@@ -5,6 +5,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import { useAuthStore } from './stores/auth'
 
 import { initializeApp } from 'firebase/app'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
@@ -24,14 +25,16 @@ const firebase = initializeApp(firebaseConfig)
 const auth = getAuth(firebase)
 
 onAuthStateChanged(auth, (user) => {
+  const authStore = useAuthStore()
+
   if (user) {
-    // User is signed in, see docs for a list of available properties
-    // https://firebase.google.com/docs/reference/js/auth.user
-    const uid = user.uid
-    // ...
+    authStore.setUser(authStore)
+    authStore.setAuthenticated()
+    router.push({ name: 'home' })
   } else {
-    // User is signed out
-    // ...
+    authStore.setUser(null)
+    authStore.setNotAuthenticated()
+    router.push({ name: 'login' })
   }
 })
 

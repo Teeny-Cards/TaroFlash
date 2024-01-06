@@ -5,12 +5,14 @@
       <input
         type="email"
         placeholder="Email"
+        autocomplete="email"
         v-model="email"
         class="border-b border-gray-400 focus:outline-none px-2 py-1 w-full"
       />
       <input
         type="password"
         placeholder="Password"
+        :autocomplete="props.signIn ? 'current-password' : 'new-password'"
         v-model="password"
         class="border-b border-gray-400 focus:outline-none px-2 py-1 w-full"
       />

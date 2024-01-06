@@ -11,14 +11,9 @@ import LoginDialogue from '@/components/LoginDialogue.vue'
 const auth = getAuth()
 
 const signUp = (email: string, password: string): void => {
-  console.log('sign up')
-  // createUserWithEmailAndPassword(auth, email, password)
-  //   .then((userCredential) => {
-  //     var user = userCredential.user
-  //   })
-  //   .catch((error) => {
-  //     var errorCode = error.code
-  //     var errorMessage = error.message
-  //   })
+  createUserWithEmailAndPassword(auth, email, password).catch((error) => {
+    var errorCode = error.code
+    var errorMessage = error.message
+  })
 }
 </script>
