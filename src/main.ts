@@ -7,7 +7,7 @@ import App from './App.vue'
 import router from './router'
 
 import { initializeApp } from 'firebase/app'
-import { getAnalytics } from 'firebase/analytics'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDCXN86DZJ1VOLuRSPPUw4ClbF8uqQ908E',
@@ -20,8 +20,20 @@ const firebaseConfig = {
 }
 
 // Initialize Firebase
-const firebaseApp = initializeApp(firebaseConfig)
-const analytics = getAnalytics(firebaseApp)
+const firebase = initializeApp(firebaseConfig)
+const auth = getAuth(firebase)
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is signed in, see docs for a list of available properties
+    // https://firebase.google.com/docs/reference/js/auth.user
+    const uid = user.uid
+    // ...
+  } else {
+    // User is signed out
+    // ...
+  }
+})
 
 const app = createApp(App)
 
