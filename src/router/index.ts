@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import DashBoard from '../views/Dashboard.vue'
 import CreateView from '../views/CreateView.vue'
 import LoginPage from '../views/LoginPage.vue'
 import SignupPage from '../views/SignupPage.vue'
-import { useAuthStore } from '../stores/auth'
+import HomeView from '../views/HomeView.vue'
+import { useUserStore } from '../stores/user'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,18 +22,25 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
-    },
-    {
-      path: '/create',
-      name: 'create',
-      component: CreateView
+      component: HomeView,
+      children: [
+        {
+          path: 'dashboard',
+          name: 'dashboard',
+          component: DashBoard
+        },
+        {
+          path: 'create',
+          name: 'create',
+          component: CreateView
+        }
+      ]
     }
   ]
 })
 
 router.beforeEach((to) => {
-  const authStore = useAuthStore()
+  const authStore = useUserStore()
 
   if (to.name !== 'signin' && to.name !== 'signup' && !authStore.authenticated) {
     return { name: 'signin' }
