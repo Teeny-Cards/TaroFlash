@@ -1,6 +1,6 @@
 <template>
   <NavBar />
-  <main class="max-w-screen-xl mx-auto">
+  <main class="max-w-screen-xl mx-auto h-full">
     <RouterView />
   </main>
 </template>

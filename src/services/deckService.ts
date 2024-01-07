@@ -7,17 +7,24 @@ import {
   where,
   collection,
   getFirestore,
-  serverTimestamp
+  serverTimestamp,
+  DocumentReference
 } from 'firebase/firestore'
 
-const createDeck = async (title: string, description: string, isPublic = false): Promise<void> => {
+const createDeck = async (
+  title: string,
+  description: string,
+  count: number,
+  isPublic = false
+): Promise<DocumentReference> => {
   const db = getFirestore()
   const user = useUserStore()
 
   const newDeck = {
     userID: user.id,
-    title: title,
-    description: description,
+    title,
+    description,
+    count,
     isPublic: isPublic,
     created_at: serverTimestamp(),
     updated_at: serverTimestamp()
@@ -25,11 +32,7 @@ const createDeck = async (title: string, description: string, isPublic = false):
 
   const deckRef = collection(db, 'Decks')
 
-  try {
-    await addDoc(deckRef, newDeck)
-  } catch (e) {
-    console.log(e)
-  }
+  return await addDoc(deckRef, newDeck)
 }
 
 const getUserDecks = async (): Promise<void> => {
@@ -44,8 +47,8 @@ const getUserDecks = async (): Promise<void> => {
     const newDecks: Deck[] = []
 
     querySnapshot.forEach((doc) => {
-      const { title, description, isPublic } = doc.data()
-      const deck = { title, description, isPublic }
+      const { title, description, count, isPublic } = doc.data()
+      const deck = { title, description, count, isPublic }
       newDecks.push(deck)
     })
 

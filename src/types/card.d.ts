@@ -1,9 +1,10 @@
 declare global {
   type Card = {
+    deckID?: string
     order: number
     frontText: string
     backText: string
-    image?: string
+    imageURL?: string
     audioClip?: string
   }
 }

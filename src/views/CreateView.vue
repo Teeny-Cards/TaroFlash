@@ -4,7 +4,7 @@
       <div class="w-[284px] h-[327px] rounded-[36px] bg-white shadow-lg"></div>
       <TeenyInput type="text" placeholder="Enter Title" v-model="title" />
       <TeenyInput type="text" placeholder="Enter Description" v-model="description" />
-      <TeenyButton @click="saveDeck" />
+      <TeenyButton @onClick="saveDeck" />
     </section>
     <section
       class="bg-white rounded-md w-full flex flex-col gap-8 justify-center items-center shadow-md p-20 relative"
@@ -48,6 +48,7 @@ import TeenyButton from '../components/TeenyButton.vue'
 import TeenyCard from '../components/TeenyCard.vue'
 import { ref } from 'vue'
 import { createDeck } from '../services/deckService'
+import { saveCardsToDeck } from '../services/cardService'
 
 const title = ref('')
 const description = ref('')
@@ -76,6 +77,11 @@ function updateBackCard(order: number, value: string): void {
 }
 
 async function saveDeck(): Promise<void> {
-  await createDeck(title.value, description.value)
+  const deckRef = await createDeck(title.value, description.value, cards.value.length)
+  saveCards(deckRef.id)
+}
+
+async function saveCards(deckId: string): Promise<void> {
+  await saveCardsToDeck(deckId, cards.value)
 }
 </script>

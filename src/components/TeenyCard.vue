@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-[284px] h-[327px] rounded-[36px] bg-white shadow-lg border border-gray-100 flex justify-center items-center p-3"
+    class="w-[284px] aspect-card rounded-[36px] bg-white shadow-lg border border-gray-100 flex justify-center items-center p-3"
   >
     <input
       class="w-full h-full text-center align-middle focus:outline-none text-3xl bg-transparent"

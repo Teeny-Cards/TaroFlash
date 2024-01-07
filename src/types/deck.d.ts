@@ -3,6 +3,7 @@ declare global {
     title: string
     description: string
     isPublic: boolean
+    count: number
   }
 }
 

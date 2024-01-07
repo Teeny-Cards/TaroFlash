@@ -3,10 +3,10 @@ import { getFirestore } from 'firebase/firestore'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 
 const handleUserAuthStateChange = async (user: any): Promise<Boolean> => {
-  const authStore = useUserStore()
+  const userStore = useUserStore()
 
   if (!user) {
-    authStore.setUser()
+    userStore.setUser()
     return false
   }
 
@@ -19,8 +19,7 @@ const handleUserAuthStateChange = async (user: any): Promise<Boolean> => {
     userProfile = {
       email: user.email,
       username: user.displayName || 'New User',
-      userId: user.uid,
-      deckRefs: []
+      userId: user.uid
     }
     await setDoc(userRef, userProfile)
   } else {
@@ -30,7 +29,7 @@ const handleUserAuthStateChange = async (user: any): Promise<Boolean> => {
     }
   }
 
-  authStore.setUser(userProfile)
+  userStore.setUser(userProfile)
   return true
 }
 

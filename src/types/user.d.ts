@@ -3,7 +3,6 @@ declare global {
     email: string | null
     username: string | null
     userId: string | null
-    deckRefs: []
   }
 }
 
