@@ -35,7 +35,7 @@ onAuthStateChanged(auth, async (user) => {
   if (authenticated) {
     router.push({ name: 'dashboard' })
   } else {
-    router.push({ name: 'login' })
+    router.push({ name: 'signin' })
   }
 })
 

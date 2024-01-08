@@ -1,34 +1,32 @@
 <template>
   <div
-    class="w-[284px] aspect-card rounded-[36px] bg-white shadow-lg border border-gray-100 flex justify-center items-center p-3"
+    class="aspect-card rounded-[36px] bg-white shadow-lg border border-gray-100 flex justify-center items-center p-3"
+    :class="width"
   >
-    <input
-      class="w-full h-full text-center align-middle focus:outline-none text-3xl bg-transparent"
-      :placeholder="props.placeholder"
-      @input="onChange"
-      v-model="value"
-    />
+    <slot></slot>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps({
-  placeholder: String,
-  order: {
-    type: Number,
-    required: true
+  size: {
+    type: String,
+    validator(value: string) {
+      // The value must match one of these strings
+      return ['small', 'base'].includes(value)
+    }
   }
 })
 
-const emit = defineEmits<{
-  (e: 'input', order: number, value: string): void
-}>()
-
-const value = ref('')
-
-function onChange(): void {
-  emit('input', props.order, value.value)
-}
+const width = computed(() => {
+  switch (props.size) {
+    case 'small':
+      return 'w-card-small'
+    case 'base':
+    default:
+      return 'w-card-base'
+  }
+})
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="h-full flex flex-col gap-4 p-8 bg-white shadow-md">
     <h1 class="text-2xl font-semibold">Decks</h1>
-    <div class="flex gap-4 overflow-auto">
+    <div class="flex gap-4">
       <div v-for="(deck, index) in decks" :key="index">
         <TeenyDeck :deck="deck" />
       </div>

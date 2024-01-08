@@ -1,5 +1,5 @@
 import { useUserStore } from '../stores/user'
-import { getFirestore } from 'firebase/firestore'
+import { getFirestore, Firestore } from 'firebase/firestore'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 
 const handleUserAuthStateChange = async (user: any): Promise<Boolean> => {
@@ -11,26 +11,31 @@ const handleUserAuthStateChange = async (user: any): Promise<Boolean> => {
   }
 
   const db = getFirestore()
+  const userProfile = await fetchOrCreateUserProfile(user, db)
+
+  userStore.setUser(userProfile)
+  return true
+}
+
+const fetchOrCreateUserProfile = async (user: any, db: Firestore) => {
   const userRef = doc(db, 'Users', user.uid)
   const docSnap = await getDoc(userRef)
 
-  let userProfile: UserProfile
-  if (!docSnap.exists()) {
-    userProfile = {
-      email: user.email,
-      username: user.displayName || 'New User',
-      userId: user.uid
-    }
-    await setDoc(userRef, userProfile)
-  } else {
-    userProfile = {
+  if (docSnap.exists()) {
+    return {
       ...(docSnap.data() as UserProfile),
       userId: user.uid
     }
   }
 
-  userStore.setUser(userProfile)
-  return true
+  const newUserProfile = {
+    email: user.email,
+    username: user.displayName || 'New User',
+    userId: user.uid
+  }
+
+  await setDoc(userRef, newUserProfile)
+  return newUserProfile
 }
 
 export { handleUserAuthStateChange }

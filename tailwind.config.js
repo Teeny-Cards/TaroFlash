@@ -8,6 +8,10 @@ export default {
       aspectRatio: {
         'card': '7 / 8',
       },
+      width: {
+        'card-small': '192px',
+        'card-base': '284px'
+      }
     },
   },
   plugins: [],

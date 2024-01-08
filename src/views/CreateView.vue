@@ -1,34 +1,16 @@
 <template>
   <div class="flex p-8 gap-8">
     <section class="flex flex-col gap-8">
-      <div class="w-[284px] h-[327px] rounded-[36px] bg-white shadow-lg"></div>
+      <TeenyCard></TeenyCard>
       <TeenyInput type="text" placeholder="Enter Title" v-model="title" />
       <TeenyInput type="text" placeholder="Enter Description" v-model="description" />
-      <TeenyButton @onClick="saveDeck" />
+      <TeenyButton @onClick="saveDeck">Save</TeenyButton>
     </section>
     <section
       class="bg-white rounded-md w-full flex flex-col gap-8 justify-center items-center shadow-md p-20 relative"
     >
-      <div
-        v-for="(card, index) in cards"
-        :key="index"
-        class="flex gap-8 justify-around items-center w-full"
-      >
-        <h2 class="text-3xl font-semibold text-gray-400">{{ card.order + 1 }}</h2>
-        <div class="flex gap-8 justify-center items-center">
-          <TeenyCard
-            placeholder="Front"
-            :value="card.frontText"
-            :order="card.order"
-            @input="updateFrontCard"
-          />
-          <TeenyCard
-            placeholder="Back"
-            :value="card.backText"
-            :order="card.order"
-            @input="updateBackCard"
-          />
-        </div>
+      <div v-for="(card, index) in cards" :key="index">
+        <TeenyCardEditor :card="card" @input="updateCard" />
       </div>
       <button
         @click="addCard"
@@ -43,12 +25,13 @@
 </template>
 
 <script setup lang="ts">
-import TeenyInput from '../components/TeenyInput.vue'
-import TeenyButton from '../components/TeenyButton.vue'
-import TeenyCard from '../components/TeenyCard.vue'
+import TeenyInput from '@/components/TeenyInput.vue'
+import TeenyButton from '@/components/TeenyButton.vue'
+import TeenyCardEditor from '@/components/TeenyCardEditor.vue'
+import TeenyCard from '@/components/TeenyCard.vue'
 import { ref } from 'vue'
-import { createDeck } from '../services/deckService'
-import { saveCardsToDeck } from '../services/cardService'
+import { createDeck } from '@/services/deckService'
+import { saveCardsToDeck } from '@/services/cardService'
 
 const title = ref('')
 const description = ref('')
@@ -56,7 +39,7 @@ const cards = ref<Card[]>([
   {
     order: 0,
     frontText: '',
-    backText: 'string'
+    backText: ''
   }
 ])
 
@@ -68,12 +51,13 @@ function addCard(): void {
   })
 }
 
-function updateFrontCard(order: number, value: string): void {
-  cards.value[order].frontText = value
-}
+function updateCard(order: number, value: { front: string; back: string }) {
+  const card = cards.value.find((c) => (c.order = order))
 
-function updateBackCard(order: number, value: string): void {
-  cards.value[order].backText = value
+  if (card) {
+    card.frontText = value.front
+    card.backText = value.back
+  }
 }
 
 async function saveDeck(): Promise<void> {
