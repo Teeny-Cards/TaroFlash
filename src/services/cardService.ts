@@ -25,6 +25,7 @@ const saveCardsToDeck = async (deckID: string, cards: Card[]): Promise<void> => 
     batch.set(cardRef, newCard)
   })
 
+  // TODO: Error Handling
   await batch.commit()
 }
 
@@ -42,4 +43,20 @@ const getCardsByDeckID = async (deckID: string): Promise<Card[]> => {
   return cards
 }
 
-export { saveCardsToDeck, getCardsByDeckID }
+//TODO: Optimize by saving cardID to cards in deck an using to create card docs. This saves a query.
+const deleteCardsByDeckID = async (deckID: string): Promise<void> => {
+  const db = getFirestore()
+  const q = query(collection(db, 'cards'), where('deckID', '==', deckID))
+
+  const querySnapshot = await getDocs(q)
+  const batch = writeBatch(db)
+
+  querySnapshot.forEach((doc) => {
+    batch.delete(doc.ref)
+  })
+
+  // TODO: Error Handling
+  await batch.commit()
+}
+
+export { saveCardsToDeck, getCardsByDeckID, deleteCardsByDeckID }

@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import TeenyDeck from '@/components/TeenyDeck.vue'
 import { onMounted } from 'vue'
-import { getUserDecks } from '../services/deckService'
+import { getUserDecks } from '@/services/deckService'
 import { useDeckStore } from '@/stores/decks'
 import { storeToRefs } from 'pinia'
 

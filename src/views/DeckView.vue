@@ -1,37 +1,37 @@
 <template>
   <div class="flex p-8 gap-8">
     <section class="flex flex-col gap-8">
-      <div class="w-[284px] h-[327px] rounded-[36px] bg-white shadow-lg"></div>
+      <TeenyCard></TeenyCard>
       <div class="flex flex-col gap-2">
         <h1 class="text-xl font-semibold text-gray-400">{{ deck?.title }}</h1>
         <h2 class="text-gray-400">{{ deck?.description }}</h2>
       </div>
-      <TeenyButton />
+      <TeenyButton color="danger" @onClick="deleteDeck">Delete</TeenyButton>
     </section>
     <section
-      class="bg-white rounded-md w-full flex flex-col gap-8 justify-center items-center shadow-md p-20 relative"
+      class="bg-white grid grid-cols-deck-desktop gap-8 rounded-md w-full shadow-md p-20 relative"
     >
-      <div
-        v-for="(card, index) in cards"
-        :key="index"
-        class="flex gap-8 justify-around items-center w-full"
-      >
-        <TeenyCard :order="1" />
-      </div>
+      <TeenyCard v-for="(card, index) in cards" :key="index" size="small">
+        <p class="text-xl font-semibold text-gray-500">{{ card.frontText }}</p>
+      </TeenyCard>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import TeenyButton from '../components/TeenyButton.vue'
 import TeenyCard from '@/components/TeenyCard.vue'
 import { useDeckStore } from '@/stores/decks'
 import { onMounted, ref } from 'vue'
-import { getDeckById } from '../services/deckService'
-import { getCardsByDeckID } from '../services/cardService'
+import { getDeckById, deleteDeckById } from '@/services/deckService'
+import { getCardsByDeckID, deleteCardsByDeckID } from '../services/cardService'
+import TeenyButton from '@/components/TeenyButton.vue'
+import router from '@/router'
 
 const props = defineProps({
-  id: String
+  id: {
+    type: String,
+    required: true
+  }
 })
 
 const deckStore = useDeckStore()
@@ -70,5 +70,11 @@ async function getCards(): Promise<void> {
   if (props.id) {
     cards.value = await getCardsByDeckID(props.id)
   }
+}
+
+async function deleteDeck(): Promise<void> {
+  await deleteCardsByDeckID(props.id)
+  await deleteDeckById(props.id)
+  router.push({ name: 'dashboard' })
 }
 </script>

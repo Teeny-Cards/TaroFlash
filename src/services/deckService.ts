@@ -10,7 +10,8 @@ import {
   serverTimestamp,
   DocumentReference,
   doc,
-  getDoc
+  getDoc,
+  deleteDoc
 } from 'firebase/firestore'
 
 const createDeck = async (
@@ -79,4 +80,16 @@ const getDeckById = async (id: string): Promise<Deck | undefined> => {
   return undefined
 }
 
-export { createDeck, getUserDecks, getDeckById }
+const deleteDeckById = async (id: string): Promise<void> => {
+  const db = getFirestore()
+  const deckRef = doc(db, 'Decks', id)
+
+  try {
+    await deleteDoc(deckRef)
+  } catch (e) {
+    //TODO: Throw error state to component
+    console.log(e)
+  }
+}
+
+export { createDeck, getUserDecks, getDeckById, deleteDeckById }

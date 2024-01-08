@@ -32,6 +32,7 @@ import TeenyCard from '@/components/TeenyCard.vue'
 import { ref } from 'vue'
 import { createDeck } from '@/services/deckService'
 import { saveCardsToDeck } from '@/services/cardService'
+import router from '@/router'
 
 const title = ref('')
 const description = ref('')
@@ -67,5 +68,6 @@ async function saveDeck(): Promise<void> {
 
 async function saveCards(deckId: string): Promise<void> {
   await saveCardsToDeck(deckId, cards.value)
+  router.push({ name: 'dashboard' })
 }
 </script>

@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import TeenyCard from './TeenyCard.vue'
+import TeenyCard from '@/components/TeenyCard.vue'
 import { ref, type PropType } from 'vue'
 
 const props = defineProps({
