@@ -7,14 +7,14 @@
         placeholder="Email"
         autocomplete="email"
         v-model="email"
-        class="border-b border-gray-400 focus:outline-none px-2 py-1 w-full"
+        class="border-b border-gray-400 focus:outline-none px-2 py-1 w-full bg-transparent"
       />
       <input
         type="password"
         placeholder="Password"
         :autocomplete="props.signIn ? 'current-password' : 'new-password'"
         v-model="password"
-        class="border-b border-gray-400 focus:outline-none px-2 py-1 w-full"
+        class="border-b border-gray-400 focus:outline-none px-2 py-1 w-full bg-transparent"
       />
       <button class="bg-cyan-400 w-full rounded p-3 text-white" @click="onClick">
         {{ signText }}
