@@ -42,4 +42,4 @@ const getCardsByDeckID = async (deckID: string): Promise<Card[]> => {
   return cards
 }
 
-export { saveCardsToDeck }
+export { saveCardsToDeck, getCardsByDeckID }

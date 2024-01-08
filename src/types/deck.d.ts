@@ -1,5 +1,6 @@
 declare global {
   type Deck = {
+    id: string
     title: string
     description: string
     isPublic: boolean

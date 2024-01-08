@@ -4,6 +4,7 @@ import CreateView from '../views/CreateView.vue'
 import LoginPage from '../views/LoginPage.vue'
 import SignupPage from '../views/SignupPage.vue'
 import HomeView from '../views/HomeView.vue'
+import DeckView from '../views/DeckView.vue'
 import { useUserStore } from '../stores/user'
 
 const router = createRouter({
@@ -33,6 +34,12 @@ const router = createRouter({
           path: 'create',
           name: 'create',
           component: CreateView
+        },
+        {
+          path: 'deck/:id',
+          name: 'deck',
+          component: DeckView,
+          props: true
         }
       ]
     }

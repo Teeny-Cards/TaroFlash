@@ -8,7 +8,9 @@ import {
   collection,
   getFirestore,
   serverTimestamp,
-  DocumentReference
+  DocumentReference,
+  doc,
+  getDoc
 } from 'firebase/firestore'
 
 const createDeck = async (
@@ -48,7 +50,7 @@ const getUserDecks = async (): Promise<void> => {
 
     querySnapshot.forEach((doc) => {
       const { title, description, count, isPublic } = doc.data()
-      const deck = { title, description, count, isPublic }
+      const deck = { title, description, count, isPublic, id: doc.id }
       newDecks.push(deck)
     })
 
@@ -58,4 +60,23 @@ const getUserDecks = async (): Promise<void> => {
   }
 }
 
-export { createDeck, getUserDecks }
+const getDeckById = async (id: string): Promise<Deck | undefined> => {
+  const db = getFirestore()
+  const deckRef = doc(db, 'Decks', id)
+
+  try {
+    const docSnapshot = await getDoc(deckRef)
+
+    if (docSnapshot.exists()) {
+      const { title, description, id, isPublic, count } = docSnapshot.data()
+      const deck = { title, description, id, isPublic, count }
+      return deck
+    }
+  } catch (e) {
+    console.log(e)
+  }
+
+  return undefined
+}
+
+export { createDeck, getUserDecks, getDeckById }
