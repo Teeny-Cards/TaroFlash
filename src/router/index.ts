@@ -5,41 +5,55 @@ import LoginPage from '../views/LoginPage.vue'
 import SignupPage from '../views/SignupPage.vue'
 import HomeView from '../views/HomeView.vue'
 import DeckView from '../views/DeckView.vue'
+import LoadingVue from '../views/LoadingView.vue'
 import { useUserStore } from '../stores/user'
+import { useAppStore } from '@/stores/app'
+import { storeToRefs } from 'pinia'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/signin',
-      name: 'signin',
-      component: LoginPage,
-      meta: { requiresAuth: false }
-    },
-    {
-      path: '/signup',
-      name: 'signup',
-      component: SignupPage,
-      meta: { requiresAuth: false }
-    },
-    {
       path: '/',
+      meta: { requiresAuth: false },
+      children: [
+        {
+          path: '/signin',
+          name: 'signin',
+          component: LoginPage
+        },
+        {
+          path: '/signup',
+          name: 'signup',
+          component: SignupPage
+        },
+        {
+          path: '/app',
+          name: 'loading',
+          component: LoadingVue,
+          props: true
+        }
+      ]
+    },
+    {
+      path: '/home',
       name: 'home',
+      redirect: { name: 'dashboard' },
       component: HomeView,
       meta: { requiresAuth: true },
       children: [
         {
-          path: 'dashboard',
+          path: '/dashboard',
           name: 'dashboard',
           component: DashBoard
         },
         {
-          path: 'create',
+          path: '/create',
           name: 'create',
           component: CreateView
         },
         {
-          path: 'deck/:id',
+          path: '/deck/:id',
           name: 'deck',
           component: DeckView,
           props: true
@@ -49,15 +63,20 @@ const router = createRouter({
   ]
 })
 
-// router.beforeEach((to, _from, next) => {
-//   const user = useUserStore()
-//   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
+router.beforeEach((to) => {
+  const { authenticated } = storeToRefs(useUserStore())
+  const { loading } = storeToRefs(useAppStore())
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
 
-//   if (requiresAuth && !user.authenticated) {
-//     next({ name: 'signin' })
-//   } else {
-//     next()
-//   }
-// })
+  if (!requiresAuth) {
+    return true
+  } else if (requiresAuth && loading.value) {
+    return { name: 'loading', query: { path: to.path } }
+  } else if (requiresAuth && authenticated.value) {
+    return true
+  } else {
+    return { name: 'signin' }
+  }
+})
 
 export default router

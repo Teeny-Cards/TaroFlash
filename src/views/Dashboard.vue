@@ -2,7 +2,8 @@
   <div class="h-full flex flex-col gap-4 p-8 bg-white shadow-md">
     <h1 class="text-2xl font-semibold">Decks</h1>
     <div class="flex gap-4">
-      <div v-for="(deck, index) in decks" :key="index">
+      <div v-if="loading">Loading</div>
+      <div v-else v-for="(deck, index) in decks" :key="index">
         <TeenyDeck :deck="deck" />
       </div>
     </div>
@@ -10,14 +11,17 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { getUserDecks } from '@/services/deckService'
 import { useDeckStore } from '@/stores/decks'
 import { storeToRefs } from 'pinia'
 
-onMounted(() => {
-  getUserDecks()
+onMounted(async () => {
+  await getUserDecks()
+  loading.value = false
 })
+
+const loading = ref(true)
 
 const deckStore = useDeckStore()
 const { decks } = storeToRefs(deckStore)

@@ -31,6 +31,7 @@ const saveCardsToDeck = async (deckID: string, cards: Card[]): Promise<void> => 
 
 const getCardsByDeckID = async (deckID: string): Promise<Card[]> => {
   const db = getFirestore()
+  //TODO: Order by 'order' field
   const q = query(collection(db, 'cards'), where('deckID', '==', deckID))
 
   const querySnapshot = await getDocs(q)
