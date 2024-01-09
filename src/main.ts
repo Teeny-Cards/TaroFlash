@@ -1,14 +1,12 @@
 import './assets/main.css'
-
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-
 import App from './App.vue'
 import router from './router'
-
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import { initializeApp } from 'firebase/app'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { handleUserAuthStateChange } from './services/userService'
+import { registerTeenyComponents } from './components/teenyComponents'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDCXN86DZJ1VOLuRSPPUw4ClbF8uqQ908E',
@@ -24,6 +22,7 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+registerTeenyComponents(app)
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig)

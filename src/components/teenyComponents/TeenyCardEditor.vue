@@ -17,8 +17,8 @@
           <input
             class="w-full h-full text-center align-middle focus:outline-none text-3xl bg-transparent"
             placeholder="Front"
-            v-model="frontText"
-            @input="onChange"
+            :value="card.frontText"
+            @input="onFrontChanged"
           />
         </div>
       </TeenyCard>
@@ -26,8 +26,8 @@
         <input
           class="w-full h-full text-center align-middle focus:outline-none text-3xl bg-transparent"
           placeholder="Back"
-          v-model="backText"
-          @input="onChange"
+          :value="card.backText"
+          @input="onBackChanged"
         />
       </TeenyCard>
     </div>
@@ -35,24 +35,31 @@
 </template>
 
 <script setup lang="ts">
-import TeenyCard from '@/components/TeenyCard.vue'
 import { ref, type PropType } from 'vue'
 
 const props = defineProps({
+  index: {
+    type: Number,
+    required: true
+  },
   card: {
     type: Object as PropType<Card>,
     required: true
   }
 })
 
-const frontText = ref(props.card.frontText)
-const backText = ref(props.card.backText)
-
 const emit = defineEmits<{
-  (e: 'input', id: number, value: { front: string; back: string }): void
+  (e: 'frontInput', index: number, value: string): void
+  (e: 'backInput', index: number, value: string): void
 }>()
 
-function onChange(): void {
-  emit('input', props.card.order, { front: frontText.value, back: backText.value })
+function onFrontChanged(e: Event): void {
+  const target = e.target as HTMLInputElement
+  emit('frontInput', props.index, target.value)
+}
+
+function onBackChanged(e: Event): void {
+  const target = e.target as HTMLInputElement
+  emit('backInput', props.index, target.value)
 }
 </script>
