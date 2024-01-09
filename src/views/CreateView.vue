@@ -22,7 +22,12 @@
       class="bg-white rounded-md w-full flex flex-col-reverse gap-8 justify-center items-center shadow-md p-20 relative"
     >
       <div v-for="(card, index) in cards" :key="index">
-        <TeenyCardEditor :card="card" @input="updateCard" />
+        <TeenyCardEditor
+          :card="card"
+          :index="index"
+          @frontInput="updateCardFront"
+          @backInput="updateCardBack"
+        />
       </div>
       <button
         @click="addCard"
@@ -37,10 +42,6 @@
 </template>
 
 <script setup lang="ts">
-import TeenyInput from '@/components/TeenyInput.vue'
-import TeenyButton from '@/components/TeenyButton.vue'
-import TeenyCardEditor from '@/components/TeenyCardEditor.vue'
-import TeenyCard from '@/components/TeenyCard.vue'
 import { ref } from 'vue'
 import { createDeck } from '@/services/deckService'
 import { saveCardsToDeck } from '@/services/cardService'
@@ -57,21 +58,26 @@ const cards = ref<Card[]>([
 ])
 
 function addCard(): void {
-  const order = cards.value.length
-
   cards.value.push({
-    order,
+    order: cards.value.length,
     frontText: '',
     backText: ''
   })
 }
 
-function updateCard(order: number, value: { front: string; back: string }) {
-  const card = cards.value[order]
+function updateCardFront(index: number, value: string) {
+  const card = cards.value[index]
 
   if (card) {
-    card.frontText = value.front
-    card.backText = value.back
+    card.frontText = value
+  }
+}
+
+function updateCardBack(index: number, value: string) {
+  const card = cards.value[index]
+
+  if (card) {
+    card.backText = value
   }
 }
 

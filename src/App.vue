@@ -1,6 +1,5 @@
 <template>
-  <loadingIndicator v-if="loading" />
-  <RouterView v-else />
+  <RouterView />
 </template>
 
 <script setup lang="ts">

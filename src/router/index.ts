@@ -49,15 +49,15 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, _from, next) => {
-  const userStore = useUserStore()
-  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
+// router.beforeEach((to, _from, next) => {
+//   const user = useUserStore()
+//   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
 
-  if (requiresAuth && !userStore.authenticated) {
-    next({ name: 'signin' })
-  } else {
-    next()
-  }
-})
+//   if (requiresAuth && !user.authenticated) {
+//     next({ name: 'signin' })
+//   } else {
+//     next()
+//   }
+// })
 
 export default router
