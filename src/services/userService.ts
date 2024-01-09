@@ -7,6 +7,7 @@ const handleUserAuthStateChange = async (user: any): Promise<Boolean> => {
 
   if (!user) {
     userStore.setUser()
+    userStore.setLoading(false)
     return false
   }
 
@@ -14,6 +15,7 @@ const handleUserAuthStateChange = async (user: any): Promise<Boolean> => {
   const userProfile = await fetchOrCreateUserProfile(user, db)
 
   userStore.setUser(userProfile)
+  userStore.setLoading(false)
   return true
 }
 

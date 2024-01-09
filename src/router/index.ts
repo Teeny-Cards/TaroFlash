@@ -13,17 +13,20 @@ const router = createRouter({
     {
       path: '/signin',
       name: 'signin',
-      component: LoginPage
+      component: LoginPage,
+      meta: { requiresAuth: false }
     },
     {
       path: '/signup',
       name: 'signup',
-      component: SignupPage
+      component: SignupPage,
+      meta: { requiresAuth: false }
     },
     {
       path: '/',
       name: 'home',
       component: HomeView,
+      meta: { requiresAuth: true },
       children: [
         {
           path: 'dashboard',
@@ -46,14 +49,15 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to) => {
-  const authStore = useUserStore()
+router.beforeEach((to, _from, next) => {
+  const userStore = useUserStore()
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
 
-  if (to.name !== 'signin' && to.name !== 'signup' && !authStore.authenticated) {
-    return { name: 'signin' }
+  if (requiresAuth && !userStore.authenticated) {
+    next({ name: 'signin' })
+  } else {
+    next()
   }
-
-  return true
 })
 
 export default router

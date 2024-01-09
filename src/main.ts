@@ -33,7 +33,7 @@ onAuthStateChanged(auth, async (user) => {
   const authenticated = await handleUserAuthStateChange(user)
 
   if (authenticated) {
-    router.push({ name: 'dashboard' })
+    // router.push({ name: 'dashboard' })
   } else {
     router.push({ name: 'signin' })
   }

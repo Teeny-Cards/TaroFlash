@@ -5,6 +5,7 @@ export const useUserStore = defineStore('user', () => {
   const username = ref('')
   const email = ref('')
   const id = ref('')
+  const loading = ref(true)
 
   const authenticated = computed(() => !!id.value)
 
@@ -20,5 +21,9 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  return { authenticated, username, email, id, setUser }
+  function setLoading(value: boolean) {
+    loading.value = value
+  }
+
+  return { authenticated, username, email, id, loading, setUser, setLoading }
 })
