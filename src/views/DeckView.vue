@@ -1,30 +1,23 @@
 <template>
-  <div class="flex p-8 gap-8">
-    <section class="flex flex-col gap-8">
-      <TeenyCard></TeenyCard>
-      <div class="flex flex-col gap-2">
-        <h1 class="text-xl font-semibold text-gray-400">{{ deck?.title }}</h1>
-        <h2 class="text-gray-400">{{ deck?.description }}</h2>
-      </div>
-      <TeenyButton color="danger" @onClick="deleteDeck">Delete</TeenyButton>
-    </section>
-    <section
-      class="bg-white grid grid-cols-deck-desktop gap-8 rounded-md w-full shadow-md p-20 relative"
-    >
-      <TeenyCard v-for="(card, index) in cards" :key="index" size="small">
-        <p class="text-xl font-semibold text-gray-500">{{ card.frontText }}</p>
-      </TeenyCard>
-    </section>
-  </div>
+  <Study v-if="studying" :cards="cards"></Study>
+  <Deck
+    v-else
+    :id="id"
+    :title="deck?.title"
+    :description="deck?.description"
+    :cards="cards"
+    @study="onStudyClicked"
+    @deleteDeck="deleteDeck"
+  />
 </template>
 
 <script setup lang="ts">
-import TeenyCard from '@/components/TeenyCard.vue'
+import Deck from '@/components/views/deck.vue'
+import Study from '@/components/views/study.vue'
 import { useDeckStore } from '@/stores/decks'
 import { onMounted, ref } from 'vue'
 import { getDeckById, deleteDeckById } from '@/services/deckService'
-import { getCardsByDeckID, deleteCardsByDeckID } from '../services/cardService'
-import TeenyButton from '@/components/TeenyButton.vue'
+import { getCardsByDeckID, deleteCardsByDeckID } from '@/services/cardService'
 import router from '@/router'
 
 const props = defineProps({
@@ -37,11 +30,16 @@ const props = defineProps({
 const deckStore = useDeckStore()
 const deck = ref<Deck | null>(null)
 const cards = ref<Card[]>([])
+const studying = ref(false)
 
 onMounted(async () => {
   getDeck()
   getCards()
 })
+
+function onStudyClicked(): void {
+  studying.value = true
+}
 
 async function getDeck(): Promise<void> {
   if (!props.id) {
