@@ -16,7 +16,7 @@
       </TeenyCard>
       <TeenyInput type="text" placeholder="Enter Title" v-model="title" />
       <TeenyInput type="text" placeholder="Enter Description" v-model="description" />
-      <TeenyButton @onClick="$emit('saveDeck')">Save</TeenyButton>
+      <TeenyButton @onClick="saveDeck">Save</TeenyButton>
     </section>
     <section
       class="bg-white rounded-3xl w-full flex flex-col-reverse gap-8 items-center shadow-md p-20 relative col-start-2"
@@ -26,12 +26,12 @@
         :key="index"
         :card="card"
         :index="index"
-        @frontInput="(index: number, value: string) => $emit('updateCardFront', index, value)"
-        @backInput="(index: number, value: string) => $emit('updateCardBack', index, value)"
+        @frontInput="updateFront"
+        @backInput="updateBack"
       />
 
       <button
-        @click="$emit('addCard')"
+        @click="addCard"
         class="bg-green-400 p-5 rounded-full text-white absolute shadow-md -right-8 top-52"
       >
         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
@@ -43,22 +43,67 @@
 </template>
 
 <script setup lang="ts">
-import { type PropType } from 'vue'
+import { ref, type PropType } from 'vue'
 
-defineProps({
+declare interface DirtyCard extends Card {
+  dirty?: Boolean
+}
+
+const props = defineProps({
+  deck: {
+    type: Object as PropType<Deck>,
+    required: true
+  },
   cards: {
     type: Object as PropType<Card[]>,
     required: true
   }
 })
 
-defineEmits<{
-  (event: 'saveDeck'): void
-  (event: 'updateCardFront', index: number, value: string): void
-  (event: 'updateCardBack', index: number, value: string): void
-  (event: 'addCard'): void
+const emit = defineEmits<{
+  (event: 'saveDeck', newDeck: Deck, newCards: Card[]): void
 }>()
 
-const title = defineModel('title')
-const description = defineModel('description')
+const title = ref(props.deck.title)
+const description = ref(props.deck.description)
+const cards = ref<DirtyCard[]>(props.cards)
+
+function addCard(): void {
+  cards.value.push({
+    order: cards.value.length,
+    frontText: '',
+    backText: '',
+    dirty: true
+  })
+}
+
+function updateFront(index: number, value: string): void {
+  const card = cards.value[index]
+
+  if (card) {
+    card.frontText = value
+    card.dirty = true
+  }
+}
+
+function updateBack(index: number, value: string): void {
+  const card = cards.value[index]
+
+  if (card) {
+    card.backText = value
+    card.dirty = true
+  }
+}
+
+function saveDeck(): void {
+  const newDeck: Deck = {
+    ...props.deck,
+    title: title.value,
+    description: description.value
+  }
+
+  const newCards = cards.value.filter((card: DirtyCard) => card.dirty)
+
+  emit('saveDeck', newDeck, newCards)
+}
 </script>

@@ -38,7 +38,10 @@ const getCardsByDeckID = async (deckID: string): Promise<Card[]> => {
   const cards: Card[] = []
 
   querySnapshot.forEach((doc) => {
-    cards.push(doc.data() as Card)
+    cards.push({
+      ...(doc.data() as Card),
+      id: doc.id
+    })
   })
 
   return cards

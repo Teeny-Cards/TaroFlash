@@ -1,25 +1,27 @@
 <template>
-  <Study v-if="studying" :cards="cards"></Study>
-  <Edit
-    v-else-if="editing"
-    v-model:title="title"
-    v-model:description="description"
-    :cards="cards"
-    @updateCardFront="onUpdateCardFront"
-    @updateCardBack="onUpdateCardBack"
-    @addCard="onAddCard"
-    @saveDeck="saveDeck"
-  ></Edit>
-  <Deck
-    v-else
-    :id="id"
-    :title="title"
-    :description="description"
-    :cards="cards"
-    @study="onStudyClicked"
-    @edit="onEditClicked"
-    @deleteDeck="deleteDeck"
-  />
+  <div v-if="loading">Loading...</div>
+  <div v-else>
+    <Study v-if="studying" :cards="cards"></Study>
+    <Edit
+      v-else-if="editing && deck"
+      :deck="deck"
+      :cards="cards"
+      @updateCardFront="onUpdateCardFront"
+      @updateCardBack="onUpdateCardBack"
+      @addCard="onAddCard"
+      @saveDeck="saveDeck"
+    ></Edit>
+    <Deck
+      v-else
+      :id="id"
+      :title="deck?.title"
+      :description="deck?.description"
+      :cards="cards"
+      @study="onStudyClicked"
+      @edit="onEditClicked"
+      @deleteDeck="deleteDeck"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -40,12 +42,17 @@ const props = defineProps({
   }
 })
 
+const deckLoading = ref(true)
+const cardsLoading = ref(true)
+
 const route = useRoute()
 const deckStore = useDeckStore()
-const title = ref('')
-const description = ref('')
-const isPublic = ref()
+const deck = ref<Deck>()
 const cards = ref<Card[]>([])
+
+const loading = computed(() => {
+  return deckLoading.value || cardsLoading.value
+})
 
 const studying = computed(() => {
   return route.query.mode === 'study'
@@ -81,32 +88,22 @@ async function getDeck(): Promise<void> {
 
   if (cachedDeck) {
     //TODO: Store in deck variable and find a way to ensure that it exists for the template
-    title.value = cachedDeck.title
-    description.value = cachedDeck.description
-    isPublic.value = cachedDeck.isPublic
+    deck.value = cachedDeck
   } else {
     const fetchedDeck = await getDeckById(props.id)
 
     if (fetchedDeck) {
-      title.value = fetchedDeck.title
-      description.value = fetchedDeck.description
-      isPublic.value = fetchedDeck.isPublic
+      deck.value = fetchedDeck
     } else {
       //TODO: Show error state
       console.log('Deck not found')
     }
   }
+
+  deckLoading.value = false
 }
 
-async function saveDeck(): Promise<void> {
-  const newDeck: Deck = {
-    id: props.id,
-    title: title.value,
-    description: description.value,
-    isPublic: isPublic.value,
-    count: cards.value.length
-  }
-
+async function saveDeck(newDeck: Deck, newCards: Card[]): Promise<void> {
   await updateDeckById(props.id, newDeck)
   // saveCards(props.id)
 }
@@ -120,7 +117,11 @@ async function deleteDeck(): Promise<void> {
 async function getCards(): Promise<void> {
   if (props.id) {
     cards.value = await getCardsByDeckID(props.id)
+  } else {
+    // TODO: Reroute
   }
+
+  cardsLoading.value = false
 }
 
 function onAddCard(): void {
