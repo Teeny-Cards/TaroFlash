@@ -21,6 +21,7 @@ export default {
         'card-base': '36px'
       },
       gridTemplateColumns: {
+        'deck-view-lg': '284px minmax(811px, 1024px)',
         'deck-desktop': 'repeat(4, 192px)',
       }
     },

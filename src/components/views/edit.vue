@@ -1,6 +1,6 @@
 <template>
-  <div class="flex p-8 gap-8">
-    <section class="flex flex-col gap-8">
+  <div class="grid grid-cols-deck-view-lg p-8 gap-8">
+    <section class="flex flex-col gap-8 fixed">
       <TeenyCard>
         <div
           class="w-full h-full flex flex-col gap-2 items-center justify-center text-gray-300 cursor-pointer"
@@ -19,16 +19,17 @@
       <TeenyButton @onClick="$emit('saveDeck')">Save</TeenyButton>
     </section>
     <section
-      class="bg-white rounded-md w-full flex flex-col-reverse gap-8 justify-center items-center shadow-md p-20 relative"
+      class="bg-white rounded-3xl w-full flex flex-col-reverse gap-8 items-center shadow-md p-20 relative col-start-2"
     >
-      <div v-for="(card, index) in cards" :key="index">
-        <TeenyCardEditor
-          :card="card"
-          :index="index"
-          @frontInput="(index: number, value: string) => $emit('updateCardFront', index, value)"
-          @backInput="(index: number, value: string) => $emit('updateCardBack', index, value)"
-        />
-      </div>
+      <TeenyCardEditor
+        v-for="(card, index) in cards"
+        :key="index"
+        :card="card"
+        :index="index"
+        @frontInput="(index: number, value: string) => $emit('updateCardFront', index, value)"
+        @backInput="(index: number, value: string) => $emit('updateCardBack', index, value)"
+      />
+
       <button
         @click="$emit('addCard')"
         class="bg-green-400 p-5 rounded-full text-white absolute shadow-md -right-8 top-52"

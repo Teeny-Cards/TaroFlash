@@ -1,5 +1,5 @@
 <template>
-  <nav class="w-full bg-green-400">
+  <nav class="w-full bg-green-400 sticky top-0 z-10">
     <div class="w-full max-w-screen-xl mx-auto px-8 py-3 flex justify-between items-center">
       <RouterLink to="/dashboard" class="text-xl font-semibold text-white">Teeny Cards</RouterLink>
       <div class="flex gap-3 items-center">

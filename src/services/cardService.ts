@@ -6,7 +6,8 @@ import {
   getFirestore,
   serverTimestamp,
   collection,
-  getDocs
+  getDocs,
+  orderBy
 } from 'firebase/firestore'
 
 const saveCardsToDeck = async (deckID: string, cards: Card[]): Promise<void> => {
@@ -31,8 +32,7 @@ const saveCardsToDeck = async (deckID: string, cards: Card[]): Promise<void> => 
 
 const getCardsByDeckID = async (deckID: string): Promise<Card[]> => {
   const db = getFirestore()
-  //TODO: Order by 'order' field
-  const q = query(collection(db, 'cards'), where('deckID', '==', deckID))
+  const q = query(collection(db, 'cards'), where('deckID', '==', deckID), orderBy('order'))
 
   const querySnapshot = await getDocs(q)
   const cards: Card[] = []
@@ -44,7 +44,6 @@ const getCardsByDeckID = async (deckID: string): Promise<Card[]> => {
   return cards
 }
 
-//TODO: Optimize by saving cardID to cards in deck an using to create card docs. This saves a query.
 const deleteCardsByDeckID = async (deckID: string): Promise<void> => {
   const db = getFirestore()
   const q = query(collection(db, 'cards'), where('deckID', '==', deckID))
