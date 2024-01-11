@@ -25,8 +25,8 @@
         <TeenyCardEditor
           :card="card"
           :index="index"
-          @frontInput="$emit('updateCardFront')"
-          @backInput="$emit('updateCardBack')"
+          @frontInput="(index: number, value: string) => $emit('updateCardFront', index, value)"
+          @backInput="(index: number, value: string) => $emit('updateCardBack', index, value)"
         />
       </div>
       <button
@@ -50,6 +50,13 @@ defineProps({
     required: true
   }
 })
+
+defineEmits<{
+  (event: 'saveDeck'): void
+  (event: 'updateCardFront', index: number, value: string): void
+  (event: 'updateCardBack', index: number, value: string): void
+  (event: 'addCard'): void
+}>()
 
 const title = defineModel('title')
 const description = defineModel('description')

@@ -28,7 +28,7 @@ import Study from '@/components/views/study.vue'
 import Edit from '@/components/views/edit.vue'
 import { useDeckStore } from '@/stores/decks'
 import { computed, onMounted, ref } from 'vue'
-import { getDeckById, deleteDeckById } from '@/services/deckService'
+import { getDeckById, deleteDeckById, updateDeckById } from '@/services/deckService'
 import { getCardsByDeckID, deleteCardsByDeckID } from '@/services/cardService'
 import { useRoute } from 'vue-router'
 import router from '@/router'
@@ -41,6 +41,11 @@ const props = defineProps({
 })
 
 const route = useRoute()
+const deckStore = useDeckStore()
+const title = ref('')
+const description = ref('')
+const isPublic = ref()
+const cards = ref<Card[]>([])
 
 const studying = computed(() => {
   return route.query.mode === 'study'
@@ -49,11 +54,6 @@ const studying = computed(() => {
 const editing = computed(() => {
   return route.query.mode === 'edit'
 })
-
-const deckStore = useDeckStore()
-const title = ref('')
-const description = ref('')
-const cards = ref<Card[]>([])
 
 onMounted(async () => {
   getDeck()
@@ -80,14 +80,17 @@ async function getDeck(): Promise<void> {
   let cachedDeck = deckStore.getDeckById(props.id)
 
   if (cachedDeck) {
+    //TODO: Store in deck variable and find a way to ensure that it exists for the template
     title.value = cachedDeck.title
     description.value = cachedDeck.description
+    isPublic.value = cachedDeck.isPublic
   } else {
     const fetchedDeck = await getDeckById(props.id)
 
     if (fetchedDeck) {
       title.value = fetchedDeck.title
       description.value = fetchedDeck.description
+      isPublic.value = fetchedDeck.isPublic
     } else {
       //TODO: Show error state
       console.log('Deck not found')
@@ -96,9 +99,16 @@ async function getDeck(): Promise<void> {
 }
 
 async function saveDeck(): Promise<void> {
-  // const deckRef = await createDeck(title.value, description.value, cards.value.length)
-  // TODO: Save Deck
-  // saveCards(deckRef.id)
+  const newDeck: Deck = {
+    id: props.id,
+    title: title.value,
+    description: description.value,
+    isPublic: isPublic.value,
+    count: cards.value.length
+  }
+
+  await updateDeckById(props.id, newDeck)
+  // saveCards(props.id)
 }
 
 async function deleteDeck(): Promise<void> {

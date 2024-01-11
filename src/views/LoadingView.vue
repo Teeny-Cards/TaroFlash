@@ -17,7 +17,7 @@ const { loading } = storeToRefs(appStore)
 
 watch(loading, (isLoading) => {
   if (!isLoading) {
-    router.push(path ?? '/dashboard')
+    router.replace(path ?? '/dashboard')
   }
 })
 </script>

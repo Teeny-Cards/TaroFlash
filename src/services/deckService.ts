@@ -11,7 +11,8 @@ import {
   DocumentReference,
   doc,
   getDoc,
-  deleteDoc
+  deleteDoc,
+  runTransaction
 } from 'firebase/firestore'
 
 const createDeck = async (
@@ -80,6 +81,26 @@ const getDeckById = async (id: string): Promise<Deck | undefined> => {
   return undefined
 }
 
+const updateDeckById = async (id: string, newDeck: Deck): Promise<void> => {
+  const db = getFirestore()
+  const deckRef = doc(db, 'Decks', id)
+
+  try {
+    await runTransaction(db, async (transaction) => {
+      const deck = await transaction.get(deckRef)
+
+      if (!deck.exists()) {
+        throw 'Document does not exist!'
+      }
+
+      transaction.update(deckRef, newDeck)
+    })
+  } catch (e) {
+    //TODO: Handle Error
+    console.log('Transaction failed: ', e)
+  }
+}
+
 const deleteDeckById = async (id: string): Promise<void> => {
   const db = getFirestore()
   const deckRef = doc(db, 'Decks', id)
@@ -92,4 +113,4 @@ const deleteDeckById = async (id: string): Promise<void> => {
   }
 }
 
-export { createDeck, getUserDecks, getDeckById, deleteDeckById }
+export { createDeck, getUserDecks, getDeckById, deleteDeckById, updateDeckById }

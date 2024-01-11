@@ -71,7 +71,7 @@ router.beforeEach((to) => {
   if (!requiresAuth) {
     return true
   } else if (requiresAuth && loading.value) {
-    return { name: 'loading', query: { path: to.path } }
+    return { name: 'loading', query: { path: to.fullPath } }
   } else if (requiresAuth && authenticated.value) {
     return true
   } else {
