@@ -14,7 +14,7 @@ const props = defineProps({
   size: {
     type: String,
     validator(value: string) {
-      return ['small', 'base'].includes(value)
+      return ['small', 'large'].includes(value)
     }
   }
 })
@@ -23,7 +23,8 @@ const width = computed(() => {
   switch (props.size) {
     case 'small':
       return 'w-card-small'
-    case 'base':
+    case 'large':
+      return 'w-card-large'
     default:
       return 'w-card-base'
   }

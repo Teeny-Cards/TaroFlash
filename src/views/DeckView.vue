@@ -1,12 +1,23 @@
 <template>
   <Study v-if="studying" :cards="cards"></Study>
+  <Edit
+    v-else-if="editing"
+    v-model:title="title"
+    v-model:description="description"
+    :cards="cards"
+    @updateCardFront="onUpdateCardFront"
+    @updateCardBack="onUpdateCardBack"
+    @addCard="onAddCard"
+    @saveDeck="saveDeck"
+  ></Edit>
   <Deck
     v-else
     :id="id"
-    :title="deck?.title"
-    :description="deck?.description"
+    :title="title"
+    :description="description"
     :cards="cards"
     @study="onStudyClicked"
+    @edit="onEditClicked"
     @deleteDeck="deleteDeck"
   />
 </template>
@@ -14,10 +25,12 @@
 <script setup lang="ts">
 import Deck from '@/components/views/deck.vue'
 import Study from '@/components/views/study.vue'
+import Edit from '@/components/views/edit.vue'
 import { useDeckStore } from '@/stores/decks'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { getDeckById, deleteDeckById } from '@/services/deckService'
 import { getCardsByDeckID, deleteCardsByDeckID } from '@/services/cardService'
+import { useRoute } from 'vue-router'
 import router from '@/router'
 
 const props = defineProps({
@@ -27,10 +40,20 @@ const props = defineProps({
   }
 })
 
+const route = useRoute()
+
+const studying = computed(() => {
+  return route.query.mode === 'study'
+})
+
+const editing = computed(() => {
+  return route.query.mode === 'edit'
+})
+
 const deckStore = useDeckStore()
-const deck = ref<Deck | null>(null)
+const title = ref('')
+const description = ref('')
 const cards = ref<Card[]>([])
-const studying = ref(false)
 
 onMounted(async () => {
   getDeck()
@@ -38,7 +61,13 @@ onMounted(async () => {
 })
 
 function onStudyClicked(): void {
-  studying.value = true
+  if (cards.value.length > 0) {
+    router.push({ name: 'deck', params: { id: props.id }, query: { mode: 'study' } })
+  }
+}
+
+function onEditClicked(): void {
+  router.push({ name: 'deck', params: { id: props.id }, query: { mode: 'edit' } })
 }
 
 async function getDeck(): Promise<void> {
@@ -51,17 +80,31 @@ async function getDeck(): Promise<void> {
   let cachedDeck = deckStore.getDeckById(props.id)
 
   if (cachedDeck) {
-    deck.value = cachedDeck
+    title.value = cachedDeck.title
+    description.value = cachedDeck.description
   } else {
     const fetchedDeck = await getDeckById(props.id)
 
     if (fetchedDeck) {
-      deck.value = fetchedDeck
+      title.value = fetchedDeck.title
+      description.value = fetchedDeck.description
     } else {
       //TODO: Show error state
       console.log('Deck not found')
     }
   }
+}
+
+async function saveDeck(): Promise<void> {
+  // const deckRef = await createDeck(title.value, description.value, cards.value.length)
+  // TODO: Save Deck
+  // saveCards(deckRef.id)
+}
+
+async function deleteDeck(): Promise<void> {
+  await deleteCardsByDeckID(props.id)
+  await deleteDeckById(props.id)
+  router.push({ name: 'dashboard' })
 }
 
 async function getCards(): Promise<void> {
@@ -70,9 +113,24 @@ async function getCards(): Promise<void> {
   }
 }
 
-async function deleteDeck(): Promise<void> {
-  await deleteCardsByDeckID(props.id)
-  await deleteDeckById(props.id)
-  router.push({ name: 'dashboard' })
+function onAddCard(): void {
+  cards.value.push({
+    order: cards.value.length,
+    frontText: '',
+    backText: ''
+  })
+}
+
+function onUpdateCardFront(index: number, value: string): void {
+  //
+}
+
+function onUpdateCardBack(index: number, value: string): void {
+  //
+}
+
+async function saveCards(deckId: string): Promise<void> {
+  // await saveCardsToDeck(deckId, cards.value)
+  // TODO: Save Cards to Deck
 }
 </script>

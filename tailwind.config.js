@@ -10,7 +10,8 @@ export default {
       },
       width: {
         'card-small': '192px',
-        'card-base': '284px'
+        'card-base': '284px',
+        'card-large': '300px',
       },
       maxWidth: {
         'screen-2.5xl': '1404px'
