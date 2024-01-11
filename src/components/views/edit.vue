@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import { ref, type PropType } from 'vue'
 
-declare interface DirtyCard extends Card {
+declare interface DirtyCard extends CardMutation {
   dirty?: Boolean
 }
 
@@ -77,6 +77,15 @@ function addCard(): void {
   })
 }
 
+function deleteCard(index: number): void {
+  const card = cards.value[index]
+
+  if (card) {
+    card.deleted = true
+    card.dirty = true
+  }
+}
+
 function updateFront(index: number, value: string): void {
   const card = cards.value[index]
 
@@ -102,7 +111,9 @@ function saveDeck(): void {
     description: description.value
   }
 
-  const newCards = cards.value.filter((card: DirtyCard) => card.dirty)
+  const newCards: CardMutation[] = cards.value
+    .filter((card: DirtyCard) => card.dirty)
+    .map(({ dirty, ...cleanCard }) => cleanCard)
 
   emit('saveDeck', newDeck, newCards)
 }

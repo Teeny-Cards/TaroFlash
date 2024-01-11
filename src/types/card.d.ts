@@ -8,6 +8,10 @@ declare global {
     imageURL?: string
     audioClip?: string
   }
+
+  type CardMutation = Card & {
+    deleted?: boolean
+  }
 }
 
 export {}

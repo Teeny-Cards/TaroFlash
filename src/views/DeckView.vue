@@ -9,7 +9,7 @@
       @updateCardFront="onUpdateCardFront"
       @updateCardBack="onUpdateCardBack"
       @addCard="onAddCard"
-      @saveDeck="saveDeck"
+      @saveDeck="updateDeck"
     ></Edit>
     <Deck
       v-else
@@ -31,7 +31,7 @@ import Edit from '@/components/views/edit.vue'
 import { useDeckStore } from '@/stores/decks'
 import { computed, onMounted, ref } from 'vue'
 import { getDeckById, deleteDeckById, updateDeckById } from '@/services/deckService'
-import { getCardsByDeckID, deleteCardsByDeckID } from '@/services/cardService'
+import { getCardsByDeckID, deleteCardsByDeckID, updateCardsByDeckID } from '@/services/cardService'
 import { useRoute } from 'vue-router'
 import router from '@/router'
 
@@ -103,9 +103,15 @@ async function getDeck(): Promise<void> {
   deckLoading.value = false
 }
 
-async function saveDeck(newDeck: Deck, newCards: Card[]): Promise<void> {
-  await updateDeckById(props.id, newDeck)
-  // saveCards(props.id)
+async function updateDeck(newDeck: Deck, newCards: Card[]): Promise<void> {
+  try {
+    await updateDeckById(props.id, newDeck)
+    await saveCards(newCards)
+    alert('saved successfully')
+  } catch (e) {
+    console.log(e)
+    alert('failed to save changes')
+  }
 }
 
 async function deleteDeck(): Promise<void> {
@@ -140,8 +146,7 @@ function onUpdateCardBack(index: number, value: string): void {
   //
 }
 
-async function saveCards(deckId: string): Promise<void> {
-  // await saveCardsToDeck(deckId, cards.value)
-  // TODO: Save Cards to Deck
+async function saveCards(cards: CardMutation[]): Promise<void> {
+  await updateCardsByDeckID(props.id, cards)
 }
 </script>

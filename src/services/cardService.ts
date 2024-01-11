@@ -47,6 +47,37 @@ const getCardsByDeckID = async (deckID: string): Promise<Card[]> => {
   return cards
 }
 
+const updateCardsByDeckID = async (deckID: string, cards: CardMutation[]): Promise<void> => {
+  const db = getFirestore()
+  const batch = writeBatch(db)
+
+  cards.forEach((card) => {
+    const { id, deleted, ...cardWithoutId } = card
+
+    if (id) {
+      const cardRef = doc(collection(db, 'cards'), id)
+
+      if (deleted) {
+        batch.delete(cardRef)
+      } else {
+        batch.update(cardRef, cardWithoutId)
+      }
+    } else {
+      const cardRef = doc(collection(db, 'cards'))
+      const newCard = {
+        ...cardWithoutId,
+        deckID,
+        created_at: serverTimestamp(),
+        updated_at: serverTimestamp()
+      }
+
+      batch.set(cardRef, newCard)
+    }
+  })
+
+  await batch.commit()
+}
+
 const deleteCardsByDeckID = async (deckID: string): Promise<void> => {
   const db = getFirestore()
   const q = query(collection(db, 'cards'), where('deckID', '==', deckID))
@@ -62,4 +93,4 @@ const deleteCardsByDeckID = async (deckID: string): Promise<void> => {
   await batch.commit()
 }
 
-export { saveCardsToDeck, getCardsByDeckID, deleteCardsByDeckID }
+export { saveCardsToDeck, updateCardsByDeckID, getCardsByDeckID, deleteCardsByDeckID }

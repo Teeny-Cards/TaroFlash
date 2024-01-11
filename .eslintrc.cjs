@@ -13,6 +13,16 @@ module.exports = {
     ecmaVersion: 'latest'
   },
   rules: {
-    "vue/multi-word-component-names": "off"
+    "vue/multi-word-component-names": "off",
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      { 
+        'vars': 'all',
+        'args': 'after-used',
+        'ignoreRestSiblings': true,
+        'varsIgnorePattern': '^_', 
+        'argsIgnorePattern': '^_' 
+      }
+    ],
   }
 }
