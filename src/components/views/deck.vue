@@ -1,6 +1,6 @@
 <template>
-  <div class="flex p-8 gap-8">
-    <section class="flex flex-col gap-8">
+  <div class="grid grid-cols-deck-view-lg p-8 gap-8">
+    <section class="flex flex-col gap-8 fixed">
       <TeenyCard></TeenyCard>
       <div class="flex flex-col gap-2">
         <h1 class="text-xl font-semibold text-gray-400">{{ title }}</h1>
@@ -29,7 +29,7 @@
       </div>
     </section>
     <section
-      class="bg-white grid grid-cols-deck-desktop gap-8 rounded-2xl w-full shadow-md p-20 relative"
+      class="bg-white grid grid-cols-deck-desktop gap-8 rounded-2xl w-full shadow-md p-20 relative col-start-2"
     >
       <TeenyCard v-for="(card, index) in cards" :key="index" size="small">
         <p class="text-xl font-semibold text-gray-500">{{ card.frontText }}</p>
