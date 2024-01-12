@@ -3,7 +3,7 @@
     <h2 class="text-3xl font-semibold text-gray-400">{{ card.order + 1 }}</h2>
     <div class="flex gap-8 justify-center items-center">
       <TeenyCard>
-        <div class="w-full h-full relative group">
+        <div class="w-full h-full flex justify-center items-center relative group">
           <div
             class="absolute top-2 left-2 text-green-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
           >
@@ -14,20 +14,24 @@
               />
             </svg>
           </div>
-          <input
-            class="w-full h-full text-center align-middle focus:outline-none text-3xl bg-transparent"
+          <textarea
+            class="w-full text-center focus:outline-none text-3xl bg-transparent resize-none"
+            rows="1"
             placeholder="Front"
             :value="card.frontText"
             @input="onFrontChanged"
+            ref="frontCardInput"
           />
         </div>
       </TeenyCard>
       <TeenyCard>
-        <input
-          class="w-full h-full text-center align-middle focus:outline-none text-3xl bg-transparent"
+        <textarea
+          class="w-full text-center focus:outline-none text-3xl bg-transparent resize-none"
+          rows="1"
           placeholder="Back"
           :value="card.backText"
           @input="onBackChanged"
+          ref="backCardInput"
         />
       </TeenyCard>
     </div>
@@ -48,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { type PropType } from 'vue'
+import { onMounted, ref, type PropType } from 'vue'
 
 const props = defineProps({
   index: {
@@ -67,13 +71,40 @@ const emit = defineEmits<{
   (e: 'delete', index: number): void
 }>()
 
+const frontCardInput = ref()
+const backCardInput = ref()
+
+onMounted(() => {
+  if (frontCardInput.value) {
+    updateInputHeight(frontCardInput.value)
+  }
+
+  if (backCardInput.value) {
+    updateInputHeight(backCardInput.value)
+  }
+})
+
 function onFrontChanged(e: Event): void {
   const target = e.target as HTMLInputElement
   emit('frontInput', props.index, target.value)
+  updateInputHeight(target)
 }
 
 function onBackChanged(e: Event): void {
   const target = e.target as HTMLInputElement
   emit('backInput', props.index, target.value)
+  updateInputHeight(target)
+}
+
+function updateInputHeight(el: HTMLInputElement): void {
+  const parent = el.parentElement
+
+  if (!parent) return
+
+  const parentStyle = window.getComputedStyle(parent)
+  const parentHeight = parent.clientHeight - parseFloat(parentStyle.paddingTop) * 2
+
+  el.style.height = 'auto' // reset
+  el.style.height = `${Math.min(el.scrollHeight, parentHeight)}px`
 }
 </script>
