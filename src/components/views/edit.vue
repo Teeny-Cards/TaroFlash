@@ -1,22 +1,36 @@
 <template>
   <div class="grid grid-cols-deck-view-lg p-8 gap-8">
     <section class="flex flex-col gap-8 fixed">
-      <TeenyCard>
-        <div
-          class="w-full h-full flex flex-col gap-2 items-center justify-center text-gray-300 cursor-pointer"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 -960 960 960">
-            <path
-              d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h360v80H200v560h560v-360h80v360q0 33-23.5 56.5T760-120H200Zm480-480v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80ZM240-280h480L570-480 450-320l-90-120-120 160Zm-40-480v560-560Z"
-              fill="currentColor"
-            />
-          </svg>
-          <p class="text-2xl font-semibold">Choose Cover</p>
+      <TeenyCard class="relative overflow-hidden">
+        <div v-if="deckImagePreview" class="absolute inset-0">
+          <img
+            :src="deckImagePreview"
+            alt="Deck Image preview"
+            class="object-cover w-full h-full"
+          />
         </div>
+        <imageUploader v-else @imageUploaded="onDeckImageUploaded">
+          <div
+            class="w-full h-full flex flex-col gap-2 items-center justify-center text-gray-300 cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 -960 960 960">
+              <path
+                d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h360v80H200v560h560v-360h80v360q0 33-23.5 56.5T760-120H200Zm480-480v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80ZM240-280h480L570-480 450-320l-90-120-120 160Zm-40-480v560-560Z"
+                fill="currentColor"
+              />
+            </svg>
+            <p class="text-2xl font-semibold">Choose Cover</p>
+          </div>
+        </imageUploader>
       </TeenyCard>
       <TeenyInput type="text" placeholder="Enter Title" v-model="title" />
       <TeenyInput type="text" placeholder="Enter Description" v-model="description" />
-      <TeenyButton @onClick="saveDeck">Save</TeenyButton>
+      <div class="w-full flex gap-2">
+        <TeenyButton color="gray" variant="secondary" @onClick="cancel" class="w-full"
+          >Cancel</TeenyButton
+        >
+        <TeenyButton @onClick="saveDeck" class="w-full">Save</TeenyButton>
+      </div>
     </section>
     <section
       class="bg-white rounded-3xl w-full flex flex-col-reverse gap-8 items-center shadow-md p-20 relative col-start-2"
@@ -43,7 +57,9 @@
 </template>
 
 <script setup lang="ts">
+import router from '@/router'
 import { ref, type PropType } from 'vue'
+import imageUploader from '../imageUploader.vue'
 
 declare interface DirtyCard extends CardMutation {
   dirty?: Boolean
@@ -64,9 +80,14 @@ const emit = defineEmits<{
   (event: 'saveDeck', newDeck: Deck, newCards: Card[]): void
 }>()
 
+const deckImagePreview = ref()
 const title = ref(props.deck.title)
 const description = ref(props.deck.description)
 const cards = ref<DirtyCard[]>(props.cards)
+
+function onDeckImageUploaded(preview: string, file: File): void {
+  deckImagePreview.value = preview
+}
 
 function addCard(): void {
   cards.value.push({
@@ -116,5 +137,9 @@ function saveDeck(): void {
     .map(({ dirty, ...cleanCard }) => cleanCard)
 
   emit('saveDeck', newDeck, newCards)
+}
+
+function cancel(): void {
+  router.push({ name: 'deck', params: { id: props.deck.id } })
 }
 </script>
