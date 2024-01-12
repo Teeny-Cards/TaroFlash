@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-8 justify-around items-center w-full">
+  <div class="flex gap-8 justify-around items-center w-full relative group">
     <h2 class="text-3xl font-semibold text-gray-400">{{ card.order + 1 }}</h2>
     <div class="flex gap-8 justify-center items-center">
       <TeenyCard>
@@ -31,11 +31,24 @@
         />
       </TeenyCard>
     </div>
+    <TeenyButton
+      color="danger"
+      variant="ghost"
+      class="absolute right-0 opacity-0 group-hover:opacity-100 transition-opacity"
+      @onClick="$emit('delete', index)"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+        <path
+          d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
+          fill="currentColor"
+        />
+      </svg>
+    </TeenyButton>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, type PropType } from 'vue'
+import { type PropType } from 'vue'
 
 const props = defineProps({
   index: {
@@ -51,6 +64,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'frontInput', index: number, value: string): void
   (e: 'backInput', index: number, value: string): void
+  (e: 'delete', index: number): void
 }>()
 
 function onFrontChanged(e: Event): void {

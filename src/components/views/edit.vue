@@ -36,12 +36,13 @@
       class="bg-white rounded-3xl w-full flex flex-col-reverse gap-8 items-center shadow-md p-20 relative col-start-2"
     >
       <TeenyCardEditor
-        v-for="(card, index) in cards"
+        v-for="(card, index) in nonDeletedCards"
         :key="index"
         :card="card"
         :index="index"
         @frontInput="updateFront"
         @backInput="updateBack"
+        @delete="deleteCard"
       />
 
       <button
@@ -58,7 +59,7 @@
 
 <script setup lang="ts">
 import router from '@/router'
-import { ref, type PropType } from 'vue'
+import { ref, type PropType, computed } from 'vue'
 import imageUploader from '../imageUploader.vue'
 
 declare interface DirtyCard extends CardMutation {
@@ -84,6 +85,10 @@ const deckImagePreview = ref()
 const title = ref(props.deck.title)
 const description = ref(props.deck.description)
 const cards = ref<DirtyCard[]>(props.cards)
+
+const nonDeletedCards = computed(() => {
+  return cards.value.filter((card) => !card.deleted)
+})
 
 function onDeckImageUploaded(preview: string, file: File): void {
   deckImagePreview.value = preview
