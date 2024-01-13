@@ -1,3 +1,4 @@
+import { TeenyError } from '@/utils/TeenyError'
 import {
   writeBatch,
   doc,
@@ -10,7 +11,7 @@ import {
   orderBy
 } from 'firebase/firestore'
 
-const saveCardsToDeck = async (deckID: string, cards: Card[]): Promise<void> => {
+const saveCardsToDeck = async (deckID: string, cards: Card[]): TeenyResponse<void> => {
   const db = getFirestore()
   const batch = writeBatch(db)
 
@@ -27,27 +28,36 @@ const saveCardsToDeck = async (deckID: string, cards: Card[]): Promise<void> => 
   })
 
   // TODO: Error Handling
-  await batch.commit()
+  try {
+    await batch.commit()
+    return { success: true, value: undefined }
+  } catch (e) {
+    return { success: false, error: new TeenyError(e) }
+  }
 }
 
-const getCardsByDeckID = async (deckID: string): Promise<Card[]> => {
+const getCardsByDeckID = async (deckID: string): TeenyResponse<Card[]> => {
   const db = getFirestore()
   const q = query(collection(db, 'cards'), where('deckID', '==', deckID), orderBy('order'))
 
-  const querySnapshot = await getDocs(q)
-  const cards: Card[] = []
+  try {
+    const querySnapshot = await getDocs(q)
+    const cards: Card[] = []
 
-  querySnapshot.forEach((doc) => {
-    cards.push({
-      ...(doc.data() as Card),
-      id: doc.id
+    querySnapshot.forEach((doc) => {
+      cards.push({
+        ...(doc.data() as Card),
+        id: doc.id
+      })
     })
-  })
 
-  return cards
+    return { success: true, value: cards }
+  } catch (e) {
+    return { success: false, error: new TeenyError(e) }
+  }
 }
 
-const updateCardsByDeckID = async (deckID: string, cards: CardMutation[]): Promise<void> => {
+const updateCardsByDeckID = async (deckID: string, cards: CardMutation[]): TeenyResponse<void> => {
   const db = getFirestore()
   const batch = writeBatch(db)
 
@@ -75,10 +85,15 @@ const updateCardsByDeckID = async (deckID: string, cards: CardMutation[]): Promi
     }
   })
 
-  await batch.commit()
+  try {
+    await batch.commit()
+    return { success: true, value: undefined }
+  } catch (e) {
+    return { success: false, error: new TeenyError(e) }
+  }
 }
 
-const deleteCardsByDeckID = async (deckID: string): Promise<void> => {
+const deleteCardsByDeckID = async (deckID: string): TeenyResponse<void> => {
   const db = getFirestore()
   const q = query(collection(db, 'cards'), where('deckID', '==', deckID))
 
@@ -89,8 +104,12 @@ const deleteCardsByDeckID = async (deckID: string): Promise<void> => {
     batch.delete(doc.ref)
   })
 
-  // TODO: Error Handling
-  await batch.commit()
+  try {
+    await batch.commit()
+    return { success: true, value: undefined }
+  } catch (e) {
+    return { success: false, error: new TeenyError(e) }
+  }
 }
 
 export { saveCardsToDeck, updateCardsByDeckID, getCardsByDeckID, deleteCardsByDeckID }

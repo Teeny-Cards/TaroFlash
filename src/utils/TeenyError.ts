@@ -13,6 +13,7 @@ type TeenyErrorName =
   | 'BackendUnavailableError'
   | 'DataLossError'
   | 'OtherError'
+  | 'CustomError'
 
 type TeenyErrorMessage = {
   name: TeenyErrorName
@@ -21,14 +22,25 @@ type TeenyErrorMessage = {
 }
 
 export class TeenyError extends Error {
-  originalMessage: string
+  name: TeenyErrorName
+  originalMessage?: string
   errorCode: string
   timestamp: string
 
-  constructor(error: any, additionalInfo = {}) {
+  constructor(error: any) {
+    if (typeof error === 'string') {
+      super(error)
+      this.name = 'CustomError'
+      this.message = error
+      this.errorCode = 'unknown'
+      this.timestamp = new Date().toISOString()
+      return
+    }
+
     const errorInfo = firebaseErrorMessages[error.code] || {
-      name: 'other',
-      message: 'An unknown error occurred, please try again.'
+      name: 'OtherError',
+      message: 'An unknown error occurred, please try again.',
+      severity: 'error'
     }
 
     super(errorInfo.message)
@@ -41,8 +53,6 @@ export class TeenyError extends Error {
     if (error.stack) {
       this.stack = error.stack
     }
-
-    Object.assign(this, additionalInfo)
   }
 }
 

@@ -2,6 +2,7 @@ import { useUserStore } from '@/stores/user'
 import { useDeckStore } from '@/stores/decks'
 import { uploadDeckPhoto } from '@/services/fileService'
 import { TeenyError } from '@/utils/TeenyError'
+import { deleteCardsByDeckID } from '@/services/cardService'
 import {
   addDoc,
   getDocs,
@@ -22,7 +23,7 @@ const createDeck = async (
   description: string,
   count: number,
   isPublic = false
-): Promise<DocumentReference> => {
+): TeenyResponse<DocumentReference> => {
   const db = getFirestore()
   const user = useUserStore()
 
@@ -39,13 +40,14 @@ const createDeck = async (
   const deckRef = collection(db, 'Decks')
 
   try {
-    return await addDoc(deckRef, newDeck)
+    const doc = await addDoc(deckRef, newDeck)
+    return { success: true, value: doc }
   } catch (e) {
-    throw new TeenyError(e)
+    return { success: false, error: new TeenyError(e) }
   }
 }
 
-const getUserDecks = async (): Promise<void> => {
+const getUserDecks = async (): TeenyResponse<void> => {
   const user = useUserStore()
   const decks = useDeckStore()
 
@@ -63,12 +65,13 @@ const getUserDecks = async (): Promise<void> => {
     })
 
     decks.setDecks(newDecks)
+    return { success: true, value: undefined }
   } catch (e) {
-    throw new TeenyError(e)
+    return { success: false, error: new TeenyError(e) }
   }
 }
 
-const getDeckById = async (id: string): Promise<Deck | undefined> => {
+const getDeckById = async (id: string): TeenyResponse<Deck> => {
   const db = getFirestore()
   const deckRef = doc(db, 'Decks', id)
 
@@ -78,45 +81,62 @@ const getDeckById = async (id: string): Promise<Deck | undefined> => {
     if (docSnapshot.exists()) {
       const { title, description, id, isPublic, count, image } = docSnapshot.data()
       const deck = { title, description, id, isPublic, count, image }
-      return deck
+      return { success: true, value: deck }
     }
-  } catch (e) {
-    throw new TeenyError(e)
-  }
 
-  return undefined
+    //TODO Provide a better error
+    return { success: false, error: new TeenyError('Deck not found') }
+  } catch (e) {
+    return { success: false, error: new TeenyError(e) }
+  }
 }
 
-const updateDeckById = async (id: string, deck: Deck): Promise<void> => {
+const updateDeckById = async (id: string, deck: Deck): TeenyResponse<void> => {
   const db = getFirestore()
   const deckRef = doc(db, 'Decks', id)
 
-  try {
-    const image = await uploadDeckPhoto(deck.image)
+  const imageResponse = await uploadDeckPhoto(deck.image)
 
+  if (!imageResponse.success) {
+    return { success: false, error: imageResponse.error }
+  }
+
+  try {
     await runTransaction(db, async (transaction) => {
       const deck = await transaction.get(deckRef)
 
       if (!deck.exists()) {
-        throw 'Document does not exist!'
+        const error = new TeenyError('Deck not found')
+        error.name = 'ObjectNotFoundError'
+
+        return { success: false, error }
       }
 
       const { imageFile, ...deckData } = deck.data()
-      transaction.update(deckRef, { ...deckData, image })
+      transaction.update(deckRef, { ...deckData, image: imageResponse.value })
     })
+
+    return { success: true, value: undefined }
   } catch (e) {
-    throw new TeenyError(e)
+    return { success: false, error: new TeenyError(e) }
   }
 }
 
-const deleteDeckById = async (id: string): Promise<void> => {
+const deleteDeckById = async (id: string): TeenyResponse<void> => {
   const db = getFirestore()
   const deckRef = doc(db, 'Decks', id)
 
   try {
+    const response = await deleteCardsByDeckID(id)
+
+    if (!response.success) {
+      return { success: false, error: response.error }
+    }
+
     await deleteDoc(deckRef)
+    return { success: true, value: undefined }
   } catch (e) {
-    throw new TeenyError(e)
+    return { success: false, error: new TeenyError(e) }
   }
 }
 

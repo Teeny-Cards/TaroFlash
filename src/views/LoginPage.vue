@@ -12,16 +12,20 @@ import router from '@/router'
 import { ref } from 'vue'
 
 const auth = getAuth()
-const error = ref('false')
 
 const signIn = (email: string, password: string): void => {
   signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential: UserCredential) => {
-      handleUserAuthStateChange(userCredential.user)
-      router.push({ name: 'dashboard' })
+    .then(async (userCredential: UserCredential) => {
+      const response = await handleUserAuthStateChange(userCredential.user)
+
+      if (response.success) {
+        router.push({ name: 'dashboard' })
+      } else {
+        // TODO: fail toast
+      }
     })
-    .catch((error) => {
-      error.value = true
+    .catch((e) => {
+      // TODO: Fail toast
     })
 }
 </script>

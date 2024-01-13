@@ -82,12 +82,22 @@ function updateCardBack(index: number, value: string) {
 }
 
 async function saveDeck(): Promise<void> {
-  const deckRef = await createDeck(title.value, description.value, cards.value.length)
-  saveCards(deckRef.id)
+  const response = await createDeck(title.value, description.value, cards.value.length)
+
+  if (response.success) {
+    saveCards(response.value.id)
+  } else {
+    // TODO: error toast
+  }
 }
 
 async function saveCards(deckId: string): Promise<void> {
-  await saveCardsToDeck(deckId, cards.value)
-  router.push({ name: 'dashboard' })
+  const response = await saveCardsToDeck(deckId, cards.value)
+  if (response.success) {
+    // TODO: success toast
+    router.push({ name: 'dashboard' })
+  } else {
+    // TODO: error toast
+  }
 }
 </script>

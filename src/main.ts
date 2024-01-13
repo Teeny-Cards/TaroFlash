@@ -30,10 +30,10 @@ const firebaseApp = initializeApp(firebaseConfig)
 const auth = getAuth(firebaseApp)
 
 onAuthStateChanged(auth, async (user) => {
-  const authenticated = await handleUserAuthStateChange(user)
+  const response = await handleUserAuthStateChange(user)
   const app = useAppStore()
 
-  if (authenticated) {
+  if (response.success) {
     app.setLoading(false)
   } else {
     router.push({ name: 'signin' })

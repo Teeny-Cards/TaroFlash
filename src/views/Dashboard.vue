@@ -17,8 +17,13 @@ import { useDeckStore } from '@/stores/decks'
 import { storeToRefs } from 'pinia'
 
 onMounted(async () => {
-  await getUserDecks()
-  loading.value = false
+  const response = await getUserDecks()
+
+  if (response.success) {
+    loading.value = false
+  } else {
+    //TODO: Error Message + Reroute
+  }
 })
 
 const loading = ref(true)

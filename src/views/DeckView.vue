@@ -27,7 +27,7 @@ import Edit from '@/components/views/edit.vue'
 import { useDeckStore } from '@/stores/decks'
 import { computed, onMounted, ref } from 'vue'
 import { getDeckById, deleteDeckById, updateDeckById } from '@/services/deckService'
-import { getCardsByDeckID, deleteCardsByDeckID, updateCardsByDeckID } from '@/services/cardService'
+import { getCardsByDeckID, updateCardsByDeckID } from '@/services/cardService'
 import { useRoute } from 'vue-router'
 import router from '@/router'
 
@@ -83,16 +83,15 @@ async function getDeck(): Promise<void> {
   let cachedDeck = deckStore.getDeckById(props.id)
 
   if (cachedDeck) {
-    //TODO: Store in deck variable and find a way to ensure that it exists for the template
     deck.value = cachedDeck
   } else {
-    const fetchedDeck = await getDeckById(props.id)
+    const response = await getDeckById(props.id)
 
-    if (fetchedDeck) {
-      deck.value = fetchedDeck
+    if (response.success) {
+      deck.value = response.value
     } else {
       //TODO: Show error state
-      console.log('Deck not found')
+      console.log(response.error.message)
     }
   }
 
@@ -100,30 +99,34 @@ async function getDeck(): Promise<void> {
 }
 
 async function updateDeck(newDeck: Deck, newCards: Card[]): Promise<void> {
-  try {
-    await updateDeckById(props.id, newDeck)
-    await saveCards(newCards)
-    alert('saved successfully')
-  } catch (e) {
-    console.log(e)
-    // alert(e)
+  const response = await updateDeckById(props.id, newDeck)
+
+  if (response.success) {
+    saveCards(newCards)
+  } else {
+    //TODO: Show error
   }
 }
 
 async function deleteDeck(): Promise<void> {
-  await deleteCardsByDeckID(props.id)
-  await deleteDeckById(props.id)
-  router.push({ name: 'dashboard' })
+  const response = await deleteDeckById(props.id)
+
+  if (response.success) {
+    router.push({ name: 'dashboard' })
+  } else {
+    //TODO: Show failed error
+  }
 }
 
 async function getCards(): Promise<void> {
-  if (props.id) {
-    cards.value = await getCardsByDeckID(props.id)
-  } else {
-    // TODO: Reroute
-  }
+  const response = await getCardsByDeckID(props.id)
 
-  cardsLoading.value = false
+  if (response.success) {
+    cards.value = response.value
+    cardsLoading.value = false
+  } else {
+    // TODO: error toast + reroute
+  }
 }
 
 function onAddCard(): void {
@@ -135,6 +138,12 @@ function onAddCard(): void {
 }
 
 async function saveCards(cards: CardMutation[]): Promise<void> {
-  await updateCardsByDeckID(props.id, cards)
+  const response = await updateCardsByDeckID(props.id, cards)
+
+  if (response.success) {
+    // TODO: success toast + reroute?
+  } else {
+    // TODO: fail toast
+  }
 }
 </script>
