@@ -52,8 +52,8 @@ const getUserDecks = async (): Promise<void> => {
     const newDecks: Deck[] = []
 
     querySnapshot.forEach((doc) => {
-      const { title, description, count, isPublic, imageURL } = doc.data()
-      const deck = { title, description, count, isPublic, imageURL, id: doc.id }
+      const { title, description, count, isPublic, image } = doc.data()
+      const deck = { title, description, count, isPublic, image, id: doc.id }
       newDecks.push(deck)
     })
 
@@ -71,8 +71,8 @@ const getDeckById = async (id: string): Promise<Deck | undefined> => {
     const docSnapshot = await getDoc(deckRef)
 
     if (docSnapshot.exists()) {
-      const { title, description, id, isPublic, count, imageURL } = docSnapshot.data()
-      const deck = { title, description, id, isPublic, count, imageURL }
+      const { title, description, id, isPublic, count, image } = docSnapshot.data()
+      const deck = { title, description, id, isPublic, count, image }
       return deck
     }
   } catch (e) {
@@ -87,10 +87,7 @@ const updateDeckById = async (id: string, deck: Deck): Promise<void> => {
   const deckRef = doc(db, 'Decks', id)
 
   try {
-    let imageURL = ''
-    if (deck.imageFile) {
-      imageURL = await uploadDeckPhoto(deck.imageFile)
-    }
+    const image = await uploadDeckPhoto(deck.image)
 
     await runTransaction(db, async (transaction) => {
       const deck = await transaction.get(deckRef)
@@ -100,11 +97,11 @@ const updateDeckById = async (id: string, deck: Deck): Promise<void> => {
       }
 
       const { imageFile, ...deckData } = deck.data()
-      transaction.update(deckRef, { ...deckData, imageURL })
+      transaction.update(deckRef, { ...deckData, image })
     })
   } catch (e) {
     //TODO: Handle Error
-    console.log('Transaction failed: ', e)
+    throw new Error(`update error: ${e}`)
   }
 }
 

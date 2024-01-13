@@ -2,9 +2,9 @@
   <div class="grid grid-cols-deck-view-lg p-8 gap-8">
     <section class="flex flex-col gap-8 fixed">
       <TeenyCard class="relative overflow-hidden">
-        <div v-if="deck.imageURL" class="absolute inset-0">
+        <div v-if="deck.image?.url" class="absolute inset-0">
           <img
-            :src="deck.imageURL"
+            :src="deck.image?.url"
             alt="Deck Image preview"
             class="object-cover w-full h-full"
           /></div
@@ -29,7 +29,9 @@
           <template #dropdown>
             <div class="flex flex-col w-32">
               <TeenyButton variant="ghost" @onClick="$emit('edit')">Edit</TeenyButton>
-              <TeenyButton variant="ghost" color="danger">Delete</TeenyButton>
+              <TeenyButton variant="ghost" color="danger" @onClick="$emit('delete')"
+                >Delete</TeenyButton
+              >
             </div>
           </template>
         </TeenyDropdown>

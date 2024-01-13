@@ -1,6 +1,6 @@
 <template>
   <div class="flex gap-8 justify-around items-center w-full relative group">
-    <h2 class="text-3xl font-semibold text-gray-400">{{ card.order + 1 }}</h2>
+    <h2 class="text-3xl font-semibold text-gray-400">{{ index + 1 }}</h2>
     <div class="flex gap-8 justify-center items-center">
       <TeenyCard>
         <div class="w-full h-full flex justify-center items-center relative group">

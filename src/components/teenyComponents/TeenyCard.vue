@@ -1,6 +1,6 @@
 <template>
   <div
-    class="aspect-card rounded-[36px] bg-white shadow-lg border border-gray-100 flex justify-center items-center p-3"
+    class="aspect-card rounded-[36px] bg-white shadow-lg flex justify-center items-center p-3"
     :class="[width, borderRadius]"
   >
     <slot></slot>

@@ -1,7 +1,9 @@
 <template>
   <div class="grid grid-cols-deck-view-lg p-8 gap-8">
     <section class="flex flex-col gap-8 fixed">
-      <TeenyCard class="relative overflow-hidden">
+      <TeenyCard
+        class="relative overflow-hidden hover:ring-4 hover:ring-green-400 transition cursor-pointer group"
+      >
         <div v-if="deckImagePreview" class="absolute inset-0">
           <img
             :src="deckImagePreview"
@@ -9,9 +11,11 @@
             class="object-cover w-full h-full"
           />
         </div>
-        <imageUploader v-else @imageUploaded="onDeckImageUploaded">
+
+        <imageUploader @imageUploaded="onDeckImageUploaded">
           <div
-            class="w-full h-full flex flex-col gap-2 items-center justify-center text-gray-300 cursor-pointer"
+            v-if="!deckImagePreview"
+            class="w-full h-full flex flex-col gap-2 items-center justify-center text-gray-300"
           >
             <svg xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 -960 960 960">
               <path
@@ -22,6 +26,23 @@
             <p class="text-2xl font-semibold">Choose Cover</p>
           </div>
         </imageUploader>
+
+        <div
+          v-if="deckImagePreview"
+          class="absolute inset-0 p-3 flex flex-col items-start opacity-0 group-hover:opacity-100 transition-opacity bg-[#4a4a4a80] pointer-events-none"
+        >
+          <TeenyButton variant="ghost" class="pointer-events-auto" @onClick="removeDeckImage">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+              <path
+                d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
+                fill="currentColor"
+              />
+            </svg>
+          </TeenyButton>
+          <div class="h-full w-full flex justify-center items-center">
+            <p class="text-white">Upload New Photo</p>
+          </div>
+        </div>
       </TeenyCard>
       <TeenyInput type="text" placeholder="Enter Title" v-model="title" />
       <TeenyInput type="text" placeholder="Enter Description" v-model="description" />
@@ -81,8 +102,9 @@ const emit = defineEmits<{
   (event: 'saveDeck', newDeck: Deck, newCards: Card[]): void
 }>()
 
-const deckImagePreview = ref()
+const deckImagePreview = ref(props.deck.image?.url)
 const deckImageFile = ref()
+const deckImageDeleted = ref(false)
 const title = ref(props.deck.title)
 const description = ref(props.deck.description)
 const cards = ref<DirtyCard[]>(props.cards)
@@ -132,12 +154,23 @@ function updateBack(index: number, value: string): void {
   }
 }
 
+function removeDeckImage(): void {
+  deckImagePreview.value = undefined
+  deckImageFile.value = undefined
+  deckImageDeleted.value = true
+}
+
 function saveDeck(): void {
   const newDeck: Deck = {
     ...props.deck,
     title: title.value,
     description: description.value,
-    imageFile: deckImageFile.value
+    count: cards.value.length,
+    image: {
+      ...props.deck.image,
+      newFile: deckImageFile.value,
+      deleted: deckImageDeleted.value
+    }
   }
 
   const newCards: CardMutation[] = cards.value

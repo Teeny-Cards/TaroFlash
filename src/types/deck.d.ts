@@ -5,8 +5,14 @@ declare global {
     description: string
     isPublic: boolean
     count: number
-    imageURL?: string
-    imageFile?: File
+    image: DeckImage
+  }
+
+  type DeckImage = {
+    name?: string
+    url?: string
+    newFile?: File
+    deleted?: boolean
   }
 }
 

@@ -15,7 +15,7 @@
       :cards="cards"
       @study="onStudyClicked"
       @edit="onEditClicked"
-      @deleteDeck="deleteDeck"
+      @delete="deleteDeck"
     />
   </div>
 </template>
@@ -106,7 +106,7 @@ async function updateDeck(newDeck: Deck, newCards: Card[]): Promise<void> {
     alert('saved successfully')
   } catch (e) {
     console.log(e)
-    alert('failed to save changes')
+    // alert(e)
   }
 }
 
