@@ -82,6 +82,7 @@ const emit = defineEmits<{
 }>()
 
 const deckImagePreview = ref()
+const deckImageFile = ref()
 const title = ref(props.deck.title)
 const description = ref(props.deck.description)
 const cards = ref<DirtyCard[]>(props.cards)
@@ -92,6 +93,7 @@ const nonDeletedCards = computed(() => {
 
 function onDeckImageUploaded(preview: string, file: File): void {
   deckImagePreview.value = preview
+  deckImageFile.value = file
 }
 
 function addCard(): void {
@@ -134,7 +136,8 @@ function saveDeck(): void {
   const newDeck: Deck = {
     ...props.deck,
     title: title.value,
-    description: description.value
+    description: description.value,
+    imageFile: deckImageFile.value
   }
 
   const newCards: CardMutation[] = cards.value

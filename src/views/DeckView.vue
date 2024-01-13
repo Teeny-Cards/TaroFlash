@@ -6,16 +6,12 @@
       v-else-if="editing && deck"
       :deck="deck"
       :cards="cards"
-      @updateCardFront="onUpdateCardFront"
-      @updateCardBack="onUpdateCardBack"
       @addCard="onAddCard"
       @saveDeck="updateDeck"
     ></Edit>
     <Deck
-      v-else
-      :id="id"
-      :title="deck?.title"
-      :description="deck?.description"
+      v-else-if="deck"
+      :deck="deck"
       :cards="cards"
       @study="onStudyClicked"
       @edit="onEditClicked"
@@ -136,14 +132,6 @@ function onAddCard(): void {
     frontText: '',
     backText: ''
   })
-}
-
-function onUpdateCardFront(index: number, value: string): void {
-  //
-}
-
-function onUpdateCardBack(index: number, value: string): void {
-  //
 }
 
 async function saveCards(cards: CardMutation[]): Promise<void> {

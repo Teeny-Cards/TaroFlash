@@ -36,6 +36,7 @@ function getImagePreview(file: File): void {
 
   reader.onload = (e: ProgressEvent<FileReader>) => {
     if (e.target) {
+      console.log(typeof selectedFile.value, ': ', selectedFile.value)
       emit('imageUploaded', e.target.result as string, selectedFile.value)
     }
   }

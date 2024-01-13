@@ -1,10 +1,17 @@
 <template>
   <div class="grid grid-cols-deck-view-lg p-8 gap-8">
     <section class="flex flex-col gap-8 fixed">
-      <TeenyCard></TeenyCard>
+      <TeenyCard class="relative overflow-hidden">
+        <div v-if="deck.imageURL" class="absolute inset-0">
+          <img
+            :src="deck.imageURL"
+            alt="Deck Image preview"
+            class="object-cover w-full h-full"
+          /></div
+      ></TeenyCard>
       <div class="flex flex-col gap-2">
-        <h1 class="text-xl font-semibold text-gray-400">{{ title }}</h1>
-        <h2 class="text-gray-400">{{ description }}</h2>
+        <h1 class="text-xl font-semibold text-gray-400">{{ deck.title }}</h1>
+        <h2 class="text-gray-400">{{ deck.description }}</h2>
       </div>
       <div class="flex gap-2">
         <TeenyButton class="w-full" variant="secondary" @onClick="$emit('study')"
@@ -39,11 +46,13 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue'
+import { type PropType } from 'vue'
 
 defineProps({
-  title: String,
-  description: String,
+  deck: {
+    type: Object as PropType<Deck>,
+    required: true
+  },
   cards: {
     type: Object as PropType<Card[]>,
     required: true

@@ -5,6 +5,8 @@ declare global {
     description: string
     isPublic: boolean
     count: number
+    imageURL?: string
+    imageFile?: File
   }
 }
 

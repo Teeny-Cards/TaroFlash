@@ -1,5 +1,6 @@
-import { useUserStore } from '../stores/user'
-import { useDeckStore } from '../stores/decks'
+import { useUserStore } from '@/stores/user'
+import { useDeckStore } from '@/stores/decks'
+import { uploadDeckPhoto } from '@/services/fileService'
 import {
   addDoc,
   getDocs,
@@ -51,8 +52,8 @@ const getUserDecks = async (): Promise<void> => {
     const newDecks: Deck[] = []
 
     querySnapshot.forEach((doc) => {
-      const { title, description, count, isPublic } = doc.data()
-      const deck = { title, description, count, isPublic, id: doc.id }
+      const { title, description, count, isPublic, imageURL } = doc.data()
+      const deck = { title, description, count, isPublic, imageURL, id: doc.id }
       newDecks.push(deck)
     })
 
@@ -70,8 +71,8 @@ const getDeckById = async (id: string): Promise<Deck | undefined> => {
     const docSnapshot = await getDoc(deckRef)
 
     if (docSnapshot.exists()) {
-      const { title, description, id, isPublic, count } = docSnapshot.data()
-      const deck = { title, description, id, isPublic, count }
+      const { title, description, id, isPublic, count, imageURL } = docSnapshot.data()
+      const deck = { title, description, id, isPublic, count, imageURL }
       return deck
     }
   } catch (e) {
@@ -81,11 +82,16 @@ const getDeckById = async (id: string): Promise<Deck | undefined> => {
   return undefined
 }
 
-const updateDeckById = async (id: string, newDeck: Deck): Promise<void> => {
+const updateDeckById = async (id: string, deck: Deck): Promise<void> => {
   const db = getFirestore()
   const deckRef = doc(db, 'Decks', id)
 
   try {
+    let imageURL = ''
+    if (deck.imageFile) {
+      imageURL = await uploadDeckPhoto(deck.imageFile)
+    }
+
     await runTransaction(db, async (transaction) => {
       const deck = await transaction.get(deckRef)
 
@@ -93,7 +99,8 @@ const updateDeckById = async (id: string, newDeck: Deck): Promise<void> => {
         throw 'Document does not exist!'
       }
 
-      transaction.update(deckRef, newDeck)
+      const { imageFile, ...deckData } = deck.data()
+      transaction.update(deckRef, { ...deckData, imageURL })
     })
   } catch (e) {
     //TODO: Handle Error
