@@ -1,6 +1,7 @@
 import { useUserStore } from '@/stores/user'
 import { useDeckStore } from '@/stores/decks'
 import { uploadDeckPhoto } from '@/services/fileService'
+import { TeenyError } from '@/utils/TeenyError'
 import {
   addDoc,
   getDocs,
@@ -37,7 +38,11 @@ const createDeck = async (
 
   const deckRef = collection(db, 'Decks')
 
-  return await addDoc(deckRef, newDeck)
+  try {
+    return await addDoc(deckRef, newDeck)
+  } catch (e) {
+    throw new TeenyError(e)
+  }
 }
 
 const getUserDecks = async (): Promise<void> => {
@@ -59,7 +64,7 @@ const getUserDecks = async (): Promise<void> => {
 
     decks.setDecks(newDecks)
   } catch (e) {
-    console.log(e)
+    throw new TeenyError(e)
   }
 }
 
@@ -76,7 +81,7 @@ const getDeckById = async (id: string): Promise<Deck | undefined> => {
       return deck
     }
   } catch (e) {
-    console.log(e)
+    throw new TeenyError(e)
   }
 
   return undefined
@@ -100,8 +105,7 @@ const updateDeckById = async (id: string, deck: Deck): Promise<void> => {
       transaction.update(deckRef, { ...deckData, image })
     })
   } catch (e) {
-    //TODO: Handle Error
-    throw new Error(`update error: ${e}`)
+    throw new TeenyError(e)
   }
 }
 
@@ -112,8 +116,7 @@ const deleteDeckById = async (id: string): Promise<void> => {
   try {
     await deleteDoc(deckRef)
   } catch (e) {
-    //TODO: Throw error state to component
-    console.log(e)
+    throw new TeenyError(e)
   }
 }
 

@@ -5,26 +5,17 @@ const uploadDeckPhoto = async (img: DeckImage): Promise<DeckImage> => {
   let newImg = img
 
   if (img.url && img.deleted) {
-    try {
-      const storageRef = ref(storage, `deck-photos/${img.name}`)
-      await deleteObject(storageRef)
-      newImg = { ...img, name: '', url: '', deleted: false }
-    } catch (e: any) {
-      alert(e.code)
-      throw new Error(`Error deleting image: ${e}`)
-    }
+    const storageRef = ref(storage, `deck-photos/${img.name}`)
+    await deleteObject(storageRef)
+    newImg = { ...img, name: '', url: '', deleted: false }
   }
 
   if (img.newFile) {
-    try {
-      const storageRef = ref(storage, `deck-photos/${img.newFile.name}`)
-      await uploadBytes(storageRef, img.newFile)
-      const url = await getDownloadURL(storageRef)
+    const storageRef = ref(storage, `deck-photos/${img.newFile.name}`)
+    await uploadBytes(storageRef, img.newFile)
+    const url = await getDownloadURL(storageRef)
 
-      newImg = { name: img.newFile.name, url }
-    } catch (e: any) {
-      throw new Error(`Error uploading image: ${e}`)
-    }
+    newImg = { name: img.newFile.name, url }
   }
 
   return newImg
