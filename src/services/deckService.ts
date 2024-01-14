@@ -106,14 +106,18 @@ const updateDeckById = async (id: string, deck: Deck): TeenyResponse<void> => {
       const deck = await transaction.get(deckRef)
 
       if (!deck.exists()) {
-        const error = new TeenyError('Deck not found')
+        const error = new TeenyError('We had some trouble finding your deck. Please try again.')
         error.name = 'ObjectNotFoundError'
 
         return { success: false, error }
       }
 
       const { imageFile, ...deckData } = deck.data()
-      transaction.update(deckRef, { ...deckData, image: imageResponse.value })
+      const { url, name } = imageResponse.value
+      transaction.update(deckRef, {
+        ...deckData,
+        image: { url, name }
+      })
     })
 
     return { success: true, value: undefined }

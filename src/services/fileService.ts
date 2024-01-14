@@ -3,13 +3,12 @@ import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'fire
 
 const uploadDeckPhoto = async (img: DeckImage): TeenyResponse<DeckImage> => {
   const storage = getStorage()
-  let newImg = img
+  let newImg = { name: '', url: '' }
 
   if (img.url && img.deleted) {
     try {
       const storageRef = ref(storage, `deck-photos/${img.name}`)
       await deleteObject(storageRef)
-      newImg = { ...img, name: '', url: '', deleted: false }
     } catch (e) {
       return { success: false, error: new TeenyError(e) }
     }

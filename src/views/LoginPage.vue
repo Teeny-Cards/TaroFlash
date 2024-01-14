@@ -9,7 +9,6 @@ import { getAuth, signInWithEmailAndPassword, type UserCredential } from 'fireba
 import LoginDialogue from '@/components/LoginDialogue.vue'
 import { handleUserAuthStateChange } from '@/services/userService'
 import router from '@/router'
-import { ref } from 'vue'
 
 const auth = getAuth()
 

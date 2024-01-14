@@ -56,16 +56,33 @@ export class TeenyError extends Error {
   }
 }
 
+//TODO: Make error messages user friendly before deployment
 const databaseErrorMessages: Record<string, TeenyErrorMessage> = {
   'storage/unknown': {
     name: 'UnknownError',
     message: 'An unknown error occurred, please try again.',
     severity: 'error'
   },
-  'storage/object-not-found': { name: 'ObjectNotFoundError', message: '', severity: 'error' },
-  'storage/quota-exceeded': { name: 'QuotaExceededError', message: '', severity: 'error' },
-  'storage/unauthenticated': { name: 'AuthenticationError', message: '', severity: 'error' },
-  'storage/unauthorized': { name: 'AuthorizationError', message: '', severity: 'error' },
+  'storage/object-not-found': {
+    name: 'ObjectNotFoundError',
+    message: 'There was no image to delete',
+    severity: 'error'
+  },
+  'storage/quota-exceeded': {
+    name: 'QuotaExceededError',
+    message: 'quota exceeded',
+    severity: 'error'
+  },
+  'storage/unauthenticated': {
+    name: 'AuthenticationError',
+    message: "Oops you're actually logged out",
+    severity: 'error'
+  },
+  'storage/unauthorized': {
+    name: 'AuthorizationError',
+    message: "You don't have access to do that",
+    severity: 'error'
+  },
   'storage/retry-limit-exceeded': {
     name: 'RequestTimeoutError',
     message: 'The request took too long',
@@ -73,7 +90,7 @@ const databaseErrorMessages: Record<string, TeenyErrorMessage> = {
   },
   'storage/server-file-wrong-size': {
     name: 'FileSizeMismatchError',
-    message: '',
+    message: 'File too big',
     severity: 'warning'
   }
 }
@@ -85,9 +102,21 @@ const firestoreErrorMessages: Record<string, TeenyErrorMessage> = {
     message: 'Try refreshing the page. If the problem persists, please contact us.',
     severity: 'error'
   },
-  'not-found': { name: 'ObjectNotFoundError', message: '', severity: 'error' },
-  'already-exists': { name: 'ResourceConflictError', message: '', severity: 'error' },
-  'permission-denied': { name: 'AuthorizationError', message: '', severity: 'error' },
+  'not-found': {
+    name: 'ObjectNotFoundError',
+    message: "We couldn't find the item you're looking for",
+    severity: 'error'
+  },
+  'already-exists': {
+    name: 'ResourceConflictError',
+    message: 'Oops that already exists',
+    severity: 'error'
+  },
+  'permission-denied': {
+    name: 'AuthorizationError',
+    message: "You don't have access to do that",
+    severity: 'error'
+  },
   'resource-exhausted': {
     name: 'ResourceLimitError',
     message: 'Not enough space',
@@ -106,7 +135,16 @@ const firestoreErrorMessages: Record<string, TeenyErrorMessage> = {
   },
   unavailable: { name: 'BackendUnavailableError', message: 'backend is down', severity: 'error' },
   'data-loss': { name: 'DataLossError', message: 'some data was lost', severity: 'severe' },
-  unauthenticated: { name: 'AuthenticationError', message: '', severity: 'error' }
+  unauthenticated: {
+    name: 'AuthenticationError',
+    message: "Oops you're actually logged out",
+    severity: 'error'
+  },
+  'invalid-argument': {
+    name: 'OtherError',
+    message: 'You just found a bug, please contact us. Error: invalid-argument',
+    severity: 'error'
+  }
 }
 
 const firebaseErrorMessages: Record<string, TeenyErrorMessage> = {

@@ -90,8 +90,7 @@ async function getDeck(): Promise<void> {
     if (response.success) {
       deck.value = response.value
     } else {
-      //TODO: Show error state
-      console.log(response.error.message)
+      alert(response.error.message)
     }
   }
 
@@ -104,6 +103,7 @@ async function updateDeck(newDeck: Deck, newCards: Card[]): Promise<void> {
   if (response.success) {
     saveCards(newCards)
   } else {
+    alert(response.error.message)
     //TODO: Show error
   }
 }
@@ -114,6 +114,7 @@ async function deleteDeck(): Promise<void> {
   if (response.success) {
     router.push({ name: 'dashboard' })
   } else {
+    alert(response.error.message)
     //TODO: Show failed error
   }
 }
@@ -125,6 +126,7 @@ async function getCards(): Promise<void> {
     cards.value = response.value
     cardsLoading.value = false
   } else {
+    alert(response.error.message)
     // TODO: error toast + reroute
   }
 }
@@ -141,8 +143,10 @@ async function saveCards(cards: CardMutation[]): Promise<void> {
   const response = await updateCardsByDeckID(props.id, cards)
 
   if (response.success) {
+    alert('Saved Successfully')
     // TODO: success toast + reroute?
   } else {
+    alert(response.error.message)
     // TODO: fail toast
   }
 }
