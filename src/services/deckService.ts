@@ -43,7 +43,7 @@ const createDeck = async (
     const doc = await addDoc(deckRef, newDeck)
     return { success: true, value: doc }
   } catch (e) {
-    return { success: false, error: new TeenyError(e) }
+    return { success: false, error: TeenyError.fromError(e) }
   }
 }
 
@@ -67,7 +67,7 @@ const getUserDecks = async (): TeenyResponse<void> => {
     decks.setDecks(newDecks)
     return { success: true, value: undefined }
   } catch (e) {
-    return { success: false, error: new TeenyError(e) }
+    return { success: false, error: TeenyError.fromError(e) }
   }
 }
 
@@ -85,9 +85,14 @@ const getDeckById = async (id: string): TeenyResponse<Deck> => {
     }
 
     //TODO Provide a better error
-    return { success: false, error: new TeenyError('Deck not found') }
+    return {
+      success: false,
+      error: new TeenyError('We had some trouble finding your deck. Please try again.', {
+        name: 'ObjectNotFoundError'
+      })
+    }
   } catch (e) {
-    return { success: false, error: new TeenyError(e) }
+    return { success: false, error: TeenyError.fromError(e) }
   }
 }
 
@@ -106,8 +111,9 @@ const updateDeckById = async (id: string, deck: Deck): TeenyResponse<void> => {
       const deck = await transaction.get(deckRef)
 
       if (!deck.exists()) {
-        const error = new TeenyError('We had some trouble finding your deck. Please try again.')
-        error.name = 'ObjectNotFoundError'
+        const error = new TeenyError('We had some trouble finding your deck. Please try again.', {
+          name: 'ObjectNotFoundError'
+        })
 
         return { success: false, error }
       }
@@ -122,7 +128,7 @@ const updateDeckById = async (id: string, deck: Deck): TeenyResponse<void> => {
 
     return { success: true, value: undefined }
   } catch (e) {
-    return { success: false, error: new TeenyError(e) }
+    return { success: false, error: TeenyError.fromError(e) }
   }
 }
 
@@ -140,7 +146,7 @@ const deleteDeckById = async (id: string): TeenyResponse<void> => {
     await deleteDoc(deckRef)
     return { success: true, value: undefined }
   } catch (e) {
-    return { success: false, error: new TeenyError(e) }
+    return { success: false, error: TeenyError.fromError(e) }
   }
 }
 

@@ -8,39 +8,52 @@ const handleUserAuthStateChange = async (user: any): TeenyResponse<Boolean> => {
 
   if (!user) {
     userStore.setUser()
-    userStore.setLoading(false)
-    const error = new TeenyError('User is not logged in')
-    error.name = 'AuthenticationError'
+    const error = new TeenyError('User is not logged in', { name: 'AuthenticationError' })
     return { success: false, error }
   }
 
   const db = getFirestore()
-  const userProfile = await fetchOrCreateUserProfile(user, db)
+  const response = await fetchOrCreateUserProfile(user, db)
 
-  userStore.setUser(userProfile)
-  userStore.setLoading(false)
-  return { success: true, value: true }
+  if (response.success) {
+    userStore.setUser(response.value)
+
+    return { success: true, value: true }
+  } else {
+    const error = new TeenyError('Failed to fetch or create user profile', {
+      name: 'AuthenticationError'
+    })
+
+    return { success: false, error }
+  }
 }
 
-const fetchOrCreateUserProfile = async (user: any, db: Firestore) => {
+const fetchOrCreateUserProfile = async (user: any, db: Firestore): TeenyResponse<UserProfile> => {
   const userRef = doc(db, 'Users', user.uid)
-  const docSnap = await getDoc(userRef)
 
-  if (docSnap.exists()) {
-    return {
-      ...(docSnap.data() as UserProfile),
+  try {
+    const docSnap = await getDoc(userRef)
+
+    if (docSnap.exists()) {
+      const userProfile = {
+        ...(docSnap.data() as UserProfile),
+        userId: user.uid
+      }
+
+      return { success: true, value: userProfile }
+    }
+
+    const newUserProfile = {
+      email: user.email,
+      username: user.displayName || 'New User',
       userId: user.uid
     }
-  }
 
-  const newUserProfile = {
-    email: user.email,
-    username: user.displayName || 'New User',
-    userId: user.uid
+    await setDoc(userRef, newUserProfile)
+    return { success: true, value: newUserProfile }
+  } catch (e) {
+    return { success: false, error: TeenyError.fromError(e) }
   }
-
-  await setDoc(userRef, newUserProfile)
-  return newUserProfile
 }
 
 export { handleUserAuthStateChange }

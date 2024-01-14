@@ -10,7 +10,7 @@ const uploadDeckPhoto = async (img: DeckImage): TeenyResponse<DeckImage> => {
       const storageRef = ref(storage, `deck-photos/${img.name}`)
       await deleteObject(storageRef)
     } catch (e) {
-      return { success: false, error: new TeenyError(e) }
+      return { success: false, error: TeenyError.fromError(e) }
     }
   }
 
@@ -22,7 +22,7 @@ const uploadDeckPhoto = async (img: DeckImage): TeenyResponse<DeckImage> => {
 
       newImg = { name: img.newFile.name, url }
     } catch (e) {
-      return { success: false, error: new TeenyError(e) }
+      return { success: false, error: TeenyError.fromError(e) }
     }
   }
 

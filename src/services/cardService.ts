@@ -32,7 +32,7 @@ const saveCardsToDeck = async (deckID: string, cards: Card[]): TeenyResponse<voi
     await batch.commit()
     return { success: true, value: undefined }
   } catch (e) {
-    return { success: false, error: new TeenyError(e) }
+    return { success: false, error: TeenyError.fromError(e) }
   }
 }
 
@@ -53,7 +53,7 @@ const getCardsByDeckID = async (deckID: string): TeenyResponse<Card[]> => {
 
     return { success: true, value: cards }
   } catch (e) {
-    return { success: false, error: new TeenyError(e) }
+    return { success: false, error: TeenyError.fromError(e) }
   }
 }
 
@@ -89,7 +89,7 @@ const updateCardsByDeckID = async (deckID: string, cards: CardMutation[]): Teeny
     await batch.commit()
     return { success: true, value: undefined }
   } catch (e) {
-    return { success: false, error: new TeenyError(e) }
+    return { success: false, error: TeenyError.fromError(e) }
   }
 }
 
@@ -108,7 +108,7 @@ const deleteCardsByDeckID = async (deckID: string): TeenyResponse<void> => {
     await batch.commit()
     return { success: true, value: undefined }
   } catch (e) {
-    return { success: false, error: new TeenyError(e) }
+    return { success: false, error: TeenyError.fromError(e) }
   }
 }
 
