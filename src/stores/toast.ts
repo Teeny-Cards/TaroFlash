@@ -6,7 +6,7 @@ export const useToastStore = defineStore('toast', () => {
   const toasts = ref<TeenyToast[]>([])
 
   const defaultToast: TeenyToast = {
-    state: 'info',
+    state: 'success',
     delay: 3000,
     persist: false,
     message: '',

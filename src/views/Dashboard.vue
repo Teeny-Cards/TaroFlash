@@ -14,20 +14,14 @@
 import { onMounted, ref } from 'vue'
 import { getUserDecks } from '@/services/deckService'
 import { useDeckStore } from '@/stores/decks'
-import { useToastStore } from '@/stores/toast'
 import { storeToRefs } from 'pinia'
 
 const loading = ref(true)
-const toastStore = useToastStore()
 const deckStore = useDeckStore()
 const { decks } = storeToRefs(deckStore)
 
 onMounted(async () => {
   const response = await getUserDecks()
-
-  toastStore.addToast({
-    message: 'test'
-  })
 
   if (response.success) {
     loading.value = false

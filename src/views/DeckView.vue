@@ -25,6 +25,7 @@ import Deck from '@/components/views/deck.vue'
 import Study from '@/components/views/study.vue'
 import Edit from '@/components/views/edit.vue'
 import { useDeckStore } from '@/stores/decks'
+import { useToastStore } from '@/stores/toast'
 import { computed, onMounted, ref } from 'vue'
 import { getDeckById, deleteDeckById, updateDeckById } from '@/services/deckService'
 import { getCardsByDeckID, updateCardsByDeckID } from '@/services/cardService'
@@ -43,6 +44,7 @@ const cardsLoading = ref(true)
 
 const route = useRoute()
 const deckStore = useDeckStore()
+const toastStore = useToastStore()
 const deck = ref<Deck>()
 const cards = ref<Card[]>([])
 
@@ -103,8 +105,10 @@ async function updateDeck(newDeck: Deck, newCards: Card[]): Promise<void> {
   if (response.success) {
     saveCards(newCards)
   } else {
-    alert(response.error.message)
-    //TODO: Show error
+    toastStore.addToast({
+      message: response.error.message,
+      state: 'error'
+    })
   }
 }
 
@@ -112,10 +116,15 @@ async function deleteDeck(): Promise<void> {
   const response = await deleteDeckById(props.id)
 
   if (response.success) {
+    toastStore.addToast({
+      message: 'Deck deleted successfully'
+    })
     router.push({ name: 'dashboard' })
   } else {
-    alert(response.error.message)
-    //TODO: Show failed error
+    toastStore.addToast({
+      message: response.error.message,
+      state: 'error'
+    })
   }
 }
 
@@ -143,11 +152,14 @@ async function saveCards(cards: CardMutation[]): Promise<void> {
   const response = await updateCardsByDeckID(props.id, cards)
 
   if (response.success) {
-    alert('Saved Successfully')
-    // TODO: success toast + reroute?
+    toastStore.addToast({
+      message: 'Saved Successfully'
+    })
   } else {
-    alert(response.error.message)
-    // TODO: fail toast
+    toastStore.addToast({
+      message: response.error.message,
+      state: 'error'
+    })
   }
 }
 </script>

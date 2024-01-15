@@ -7,14 +7,14 @@
     leave-to-class="translate-x-full"
     leave-active-class="transform transition-transform"
   >
-    <div v-if="open" class="bg-green-400 rounded-xl p-4 text-white shadow-lg w-72">
+    <div v-if="open" class="rounded-xl p-4 text-white shadow-lg w-72" :class="color">
       {{ toast.message }}
     </div>
   </transition>
 </template>
 
 <script setup lang="ts">
-import { ref, type PropType, onMounted, onBeforeUnmount } from 'vue'
+import { ref, type PropType, onMounted, computed } from 'vue'
 
 const props = defineProps({
   toast: {
@@ -29,6 +29,19 @@ const emit = defineEmits<{
 
 const open = ref(false)
 const timeout = ref<NodeJS.Timeout>()
+
+const color = computed(() => {
+  switch (props.toast.state) {
+    case 'info':
+      return 'bg-blue-400'
+    case 'warn':
+      return 'bg-yellow-400'
+    case 'error':
+      return 'bg-red-400'
+    default:
+      return 'bg-green-400'
+  }
+})
 
 onMounted(() => {
   openToast()
