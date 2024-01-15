@@ -16,6 +16,7 @@ const router = createRouter({
     {
       path: '/',
       meta: { requiresAuth: false },
+      redirect: { name: 'loading' },
       children: [
         {
           path: '/signin',
