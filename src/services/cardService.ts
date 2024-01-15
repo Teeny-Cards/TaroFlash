@@ -11,14 +11,16 @@ import {
   orderBy
 } from 'firebase/firestore'
 
-const saveCardsToDeck = async (deckID: string, cards: Card[]): TeenyResponse<void> => {
+const saveCardsToDeck = async (deckID: string, cards: CardMutation[]): TeenyResponse<void> => {
   const db = getFirestore()
   const batch = writeBatch(db)
 
   cards.forEach((card) => {
     const cardRef = doc(collection(db, 'cards'))
+
+    const { deleted, id, dirty, ...cleanCard } = card
     const newCard = {
-      ...card,
+      ...cleanCard,
       deckID: deckID,
       created_at: serverTimestamp(),
       updated_at: serverTimestamp()
@@ -27,7 +29,6 @@ const saveCardsToDeck = async (deckID: string, cards: Card[]): TeenyResponse<voi
     batch.set(cardRef, newCard)
   })
 
-  // TODO: Error Handling
   try {
     await batch.commit()
     return { success: true, value: undefined }
@@ -62,7 +63,7 @@ const updateCardsByDeckID = async (deckID: string, cards: CardMutation[]): Teeny
   const batch = writeBatch(db)
 
   cards.forEach((card) => {
-    const { id, deleted, ...cardWithoutId } = card
+    const { id, deleted, dirty, ...cleanCard } = card
 
     if (id) {
       const cardRef = doc(collection(db, 'cards'), id)
@@ -70,12 +71,12 @@ const updateCardsByDeckID = async (deckID: string, cards: CardMutation[]): Teeny
       if (deleted) {
         batch.delete(cardRef)
       } else {
-        batch.update(cardRef, cardWithoutId)
+        batch.update(cardRef, cleanCard)
       }
     } else {
       const cardRef = doc(collection(db, 'cards'))
       const newCard = {
-        ...cardWithoutId,
+        ...cleanCard,
         deckID,
         created_at: serverTimestamp(),
         updated_at: serverTimestamp()

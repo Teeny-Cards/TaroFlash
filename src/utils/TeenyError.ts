@@ -52,6 +52,10 @@ export class TeenyError extends Error {
       severity: 'error'
     }
 
+    if (errorInfo.name === 'OtherError') {
+      console.error(error)
+    }
+
     return new TeenyError(errorInfo.message, {
       name: errorInfo.name,
       errorCode: error.code,

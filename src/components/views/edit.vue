@@ -58,7 +58,7 @@
     >
       <TeenyCardEditor
         v-for="(card, index) in nonDeletedCards"
-        :key="index"
+        :key="card.id"
         :card="card"
         :index="index"
         @frontInput="updateFront"
@@ -79,18 +79,13 @@
 </template>
 
 <script setup lang="ts">
-import router from '@/router'
-import { ref, type PropType, computed } from 'vue'
-import imageUploader from '../imageUploader.vue'
-
-declare interface DirtyCard extends CardMutation {
-  dirty?: Boolean
-}
+import { ref, type PropType, computed, onMounted } from 'vue'
+import imageUploader from '@/components/imageUploader.vue'
+import generateUID from '@/utils/uid'
 
 const props = defineProps({
   deck: {
-    type: Object as PropType<Deck>,
-    required: true
+    type: Object as PropType<Deck>
   },
   cards: {
     type: Object as PropType<Card[]>,
@@ -100,14 +95,16 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (event: 'saveDeck', newDeck: Deck, newCards: Card[]): void
+  (event: 'cancel'): void
 }>()
 
-const deckImagePreview = ref(props.deck.image?.url)
+const deckImagePreview = ref(props.deck?.image?.url)
 const deckImageFile = ref()
 const deckImageDeleted = ref(false)
-const title = ref(props.deck.title)
-const description = ref(props.deck.description)
-const cards = ref<DirtyCard[]>(props.cards)
+const title = ref(props.deck?.title ?? '')
+const description = ref(props.deck?.description ?? '')
+const isPublic = ref(false)
+const cards = ref<CardMutation[]>(props.cards)
 
 const nonDeletedCards = computed(() => {
   return cards.value.filter((card) => !card.deleted)
@@ -123,7 +120,8 @@ function addCard(): void {
     order: cards.value.length,
     frontText: '',
     backText: '',
-    dirty: true
+    dirty: true,
+    id: generateUID()
   })
 }
 
@@ -131,8 +129,8 @@ function deleteCard(index: number): void {
   const card = cards.value[index]
 
   if (card) {
-    card.deleted = true
-    card.dirty = true
+    const updatedCard = { ...card, deleted: true, dirty: true }
+    cards.value.splice(index, 1, updatedCard)
   }
 }
 
@@ -140,8 +138,8 @@ function updateFront(index: number, value: string): void {
   const card = cards.value[index]
 
   if (card) {
-    card.frontText = value
-    card.dirty = true
+    const updatedCard = { ...card, frontText: value, dirty: true }
+    cards.value.splice(index, 1, updatedCard)
   }
 }
 
@@ -149,8 +147,8 @@ function updateBack(index: number, value: string): void {
   const card = cards.value[index]
 
   if (card) {
-    card.backText = value
-    card.dirty = true
+    const updatedCard = { ...card, backText: value, dirty: true }
+    cards.value.splice(index, 1, updatedCard)
   }
 }
 
@@ -162,25 +160,25 @@ function removeDeckImage(): void {
 
 function saveDeck(): void {
   const newDeck: Deck = {
+    id: '',
     ...props.deck,
+    isPublic: isPublic.value,
     title: title.value,
     description: description.value,
     count: cards.value.length,
     image: {
-      ...props.deck.image,
+      ...props.deck?.image,
       newFile: deckImageFile.value,
       deleted: deckImageDeleted.value
     }
   }
 
-  const newCards: CardMutation[] = cards.value
-    .filter((card: DirtyCard) => card.dirty)
-    .map(({ dirty, ...cleanCard }) => cleanCard)
+  const newCards: CardMutation[] = cards.value.filter((card: CardMutation) => card.dirty)
 
   emit('saveDeck', newDeck, newCards)
 }
 
 function cancel(): void {
-  router.push({ name: 'deck', params: { id: props.deck.id } })
+  emit('cancel')
 }
 </script>

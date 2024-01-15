@@ -6,8 +6,8 @@
       v-else-if="editing && deck"
       :deck="deck"
       :cards="cards"
-      @addCard="onAddCard"
       @saveDeck="updateDeck"
+      @cancel="onCancelEdit"
     ></Edit>
     <Deck
       v-else-if="deck"
@@ -75,6 +75,10 @@ function onEditClicked(): void {
   router.push({ name: 'deck', params: { id: props.id }, query: { mode: 'edit' } })
 }
 
+function onCancelEdit(): void {
+  router.push({ name: 'deck', params: { id: props.id } })
+}
+
 async function getDeck(): Promise<void> {
   if (!props.id) {
     //TODO: Reroute back to dashboard or show 'no deck' UI
@@ -138,14 +142,6 @@ async function getCards(): Promise<void> {
     alert(response.error.message)
     // TODO: error toast + reroute
   }
-}
-
-function onAddCard(): void {
-  cards.value.push({
-    order: cards.value.length,
-    frontText: '',
-    backText: ''
-  })
 }
 
 async function saveCards(cards: CardMutation[]): Promise<void> {

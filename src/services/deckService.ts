@@ -18,21 +18,22 @@ import {
   runTransaction
 } from 'firebase/firestore'
 
-const createDeck = async (
-  title: string,
-  description: string,
-  count: number,
-  isPublic = false
-): TeenyResponse<DocumentReference> => {
+const createDeck = async (deck: Deck): TeenyResponse<DocumentReference> => {
   const db = getFirestore()
   const user = useUserStore()
+  const imageResponse = await uploadDeckPhoto(deck.image)
 
+  if (!imageResponse.success) {
+    return { success: false, error: imageResponse.error }
+  }
+
+  const { id, ...cleanDeck } = deck
+  const { image, ...deckData } = cleanDeck
+  const { url, name } = imageResponse.value
   const newDeck = {
+    ...deckData,
+    image: { url, name },
     userID: user.id,
-    title,
-    description,
-    count,
-    isPublic: isPublic,
     created_at: serverTimestamp(),
     updated_at: serverTimestamp()
   }
