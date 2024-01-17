@@ -15,6 +15,7 @@ import { onMounted, ref } from 'vue'
 import { getUserDecks } from '@/services/deckService'
 import { useDeckStore } from '@/stores/decks'
 import { storeToRefs } from 'pinia'
+import TeenyDeck from '@/components/TeenyDeck/TeenyDeck.vue'
 
 const loading = ref(true)
 const deckStore = useDeckStore()

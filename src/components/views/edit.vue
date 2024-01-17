@@ -79,7 +79,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, type PropType, computed, onMounted } from 'vue'
+import TeenyCard from '@/components/TeenyCard/TeenyCard.vue'
+import TeenyButton from '@/components/TeenyButton/TeenyButton.vue'
+import TeenyInput from '@/components/TeenyInput/TeenyInput.vue'
+import TeenyCardEditor from '@/components/TeenyCardEditor/TeenyCardEditor.vue'
+import { ref, type PropType, computed } from 'vue'
 import imageUploader from '@/components/imageUploader.vue'
 import generateUID from '@/utils/uid'
 
@@ -173,7 +177,7 @@ function saveDeck(): void {
     }
   }
 
-  const newCards: CardMutation[] = cards.value.filter((card: CardMutation) => card.dirty)
+  const newCards = cards.value.filter((card: CardMutation) => card.dirty)
 
   emit('saveDeck', newDeck, newCards)
 }

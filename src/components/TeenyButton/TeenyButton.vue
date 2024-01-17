@@ -3,6 +3,7 @@
     class="rounded-lg p-2 transition-colors font-semibold"
     :class="styles"
     @click="$emit('onClick')"
+    data-test="teeny-button"
   >
     <slot></slot>
   </button>

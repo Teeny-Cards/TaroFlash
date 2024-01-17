@@ -15,6 +15,7 @@
             </svg>
           </div>
           <textarea
+            data-test-teeny-card-editor-input="frontText"
             class="w-full text-center focus:outline-none text-3xl bg-transparent resize-none"
             rows="1"
             placeholder="Front"
@@ -26,6 +27,7 @@
       </TeenyCard>
       <TeenyCard>
         <textarea
+          data-test-teeny-card-editor-input="backText"
           class="w-full text-center focus:outline-none text-3xl bg-transparent resize-none"
           rows="1"
           placeholder="Back"
@@ -40,6 +42,7 @@
       variant="ghost"
       class="absolute right-0 opacity-0 group-hover:opacity-100 transition-opacity"
       @onClick="$emit('delete', index)"
+      data-test-teeny-card-editor-button="delete"
     >
       <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
         <path
@@ -52,6 +55,8 @@
 </template>
 
 <script setup lang="ts">
+import TeenyCard from '@/components/TeenyCard/TeenyCard.vue'
+import TeenyButton from '@/components/TeenyButton/TeenyButton.vue'
 import { onMounted, ref, type PropType } from 'vue'
 
 const props = defineProps({
