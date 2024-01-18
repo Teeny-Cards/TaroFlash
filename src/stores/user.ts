@@ -1,24 +1,38 @@
-import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { handleUserAuthStateChange } from '@/services/userService'
 
-export const useUserStore = defineStore('user', () => {
-  const username = ref('')
-  const email = ref('')
-  const id = ref('')
+export const useUserStore = defineStore('user', {
+  state: () => ({
+    username: '',
+    email: '',
+    id: ''
+  }),
+  actions: {
+    async login(user: any) {
+      const response = await handleUserAuthStateChange(user)
 
-  const authenticated = computed(() => !!id.value)
+      if (response.success) {
+        this.setUser(response.value)
+      } else {
+        this.setUser()
+      }
+    },
 
-  function setUser(newUser?: UserProfile) {
-    if (newUser) {
-      username.value = newUser.username || ''
-      email.value = newUser.email || ''
-      id.value = newUser.userId || ''
-    } else {
-      username.value = ''
-      email.value = ''
-      id.value = ''
+    setUser(newUser?: UserProfile) {
+      if (newUser) {
+        this.username = newUser.username || ''
+        this.email = newUser.email || ''
+        this.id = newUser.userId || ''
+      } else {
+        this.username = ''
+        this.email = ''
+        this.id = ''
+      }
+    }
+  },
+  getters: {
+    authenticated: (state) => {
+      return !!state.id
     }
   }
-
-  return { authenticated, username, email, id, setUser }
 })

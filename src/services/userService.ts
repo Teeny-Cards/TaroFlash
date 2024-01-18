@@ -1,13 +1,9 @@
 import { TeenyError } from '@/utils/TeenyError'
-import { useUserStore } from '../stores/user'
 import { getFirestore, Firestore } from 'firebase/firestore'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 
-const handleUserAuthStateChange = async (user: any): TeenyResponse<Boolean> => {
-  const userStore = useUserStore()
-
+const handleUserAuthStateChange = async (user: any): TeenyResponse<UserProfile> => {
   if (!user) {
-    userStore.setUser()
     const error = new TeenyError('User is not logged in', { name: 'AuthenticationError' })
     return { success: false, error }
   }
@@ -16,9 +12,7 @@ const handleUserAuthStateChange = async (user: any): TeenyResponse<Boolean> => {
   const response = await fetchOrCreateUserProfile(user, db)
 
   if (response.success) {
-    userStore.setUser(response.value)
-
-    return { success: true, value: true }
+    return { success: true, value: response.value }
   } else {
     const error = new TeenyError('Failed to fetch or create user profile', {
       name: 'AuthenticationError'
