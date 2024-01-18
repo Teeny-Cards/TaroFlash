@@ -27,10 +27,7 @@ async function saveDeck(deck: Deck, cards: CardMutation[]): Promise<void> {
     const doc = await createDeck(deck)
     saveCards(doc.id, cards)
   } catch (e: any) {
-    toastStore.addToast({
-      message: e.message,
-      state: 'error'
-    })
+    toastStore.error(e.message)
   }
 }
 
@@ -38,16 +35,10 @@ async function saveCards(deckId: string, cards: CardMutation[]): Promise<void> {
   try {
     await saveCardsToDeck(deckId, cards)
 
-    toastStore.addToast({
-      message: 'Deck Saved Successfully'
-    })
-
+    toastStore.success('Deck Saved Successfully')
     router.push({ name: 'deck', params: { id: deckId } })
   } catch (e: any) {
-    toastStore.addToast({
-      message: e.message,
-      state: 'error'
-    })
+    toastStore.error(e.message)
   }
 }
 </script>

@@ -88,10 +88,7 @@ async function updateDeck(newDeck: Deck, newCards: Card[]): Promise<void> {
     await updateDeckById(props.id, newDeck)
     saveCards(newCards)
   } catch (e: any) {
-    toastStore.addToast({
-      message: e.message,
-      state: 'error'
-    })
+    toastStore.error(e.message)
   }
 }
 
@@ -99,16 +96,10 @@ async function deleteDeck(): Promise<void> {
   try {
     await deleteDeckById(props.id)
 
-    toastStore.addToast({
-      message: 'Deck deleted successfully'
-    })
-
+    toastStore.success('Deck deleted successfully')
     router.push({ name: 'dashboard' })
   } catch (e: any) {
-    toastStore.addToast({
-      message: e.message,
-      state: 'error'
-    })
+    toastStore.error(e.message)
   }
 }
 
@@ -116,10 +107,7 @@ async function getDeck(): Promise<void> {
   try {
     await deckStore.fetchDeckById(props.id)
   } catch (e: any) {
-    toastStore.addToast({
-      message: e.message,
-      state: 'error'
-    })
+    toastStore.error(e.message)
     router.push({ name: 'dashboard' })
   }
 }
@@ -130,25 +118,16 @@ async function getCards(): Promise<void> {
     cards.value = newCards
     cardsLoading.value = false
   } catch (e: any) {
-    toastStore.addToast({
-      message: e.message,
-      state: 'error'
-    })
+    toastStore.error(e.message)
   }
 }
 
 async function saveCards(cards: CardMutation[]): Promise<void> {
   try {
     await updateCardsByDeckID(props.id, cards)
-
-    toastStore.addToast({
-      message: 'Saved Successfully'
-    })
+    toastStore.success('Saved Successfully')
   } catch (e: any) {
-    toastStore.addToast({
-      message: e.message,
-      state: 'error'
-    })
+    toastStore.error(e.message)
   }
 }
 </script>

@@ -27,10 +27,7 @@ onMounted(async () => {
     await deckStore.fetchUserDecks()
     loading.value = false
   } catch (e: any) {
-    toastStore.addToast({
-      message: e.message,
-      state: 'error'
-    })
+    toastStore.error(e.message)
   }
 })
 </script>
