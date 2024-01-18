@@ -24,6 +24,10 @@ export class TeenyError extends Error {
   }
 
   static fromError(error: any): TeenyError {
+    if (error instanceof TeenyError) {
+      return error
+    }
+
     const errorInfo = firebaseErrorMessages[error.code] || {
       name: 'OtherError',
       message: 'An unknown error occurred, please try again.',

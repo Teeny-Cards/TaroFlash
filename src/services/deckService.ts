@@ -17,37 +17,30 @@ import {
   runTransaction
 } from 'firebase/firestore'
 
-const createDeck = async (deck: Deck): TeenyResponse<DocumentReference> => {
+const createDeck = async (deck: Deck): Promise<DocumentReference> => {
   const db = getFirestore()
   const user = useUserStore()
-  const imageResponse = await uploadDeckPhoto(deck.image)
-
-  if (!imageResponse.success) {
-    return { success: false, error: imageResponse.error }
-  }
-
-  const { id, ...cleanDeck } = deck
-  const { image, ...deckData } = cleanDeck
-  const { url, name } = imageResponse.value
-  const newDeck = {
-    ...deckData,
-    image: { url, name },
-    userID: user.id,
-    created_at: serverTimestamp(),
-    updated_at: serverTimestamp()
-  }
-
-  const deckRef = collection(db, 'Decks')
 
   try {
-    const doc = await addDoc(deckRef, newDeck)
-    return { success: true, value: doc }
+    const { url, name } = await uploadDeckPhoto(deck.image)
+    const { id, image, ...deckData } = deck
+
+    const newDeck = {
+      ...deckData,
+      image: { url, name },
+      userID: user.id,
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp()
+    }
+
+    const deckRef = collection(db, 'Decks')
+    return await addDoc(deckRef, newDeck)
   } catch (e) {
-    return { success: false, error: TeenyError.fromError(e) }
+    throw TeenyError.fromError(e)
   }
 }
 
-const getUserDecks = async (): TeenyResponse<Deck[]> => {
+const getUserDecks = async (): Promise<Deck[]> => {
   const user = useUserStore()
 
   const db = getFirestore()
@@ -63,13 +56,13 @@ const getUserDecks = async (): TeenyResponse<Deck[]> => {
       newDecks.push(deck)
     })
 
-    return { success: true, value: newDecks }
+    return newDecks
   } catch (e) {
-    return { success: false, error: TeenyError.fromError(e) }
+    throw TeenyError.fromError(e)
   }
 }
 
-const getDeckById = async (id: string): TeenyResponse<Deck> => {
+const getDeckById = async (id: string): Promise<Deck> => {
   const db = getFirestore()
   const deckRef = doc(db, 'Decks', id)
 
@@ -80,31 +73,24 @@ const getDeckById = async (id: string): TeenyResponse<Deck> => {
       const { title, description, id, isPublic, count, image } = docSnapshot.data()
       const deck = { title, description, id, isPublic, count, image }
 
-      return { success: true, value: deck }
+      return deck
     }
 
-    return {
-      success: false,
-      error: new TeenyError('We had some trouble finding your deck. Please try again.', {
-        name: 'ObjectNotFoundError'
-      })
-    }
+    throw new TeenyError('We had some trouble finding your deck. Please try again.', {
+      name: 'ObjectNotFoundError'
+    })
   } catch (e) {
-    return { success: false, error: TeenyError.fromError(e) }
+    throw TeenyError.fromError(e)
   }
 }
 
-const updateDeckById = async (id: string, deck: Deck): TeenyResponse<void> => {
+const updateDeckById = async (id: string, deck: Deck): Promise<void> => {
   const db = getFirestore()
   const deckRef = doc(db, 'Decks', id)
 
-  const imageResponse = await uploadDeckPhoto(deck.image)
-
-  if (!imageResponse.success) {
-    return { success: false, error: imageResponse.error }
-  }
-
   try {
+    const imageResponse = await uploadDeckPhoto(deck.image)
+
     await runTransaction(db, async (transaction) => {
       const deck = await transaction.get(deckRef)
 
@@ -117,34 +103,26 @@ const updateDeckById = async (id: string, deck: Deck): TeenyResponse<void> => {
       }
 
       const { imageFile, ...deckData } = deck.data()
-      const { url, name } = imageResponse.value
+      const { url, name } = imageResponse
       transaction.update(deckRef, {
         ...deckData,
         image: { url, name }
       })
     })
-
-    return { success: true, value: undefined }
   } catch (e) {
-    return { success: false, error: TeenyError.fromError(e) }
+    throw TeenyError.fromError(e)
   }
 }
 
-const deleteDeckById = async (id: string): TeenyResponse<void> => {
+const deleteDeckById = async (id: string): Promise<void> => {
   const db = getFirestore()
   const deckRef = doc(db, 'Decks', id)
 
   try {
-    const response = await deleteCardsByDeckID(id)
-
-    if (!response.success) {
-      return { success: false, error: response.error }
-    }
-
+    await deleteCardsByDeckID(id)
     await deleteDoc(deckRef)
-    return { success: true, value: undefined }
   } catch (e) {
-    return { success: false, error: TeenyError.fromError(e) }
+    throw TeenyError.fromError(e)
   }
 }
 

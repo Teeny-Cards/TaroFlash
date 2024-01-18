@@ -17,29 +17,15 @@ export const useDeckStore = defineStore('decks', {
 
   actions: {
     async fetchUserDecks(): Promise<void> {
-      const response = await getUserDecks()
-
-      if (response.success) {
-        this.setDecks(response.value)
-      } else {
-        throw response.error
-      }
+      const decks = await getUserDecks()
+      this.setDecks(decks)
     },
 
     async fetchDeckById(id: string): Promise<void> {
-      const deck = this.getDeckById(id)
+      const deck = this.getDeckById(id) ?? (await getDeckById(id))
 
       if (deck) {
         this.setCurrentDeck(deck)
-        return
-      }
-
-      const response = await getDeckById(id)
-
-      if (response.success) {
-        this.setCurrentDeck(response.value)
-      } else {
-        throw response.error
       }
     },
 

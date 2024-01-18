@@ -63,15 +63,7 @@ const editing = computed(() => {
 })
 
 onMounted(async () => {
-  try {
-    await deckStore.fetchDeckById(props.id)
-  } catch (e: any) {
-    toastStore.addToast({
-      message: e.message,
-      state: 'error'
-    })
-  }
-
+  await getDeck()
   await getCards()
 
   deckLoading.value = false
@@ -92,56 +84,68 @@ function onCancelEdit(): void {
 }
 
 async function updateDeck(newDeck: Deck, newCards: Card[]): Promise<void> {
-  const response = await updateDeckById(props.id, newDeck)
-
-  if (response.success) {
+  try {
+    await updateDeckById(props.id, newDeck)
     saveCards(newCards)
-  } else {
+  } catch (e: any) {
     toastStore.addToast({
-      message: response.error.message,
+      message: e.message,
       state: 'error'
     })
   }
 }
 
 async function deleteDeck(): Promise<void> {
-  const response = await deleteDeckById(props.id)
+  try {
+    await deleteDeckById(props.id)
 
-  if (response.success) {
     toastStore.addToast({
       message: 'Deck deleted successfully'
     })
+
     router.push({ name: 'dashboard' })
-  } else {
+  } catch (e: any) {
     toastStore.addToast({
-      message: response.error.message,
+      message: e.message,
+      state: 'error'
+    })
+  }
+}
+
+async function getDeck(): Promise<void> {
+  try {
+    await deckStore.fetchDeckById(props.id)
+  } catch (e: any) {
+    toastStore.addToast({
+      message: e.message,
       state: 'error'
     })
   }
 }
 
 async function getCards(): Promise<void> {
-  const response = await getCardsByDeckID(props.id)
-
-  if (response.success) {
-    cards.value = response.value
+  try {
+    const newCards = await getCardsByDeckID(props.id)
+    cards.value = newCards
     cardsLoading.value = false
-  } else {
-    alert(response.error.message)
-    // TODO: error toast + reroute
+  } catch (e: any) {
+    toastStore.addToast({
+      message: e.message,
+      state: 'error'
+    })
   }
 }
 
 async function saveCards(cards: CardMutation[]): Promise<void> {
-  const response = await updateCardsByDeckID(props.id, cards)
+  try {
+    await updateCardsByDeckID(props.id, cards)
 
-  if (response.success) {
     toastStore.addToast({
       message: 'Saved Successfully'
     })
-  } else {
+  } catch (e: any) {
     toastStore.addToast({
-      message: response.error.message,
+      message: e.message,
       state: 'error'
     })
   }

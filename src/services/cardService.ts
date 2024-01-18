@@ -11,7 +11,7 @@ import {
   orderBy
 } from 'firebase/firestore'
 
-const saveCardsToDeck = async (deckID: string, cards: CardMutation[]): TeenyResponse<void> => {
+const saveCardsToDeck = async (deckID: string, cards: CardMutation[]): Promise<void> => {
   const db = getFirestore()
   const batch = writeBatch(db)
 
@@ -31,13 +31,12 @@ const saveCardsToDeck = async (deckID: string, cards: CardMutation[]): TeenyResp
 
   try {
     await batch.commit()
-    return { success: true, value: undefined }
   } catch (e) {
-    return { success: false, error: TeenyError.fromError(e) }
+    throw TeenyError.fromError(e)
   }
 }
 
-const getCardsByDeckID = async (deckID: string): TeenyResponse<Card[]> => {
+const getCardsByDeckID = async (deckID: string): Promise<Card[]> => {
   const db = getFirestore()
   const q = query(collection(db, 'cards'), where('deckID', '==', deckID), orderBy('order'))
 
@@ -52,13 +51,13 @@ const getCardsByDeckID = async (deckID: string): TeenyResponse<Card[]> => {
       })
     })
 
-    return { success: true, value: cards }
+    return cards
   } catch (e) {
-    return { success: false, error: TeenyError.fromError(e) }
+    throw TeenyError.fromError(e)
   }
 }
 
-const updateCardsByDeckID = async (deckID: string, cards: CardMutation[]): TeenyResponse<void> => {
+const updateCardsByDeckID = async (deckID: string, cards: CardMutation[]): Promise<void> => {
   const db = getFirestore()
   const batch = writeBatch(db)
 
@@ -88,13 +87,12 @@ const updateCardsByDeckID = async (deckID: string, cards: CardMutation[]): Teeny
 
   try {
     await batch.commit()
-    return { success: true, value: undefined }
   } catch (e) {
-    return { success: false, error: TeenyError.fromError(e) }
+    throw TeenyError.fromError(e)
   }
 }
 
-const deleteCardsByDeckID = async (deckID: string): TeenyResponse<void> => {
+const deleteCardsByDeckID = async (deckID: string): Promise<void> => {
   const db = getFirestore()
   const q = query(collection(db, 'cards'), where('deckID', '==', deckID))
 
@@ -107,9 +105,8 @@ const deleteCardsByDeckID = async (deckID: string): TeenyResponse<void> => {
 
   try {
     await batch.commit()
-    return { success: true, value: undefined }
   } catch (e) {
-    return { success: false, error: TeenyError.fromError(e) }
+    throw TeenyError.fromError(e)
   }
 }
 

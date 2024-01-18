@@ -2,27 +2,22 @@ import { TeenyError } from '@/utils/TeenyError'
 import { getFirestore, Firestore } from 'firebase/firestore'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 
-const handleUserAuthStateChange = async (user: any): TeenyResponse<UserProfile> => {
+const handleUserAuthStateChange = async (user: any): Promise<UserProfile> => {
   if (!user) {
-    const error = new TeenyError('User is not logged in', { name: 'AuthenticationError' })
-    return { success: false, error }
+    throw new TeenyError('User is not logged in', { name: 'AuthenticationError' })
   }
 
   const db = getFirestore()
-  const response = await fetchOrCreateUserProfile(user, db)
 
-  if (response.success) {
-    return { success: true, value: response.value }
-  } else {
-    const error = new TeenyError('Failed to fetch or create user profile', {
-      name: 'AuthenticationError'
-    })
-
-    return { success: false, error }
+  try {
+    const userProfile = await fetchOrCreateUserProfile(user, db)
+    return userProfile
+  } catch (e: any) {
+    throw TeenyError.fromError(e)
   }
 }
 
-const fetchOrCreateUserProfile = async (user: any, db: Firestore): TeenyResponse<UserProfile> => {
+const fetchOrCreateUserProfile = async (user: any, db: Firestore): Promise<UserProfile> => {
   const userRef = doc(db, 'Users', user.uid)
 
   try {
@@ -34,7 +29,7 @@ const fetchOrCreateUserProfile = async (user: any, db: Firestore): TeenyResponse
         userId: user.uid
       }
 
-      return { success: true, value: userProfile }
+      return userProfile
     }
 
     const newUserProfile = {
@@ -44,9 +39,10 @@ const fetchOrCreateUserProfile = async (user: any, db: Firestore): TeenyResponse
     }
 
     await setDoc(userRef, newUserProfile)
-    return { success: true, value: newUserProfile }
+
+    return newUserProfile
   } catch (e) {
-    return { success: false, error: TeenyError.fromError(e) }
+    throw TeenyError.fromError(e)
   }
 }
 
