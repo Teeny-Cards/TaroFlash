@@ -12,7 +12,6 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { getUserDecks } from '@/services/deckService'
 import { useDeckStore } from '@/stores/decks'
 import { storeToRefs } from 'pinia'
 import TeenyDeck from '@/components/TeenyDeck/TeenyDeck.vue'
@@ -22,12 +21,7 @@ const deckStore = useDeckStore()
 const { decks } = storeToRefs(deckStore)
 
 onMounted(async () => {
-  const response = await getUserDecks()
-
-  if (response.success) {
-    loading.value = false
-  } else {
-    //TODO: Error Message + Reroute
-  }
+  await deckStore.fetchUserDecks()
+  loading.value = false
 })
 </script>

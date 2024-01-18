@@ -1,20 +1,30 @@
-import { ref } from 'vue'
+import { getUserDecks } from '@/services/deckService'
 import { defineStore } from 'pinia'
 
-export const useDeckStore = defineStore('decks', () => {
-  const decks = ref<Deck[]>([])
+export const useDeckStore = defineStore('decks', {
+  state: () => ({
+    decks: [] as Deck[]
+  }),
 
-  function addDeck(deck: Deck): void {
-    decks.value.push(deck)
+  getters: {
+    getDeckById:
+      (state) =>
+      (id: string): Deck | undefined => {
+        return state.decks.find((deck) => deck.id === id)
+      }
+  },
+
+  actions: {
+    async fetchUserDecks(): Promise<void> {
+      const response = await getUserDecks()
+
+      if (response.success) {
+        this.setDecks(response.value)
+      }
+    },
+
+    setDecks(newDecks: Deck[]): void {
+      this.decks = newDecks
+    }
   }
-
-  function setDecks(newDecks: Deck[]): void {
-    decks.value = newDecks
-  }
-
-  function getDeckById(id: string): Deck | undefined {
-    return decks.value.find((deck) => deck.id === id)
-  }
-
-  return { decks, addDeck, setDecks, getDeckById }
 })

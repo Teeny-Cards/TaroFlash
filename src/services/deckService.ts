@@ -1,5 +1,4 @@
 import { useUserStore } from '@/stores/user'
-import { useDeckStore } from '@/stores/decks'
 import { uploadDeckPhoto } from '@/services/fileService'
 import { TeenyError } from '@/utils/TeenyError'
 import { deleteCardsByDeckID } from '@/services/cardService'
@@ -48,9 +47,8 @@ const createDeck = async (deck: Deck): TeenyResponse<DocumentReference> => {
   }
 }
 
-const getUserDecks = async (): TeenyResponse<void> => {
+const getUserDecks = async (): TeenyResponse<Deck[]> => {
   const user = useUserStore()
-  const decks = useDeckStore()
 
   const db = getFirestore()
   const q = query(collection(db, 'Decks'), where('userID', '==', user.id))
@@ -65,8 +63,7 @@ const getUserDecks = async (): TeenyResponse<void> => {
       newDecks.push(deck)
     })
 
-    decks.setDecks(newDecks)
-    return { success: true, value: undefined }
+    return { success: true, value: newDecks }
   } catch (e) {
     return { success: false, error: TeenyError.fromError(e) }
   }

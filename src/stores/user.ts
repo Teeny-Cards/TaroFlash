@@ -8,6 +8,13 @@ export const useUserStore = defineStore('user', {
     email: '',
     id: ''
   }),
+
+  getters: {
+    authenticated: (state) => {
+      return !!state.id
+    }
+  },
+
   actions: {
     async login(user: any): Promise<void> {
       const app = useAppStore()
@@ -34,11 +41,6 @@ export const useUserStore = defineStore('user', {
         this.email = ''
         this.id = ''
       }
-    }
-  },
-  getters: {
-    authenticated: (state) => {
-      return !!state.id
     }
   }
 })
