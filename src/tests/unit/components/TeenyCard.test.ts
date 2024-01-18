@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import TeenyCard from './TeenyCard.vue'
+import TeenyCard from '@/components/TeenyCard.vue'
 import { expect, test } from 'vitest'
 
 test('It renders slot content', async () => {

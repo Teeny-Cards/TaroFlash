@@ -40,12 +40,12 @@ const props = defineProps({
   }
 })
 
-const deckLoading = ref(true)
-const cardsLoading = ref(true)
-
 const route = useRoute()
 const deckStore = useDeckStore()
 const toastStore = useToastStore()
+
+const deckLoading = ref(true)
+const cardsLoading = ref(true)
 const cards = ref<Card[]>([])
 
 const { currentDeck } = storeToRefs(deckStore)

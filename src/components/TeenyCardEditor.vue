@@ -55,8 +55,8 @@
 </template>
 
 <script setup lang="ts">
-import TeenyCard from '@/components/TeenyCard/TeenyCard.vue'
-import TeenyButton from '@/components/TeenyButton/TeenyButton.vue'
+import TeenyCard from '@/components/TeenyCard.vue'
+import TeenyButton from '@/components/TeenyButton.vue'
 import { onMounted, ref, type PropType } from 'vue'
 
 const props = defineProps({

@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import TeenyCard from '@/components/TeenyCard/TeenyCard.vue'
+import TeenyCard from '@/components/TeenyCard.vue'
 import { RouterLink } from 'vue-router'
 
 defineProps<{ deck: Deck }>()

@@ -49,8 +49,8 @@
 
 <script setup lang="ts">
 import { ref, type PropType, onMounted, onUnmounted } from 'vue'
-import TeenyCard from '@/components/TeenyCard/TeenyCard.vue'
-import TeenyButton from '@/components/TeenyButton/TeenyButton.vue'
+import TeenyCard from '@/components/TeenyCard.vue'
+import TeenyButton from '@/components/TeenyButton.vue'
 
 const props = defineProps({
   cards: {
