@@ -3,15 +3,15 @@
   <div v-else>
     <Study v-if="studying" :cards="cards"></Study>
     <Edit
-      v-else-if="editing && deck"
-      :deck="deck"
+      v-else-if="editing && currentDeck"
+      :deck="currentDeck"
       :cards="cards"
       @saveDeck="updateDeck"
       @cancel="onCancelEdit"
     ></Edit>
     <Deck
-      v-else-if="deck"
-      :deck="deck"
+      v-else-if="currentDeck"
+      :deck="currentDeck"
       :cards="cards"
       @study="onStudyClicked"
       @edit="onEditClicked"
@@ -27,10 +27,11 @@ import Edit from '@/components/views/edit.vue'
 import { useDeckStore } from '@/stores/decks'
 import { useToastStore } from '@/stores/toast'
 import { computed, onMounted, ref } from 'vue'
-import { getDeckById, deleteDeckById, updateDeckById } from '@/services/deckService'
+import { deleteDeckById, updateDeckById } from '@/services/deckService'
 import { getCardsByDeckID, updateCardsByDeckID } from '@/services/cardService'
 import { useRoute } from 'vue-router'
 import router from '@/router'
+import { storeToRefs } from 'pinia'
 
 const props = defineProps({
   id: {
@@ -45,8 +46,9 @@ const cardsLoading = ref(true)
 const route = useRoute()
 const deckStore = useDeckStore()
 const toastStore = useToastStore()
-const deck = ref<Deck>()
 const cards = ref<Card[]>([])
+
+const { currentDeck } = storeToRefs(deckStore)
 
 const loading = computed(() => {
   return deckLoading.value || cardsLoading.value
@@ -61,8 +63,10 @@ const editing = computed(() => {
 })
 
 onMounted(async () => {
-  getDeck()
-  getCards()
+  await deckStore.fetchDeckById(props.id)
+  await getCards()
+
+  deckLoading.value = false
 })
 
 function onStudyClicked(): void {
@@ -77,30 +81,6 @@ function onEditClicked(): void {
 
 function onCancelEdit(): void {
   router.push({ name: 'deck', params: { id: props.id } })
-}
-
-async function getDeck(): Promise<void> {
-  if (!props.id) {
-    //TODO: Reroute back to dashboard or show 'no deck' UI
-    console.error('No deck ID provided')
-    return
-  }
-
-  let cachedDeck = deckStore.getDeckById(props.id)
-
-  if (cachedDeck) {
-    deck.value = cachedDeck
-  } else {
-    const response = await getDeckById(props.id)
-
-    if (response.success) {
-      deck.value = response.value
-    } else {
-      alert(response.error.message)
-    }
-  }
-
-  deckLoading.value = false
 }
 
 async function updateDeck(newDeck: Deck, newCards: Card[]): Promise<void> {
