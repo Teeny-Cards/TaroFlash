@@ -63,7 +63,15 @@ const editing = computed(() => {
 })
 
 onMounted(async () => {
-  await deckStore.fetchDeckById(props.id)
+  try {
+    await deckStore.fetchDeckById(props.id)
+  } catch (e: any) {
+    toastStore.addToast({
+      message: e.message,
+      state: 'error'
+    })
+  }
+
   await getCards()
 
   deckLoading.value = false

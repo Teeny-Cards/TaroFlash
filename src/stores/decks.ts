@@ -21,6 +21,8 @@ export const useDeckStore = defineStore('decks', {
 
       if (response.success) {
         this.setDecks(response.value)
+      } else {
+        throw response.error
       }
     },
 
@@ -36,10 +38,10 @@ export const useDeckStore = defineStore('decks', {
 
       if (response.success) {
         this.setCurrentDeck(response.value)
+      } else {
+        throw response.error
       }
     },
-
-    async fetchCardsByDeckId(id: string): Promise<void> {},
 
     setDecks(newDecks: Deck[]): void {
       this.decks = newDecks

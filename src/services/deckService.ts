@@ -79,10 +79,10 @@ const getDeckById = async (id: string): TeenyResponse<Deck> => {
     if (docSnapshot.exists()) {
       const { title, description, id, isPublic, count, image } = docSnapshot.data()
       const deck = { title, description, id, isPublic, count, image }
+
       return { success: true, value: deck }
     }
 
-    //TODO Provide a better error
     return {
       success: false,
       error: new TeenyError('We had some trouble finding your deck. Please try again.', {

@@ -1,26 +1,3 @@
-type TeenyErrorName =
-  | 'UnknownError'
-  | 'ObjectNotFoundError'
-  | 'QuotaExceededError'
-  | 'AuthenticationError'
-  | 'AuthorizationError'
-  | 'RequestTimeoutError'
-  | 'FileSizeMismatchError'
-  | 'GenericFirestoreError'
-  | 'ResourceConflictError'
-  | 'ResourceLimitError'
-  | 'TemporaryServerError'
-  | 'BackendUnavailableError'
-  | 'DataLossError'
-  | 'OtherError'
-  | 'CustomError'
-
-type TeenyErrorMessage = {
-  name: TeenyErrorName
-  message: string
-  severity: 'error' | 'warning' | 'info' | 'severe'
-}
-
 export class TeenyError extends Error {
   name: TeenyErrorName
   originalMessage?: string
@@ -39,6 +16,7 @@ export class TeenyError extends Error {
     super(message)
 
     this.name = additionalInfo?.name ?? 'CustomError'
+    this.message = message
     this.originalMessage = additionalInfo?.originalMessage || 'No original message'
     this.errorCode = additionalInfo?.errorCode
     this.timestamp = new Date().toISOString()
