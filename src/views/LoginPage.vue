@@ -11,21 +11,20 @@ import { useUserStore } from '@/stores/user'
 import router from '@/router'
 
 const auth = getAuth()
+const user = useUserStore()
 
-const signIn = (email: string, password: string): void => {
-  signInWithEmailAndPassword(auth, email, password)
-    .then(async (userCredential: UserCredential) => {
-      const user = useUserStore()
-      user.login(userCredential.user)
+const signIn = async (email: string, password: string): Promise<void> => {
+  try {
+    const userCredential: UserCredential = await signInWithEmailAndPassword(auth, email, password)
+    await user.login(userCredential.user)
 
-      if (user.authenticated) {
-        router.push({ name: 'dashboard' })
-      } else {
-        // TODO: fail toast
-      }
-    })
-    .catch((e) => {
-      // TODO: Fail toast
-    })
+    if (user.authenticated) {
+      router.push({ name: 'dashboard' })
+    } else {
+      // TODO: Form error message
+    }
+  } catch (e) {
+    // TODO: Form error message
+  }
 }
 </script>

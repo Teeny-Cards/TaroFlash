@@ -11,9 +11,9 @@ import LoginDialogue from '@/components/LoginDialogue.vue'
 const auth = getAuth()
 
 const signUp = (email: string, password: string): void => {
+  //TODO: do some more here
   createUserWithEmailAndPassword(auth, email, password).catch((error) => {
-    var errorCode = error.code
-    var errorMessage = error.message
+    //TODO: Form error message
   })
 }
 </script>

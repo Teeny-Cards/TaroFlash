@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { handleUserAuthStateChange } from '@/services/userService'
+import { useAppStore } from './app'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -8,7 +9,10 @@ export const useUserStore = defineStore('user', {
     id: ''
   }),
   actions: {
-    async login(user: any) {
+    async login(user: any): Promise<void> {
+      const app = useAppStore()
+      app.setLoading(true)
+
       const response = await handleUserAuthStateChange(user)
 
       if (response.success) {
@@ -16,9 +20,11 @@ export const useUserStore = defineStore('user', {
       } else {
         this.setUser()
       }
+
+      app.setLoading(false)
     },
 
-    setUser(newUser?: UserProfile) {
+    setUser(newUser?: UserProfile): void {
       if (newUser) {
         this.username = newUser.username || ''
         this.email = newUser.email || ''

@@ -3,11 +3,9 @@ import App from './App.vue'
 import router from './router'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { useAppStore } from './stores/app'
 import { useUserStore } from './stores/user'
 import { initializeApp } from 'firebase/app'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { handleUserAuthStateChange } from './services/userService'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDCXN86DZJ1VOLuRSPPUw4ClbF8uqQ908E',
@@ -33,8 +31,7 @@ onAuthStateChanged(auth, async (user) => {
   await userStore.login(user)
 
   if (userStore.authenticated) {
-    const app = useAppStore()
-    app.setLoading(false)
+    // TODO: something
   } else {
     router.push({ name: 'signin' })
   }
