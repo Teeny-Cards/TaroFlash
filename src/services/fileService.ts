@@ -1,4 +1,4 @@
-import { TeenyError } from '@/utils/TeenyError'
+import { TeenyError } from '@/utils/teenyError'
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage'
 
 const uploadDeckPhoto = async (img: DeckImage): Promise<DeckImage> => {

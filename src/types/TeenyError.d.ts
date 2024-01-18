@@ -18,8 +18,10 @@ type TeenyErrorName =
 type TeenyErrorMessage = {
   name: TeenyErrorName
   message: string
-  severity: 'error' | 'warning' | 'info' | 'severe'
+  severity: TeenyErrorSeverity
 }
+
+type TeenyErrorSeverity = 'error' | 'warning' | 'info' | 'severe'
 
 type TeenyError = Error & {
   name: TeenyErrorName

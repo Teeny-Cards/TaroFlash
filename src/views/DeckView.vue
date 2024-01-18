@@ -120,6 +120,7 @@ async function getDeck(): Promise<void> {
       message: e.message,
       state: 'error'
     })
+    router.push({ name: 'dashboard' })
   }
 }
 

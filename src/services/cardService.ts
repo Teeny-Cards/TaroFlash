@@ -1,4 +1,4 @@
-import { TeenyError } from '@/utils/TeenyError'
+import { TeenyError } from '@/utils/teenyError'
 import {
   writeBatch,
   doc,

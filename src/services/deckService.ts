@@ -1,6 +1,6 @@
 import { useUserStore } from '@/stores/user'
 import { uploadDeckPhoto } from '@/services/fileService'
-import { TeenyError } from '@/utils/TeenyError'
+import { TeenyError } from '@/utils/teenyError'
 import { deleteCardsByDeckID } from '@/services/cardService'
 import {
   addDoc,
@@ -76,7 +76,7 @@ const getDeckById = async (id: string): Promise<Deck> => {
       return deck
     }
 
-    throw new TeenyError('We had some trouble finding your deck. Please try again.', {
+    throw new TeenyError('We had some trouble finding your deck', {
       name: 'ObjectNotFoundError'
     })
   } catch (e) {
