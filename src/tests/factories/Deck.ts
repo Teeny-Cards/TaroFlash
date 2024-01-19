@@ -1,11 +1,11 @@
 import { faker } from '@faker-js/faker'
 
 export function createDeck({
-  id = faker.datatype.uuid(),
-  title = faker.lorem.sentence(),
+  id = faker.string.uuid(),
+  title = faker.lorem.text(),
   description = faker.lorem.sentences(2),
   isPublic = faker.datatype.boolean(),
-  count = faker.datatype.number({ min: 1, max: 10 }),
+  count = faker.number.int({ min: 1, max: 10 }),
   image = {}
 } = {}) {
   return {
@@ -19,5 +19,5 @@ export function createDeck({
 }
 
 export function createDecks(count = 2) {
-  return Array.from({ length: count }, () => createDeck())
+  return Array.from({ length: count }, (_el, index) => createDeck({ count: index }))
 }

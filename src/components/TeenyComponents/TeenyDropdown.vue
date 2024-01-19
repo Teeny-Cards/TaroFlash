@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import TeenyButton from '@/components/TeenyButton.vue'
+import TeenyButton from '@/components/TeenyComponents/TeenyButton.vue'
 import { onUnmounted, ref } from 'vue'
 import { onMounted } from 'vue'
 

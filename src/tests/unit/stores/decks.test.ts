@@ -1,7 +1,7 @@
 import { expect, describe, test, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useDeckStore } from '@/stores/decks'
-import { createDecks, createDeck } from '@/tests/factories/Deck'
+import { createDecks, createDeck } from '@/tests/factories/deck'
 
 describe('decks store', () => {
   beforeEach(() => {
