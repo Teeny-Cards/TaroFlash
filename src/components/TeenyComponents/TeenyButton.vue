@@ -19,7 +19,7 @@ const props = defineProps({
   color: {
     type: String,
     validator(value: string) {
-      return ['interaction', 'danger', 'gray'].includes(value)
+      return ['danger', 'gray'].includes(value)
     }
   },
   variant: {

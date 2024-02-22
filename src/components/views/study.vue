@@ -24,10 +24,14 @@
       >
         <div
           v-if="!isFirstCard && !frontShowing"
-          class="flex items-center justify-center gap-2 w-full absolute inset-0"
+          class="flex items-center justify-center gap-8 w-full absolute inset-0"
         >
-          <TeenyButton color="danger" variant="secondary" iconLeft="close" rounded />
-          <TeenyButton variant="secondary" iconRight="check" rounded />
+          <TeenyIcon src="arrow-back" fill="grey" />
+          <div class="flex items-center justify-center gap-2">
+            <TeenyButton color="danger" variant="secondary" iconLeft="close" rounded />
+            <TeenyButton variant="secondary" iconRight="check" rounded />
+          </div>
+          <TeenyIcon src="arrow-forward" fill="grey" />
         </div>
       </transition>
 

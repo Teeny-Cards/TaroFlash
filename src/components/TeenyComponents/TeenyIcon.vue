@@ -1,5 +1,5 @@
 <template>
-  <div :style="{ color: fill }">
+  <div :class="color">
     <Icon></Icon>
   </div>
 </template>
@@ -16,4 +16,8 @@ const props = defineProps({
 })
 
 const Icon = defineAsyncComponent(() => import(`../../assets/svgs/${props.src}.svg`))
+
+const color = {
+  'text-gray-300': props.fill === 'grey'
+}
 </script>
