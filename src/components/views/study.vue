@@ -5,7 +5,7 @@
     <TeenyCard
       size="large"
       class="transition-transform duration-1500 ease-linear"
-      @click="setCardState"
+      @click="flipCard"
       current-card
     >
       <span class="text-5xl font-semibold text-center">
@@ -28,8 +28,14 @@
         >
           <TeenyIcon src="arrow-back" fill="grey" />
           <div class="flex items-center justify-center gap-2">
-            <TeenyButton color="danger" variant="secondary" iconLeft="close" rounded />
-            <TeenyButton variant="secondary" iconRight="check" rounded />
+            <TeenyButton
+              color="danger"
+              variant="secondary"
+              iconLeft="close"
+              rounded
+              @onClick="failCard"
+            />
+            <TeenyButton variant="secondary" iconRight="check" rounded @onClick="passCard" />
           </div>
           <TeenyIcon src="arrow-forward" fill="grey" />
         </div>
@@ -41,10 +47,7 @@
         leave-active-class="transition-opacity"
       >
         <div v-if="isFirstCard" class="absolute inset-0 flex items-center justify-center">
-          <p class="text-gray-300">
-            Click card or press
-            <span class="border-2 rounded-md border-gray-300 py-0.5 px-2">Space</span> to flip
-          </p>
+          <p class="text-gray-300">Click card or press any key to flip</p>
         </div>
       </transition>
     </div>
@@ -79,21 +82,32 @@ onUnmounted(() => {
   document.removeEventListener('keyup', onKeyUp)
 })
 
-function onKeyUp(e: KeyboardEvent): void {
-  if (e.code === 'Space' || e.key === ' ') {
-    setCardState()
-  }
+function failCard(): void {
+  nextCard()
 }
 
-function setCardState(): void {
+function passCard(): void {
+  nextCard()
+}
+
+function onKeyUp(e: KeyboardEvent): void {
   if (frontShowing.value) {
     flipCard()
-  } else {
-    nextCard()
+    return
+  }
+
+  if (e.code === 'ArrowRight') {
+    passCard()
+    return
+  } else if (e.code === 'ArrowLeft') {
+    failCard()
+    return
   }
 }
 
 function flipCard(): void {
+  if (!frontShowing.value) return
+
   isFirstCard.value = false
   cardEl.value?.classList.add('[transform:rotateY(90deg)]')
 
