@@ -76,8 +76,8 @@ const emit = defineEmits<{
   (e: 'delete', index: number): void
 }>()
 
-const frontCardInput = ref()
-const backCardInput = ref()
+const frontCardInput = ref<HTMLInputElement>()
+const backCardInput = ref<HTMLInputElement>()
 
 onMounted(() => {
   if (frontCardInput.value) {

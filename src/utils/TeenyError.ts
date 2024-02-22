@@ -56,7 +56,7 @@ export class TeenyError extends Error {
 
   logSevereError() {
     if (this.severity === 'severe' || this.severity === 'error') {
-      console.error(this)
+      console.error(this.message)
     }
   }
 }

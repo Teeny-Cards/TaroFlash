@@ -1,22 +1,25 @@
 <template>
   <button
-    class="rounded-lg p-2 transition-colors font-semibold"
-    :class="styles"
+    class="p-2 transition-colors font-semibold flex items-center justify-center gap-1"
+    :class="{ ...styles, 'rounded-full': rounded, 'rounded-lg': !rounded }"
     @click="$emit('onClick')"
     data-test="teeny-button"
   >
+    <TeenyIcon v-if="iconLeft" :src="iconLeft" />
     <slot></slot>
+    <TeenyIcon v-if="iconRight" :src="iconRight" />
   </button>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import TeenyIcon from './TeenyIcon.vue'
 
 const props = defineProps({
   color: {
     type: String,
     validator(value: string) {
-      return ['interaction', 'danger', 'gray'].includes(value)
+      return ['danger', 'gray'].includes(value)
     }
   },
   variant: {
@@ -24,7 +27,13 @@ const props = defineProps({
     validator(value: string) {
       return ['secondary', 'ghost'].includes(value)
     }
-  }
+  },
+  rounded: {
+    type: Boolean,
+    default: false
+  },
+  iconRight: String,
+  iconLeft: String
 })
 
 const styles = computed(() => {

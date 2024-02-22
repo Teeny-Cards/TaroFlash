@@ -8,7 +8,7 @@
       @click="setCardState"
       current-card
     >
-      <span class="text-5xl font-semibold">
+      <span class="text-5xl font-semibold text-center">
         {{ frontShowing ? currentCard.frontText : currentCard.backText }}
       </span>
     </TeenyCard>
@@ -24,10 +24,14 @@
       >
         <div
           v-if="!isFirstCard && !frontShowing"
-          class="flex items-center justify-center gap-2 w-full absolute inset-0"
+          class="flex items-center justify-center gap-8 w-full absolute inset-0"
         >
-          <TeenyButton color="danger" variant="secondary" class="w-full">Nope</TeenyButton>
-          <TeenyButton variant="secondary" class="w-full">Got It!</TeenyButton>
+          <TeenyIcon src="arrow-back" fill="grey" />
+          <div class="flex items-center justify-center gap-2">
+            <TeenyButton color="danger" variant="secondary" iconLeft="close" rounded />
+            <TeenyButton variant="secondary" iconRight="check" rounded />
+          </div>
+          <TeenyIcon src="arrow-forward" fill="grey" />
         </div>
       </transition>
 
@@ -51,6 +55,7 @@
 import { ref, type PropType, onMounted, onUnmounted } from 'vue'
 import TeenyCard from '@/components/TeenyComponents/TeenyCard.vue'
 import TeenyButton from '@/components/TeenyComponents/TeenyButton.vue'
+import TeenyIcon from '@/components/TeenyComponents/TeenyIcon.vue'
 
 const props = defineProps({
   cards: {

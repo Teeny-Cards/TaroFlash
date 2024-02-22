@@ -84,7 +84,7 @@ import TeenyButton from '@/components/TeenyComponents/TeenyButton.vue'
 import TeenyInput from '@/components/TeenyComponents/TeenyInput.vue'
 import TeenyCardEditor from '@/components/TeenyComponents/TeenyCardEditor.vue'
 import { ref, type PropType, computed } from 'vue'
-import imageUploader from '@/components/imageUploader.vue'
+import imageUploader from '@/components/ImageUploader.vue'
 import generateUID from '@/utils/uid'
 
 const props = defineProps({
