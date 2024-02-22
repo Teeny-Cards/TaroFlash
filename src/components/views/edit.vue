@@ -79,12 +79,12 @@
 </template>
 
 <script setup lang="ts">
-import TeenyCard from '@/components/TeenyCard/TeenyCard.vue'
-import TeenyButton from '@/components/TeenyButton/TeenyButton.vue'
-import TeenyInput from '@/components/TeenyInput/TeenyInput.vue'
-import TeenyCardEditor from '@/components/TeenyCardEditor/TeenyCardEditor.vue'
+import TeenyCard from '@/components/TeenyComponents/TeenyCard.vue'
+import TeenyButton from '@/components/TeenyComponents/TeenyButton.vue'
+import TeenyInput from '@/components/TeenyComponents/TeenyInput.vue'
+import TeenyCardEditor from '@/components/TeenyComponents/TeenyCardEditor.vue'
 import { ref, type PropType, computed } from 'vue'
-import imageUploader from '@/components/imageUploader.vue'
+import imageUploader from '@/components/ImageUploader.vue'
 import generateUID from '@/utils/uid'
 
 const props = defineProps({

@@ -1,9 +1,10 @@
-import { getUserDecks } from '@/services/deckService'
+import { getUserDecks, getDeckById } from '@/services/deckService'
 import { defineStore } from 'pinia'
 
 export const useDeckStore = defineStore('decks', {
   state: () => ({
-    decks: [] as Deck[]
+    decks: [] as Deck[],
+    currentDeck: {} as Deck
   }),
 
   getters: {
@@ -16,15 +17,24 @@ export const useDeckStore = defineStore('decks', {
 
   actions: {
     async fetchUserDecks(): Promise<void> {
-      const response = await getUserDecks()
+      const decks = await getUserDecks()
+      this.setDecks(decks)
+    },
 
-      if (response.success) {
-        this.setDecks(response.value)
+    async fetchDeckById(id: string): Promise<void> {
+      const deck = this.getDeckById(id) ?? (await getDeckById(id))
+
+      if (deck) {
+        this.setCurrentDeck(deck)
       }
     },
 
     setDecks(newDecks: Deck[]): void {
       this.decks = newDecks
+    },
+
+    setCurrentDeck(newDeck: Deck): void {
+      this.currentDeck = newDeck
     }
   }
 })

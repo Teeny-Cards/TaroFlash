@@ -1,7 +1,7 @@
-import { TeenyError } from '@/utils/TeenyError'
+import { TeenyError } from '@/utils/teenyError'
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage'
 
-const uploadDeckPhoto = async (img: DeckImage): TeenyResponse<DeckImage> => {
+const uploadDeckPhoto = async (img: DeckImage): Promise<DeckImage> => {
   const storage = getStorage()
   let newImg = { name: img.name ?? '', url: img.url ?? '' }
 
@@ -10,7 +10,7 @@ const uploadDeckPhoto = async (img: DeckImage): TeenyResponse<DeckImage> => {
       const storageRef = ref(storage, `deck-photos/${img.name}`)
       await deleteObject(storageRef)
     } catch (e) {
-      return { success: false, error: TeenyError.fromError(e) }
+      throw TeenyError.fromError(e)
     }
   }
 
@@ -22,11 +22,11 @@ const uploadDeckPhoto = async (img: DeckImage): TeenyResponse<DeckImage> => {
 
       newImg = { name: img.newFile.name, url }
     } catch (e) {
-      return { success: false, error: TeenyError.fromError(e) }
+      throw TeenyError.fromError(e)
     }
   }
 
-  return { success: true, value: newImg }
+  return newImg
 }
 
 export { uploadDeckPhoto }

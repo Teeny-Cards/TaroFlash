@@ -19,10 +19,54 @@ export const useToastStore = defineStore('toast', () => {
     toasts.value.push(newToast)
   }
 
+  function warn(
+    message: string,
+    options?: {
+      subMessage?: string
+      delay?: number
+      persist?: boolean
+    }
+  ): void {
+    addToast({ message, ...options, state: 'warn' })
+  }
+
+  function success(
+    message: string,
+    options?: {
+      subMessage?: string
+      delay?: number
+      persist?: boolean
+    }
+  ): void {
+    addToast({ message, ...options, state: 'success' })
+  }
+
+  function error(
+    message: string,
+    options?: {
+      subMessage?: string
+      delay?: number
+      persist?: boolean
+    }
+  ): void {
+    addToast({ message, ...options, state: 'error' })
+  }
+
+  function info(
+    message: string,
+    options?: {
+      subMessage?: string
+      delay?: number
+      persist?: boolean
+    }
+  ): void {
+    addToast({ message, ...options, state: 'info' })
+  }
+
   function removeToast(toast: TeenyToast): void {
     const index = toasts.value.findIndex((t) => t.id === toast.id)
     toasts.value.splice(index, 1)
   }
 
-  return { toasts, addToast, removeToast }
+  return { toasts, removeToast, warn, success, error, info }
 })

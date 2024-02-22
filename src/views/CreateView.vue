@@ -23,30 +23,22 @@ const cards = ref<Card[]>([
 ])
 
 async function saveDeck(deck: Deck, cards: CardMutation[]): Promise<void> {
-  const response = await createDeck(deck)
-
-  if (response.success) {
-    saveCards(response.value.id, cards)
-  } else {
-    toastStore.addToast({
-      message: response.error.message,
-      state: 'error'
-    })
+  try {
+    const doc = await createDeck(deck)
+    saveCards(doc.id, cards)
+  } catch (e: any) {
+    toastStore.error(e.message)
   }
 }
 
 async function saveCards(deckId: string, cards: CardMutation[]): Promise<void> {
-  const response = await saveCardsToDeck(deckId, cards)
-  if (response.success) {
-    toastStore.addToast({
-      message: 'Deck Saved Successfully'
-    })
+  try {
+    await saveCardsToDeck(deckId, cards)
+
+    toastStore.success('Deck Saved Successfully')
     router.push({ name: 'deck', params: { id: deckId } })
-  } else {
-    toastStore.addToast({
-      message: response.error.message,
-      state: 'error'
-    })
+  } catch (e: any) {
+    toastStore.error(e.message)
   }
 }
 </script>

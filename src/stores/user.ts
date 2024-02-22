@@ -20,15 +20,14 @@ export const useUserStore = defineStore('user', {
       const app = useAppStore()
       app.setLoading(true)
 
-      const response = await handleUserAuthStateChange(user)
-
-      if (response.success) {
-        this.setUser(response.value)
-      } else {
+      try {
+        const newUser = await handleUserAuthStateChange(user)
+        this.setUser(newUser)
+      } catch (e: any) {
         this.setUser()
+      } finally {
+        app.setLoading(false)
       }
-
-      app.setLoading(false)
     },
 
     setUser(newUser?: UserProfile): void {

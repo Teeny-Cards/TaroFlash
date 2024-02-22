@@ -55,8 +55,8 @@
 </template>
 
 <script setup lang="ts">
-import TeenyCard from '@/components/TeenyCard/TeenyCard.vue'
-import TeenyButton from '@/components/TeenyButton/TeenyButton.vue'
+import TeenyCard from '@/components/TeenyComponents/TeenyCard.vue'
+import TeenyButton from '@/components/TeenyComponents/TeenyButton.vue'
 import { onMounted, ref, type PropType } from 'vue'
 
 const props = defineProps({
@@ -76,8 +76,8 @@ const emit = defineEmits<{
   (e: 'delete', index: number): void
 }>()
 
-const frontCardInput = ref()
-const backCardInput = ref()
+const frontCardInput = ref<HTMLInputElement>()
+const backCardInput = ref<HTMLInputElement>()
 
 onMounted(() => {
   if (frontCardInput.value) {

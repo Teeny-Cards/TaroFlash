@@ -3,15 +3,15 @@
   <div v-else>
     <Study v-if="studying" :cards="cards"></Study>
     <Edit
-      v-else-if="editing && deck"
-      :deck="deck"
+      v-else-if="editing && currentDeck"
+      :deck="currentDeck"
       :cards="cards"
       @saveDeck="updateDeck"
       @cancel="onCancelEdit"
     ></Edit>
     <Deck
-      v-else-if="deck"
-      :deck="deck"
+      v-else-if="currentDeck"
+      :deck="currentDeck"
       :cards="cards"
       @study="onStudyClicked"
       @edit="onEditClicked"
@@ -27,10 +27,11 @@ import Edit from '@/components/views/edit.vue'
 import { useDeckStore } from '@/stores/decks'
 import { useToastStore } from '@/stores/toast'
 import { computed, onMounted, ref } from 'vue'
-import { getDeckById, deleteDeckById, updateDeckById } from '@/services/deckService'
+import { deleteDeckById, updateDeckById } from '@/services/deckService'
 import { getCardsByDeckID, updateCardsByDeckID } from '@/services/cardService'
 import { useRoute } from 'vue-router'
 import router from '@/router'
+import { storeToRefs } from 'pinia'
 
 const props = defineProps({
   id: {
@@ -39,14 +40,15 @@ const props = defineProps({
   }
 })
 
-const deckLoading = ref(true)
-const cardsLoading = ref(true)
-
 const route = useRoute()
 const deckStore = useDeckStore()
 const toastStore = useToastStore()
-const deck = ref<Deck>()
+
+const deckLoading = ref(true)
+const cardsLoading = ref(true)
 const cards = ref<Card[]>([])
+
+const { currentDeck } = storeToRefs(deckStore)
 
 const loading = computed(() => {
   return deckLoading.value || cardsLoading.value
@@ -61,8 +63,10 @@ const editing = computed(() => {
 })
 
 onMounted(async () => {
-  getDeck()
-  getCards()
+  await getDeck()
+  await getCards()
+
+  deckLoading.value = false
 })
 
 function onStudyClicked(): void {
@@ -79,83 +83,51 @@ function onCancelEdit(): void {
   router.push({ name: 'deck', params: { id: props.id } })
 }
 
-async function getDeck(): Promise<void> {
-  if (!props.id) {
-    //TODO: Reroute back to dashboard or show 'no deck' UI
-    console.error('No deck ID provided')
-    return
-  }
-
-  let cachedDeck = deckStore.getDeckById(props.id)
-
-  if (cachedDeck) {
-    deck.value = cachedDeck
-  } else {
-    const response = await getDeckById(props.id)
-
-    if (response.success) {
-      deck.value = response.value
-    } else {
-      alert(response.error.message)
-    }
-  }
-
-  deckLoading.value = false
-}
-
 async function updateDeck(newDeck: Deck, newCards: Card[]): Promise<void> {
-  const response = await updateDeckById(props.id, newDeck)
-
-  if (response.success) {
+  try {
+    await updateDeckById(props.id, newDeck)
     saveCards(newCards)
-  } else {
-    toastStore.addToast({
-      message: response.error.message,
-      state: 'error'
-    })
+  } catch (e: any) {
+    toastStore.error(e.message)
   }
 }
 
 async function deleteDeck(): Promise<void> {
-  const response = await deleteDeckById(props.id)
+  try {
+    await deleteDeckById(props.id)
 
-  if (response.success) {
-    toastStore.addToast({
-      message: 'Deck deleted successfully'
-    })
+    toastStore.success('Deck deleted successfully')
     router.push({ name: 'dashboard' })
-  } else {
-    toastStore.addToast({
-      message: response.error.message,
-      state: 'error'
-    })
+  } catch (e: any) {
+    toastStore.error(e.message)
+  }
+}
+
+async function getDeck(): Promise<void> {
+  try {
+    await deckStore.fetchDeckById(props.id)
+  } catch (e: any) {
+    toastStore.error(e.message)
+    router.push({ name: 'dashboard' })
   }
 }
 
 async function getCards(): Promise<void> {
-  const response = await getCardsByDeckID(props.id)
-
-  if (response.success) {
-    cards.value = response.value
+  try {
+    const newCards = await getCardsByDeckID(props.id)
+    cards.value = newCards
     cardsLoading.value = false
-  } else {
-    alert(response.error.message)
-    // TODO: error toast + reroute
+  } catch (e: any) {
+    toastStore.error(e.message)
   }
 }
 
 async function saveCards(cards: CardMutation[]): Promise<void> {
-  const response = await updateCardsByDeckID(props.id, cards)
-
-  if (response.success) {
-    toastStore.addToast({
-      message: 'Saved Successfully'
-    })
-  } else {
-    toastStore.addToast({
-      message: response.error.message,
-      state: 'error'
-    })
+  try {
+    await updateCardsByDeckID(props.id, cards)
+    toastStore.success('Saved Successfully')
+  } catch (e: any) {
+    toastStore.error(e.message)
   }
 }
 </script>

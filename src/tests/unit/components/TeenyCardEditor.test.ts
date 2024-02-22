@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import TeenyCardEditor from './TeenyCardEditor.vue'
+import TeenyCardEditor from '@/components/TeenyCardEditor.vue'
 import { expect, test } from 'vitest'
 
 test('It renders a front and back card with passed in values', async () => {
