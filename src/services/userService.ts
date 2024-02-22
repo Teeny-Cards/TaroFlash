@@ -1,4 +1,4 @@
-import { TeenyError } from '@/utils/teenyError'
+import { TeenyError } from '@/utils/TeenyError'
 import { getFirestore, Firestore } from 'firebase/firestore'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 

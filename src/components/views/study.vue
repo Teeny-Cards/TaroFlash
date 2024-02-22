@@ -59,6 +59,7 @@ import { ref, type PropType, onMounted, onUnmounted } from 'vue'
 import TeenyCard from '@/components/TeenyComponents/TeenyCard.vue'
 import TeenyButton from '@/components/TeenyComponents/TeenyButton.vue'
 import TeenyIcon from '@/components/TeenyComponents/TeenyIcon.vue'
+import { onBeforeRouteLeave } from 'vue-router'
 
 const props = defineProps({
   cards: {
@@ -76,10 +77,18 @@ const currentCard = ref(cards.pop() as Card)
 onMounted(() => {
   cardEl.value = document.querySelector('[current-card]') as HTMLDivElement
   document.addEventListener('keyup', onKeyUp)
+  // window.addEventListener('beforeunload', onLeavePage)
+  window.addEventListener('visibilitychange', onVisibilityChanged)
+})
+
+onBeforeRouteLeave(() => {
+  // TODO: save deck state
 })
 
 onUnmounted(() => {
   document.removeEventListener('keyup', onKeyUp)
+  window.removeEventListener('beforeunload', onLeavePage)
+  window.addEventListener('visibilitychange', onVisibilityChanged)
 })
 
 function failCard(): void {
@@ -121,6 +130,17 @@ function nextCard(): void {
   if (cards.length > 0) {
     currentCard.value = cards.pop() as Card
     frontShowing.value = true
+  }
+}
+
+function onLeavePage(e: BeforeUnloadEvent): boolean {
+  e.preventDefault()
+  return true
+}
+
+function onVisibilityChanged(): void {
+  if (document.visibilityState === 'hidden') {
+    // TODO: save card state
   }
 }
 </script>

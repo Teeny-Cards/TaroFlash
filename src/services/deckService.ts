@@ -1,6 +1,6 @@
 import { useUserStore } from '@/stores/user'
 import { uploadDeckPhoto } from '@/services/fileService'
-import { TeenyError } from '@/utils/teenyError'
+import { TeenyError } from '@/utils/TeenyError'
 import { deleteCardsByDeckID } from '@/services/cardService'
 import {
   addDoc,
