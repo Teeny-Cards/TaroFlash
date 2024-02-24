@@ -1,3 +1,164 @@
+import { differenceInHours } from 'date-fns'
+
+interface StreakBonus {
+  threshold: number
+  bonus: number
+  status: streakStatus
+}
+
+type streakStatus = 'diamond' | 'gold' | 'silver' | 'bronze' | 'copper' | 'none'
+
+const bonuses: StreakBonus[] = [
+  { threshold: 21, bonus: 0.05, status: 'diamond' },
+  { threshold: 13, bonus: 0.04, status: 'gold' },
+  { threshold: 8, bonus: 0.03, status: 'silver' },
+  { threshold: 5, bonus: 0.02, status: 'bronze' },
+  { threshold: 3, bonus: 0.01, status: 'copper' }
+]
+
+export class SRS {
+  private readonly EASE_MIN = 1.3
+  private readonly EASE_MAX = 2.65
+  private readonly EASE_INCREMENT = 0.01
+  private readonly EASE_DECREMENT = 0.05
+  private readonly FAIL_DECREMENT = 0.5
+  private readonly MIN_INTERVAL = 0.00069 // 1 minute
+  private readonly MAX_INTERVAL = 365 // 1 year
+  private readonly YOUNG_BOUNDARY = 1
+  private readonly MATURE_BOUNDARY = 21
+  private readonly FUZZ_FACTOR = 1
+
+  dueDate: Date
+  lastUpdated: Date
+  state: CardState
+  interval: number
+  ease: number
+  leechCount: number
+  streak: number
+
+  constructor(card: Card) {
+    this.dueDate = card.dueDate ?? new Date()
+    this.lastUpdated = card.lastUpdated ?? new Date()
+    this.state = card.state ?? 'learning'
+    this.interval = card.interval ?? 0
+    this.ease = card.ease ?? 2.5
+    this.leechCount = card.leechCount ?? 0
+    this.streak = card.streak ?? 0
+  }
+
+  get passInterval(): number {
+    switch (this.state) {
+      case 'new':
+        return 0.00345 + this.smallFuzz // 5 minutes ± fuzz
+      case 'learning':
+        return 1
+    }
+
+    const interval = Math.floor(this.interval * this.ease) * this.fuzz
+    return Math.min(interval, this.MAX_INTERVAL)
+  }
+
+  get failInterval(): number {
+    if (this.state === 'new') {
+      return this.MIN_INTERVAL
+    } else if (this.state === 'learning') {
+      return 0.00345 + this.smallFuzz // 5 minutes ± fuzz
+    }
+
+    const interval = Math.floor(this.interval * this.FAIL_DECREMENT) * this.fuzz
+    return Math.max(interval, this.MIN_INTERVAL)
+  }
+
+  get streakBonus(): number {
+    return bonuses.find(({ threshold }) => this.streak >= threshold)?.bonus ?? 0
+  }
+
+  get streakStatus(): streakStatus {
+    return bonuses.find(({ threshold }) => this.streak >= threshold)?.status ?? 'none'
+  }
+
+  get fuzz(): number {
+    const min = -2 * this.FUZZ_FACTOR // -3 days * fuzz
+    const max = 2 * this.FUZZ_FACTOR // 3 days * fuzz
+
+    const fuzz = Math.random() * (max - min) + min
+    return Math.floor(fuzz)
+  }
+
+  get smallFuzz(): number {
+    const min = -0.00345 // -5mins
+    const max = 0.00345 // 5mins
+
+    const fuzz = Math.random() * (max - min) + min
+    return Math.floor(fuzz)
+  }
+
+  get updatedToday(): boolean {
+    return differenceInHours(new Date(), this.lastUpdated) < 24
+  }
+
+  public pass(): void {
+    this.calculateEaseFactor(true)
+    this.promoteCard()
+
+    this.dueDate = new Date(this.dueDate.setDate(this.dueDate.getDate() + this.passInterval))
+    this.interval = this.passInterval
+    this.lastUpdated = new Date()
+  }
+
+  public fail(): void {
+    this.calculateEaseFactor(false)
+    this.demoteCard()
+    this.updateLeechCount()
+
+    this.dueDate = new Date(this.dueDate.setDate(this.dueDate.getDate() + this.failInterval))
+    this.interval = this.failInterval
+    this.lastUpdated = new Date()
+  }
+
+  private calculateEaseFactor(pass: boolean): void {
+    if (pass) {
+      const ease = this.ease + this.EASE_INCREMENT + this.streakBonus
+      this.ease = Math.min(ease, this.EASE_MAX)
+    } else {
+      const ease = this.ease - this.EASE_DECREMENT
+      this.ease = Math.max(ease, this.EASE_MIN)
+    }
+  }
+
+  private promoteCard(): void {
+    if (this.updatedToday) return
+
+    if (this.state === 'new') {
+      this.state = 'learning'
+    } else if (
+      (this.state === 'learning' || this.state === 'relearn') &&
+      this.interval >= this.YOUNG_BOUNDARY
+    ) {
+      this.state = 'young'
+    } else if (
+      (this.state === 'young' || this.state === 'relearn') &&
+      this.interval >= this.MATURE_BOUNDARY
+    ) {
+      this.state = 'mature'
+    }
+  }
+
+  demoteCard(): void {
+    if (this.updatedToday) return
+
+    if (this.state === 'mature' || this.state === 'young') {
+      this.state = 'relearn'
+    }
+  }
+
+  updateLeechCount(): void {
+    if (this.state === 'mature' || this.state === 'young') {
+      this.leechCount++
+    }
+  }
+}
+
 /*
   Card States
 

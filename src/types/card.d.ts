@@ -13,6 +13,7 @@ declare global {
     interval?: number
     ease?: number
     leechCount?: number
+    streak?: number
   }
 
   type CardMutation = Card & {
