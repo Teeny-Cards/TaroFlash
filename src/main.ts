@@ -31,7 +31,9 @@ onAuthStateChanged(auth, async (user) => {
   await userStore.login(user)
 
   if (userStore.authenticated) {
-    // TODO: something
+    if (router.currentRoute.value.name === 'signin') {
+      router.push({ name: 'dashboard' })
+    }
   } else {
     router.push({ name: 'signin' })
   }
