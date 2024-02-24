@@ -1,4 +1,4 @@
-import { differenceInHours } from 'date-fns'
+import { differenceInHours, formatDistanceToNow } from 'date-fns'
 
 interface StreakBonus {
   threshold: number
@@ -16,7 +16,7 @@ const bonuses: StreakBonus[] = [
   { threshold: 3, bonus: 0.01, status: 'copper' }
 ]
 
-export class SRS {
+export default class SpacedCard {
   private readonly EASE_MIN = 1.3
   private readonly EASE_MAX = 2.65
   private readonly EASE_INCREMENT = 0.01
@@ -39,34 +39,19 @@ export class SRS {
   constructor(card: Card) {
     this.dueDate = card.dueDate ?? new Date()
     this.lastUpdated = card.lastUpdated ?? new Date()
-    this.state = card.state ?? 'learning'
+    this.state = card.state ?? 'new'
     this.interval = card.interval ?? 0
     this.ease = card.ease ?? 2.5
     this.leechCount = card.leechCount ?? 0
     this.streak = card.streak ?? 0
   }
 
-  get passInterval(): number {
-    switch (this.state) {
-      case 'new':
-        return 0.00345 + this.smallFuzz // 5 minutes ± fuzz
-      case 'learning':
-        return 1
+  get passInterval(): string {
+    if (this.state === 'new' || (this.state === 'learning' && this.interval < 1)) {
+      return formatDistanceToNow(new Date(this.dueDate.setMinutes(this.dueDate.getMinutes() + 10)))
     }
 
-    const interval = Math.floor(this.interval * this.ease) * this.fuzz
-    return Math.min(interval, this.MAX_INTERVAL)
-  }
-
-  get failInterval(): number {
-    if (this.state === 'new') {
-      return this.MIN_INTERVAL
-    } else if (this.state === 'learning') {
-      return 0.00345 + this.smallFuzz // 5 minutes ± fuzz
-    }
-
-    const interval = Math.floor(this.interval * this.FAIL_DECREMENT) * this.fuzz
-    return Math.max(interval, this.MIN_INTERVAL)
+    return ''
   }
 
   get streakBonus(): number {
@@ -85,14 +70,6 @@ export class SRS {
     return Math.floor(fuzz)
   }
 
-  get smallFuzz(): number {
-    const min = -0.00345 // -5mins
-    const max = 0.00345 // 5mins
-
-    const fuzz = Math.random() * (max - min) + min
-    return Math.floor(fuzz)
-  }
-
   get updatedToday(): boolean {
     return differenceInHours(new Date(), this.lastUpdated) < 24
   }
@@ -101,8 +78,8 @@ export class SRS {
     this.calculateEaseFactor(true)
     this.promoteCard()
 
-    this.dueDate = new Date(this.dueDate.setDate(this.dueDate.getDate() + this.passInterval))
-    this.interval = this.passInterval
+    this.interval = this.setPassInterval()
+    this.dueDate = new Date(this.dueDate.setDate(this.dueDate.getDate() + this.interval))
     this.lastUpdated = new Date()
   }
 
@@ -111,9 +88,29 @@ export class SRS {
     this.demoteCard()
     this.updateLeechCount()
 
-    this.dueDate = new Date(this.dueDate.setDate(this.dueDate.getDate() + this.failInterval))
-    this.interval = this.failInterval
+    this.interval = this.setFailInterval()
+    this.dueDate = new Date(this.dueDate.setDate(this.dueDate.getDate() + this.interval))
     this.lastUpdated = new Date()
+  }
+
+  private setPassInterval(): number {
+    if (this.state === 'new' || this.state === 'learning') {
+      return 1
+      // return 0.00345
+    }
+
+    const interval = Math.floor(this.interval * this.ease) * this.fuzz
+    return Math.min(interval, this.MAX_INTERVAL)
+  }
+
+  private setFailInterval(): number {
+    if (this.state === 'new' || this.state === 'learning') {
+      return 1
+      // return this.MIN_INTERVAL
+    }
+
+    const interval = Math.floor(this.interval * this.FAIL_DECREMENT) * this.fuzz
+    return Math.max(interval, this.MIN_INTERVAL)
   }
 
   private calculateEaseFactor(pass: boolean): void {
@@ -144,7 +141,7 @@ export class SRS {
     }
   }
 
-  demoteCard(): void {
+  private demoteCard(): void {
     if (this.updatedToday) return
 
     if (this.state === 'mature' || this.state === 'young') {
@@ -152,7 +149,7 @@ export class SRS {
     }
   }
 
-  updateLeechCount(): void {
+  private updateLeechCount(): void {
     if (this.state === 'mature' || this.state === 'young') {
       this.leechCount++
     }
