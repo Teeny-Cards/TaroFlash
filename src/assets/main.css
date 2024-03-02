@@ -7,3 +7,10 @@
     transform: rotateY(180deg);
   }
 }
+
+@layer base {
+  @font-face {
+    font-family: 'Arial Rounded MT Bold';
+    src: url(/assets/fonts/arialroundedmtbold.tff) format('tff');
+  }
+}
