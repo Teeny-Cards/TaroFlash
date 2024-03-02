@@ -1,6 +1,6 @@
 <template>
   <section
-    class="h-full bg-white rounded-2xl shadow-md flex flex-col gap-6 justify-center items-center p-16 m-16"
+    class="h-full bg-white rounded-2xl shadow-md flex flex-col gap-6 justify-center items-center p-16 m-16 relative"
   >
     <TeenyCard
       size="large"
@@ -51,6 +51,14 @@
         </div>
       </transition>
     </div>
+
+    <div class="absolute bg-white p-2 left-64 top-1/4">
+      <p>State: {{ spacedCard.state }}</p>
+      <p>Interval: {{ spacedCard.interval }}</p>
+      <p>Pass Interval: {{ spacedCard.passIntervalString }}</p>
+      <p>Fail Interval: {{ spacedCard.failIntervalString }}</p>
+      <p>Fuzz: {{ spacedCard.fuzzString }}</p>
+    </div>
   </section>
 </template>
 
@@ -60,6 +68,7 @@ import TeenyCard from '@/components/TeenyComponents/TeenyCard.vue'
 import TeenyButton from '@/components/TeenyComponents/TeenyButton.vue'
 import TeenyIcon from '@/components/TeenyComponents/TeenyIcon.vue'
 import { onBeforeRouteLeave } from 'vue-router'
+import SRC from '@/utils/SRC'
 
 const props = defineProps({
   cards: {
@@ -73,30 +82,31 @@ const cards = props.cards
 const isFirstCard = ref(true)
 const frontShowing = ref(true)
 const currentCard = ref(cards.pop() as Card)
+let spacedCard = ref(new SRC(currentCard.value))
 
 onMounted(() => {
   cardEl.value = document.querySelector('[current-card]') as HTMLDivElement
   document.addEventListener('keyup', onKeyUp)
-  // window.addEventListener('beforeunload', onLeavePage)
   window.addEventListener('visibilitychange', onVisibilityChanged)
 })
 
 onBeforeRouteLeave(() => {
-  // TODO: save deck state
+  // TODO: save card state
 })
 
 onUnmounted(() => {
   document.removeEventListener('keyup', onKeyUp)
-  window.removeEventListener('beforeunload', onLeavePage)
   window.addEventListener('visibilitychange', onVisibilityChanged)
 })
 
 function failCard(): void {
-  nextCard()
+  spacedCard.value.fail()
+  // nextCard()
 }
 
 function passCard(): void {
-  nextCard()
+  spacedCard.value.pass()
+  // nextCard()
 }
 
 function onKeyUp(e: KeyboardEvent): void {
@@ -129,13 +139,9 @@ function flipCard(): void {
 function nextCard(): void {
   if (cards.length > 0) {
     currentCard.value = cards.pop() as Card
+    spacedCard.value = new SRC(currentCard.value)
     frontShowing.value = true
   }
-}
-
-function onLeavePage(e: BeforeUnloadEvent): boolean {
-  e.preventDefault()
-  return true
 }
 
 function onVisibilityChanged(): void {
@@ -144,3 +150,4 @@ function onVisibilityChanged(): void {
   }
 }
 </script>
+@/utils/SRC
