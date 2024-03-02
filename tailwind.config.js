@@ -1,5 +1,10 @@
 export default {
-  content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+  content: [
+    './index.html',
+    './src/**/*.{vue,js,ts,jsx,tsx}',
+    './docs/.vitepress/**/*.{js,ts,vue}',
+    './docs/**/*.md'
+  ],
   theme: {
     colors: {
       blue: {
