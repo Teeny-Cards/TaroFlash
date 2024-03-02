@@ -1,37 +1,62 @@
 <template>
   <div v-if="loading">Loading...</div>
   <div v-else>
-    <Study v-if="studying" :cards="cards"></Study>
-    <Edit
-      v-else-if="editing && currentDeck"
-      :deck="currentDeck"
-      :cards="cards"
-      @saveDeck="updateDeck"
-      @cancel="onCancelEdit"
-    ></Edit>
-    <Deck
-      v-else-if="currentDeck"
-      :deck="currentDeck"
-      :cards="cards"
-      @study="onStudyClicked"
-      @edit="onEditClicked"
-      @delete="deleteDeck"
-    />
+    <section deck-view class="px-4 py-7 flex flex-col items-center gap-6">
+      <div deck-view__header class="flex flex-col items-center gap-6 w-max">
+        <TeenyCard class="relative overflow-hidden">
+          <div v-if="currentDeck.image?.url" class="absolute inset-0">
+            <img
+              :src="currentDeck.image?.url"
+              alt="Deck Image preview"
+              class="object-cover w-full h-full"
+            /></div
+        ></TeenyCard>
+        <div deck-view__header__title class="flex flex-col items-center gap-2">
+          <h1 class="font-primary text-4xl m-0 w-64 text-center text-grey-dark">
+            {{ currentDeck.title }}
+          </h1>
+          <h2 class="text-sm text-grey text-center w-64">{{ currentDeck.description }}</h2>
+          <div deck-view__header__created-by class="flex gap-2 items-center text-blue">
+            <TeenyIcon src="user" />
+            <h2 class="text-base font-semibold font-primary">{{ currentDeck.createdBy }}</h2>
+          </div>
+        </div>
+        <div deck-view__header__actions class="flex items-center gap-2.5">
+          <TeenyButton icon-left="play">Study</TeenyButton>
+          <TeenyButton icon-left="settings" color="gray"></TeenyButton>
+        </div>
+      </div>
+      <div deck-view__card-list class="flex flex-col w-full">
+        <div
+          deck-view__card-list__item
+          v-for="card in cards"
+          :key="card.id"
+          class="px-2.5 py-4 border-b border-b-grey w-full border-dashed flex items-center justify-between"
+        >
+          <div class="flex items-center gap-6">
+            <TeenyCard size="tiny" />
+            {{ card.frontText }}
+          </div>
+          {{ card.backText }}
+          <div class="w-6 h-6 rounded-full bg-grey-light"></div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
+import TeenyCard from '@/components/TeenyComponents/TeenyCard.vue'
+import TeenyIcon from '@/components/TeenyComponents/TeenyIcon.vue'
 import Deck from '@/components/views/deck.vue'
-import Study from '@/components/views/study.vue'
-import Edit from '@/components/views/edit.vue'
 import { useDeckStore } from '@/stores/decks'
 import { useToastStore } from '@/stores/toast'
 import { computed, onMounted, ref } from 'vue'
 import { deleteDeckById, updateDeckById } from '@/services/deckService'
 import { getCardsByDeckID, updateCardsByDeckID } from '@/services/cardService'
-import { useRoute } from 'vue-router'
 import router from '@/router'
 import { storeToRefs } from 'pinia'
+import TeenyButton from '@/components/TeenyComponents/TeenyButton.vue'
 
 const props = defineProps({
   id: {
@@ -40,7 +65,6 @@ const props = defineProps({
   }
 })
 
-const route = useRoute()
 const deckStore = useDeckStore()
 const toastStore = useToastStore()
 
@@ -52,14 +76,6 @@ const { currentDeck } = storeToRefs(deckStore)
 
 const loading = computed(() => {
   return deckLoading.value || cardsLoading.value
-})
-
-const studying = computed(() => {
-  return route.query.mode === 'study'
-})
-
-const editing = computed(() => {
-  return route.query.mode === 'edit'
 })
 
 onMounted(async () => {
@@ -77,10 +93,6 @@ function onStudyClicked(): void {
 
 function onEditClicked(): void {
   router.push({ name: 'deck', params: { id: props.id }, query: { mode: 'edit' } })
-}
-
-function onCancelEdit(): void {
-  router.push({ name: 'deck', params: { id: props.id } })
 }
 
 async function updateDeck(newDeck: Deck, newCards: Card[]): Promise<void> {

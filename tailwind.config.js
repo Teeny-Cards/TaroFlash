@@ -28,7 +28,6 @@ export default {
         dark: '#4F4F4F'
       },
       red: '#F66A6A',
-      purple: '#896AF6',
       parchment: '#F3F1EA',
       white: '#FFFFFF',
       black: '#000000'
@@ -41,6 +40,7 @@ export default {
         card: '7 / 8.25'
       },
       width: {
+        'card-tiny': '43px',
         'card-small': '192px',
         'card-base': '260px',
         'card-large': '300px'
@@ -50,6 +50,7 @@ export default {
         'screen-2.5xl': '1404px'
       },
       borderRadius: {
+        'card-tiny': '9px',
         'card-small': '20px',
         'card-base': '36px'
       },

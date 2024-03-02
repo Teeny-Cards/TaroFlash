@@ -6,6 +6,7 @@ declare global {
     isPublic: boolean
     count: number
     image: DeckImage
+    createdBy: string
   }
 
   type DeckImage = {

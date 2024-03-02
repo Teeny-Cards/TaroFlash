@@ -29,6 +29,7 @@ const createDeck = async (deck: Deck): Promise<DocumentReference> => {
       ...deckData,
       image: { url, name },
       userID: user.id,
+      createdBy: user.username,
       created_at: serverTimestamp(),
       updated_at: serverTimestamp()
     }
@@ -51,8 +52,8 @@ const getUserDecks = async (): Promise<Deck[]> => {
     const newDecks: Deck[] = []
 
     querySnapshot.forEach((doc) => {
-      const { title, description, count, isPublic, image } = doc.data()
-      const deck = { title, description, count, isPublic, image, id: doc.id }
+      const { title, description, count, isPublic, image, createdBy } = doc.data()
+      const deck = { title, description, count, isPublic, image, id: doc.id, createdBy }
       newDecks.push(deck)
     })
 
@@ -70,8 +71,8 @@ const getDeckById = async (id: string): Promise<Deck> => {
     const docSnapshot = await getDoc(deckRef)
 
     if (docSnapshot.exists()) {
-      const { title, description, id, isPublic, count, image } = docSnapshot.data()
-      const deck = { title, description, id, isPublic, count, image }
+      const { title, description, id, isPublic, count, image, createdBy } = docSnapshot.data()
+      const deck = { title, description, id, isPublic, count, image, createdBy }
 
       return deck
     }

@@ -1,13 +1,17 @@
 <template>
   <button
-    class="p-2 transition-colors font-semibold flex items-center justify-center gap-1"
-    :class="{ ...styles, 'rounded-full': rounded, 'rounded-lg': !rounded }"
+    class="px-3 py-2 transition-colors font-semibold flex items-center justify-center gap-2.5 font-primary rounded-2xl"
+    :class="styles"
     @click="$emit('onClick')"
     data-test="teeny-button"
   >
-    <TeenyIcon v-if="iconLeft" :src="iconLeft" />
+    <div v-if="iconLeft" class="rounded-full" :class="iconStyles">
+      <TeenyIcon v-if="iconLeft" :src="iconLeft" />
+    </div>
     <slot></slot>
-    <TeenyIcon v-if="iconRight" :src="iconRight" />
+    <div v-if="iconRight" class="rounded-full" :class="iconStyles">
+      <TeenyIcon v-if="iconRight" :src="iconRight" />
+    </div>
   </button>
 </template>
 
@@ -28,10 +32,6 @@ const props = defineProps({
       return ['secondary', 'ghost'].includes(value)
     }
   },
-  rounded: {
-    type: Boolean,
-    default: false
-  },
   iconRight: String,
   iconLeft: String
 })
@@ -40,24 +40,44 @@ const styles = computed(() => {
   switch (props.color) {
     case 'danger':
       return {
-        'bg-red-400 text-white': props.variant === undefined,
-        'border border-red-400 border-2 text-red-400 hover:bg-red-400 hover:text-white':
+        'bg-red text-white': props.variant === undefined,
+        'border border-red-400 border-2 text-red hover:bg-red hover:text-white':
           props.variant === 'secondary',
-        'text-red-400 hover:bg-red-400 hover:text-white': props.variant === 'ghost'
+        'text-red-400 hover:bg-red hover:text-white': props.variant === 'ghost'
       }
     case 'gray':
       return {
-        'bg-gray-400 text-white': props.variant === undefined,
-        'border border-gray-400 border-2 text-gray-400 hover:bg-gray-400 hover:text-white':
+        'bg-grey text-white': props.variant === undefined,
+        'border border-grey border-2 text-grey hover:bg-grey hover:text-white':
           props.variant === 'secondary',
-        'text-gray-400 hover:bg-gray-400 hover:text-white': props.variant === 'ghost'
+        'text-grey hover:bg-grey hover:text-white': props.variant === 'ghost'
       }
     default:
       return {
-        'bg-green-400 text-white': props.variant === undefined,
-        'border border-green-400 border-2 text-green-400 hover:bg-green-400 hover:text-white':
+        'bg-blue text-white': props.variant === undefined,
+        'border border-blue border-2 text-blue hover:bg-blue hover:text-white':
           props.variant === 'secondary',
-        'text-green-400 hover:bg-green-400 hover:text-white': props.variant === 'ghost'
+        'text-blue hover:bg-blue hover:text-white': props.variant === 'ghost'
+      }
+  }
+})
+
+const iconStyles = computed(() => {
+  switch (props.color) {
+    case 'danger':
+      return {
+        'bg-white text-red': props.variant === undefined || props.variant === 'secondary',
+        'bg-red text-white': props.variant === 'ghost'
+      }
+    case 'gray':
+      return {
+        'bg-white text-grey': props.variant === undefined || props.variant === 'secondary',
+        'bg-grey text-white': props.variant === 'ghost'
+      }
+    default:
+      return {
+        'bg-white text-blue': props.variant === undefined || props.variant === 'secondary',
+        'bg-blue text-white': props.variant === 'ghost'
       }
   }
 })
