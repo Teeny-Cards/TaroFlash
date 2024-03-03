@@ -1,8 +1,7 @@
 <template>
   <button
     class="transition-colors font-semibold flex items-center justify-center font-primary"
-    :class="[buttonColor[color], buttonSize[size], buttonPadding[size]]"
-    @click="$emit('onClick')"
+    :class="[buttonColor[variant], buttonSize[size], buttonPadding[size]]"
     teeny-button
   >
     <div
@@ -29,7 +28,7 @@
 import TeenyIcon from './TeenyIcon.vue'
 
 const props = defineProps({
-  color: {
+  variant: {
     type: String,
     validator(value: string) {
       return ['interaction', 'muted', 'danger'].includes(value)
@@ -88,8 +87,8 @@ const iconOnlyStyles: { [key: string]: string } = {
 }
 
 const iconStyles = {
-  [iconColor[props.color]]: !props.iconOnly, // Apply icon color only if not iconOnly
-  [iconBackground[props.color]]: !props.iconOnly, // Apply background only if not iconOnly
-  [iconOnlyStyles[props.color]]: props.iconOnly // Apply iconOnlyStyles if iconOnly is true
+  [iconColor[props.variant]]: !props.iconOnly, // Apply icon color only if not iconOnly
+  [iconBackground[props.variant]]: !props.iconOnly, // Apply background only if not iconOnly
+  [iconOnlyStyles[props.variant]]: props.iconOnly // Apply iconOnlyStyles if iconOnly is true
 }
 </script>

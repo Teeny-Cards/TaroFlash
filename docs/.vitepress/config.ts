@@ -17,17 +17,6 @@ export default defineConfig({
           text: 'Components',
           items: [{ text: 'Teeny Button', link: '/components/teeny-button' }]
         }
-      ],
-      '/design-system/': [
-        {
-          text: 'Design System',
-          items: [
-            { text: 'Introduction', link: '/design-system/index' },
-            { text: 'Color', link: '/design-system/color' },
-            { text: 'Typography', link: '/design-system/typography' },
-            { text: 'Spacing', link: '/design-system/spacing' }
-          ]
-        }
       ]
     },
 

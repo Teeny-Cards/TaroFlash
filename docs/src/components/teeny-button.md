@@ -22,11 +22,15 @@ An alias has been set up for Teeny Components, so you can import the Teeny Butto
 
 Out of the box, the Teeny Button is styled with a default blue color scheme and is capable of accepting any content, such as text or other elements, through its default slot.
 
-The button also exposes an `onClick` event, allowing you to specify the function to be executed when the button is clicked.
+Since the TeenyButton uses a standard html button element under the hood, you can also use the `click` event to specify a function to be executed when the button is clicked.
 
 Example of a basic button:
 
 <TeenyButton>Save</TeenyButton>
+
+```html
+<TeenyButton @click="console.log('save')">Save</TeenyButton>
+```
 
 ## Incorporating Icons
 
@@ -36,6 +40,10 @@ Example with a left-aligned icon:
 
 <TeenyButton icon-left="close">Close</TeenyButton>
 
+```html
+<TeenyButton icon-left="close">Close</TeenyButton>
+```
+
 ### Icon Only
 
 The Teeny Button also accepts an optional `icon-only` prop, which allows you to render an icon without any accompanying text. The visual style of the button will be adjusted to accommodate the icon's presence.
@@ -43,6 +51,10 @@ The Teeny Button also accepts an optional `icon-only` prop, which allows you to 
 Example of an icon-only button:
 
 <TeenyButton icon-left="close" icon-only></TeenyButton>
+
+```html
+<TeenyButton icon-left="close" icon-only></TeenyButton>
+```
 
 ## Adjustable Sizes
 
@@ -57,19 +69,32 @@ Illustration of different sizes:
   <TeenyButton size="teeny" icon-left="check">Teeny</TeenyButton>
 </div>
 
+```html
+<TeenyButton size="large" icon-left="check">Large</TeenyButton>
+<TeenyButton size="base" icon-left="check">Base</TeenyButton>
+<TeenyButton size="small" icon-left="check">Small</TeenyButton>
+<TeenyButton size="teeny" icon-left="check">Teeny</TeenyButton>
+```
+
 ## Variants for Different Contexts
 
-### Colors
+### Variants
 
-The button's appearance can be further customized by using the `color` prop, which allows you to define the button's thematic significance. Options include `interaction` (default), `muted`, and `danger`, each designed to convey different levels of urgency or importance.
+The button's appearance can be further customized by using the `variant` prop, which allows you to define the button's thematic significance. Options include `interaction` (default), `muted`, and `danger`, each designed to convey different levels of urgency or importance.
 
 Example showcasing various variants:
 
 <div class="flex gap-2 items-center">
   <TeenyButton icon-left="check">Interaction</TeenyButton>
-  <TeenyButton color="muted" icon-left="close">Muted</TeenyButton>
-  <TeenyButton color="danger" icon-left="delete">Danger</TeenyButton>
+  <TeenyButton variant="muted" icon-left="close">Muted</TeenyButton>
+  <TeenyButton variant="danger" icon-left="delete">Danger</TeenyButton>
 </div>
+
+```html
+<TeenyButton icon-left="check">Interaction</TeenyButton>
+<TeenyButton variant="muted" icon-left="close">Muted</TeenyButton>
+<TeenyButton variant="danger" icon-left="delete">Danger</TeenyButton>
+```
 
 ### Inverted
 
@@ -77,11 +102,17 @@ In addition to color variants, the Teeny Button also supports an `inverted` prop
 
 Example of an inverted variant:
 
-<div class="p-4 bg-grey-light rounded-[20px] flex gap-2">
+<div class="p-4 bg-parchment rounded-[20px] flex gap-2">
 <TeenyButton inverted icon-left="check">Interaction</TeenyButton>
-<TeenyButton inverted color="muted" icon-left="close">Muted</TeenyButton>
-<TeenyButton inverted color="danger" icon-left="delete">Danger</TeenyButton>
+<TeenyButton inverted variant="muted" icon-left="close">Muted</TeenyButton>
+<TeenyButton inverted variant="danger" icon-left="delete">Danger</TeenyButton>
 </div>
+
+```html
+<TeenyButton inverted icon-left="check">Interaction</TeenyButton>
+<TeenyButton inverted variant="muted" icon-left="close">Muted</TeenyButton>
+<TeenyButton inverted variant="danger" icon-left="delete">Danger</TeenyButton>
+```
 
 ## Detailed Prop Specifications
 
@@ -89,9 +120,9 @@ Below is a table delineating the available props, their expected data types, def
 
 | Prop         | Type   | Default     | Description                                           |
 | ------------ | ------ | ----------- | ----------------------------------------------------- |
-| `onClick`    | Func   | `undefined` | Specifies the function to be executed on button click |
+| `click`      | Func   | `undefined` | Specifies the function to be executed on button click |
 | `size`       | String | `base`      | Defines the size of the button, adjusting its scale.  |
-| `color`      | String | `primary`   | Determines the button's styling theme.                |
+| `variant`    | String | `primary`   | Determines the button's styling theme.                |
 | `inverted`   | Bool   | `false`     | Determines if the button's color scheme is inverted.  |
 | `icon-only`  | Bool   | `false`     | Specifies if the button only displays an icon.        |
 | `icon-left`  | String | `undefined` | Specifies the left-aligned icon's filename.           |

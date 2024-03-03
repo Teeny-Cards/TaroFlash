@@ -23,7 +23,7 @@
         </div>
         <div deck-view__header__actions class="flex items-center gap-2.5">
           <TeenyButton icon-left="play">Study</TeenyButton>
-          <TeenyButton icon-left="settings" color="gray"></TeenyButton>
+          <TeenyButton icon-left="settings" variant="muted" icon-only></TeenyButton>
         </div>
       </div>
       <div deck-view__card-list class="flex flex-col w-full">
@@ -48,7 +48,6 @@
 <script setup lang="ts">
 import TeenyCard from '@teeny/TeenyCard.vue'
 import TeenyIcon from '@teeny/TeenyIcon.vue'
-import Deck from '@/components/views/deck.vue'
 import { useDeckStore } from '@/stores/decks'
 import { useToastStore } from '@/stores/toast'
 import { computed, onMounted, ref } from 'vue'
