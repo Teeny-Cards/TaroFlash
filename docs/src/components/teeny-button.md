@@ -4,29 +4,51 @@
 
 # Teeny Button
 
-## Basic Usage
+The Teeny Button is a versatile and customizable component designed for Vue.js applications. It provides an elegant solution for integrating button elements into your user interface, offering a range of customization options including colors, icons, sizes, and variants to fit the design requirements of your project seamlessly.
 
-The Teeny Button, by default, uses the `blue` color and takes a default slot to pass in text (or anything really).
+## Installation
+
+To begin using the Teeny Button in your project, ensure you have imported the component correctly.
+
+An alias has been set up for Teeny Components, so you can import the Teeny Button directly from the `@teeny` namespace.
 
 ```html
-<TeenyButton>Save></TeenyButton>
+<script setup>
+  import TeenyButton from '@teeny/TeenyButton.vue'
+</script>
 ```
+
+## Default Configuration
+
+Out of the box, the Teeny Button is styled with a default blue color scheme and is capable of accepting any content, such as text or other elements, through its default slot.
+
+The button also exposes an `onClick` event, allowing you to specify the function to be executed when the button is clicked.
+
+Example of a basic button:
 
 <TeenyButton>Save</TeenyButton>
 
-## Icons
+## Incorporating Icons
 
-The Component accepts two icon props: `icon-left` and `icon-right`. The prop is a simple string that relates to the name of the svg icon stored at `src/assets/svgs`.
+To enhance the button's visual appeal, the component supports the inclusion of icons on either side of the text. This is achieved through the `icon-left` and `icon-right` properties, which accept a string corresponding to the SVG icon's filename located in `src/assets/svgs`.
 
-```html
-<TeenyButton icon-left="close">Close</TeenyButton>
-```
+Example with a left-aligned icon:
 
 <TeenyButton icon-left="close">Close</TeenyButton>
 
-## Sizes
+### Icon Only
 
-The Component accepts a `size` prop that can be set to `small`, `medium`, or `large`.
+The Teeny Button also accepts an optional `icon-only` prop, which allows you to render an icon without any accompanying text. The visual style of the button will be adjusted to accommodate the icon's presence.
+
+Example of an icon-only button:
+
+<TeenyButton icon-left="close" icon-only></TeenyButton>
+
+## Adjustable Sizes
+
+Adapt the Teeny Button to fit various UI contexts by setting the size prop. Available options include `large`, `base`, `small`, or `teeny`, enabling you to maintain design consistency across different sections of your application.
+
+Illustration of different sizes:
 
 <div class="flex gap-2 items-center">
   <TeenyButton size="large" icon-left="check">Large</TeenyButton>
@@ -35,6 +57,44 @@ The Component accepts a `size` prop that can be set to `small`, `medium`, or `la
   <TeenyButton size="teeny" icon-left="check">Teeny</TeenyButton>
 </div>
 
-## Variant
+## Variants for Different Contexts
 
-The Component accepts a `variant` prop that can be set to `primary`, `secondary`, `tertiary`, or `danger`.
+### Colors
+
+The button's appearance can be further customized by using the `color` prop, which allows you to define the button's thematic significance. Options include `interaction` (default), `muted`, and `danger`, each designed to convey different levels of urgency or importance.
+
+Example showcasing various variants:
+
+<div class="flex gap-2 items-center">
+  <TeenyButton icon-left="check">Interaction</TeenyButton>
+  <TeenyButton color="muted" icon-left="close">Muted</TeenyButton>
+  <TeenyButton color="danger" icon-left="delete">Danger</TeenyButton>
+</div>
+
+### Inverted
+
+In addition to color variants, the Teeny Button also supports an `inverted` prop, which inverts the button's color scheme, making it suitable for use on dark backgrounds or in contexts where a lighter color scheme is preferred.
+
+Example of an inverted variant:
+
+<div class="p-4 bg-grey-light rounded-[20px] flex gap-2">
+<TeenyButton inverted icon-left="check">Interaction</TeenyButton>
+<TeenyButton inverted color="muted" icon-left="close">Muted</TeenyButton>
+<TeenyButton inverted color="danger" icon-left="delete">Danger</TeenyButton>
+</div>
+
+## Detailed Prop Specifications
+
+Below is a table delineating the available props, their expected data types, default values, and a brief description:
+
+| Prop         | Type   | Default     | Description                                           |
+| ------------ | ------ | ----------- | ----------------------------------------------------- |
+| `onClick`    | Func   | `undefined` | Specifies the function to be executed on button click |
+| `size`       | String | `base`      | Defines the size of the button, adjusting its scale.  |
+| `color`      | String | `primary`   | Determines the button's styling theme.                |
+| `inverted`   | Bool   | `false`     | Determines if the button's color scheme is inverted.  |
+| `icon-only`  | Bool   | `false`     | Specifies if the button only displays an icon.        |
+| `icon-left`  | String | `undefined` | Specifies the left-aligned icon's filename.           |
+| `icon-right` | String | `undefined` | Specifies the right-aligned icon's filename           |
+
+By leveraging these props, you can customize the Teeny Button to align perfectly with your application's design language, ensuring a cohesive and intuitive user interface.

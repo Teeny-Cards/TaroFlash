@@ -1,84 +1,95 @@
 <template>
   <button
-    class="px-3 py-2 transition-colors font-semibold flex items-center justify-center gap-2.5 font-primary rounded-2xl"
-    :class="styles"
+    class="transition-colors font-semibold flex items-center justify-center font-primary"
+    :class="[buttonColor[color], buttonSize[size], buttonPadding[size]]"
     @click="$emit('onClick')"
-    data-test="teeny-button"
+    teeny-button
   >
-    <div v-if="iconLeft" class="rounded-full" :class="iconStyles">
-      <TeenyIcon v-if="iconLeft" :src="iconLeft" />
+    <div
+      v-if="iconLeft"
+      class="rounded-full flex justify-center items-center"
+      :class="iconStyles"
+      teeny-button__icon-left
+    >
+      <TeenyIcon v-if="iconLeft" :src="iconLeft" :size="size" />
     </div>
     <slot></slot>
-    <div v-if="iconRight" class="rounded-full" :class="iconStyles">
-      <TeenyIcon v-if="iconRight" :src="iconRight" />
+    <div
+      v-if="iconRight"
+      class="rounded-full flex justify-center items-center"
+      :class="iconStyles"
+      teeny-button__icon-right
+    >
+      <TeenyIcon v-if="iconRight" :src="iconRight" :size="size" />
     </div>
   </button>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import TeenyIcon from './TeenyIcon.vue'
 
 const props = defineProps({
   color: {
     type: String,
     validator(value: string) {
-      return ['danger', 'gray'].includes(value)
-    }
+      return ['interaction', 'muted', 'danger'].includes(value)
+    },
+    default: 'interaction'
   },
-  variant: {
+  size: {
     type: String,
     validator(value: string) {
-      return ['secondary', 'ghost'].includes(value)
-    }
+      return ['large', 'base', 'small', 'teeny'].includes(value)
+    },
+    default: 'base'
   },
+  inverted: Boolean,
+  iconOnly: Boolean,
   iconRight: String,
   iconLeft: String
 })
 
-const styles = computed(() => {
-  switch (props.color) {
-    case 'danger':
-      return {
-        'bg-red text-white': props.variant === undefined,
-        'border border-red-400 border-2 text-red hover:bg-red hover:text-white':
-          props.variant === 'secondary',
-        'text-red-400 hover:bg-red hover:text-white': props.variant === 'ghost'
-      }
-    case 'gray':
-      return {
-        'bg-grey text-white': props.variant === undefined,
-        'border border-grey border-2 text-grey hover:bg-grey hover:text-white':
-          props.variant === 'secondary',
-        'text-grey hover:bg-grey hover:text-white': props.variant === 'ghost'
-      }
-    default:
-      return {
-        'bg-blue text-white': props.variant === undefined,
-        'border border-blue border-2 text-blue hover:bg-blue hover:text-white':
-          props.variant === 'secondary',
-        'text-blue hover:bg-blue hover:text-white': props.variant === 'ghost'
-      }
-  }
-})
+const buttonSize: { [key: string]: string } = {
+  large: 'text-lg rounded-btn-large gap-2',
+  base: 'text-base rounded-btn-base gap-2',
+  small: 'text-sm rounded-btn-small gap-1.5',
+  teeny: 'text-sm rounded-btn-teeny gap-1.5'
+}
 
-const iconStyles = computed(() => {
-  switch (props.color) {
-    case 'danger':
-      return {
-        'bg-white text-red': props.variant === undefined || props.variant === 'secondary',
-        'bg-red text-white': props.variant === 'ghost'
-      }
-    case 'gray':
-      return {
-        'bg-white text-grey': props.variant === undefined || props.variant === 'secondary',
-        'bg-grey text-white': props.variant === 'ghost'
-      }
-    default:
-      return {
-        'bg-white text-blue': props.variant === undefined || props.variant === 'secondary',
-        'bg-blue text-white': props.variant === 'ghost'
-      }
-  }
-})
+const buttonPadding: { [key: string]: string } = {
+  large: props.iconOnly ? 'p-2' : 'px-2.5 py-1.5',
+  base: props.iconOnly ? 'p-2' : 'px-2.5 py-1.5',
+  small: props.iconOnly ? 'p-2' : 'px-2.5 py-1.5',
+  teeny: props.iconOnly ? 'p-2' : 'px-1.5 py-1'
+}
+
+const buttonColor: { [key: string]: string } = {
+  interaction: props.inverted ? 'bg-white text-blue' : 'bg-blue text-white',
+  muted: props.inverted ? 'bg-white text-grey' : 'bg-grey text-white',
+  danger: props.inverted ? 'bg-white text-red' : 'bg-red text-white'
+}
+
+const iconColor: { [key: string]: string } = {
+  interaction: props.inverted ? 'text-white' : 'text-blue',
+  muted: props.inverted ? 'text-white' : 'text-grey',
+  danger: props.inverted ? 'text-white' : 'text-red'
+}
+
+const iconBackground: { [key: string]: string } = {
+  interaction: props.inverted ? 'bg-blue p-0.5' : 'bg-white p-0.5',
+  muted: props.inverted ? 'bg-grey p-0.5' : 'bg-white p-0.5',
+  danger: props.inverted ? 'bg-red p-0.5' : 'bg-white p-0.5'
+}
+
+const iconOnlyStyles: { [key: string]: string } = {
+  interaction: props.inverted ? 'p-0 bg-transparent text-blue' : 'p-0 bg-transparent text-white',
+  muted: props.inverted ? 'p-0 bg-transparent text-grey' : 'p-0 bg-transparent text-white',
+  danger: props.iconOnly ? 'p-0 bg-transparent text-red' : 'p-0 bg-transparent text-white'
+}
+
+const iconStyles = {
+  [iconColor[props.color]]: !props.iconOnly, // Apply icon color only if not iconOnly
+  [iconBackground[props.color]]: !props.iconOnly, // Apply background only if not iconOnly
+  [iconOnlyStyles[props.color]]: props.iconOnly // Apply iconOnlyStyles if iconOnly is true
+}
 </script>

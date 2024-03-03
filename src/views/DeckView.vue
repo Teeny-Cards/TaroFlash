@@ -46,8 +46,8 @@
 </template>
 
 <script setup lang="ts">
-import TeenyCard from '@/components/TeenyComponents/TeenyCard.vue'
-import TeenyIcon from '@/components/TeenyComponents/TeenyIcon.vue'
+import TeenyCard from '@teeny/TeenyCard.vue'
+import TeenyIcon from '@teeny/TeenyIcon.vue'
 import Deck from '@/components/views/deck.vue'
 import { useDeckStore } from '@/stores/decks'
 import { useToastStore } from '@/stores/toast'

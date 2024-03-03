@@ -37,6 +37,16 @@ export default {
       white: '#FFFFFF',
       black: '#000000'
     },
+    borderRadius: {
+      full: '9999px',
+      'btn-large': '18px',
+      'btn-base': '16px',
+      'btn-small': '14px',
+      'btn-teeny': '12px',
+      'card-tiny': '9px',
+      'card-small': '20px',
+      'card-base': '36px'
+    },
     extend: {
       fontFamily: {
         primary: ['Arial Rounded MT Bold', 'Arial', 'sans-serif']
@@ -53,11 +63,6 @@ export default {
       maxWidth: {
         app: '1306px',
         'screen-2.5xl': '1404px'
-      },
-      borderRadius: {
-        'card-tiny': '9px',
-        'card-small': '20px',
-        'card-base': '36px'
       },
       gridTemplateColumns: {
         'deck-view-lg': '284px minmax(811px, 1024px)',
