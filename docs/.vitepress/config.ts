@@ -15,11 +15,7 @@ export default defineConfig({
       '/components/': [
         {
           text: 'Components',
-          items: [
-            { text: 'Teeny Button', link: '/components/teeny-button' },
-            { text: 'Markdown Examples', link: '/components/markdown-examples' },
-            { text: 'Runtime API Examples', link: '/components/api-examples' }
-          ]
+          items: [{ text: 'Teeny Button', link: '/components/teeny-button' }]
         }
       ],
       '/design-system/': [
