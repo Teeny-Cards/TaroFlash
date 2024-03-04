@@ -9,4 +9,3 @@
 import NavBar from '@/components/TheNavBar.vue'
 import { RouterView } from 'vue-router'
 </script>
-../components/TheNavBar.vue

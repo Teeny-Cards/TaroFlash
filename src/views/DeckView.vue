@@ -26,7 +26,7 @@
           <TeenyButton icon-left="settings" variant="muted" icon-only></TeenyButton>
         </div>
       </div>
-      <CardList :cards="cards"></CardList>
+      <CardList :cards="currentDeckCards"></CardList>
     </section>
   </div>
 </template>
@@ -37,10 +37,8 @@ import TeenyIcon from '@/components/TeenyIcon.vue'
 import CardList from '@/components/DeckViewCardList.vue'
 import { useDeckStore } from '@/stores/decks'
 import { useToastStore } from '@/stores/toast'
-import { computed, onMounted, ref } from 'vue'
-import { deleteDeckById, updateDeckById } from '@/services/deckService'
-import { getCardsByDeckID, updateCardsByDeckID } from '@/services/cardService'
-import router from '@/router'
+import { onMounted, ref } from 'vue'
+import { updateCardsByDeckID } from '@/services/cardService'
 import { storeToRefs } from 'pinia'
 import TeenyButton from '@/components/TeenyButton.vue'
 
@@ -54,72 +52,24 @@ const props = defineProps({
 const deckStore = useDeckStore()
 const toastStore = useToastStore()
 
-const deckLoading = ref(true)
-const cardsLoading = ref(true)
-const cards = ref<Card[]>([])
+const loading = ref(true)
 
-const { currentDeck } = storeToRefs(deckStore)
-
-const loading = computed(() => {
-  return deckLoading.value || cardsLoading.value
-})
+const { currentDeck, currentDeckCards } = storeToRefs(deckStore)
 
 onMounted(async () => {
   await getDeck()
-  await getCards()
 
-  deckLoading.value = false
+  loading.value = false
 })
-
-function onStudyClicked(): void {
-  if (cards.value.length > 0) {
-    router.push({ name: 'deck', params: { id: props.id }, query: { mode: 'study' } })
-  }
-}
-
-function onEditClicked(): void {
-  router.push({ name: 'deck', params: { id: props.id }, query: { mode: 'edit' } })
-}
-
-async function updateDeck(newDeck: Deck, newCards: Card[]): Promise<void> {
-  try {
-    await updateDeckById(props.id, newDeck)
-    saveCards(newCards)
-  } catch (e: any) {
-    toastStore.error(e.message)
-  }
-}
-
-async function deleteDeck(): Promise<void> {
-  try {
-    await deleteDeckById(props.id)
-
-    toastStore.success('Deck deleted successfully')
-    router.push({ name: 'dashboard' })
-  } catch (e: any) {
-    toastStore.error(e.message)
-  }
-}
 
 async function getDeck(): Promise<void> {
   try {
     await deckStore.fetchDeckById(props.id)
   } catch (e: any) {
     toastStore.error(e.message)
-    router.push({ name: 'dashboard' })
+    // router.push({ name: 'dashboard' })
   }
 }
-
-async function getCards(): Promise<void> {
-  try {
-    const newCards = await getCardsByDeckID(props.id)
-    cards.value = newCards
-    cardsLoading.value = false
-  } catch (e: any) {
-    toastStore.error(e.message)
-  }
-}
-
 async function saveCards(cards: CardMutation[]): Promise<void> {
   try {
     await updateCardsByDeckID(props.id, cards)
@@ -129,4 +79,3 @@ async function saveCards(cards: CardMutation[]): Promise<void> {
   }
 }
 </script>
-@/components/views/deckView/CardList.vue
