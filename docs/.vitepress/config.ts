@@ -29,8 +29,8 @@ export default defineConfig({
     plugins: [svgLoader()],
     resolve: {
       alias: {
-        '@teeny': '../../../src/components/TeenyComponents',
-        '@app': '../../..'
+        '@': '../../../src',
+        '@base': '../../..'
       }
     }
   }

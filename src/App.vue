@@ -5,5 +5,5 @@
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import TeenyToastManager from '@/components/TeenyComponents/TeenyToast/TeenyToastManager.vue'
+import TeenyToastManager from '@/components/TeenyToastManager.vue'
 </script>

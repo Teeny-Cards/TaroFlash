@@ -1,5 +1,5 @@
 <script setup>
-  import TeenyButton from '@teeny/TeenyButton.vue'
+  import TeenyButton from '@/components/TeenyButton.vue'
 </script>
 
 # Teeny Button
@@ -14,7 +14,7 @@ An alias has been set up for Teeny Components, so you can import the Teeny Butto
 
 ```html
 <script setup>
-  import TeenyButton from '@teeny/TeenyButton.vue'
+  import TeenyButton from '@/components/TeenyButton.vue'
 </script>
 ```
 

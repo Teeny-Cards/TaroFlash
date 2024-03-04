@@ -26,28 +26,15 @@
           <TeenyButton icon-left="settings" variant="muted" icon-only></TeenyButton>
         </div>
       </div>
-      <div deck-view__card-list class="flex flex-col w-full">
-        <div
-          deck-view__card-list__item
-          v-for="card in cards"
-          :key="card.id"
-          class="px-2.5 py-4 border-b border-b-grey w-full border-dashed flex items-center justify-between"
-        >
-          <div class="flex items-center gap-6">
-            <TeenyCard size="tiny" />
-            {{ card.frontText }}
-          </div>
-          {{ card.backText }}
-          <div class="w-6 h-6 rounded-full bg-grey-light"></div>
-        </div>
-      </div>
+      <CardList :cards="cards"></CardList>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import TeenyCard from '@teeny/TeenyCard.vue'
-import TeenyIcon from '@teeny/TeenyIcon.vue'
+import TeenyCard from '@/components/TeenyCard.vue'
+import TeenyIcon from '@/components/TeenyIcon.vue'
+import CardList from '@/components/DeckViewCardList.vue'
 import { useDeckStore } from '@/stores/decks'
 import { useToastStore } from '@/stores/toast'
 import { computed, onMounted, ref } from 'vue'
@@ -55,7 +42,7 @@ import { deleteDeckById, updateDeckById } from '@/services/deckService'
 import { getCardsByDeckID, updateCardsByDeckID } from '@/services/cardService'
 import router from '@/router'
 import { storeToRefs } from 'pinia'
-import TeenyButton from '@/components/TeenyComponents/TeenyButton.vue'
+import TeenyButton from '@/components/TeenyButton.vue'
 
 const props = defineProps({
   id: {
@@ -142,3 +129,4 @@ async function saveCards(cards: CardMutation[]): Promise<void> {
   }
 }
 </script>
+@/components/views/deckView/CardList.vue

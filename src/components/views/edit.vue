@@ -79,13 +79,14 @@
 </template>
 
 <script setup lang="ts">
-import TeenyCard from '@/components/TeenyComponents/TeenyCard.vue'
-import TeenyButton from '@/components/TeenyComponents/TeenyButton.vue'
-import TeenyInput from '@/components/TeenyComponents/TeenyInput.vue'
-import TeenyCardEditor from '@/components/TeenyComponents/TeenyCardEditor.vue'
+import TeenyCard from '@/components/TeenyCard.vue'
+import TeenyButton from '@/components/TeenyButton.vue'
+import TeenyInput from '@/components/TeenyInput.vue'
+import TeenyCardEditor from '@/components/TeenyCardEditor.vue'
 import { ref, type PropType, computed } from 'vue'
-import imageUploader from '@/components/ImageUploader.vue'
+import imageUploader from '@/components/TheImageUploader.vue'
 import generateUID from '@/utils/uid'
+import { useUserStore } from '@/stores/user'
 
 const props = defineProps({
   deck: {
@@ -102,6 +103,8 @@ const emit = defineEmits<{
   (event: 'cancel'): void
 }>()
 
+const userStore = useUserStore()
+const { username } = userStore
 const deckImagePreview = ref(props.deck?.image?.url)
 const deckImageFile = ref()
 const deckImageDeleted = ref(false)
@@ -170,6 +173,7 @@ function saveDeck(): void {
     title: title.value,
     description: description.value,
     count: cards.value.length,
+    createdBy: username,
     image: {
       ...props.deck?.image,
       newFile: deckImageFile.value,

@@ -1,5 +1,5 @@
 <script setup>
-  import TeenyIcon from '@teeny/TeenyIcon.vue'
+  import TeenyIcon from '@/components/TeenyIcon.vue'
 
   const icons = [
     'arrow-back',

@@ -1,5 +1,5 @@
 <script setup>
-  import tailwindConfig from '@app/tailwind.config.js'
+  import tailwindConfig from '@base/tailwind.config.js'
 
   const colors = Object.entries(tailwindConfig.theme.colors).flatMap(([colorKey, colorValue]) => {
     if (typeof colorValue === 'object') {

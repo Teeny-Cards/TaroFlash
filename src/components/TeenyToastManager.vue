@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import { useToastStore } from '@/stores/toast'
 import { storeToRefs } from 'pinia'
-import TeenyToast from './TeenyToast.vue'
+import TeenyToast from '@/components//TeenyToast.vue'
 
 const toastStore = useToastStore()
 const { toasts } = storeToRefs(toastStore)

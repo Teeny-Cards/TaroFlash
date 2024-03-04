@@ -64,9 +64,9 @@
 
 <script setup lang="ts">
 import { ref, type PropType, onMounted, onUnmounted } from 'vue'
-import TeenyCard from '@/components/TeenyComponents/TeenyCard.vue'
-import TeenyButton from '@/components/TeenyComponents/TeenyButton.vue'
-import TeenyIcon from '@/components/TeenyComponents/TeenyIcon.vue'
+import TeenyCard from '@/components/TeenyCard.vue'
+import TeenyButton from '@/components/TeenyButton.vue'
+import TeenyIcon from '@/components/TeenyIcon.vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import SRC from '@/utils/SRC'
 
