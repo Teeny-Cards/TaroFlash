@@ -1,7 +1,5 @@
 <template>
-  <div teeny-icon>
-    <Icon :class="iconSize[size]"></Icon>
-  </div>
+  <Icon teeny-icon :class="iconSize[size]"></Icon>
 </template>
 
 <script setup lang="ts">

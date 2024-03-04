@@ -15,7 +15,10 @@ export default defineConfig({
       '/components/': [
         {
           text: 'Components',
-          items: [{ text: 'Teeny Button', link: '/components/teeny-button' }]
+          items: [
+            { text: 'Teeny Button', link: '/components/teeny-button' },
+            { text: 'Teeny Icon', link: '/components/teeny-icon' }
+          ]
         }
       ]
     },
