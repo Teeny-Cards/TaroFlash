@@ -43,9 +43,11 @@ export default {
       'btn-base': '16px',
       'btn-small': '14px',
       'btn-teeny': '12px',
-      'card-tiny': '9px',
-      'card-small': '20px',
-      'card-base': '36px'
+      'card-teeny': '9px',
+      'card-xs': '14px',
+      'card-small': '32px',
+      'card-base': '48px',
+      'card-large': '64px'
     },
     extend: {
       fontFamily: {
@@ -55,10 +57,11 @@ export default {
         card: '7 / 8.25'
       },
       width: {
-        'card-tiny': '43px',
-        'card-small': '192px',
-        'card-base': '260px',
-        'card-large': '300px'
+        'card-teeny': '28px',
+        'card-xs': '43px',
+        'card-small': '138px',
+        'card-base': '192px',
+        'card-large': '260px'
       },
       maxWidth: {
         app: '1306px',

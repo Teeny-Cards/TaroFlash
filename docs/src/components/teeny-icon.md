@@ -11,7 +11,8 @@
     'delete',
     'play',
     'settings',
-    'user'
+    'user',
+    'more'
   ]
 </script>
 
