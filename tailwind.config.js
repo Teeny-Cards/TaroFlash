@@ -49,6 +49,9 @@ export default {
       'card-base': '48px',
       'card-large': '64px'
     },
+    boxShadow: {
+      DEFAULT: '4px 4px 10px 0px rgba(0,0,0,0.15)'
+    },
     extend: {
       fontFamily: {
         primary: ['Arial Rounded MT Bold', 'Arial', 'sans-serif']

@@ -3,7 +3,7 @@
   <div v-else>
     <section deck-view class="px-4 py-7 flex flex-col items-center gap-6">
       <div deck-view__header class="flex flex-col items-center gap-6 w-max">
-        <TeenyCard class="relative overflow-hidden">
+        <TeenyCard size="large" class="relative overflow-hidden">
           <div v-if="currentDeck.image?.url" class="absolute inset-0">
             <img
               :src="currentDeck.image?.url"
@@ -34,13 +34,13 @@
 <script setup lang="ts">
 import TeenyCard from '@/components/TeenyCard.vue'
 import TeenyIcon from '@/components/TeenyIcon.vue'
+import TeenyButton from '@/components/TeenyButton.vue'
 import CardList from '@/components/DeckViewCardList.vue'
 import { useDeckStore } from '@/stores/decks'
 import { useToastStore } from '@/stores/toast'
 import { onMounted, ref } from 'vue'
 import { updateCardsByDeckID } from '@/services/cardService'
 import { storeToRefs } from 'pinia'
-import TeenyButton from '@/components/TeenyButton.vue'
 
 const props = defineProps({
   id: {
@@ -51,14 +51,11 @@ const props = defineProps({
 
 const deckStore = useDeckStore()
 const toastStore = useToastStore()
-
-const loading = ref(true)
-
 const { currentDeck, currentDeckCards } = storeToRefs(deckStore)
+const loading = ref(true)
 
 onMounted(async () => {
   await getDeck()
-
   loading.value = false
 })
 
@@ -70,6 +67,7 @@ async function getDeck(): Promise<void> {
     // router.push({ name: 'dashboard' })
   }
 }
+
 async function saveCards(cards: CardMutation[]): Promise<void> {
   try {
     await updateCardsByDeckID(props.id, cards)

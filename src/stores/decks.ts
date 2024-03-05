@@ -14,6 +14,11 @@ export const useDeckStore = defineStore('decks', {
       (state) =>
       (id: string): Deck | undefined => {
         return state.decks.find((deck) => deck.id === id)
+      },
+    cardsInCurrentDeck:
+      (state) =>
+      (id: string): Boolean => {
+        return state.currentDeckCards.some((card: Card) => card.deckID === id)
       }
   },
 
@@ -33,11 +38,8 @@ export const useDeckStore = defineStore('decks', {
     },
 
     async fetchCardsByDeckId(id: string): Promise<void> {
-      const cards = await getCardsByDeckID(id)
-
-      if (cards) {
-        this.currentDeckCards = cards
-      }
+      if (this.cardsInCurrentDeck(id)) return
+      this.currentDeckCards = (await getCardsByDeckID(id)) ?? []
     },
 
     setDecks(newDecks: Deck[]): void {

@@ -12,7 +12,7 @@ defineProps({
   size: {
     type: String,
     validator(value: string) {
-      return ['large', 'base', 'small', 'teeny'].includes(value)
+      return ['large', 'base', 'small', 'xs', 'teeny'].includes(value)
     },
     default: 'base'
   }
