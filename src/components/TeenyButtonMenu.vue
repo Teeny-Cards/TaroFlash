@@ -1,5 +1,5 @@
 <template>
-  <div teeny-dropdown class="relative" ref="teenyDropdown">
+  <div teeny-dropdown class="relative w-max" ref="teenyDropdown">
     <slot
       teeny-dropdown__trigger
       name="trigger"
@@ -11,11 +11,13 @@
         :variant="variant"
         :inverted="inverted"
         @click="toggleDropdown"
-      />
+      >
+        {{ triggerLabel }}
+      </TeenyButton>
     </slot>
-    <div v-if="dropdownVisible" class="absolute z-10 right-0 top-full mt-2">
-      <slot name="dropdown">
-        <div class="flex flex-col gap-1.5 items-end">
+    <div v-if="dropdownVisible" class="absolute z-10 right-0 lg:left-0 top-full mt-2">
+      <slot name="dropdown" :closeDropdown="closeDropdown">
+        <div class="flex flex-col gap-1.5 items-end lg:items-start">
           <TeenyButton
             v-for="action in actions"
             teeny-dropdown__action
@@ -38,12 +40,12 @@
 </template>
 
 <script setup lang="ts">
-import TeenyButton from '@/components/TeenyButton.vue'
+import TeenyButton from './TeenyButton.vue'
 import { onUnmounted, ref } from 'vue'
 import { onMounted } from 'vue'
 import { nextTick } from 'vue'
 
-export interface DropdownAction {
+export interface Action {
   label: string
   action: () => void
   variant?: string
@@ -55,9 +57,10 @@ export interface DropdownAction {
 }
 
 defineProps({
+  triggerLabel: String,
   variant: String,
   inverted: Boolean,
-  actions: Array<DropdownAction>
+  actions: Array<Action>
 })
 
 onMounted(() => {

@@ -1,6 +1,6 @@
 <template>
   <button
-    class="transition-colors font-semibold flex items-center justify-center font-primary"
+    class="transition-colors font-semibold flex items-center justify-center font-primary select-none"
     :class="[buttonColor[variant], buttonSize[size], buttonPadding[size]]"
     teeny-button
   >

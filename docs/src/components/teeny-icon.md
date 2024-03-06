@@ -12,7 +12,9 @@
     'play',
     'settings',
     'user',
-    'more'
+    'more',
+    'expand-more',
+    'expand-less'
   ]
 </script>
 
