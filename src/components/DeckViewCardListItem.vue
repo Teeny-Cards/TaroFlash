@@ -4,7 +4,7 @@
     {{ card.frontText }}
   </div>
   {{ card.backText }}
-  <TeenyDropdown :actions="moreMenuActions">
+  <TeenyButtonMenu :actions="moreMenuActions">
     <template #trigger="{ toggleDropdown }">
       <div
         @click="toggleDropdown"
@@ -15,13 +15,13 @@
         <TeenyIcon src="more" size="teeny" />
       </div>
     </template>
-  </TeenyDropdown>
+  </TeenyButtonMenu>
 </template>
 
 <script setup lang="ts">
 import TeenyCard from '@/components/TeenyCard.vue'
 import TeenyIcon from '@/components/TeenyIcon.vue'
-import TeenyDropdown, { type DropdownAction } from './TeenyDropdown.vue'
+import TeenyButtonMenu, { type DropdownAction } from '@/components/TeenyButtonMenu.vue'
 import type { PropType } from 'vue'
 
 defineProps({

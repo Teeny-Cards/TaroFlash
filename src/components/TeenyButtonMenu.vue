@@ -19,7 +19,7 @@
           <TeenyButton
             v-for="action in actions"
             teeny-dropdown__action
-            class="shadow opacity-0 transition-all duration-200 transform scale-75"
+            class="shadow opacity-0 transition-all duration-100 transform scale-75"
             :key="action.label"
             :variant="action.variant"
             :inverted="action.inverted"
@@ -84,7 +84,7 @@ async function toggleDropdown(): Promise<void> {
 
     const nodeList = teenyDropdown.value?.querySelectorAll('[teeny-dropdown__action]')
     const actions = nodeList ? [...nodeList] : []
-    animateActionsIn(actions, 50)
+    animateActionsIn(actions, 25)
   }
 }
 
