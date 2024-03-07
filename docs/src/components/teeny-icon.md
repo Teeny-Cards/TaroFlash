@@ -20,7 +20,7 @@
 
 # Teeny Icon
 
-The Teeny Icon component, under the hood, is a simple SVG wrapper that accepts a filename corresponding to the desired icon located in `src/assets/svgs`. This component is designed to be used in conjunction with other components, such as buttons, to enhance the visual appeal of your application.
+The Teeny Icon component, under the hood, is a simple SVG wrapper that accepts a filename corresponding to the desired icon located in `src/icons/svgs`. This component is designed to be used in conjunction with other components, such as buttons, to enhance the visual appeal of your application.
 
 ## Usage
 

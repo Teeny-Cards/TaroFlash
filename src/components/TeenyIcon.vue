@@ -1,5 +1,5 @@
 <template>
-  <Icon teeny-icon :class="iconSize[size]"></Icon>
+  <Icon :teeny-icon="src" :class="iconSize[size]"></Icon>
 </template>
 
 <script setup lang="ts">
@@ -17,7 +17,7 @@ const props = defineProps({
   }
 })
 
-const Icon = defineAsyncComponent(() => import(`../assets/svgs/${props.src}.svg`))
+const Icon = defineAsyncComponent(() => import(`../assets/icons/${props.src}.svg`))
 
 const iconSize: { [key: string]: string } = {
   large: 'w-6 h-6',
