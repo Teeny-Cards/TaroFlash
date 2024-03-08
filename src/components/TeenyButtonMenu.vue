@@ -15,13 +15,13 @@
         {{ triggerLabel }}
       </TeenyButton>
     </slot>
-    <div v-if="dropdownVisible" class="absolute z-10 right-0 lg:left-0 top-full mt-2">
+    <div v-if="dropdownVisible" class="absolute right-0 z-10 mt-2 lg:left-0 top-full">
       <slot name="dropdown" :closeDropdown="closeDropdown">
         <div class="flex flex-col gap-1.5 items-end lg:items-start">
           <TeenyButton
             v-for="action in actions"
             teeny-dropdown__action
-            class="shadow opacity-0 transition-all duration-100 transform scale-75"
+            class="transition-all duration-100 transform scale-75 shadow opacity-0"
             :key="action.label"
             :variant="action.variant"
             :inverted="action.inverted"
@@ -74,7 +74,9 @@ onUnmounted(() => {
 const teenyDropdown = ref<HTMLDivElement>()
 const dropdownVisible = ref(false)
 
-async function toggleDropdown(): Promise<void> {
+async function toggleDropdown(e: Event): Promise<void> {
+  e.stopPropagation()
+
   if (dropdownVisible.value) {
     const nodeList = teenyDropdown.value?.querySelectorAll('[teeny-dropdown__action]')
     const actions = nodeList ? [...nodeList] : []

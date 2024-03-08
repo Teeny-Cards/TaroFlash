@@ -2,12 +2,12 @@
   <transition
     enter-from-class="translate-x-full"
     enter-to-class="translate-x-0"
-    enter-active-class="transform transition-transform"
+    enter-active-class="transition-transform transform"
     leave-from-class="translate-x-0"
     leave-to-class="translate-x-full"
-    leave-active-class="transform transition-transform"
+    leave-active-class="transition-transform transform"
   >
-    <div v-if="open" class="rounded-xl p-4 text-white shadow-lg w-72" :class="color">
+    <div teeny-toast v-if="open" class="p-4 text-white shadow-lg rounded-xl w-72" :class="color">
       {{ toast.message }}
     </div>
   </transition>

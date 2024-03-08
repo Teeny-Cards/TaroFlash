@@ -14,3 +14,12 @@
     src: url(/assets/fonts/arialroundedmtbold.tff) format('tff');
   }
 }
+
+.scroll-hidden-x {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scroll-hidden-x::-webkit-scrollbar {
+  display: none;
+}

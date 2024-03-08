@@ -1,5 +1,8 @@
 <template>
-  <div class="absolute inset-0 pointer-events-none flex flex-col gap-2 items-end p-4 pt-16 z-50">
+  <div
+    teeny-toast-manager
+    class="absolute inset-0 z-50 flex flex-col items-end gap-2 p-4 pt-16 pointer-events-none"
+  >
     <TeenyToast v-for="(toast, index) in toasts" :key="index" :toast="toast" @close="onCloseToast">
     </TeenyToast>
   </div>

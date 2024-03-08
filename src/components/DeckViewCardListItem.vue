@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center gap-6">
+  <div class="flex items-center gap-6" tabindex="0" role="button">
     <TeenyCard size="xs" />
     {{ card.frontText }}
   </div>
@@ -8,7 +8,7 @@
     <template #trigger="{ toggleDropdown }">
       <div
         @click="toggleDropdown"
-        class="w-6 h-6 rounded-full flex items-center justify-center bg-grey-light"
+        class="flex items-center justify-center w-6 h-6 rounded-full bg-grey-light"
         tabindex="0"
         role="button"
       >
@@ -21,32 +21,37 @@
 <script setup lang="ts">
 import TeenyCard from '@/components/TeenyCard.vue'
 import TeenyIcon from '@/components/TeenyIcon.vue'
-import TeenyButtonMenu, { type DropdownAction } from '@/components/TeenyButtonMenu.vue'
+import TeenyButtonMenu, { type Action } from '@/components/TeenyButtonMenu.vue'
 import type { PropType } from 'vue'
 
-defineProps({
+const props = defineProps({
   card: {
     type: Object as PropType<Card>,
     required: true
   }
 })
 
-const moreMenuActions: DropdownAction[] = [
+const emit = defineEmits<{
+  (e: 'moveCard', card: Card): void
+  (e: 'deleteCard', card: Card): void
+}>()
+
+const moreMenuActions: Action[] = [
   {
     label: 'Select',
-    action: () => console.log('Edit'),
+    action: () => {},
     inverted: true,
     iconRight: 'check'
   },
   {
     label: 'Move',
-    action: () => console.log('Delete'),
+    action: () => emit('moveCard', props.card),
     inverted: true,
     iconRight: 'arrow-forward'
   },
   {
     label: 'Delete',
-    action: () => console.log('Delete'),
+    action: () => emit('deleteCard', props.card),
     variant: 'danger',
     inverted: true,
     iconRight: 'delete'

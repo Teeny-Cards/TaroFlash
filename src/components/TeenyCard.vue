@@ -1,6 +1,6 @@
 <template>
   <div
-    class="aspect-card bg-white flex justify-center items-center p-3"
+    class="flex items-center justify-center p-3 bg-white aspect-card shrink-0"
     :class="[cardSize[size], borderRadius[size]]"
   >
     <slot></slot>
@@ -27,10 +27,10 @@ const cardSize: { [key: string]: string } = {
 }
 
 const borderRadius: { [key: string]: string } = {
-  teeny: 'rounded-card-teeny',
-  xs: 'rounded-card-xs',
-  small: 'rounded-card-small',
-  base: 'rounded-card-base',
-  large: 'rounded-card-large'
+  teeny: 'rounded-xs',
+  xs: 'rounded',
+  small: 'rounded-xl',
+  base: 'rounded-2xl',
+  large: 'rounded-4xl'
 }
 </script>

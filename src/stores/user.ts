@@ -32,9 +32,9 @@ export const useUserStore = defineStore('user', {
 
     setUser(newUser?: UserProfile): void {
       if (newUser) {
-        this.username = newUser.username || ''
-        this.email = newUser.email || ''
-        this.id = newUser.userId || ''
+        this.username = newUser.username ?? ''
+        this.email = newUser.email ?? ''
+        this.id = newUser.userId ?? ''
       } else {
         this.username = ''
         this.email = ''

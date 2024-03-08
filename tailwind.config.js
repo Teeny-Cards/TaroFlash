@@ -38,19 +38,20 @@ export default {
       black: '#000000'
     },
     borderRadius: {
-      full: '9999px',
-      'btn-large': '18px',
-      'btn-base': '16px',
-      'btn-small': '14px',
-      'btn-teeny': '12px',
-      'card-teeny': '9px',
-      'card-xs': '14px',
-      'card-small': '32px',
-      'card-base': '48px',
-      'card-large': '64px'
+      xs: '9px',
+      sm: '12px',
+      DEFAULT: '14px',
+      md: '16px',
+      lg: '18px',
+      xl: '32px',
+      '2xl': '38px',
+      '3xl': '48px',
+      '4xl': '64px',
+      full: '9999px'
     },
     boxShadow: {
-      DEFAULT: '4px 4px 10px 0px rgba(0,0,0,0.15)'
+      DEFAULT: '4px 4px 10px 0px rgba(0,0,0,0.15)',
+      modal: '8px 8px 42.9px 0px rgba(0,0,0,0.25)'
     },
     extend: {
       fontFamily: {

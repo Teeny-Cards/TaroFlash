@@ -49,10 +49,10 @@ const props = defineProps({
 })
 
 const buttonSize: { [key: string]: string } = {
-  large: 'text-lg rounded-btn-large gap-2',
-  base: 'text-base rounded-btn-base gap-2',
-  small: 'text-sm rounded-btn-small gap-1.5',
-  teeny: 'text-sm rounded-btn-teeny gap-1.5'
+  large: 'text-lg rounded-lg gap-2',
+  base: 'text-base rounded-md gap-2',
+  small: 'text-sm rounded gap-1.5',
+  teeny: 'text-sm rounded-sm gap-1.5'
 }
 
 const buttonPadding: { [key: string]: string } = {
