@@ -21,20 +21,52 @@
 </template>
 
 <script setup lang="ts">
+import { onUnmounted, ref, watch } from 'vue'
+
 const emit = defineEmits<{ (event: 'close'): void }>()
 
-defineProps({
+const props = defineProps({
   open: {
     type: Boolean,
     default: false
   }
 })
 
+onUnmounted(() => {
+  releaseScroll()
+})
+
+const scrollTop = ref(document.documentElement.scrollTop)
+
+function captureScroll(): void {
+  scrollTop.value = document.documentElement.scrollTop
+  document.body.style.position = 'fixed'
+  document.body.style.top = `${-scrollTop.value}px`
+  document.body.style.width = '100%'
+}
+
+function releaseScroll(): void {
+  document.body.style.position = ''
+  document.body.style.top = ''
+  document.body.style.width = ''
+  window.scrollTo(0, scrollTop.value)
+}
+
 function close(e: Event) {
   const target = e.target as HTMLElement
 
   if (target.hasAttribute('teeny-modal')) {
+    releaseScroll()
     emit('close')
   }
 }
+
+watch(
+  () => props.open,
+  (open) => {
+    if (open) {
+      captureScroll()
+    }
+  }
+)
 </script>
