@@ -1,10 +1,13 @@
 <template>
-  <div
-    teeny-toast-manager
-    class="absolute inset-0 z-50 flex flex-col items-end gap-2 p-4 pt-16 pointer-events-none"
-  >
-    <TeenyToast v-for="(toast, index) in toasts" :key="index" :toast="toast" @close="onCloseToast">
-    </TeenyToast>
+  <div teeny-toast-manager>
+    <teleport to="[teeny-toast-container]">
+      <TeenyToast
+        v-for="(toast, index) in toasts"
+        :key="index"
+        :toast="toast"
+        @close="onCloseToast"
+      />
+    </teleport>
   </div>
 </template>
 

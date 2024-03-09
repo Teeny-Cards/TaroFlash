@@ -66,6 +66,8 @@ watch(
   (open) => {
     if (open) {
       captureScroll()
+    } else {
+      releaseScroll()
     }
   }
 )

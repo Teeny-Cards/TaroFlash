@@ -1,5 +1,6 @@
 <template>
   <div
+    teeny-card
     class="flex items-center justify-center p-3 bg-white aspect-card shrink-0"
     :class="[cardSize[size], borderRadius[size]]"
   >
@@ -19,11 +20,11 @@ defineProps({
 })
 
 const cardSize: { [key: string]: string } = {
-  teeny: 'w-card-teeny',
-  xs: 'w-card-xs',
-  small: 'w-card-small',
-  base: 'w-card-base',
-  large: 'w-card-large'
+  teeny: 'min-w-card-teeny max-w-card-teeny',
+  xs: 'min-w-card-xs max-w-card-xs',
+  small: 'min-w-card-small max-w-card-small',
+  base: 'min-w-card-base max-w-card-base',
+  large: 'min-w-card-large max-w-card-large'
 }
 
 const borderRadius: { [key: string]: string } = {

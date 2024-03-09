@@ -38,7 +38,8 @@
   <TeenyModal @close="editCardModalVisible = false" :open="editCardModalVisible">
     <EditCardModal
       v-if="currentDeckCards.length > 0"
-      @close="editCardModalVisible = false"
+      @cancel="editCardModalVisible = false"
+      @save="saveCards"
       :cards="currentDeckCards"
       :index="editCardIndex"
     />
@@ -72,7 +73,7 @@ const router = useRouter()
 
 const { currentDeck, currentDeckCards } = storeToRefs(deckStore)
 const loading = ref(true)
-const editCardModalVisible = ref(true)
+const editCardModalVisible = ref(false)
 const editCardIndex = ref(0)
 
 onMounted(async () => {
@@ -101,6 +102,7 @@ function onEditCard(index: number): void {
 async function saveCards(cards: CardMutation[]): Promise<void> {
   try {
     await updateCardsByDeckID(props.id, cards)
+    editCardModalVisible.value = false
     toastStore.success('Saved Successfully')
   } catch (e: any) {
     toastStore.error(e.message)

@@ -15,11 +15,11 @@
   }
 }
 
-.scroll-hidden-x {
+.scroll-hidden {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-.scroll-hidden-x::-webkit-scrollbar {
+.scroll-hidden::-webkit-scrollbar {
   display: none;
 }

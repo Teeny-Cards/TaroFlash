@@ -14,7 +14,9 @@
     'user',
     'more',
     'expand-more',
-    'expand-less'
+    'expand-less',
+    'add-image',
+    'image'
   ]
 </script>
 

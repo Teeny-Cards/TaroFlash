@@ -33,13 +33,13 @@ const timeout = ref<NodeJS.Timeout>()
 const color = computed(() => {
   switch (props.toast.state) {
     case 'info':
-      return 'bg-blue-400'
+      return 'bg-blue'
     case 'warn':
-      return 'bg-yellow-400'
+      return 'bg-orange'
     case 'error':
-      return 'bg-red-400'
+      return 'bg-red'
     default:
-      return 'bg-green-400'
+      return 'bg-pink'
   }
 })
 

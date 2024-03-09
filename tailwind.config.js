@@ -60,7 +60,7 @@ export default {
       aspectRatio: {
         card: '7 / 8.25'
       },
-      width: {
+      spacing: {
         'card-teeny': '28px',
         'card-xs': '43px',
         'card-small': '138px',
