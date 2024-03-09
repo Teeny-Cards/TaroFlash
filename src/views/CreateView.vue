@@ -9,9 +9,9 @@ import { createDeck } from '@/services/deckService'
 import { saveCardsToDeck } from '@/services/cardService'
 import router from '@/router'
 import generateUID from '@/utils/uid'
-import { useToastStore } from '@/stores/toast'
+import { useMessageStore } from '@/stores/message'
 
-const toastStore = useToastStore()
+const messageStore = useMessageStore()
 const deck = ref<Deck>()
 const cards = ref<Card[]>([
   {
@@ -27,7 +27,7 @@ async function saveDeck(deck: Deck, cards: CardMutation[]): Promise<void> {
     const doc = await createDeck(deck)
     saveCards(doc.id, cards)
   } catch (e: any) {
-    toastStore.error(e.message)
+    messageStore.error(e.message)
   }
 }
 
@@ -35,10 +35,11 @@ async function saveCards(deckId: string, cards: CardMutation[]): Promise<void> {
   try {
     await saveCardsToDeck(deckId, cards)
 
-    toastStore.success('Deck Saved Successfully')
+    messageStore.success('Deck Saved Successfully')
     router.push({ name: 'deck', params: { id: deckId } })
   } catch (e: any) {
-    toastStore.error(e.message)
+    messageStore.error(e.message)
   }
 }
 </script>
+@/stores/message

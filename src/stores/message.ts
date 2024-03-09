@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import generateUID from '@/utils/uid'
 
-export const useToastStore = defineStore('toast', () => {
+export const useMessageStore = defineStore('message', () => {
   const toasts = ref<TeenyToast[]>([])
 
   const defaultToast: TeenyToast = {

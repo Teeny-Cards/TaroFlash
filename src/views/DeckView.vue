@@ -44,6 +44,15 @@
       :index="editCardIndex"
     />
   </TeenyModal>
+
+  <TeenyAlert
+    :open="true"
+    title="Delete Card"
+    :message="`Are you sure you want to delete ${editCardIndex}?`"
+  >
+    <TeenyButton variant="muted" icon-left="close">Cancel</TeenyButton>
+    <TeenyButton variant="danger" icon-left="delete">Delete</TeenyButton>
+  </TeenyAlert>
 </template>
 
 <script setup lang="ts">
@@ -51,12 +60,12 @@ import TeenyCard from '@/components/TeenyCard.vue'
 import TeenyIcon from '@/components/TeenyIcon.vue'
 import TeenyButton from '@/components/TeenyButton.vue'
 import TeenyModal from '@/components/TeenyModal.vue'
+import TeenyAlert from '@/components/TeenyAlert.vue'
 import CardList from '@/components/DeckViewCardList.vue'
 import EditCardModal from '@/components/DeckViewEditCardModal.vue'
 import { useDeckStore } from '@/stores/decks'
-import { useToastStore } from '@/stores/toast'
+import { useMessageStore } from '@/stores/message'
 import { onMounted, ref } from 'vue'
-import { updateCardsByDeckID } from '@/services/cardService'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 
@@ -68,7 +77,7 @@ const props = defineProps({
 })
 
 const deckStore = useDeckStore()
-const toastStore = useToastStore()
+const messageStore = useMessageStore()
 const router = useRouter()
 
 const { currentDeck, currentDeckCards } = storeToRefs(deckStore)
@@ -88,8 +97,9 @@ function routeBack(): void {
 async function getDeck(): Promise<void> {
   try {
     await deckStore.fetchDeckById(props.id)
+    await deckStore.fetchCardsByDeckId(props.id)
   } catch (e: any) {
-    toastStore.error(e.message)
+    messageStore.error(e.message)
     // router.push({ name: 'dashboard' })
   }
 }
@@ -101,11 +111,11 @@ function onEditCard(index: number): void {
 
 async function saveCards(cards: CardMutation[]): Promise<void> {
   try {
-    await updateCardsByDeckID(props.id, cards)
+    await deckStore.updateCardsByDeckId(props.id, cards)
     editCardModalVisible.value = false
-    toastStore.success('Saved Successfully')
+    messageStore.success('Saved Successfully')
   } catch (e: any) {
-    toastStore.error(e.message)
+    messageStore.error(e.message)
   }
 }
 </script>

@@ -13,13 +13,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useDeckStore } from '@/stores/decks'
-import { useToastStore } from '@/stores/toast'
+import { useMessageStore } from '@/stores/message'
 import { storeToRefs } from 'pinia'
 import TeenyDeck from '@/components/TeenyDeck.vue'
 
 const loading = ref(true)
 const deckStore = useDeckStore()
-const toastStore = useToastStore()
+const messageStore = useMessageStore()
 const { decks } = storeToRefs(deckStore)
 
 onMounted(async () => {
@@ -27,7 +27,8 @@ onMounted(async () => {
     await deckStore.fetchUserDecks()
     loading.value = false
   } catch (e: any) {
-    toastStore.error(e.message)
+    messageStore.error(e.message)
   }
 })
 </script>
+@/stores/message

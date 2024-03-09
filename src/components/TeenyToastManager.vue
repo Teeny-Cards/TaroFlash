@@ -12,14 +12,15 @@
 </template>
 
 <script setup lang="ts">
-import { useToastStore } from '@/stores/toast'
+import { useMessageStore } from '@/stores/message'
 import { storeToRefs } from 'pinia'
 import TeenyToast from '@/components//TeenyToast.vue'
 
-const toastStore = useToastStore()
-const { toasts } = storeToRefs(toastStore)
+const messageStore = useMessageStore()
+const { toasts } = storeToRefs(messageStore)
 
 function onCloseToast(toast: TeenyToast): void {
-  toastStore.removeToast(toast)
+  messageStore.removeToast(toast)
 }
 </script>
+@/stores/message
