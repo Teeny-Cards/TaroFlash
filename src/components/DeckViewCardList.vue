@@ -2,15 +2,15 @@
   <div deck-view__card-list class="flex flex-col w-full">
     <div
       deck-view__card-list__item
-      v-for="(card, index) in cards"
+      v-for="card in cards"
       :key="card.id"
       class="px-2.5 py-4 border-b border-b-grey w-full border-dashed flex items-center justify-between"
-      @click="$emit('editCard', index)"
+      @click="$emit('edit-card', card)"
     >
       <DeckViewCardListItem
         :card="card"
-        @moveCard="(card: Card) => $emit('moveCard', card)"
-        @deleteCard="(card: Card) => $emit('deleteCard', card)"
+        @moveCard="(card: Card) => $emit('move-card', card)"
+        @deleteCard="(card: Card) => $emit('delete-card', card)"
       />
     </div>
   </div>
@@ -25,8 +25,8 @@ defineProps({
 })
 
 defineEmits<{
-  (e: 'editCard', index: number): void
-  (e: 'moveCard', card: Card): void
-  (e: 'deleteCard', card: Card): void
+  (e: 'edit-card', card: Card): void
+  (e: 'move-card', card: Card): void
+  (e: 'delete-card', card: Card): void
 }>()
 </script>

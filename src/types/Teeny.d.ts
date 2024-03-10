@@ -10,7 +10,8 @@ type TeenyToast = {
 type TeenyAlert = {
   title: string
   message: string
-  actions?: [ButtonAction, ButtonAction?]
+  actions: [TeenyButton, TeenyButton?]
+  id?: string
 }
 
 type TeenyButton = {

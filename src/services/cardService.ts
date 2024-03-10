@@ -8,7 +8,8 @@ import {
   serverTimestamp,
   collection,
   getDocs,
-  orderBy
+  orderBy,
+  deleteDoc
 } from 'firebase/firestore'
 
 const saveCardsToDeck = async (deckID: string, cards: CardMutation[]): Promise<void> => {
@@ -110,4 +111,21 @@ const deleteCardsByDeckID = async (deckID: string): Promise<void> => {
   }
 }
 
-export { saveCardsToDeck, updateCardsByDeckID, getCardsByDeckID, deleteCardsByDeckID }
+const deleteCardById = async (cardID: string): Promise<void> => {
+  const db = getFirestore()
+  const cardRef = doc(db, 'cards', cardID)
+
+  try {
+    await deleteDoc(cardRef)
+  } catch (e) {
+    throw TeenyError.fromError(e)
+  }
+}
+
+export {
+  saveCardsToDeck,
+  updateCardsByDeckID,
+  getCardsByDeckID,
+  deleteCardsByDeckID,
+  deleteCardById
+}

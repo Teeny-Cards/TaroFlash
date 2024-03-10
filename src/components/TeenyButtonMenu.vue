@@ -45,22 +45,11 @@ import { onUnmounted, ref } from 'vue'
 import { onMounted } from 'vue'
 import { nextTick } from 'vue'
 
-export interface Action {
-  label: string
-  action: () => void
-  variant?: string
-  inverted?: boolean
-  iconLeft?: string
-  iconRight?: string
-  iconOnly?: boolean
-  size?: string
-}
-
 defineProps({
   triggerLabel: String,
   variant: String,
   inverted: Boolean,
-  actions: Array<Action>
+  actions: Array<TeenyButton>
 })
 
 onMounted(() => {

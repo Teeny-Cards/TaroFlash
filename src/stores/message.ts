@@ -4,7 +4,7 @@ import generateUID from '@/utils/uid'
 export const useMessageStore = defineStore('message', {
   state: () => ({
     toasts: [] as TeenyToast[],
-    alerts: [] as TeenyAlert[]
+    currentAlert: null as TeenyAlert | null
   }),
 
   getters: {
@@ -15,10 +15,26 @@ export const useMessageStore = defineStore('message', {
       message: '',
       subMessage: '',
       id: ''
+    }),
+
+    defaultAlert: (): TeenyAlert => ({
+      title: '',
+      message: '',
+      actions: [{ label: 'Close', action: () => {} }],
+      id: generateUID()
     })
   },
 
   actions: {
+    alert(alert: TeenyAlert): void {
+      const newAlert = { ...this.defaultAlert, ...alert }
+      this.currentAlert = newAlert
+    },
+
+    removeAlert(): void {
+      this.currentAlert = null
+    },
+
     addToast(toast: TeenyToast): void {
       const newToast = { ...this.defaultToast, ...toast, id: generateUID() }
       this.toasts.push(newToast)

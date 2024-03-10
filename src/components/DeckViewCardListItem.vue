@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import TeenyCard from '@/components/TeenyCard.vue'
 import TeenyIcon from '@/components/TeenyIcon.vue'
-import TeenyButtonMenu, { type Action } from '@/components/TeenyButtonMenu.vue'
+import TeenyButtonMenu from '@/components/TeenyButtonMenu.vue'
 import type { PropType } from 'vue'
 
 const props = defineProps({
@@ -36,7 +36,7 @@ const emit = defineEmits<{
   (e: 'deleteCard', card: Card): void
 }>()
 
-const moreMenuActions: Action[] = [
+const moreMenuActions: TeenyButton[] = [
   {
     label: 'Select',
     action: () => {},

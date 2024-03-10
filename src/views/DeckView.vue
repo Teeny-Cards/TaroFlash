@@ -31,7 +31,11 @@
           <TeenyButton icon-left="settings" variant="muted" icon-only></TeenyButton>
         </div>
       </div>
-      <CardList :cards="currentDeckCards" @editCard="onEditCard"></CardList>
+      <CardList
+        :cards="currentDeckCards"
+        @edit-card="onEditCard"
+        @delete-card="onDeleteCard"
+      ></CardList>
     </section>
   </div>
 
@@ -41,18 +45,9 @@
       @cancel="editCardModalVisible = false"
       @save="saveCards"
       :cards="currentDeckCards"
-      :index="editCardIndex"
+      :index="editingCard?.order ?? 0"
     />
   </TeenyModal>
-
-  <TeenyAlert
-    :open="true"
-    title="Delete Card"
-    :message="`Are you sure you want to delete ${editCardIndex}?`"
-  >
-    <TeenyButton variant="muted" icon-left="close">Cancel</TeenyButton>
-    <TeenyButton variant="danger" icon-left="delete">Delete</TeenyButton>
-  </TeenyAlert>
 </template>
 
 <script setup lang="ts">
@@ -60,7 +55,6 @@ import TeenyCard from '@/components/TeenyCard.vue'
 import TeenyIcon from '@/components/TeenyIcon.vue'
 import TeenyButton from '@/components/TeenyButton.vue'
 import TeenyModal from '@/components/TeenyModal.vue'
-import TeenyAlert from '@/components/TeenyAlert.vue'
 import CardList from '@/components/DeckViewCardList.vue'
 import EditCardModal from '@/components/DeckViewEditCardModal.vue'
 import { useDeckStore } from '@/stores/decks'
@@ -68,6 +62,7 @@ import { useMessageStore } from '@/stores/message'
 import { onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
+import { deleteCardById } from '@/services/cardService'
 
 const props = defineProps({
   id: {
@@ -83,7 +78,7 @@ const router = useRouter()
 const { currentDeck, currentDeckCards } = storeToRefs(deckStore)
 const loading = ref(true)
 const editCardModalVisible = ref(false)
-const editCardIndex = ref(0)
+const editingCard = ref<Card | undefined>()
 
 onMounted(async () => {
   await getDeck()
@@ -92,6 +87,32 @@ onMounted(async () => {
 
 function routeBack(): void {
   router.go(-1)
+}
+
+function onDeleteCard(card: Card): void {
+  editingCard.value = card
+
+  messageStore.alert({
+    title: 'Delete Card',
+    message: `Are you sure you want to delete ${card.frontText}?`,
+    actions: [
+      {
+        label: 'Cancel',
+        variant: 'muted',
+        iconLeft: 'close',
+        action: () => messageStore.removeAlert()
+      },
+      {
+        label: 'Delete',
+        variant: 'danger',
+        iconLeft: 'delete',
+        action: () => {
+          messageStore.removeAlert()
+          deleteCard(card)
+        }
+      }
+    ]
+  })
 }
 
 async function getDeck(): Promise<void> {
@@ -104,8 +125,8 @@ async function getDeck(): Promise<void> {
   }
 }
 
-function onEditCard(index: number): void {
-  editCardIndex.value = index
+function onEditCard(card: Card): void {
+  editingCard.value = card
   editCardModalVisible.value = true
 }
 
@@ -114,6 +135,15 @@ async function saveCards(cards: CardMutation[]): Promise<void> {
     await deckStore.updateCardsByDeckId(props.id, cards)
     editCardModalVisible.value = false
     messageStore.success('Saved Successfully')
+  } catch (e: any) {
+    messageStore.error(e.message)
+  }
+}
+
+async function deleteCard(card: Card) {
+  try {
+    await deleteCardById(card.id)
+    messageStore.success('Deleted Successfully')
   } catch (e: any) {
     messageStore.error(e.message)
   }
