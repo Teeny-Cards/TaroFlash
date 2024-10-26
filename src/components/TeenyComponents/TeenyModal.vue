@@ -32,24 +32,31 @@ const props = defineProps({
   }
 })
 
+const scrollTop = ref(document.documentElement.scrollTop)
+const released = ref(false)
+
 onUnmounted(() => {
   releaseScroll()
 })
-
-const scrollTop = ref(document.documentElement.scrollTop)
 
 function captureScroll(): void {
   scrollTop.value = document.documentElement.scrollTop
   document.body.style.position = 'fixed'
   document.body.style.top = `${-scrollTop.value}px`
   document.body.style.width = '100%'
+
+  released.value = false
 }
 
 function releaseScroll(): void {
+  if (released.value) return
+
   document.body.style.position = ''
   document.body.style.top = ''
   document.body.style.width = ''
   window.scrollTo(0, scrollTop.value)
+
+  released.value = true
 }
 
 function close(e: Event) {
