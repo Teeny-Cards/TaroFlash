@@ -19,9 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import TeenyCard from '@/components/TeenyCard.vue'
-import TeenyIcon from '@/components/TeenyIcon.vue'
-import TeenyButtonMenu from '@/components/TeenyButtonMenu.vue'
+import TeenyCard from '@teeny/TeenyCard.vue'
+import TeenyIcon from '@teeny/TeenyIcon.vue'
+import TeenyButtonMenu from '@teeny/TeenyButtonMenu.vue'
 import type { PropType } from 'vue'
 
 const props = defineProps({

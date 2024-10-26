@@ -37,8 +37,8 @@
 <script setup lang="ts">
 import { useMessageStore } from '@/stores/message'
 import { storeToRefs } from 'pinia'
-import TeenyAlert from '@/components/TeenyAlert.vue'
-import TeenyButton from '@/components/TeenyButton.vue'
+import TeenyAlert from './TeenyAlert.vue'
+import TeenyButton from './TeenyButton.vue'
 import { computed, type ComputedRef } from 'vue'
 
 const messageStore = useMessageStore()

@@ -6,6 +6,6 @@
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import TeenyToastManager from '@/components/TeenyToastManager.vue'
-import TeenyAlertManager from '@/components/TeenyAlertManager.vue'
+import TeenyToastManager from '@teeny/TeenyToastManager.vue'
+import TeenyAlertManager from '@teeny/TeenyAlertManager.vue'
 </script>

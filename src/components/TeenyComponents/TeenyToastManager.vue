@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import { useMessageStore } from '@/stores/message'
 import { storeToRefs } from 'pinia'
-import TeenyToast from '@/components//TeenyToast.vue'
+import TeenyToast from './TeenyToast.vue'
 
 const messageStore = useMessageStore()
 const { toasts } = storeToRefs(messageStore)

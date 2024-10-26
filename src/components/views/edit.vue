@@ -79,10 +79,10 @@
 </template>
 
 <script setup lang="ts">
-import TeenyCard from '@/components/TeenyCard.vue'
-import TeenyButton from '@/components/TeenyButton.vue'
-import TeenyInput from '@/components/TeenyInput.vue'
-import TeenyCardEditor from '@/components/TeenyCardEditor.vue'
+import TeenyCard from '@teeny/TeenyCard.vue'
+import TeenyButton from '@teeny/TeenyButton.vue'
+import TeenyInput from '@teeny/TeenyInput.vue'
+import TeenyCardEditor from '@teeny/TeenyCardEditor.vue'
 import { ref, type PropType, computed } from 'vue'
 import imageUploader from '@/components/TheImageUploader.vue'
 import generateUID from '@/utils/uid'

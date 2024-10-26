@@ -51,10 +51,10 @@
 </template>
 
 <script setup lang="ts">
-import TeenyCard from '@/components/TeenyCard.vue'
-import TeenyIcon from '@/components/TeenyIcon.vue'
-import TeenyButton from '@/components/TeenyButton.vue'
-import TeenyModal from '@/components/TeenyModal.vue'
+import TeenyCard from '@teeny/TeenyCard.vue'
+import TeenyIcon from '@teeny/TeenyIcon.vue'
+import TeenyButton from '@teeny/TeenyButton.vue'
+import TeenyModal from '@teeny/TeenyModal.vue'
 import CardList from '@/components/DeckViewCardList.vue'
 import EditCardModal from '@/components/DeckViewEditCardModal.vue'
 import { useDeckStore } from '@/stores/decks'

@@ -39,9 +39,9 @@
 </template>
 
 <script setup lang="ts">
-import TeenyIcon from '@/components/TeenyIcon.vue'
-import TeenyButton from '@/components/TeenyButton.vue'
-import TeenyCardEditor from '@/components/TeenyCardEditor.vue'
+import TeenyIcon from '@teeny/TeenyIcon.vue'
+import TeenyButton from '@teeny/TeenyButton.vue'
+import TeenyCardEditor from '@teeny/TeenyCardEditor.vue'
 import { ref, type PropType, onMounted } from 'vue'
 
 const CONTAINER_HEIGHT = 306.42
