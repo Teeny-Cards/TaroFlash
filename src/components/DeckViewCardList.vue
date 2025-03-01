@@ -4,7 +4,7 @@
       deck-view__card-list__item
       v-for="card in cards"
       :key="card.id"
-      class="px-2.5 py-4 border-b border-b-grey w-full border-dashed flex items-center justify-between"
+      class="px-2.5 py-4 border-b border-b-grey w-full border-dashed flex items-center justify-between cursor-pointer hover:bg-grey-light"
       @click="$emit('edit-card', card)"
     >
       <DeckViewCardListItem

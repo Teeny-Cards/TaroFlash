@@ -29,7 +29,7 @@
             :iconRight="action.iconRight"
             :iconOnly="action.iconOnly"
             :size="action.size"
-            @click="action.action"
+            @click="onOptionClick(action)"
           >
             {{ action.label }}
           </TeenyButton>
@@ -63,6 +63,11 @@ onUnmounted(() => {
 const teenyDropdown = ref<HTMLDivElement>()
 const dropdownVisible = ref(false)
 
+function onOptionClick(action: TeenyButton): void {
+  action.action()
+  closeDropdown()
+}
+
 async function toggleDropdown(e: Event): Promise<void> {
   e.stopPropagation()
 
@@ -82,12 +87,8 @@ async function toggleDropdown(e: Event): Promise<void> {
   }
 }
 
-function closeDropdown(e: MouseEvent): void {
-  const clickedElement = e.target as Node
-
-  if (!teenyDropdown.value?.contains(clickedElement)) {
-    dropdownVisible.value = false
-  }
+function closeDropdown(): void {
+  dropdownVisible.value = false
 }
 
 function animateActionsIn(elements: Element[], delay: number): void {

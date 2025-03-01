@@ -6,21 +6,20 @@
   {{ card.backText }}
   <TeenyButtonMenu :actions="moreMenuActions">
     <template #trigger="{ toggleDropdown }">
-      <div
+      <TeenyButton
         @click="toggleDropdown"
-        class="flex items-center justify-center w-6 h-6 rounded-full bg-grey-light"
-        tabindex="0"
-        role="button"
-      >
-        <TeenyIcon src="more" size="teeny" />
-      </div>
+        icon-only
+        variant="muted"
+        icon-right="more"
+        size="small"
+      />
     </template>
   </TeenyButtonMenu>
 </template>
 
 <script setup lang="ts">
 import TeenyCard from '@teeny/TeenyCard.vue'
-import TeenyIcon from '@teeny/TeenyIcon.vue'
+import TeenyButton from '@teeny/TeenyButton.vue'
 import TeenyButtonMenu from '@teeny/TeenyButtonMenu.vue'
 import type { PropType } from 'vue'
 
