@@ -1,11 +1,84 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-@layer utilities {
-  .rotate-y-180 {
-    transform: rotateY(180deg);
+@theme {
+  --color-*: initial;
+  --color-blue: #1491d1;
+  --color-blue-light: #41a9df;
+
+  --color-arctic: #9ad5f3;
+  --color-arctic-light: #b4dbef;
+
+  --color-leaf: #e4edd9;
+  --color-leaf-light: #ecf8e2;
+
+  --color-orange: #fbc56f;
+  --color-orange-light: #f7d279;
+
+  --color-pink: #f388a5;
+  --color-pink-light: #f599b3;
+
+  --color-grey: #959595;
+  --color-grey-light: #d2d2d2;
+  --color-grey-dark: #4f4f4f;
+
+  --color-red: #f66a6a;
+  --color-parchment: #f3f1ea;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --radius-*: initial;
+  --radius-xs: 9px;
+  --radius-sm: 12px;
+  --radius: 14px;
+  --radius-md: 16px;
+  --radius-lg: 18px;
+  --radius-xl: 32px;
+  --radius-2xl: 38px;
+  --radius-3xl: 48px;
+  --radius-4xl: 64px;
+  --radius-full: 9999px;
+
+  --shadow-*: initial;
+  --shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.15);
+  --shadow-modal: 8px 8px 42.9px 0px rgba(0, 0, 0, 0.25);
+
+  --font-primary: Arial Rounded MT Bold, Arial, sans-serif;
+
+  --aspect-card: 7 / 8.25;
+
+  --spacing-card-teeny: 28px;
+  --spacing-card-xs: 43px;
+  --spacing-card-small: 138px;
+  --spacing-card-base: 192px;
+  --spacing-card-large: 260px;
+
+  --container-app: 1306px;
+  --container-screen-2_5xl: 1404px;
+
+  --grid-template-columns-deck-view-lg: 284px minmax(811px, 1024px);
+  --grid-template-columns-deck-desktop: repeat(4, 192px);
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
   }
+}
+
+@utility rotate-y-180 {
+  transform: rotateY(180deg);
 }
 
 @layer base {

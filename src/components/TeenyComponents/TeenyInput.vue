@@ -3,7 +3,7 @@
     :type="props.type"
     :placeholder="props.placeholder"
     v-model="value"
-    class="border-b border-gray-400 focus:outline-none py-1 w-full bg-transparent"
+    class="border-b border-gray-400 focus:outline-hidden py-1 w-full bg-transparent"
   />
 </template>
 

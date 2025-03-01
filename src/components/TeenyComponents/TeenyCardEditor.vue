@@ -9,7 +9,7 @@
       <textarea
         teeny-card-editor__input="front"
         name="frontText"
-        class="w-full text-2xl text-center bg-transparent resize-none text-grey-dark focus:outline-none"
+        class="w-full text-2xl text-center bg-transparent resize-none text-grey-dark focus:outline-hidden"
         rows="1"
         placeholder="Front"
         :value="card.frontText"
@@ -22,7 +22,7 @@
     <textarea
       teeny-card-editor__input="back"
       name="backText"
-      class="w-full text-2xl text-center bg-transparent resize-none focus:outline-none text-grey-dark"
+      class="w-full text-2xl text-center bg-transparent resize-none focus:outline-hidden text-grey-dark"
       rows="1"
       placeholder="Back"
       :value="card.backText"
