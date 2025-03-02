@@ -28,7 +28,7 @@
 
   --radius-*: initial;
   --radius-xs: 9px;
-  --radius-sm: 12px;
+  --radius-sm: 13px;
   --radius: 14px;
   --radius-md: 16px;
   --radius-lg: 18px;
@@ -107,7 +107,7 @@
   }
   .btn-teeny {
     font-size: var(--text-sm);
-    border-radius: var(--radius-xs);
+    border-radius: var(--radius-sm);
     gap: calc(var(--spacing) * 1.5);
     padding: calc(var(--spacing) * 1) calc(var(--spacing) * 1.5);
   }

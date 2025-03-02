@@ -1,13 +1,21 @@
 <template>
   <div v-if="loading">Loading...</div>
-  <div v-else>
-    <section deck-view class="flex flex-col items-center gap-6 px-4 py-7">
-      <div deck-view__top-actions class="hidden w-full">
-        <TeenyButton size="teeny" icon-left="chevron-left" variant="muted" @click="routeBack"
-          >Back</TeenyButton
-        >
-      </div>
-      <div deck-view__header class="flex flex-col items-center gap-6 w-max">
+  <section v-else tid="deck-view" class="flex flex-col items-center gap-6">
+    <div tid="top-actions" class="w-full">
+      <TeenyButton
+        size="teeny"
+        icon-left="chevron-left"
+        icon-size="teeny"
+        variant="muted"
+        @click="routeBack"
+        >Back</TeenyButton
+      >
+    </div>
+    <div tid="body" class="flex flex-col items-center gap-6 sm:gap-16 w-full lg:flex-row lg:gap-26">
+      <div
+        tid="body-header"
+        class="flex flex-col items-center gap-6 w-max sm:flex-row sm:items-end lg:flex-col lg:items-start"
+      >
         <TeenyCard size="large" class="relative overflow-hidden">
           <div v-if="currentDeck.image?.url" class="absolute inset-0">
             <img
@@ -16,19 +24,23 @@
               class="object-cover w-full h-full"
             /></div
         ></TeenyCard>
-        <div deck-view__header__title class="flex flex-col items-center gap-2">
-          <h1 class="w-64 m-0 text-4xl text-center font-primary text-grey-dark">
-            {{ currentDeck.title }}
-          </h1>
-          <h2 class="w-64 text-sm text-center text-grey">{{ currentDeck.description }}</h2>
-          <div deck-view__header__created-by class="flex items-center gap-2 text-blue">
-            <TeenyIcon src="user" />
-            <h2 class="text-base font-semibold font-primary">{{ currentDeck.createdBy }}</h2>
+        <div tid="header-content" class="flex flex-col items-center gap-6 sm:items-start">
+          <div tid="header-title" class="flex flex-col items-center gap-2 sm:items-start">
+            <h1 class="w-64 m-0 text-4xl text-center font-primary text-grey-dark sm:text-left">
+              {{ currentDeck.title }}
+            </h1>
+            <h2 class="w-64 text-sm text-center text-grey sm:text-left">
+              {{ currentDeck.description }}
+            </h2>
+            <div tid="header-created-by" class="flex items-center gap-2 text-blue">
+              <TeenyIcon src="user" />
+              <h2 class="text-base font-semibold font-primary">{{ currentDeck.createdBy }}</h2>
+            </div>
           </div>
-        </div>
-        <div deck-view__header__actions class="flex items-center gap-2.5">
-          <TeenyButton icon-left="play">Study</TeenyButton>
-          <TeenyButton icon-left="settings" variant="muted" icon-only></TeenyButton>
+          <div tid="header-actions" class="flex items-center gap-2.5">
+            <TeenyButton icon-left="play">Study</TeenyButton>
+            <TeenyButton icon-left="settings" variant="muted" icon-only></TeenyButton>
+          </div>
         </div>
       </div>
       <CardList
@@ -36,8 +48,8 @@
         @edit-card="onEditCard"
         @delete-card="onDeleteCard"
       ></CardList>
-    </section>
-  </div>
+    </div>
+  </section>
 
   <TeenyModal @close="editCardModalVisible = false" :open="editCardModalVisible">
     <EditCardModal

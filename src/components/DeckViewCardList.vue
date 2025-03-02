@@ -1,18 +1,15 @@
 <template>
-  <div deck-view__card-list class="flex flex-col w-full">
-    <div
-      deck-view__card-list__item
-      v-for="card in cards"
-      :key="card.id"
-      class="px-2.5 py-4 border-b border-b-grey w-full border-dashed flex items-center justify-between cursor-pointer hover:bg-grey-light"
-      @click="$emit('edit-card', card)"
-    >
+  <div tid="deck-view__card-list" class="flex gap-2 flex-col w-full">
+    <template v-for="card in cards" :key="card.id">
       <DeckViewCardListItem
+        tid="list-item"
         :card="card"
+        @click="$emit('edit-card', card)"
         @moveCard="(card: Card) => $emit('move-card', card)"
         @deleteCard="(card: Card) => $emit('delete-card', card)"
       />
-    </div>
+      <div class="w-full border-dashed border-b border-b-grey"></div>
+    </template>
   </div>
 </template>
 
