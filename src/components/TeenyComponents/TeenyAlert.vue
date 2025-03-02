@@ -14,7 +14,7 @@
         class="fixed inset-0 flex items-center justify-center px-4 pointer-events-auto py-7"
         @click="close"
       >
-        <div class="px-8 py-8 bg-white rounded-3xl flex flex-col items-center gap-8 shadow-modal">
+        <div class="px-8 py-8 bg-white rounded-12 flex flex-col items-center gap-8 shadow-modal">
           <h1 class="text-2xl font-semibold font-primary text-grey-dark text-center">
             {{ title }}
           </h1>

@@ -1,22 +1,41 @@
 <template>
   <div
-    class="hover:font-bold group px-4 py-2 w-full flex items-center justify-between cursor-pointer hover:bg-[url('../assets/svg/stripe-blue.svg')] rounded-[28px]"
+    class="hover:font-bold group px-4 py-2 w-full flex items-center justify-between cursor-pointer hover:bg-(image:--stripe-blue-bg) rounded-[28px]"
   >
     <div class="flex items-center gap-6 group-hover:text-white" tabindex="0" role="button">
       <TeenyCard size="xs" />
       {{ card.frontText }}
     </div>
     <span class="group-hover:text-white">{{ card.backText }}</span>
-    <TeenyButtonMenu :actions="moreMenuActions">
+    <div
+      v-if="selectionModeActive"
+      tid="select-radio-button"
+      class="w-7 h-7 rounded-full flex justify-center items-center"
+      :class="{
+        'bg-blue-light': selected,
+        'bg-white': !selected,
+        'group-hover:ring-white group-hover:ring-3': selected
+      }"
+      @click.stop="emit('selectCard', card)"
+    >
+      <TeenyIcon
+        v-if="selected"
+        src="check"
+        class="text-blue"
+        :class="{ 'text-white': selected }"
+      />
+    </div>
+    <TeenyButtonMenu v-else :actions="moreMenuActions">
       <template #trigger="{ toggleDropdown }">
         <TeenyButton
           @click="toggleDropdown"
           icon-only
           variant="muted"
-          icon-right="more"
           size="small"
-          class="group-hover:bg-white group-hover:text-blue!"
-        />
+          class="group-hover:bg-white group-hover:text-blue hover:bg-blue-light hover:ring-white hover:ring-3 hover:text-white"
+        >
+          <TeenyIcon src="more" />
+        </TeenyButton>
       </template>
     </TeenyButtonMenu>
   </div>
@@ -24,6 +43,7 @@
 
 <script setup lang="ts">
 import TeenyCard from '@teeny/TeenyCard.vue'
+import TeenyIcon from '@teeny/TeenyIcon.vue'
 import TeenyButton from '@teeny/TeenyButton.vue'
 import TeenyButtonMenu from '@teeny/TeenyButtonMenu.vue'
 import type { PropType } from 'vue'
@@ -32,10 +52,13 @@ const props = defineProps({
   card: {
     type: Object as PropType<Card>,
     required: true
-  }
+  },
+  selected: Boolean,
+  selectionModeActive: Boolean
 })
 
 const emit = defineEmits<{
+  (e: 'selectCard', card: Card): void
   (e: 'moveCard', card: Card): void
   (e: 'deleteCard', card: Card): void
 }>()
@@ -43,7 +66,7 @@ const emit = defineEmits<{
 const moreMenuActions: TeenyButton[] = [
   {
     label: 'Select',
-    action: () => {},
+    action: () => emit('selectCard', props.card),
     inverted: true,
     iconRight: 'check'
   },

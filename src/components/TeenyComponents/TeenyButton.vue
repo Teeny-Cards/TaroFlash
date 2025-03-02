@@ -5,7 +5,8 @@
       [sizeClass[props.size]]: true,
       [variantClass[props.variant]]: true,
       'btn-inverted': props.inverted,
-      'btn-icon-only': props.iconOnly
+      'btn-icon-only': props.iconOnly,
+      'btn-fancy-hover': props.fancyHover
     }"
     @click.stop
     teeny-button
@@ -58,7 +59,8 @@ const props = defineProps({
   inverted: Boolean,
   iconOnly: Boolean,
   iconRight: String,
-  iconLeft: String
+  iconLeft: String,
+  fancyHover: Boolean
 })
 
 const variantClass: { [key: string]: string } = {

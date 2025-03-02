@@ -54,7 +54,7 @@
       </div>
     </section>
     <section
-      class="bg-white rounded-3xl w-full flex flex-col-reverse gap-8 items-center shadow-md p-20 relative col-start-2"
+      class="bg-white rounded-12 w-full flex flex-col-reverse gap-8 items-center shadow-md p-20 relative col-start-2"
     >
       <TeenyCardEditor
         v-for="(card, index) in nonDeletedCards"

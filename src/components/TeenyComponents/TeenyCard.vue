@@ -28,10 +28,10 @@ const cardSize: { [key: string]: string } = {
 }
 
 const borderRadius: { [key: string]: string } = {
-  teeny: 'rounded-xs',
-  xs: 'rounded',
-  small: 'rounded-xl',
-  base: 'rounded-2xl',
-  large: 'rounded-4xl'
+  teeny: 'rounded-2',
+  xs: 'rounded-3',
+  small: 'rounded-8',
+  base: 'rounded-10',
+  large: 'rounded-16'
 }
 </script>

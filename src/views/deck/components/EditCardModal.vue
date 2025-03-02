@@ -1,7 +1,7 @@
 <template>
   <div
     edit-card-modal
-    class="w-full bg-orange rounded-4xl flex flex-col items-center justify-center gap-4 shadow-modal text-white py-4 bg-[url('../assets/img/stripe-orange.png')] bg-cover overflow-hidden"
+    class="w-full bg-orange rounded-16 flex flex-col items-center justify-center gap-4 shadow-modal text-white py-4 bg-[url('../assets/img/stripe-orange.png')] bg-cover overflow-hidden"
   >
     <div edit-card-modal__title class="flex justify-center w-full">
       <h1 class="text-2xl font-semibold font-primary">Edit Card</h1>

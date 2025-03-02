@@ -7,7 +7,7 @@
     leave-to-class="translate-x-full"
     leave-active-class="transition-transform transform"
   >
-    <div teeny-toast v-if="open" class="p-4 text-white shadow-lg rounded-xl w-72" :class="color">
+    <div teeny-toast v-if="open" class="p-4 text-white shadow-lg rounded-8 w-72" :class="color">
       {{ toast.message }}
     </div>
   </transition>

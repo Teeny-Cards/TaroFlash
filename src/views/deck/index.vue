@@ -11,7 +11,10 @@
         >Back</TeenyButton
       >
     </div>
-    <div tid="body" class="flex flex-col items-center gap-6 sm:gap-16 w-full lg:flex-row lg:gap-26">
+    <div
+      tid="body"
+      class="flex flex-col items-center gap-6 sm:gap-16 w-full lg:flex-row lg:gap-26 lg:items-start"
+    >
       <div
         tid="body-header"
         class="flex flex-col items-center gap-6 w-max sm:flex-row sm:items-end lg:flex-col lg:items-start"
@@ -38,16 +41,37 @@
             </div>
           </div>
           <div tid="header-actions" class="flex items-center gap-2.5">
-            <TeenyButton icon-left="play">Study</TeenyButton>
-            <TeenyButton icon-left="settings" variant="muted" icon-only></TeenyButton>
+            <TeenyButton icon-left="play" fancy-hover>Study</TeenyButton>
+            <DeckSettingsModal />
           </div>
         </div>
       </div>
-      <CardList
-        :cards="currentDeckCards"
-        @edit-card="onEditCard"
-        @delete-card="onDeleteCard"
-      ></CardList>
+      <div tid="card-list-container" class="flex flex-col gap-8 w-full">
+        <div tid="card-list__actions" class="flex justify-center gap-2.5 w-full">
+          <TeenyButton
+            icon-only
+            icon-left="close"
+            variant="muted"
+            @click="cancelSelectionMode"
+          ></TeenyButton>
+          <TeenyButton icon-only icon-left="move-item"></TeenyButton>
+          <TeenyButton icon-only icon-left="delete" variant="danger"></TeenyButton>
+        </div>
+        <div tid="card-list" class="flex gap-2 flex-col w-full">
+          <template v-for="card in currentDeckCards" :key="card.id">
+            <ListItem
+              tid="card-list__item"
+              :card="card"
+              :selected="selectedCards.includes(card)"
+              :selectionModeActive="selectionModeActive"
+              @click="onEditCard(card)"
+              @selectCard="(card: Card) => onSelectCard(card)"
+              @deleteCard="(card: Card) => onDeleteCard(card)"
+            />
+            <div class="w-full border-dashed border-b border-b-grey"></div>
+          </template>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -67,8 +91,9 @@ import TeenyCard from '@teeny/TeenyCard.vue'
 import TeenyIcon from '@teeny/TeenyIcon.vue'
 import TeenyButton from '@teeny/TeenyButton.vue'
 import TeenyModal from '@teeny/TeenyModal.vue'
-import CardList from '@/components/DeckViewCardList.vue'
-import EditCardModal from '@/components/DeckViewEditCardModal.vue'
+import ListItem from './components/ListItem.vue'
+import EditCardModal from './components/EditCardModal.vue'
+import DeckSettingsModal from '@/components/DeckSettingsModal.vue'
 import { useDeckStore } from '@/stores/decks'
 import { useMessageStore } from '@/stores/message'
 import { onMounted, ref } from 'vue'
@@ -91,6 +116,8 @@ const { currentDeck, currentDeckCards } = storeToRefs(deckStore)
 const loading = ref(true)
 const editCardModalVisible = ref(false)
 const editingCard = ref<Card | undefined>()
+const selectionModeActive = ref(false)
+const selectedCards = ref<Card[]>([])
 
 onMounted(async () => {
   await getDeck()
@@ -137,7 +164,26 @@ async function getDeck(): Promise<void> {
   }
 }
 
+function cancelSelectionMode(): void {
+  selectionModeActive.value = false
+  selectedCards.value = []
+}
+
+function onSelectCard(card: Card): void {
+  selectionModeActive.value = true
+
+  if (selectedCards.value.includes(card)) {
+    selectedCards.value = selectedCards.value.filter((c) => c.id !== card.id)
+  } else {
+    selectedCards.value.push(card)
+  }
+}
+
 function onEditCard(card: Card): void {
+  if (selectionModeActive.value) {
+    return onSelectCard(card)
+  }
+
   editingCard.value = card
   editCardModalVisible.value = true
 }

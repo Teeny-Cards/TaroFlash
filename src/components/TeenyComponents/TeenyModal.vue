@@ -63,7 +63,6 @@ function close(e: Event) {
   const target = e.target as HTMLElement
 
   if (target.hasAttribute('teeny-modal')) {
-    releaseScroll()
     emit('close')
   }
 }

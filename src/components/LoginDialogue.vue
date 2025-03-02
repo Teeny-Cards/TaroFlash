@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 border border-gray-400 rounded">
+  <div class="p-4 border border-gray-400 rounded-12">
     <div class="flex flex-col gap-8 w-96 p-8 items-center">
       <h1 class="text-2xl font-bold">{{ signText }}</h1>
       <input
@@ -16,7 +16,7 @@
         v-model="password"
         class="border-b border-gray-400 focus:outline-hidden px-2 py-1 w-full bg-transparent"
       />
-      <button class="bg-cyan-400 w-full rounded p-3 text-white" @click="onClick">
+      <button class="bg-cyan-400 w-full rounded-12 p-3 text-white" @click="onClick">
         {{ signText }}
       </button>
       <span v-if="props.signIn"

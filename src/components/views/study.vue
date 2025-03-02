@@ -1,6 +1,6 @@
 <template>
   <section
-    class="h-full bg-white rounded-2xl shadow-md flex flex-col gap-6 justify-center items-center p-16 m-16 relative"
+    class="h-full bg-white rounded-10 shadow-md flex flex-col gap-6 justify-center items-center p-16 m-16 relative"
   >
     <TeenyCard
       size="large"
