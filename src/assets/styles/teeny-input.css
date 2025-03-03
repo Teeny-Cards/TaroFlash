@@ -18,10 +18,10 @@
 
   .teeny-input.input-large {
     padding: calc(var(--spacing) * 4) calc(var(--spacing) * 6);
-    border-radius: var(--radius-8);
+    border-radius: var(--radius-7);
   }
   .teeny-input.input-large input {
-    font-size: var(--text-2xl);
+    font-size: var(--text-xl);
     font-weight: bold;
     color: var(--color-grey-dark);
     border-bottom: 1px dashed var(--color-grey-dark);

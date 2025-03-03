@@ -26,7 +26,8 @@
   --stripe-blue-bg: url('../svg/stripe-blue.svg');
   --curve-green-bg: url('../svg/curve-green.svg');
 
-  --radius-1: 4px --radius-2: calc(var(--spacing) * 2); /* 8px */
+  --radius-1: var(--spacing); /* 4px */
+  --radius-2: calc(var(--spacing) * 2); /* 8px */
   --radius-3: calc(var(--spacing) * 3); /* 12px */
   --radius-4: calc(var(--spacing) * 4); /* 16px */
   --radius-5: calc(var(--spacing) * 5); /* 20px */
@@ -50,12 +51,6 @@
   --font-primary: Arial Rounded MT Bold, Arial, sans-serif;
 
   --aspect-card: 7 / 8.25;
-
-  --spacing-card-teeny: 28px;
-  --spacing-card-xs: 43px;
-  --spacing-card-small: 138px;
-  --spacing-card-base: 192px;
-  --spacing-card-large: 260px;
 
   --container-app: 1306px;
   --container-screen-2_5xl: 1404px;
