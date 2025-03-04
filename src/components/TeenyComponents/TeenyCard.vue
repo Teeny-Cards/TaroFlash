@@ -20,11 +20,11 @@ defineProps({
 })
 
 const cardSize: { [key: string]: string } = {
-  teeny: 'min-w-card-teeny max-w-card-teeny',
-  xs: 'min-w-card-xs max-w-card-xs',
-  small: 'min-w-card-small max-w-card-small',
-  base: 'min-w-card-base max-w-card-base',
-  large: 'min-w-card-large max-w-card-large'
+  teeny: 'min-w-7 max-w-7',
+  xs: 'min-w-10.75 max-w-10.75',
+  small: 'min-w-34.5 max-w-34.5',
+  base: 'min-w-48 max-w-48',
+  large: 'min-w-65 max-w-65'
 }
 
 const borderRadius: { [key: string]: string } = {

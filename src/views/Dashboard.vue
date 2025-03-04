@@ -1,6 +1,6 @@
 <template>
-  <div class="h-full flex flex-col gap-4 p-8 bg-white shadow-md">
-    <h1 class="text-2xl font-semibold">Decks</h1>
+  <div class="h-full flex flex-col gap-4">
+    <h1 class="text-2xl font-semibold text-grey-dark">All Decks</h1>
     <div class="flex gap-4">
       <div v-if="loading">Loading</div>
       <div v-else v-for="(deck, index) in decks" :key="index">
@@ -31,4 +31,3 @@ onMounted(async () => {
   }
 })
 </script>
-@/stores/message

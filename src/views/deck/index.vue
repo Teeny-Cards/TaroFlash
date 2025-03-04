@@ -17,7 +17,7 @@
     >
       <div
         tid="body-header"
-        class="flex flex-col items-center gap-6 w-max sm:flex-row sm:items-end lg:flex-col lg:items-start"
+        class="sticky top-0 flex flex-col items-center gap-6 w-max sm:flex-row sm:items-end lg:flex-col lg:items-start"
       >
         <TeenyCard size="large" class="relative overflow-hidden">
           <div v-if="currentDeck.image?.url" class="absolute inset-0">
@@ -42,7 +42,7 @@
           </div>
           <div tid="header-actions" class="flex items-center gap-2.5">
             <TeenyButton icon-left="play" fancy-hover>Study</TeenyButton>
-            <DeckSettingsModal />
+            <DeckSettingsModal :deck="currentDeck" />
           </div>
         </div>
       </div>
