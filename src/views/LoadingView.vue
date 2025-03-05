@@ -3,8 +3,8 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue'
-import { useAppStore } from '@/stores/app'
+import { onMounted, watch } from 'vue'
+import { useMemberStore } from '@/stores/member'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
@@ -12,11 +12,17 @@ import { storeToRefs } from 'pinia'
 const route = useRoute()
 const path = route.query.path as string
 
-const appStore = useAppStore()
-const { loading } = storeToRefs(appStore)
+const userStore = useMemberStore()
+const { authenticated } = storeToRefs(userStore)
 
-watch(loading, (isLoading) => {
-  if (!isLoading) {
+onMounted(() => {
+  if (authenticated.value) {
+    router.replace(path ?? '/dashboard')
+  }
+})
+
+watch(authenticated, (isAuthenticated) => {
+  if (isAuthenticated) {
     router.replace(path ?? '/dashboard')
   }
 })

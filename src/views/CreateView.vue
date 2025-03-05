@@ -6,39 +6,38 @@
 import Edit from '@/components/views/edit.vue'
 import { ref } from 'vue'
 import { createDeck } from '@/services/deckService'
-import { saveCardsToDeck } from '@/services/cardService'
+import { saveCards } from '@/services/cardService'
 import router from '@/router'
 import generateUID from '@/utils/uid'
-import { useToastStore } from '@/stores/toast'
+import { useMessageStore } from '@/stores/message'
 
-const toastStore = useToastStore()
+const messageStore = useMessageStore()
 const deck = ref<Deck>()
 const cards = ref<Card[]>([
   {
-    order: 0,
-    frontText: '',
-    backText: '',
+    front_text: '',
+    back_text: '',
     id: generateUID()
   }
 ])
 
-async function saveDeck(deck: Deck, cards: CardMutation[]): Promise<void> {
+async function saveDeck(deck: Deck, cards: Card[]): Promise<void> {
   try {
-    const doc = await createDeck(deck)
-    saveCards(doc.id, cards)
+    await createDeck(deck)
+    // saveCards(doc.id, cards)
   } catch (e: any) {
-    toastStore.error(e.message)
+    messageStore.error(e.message)
   }
 }
 
-async function saveCards(deckId: string, cards: CardMutation[]): Promise<void> {
+async function save(deckId: string, cards: Card[]): Promise<void> {
   try {
-    await saveCardsToDeck(deckId, cards)
+    await saveCards(cards)
 
-    toastStore.success('Deck Saved Successfully')
+    messageStore.success('Deck Saved Successfully')
     router.push({ name: 'deck', params: { id: deckId } })
   } catch (e: any) {
-    toastStore.error(e.message)
+    messageStore.error(e.message)
   }
 }
 </script>

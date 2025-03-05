@@ -4,9 +4,9 @@ import CreateView from '../views/CreateView.vue'
 import LoginPage from '../views/LoginPage.vue'
 import SignupPage from '../views/SignupPage.vue'
 import HomeView from '../views/HomeView.vue'
-import DeckView from '../views/DeckView.vue'
+import DeckView from '../views/deck/index.vue'
 import LoadingVue from '../views/LoadingView.vue'
-import { useUserStore } from '../stores/user'
+import { useMemberStore } from '../stores/member'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
 
@@ -65,7 +65,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const { authenticated } = storeToRefs(useUserStore())
+  const { authenticated } = storeToRefs(useMemberStore())
   const { loading } = storeToRefs(useAppStore())
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
 

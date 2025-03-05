@@ -1,6 +1,6 @@
 <template>
   <section
-    class="h-full bg-white rounded-2xl shadow-md flex flex-col gap-6 justify-center items-center p-16 m-16 relative"
+    class="h-full bg-white rounded-10 shadow-md flex flex-col gap-6 justify-center items-center p-16 m-16 relative"
   >
     <TeenyCard
       size="large"
@@ -9,7 +9,7 @@
       current-card
     >
       <span class="text-5xl font-semibold text-center">
-        {{ frontShowing ? currentCard.frontText : currentCard.backText }}
+        {{ frontShowing ? currentCard.back_text : currentCard.front_text }}
       </span>
     </TeenyCard>
 
@@ -64,9 +64,9 @@
 
 <script setup lang="ts">
 import { ref, type PropType, onMounted, onUnmounted } from 'vue'
-import TeenyCard from '@/components/TeenyComponents/TeenyCard.vue'
-import TeenyButton from '@/components/TeenyComponents/TeenyButton.vue'
-import TeenyIcon from '@/components/TeenyComponents/TeenyIcon.vue'
+import TeenyCard from '@teeny/TeenyCard.vue'
+import TeenyButton from '@teeny/TeenyButton.vue'
+import TeenyIcon from '@teeny/TeenyIcon.vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import SRC from '@/utils/SRC'
 

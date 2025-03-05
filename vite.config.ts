@@ -10,7 +10,8 @@ export default defineConfig({
   plugins: [vue(), vueJsx(), svgLoader()],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@teeny': fileURLToPath(new URL('./src/components/TeenyComponents', import.meta.url))
     }
   }
 })

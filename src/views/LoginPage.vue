@@ -1,30 +1,32 @@
 <template>
   <section class="w-full flex justify-center pt-32">
-    <LoginDialogue signIn @signedIn="signIn" />
+    <LoginDialogue signIn @signedIn="signInWithEmail" />
   </section>
 </template>
 
 <script setup lang="ts">
-import { getAuth, signInWithEmailAndPassword, type UserCredential } from 'firebase/auth'
 import LoginDialogue from '@/components/LoginDialogue.vue'
-import { useUserStore } from '@/stores/user'
+import { useMemberStore } from '@/stores/member'
 import router from '@/router'
+import { supabase } from '@/supabaseClient'
+import { TeenyError } from '@/utils/TeenyError'
 
-const auth = getAuth()
-const user = useUserStore()
+const user = useMemberStore()
 
-const signIn = async (email: string, password: string): Promise<void> => {
-  try {
-    const userCredential: UserCredential = await signInWithEmailAndPassword(auth, email, password)
-    await user.login(userCredential.user)
+async function signInWithEmail(email: string, password: string): Promise<void> {
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  })
 
-    if (user.authenticated) {
-      router.push({ name: 'dashboard' })
-    } else {
-      // TODO: Form error message
-    }
-  } catch (e) {
-    // TODO: Form error message
+  if (error) {
+    throw new TeenyError(error.message)
+  }
+
+  await user.login()
+
+  if (user.authenticated) {
+    router.push({ name: 'dashboard' })
   }
 }
 </script>

@@ -1,64 +1,84 @@
 <template>
   <button
-    class="p-2 transition-colors font-semibold flex items-center justify-center gap-1"
-    :class="{ ...styles, 'rounded-full': rounded, 'rounded-lg': !rounded }"
-    @click="$emit('onClick')"
-    data-test="teeny-button"
+    class="teeny-btn"
+    :class="{
+      [sizeClass[props.size]]: true,
+      [variantClass[props.variant]]: true,
+      'btn-inverted': props.inverted,
+      'btn-icon-only': props.iconOnly,
+      'btn-fancy-hover': props.fancyHover
+    }"
+    @click.stop
+    teeny-button
   >
-    <TeenyIcon v-if="iconLeft" :src="iconLeft" />
+    <div
+      v-if="iconLeft"
+      class="btn-icon"
+      :class="iconVariantClass[props.variant]"
+      teeny-button__icon-left
+    >
+      <TeenyIcon v-if="iconLeft" :src="iconLeft" :size="iconSize" />
+    </div>
     <slot></slot>
-    <TeenyIcon v-if="iconRight" :src="iconRight" />
+    <div
+      v-if="iconRight"
+      class="btn-icon"
+      :class="iconVariantClass[props.variant]"
+      teeny-button__icon-right
+    >
+      <TeenyIcon v-if="iconRight" :src="iconRight" :size="iconSize" />
+    </div>
   </button>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import TeenyIcon from './TeenyIcon.vue'
+import TeenyIcon from '@teeny/TeenyIcon.vue'
 
 const props = defineProps({
-  color: {
-    type: String,
-    validator(value: string) {
-      return ['danger', 'gray'].includes(value)
-    }
-  },
   variant: {
     type: String,
     validator(value: string) {
-      return ['secondary', 'ghost'].includes(value)
-    }
+      return ['interaction', 'muted', 'danger'].includes(value)
+    },
+    default: 'interaction'
   },
-  rounded: {
-    type: Boolean,
-    default: false
+  size: {
+    type: String,
+    validator(value: string) {
+      return ['large', 'base', 'small', 'teeny'].includes(value)
+    },
+    default: 'base'
   },
+  iconSize: {
+    type: String,
+    validator(value: string) {
+      return ['large', 'base', 'small', 'teeny'].includes(value)
+    },
+    default: 'small'
+  },
+  inverted: Boolean,
+  iconOnly: Boolean,
   iconRight: String,
-  iconLeft: String
+  iconLeft: String,
+  fancyHover: Boolean
 })
 
-const styles = computed(() => {
-  switch (props.color) {
-    case 'danger':
-      return {
-        'bg-red-400 text-white': props.variant === undefined,
-        'border border-red-400 border-2 text-red-400 hover:bg-red-400 hover:text-white':
-          props.variant === 'secondary',
-        'text-red-400 hover:bg-red-400 hover:text-white': props.variant === 'ghost'
-      }
-    case 'gray':
-      return {
-        'bg-gray-400 text-white': props.variant === undefined,
-        'border border-gray-400 border-2 text-gray-400 hover:bg-gray-400 hover:text-white':
-          props.variant === 'secondary',
-        'text-gray-400 hover:bg-gray-400 hover:text-white': props.variant === 'ghost'
-      }
-    default:
-      return {
-        'bg-green-400 text-white': props.variant === undefined,
-        'border border-green-400 border-2 text-green-400 hover:bg-green-400 hover:text-white':
-          props.variant === 'secondary',
-        'text-green-400 hover:bg-green-400 hover:text-white': props.variant === 'ghost'
-      }
-  }
-})
+const variantClass: { [key: string]: string } = {
+  interaction: 'btn-interaction',
+  muted: 'btn-muted',
+  danger: 'btn-danger'
+}
+
+const sizeClass: { [key: string]: string } = {
+  large: 'btn-large',
+  base: 'btn-base',
+  small: 'btn-small',
+  teeny: 'btn-teeny'
+}
+
+const iconVariantClass: { [key: string]: string } = {
+  interaction: 'btn-icon-interaction',
+  muted: 'btn-icon-muted',
+  danger: 'btn-icon-danger'
+}
 </script>

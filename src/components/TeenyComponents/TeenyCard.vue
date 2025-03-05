@@ -1,42 +1,37 @@
 <template>
   <div
-    class="aspect-card rounded-[36px] bg-white shadow-lg flex justify-center items-center p-3"
-    :class="[width, borderRadius]"
+    teeny-card
+    class="flex items-center justify-center p-3 bg-white aspect-card shrink-0"
+    :class="[cardSize[size], borderRadius[size]]"
   >
     <slot></slot>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-
-const props = defineProps({
+defineProps({
   size: {
     type: String,
     validator(value: string) {
-      return ['small', 'large'].includes(value)
-    }
+      return ['large', 'base', 'small', 'xs', 'teeny'].includes(value)
+    },
+    default: 'base'
   }
 })
 
-const width = computed(() => {
-  switch (props.size) {
-    case 'small':
-      return 'w-card-small'
-    case 'large':
-      return 'w-card-large'
-    default:
-      return 'w-card-base'
-  }
-})
+const cardSize: { [key: string]: string } = {
+  teeny: 'min-w-7 max-w-7',
+  xs: 'min-w-10.75 max-w-10.75',
+  small: 'min-w-34.5 max-w-34.5',
+  base: 'min-w-48 max-w-48',
+  large: 'min-w-65 max-w-65'
+}
 
-const borderRadius = computed(() => {
-  switch (props.size) {
-    case 'small':
-      return 'rounded-card-small'
-    case 'base':
-    default:
-      return 'rounded-card-base'
-  }
-})
+const borderRadius: { [key: string]: string } = {
+  teeny: 'rounded-2',
+  xs: 'rounded-3',
+  small: 'rounded-8',
+  base: 'rounded-10',
+  large: 'rounded-16'
+}
 </script>
