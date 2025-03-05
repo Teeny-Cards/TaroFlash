@@ -2,8 +2,8 @@ type Deck = {
   id?: string
   title?: string
   description?: string
-  is_public: boolean
-  count?: number
+  is_public?: boolean
+  card_count?: number
   member_id?: string
   member?: { display_name: string }
   cards?: Card[]

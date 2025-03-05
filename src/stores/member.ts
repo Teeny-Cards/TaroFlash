@@ -1,13 +1,12 @@
 import { supabase } from '@/supabaseClient'
 import { TeenyError } from '@/utils/TeenyError'
-import type { User } from '@supabase/auth-js'
+import { fetchMemberById } from '@/services/memberService'
 import { defineStore } from 'pinia'
 import { useAppStore } from './app'
 
 export const useMemberStore = defineStore('member', {
   state: () => ({
-    username: '',
-    email: '',
+    display_name: '',
     id: '',
     authenticated: false
   }),
@@ -21,19 +20,18 @@ export const useMemberStore = defineStore('member', {
         throw new TeenyError(error.message)
       }
 
+      const member = await fetchMemberById(data.session?.user.id ?? '')
+
       this.authenticated = data.session?.user.aud === 'authenticated'
-      this.setUser(data.session?.user)
+      this.setMember(member)
       useAppStore().setLoading(false)
     },
 
-    setUser(newUser?: User): void {
-      if (newUser) {
-        this.email = newUser.email ?? ''
-        this.id = newUser.id ?? ''
-      } else {
-        this.email = ''
-        this.id = ''
-      }
+    setMember(member: Member | null): void {
+      if (!member) return
+
+      this.id = member.id ?? ''
+      this.display_name = member.display_name ?? ''
     }
   }
 })
