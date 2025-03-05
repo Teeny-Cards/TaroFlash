@@ -1,0 +1,80 @@
+@import 'tailwindcss';
+@import 'teeny-button.css';
+@import 'teeny-input.css';
+
+@theme {
+  --color-*: initial;
+  --color-blue: #1491d1;
+  --color-blue-light: #41a9df;
+  --color-arctic: #9ad5f3;
+  --color-arctic-light: #b4dbef;
+  --color-leaf-dark: #469659;
+  --color-leaf: #e4edd9;
+  --color-leaf-light: #ecf8e2;
+  --color-orange: #fbc56f;
+  --color-orange-light: #f7d279;
+  --color-pink: #f388a5;
+  --color-pink-light: #f599b3;
+  --color-grey: #959595;
+  --color-grey-light: #d2d2d2;
+  --color-grey-dark: #4f4f4f;
+  --color-red: #f66a6a;
+  --color-parchment: #f3f1ea;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --stripe-blue-bg: url('../svg/stripe-blue.svg');
+  --curve-green-bg: url('../svg/curve-green.svg');
+
+  --radius-1: var(--spacing); /* 4px */
+  --radius-2: calc(var(--spacing) * 2); /* 8px */
+  --radius-3: calc(var(--spacing) * 3); /* 12px */
+  --radius-4: calc(var(--spacing) * 4); /* 16px */
+  --radius-5: calc(var(--spacing) * 5); /* 20px */
+  --radius-6: calc(var(--spacing) * 6); /* 24px */
+  --radius-7: calc(var(--spacing) * 7); /* 28px */
+  --radius-8: calc(var(--spacing) * 8); /* 32px */
+  --radius-9: calc(var(--spacing) * 9); /* 36px */
+  --radius-10: calc(var(--spacing) * 10); /* 40px */
+  --radius-11: calc(var(--spacing) * 11); /* 44px */
+  --radius-12: calc(var(--spacing) * 12); /* 48px */
+  --radius-13: calc(var(--spacing) * 13); /* 52px */
+  --radius-14: calc(var(--spacing) * 14); /* 56px */
+  --radius-15: calc(var(--spacing) * 15); /* 60px */
+  --radius-16: calc(var(--spacing) * 16); /* 64px */
+  --radius-full: 9999px;
+
+  --shadow-*: initial;
+  --shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.15);
+  --shadow-modal: 8px 8px 42.9px 0px rgba(0, 0, 0, 0.25);
+
+  --font-primary: Arial Rounded MT Bold, Arial, sans-serif;
+
+  --aspect-card: 7 / 8.25;
+
+  --container-app: 1306px;
+  --container-screen-2_5xl: 1404px;
+
+  --grid-template-columns-deck-view-lg: 284px minmax(811px, 1024px);
+  --grid-template-columns-deck-desktop: repeat(4, 192px);
+}
+
+@utility rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+@layer base {
+  @font-face {
+    font-family: 'Arial Rounded MT Bold';
+    src: url(/assets/fonts/arialroundedmtbold.tff) format('tff');
+  }
+}
+
+.scroll-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scroll-hidden::-webkit-scrollbar {
+  display: none;
+}

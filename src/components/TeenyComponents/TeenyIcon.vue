@@ -1,7 +1,5 @@
 <template>
-  <div :class="color">
-    <Icon></Icon>
-  </div>
+  <Icon :teeny-icon="src" :class="iconSize[size]"></Icon>
 </template>
 
 <script setup lang="ts">
@@ -12,12 +10,19 @@ const props = defineProps({
     type: String,
     required: true
   },
-  fill: String
+  size: {
+    type: String,
+    validator: (value: string) => ['large', 'base', 'small', 'teeny'].includes(value),
+    default: 'base'
+  }
 })
 
-const Icon = defineAsyncComponent(() => import(`../../assets/svgs/${props.src}.svg`))
+const Icon = defineAsyncComponent(() => import(`../../assets/icons/${props.src}.svg`))
 
-const color = {
-  'text-gray-300': props.fill === 'grey'
+const iconSize: { [key: string]: string } = {
+  large: 'w-6 h-6',
+  base: 'w-5 h-5',
+  small: 'w-4 h-4',
+  teeny: 'w-3 h-3'
 }
 </script>

@@ -1,9 +1,19 @@
 <template>
   <RouterView />
   <TeenyToastManager />
+  <TeenyAlertManager />
 </template>
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import TeenyToastManager from '@/components/TeenyComponents/TeenyToast/TeenyToastManager.vue'
+import TeenyToastManager from '@teeny/TeenyToastManager.vue'
+import TeenyAlertManager from '@teeny/TeenyAlertManager.vue'
+import { useMemberStore } from './stores/member'
+import { onMounted } from 'vue'
+
+const user = useMemberStore()
+
+onMounted(() => {
+  user.login()
+})
 </script>

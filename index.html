@@ -4,10 +4,16 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>TeenyCards</title>
   </head>
-  <body class="bg-gray-50">
-    <div id="app" class="flex flex-col"></div>
+  <body class="bg-parchment">
+    <div id="app" class="flex flex-col md:items-center"></div>
+    <section teeny-modal-container class="fixed inset-0 z-20 pointer-events-none"></section>
+    <section teeny-alert-container class="fixed inset-0 z-30 pointer-events-none"></section>
+    <section
+      teeny-toast-container
+      class="fixed inset-0 z-30 flex flex-col items-end gap-2 p-4 pt-16 pointer-events-none"
+    ></section>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

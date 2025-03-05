@@ -50,19 +50,19 @@
         <TeenyButton color="gray" variant="secondary" @onClick="cancel" class="w-full"
           >Cancel</TeenyButton
         >
-        <TeenyButton @onClick="saveDeck" class="w-full">Save</TeenyButton>
+        <TeenyButton @click="saveDeck" class="w-full">Save</TeenyButton>
       </div>
     </section>
     <section
-      class="bg-white rounded-3xl w-full flex flex-col-reverse gap-8 items-center shadow-md p-20 relative col-start-2"
+      class="bg-white rounded-12 w-full flex flex-col-reverse gap-8 items-center shadow-md p-20 relative col-start-2"
     >
       <TeenyCardEditor
-        v-for="(card, index) in nonDeletedCards"
+        v-for="(card, index) in cards"
         :key="card.id"
         :card="card"
         :index="index"
-        @frontInput="updateFront"
-        @backInput="updateBack"
+        @front_input="updateFront"
+        @back_input="updateBack"
         @delete="deleteCard"
       />
 
@@ -79,13 +79,13 @@
 </template>
 
 <script setup lang="ts">
-import TeenyCard from '@/components/TeenyComponents/TeenyCard.vue'
-import TeenyButton from '@/components/TeenyComponents/TeenyButton.vue'
-import TeenyInput from '@/components/TeenyComponents/TeenyInput.vue'
-import TeenyCardEditor from '@/components/TeenyComponents/TeenyCardEditor.vue'
-import { ref, type PropType, computed } from 'vue'
-import imageUploader from '@/components/ImageUploader.vue'
-import generateUID from '@/utils/uid'
+import TeenyCard from '@teeny/TeenyCard.vue'
+import TeenyButton from '@teeny/TeenyButton.vue'
+import TeenyInput from '@teeny/TeenyInput.vue'
+import TeenyCardEditor from '@teeny/TeenyCardEditor.vue'
+import { ref, type PropType } from 'vue'
+import imageUploader from '@/components/TheImageUploader.vue'
+import { uploadImage } from '@/services/fileService'
 
 const props = defineProps({
   deck: {
@@ -102,30 +102,24 @@ const emit = defineEmits<{
   (event: 'cancel'): void
 }>()
 
-const deckImagePreview = ref(props.deck?.image?.url)
-const deckImageFile = ref()
-const deckImageDeleted = ref(false)
 const title = ref(props.deck?.title ?? '')
 const description = ref(props.deck?.description ?? '')
 const isPublic = ref(false)
-const cards = ref<CardMutation[]>(props.cards)
+const cards = ref<Card[]>(props.cards)
+const deckImagePreview = ref(props.deck?.image_url)
+const image_file_path = ref<string>()
 
-const nonDeletedCards = computed(() => {
-  return cards.value.filter((card) => !card.deleted)
-})
-
-function onDeckImageUploaded(preview: string, file: File): void {
+async function onDeckImageUploaded(preview: string, file: File): Promise<void> {
+  // TODO: if the deck doesn't end up being saved we need to delete this image
+  const file_path = await uploadImage('deck-images', file)
   deckImagePreview.value = preview
-  deckImageFile.value = file
+  image_file_path.value = file_path
 }
 
 function addCard(): void {
   cards.value.push({
-    order: cards.value.length,
-    frontText: '',
-    backText: '',
-    dirty: true,
-    id: generateUID()
+    front_text: '',
+    back_text: ''
   })
 }
 
@@ -133,7 +127,7 @@ function deleteCard(index: number): void {
   const card = cards.value[index]
 
   if (card) {
-    const updatedCard = { ...card, deleted: true, dirty: true }
+    const updatedCard = { ...card, deleted: true }
     cards.value.splice(index, 1, updatedCard)
   }
 }
@@ -142,7 +136,7 @@ function updateFront(index: number, value: string): void {
   const card = cards.value[index]
 
   if (card) {
-    const updatedCard = { ...card, frontText: value, dirty: true }
+    const updatedCard = { ...card, front_text: value }
     cards.value.splice(index, 1, updatedCard)
   }
 }
@@ -151,35 +145,28 @@ function updateBack(index: number, value: string): void {
   const card = cards.value[index]
 
   if (card) {
-    const updatedCard = { ...card, backText: value, dirty: true }
+    const updatedCard = { ...card, back_text: value }
     cards.value.splice(index, 1, updatedCard)
   }
 }
 
 function removeDeckImage(): void {
-  deckImagePreview.value = undefined
-  deckImageFile.value = undefined
-  deckImageDeleted.value = true
+  // deckImagePreview.value = undefined
+  // deckImageFile.value = undefined
+  // deckImageDeleted.value = true
 }
 
 function saveDeck(): void {
   const newDeck: Deck = {
-    id: '',
     ...props.deck,
-    isPublic: isPublic.value,
+    is_public: isPublic.value,
     title: title.value,
     description: description.value,
     count: cards.value.length,
-    image: {
-      ...props.deck?.image,
-      newFile: deckImageFile.value,
-      deleted: deckImageDeleted.value
-    }
+    image_url: image_file_path.value
   }
 
-  const newCards = cards.value.filter((card: CardMutation) => card.dirty)
-
-  emit('saveDeck', newDeck, newCards)
+  emit('saveDeck', newDeck, cards.value)
 }
 
 function cancel(): void {

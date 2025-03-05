@@ -1,113 +1,28 @@
 import { TeenyError } from '@/utils/TeenyError'
-import {
-  writeBatch,
-  doc,
-  where,
-  query,
-  getFirestore,
-  serverTimestamp,
-  collection,
-  getDocs,
-  orderBy
-} from 'firebase/firestore'
+import { supabase } from '@/supabaseClient'
 
-const saveCardsToDeck = async (deckID: string, cards: CardMutation[]): Promise<void> => {
-  const db = getFirestore()
-  const batch = writeBatch(db)
+export async function saveCards(cards: Card[]): Promise<Card[]> {
+  const { data, error } = await supabase.from('cards').upsert(cards).select()
 
-  cards.forEach((card) => {
-    const cardRef = doc(collection(db, 'cards'))
+  if (error) {
+    throw new TeenyError(error.message)
+  }
 
-    const { deleted, id, dirty, ...cleanCard } = card
-    const newCard = {
-      ...cleanCard,
-      deckID: deckID,
-      created_at: serverTimestamp(),
-      updated_at: serverTimestamp()
-    }
+  return data
+}
 
-    batch.set(cardRef, newCard)
-  })
+export async function deleteCardsByDeckId(deck_id: string): Promise<void> {
+  const { error } = await supabase.from('cards').delete().eq('deck_id', deck_id)
 
-  try {
-    await batch.commit()
-  } catch (e) {
-    throw TeenyError.fromError(e)
+  if (error) {
+    throw new TeenyError(error.message)
   }
 }
 
-const getCardsByDeckID = async (deckID: string): Promise<Card[]> => {
-  const db = getFirestore()
-  const q = query(collection(db, 'cards'), where('deckID', '==', deckID), orderBy('order'))
+export async function deleteCardById(card_id: string): Promise<void> {
+  const { error } = await supabase.from('cards').delete().eq('id', card_id)
 
-  try {
-    const querySnapshot = await getDocs(q)
-    const cards: Card[] = []
-
-    querySnapshot.forEach((doc) => {
-      cards.push({
-        ...(doc.data() as Card),
-        id: doc.id
-      })
-    })
-
-    return cards
-  } catch (e) {
-    throw TeenyError.fromError(e)
+  if (error) {
+    throw new TeenyError(error.message)
   }
 }
-
-const updateCardsByDeckID = async (deckID: string, cards: CardMutation[]): Promise<void> => {
-  const db = getFirestore()
-  const batch = writeBatch(db)
-
-  cards.forEach((card) => {
-    const { id, deleted, dirty, ...cleanCard } = card
-
-    if (id) {
-      const cardRef = doc(collection(db, 'cards'), id)
-
-      if (deleted) {
-        batch.delete(cardRef)
-      } else {
-        batch.update(cardRef, cleanCard)
-      }
-    } else {
-      const cardRef = doc(collection(db, 'cards'))
-      const newCard = {
-        ...cleanCard,
-        deckID,
-        created_at: serverTimestamp(),
-        updated_at: serverTimestamp()
-      }
-
-      batch.set(cardRef, newCard)
-    }
-  })
-
-  try {
-    await batch.commit()
-  } catch (e) {
-    throw TeenyError.fromError(e)
-  }
-}
-
-const deleteCardsByDeckID = async (deckID: string): Promise<void> => {
-  const db = getFirestore()
-  const q = query(collection(db, 'cards'), where('deckID', '==', deckID))
-
-  const querySnapshot = await getDocs(q)
-  const batch = writeBatch(db)
-
-  querySnapshot.forEach((doc) => {
-    batch.delete(doc.ref)
-  })
-
-  try {
-    await batch.commit()
-  } catch (e) {
-    throw TeenyError.fromError(e)
-  }
-}
-
-export { saveCardsToDeck, updateCardsByDeckID, getCardsByDeckID, deleteCardsByDeckID }

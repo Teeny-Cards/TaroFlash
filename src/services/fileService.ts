@@ -1,32 +1,15 @@
-import { TeenyError } from '@/utils/TeenyError'
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage'
+// import { TeenyError } from '@/utils/TeenyError'
+import { supabase } from '@/supabaseClient'
+import { useMemberStore } from '@/stores/member'
 
-const uploadDeckPhoto = async (img: DeckImage): Promise<DeckImage> => {
-  const storage = getStorage()
-  let newImg = { name: img.name ?? '', url: img.url ?? '' }
+export async function uploadImage(bucket: string, file: File): Promise<string> {
+  const user_id = useMemberStore().id
+  const file_path = `${user_id}/${file.name}`
 
-  if (img.url && img.deleted) {
-    try {
-      const storageRef = ref(storage, `deck-photos/${img.name}`)
-      await deleteObject(storageRef)
-    } catch (e) {
-      throw TeenyError.fromError(e)
-    }
-  }
+  await supabase.storage.from(bucket).upload(file_path, file)
 
-  if (img.newFile) {
-    try {
-      const storageRef = ref(storage, `deck-photos/${img.newFile.name}`)
-      await uploadBytes(storageRef, img.newFile)
-      const url = await getDownloadURL(storageRef)
+  const { data } = supabase.storage.from(bucket).getPublicUrl(file_path)
 
-      newImg = { name: img.newFile.name, url }
-    } catch (e) {
-      throw TeenyError.fromError(e)
-    }
-  }
-
-  return newImg
+  console.log(data.publicUrl)
+  return data.publicUrl
 }
-
-export { uploadDeckPhoto }
