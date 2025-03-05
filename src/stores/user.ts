@@ -1,42 +1,36 @@
+import { supabase } from '@/supabaseClient'
+import { TeenyError } from '@/utils/TeenyError'
+import type { User } from '@supabase/auth-js'
 import { defineStore } from 'pinia'
-import { handleUserAuthStateChange } from '@/services/userService'
 import { useAppStore } from './app'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
     username: '',
     email: '',
-    id: ''
+    id: '',
+    authenticated: false
   }),
 
-  getters: {
-    authenticated: (state) => {
-      return !!state.id
-    }
-  },
-
   actions: {
-    async login(user: any): Promise<void> {
-      const app = useAppStore()
-      app.setLoading(true)
+    async login(): Promise<void> {
+      useAppStore().setLoading(true)
+      const { data, error } = await supabase.auth.getSession()
 
-      try {
-        const newUser = await handleUserAuthStateChange(user)
-        this.setUser(newUser)
-      } catch (e: any) {
-        this.setUser()
-      } finally {
-        app.setLoading(false)
+      if (error) {
+        throw new TeenyError(error.message)
       }
+
+      this.authenticated = data.session?.user.aud === 'authenticated'
+      this.setUser(data.session?.user)
+      useAppStore().setLoading(false)
     },
 
-    setUser(newUser?: UserProfile): void {
+    setUser(newUser?: User): void {
       if (newUser) {
-        this.username = newUser.username ?? ''
         this.email = newUser.email ?? ''
-        this.id = newUser.userId ?? ''
+        this.id = newUser.id ?? ''
       } else {
-        this.username = ''
         this.email = ''
         this.id = ''
       }

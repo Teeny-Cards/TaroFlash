@@ -2,10 +2,11 @@ type Deck = {
   id: string
   title: string
   description: string
-  isPublic: boolean
+  is_public: boolean
   count: number
   image: DeckImage
-  createdBy: string
+  created_by: string
+  user_id: string
 }
 
 type DeckImage = {

@@ -16,9 +16,9 @@
         v-model="password"
         class="border-b border-gray-400 focus:outline-hidden px-2 py-1 w-full bg-transparent"
       />
-      <button class="bg-cyan-400 w-full rounded-12 p-3 text-white" @click="onClick">
+      <TeenyButton @click="onClick">
         {{ signText }}
-      </button>
+      </TeenyButton>
       <span v-if="props.signIn"
         >Don't have an account?
         <RouterLink to="/signup" class="text-cyan-400 cursor-pointer"
@@ -38,6 +38,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import TeenyButton from '@teeny/TeenyButton.vue'
 
 const props = defineProps({
   signIn: Boolean

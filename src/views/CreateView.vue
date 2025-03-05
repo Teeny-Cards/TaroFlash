@@ -6,7 +6,7 @@
 import Edit from '@/components/views/edit.vue'
 import { ref } from 'vue'
 import { createDeck } from '@/services/deckService'
-import { saveCardsToDeck } from '@/services/cardService'
+import { saveCards } from '@/services/cardService'
 import router from '@/router'
 import generateUID from '@/utils/uid'
 import { useMessageStore } from '@/stores/message'
@@ -16,24 +16,24 @@ const deck = ref<Deck>()
 const cards = ref<Card[]>([
   {
     order: 0,
-    frontText: '',
-    backText: '',
+    front_text: '',
+    back_text: '',
     id: generateUID()
   }
 ])
 
 async function saveDeck(deck: Deck, cards: CardMutation[]): Promise<void> {
   try {
-    const doc = await createDeck(deck)
-    saveCards(doc.id, cards)
+    await createDeck(deck)
+    // saveCards(doc.id, cards)
   } catch (e: any) {
     messageStore.error(e.message)
   }
 }
 
-async function saveCards(deckId: string, cards: CardMutation[]): Promise<void> {
+async function save(deckId: string, cards: CardMutation[]): Promise<void> {
   try {
-    await saveCardsToDeck(deckId, cards)
+    await saveCards(cards)
 
     messageStore.success('Deck Saved Successfully')
     router.push({ name: 'deck', params: { id: deckId } })
@@ -42,4 +42,3 @@ async function saveCards(deckId: string, cards: CardMutation[]): Promise<void> {
   }
 }
 </script>
-@/stores/message

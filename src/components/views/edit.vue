@@ -50,7 +50,7 @@
         <TeenyButton color="gray" variant="secondary" @onClick="cancel" class="w-full"
           >Cancel</TeenyButton
         >
-        <TeenyButton @onClick="saveDeck" class="w-full">Save</TeenyButton>
+        <TeenyButton @click="saveDeck" class="w-full">Save</TeenyButton>
       </div>
     </section>
     <section
@@ -169,11 +169,10 @@ function saveDeck(): void {
   const newDeck: Deck = {
     id: '',
     ...props.deck,
-    isPublic: isPublic.value,
+    is_public: isPublic.value,
     title: title.value,
     description: description.value,
     count: cards.value.length,
-    createdBy: username,
     image: {
       ...props.deck?.image,
       newFile: deckImageFile.value,

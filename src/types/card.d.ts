@@ -1,17 +1,17 @@
 type Card = {
   order: number
-  frontText: string
-  backText: string
-  deckID?: string
+  front_text: string
+  back_text: string
+  deck_id?: string
   id: string
-  imageURL?: string
-  audioClip?: string
-  dueDate?: Date
-  lastUpdated?: Date
+  image_url?: string
+  audio_clip?: string
+  due_date?: Date
+  last_updated?: Date
   state?: CardState
   interval?: number
   ease?: number
-  leechCount?: number
+  leech_count?: number
   streak?: number
 }
 
