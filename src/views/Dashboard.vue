@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { getUserDecks } from '@/services/deckService'
+import { fetchUserDecks } from '@/services/deckService'
 import { useMessageStore } from '@/stores/message'
 import TeenyDeck from '@teeny/TeenyDeck.vue'
 
@@ -22,7 +22,7 @@ const decks = ref<Deck[]>([])
 
 onMounted(async () => {
   try {
-    decks.value = await getUserDecks()
+    decks.value = await fetchUserDecks()
     loading.value = false
   } catch (e: any) {
     messageStore.error(e.message)

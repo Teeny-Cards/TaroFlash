@@ -11,17 +11,7 @@ export async function saveCards(cards: Card[]): Promise<Card[]> {
   return data
 }
 
-export async function getCardsByDeckID(deck_id: string): Promise<Card[]> {
-  const { data, error } = await supabase.from('cards').select().eq('deck_id', deck_id)
-
-  if (error) {
-    throw new TeenyError(error.message)
-  }
-
-  return data
-}
-
-export async function deleteCardsByDeckID(deck_id: string): Promise<void> {
+export async function deleteCardsByDeckId(deck_id: string): Promise<void> {
   const { error } = await supabase.from('cards').delete().eq('deck_id', deck_id)
 
   if (error) {

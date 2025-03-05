@@ -110,7 +110,7 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { deleteCardById } from '@/services/cardService'
 import { saveCards } from '@/services/cardService'
-import { getDeckById } from '@/services/deckService'
+import { fetchDeckById } from '@/services/deckService'
 
 const props = defineProps({
   id: {
@@ -179,7 +179,7 @@ async function addCard(): Promise<void> {
 
 async function getDeck(): Promise<void> {
   try {
-    currentDeck.value = await getDeckById(props.id)
+    currentDeck.value = await fetchDeckById(props.id)
   } catch (e: any) {
     messageStore.error(e.message)
     // router.push({ name: 'dashboard' })
@@ -236,7 +236,7 @@ async function deleteCard(card: Card) {
 
   try {
     await deleteCardById(card.id)
-    currentDeck.value = await getDeckById(props.id)
+    currentDeck.value = await fetchDeckById(props.id)
 
     messageStore.success('Deleted Successfully')
   } catch (e: any) {

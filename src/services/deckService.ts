@@ -1,5 +1,5 @@
 import { TeenyError } from '@/utils/TeenyError'
-import { deleteCardsByDeckID } from '@/services/cardService'
+import { deleteCardsByDeckId } from '@/services/cardService'
 import { supabase } from '@/supabaseClient'
 import { useUserStore } from '@/stores/member'
 
@@ -15,7 +15,7 @@ export async function createDeck(deck: Deck): Promise<any> {
   }
 }
 
-export async function getUserDecks(): Promise<Deck[]> {
+export async function fetchUserDecks(): Promise<Deck[]> {
   const { data, error } = await supabase.from('decks').select().eq('member_id', useUserStore().id)
 
   if (error) {
@@ -25,7 +25,7 @@ export async function getUserDecks(): Promise<Deck[]> {
   return data
 }
 
-export async function getDeckById(id: string): Promise<Deck> {
+export async function fetchDeckById(id: string): Promise<Deck> {
   const { data, error } = await supabase
     .from('decks')
     .select('*, cards(*), member:members(display_name)')
@@ -53,5 +53,5 @@ export async function deleteDeckById(id: string): Promise<void> {
     throw new TeenyError(error.message)
   }
 
-  await deleteCardsByDeckID(id)
+  await deleteCardsByDeckId(id)
 }
