@@ -1,7 +1,7 @@
 <template>
   <div
     edit-card-modal
-    class="w-full bg-orange rounded-16 flex flex-col items-center justify-center gap-4 shadow-modal text-white py-4 bg-[url('../assets/img/stripe-orange.png')] bg-cover overflow-hidden"
+    class="w-full lg:w-max bg-orange rounded-16 flex flex-col items-center justify-center gap-4 shadow-modal text-white py-4 bg-(image:--curve-green-bg) overflow-hidden"
   >
     <div edit-card-modal__title class="flex justify-center w-full">
       <h1 class="text-2xl font-semibold font-primary">Edit Card</h1>
@@ -12,7 +12,7 @@
       <div
         edit-card-modal__card-list
         ref="cardListEl"
-        class="overflow-y-auto h-[306.42px] w-full flex flex-col gap-4 snap-mandatory snap-y scroll-hidden"
+        class="overflow-y-auto h-[306.42px] w-full flex flex-col gap-4 snap-mandatory snap-y scroll-hidden scroll-smooth"
       >
         <div
           edit-card-modal__teeny-card-editor
@@ -51,6 +51,10 @@ const props = defineProps({
   cards: {
     type: Array as PropType<Card[]>,
     required: true
+  },
+  focussedCardId: {
+    type: String,
+    required: true
   }
 })
 
@@ -59,11 +63,11 @@ const emit = defineEmits<{
   (e: 'save', cards: Card[]): void
 }>()
 
-// onMounted(() => {
-//   const index = props.cards.findIndex((card) => card.id === props.id)
-//   const scrollPos = props.index * CONTAINER_HEIGHT + GAP
-//   setScrollPosition(scrollPos)
-// })
+onMounted(() => {
+  const index = props.cards.findIndex((card) => card.id === props.focussedCardId)
+  const scrollPos = index * CONTAINER_HEIGHT + GAP
+  setScrollPosition(scrollPos)
+})
 
 const cardListEl = ref<HTMLDivElement>()
 const dirty_cards: Card[] = []
@@ -92,7 +96,7 @@ function save(): void {
   emit('save', dirty_cards)
 }
 
-function setScrollPosition(pos: number, animate?: boolean): void {
+function setScrollPosition(pos: number, animate: boolean = false): void {
   cardListEl.value?.scrollTo({ top: pos, left: 0, behavior: animate ? 'smooth' : 'auto' })
 }
 

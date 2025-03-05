@@ -92,6 +92,7 @@
       @cancel="editCardModalVisible = false"
       @save="onSaveCards"
       :cards="currentDeck?.cards ?? []"
+      :focussedCardId="editCardModalFocusedCardId"
     />
   </TeenyModal>
 </template>
@@ -124,6 +125,7 @@ const router = useRouter()
 const currentDeck = ref<Deck>()
 const loading = ref(true)
 const editCardModalVisible = ref(false)
+const editCardModalFocusedCardId = ref()
 const selectionModeActive = ref(false)
 const selectedCards = ref<Card[]>([])
 
@@ -173,8 +175,6 @@ async function addCard(): Promise<void> {
 
   const cards = await saveCards([newCard])
   currentDeck?.value?.cards?.push(...cards)
-
-  editCardModalVisible.value = true
 }
 
 async function getDeck(): Promise<void> {
@@ -206,6 +206,7 @@ function onEditCard(card: Card): void {
     return onSelectCard(card)
   }
 
+  editCardModalFocusedCardId.value = card.id
   editCardModalVisible.value = true
 }
 

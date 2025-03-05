@@ -16,7 +16,7 @@ export async function createDeck(deck: Deck): Promise<any> {
 }
 
 export async function getUserDecks(): Promise<Deck[]> {
-  const { data, error } = await supabase.from('decks').select().eq('user_id', useUserStore().id)
+  const { data, error } = await supabase.from('decks').select().eq('member_id', useUserStore().id)
 
   if (error) {
     throw new TeenyError(error.message)
