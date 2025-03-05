@@ -4,9 +4,9 @@
   >
     <div class="flex items-center gap-6 group-hover:text-white" tabindex="0" role="button">
       <TeenyCard size="xs" />
-      {{ card.frontText }}
+      {{ card.front_text }}
     </div>
-    <span class="group-hover:text-white">{{ card.backText }}</span>
+    <span class="group-hover:text-white">{{ card.back_text }}</span>
     <div
       v-if="selectionModeActive"
       tid="select-radio-button"

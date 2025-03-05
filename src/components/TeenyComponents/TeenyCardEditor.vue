@@ -8,11 +8,11 @@
       />
       <textarea
         teeny-card-editor__input="front"
-        name="frontText"
+        name="front_text"
         class="w-full text-2xl text-center bg-transparent resize-none text-grey-dark focus:outline-hidden"
         rows="1"
         placeholder="Front"
-        :value="card.frontText"
+        :value="card.front_text"
         @input="onFrontChanged"
         ref="frontCardInput"
       />
@@ -21,11 +21,11 @@
   <TeenyCard size="large" class="snap-center overflow-hidden">
     <textarea
       teeny-card-editor__input="back"
-      name="backText"
+      name="back_text"
       class="w-full text-2xl text-center bg-transparent resize-none focus:outline-hidden text-grey-dark"
       rows="1"
       placeholder="Back"
-      :value="card.backText"
+      :value="card.back_text"
       @input="onBackChanged"
       ref="backCardInput"
     />
@@ -38,19 +38,15 @@ import TeenyIcon from './TeenyIcon.vue'
 import { onMounted, ref, type PropType } from 'vue'
 
 const props = defineProps({
-  index: {
-    type: Number,
-    required: true
-  },
   card: {
-    type: Object as PropType<CardMutation>,
+    type: Object as PropType<Card>,
     required: true
   }
 })
 
 const emit = defineEmits<{
-  (e: 'frontInput', index: number, value: string): void
-  (e: 'backInput', index: number, value: string): void
+  (e: 'frontInput', card: Card, value: string): void
+  (e: 'backInput', card: Card, value: string): void
 }>()
 
 const frontCardInput = ref<HTMLInputElement>()
@@ -68,13 +64,13 @@ onMounted(() => {
 
 function onFrontChanged(e: Event): void {
   const target = e.target as HTMLInputElement
-  emit('frontInput', props.index, target.value)
+  emit('frontInput', props.card, target.value)
   updateInputHeight(target)
 }
 
 function onBackChanged(e: Event): void {
   const target = e.target as HTMLInputElement
-  emit('backInput', props.index, target.value)
+  emit('backInput', props.card, target.value)
   updateInputHeight(target)
 }
 

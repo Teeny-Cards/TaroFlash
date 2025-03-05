@@ -5,8 +5,9 @@ type Deck = {
   is_public: boolean
   count: number
   image: DeckImage
-  created_by: string
-  user_id: string
+  member_id?: string
+  member?: { display_name: string }
+  cards?: Card[]
 }
 
 type DeckImage = {

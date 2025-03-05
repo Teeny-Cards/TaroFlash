@@ -6,7 +6,7 @@ import SignupPage from '../views/SignupPage.vue'
 import HomeView from '../views/HomeView.vue'
 import DeckView from '../views/deck/index.vue'
 import LoadingVue from '../views/LoadingView.vue'
-import { useUserStore } from '../stores/user'
+import { useUserStore } from '../stores/member'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
 

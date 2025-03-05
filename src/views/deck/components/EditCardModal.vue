@@ -16,7 +16,7 @@
       >
         <div
           edit-card-modal__teeny-card-editor
-          v-for="(card, index) in cardList"
+          v-for="(card, index) in cards"
           :key="card.id"
           class="flex w-full gap-4 px-20 overflow-x-auto shrink-0 snap-mandatory snap-x scroll-hidden font-primary snap-center"
         >
@@ -51,47 +51,45 @@ const props = defineProps({
   cards: {
     type: Array as PropType<Card[]>,
     required: true
-  },
-  index: {
-    type: Number,
-    required: true
   }
 })
 
 const emit = defineEmits<{
   (e: 'cancel'): void
-  (e: 'save', cards: CardMutation[]): void
+  (e: 'save', cards: Card[]): void
 }>()
 
-onMounted(() => {
-  const scrollPos = props.index * CONTAINER_HEIGHT + GAP
-  setScrollPosition(scrollPos)
-})
+// onMounted(() => {
+//   const index = props.cards.findIndex((card) => card.id === props.id)
+//   const scrollPos = props.index * CONTAINER_HEIGHT + GAP
+//   setScrollPosition(scrollPos)
+// })
 
 const cardListEl = ref<HTMLDivElement>()
-const cardList = ref<CardMutation[]>([...props.cards])
+const dirty_cards: Card[] = []
 
-function updateFront(index: number, value: string): void {
-  const card = cardList.value[index]
+function updateFront(card: Card, value: string): void {
+  const dirty_card = dirty_cards.find((dirty_card) => dirty_card.id === card.id)
 
-  if (card) {
-    const updatedCard = { ...card, frontText: value, dirty: true }
-    cardList.value.splice(index, 1, updatedCard)
+  if (dirty_card) {
+    dirty_card.front_text = value
+  } else {
+    dirty_cards.push({ ...card, front_text: value })
   }
 }
 
-function updateBack(index: number, value: string): void {
-  const card = cardList.value[index]
+function updateBack(card: Card, value: string): void {
+  const dirty_card = dirty_cards.find((dirty_card) => dirty_card.id === card.id)
 
-  if (card) {
-    const updatedCard = { ...card, backText: value, dirty: true }
-    cardList.value.splice(index, 1, updatedCard)
+  if (dirty_card) {
+    dirty_card.back_text = value
+  } else {
+    dirty_cards.push({ ...card, back_text: value })
   }
 }
 
 function save(): void {
-  const newCards = cardList.value.filter((card: CardMutation) => card.dirty)
-  emit('save', newCards)
+  emit('save', dirty_cards)
 }
 
 function setScrollPosition(pos: number, animate?: boolean): void {

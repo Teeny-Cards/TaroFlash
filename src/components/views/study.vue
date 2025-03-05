@@ -9,7 +9,7 @@
       current-card
     >
       <span class="text-5xl font-semibold text-center">
-        {{ frontShowing ? currentCard.frontText : currentCard.backText }}
+        {{ frontShowing ? currentCard.back_text : currentCard.front_text }}
       </span>
     </TeenyCard>
 

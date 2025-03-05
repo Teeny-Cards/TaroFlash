@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import LoginDialogue from '@/components/LoginDialogue.vue'
-import { useUserStore } from '@/stores/user'
+import { useUserStore } from '@/stores/member'
 import router from '@/router'
 import { supabase } from '@/supabaseClient'
 import { TeenyError } from '@/utils/TeenyError'

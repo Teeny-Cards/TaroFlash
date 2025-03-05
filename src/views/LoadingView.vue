@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { onMounted, watch } from 'vue'
-import { useUserStore } from '@/stores/user'
+import { useUserStore } from '@/stores/member'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
