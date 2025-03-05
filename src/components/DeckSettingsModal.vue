@@ -30,7 +30,7 @@
               placeholder="Add a short description to your deck."
               v-model="description"
             />
-            <div class="flex flex-col gap-9 font-primary text-grey-dark text-xl">
+            <div class="flex flex-col gap-8 font-primary text-grey-dark text-xl">
               <div class="flex justify-between items-center">
                 <div class="flex gap-2.5 items-center">
                   <TeenyIcon src="public" class="text-leaf-dark"></TeenyIcon>
@@ -59,6 +59,11 @@
                 </div>
                 <TeenyToggle :checked="newCards" @click="newCards = !newCards" />
               </div>
+              <div class="flex gap-2.5 items-center font-light">
+                <p v-for="(tag, index) in deck?.tags" :key="index" class="text-grey text-sm">
+                  #{{ tag }}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -69,7 +74,7 @@
       </div>
       <div tid="settings-modal-footer" class="flex justify-between items-center">
         <p class="text-grey-dark">
-          Created On <span class="text-leaf-dark font-bold">February 28, 2024</span>
+          Created On <span class="text-leaf-dark font-bold">{{ created_at }}</span>
         </p>
         <div class="flex gap-1.5">
           <TeenyButton variant="muted" icon-left="close" @click="open = false">Cancel</TeenyButton>
@@ -88,7 +93,7 @@ import TeenyCard from '@teeny/TeenyCard.vue'
 import TeenyInput from '@teeny/TeenyInput.vue'
 import TeenyIcon from '@teeny/TeenyIcon.vue'
 import TeenyToggle from '@teeny/TeenyToggle.vue'
-import { ref, type PropType } from 'vue'
+import { computed, ref, type PropType } from 'vue'
 
 const props = defineProps({
   deck: Object as PropType<Deck>
@@ -96,7 +101,12 @@ const props = defineProps({
 
 const title = ref(props.deck?.title ?? '')
 const description = ref(props.deck?.description ?? '')
-const publicDeck = ref(props.deck?.isPublic ?? false)
+const publicDeck = ref(props.deck?.is_public ?? false)
+
+const created_at = computed(() => {
+  var date = new Date(props.deck?.created_at ?? '')
+  return date.toDateString()
+})
 
 const open = ref(false)
 const spaced = ref(false)

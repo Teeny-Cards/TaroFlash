@@ -8,10 +8,10 @@
 import { RouterView } from 'vue-router'
 import TeenyToastManager from '@teeny/TeenyToastManager.vue'
 import TeenyAlertManager from '@teeny/TeenyAlertManager.vue'
-import { useUserStore } from './stores/member'
+import { useMemberStore } from './stores/member'
 import { onMounted } from 'vue'
 
-const user = useUserStore()
+const user = useMemberStore()
 
 onMounted(() => {
   user.login()

@@ -15,14 +15,13 @@ const messageStore = useMessageStore()
 const deck = ref<Deck>()
 const cards = ref<Card[]>([
   {
-    order: 0,
     front_text: '',
     back_text: '',
     id: generateUID()
   }
 ])
 
-async function saveDeck(deck: Deck, cards: CardMutation[]): Promise<void> {
+async function saveDeck(deck: Deck, cards: Card[]): Promise<void> {
   try {
     await createDeck(deck)
     // saveCards(doc.id, cards)
@@ -31,7 +30,7 @@ async function saveDeck(deck: Deck, cards: CardMutation[]): Promise<void> {
   }
 }
 
-async function save(deckId: string, cards: CardMutation[]): Promise<void> {
+async function save(deckId: string, cards: Card[]): Promise<void> {
   try {
     await saveCards(cards)
 

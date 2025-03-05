@@ -1,18 +1,13 @@
 type Deck = {
-  id: string
-  title: string
-  description: string
+  id?: string
+  title?: string
+  description?: string
   is_public: boolean
-  count: number
-  image: DeckImage
+  count?: number
   member_id?: string
   member?: { display_name: string }
   cards?: Card[]
-}
-
-type DeckImage = {
-  name?: string
-  url?: string
-  newFile?: File
-  deleted?: boolean
+  tags?: string[]
+  created_at?: string
+  image_url?: string
 }

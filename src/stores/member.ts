@@ -4,7 +4,7 @@ import type { User } from '@supabase/auth-js'
 import { defineStore } from 'pinia'
 import { useAppStore } from './app'
 
-export const useUserStore = defineStore('user', {
+export const useMemberStore = defineStore('member', {
   state: () => ({
     username: '',
     email: '',

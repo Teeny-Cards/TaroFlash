@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { onMounted, watch } from 'vue'
-import { useUserStore } from '@/stores/member'
+import { useMemberStore } from '@/stores/member'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
@@ -12,7 +12,7 @@ import { storeToRefs } from 'pinia'
 const route = useRoute()
 const path = route.query.path as string
 
-const userStore = useUserStore()
+const userStore = useMemberStore()
 const { authenticated } = storeToRefs(userStore)
 
 onMounted(() => {

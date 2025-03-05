@@ -20,9 +20,9 @@
         class="sticky top-0 flex flex-col items-center gap-6 w-max sm:flex-row sm:items-end lg:flex-col lg:items-start"
       >
         <TeenyCard size="large" class="relative overflow-hidden">
-          <div v-if="currentDeck?.image?.url" class="absolute inset-0">
+          <div v-if="currentDeck?.image_url" class="absolute inset-0">
             <img
-              :src="currentDeck.image?.url"
+              :src="currentDeck.image_url"
               alt="Deck Image preview"
               class="object-cover w-full h-full"
             /></div

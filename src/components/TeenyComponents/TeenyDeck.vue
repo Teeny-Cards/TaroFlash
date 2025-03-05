@@ -2,9 +2,9 @@
   <div class="flex flex-col gap-4">
     <RouterLink :to="`/deck/${deck.id}`">
       <TeenyCard size="small" class="relative overflow-hidden">
-        <div v-if="deck.image?.url" class="absolute inset-0">
+        <div v-if="deck.image_url" class="absolute inset-0">
           <img
-            :src="deck.image?.url"
+            :src="deck.image_url"
             alt="Deck Image preview"
             class="object-cover w-full h-full"
           /></div

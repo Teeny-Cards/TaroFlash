@@ -6,12 +6,12 @@
 
 <script setup lang="ts">
 import LoginDialogue from '@/components/LoginDialogue.vue'
-import { useUserStore } from '@/stores/member'
+import { useMemberStore } from '@/stores/member'
 import router from '@/router'
 import { supabase } from '@/supabaseClient'
 import { TeenyError } from '@/utils/TeenyError'
 
-const user = useUserStore()
+const user = useMemberStore()
 
 async function signInWithEmail(email: string, password: string): Promise<void> {
   const { error } = await supabase.auth.signInWithPassword({

@@ -61,8 +61,8 @@
         :key="card.id"
         :card="card"
         :index="index"
-        @frontInput="updateFront"
-        @backInput="updateBack"
+        @front_input="updateFront"
+        @back_input="updateBack"
         @delete="deleteCard"
       />
 
@@ -85,7 +85,7 @@ import TeenyInput from '@teeny/TeenyInput.vue'
 import TeenyCardEditor from '@teeny/TeenyCardEditor.vue'
 import { ref, type PropType } from 'vue'
 import imageUploader from '@/components/TheImageUploader.vue'
-import { useUserStore } from '@/stores/member'
+import { uploadImage } from '@/services/fileService'
 
 const props = defineProps({
   deck: {
@@ -102,24 +102,22 @@ const emit = defineEmits<{
   (event: 'cancel'): void
 }>()
 
-const userStore = useUserStore()
-const { username } = userStore
-const deckImagePreview = ref(props.deck?.image?.url)
-const deckImageFile = ref()
-const deckImageDeleted = ref(false)
 const title = ref(props.deck?.title ?? '')
 const description = ref(props.deck?.description ?? '')
 const isPublic = ref(false)
 const cards = ref<Card[]>(props.cards)
+const deckImagePreview = ref(props.deck?.image_url)
+const image_file_path = ref<string>()
 
-function onDeckImageUploaded(preview: string, file: File): void {
+async function onDeckImageUploaded(preview: string, file: File): Promise<void> {
+  // TODO: if the deck doesn't end up being saved we need to delete this image
+  const file_path = await uploadImage('deck-images', file)
   deckImagePreview.value = preview
-  deckImageFile.value = file
+  image_file_path.value = file_path
 }
 
 function addCard(): void {
   cards.value.push({
-    order: cards.value.length,
     front_text: '',
     back_text: ''
   })
@@ -153,24 +151,19 @@ function updateBack(index: number, value: string): void {
 }
 
 function removeDeckImage(): void {
-  deckImagePreview.value = undefined
-  deckImageFile.value = undefined
-  deckImageDeleted.value = true
+  // deckImagePreview.value = undefined
+  // deckImageFile.value = undefined
+  // deckImageDeleted.value = true
 }
 
 function saveDeck(): void {
   const newDeck: Deck = {
-    id: '',
     ...props.deck,
     is_public: isPublic.value,
     title: title.value,
     description: description.value,
     count: cards.value.length,
-    image: {
-      ...props.deck?.image,
-      newFile: deckImageFile.value,
-      deleted: deckImageDeleted.value
-    }
+    image_url: image_file_path.value
   }
 
   emit('saveDeck', newDeck, cards.value)
