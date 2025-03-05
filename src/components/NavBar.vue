@@ -5,7 +5,7 @@
       <div class="flex gap-3 items-center">
         <!-- <RouterLink to="/dashboard" class="text-white">Dashboard</RouterLink> -->
         <RouterLink to="/create" class="text-white">Create</RouterLink>
-        <!-- <button @click="onClick" class="text-white">Sign Out</button> -->
+        <p class="text-white">{{ display_name }}</p>
       </div>
     </div>
   </nav>
@@ -13,4 +13,8 @@
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+
+const props = defineProps({
+  display_name: String
+})
 </script>

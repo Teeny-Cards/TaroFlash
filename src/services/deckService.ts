@@ -16,7 +16,10 @@ export async function createDeck(deck: Deck): Promise<any> {
 }
 
 export async function fetchUserDecks(): Promise<Deck[]> {
-  const { data, error } = await supabase.from('decks').select().eq('member_id', useMemberStore().id)
+  const { data, error } = await supabase
+    .from('decks')
+    .select('description, title, image_url, id')
+    .eq('member_id', useMemberStore().id)
 
   if (error) {
     throw new TeenyError(error.message)
@@ -30,12 +33,13 @@ export async function fetchDeckById(id: string): Promise<Deck> {
     .from('decks')
     .select('*, cards(*), member:members(display_name)')
     .eq('id', id)
+    .single()
 
   if (error) {
     throw new TeenyError(error.message)
   }
 
-  return data[0]
+  return data
 }
 
 export async function updateDeckById(id: string, deck: Deck): Promise<void> {
