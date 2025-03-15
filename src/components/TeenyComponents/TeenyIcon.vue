@@ -20,7 +20,7 @@ const props = defineProps({
 const Icon = defineAsyncComponent(() => import(`../../assets/icons/${props.src}.svg`))
 
 const iconSize: { [key: string]: string } = {
-  large: 'w-6 h-6',
+  large: 'w-8  h-8',
   base: 'w-5 h-5',
   small: 'w-4 h-4',
   teeny: 'w-3 h-3'

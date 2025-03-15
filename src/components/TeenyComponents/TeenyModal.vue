@@ -1,5 +1,9 @@
 <template>
   <teleport to="[teeny-modal-container]">
+    <div
+      v-if="backdrop && open"
+      class="fixed inset-0 bg-black/25 pointer-events-auto backdrop-blur-xs"
+    ></div>
     <Transition
       enter-from-class="scale-90 opacity-0"
       enter-to-class="scale-100 opacity-100"
@@ -29,7 +33,8 @@ const props = defineProps({
   open: {
     type: Boolean,
     default: false
-  }
+  },
+  backdrop: Boolean
 })
 
 const scrollTop = ref(document.documentElement.scrollTop)
