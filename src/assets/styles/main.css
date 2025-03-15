@@ -32,28 +32,28 @@
   --curve-green-bg: url('../backgrounds/curve-green.svg');
   --bank-note-yellow-bg: url('../backgrounds/bank-note-yellow.svg');
 
-  --radius-1: var(--spacing); /* 4px */
-  --radius-2: calc(var(--spacing) * 2); /* 8px */
-  --radius-3: calc(var(--spacing) * 3); /* 12px */
-  --radius-4: calc(var(--spacing) * 4); /* 16px */
-  --radius-5: calc(var(--spacing) * 5); /* 20px */
-  --radius-6: calc(var(--spacing) * 6); /* 24px */
-  --radius-7: calc(var(--spacing) * 7); /* 28px */
-  --radius-8: calc(var(--spacing) * 8); /* 32px */
-  --radius-9: calc(var(--spacing) * 9); /* 36px */
-  --radius-10: calc(var(--spacing) * 10); /* 40px */
-  --radius-11: calc(var(--spacing) * 11); /* 44px */
-  --radius-12: calc(var(--spacing) * 12); /* 48px */
-  --radius-13: calc(var(--spacing) * 13); /* 52px */
-  --radius-14: calc(var(--spacing) * 14); /* 56px */
-  --radius-15: calc(var(--spacing) * 15); /* 60px */
-  --radius-16: calc(var(--spacing) * 16); /* 64px */
-  --radius-17: calc(var(--spacing) * 17); /* 68px */
-  --radius-18: calc(var(--spacing) * 18); /* 72px */
-  --radius-19: calc(var(--spacing) * 19); /* 76px */
-  --radius-20: calc(var(--spacing) * 20); /* 80px */
-  --radius-21: calc(var(--spacing) * 21); /* 84px */
-  --radius-22: calc(var(--spacing) * 22); /* 88px */
+  --radius-1: --spacing(1); /* 4px */
+  --radius-2: --spacing(2); /* 8px */
+  --radius-3: --spacing(3); /* 12px */
+  --radius-4: --spacing(4); /* 16px */
+  --radius-5: --spacing(5); /* 20px */
+  --radius-6: --spacing(6); /* 24px */
+  --radius-7: --spacing(7); /* 28px */
+  --radius-8: --spacing(8); /* 32px */
+  --radius-9: --spacing(9); /* 36px */
+  --radius-10: --spacing(10); /* 40px */
+  --radius-11: --spacing(11); /* 44px */
+  --radius-12: --spacing(12); /* 48px */
+  --radius-13: --spacing(13); /* 52px */
+  --radius-14: --spacing(14); /* 56px */
+  --radius-15: --spacing(15); /* 60px */
+  --radius-16: --spacing(16); /* 64px */
+  --radius-17: --spacing(17); /* 68px */
+  --radius-18: --spacing(18); /* 72px */
+  --radius-19: --spacing(19); /* 76px */
+  --radius-20: --spacing(20); /* 80px */
+  --radius-21: --spacing(21); /* 84px */
+  --radius-22: --spacing(22); /* 88px */
   --radius-full: 9999px;
 
   --shadow-*: initial;

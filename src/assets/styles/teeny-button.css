@@ -48,6 +48,10 @@
     background-color: var(--color-red);
     color: var(--color-white);
   }
+  .btn-parchment {
+    background-color: var(--color-parchment);
+    color: var(--color-grey-dark);
+  }
 
   /* Inverted styles */
   .btn-inverted {
@@ -61,6 +65,9 @@
   }
   .btn-inverted.btn-danger {
     color: var(--color-red);
+  }
+  .btn-inverted.btn-parchment {
+    color: var(--color-parchment);
   }
 
   .btn-inverted .btn-icon {
@@ -79,6 +86,10 @@
     background-color: var(--color-red);
     color: var(--color-white);
   }
+  .btn-inverted .btn-icon-parchment {
+    background-color: var(--color-parchment);
+    color: var(--color-grey-dark);
+  }
 
   /* Icon-only buttons */
   .teeny-btn.btn-icon-only {
@@ -86,7 +97,7 @@
     border-radius: var(--radius-4);
   }
   .btn-icon-only .btn-icon {
-    color: var(--color-white);
+    /* color: var(--color-white); */
     background-color: transparent;
   }
   .btn-icon-only.btn-small {
@@ -114,6 +125,10 @@
     color: var(--color-red);
     background-color: var(--color-white);
   }
+  .btn-icon-parchment {
+    color: var(--color-blue);
+    background-color: var(--color-white);
+  }
 
   .btn-fancy-hover {
     position: relative;
@@ -132,5 +147,8 @@
   }
   .btn-fancy-hover:hover::before {
     opacity: 1;
+  }
+  .btn-fancy-hover:hover .btn-icon {
+    color: var(--color-white);
   }
 }
