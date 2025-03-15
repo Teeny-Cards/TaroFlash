@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import DashBoard from '../views/Dashboard.vue'
-import CreateView from '../views/CreateView.vue'
-import LoginPage from '../views/LoginPage.vue'
-import SignupPage from '../views/SignupPage.vue'
-import HomeView from '../views/HomeView.vue'
-import DeckView from '../views/deck/index.vue'
-import LoadingVue from '../views/LoadingView.vue'
-import { useMemberStore } from '../stores/member'
-import { useAppStore } from '@/stores/app'
+import DashBoard from '@/views/Dashboard.vue'
+import CreateView from '@/views/CreateView.vue'
+import LoginPage from '@/views/LoginPage.vue'
+import SignupPage from '@/views/SignupPage.vue'
+import HomeView from '@/views/HomeView.vue'
+import DeckView from '@/views/deck/index.vue'
+import LoadingVue from '@/views/LoadingView.vue'
+import { useMemberStore } from '@/stores/member'
+import { useSessionStore } from '@/stores/session'
 import { storeToRefs } from 'pinia'
 
 const router = createRouter({
@@ -66,7 +66,7 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const { authenticated } = storeToRefs(useMemberStore())
-  const { loading } = storeToRefs(useAppStore())
+  const { loading } = storeToRefs(useSessionStore())
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
 
   if (!requiresAuth) {

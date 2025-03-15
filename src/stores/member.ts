@@ -2,7 +2,7 @@ import { supabase } from '@/supabaseClient'
 import { TeenyError } from '@/utils/TeenyError'
 import { fetchMemberById } from '@/services/memberService'
 import { defineStore } from 'pinia'
-import { useAppStore } from './app'
+import { useSessionStore } from './session'
 
 export const useMemberStore = defineStore('member', {
   state: () => ({
@@ -16,7 +16,8 @@ export const useMemberStore = defineStore('member', {
 
   actions: {
     async login(): Promise<void> {
-      useAppStore().setLoading(true)
+      const session = useSessionStore()
+      session.setLoading(true)
       const { data, error } = await supabase.auth.getSession()
 
       if (error) {
@@ -27,7 +28,7 @@ export const useMemberStore = defineStore('member', {
 
       this.authenticated = data.session?.user.aud === 'authenticated'
       this.setMember(member)
-      useAppStore().setLoading(false)
+      session.setLoading(false)
     },
 
     setMember(member: Member | null): void {
