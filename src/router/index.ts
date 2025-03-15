@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DashBoard from '@/views/Dashboard.vue'
-import CreateView from '@/views/CreateView.vue'
+import ShopView from '@/views/shop/index.vue'
 import LoginPage from '@/views/LoginPage.vue'
 import SignupPage from '@/views/SignupPage.vue'
 import HomeView from '@/views/HomeView.vue'
@@ -49,9 +49,9 @@ const router = createRouter({
           component: DashBoard
         },
         {
-          path: '/create',
-          name: 'create',
-          component: CreateView
+          path: '/shop',
+          name: 'shop',
+          component: ShopView
         },
         {
           path: '/deck/:id',
