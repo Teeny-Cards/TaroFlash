@@ -13,18 +13,24 @@
   --color-leaf-light: #ecf8e2;
   --color-orange: #fbc56f;
   --color-orange-light: #f7d279;
+  --color-yellow: #f6f3df;
+  --color-yellow-light: #fcfae4;
   --color-pink: #f388a5;
   --color-pink-light: #f599b3;
   --color-grey: #959595;
   --color-grey-light: #d2d2d2;
   --color-grey-dark: #4f4f4f;
   --color-red: #f66a6a;
+  --color-brown-light: #b6b197;
   --color-parchment: #f3f1ea;
   --color-white: #ffffff;
   --color-black: #000000;
 
-  --stripe-blue-bg: url('../svg/stripe-blue.svg');
-  --curve-green-bg: url('../svg/curve-green.svg');
+  /* Backgrounds */
+  --jupiter-green-bg: url('../backgrounds/jupiter-green.svg');
+  --stripe-blue-bg: url('../backgrounds/stripe-blue.svg');
+  --curve-green-bg: url('../backgrounds/curve-green.svg');
+  --bank-note-yellow-bg: url('../backgrounds/bank-note-yellow.svg');
 
   --radius-1: var(--spacing); /* 4px */
   --radius-2: calc(var(--spacing) * 2); /* 8px */
@@ -42,6 +48,12 @@
   --radius-14: calc(var(--spacing) * 14); /* 56px */
   --radius-15: calc(var(--spacing) * 15); /* 60px */
   --radius-16: calc(var(--spacing) * 16); /* 64px */
+  --radius-17: calc(var(--spacing) * 17); /* 68px */
+  --radius-18: calc(var(--spacing) * 18); /* 72px */
+  --radius-19: calc(var(--spacing) * 19); /* 76px */
+  --radius-20: calc(var(--spacing) * 20); /* 80px */
+  --radius-21: calc(var(--spacing) * 21); /* 84px */
+  --radius-22: calc(var(--spacing) * 22); /* 88px */
   --radius-full: 9999px;
 
   --shadow-*: initial;
