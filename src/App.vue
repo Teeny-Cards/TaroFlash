@@ -8,12 +8,12 @@
 import { RouterView } from 'vue-router'
 import TeenyToastManager from '@teeny/TeenyToastManager.vue'
 import TeenyAlertManager from '@teeny/TeenyAlertManager.vue'
-import { useMemberStore } from './stores/member'
+import { useMemberStore } from '@/stores/member'
 import { onMounted } from 'vue'
 
-const user = useMemberStore()
+const memberStore = useMemberStore()
 
 onMounted(() => {
-  user.login()
+  memberStore.login()
 })
 </script>
