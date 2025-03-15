@@ -8,6 +8,9 @@ export const useMemberStore = defineStore('member', {
   state: () => ({
     display_name: '',
     id: '',
+    description: '',
+    created_at: '',
+    num_decks: 0,
     authenticated: false
   }),
 
@@ -32,6 +35,9 @@ export const useMemberStore = defineStore('member', {
 
       this.id = member.id ?? ''
       this.display_name = member.display_name ?? ''
+      this.description = member.description ?? ''
+      this.created_at = member.created_at ?? ''
+      this.num_decks = member.num_decks ?? 0
     }
   }
 })

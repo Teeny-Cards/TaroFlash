@@ -4,11 +4,15 @@
     class="w-full lg:w-max bg-orange rounded-16 flex flex-col items-center justify-center gap-4 shadow-modal text-white py-4 bg-(image:--curve-green-bg) overflow-hidden"
   >
     <div edit-card-modal__title class="flex justify-center w-full">
-      <h1 class="text-2xl font-semibold font-primary">Edit Card</h1>
+      <h1 class="text-2xl text-grey font-semibold font-primary">Edit Card</h1>
     </div>
     <div edit-card-modal__body class="flex flex-col items-center w-full gap-2">
-      <TeenyIcon src="expand-less" size="large" @click="scrollUp"></TeenyIcon>
-
+      <TeenyIcon
+        src="expand-less"
+        size="large"
+        class="text-grey cursor-pointer"
+        @click="scrollUp"
+      ></TeenyIcon>
       <div
         edit-card-modal__card-list
         ref="cardListEl"
@@ -16,20 +20,20 @@
       >
         <div
           edit-card-modal__teeny-card-editor
-          v-for="(card, index) in cards"
+          v-for="card in cards"
           :key="card.id"
           class="flex w-full gap-4 px-20 overflow-x-auto shrink-0 snap-mandatory snap-x scroll-hidden font-primary snap-center"
         >
-          <TeenyCardEditor
-            :card="card"
-            :index="index"
-            @front-input="updateFront"
-            @back-input="updateBack"
-          />
+          <TeenyCardEditor :card="card" @front-input="updateFront" @back-input="updateBack" />
         </div>
       </div>
 
-      <TeenyIcon src="expand-more" size="large" @click="scrollDown"></TeenyIcon>
+      <TeenyIcon
+        src="expand-more"
+        size="large"
+        class="text-grey cursor-pointer"
+        @click="scrollDown"
+      ></TeenyIcon>
     </div>
     <div edit-card-modal__actions class="w-full flex justify-center gap-2.5">
       <TeenyButton variant="muted" icon-left="close" @click="$emit('cancel')">Cancel</TeenyButton>
@@ -53,7 +57,7 @@ const props = defineProps({
     required: true
   },
   focussedCardId: {
-    type: String,
+    type: Number,
     required: true
   }
 })
@@ -97,7 +101,7 @@ function save(): void {
 }
 
 function setScrollPosition(pos: number, animate: boolean = false): void {
-  cardListEl.value?.scrollTo({ top: pos, left: 0, behavior: animate ? 'smooth' : 'auto' })
+  cardListEl.value?.scrollTo({ top: pos, left: 0, behavior: animate ? 'smooth' : 'instant' })
 }
 
 function scrollDown(): void {
