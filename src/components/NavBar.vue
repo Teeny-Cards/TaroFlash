@@ -1,7 +1,7 @@
 <template>
-  <nav class="w-full bg-blue font-primary sticky top-0 z-10 flex justify-center px-4 h-17">
-    <div class="w-full max-w-app flex justify-between items-center">
-      <RouterLink to="/dashboard" class="text-4xl text-white bg-blue mt-8 px-8 py-3 rounded-5"
+  <nav class="w-full bg-blue font-primary sticky top-0 z-10 flex justify-center h-17">
+    <div class="w-full max-w-app flex justify-between items-center px-4 sm:px-16">
+      <RouterLink to="/dashboard" class="text-4xl text-white bg-blue px-8 py-3 rounded-5"
         >TeenyCards</RouterLink
       >
       <div class="flex gap-6 items-end">
@@ -15,9 +15,9 @@
         <div class="flex gap-4">
           <TeenyButton
             icon-left="store"
-            variant="parchment"
             icon-size="base"
             icon-only
+            inverted
             class="ring-8 ring-blue p-1.5"
             :class="{ 'ring-pink': isActive('shop') }"
             @click="routeToShop"
@@ -25,8 +25,8 @@
           <TeenyButton
             icon-left="user"
             icon-only
-            variant="parchment"
             icon-size="base"
+            inverted
             class="ring-8 ring-blue p-1.5"
           ></TeenyButton>
         </div>

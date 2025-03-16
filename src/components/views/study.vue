@@ -150,4 +150,3 @@ function onVisibilityChanged(): void {
   }
 }
 </script>
-@/utils/SRC
