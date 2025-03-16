@@ -38,7 +38,7 @@ const props = defineProps({
   variant: {
     type: String,
     validator(value: string) {
-      return ['interaction', 'muted', 'danger', 'parchment'].includes(value)
+      return ['interaction', 'muted', 'danger'].includes(value)
     },
     default: 'interaction'
   },
@@ -66,8 +66,7 @@ const props = defineProps({
 const variantClass: { [key: string]: string } = {
   interaction: 'btn-interaction',
   muted: 'btn-muted',
-  danger: 'btn-danger',
-  parchment: 'btn-parchment'
+  danger: 'btn-danger'
 }
 
 const sizeClass: { [key: string]: string } = {
@@ -80,7 +79,6 @@ const sizeClass: { [key: string]: string } = {
 const iconVariantClass: { [key: string]: string } = {
   interaction: 'btn-icon-interaction',
   muted: 'btn-icon-muted',
-  danger: 'btn-icon-danger',
-  parchment: 'btn-icon-parchment'
+  danger: 'btn-icon-danger'
 }
 </script>

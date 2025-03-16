@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap');
+
 @import 'tailwindcss';
 @import 'teeny-button.css';
 @import 'teeny-input.css';
@@ -8,6 +10,7 @@
   --color-blue-light: #41a9df;
   --color-arctic: #9ad5f3;
   --color-arctic-light: #b4dbef;
+  --color-green: #a4c6ae;
   --color-leaf-dark: #469659;
   --color-leaf: #e4edd9;
   --color-leaf-light: #ecf8e2;
@@ -22,7 +25,9 @@
   --color-grey-dark: #4f4f4f;
   --color-red: #f66a6a;
   --color-brown-light: #b6b197;
+  --color-brown-dark: #744e2a;
   --color-parchment: #f3f1ea;
+  --color-parchment-dark: #e7e0d5;
   --color-white: #ffffff;
   --color-black: #000000;
 
@@ -31,6 +36,7 @@
   --stripe-blue-bg: url('../backgrounds/stripe-blue.svg');
   --curve-green-bg: url('../backgrounds/curve-green.svg');
   --bank-note-yellow-bg: url('../backgrounds/bank-note-yellow.svg');
+  --leaf-blue-bg: url('../backgrounds/leaf-blue.svg');
 
   --radius-1: --spacing(1); /* 4px */
   --radius-2: --spacing(2); /* 8px */
@@ -60,12 +66,10 @@
   --shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.15);
   --shadow-modal: 8px 8px 42.9px 0px rgba(0, 0, 0, 0.25);
 
-  --font-primary: Arial Rounded MT Bold, Arial, sans-serif;
-
+  --font-primary: 'Tilt Neon', sans-serif;
   --aspect-card: 7 / 8.25;
 
-  --container-app: 1306px;
-  --container-screen-2_5xl: 1404px;
+  --container-app: 1400px;
 
   --grid-template-columns-deck-view-lg: 284px minmax(811px, 1024px);
   --grid-template-columns-deck-desktop: repeat(4, 192px);
@@ -76,9 +80,8 @@
 }
 
 @layer base {
-  @font-face {
-    font-family: 'Arial Rounded MT Bold';
-    src: url(/assets/fonts/arialroundedmtbold.tff) format('tff');
+  html {
+    font-family: var(--font-primary);
   }
 }
 
