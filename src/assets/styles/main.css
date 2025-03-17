@@ -60,6 +60,15 @@
   --radius-20: --spacing(20); /* 80px */
   --radius-21: --spacing(21); /* 84px */
   --radius-22: --spacing(22); /* 88px */
+  --radius-23: --spacing(23); /* 92px */
+  --radius-24: --spacing(24); /* 96px */
+  --radius-25: --spacing(25); /* 100px */
+  --radius-26: --spacing(26); /* 104px */
+  --radius-27: --spacing(27); /* 108px */
+  --radius-28: --spacing(28); /* 112px */
+  --radius-29: --spacing(29); /* 116px */
+  --radius-30: --spacing(30); /* 120px */
+  --radius-31: --spacing(31); /* 124px */
   --radius-full: 9999px;
 
   --shadow-*: initial;
