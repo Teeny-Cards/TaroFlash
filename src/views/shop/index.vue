@@ -14,19 +14,70 @@
     </div>
     <div class="flex flex-col gap-16">
       <div class="flex gap-13 justify-center w-full">
-        <ShopItem v-for="item in power_ups" :key="item.name" :item="item" />
+        <ShopItem
+          v-for="item in shop_items.power_ups"
+          :key="item.name"
+          :item="item"
+          @click="selected_item = item"
+        />
       </div>
       <div class="w-full h-0.25 bg-brown-light"></div>
       <div class="flex gap-13 justify-center w-full">
-        <ShopItem v-for="item in stationary" :key="item.name" :item="item" />
+        <ShopItem
+          v-for="item in shop_items.stationary"
+          :key="item.name"
+          :item="item"
+          @click="selected_item = item"
+        />
       </div>
     </div>
   </div>
+
+  <TeenyModal :open="selected_item !== undefined" @close="selected_item = undefined">
+    <PurchaseModal :item="selected_item!" @purchased="submitPurchase(selected_item!)" />
+  </TeenyModal>
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import ShopItem from './components/ShopItem.vue'
-import { power_ups, stationary } from '@/data/shopItems'
+import { fetchShopItems, upsertPurchase } from '@/services/shopService'
+import TeenyModal from '@teeny/TeenyModal.vue'
+import PurchaseModal from './components/PurchaseModal.vue'
+import { useMemberStore } from '@/stores/member'
+
+const shop_items = ref<{ [key: string]: ShopItem[] }>({})
+const selected_item = ref<ShopItem | undefined>()
+const memberStore = useMemberStore()
+
+onMounted(async () => {
+  const items = await fetchShopItems()
+
+  if (items) {
+    shop_items.value = groupItemsByCategory(items)
+  }
+})
+
+function groupItemsByCategory(items: ShopItem[]) {
+  return items.reduce((acc: { [key: string]: ShopItem[] }, item: ShopItem) => {
+    if (!acc[item.category]) {
+      acc[item.category] = []
+    }
+
+    acc[item.category].push(item)
+    return acc
+  }, {})
+}
+
+async function submitPurchase(item: ShopItem) {
+  await upsertPurchase({
+    item_id: item.id,
+    member_id: memberStore.id,
+    quantity: 1
+  })
+
+  selected_item.value = undefined
+}
 </script>
 
 <style scoped>

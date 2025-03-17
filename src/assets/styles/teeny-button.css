@@ -38,15 +38,15 @@
   /* Variants */
   .btn-interaction {
     background-color: var(--color-blue);
-    color: var(--color-parchment);
+    color: var(--color-white);
   }
   .btn-muted {
     background-color: var(--color-grey);
-    color: var(--color-parchment);
+    color: var(--color-white);
   }
   .btn-danger {
     background-color: var(--color-red);
-    color: var(--color-parchment);
+    color: var(--color-white);
   }
 
   /* Inverted styles */
@@ -110,15 +110,15 @@
   }
   .btn-icon-interaction {
     color: var(--color-blue);
-    background-color: var(--color-parchment);
+    background-color: var(--color-white);
   }
   .btn-icon-muted {
     color: var(--color-grey);
-    background-color: var(--color-parchment);
+    background-color: var(--color-white);
   }
   .btn-icon-danger {
     color: var(--color-red);
-    background-color: var(--color-parchment);
+    background-color: var(--color-white);
   }
 
   .btn-fancy-hover {
@@ -140,6 +140,6 @@
     opacity: 1;
   }
   .btn-fancy-hover:hover .btn-icon {
-    color: var(--color-parchment);
+    color: var(--color-white);
   }
 }

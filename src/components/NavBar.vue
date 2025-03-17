@@ -1,9 +1,7 @@
 <template>
   <nav class="w-full bg-blue font-primary sticky top-0 z-10 flex justify-center h-17">
     <div class="w-full max-w-app flex justify-between items-center px-4 sm:px-16">
-      <RouterLink to="/dashboard" class="text-4xl text-white bg-blue px-8 py-3 rounded-5"
-        >TeenyCards</RouterLink
-      >
+      <RouterLink to="/dashboard" class="text-4xl text-white">TeenyCards</RouterLink>
       <div class="flex gap-6 items-end">
         <div class="flex gap-2.25 mt-6">
           <div

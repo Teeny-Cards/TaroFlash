@@ -1,6 +1,15 @@
 declare type ShopItem = {
+  id: string
   name: string
-  src: string
+  item_key: string
   description: string
   price: number
+  category: string
+}
+
+declare type Purchase = {
+  id?: string
+  item_id: string
+  member_id: string
+  quantity: number
 }
