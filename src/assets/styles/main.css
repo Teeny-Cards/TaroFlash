@@ -3,10 +3,11 @@
 @import 'tailwindcss';
 @import 'teeny-button.css';
 @import 'teeny-input.css';
+@import 'custom-styles.css';
 
 @theme {
   --color-*: initial;
-  --color-blue: #1491d1;
+  --color-blue: #11b7d4;
   --color-blue-light: #41a9df;
   --color-arctic: #9ad5f3;
   --color-arctic-light: #b4dbef;
@@ -31,14 +32,8 @@
   --color-white: #ffffff;
   --color-black: #000000;
 
-  /* Backgrounds */
-  --jupiter-green-bg: url('../backgrounds/jupiter-green.svg');
-  --stripe-blue-bg: url('../backgrounds/stripe-blue.svg');
-  --curve-green-bg: url('../backgrounds/curve-green.svg');
-  --bank-note-yellow-bg: url('../backgrounds/bank-note-yellow.svg');
-  --leaf-blue-bg: url('../backgrounds/leaf-blue.svg');
-
   --radius-1: --spacing(1); /* 4px */
+  --radius-1_5: --spacing(1.5); /* 6px */
   --radius-2: --spacing(2); /* 8px */
   --radius-3: --spacing(3); /* 12px */
   --radius-4: --spacing(4); /* 16px */
@@ -82,10 +77,15 @@
 
   --grid-template-columns-deck-view-lg: 284px minmax(811px, 1024px);
   --grid-template-columns-deck-desktop: repeat(4, 192px);
-}
 
-@utility rotate-y-180 {
-  transform: rotateY(180deg);
+  /* Backgrounds */
+  --jupiter-green-bg: url('../backgrounds/jupiter-green.svg');
+  --stripe-blue-bg: url('../backgrounds/stripe-blue.svg');
+  --curve-green-bg: url('../backgrounds/curve-green.svg');
+  --bank-note-green-bg: url('../backgrounds/bank-note-green.svg');
+  --leaf-blue-bg: url('../backgrounds/leaf-blue.svg');
+
+  --bg-sm: --spacing(20);
 }
 
 @layer base {

@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import TeenyIcon from '@teeny/TeenyIcon.vue'
+import TeenyIcon from './TeenyIcon.vue'
 
 const props = defineProps({
   variant: {
