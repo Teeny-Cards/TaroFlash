@@ -1,5 +1,5 @@
 <script setup>
-  import TeenyButton from '@/components/TeenyButton.vue'
+  import TeenyButton from '@/components/TeenyComponents/TeenyButton.vue'
 </script>
 
 # Teeny Button
