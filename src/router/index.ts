@@ -5,8 +5,7 @@ import LoginPage from '@/views/LoginPage.vue'
 import SignupPage from '@/views/SignupPage.vue'
 import AppView from '@/views/AppView.vue'
 import DeckView from '@/views/deck/index.vue'
-import LoadingView from '@/views/LoadingView.vue'
-import { useSessionStore } from '@/stores/session'
+import { initUser } from '@/stores/initUser'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,24 +21,12 @@ const router = createRouter({
       component: SignupPage
     },
     {
-      path: '/loading',
-      name: 'loading',
-      component: LoadingView
-    },
-    {
       path: '/',
       name: 'authenticated',
       component: AppView,
-      beforeEnter: async (to) => {
-        const session = useSessionStore()
-
-        if (session.authenticated) return true
-
-        if (!session.hasLoadedOnce) {
-          return { name: 'loading', query: { path: to.fullPath } }
-        }
-
-        return { name: 'signin' }
+      beforeEnter: async () => {
+        const authenticated = await initUser()
+        if (!authenticated) return { name: 'signin' }
       },
       children: [
         {
