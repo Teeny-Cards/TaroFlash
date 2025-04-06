@@ -1,6 +1,7 @@
 import { deleteCardsByDeckId } from '@/services/cardService'
 import { supabase } from '@/supabaseClient'
 import { useMemberStore } from '@/stores/member'
+import Logger from '@/utils/logger'
 
 export async function createDeck(deck: Deck): Promise<any> {
   const { id, ...data } = deck
@@ -10,6 +11,7 @@ export async function createDeck(deck: Deck): Promise<any> {
   const { error } = await supabase.from('decks').insert(data)
 
   if (error) {
+    Logger.error(error.message)
     throw new Error(error.message)
   }
 }
@@ -21,6 +23,7 @@ export async function fetchUserDecks(): Promise<Deck[]> {
     .eq('member_id', useMemberStore().id)
 
   if (error) {
+    Logger.error(error.message)
     throw new Error(error.message)
   }
 
@@ -35,6 +38,7 @@ export async function fetchDeckById(id: string): Promise<Deck> {
     .single()
 
   if (error) {
+    Logger.error(error.message)
     throw new Error(error.message)
   }
 
@@ -45,6 +49,7 @@ export async function updateDeckById(id: string, deck: Deck): Promise<void> {
   const { error } = await supabase.from('decks').update(deck).eq('id', id)
 
   if (error) {
+    Logger.error(error.message)
     throw new Error(error.message)
   }
 }
@@ -53,6 +58,7 @@ export async function deleteDeckById(id: string): Promise<void> {
   const { error } = await supabase.from('decks').delete().eq('id', id)
 
   if (error) {
+    Logger.error(error.message)
     throw new Error(error.message)
   }
 
