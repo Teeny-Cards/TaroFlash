@@ -52,5 +52,6 @@
     "vitepress": "^1.0.0-rc.44",
     "vitest": "^1.0.4",
     "vue-tsc": "^1.8.25"
-  }
+  },
+  "packageManager": "pnpm@8.10.0+sha1.77d568bacf41eeefd6695a7087c1282433955b5c"
 }
