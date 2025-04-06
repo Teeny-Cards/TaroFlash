@@ -1,9 +1,11 @@
 import { supabase } from '@/supabaseClient'
+import Logger from '@/utils/logger'
 
 export async function fetchShopItems(): Promise<ShopItem[]> {
   const { data, error } = await supabase.from('shop_items').select('*')
 
   if (error) {
+    Logger.error(error.message)
     throw new Error(error.message)
   }
 
@@ -18,6 +20,7 @@ export async function upsertPurchase(purchase: Purchase): Promise<void> {
   })
 
   if (error) {
+    Logger.error(error.message)
     throw new Error(error.message)
   }
 }
