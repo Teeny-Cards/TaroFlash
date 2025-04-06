@@ -1,124 +1,113 @@
 @layer components {
   /* Base button styles */
   .teeny-btn {
+    --btn-main-color: var(--color-blue);
+    --btn-tertiary-color: var(--color-white);
+
+    background-color: var(--btn-main-color);
+    color: var(--btn-tertiary-color);
+    font-family: var(--font-primary);
+    font-size: var(--btn-font-size);
+    border-radius: var(--btn-border-radius);
+    gap: var(--btn-gap);
+    padding: var(--btn-padding);
+
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--font-primary);
     user-select: none;
     cursor: pointer;
   }
 
-  /* Sizes */
-  .btn-large {
-    font-size: var(--text-lg);
-    border-radius: var(--radius-4);
-    gap: --spacing(2);
-    padding: --spacing(1.5) --spacing(2.5);
-  }
-  .btn-base {
-    font-size: var(--text-base);
-    border-radius: var(--radius-4);
-    gap: --spacing(2);
-    padding: --spacing(1.5) --spacing(2.5);
-  }
-  .btn-small {
-    font-size: var(--text-sm);
-    border-radius: var(--radius-3);
-    gap: --spacing(1.5);
-    padding: --spacing(1) --spacing(1);
-  }
-  .btn-teeny {
-    font-size: var(--text-sm);
-    border-radius: var(--radius-3);
-    gap: --spacing(1.5);
-    padding: --spacing(1) --spacing(1.5);
-  }
+  .teeny-btn .btn-icon {
+    color: var(--btn-main-color);
+    background-color: var(--btn-tertiary-color);
 
-  /* Variants */
-  .btn-interaction {
-    background-color: var(--color-blue);
-    color: var(--color-white);
-  }
-  .btn-muted {
-    background-color: var(--color-grey);
-    color: var(--color-white);
-  }
-  .btn-danger {
-    background-color: var(--color-red);
-    color: var(--color-white);
-  }
-
-  /* Inverted styles */
-  .btn-inverted {
-    background-color: var(--color-white);
-  }
-  .btn-inverted.btn-interaction {
-    color: var(--color-blue);
-  }
-  .btn-inverted.btn-muted {
-    color: var(--color-grey);
-  }
-  .btn-inverted.btn-danger {
-    color: var(--color-red);
-  }
-
-  .btn-inverted .btn-icon-interaction {
-    background-color: var(--color-blue);
-    color: var(--color-white);
-  }
-  .btn-inverted .btn-icon-muted {
-    background-color: var(--color-grey);
-    color: var(--color-white);
-  }
-  .btn-inverted .btn-icon-danger {
-    background-color: var(--color-red);
-    color: var(--color-white);
-  }
-
-  /* Icon-only buttons */
-  .teeny-btn.btn-icon-only {
-    padding: --spacing(2);
-    border-radius: var(--radius-4);
-  }
-  .btn-icon-only .btn-icon {
-    color: var(--color-white);
-    background-color: transparent;
-  }
-  .btn-icon-only.btn-small {
-    padding: --spacing(1);
-    border-radius: var(--radius-4);
-  }
-
-  .btn-inverted.btn-icon-only .btn-icon-interaction {
-    color: var(--color-blue);
-  }
-  .btn-inverted.btn-icon-only .btn-icon-muted {
-    color: var(--color-grey);
-  }
-  .btn-inverted.btn-icon-only .btn-icon-danger {
-    color: var(--color-red);
-  }
-
-  /* Icon styles */
-  .btn-icon {
     border-radius: var(--radius-full);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: --spacing(0.5);
   }
-  .btn-icon-interaction {
-    color: var(--color-blue);
-    background-color: var(--color-white);
+
+  /* Button variants */
+  .teeny-btn.btn-interaction {
+    --btn-main-color: var(--color-blue);
+    --btn-tertiary-color: var(--color-white);
   }
-  .btn-icon-muted {
-    color: var(--color-grey);
-    background-color: var(--color-white);
+  .teeny-btn.btn-muted {
+    --btn-main-color: var(--color-grey);
+    --btn-tertiary-color: var(--color-white);
   }
-  .btn-icon-danger {
-    color: var(--color-red);
-    background-color: var(--color-white);
+  .teeny-btn.btn-danger {
+    --btn-main-color: var(--color-red);
+    --btn-tertiary-color: var(--color-white);
+  }
+
+  /* Inverted styles */
+  .teeny-btn.btn-inverted.btn-interaction {
+    --btn-main-color: var(--color-white);
+    --btn-tertiary-color: var(--color-blue);
+  }
+  .teeny-btn.btn-inverted.btn-muted {
+    --btn-main-color: var(--color-white);
+    --btn-tertiary-color: var(--color-grey);
+  }
+  .teeny-btn.btn-inverted.btn-danger {
+    --btn-main-color: var(--color-white);
+    --btn-tertiary-color: var(--color-red);
+  }
+
+  /* Button sizes */
+  .teeny-btn.btn-large {
+    --btn-font-size: var(--text-lg);
+    --btn-border-radius: var(--radius-4);
+    --btn-gap: --spacing(2);
+    --btn-padding: --spacing(1.5) --spacing(2.5);
+  }
+  .teeny-btn.btn-base {
+    --btn-font-size: var(--text-base);
+    --btn-border-radius: var(--radius-4);
+    --btn-gap: --spacing(2);
+    --btn-padding: --spacing(1.5) --spacing(2.5);
+  }
+  .teeny-btn.btn-small {
+    --btn-font-size: var(--text-sm);
+    --btn-border-radius: var(--radius-3);
+    --btn-gap: --spacing(1.5);
+    --btn-padding: --spacing(1) --spacing(1);
+  }
+  .teeny-btn.btn-teeny {
+    --btn-font-size: var(--text-sm);
+    --btn-border-radius: var(--radius-3);
+    --btn-gap: --spacing(1.5);
+    --btn-padding: --spacing(1) --spacing(1.5);
+  }
+
+  /* Icon-only buttons */
+  .teeny-btn.btn-icon-only,
+  .teeny-btn.btn-inverted.btn-icon-only {
+    --btn-padding: --spacing(2);
+    --btn-border-radius: var(--radius-4);
+    --btn-tertiary-color: var(--color-white);
+  }
+  .teeny-btn.btn-icon-only .btn-icon {
+    background-color: transparent;
+    color: var(--btn-tertiary-color);
+  }
+
+  .teeny-btn.btn-icon-only.btn-small {
+    --btn-padding: --spacing(1);
+  }
+
+  .teeny-btn.btn-icon-only.btn-inverted.btn-interaction {
+    --btn-tertiary-color: var(--color-blue);
+  }
+  .teeny-btn.btn-icon-only.btn-inverted.btn-muted {
+    --btn-tertiary-color: var(--color-grey);
+  }
+  .teeny-btn.btn-icon-only.btn-inverted.btn-danger {
+    --btn-tertiary-color: var(--color-red);
   }
 
   .btn-fancy-hover {
@@ -139,7 +128,7 @@
   .btn-fancy-hover:hover::before {
     opacity: 1;
   }
-  .btn-fancy-hover:hover .btn-icon {
-    color: var(--color-white);
+  .btn-fancy-hover:hover {
+    --btn-tertiary-color: var(--color-white);
   }
 }

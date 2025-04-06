@@ -5,7 +5,7 @@
     <div
       class="absolute -inset-4 rounded-8 group-hover:bg-parchment-dark -z-1 transition-colors duration-75"
     ></div>
-    <TeenyImage class="w-29 h-29" :src="`items/${item.item_key}.svg`" />
+    <TeenyImage class="w-29 h-29" :src="item.item_key" />
     <p class="text-xl text-center text-brown-dark">{{ item.name }}</p>
     <p class="shop-item__description text-xs text-center text-grey w-32 h-8.5">
       {{ item.description }}
