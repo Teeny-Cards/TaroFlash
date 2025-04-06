@@ -57,7 +57,7 @@ const props = defineProps({
     required: true
   },
   focussedCardId: {
-    type: Number,
+    type: String,
     required: true
   }
 })

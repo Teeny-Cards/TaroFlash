@@ -40,10 +40,10 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import ShopItem from './components/ShopItem.vue'
+import ShopItem from '@/components/ShopView/ShopItem.vue'
 import { fetchShopItems, upsertPurchase } from '@/services/shopService'
 import TeenyModal from '@teeny/TeenyModal.vue'
-import PurchaseModal from './components/PurchaseModal.vue'
+import PurchaseModal from '@/components/ShopView/PurchaseModal.vue'
 import { useMemberStore } from '@/stores/member'
 
 const shop_items = ref<{ [key: string]: ShopItem[] }>({})

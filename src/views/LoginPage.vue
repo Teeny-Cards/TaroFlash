@@ -1,23 +1,34 @@
 <template>
   <section class="w-full flex justify-center pt-32">
-    <LoginDialogue signIn @signedIn="signInWithEmail" />
+    <LoginDialogue signIn @signedIn="loginWithEmail" />
   </section>
 </template>
 
 <script setup lang="ts">
 import LoginDialogue from '@/components/LoginDialogue.vue'
 import router from '@/router'
+import { initUser } from '@/stores/initUser'
 import { useSessionStore } from '@/stores/session'
+import { useMessageStore } from '@/stores/message'
+import { onMounted } from 'vue'
 
 const session = useSessionStore()
+const messageStore = useMessageStore()
 
-async function signInWithEmail(email: string, password: string): Promise<void> {
+onMounted(async () => {
+  const authenticated = await initUser()
+
+  if (authenticated) {
+    router.push({ name: 'dashboard' })
+  }
+})
+
+async function loginWithEmail(email: string, password: string): Promise<void> {
   try {
     await session.login(email, password)
+    router.push({ name: 'dashboard' })
   } catch (e: any) {
-    throw e
+    messageStore.error(e.message)
   }
-
-  router.push({ name: 'dashboard' })
 }
 </script>
