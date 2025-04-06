@@ -4,26 +4,37 @@
 
 <script setup lang="ts">
 import { onMounted, watch } from 'vue'
+import { useSessionStore } from '@/stores/session'
 import { useMemberStore } from '@/stores/member'
 import router from '@/router'
 import { useRoute } from 'vue-router'
-import { storeToRefs } from 'pinia'
+import Logger from '@/utils/logger'
 
 const route = useRoute()
-const path = route.query.path as string
 
-const userStore = useMemberStore()
-const { authenticated } = storeToRefs(userStore)
+const session = useSessionStore()
+const memberStore = useMemberStore()
 
-onMounted(() => {
-  if (authenticated.value) {
-    router.replace(path ?? '/dashboard')
+onMounted(async () => {
+  await initUser()
+
+  if (session.authenticated) {
+    const path = route.query.path?.toString() ?? '/dashboard'
+
+    Logger.info(`User is authenticated, redirecting to ${path}`)
+    router.replace(path)
   }
 })
 
-watch(authenticated, (isAuthenticated) => {
-  if (isAuthenticated) {
-    router.replace(path ?? '/dashboard')
+async function initUser() {
+  try {
+    await session.restoreSession()
+
+    if (session.authenticated && session.user?.id) {
+      await memberStore.fetchMember()
+    }
+  } catch (e: any) {
+    Logger.error(`Error initializing user: ${e.message}`)
   }
-})
+}
 </script>

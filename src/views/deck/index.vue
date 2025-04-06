@@ -111,6 +111,7 @@ import { useRouter } from 'vue-router'
 import { deleteCardById } from '@/services/cardService'
 import { saveCards } from '@/services/cardService'
 import { fetchDeckById } from '@/services/deckService'
+import Logger from '@/utils/logger'
 
 const props = defineProps({
   id: {
@@ -130,6 +131,7 @@ const selectionModeActive = ref(false)
 const selectedCards = ref<Card[]>([])
 
 onMounted(async () => {
+  Logger.info(`Deck view mounted for deck ID: ${props.id}`)
   await getDeck()
   loading.value = false
 })
@@ -178,9 +180,14 @@ async function addCard(): Promise<void> {
 }
 
 async function getDeck(): Promise<void> {
+  Logger.debug(`Fetching deck with ID: ${props.id}`)
   try {
     currentDeck.value = await fetchDeckById(props.id)
+    Logger.info(
+      `Loaded deck: ${currentDeck.value.title} with ${currentDeck.value.cards?.length || 0} cards`
+    )
   } catch (e: any) {
+    Logger.error(`Error loading deck: ${e.message}`)
     messageStore.error(e.message)
     // router.push({ name: 'dashboard' })
   }
@@ -211,8 +218,10 @@ function onEditCard(card: Card): void {
 }
 
 async function onSaveCards(cards: Card[]): Promise<void> {
+  Logger.info(`Saving ${cards.length} cards`)
   try {
     const new_cards = await saveCards(cards)
+    Logger.debug(`Cards saved successfully, updating UI`)
 
     for (const card of new_cards) {
       const index = currentDeck.value?.cards?.findIndex((c) => c.id === card.id)
@@ -225,21 +234,26 @@ async function onSaveCards(cards: Card[]): Promise<void> {
     editCardModalVisible.value = false
     messageStore.success('Saved Successfully')
   } catch (e: any) {
+    Logger.error(`Error saving cards: ${e.message}`)
     messageStore.error(e.message)
   }
 }
 
 async function deleteCard(card: Card) {
   if (!card.id) {
+    Logger.warn('Attempted to delete card without ID')
     return
   }
 
+  Logger.info(`Deleting card with ID: ${card.id}`)
   try {
     await deleteCardById(card.id)
+    Logger.debug('Card deleted, refreshing deck data')
     currentDeck.value = await fetchDeckById(props.id)
 
     messageStore.success('Deleted Successfully')
   } catch (e: any) {
+    Logger.error(`Error deleting card: ${e.message}`)
     messageStore.error(e.message)
   }
 }

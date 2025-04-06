@@ -1,7 +1,7 @@
-import { supabase } from '@/supabaseClient'
 import { fetchMemberById } from '@/services/memberService'
 import { defineStore } from 'pinia'
 import { useSessionStore } from './session'
+import Logger from '@/utils/logger'
 
 export const useMemberStore = defineStore('member', {
   state: () => ({
@@ -9,30 +9,29 @@ export const useMemberStore = defineStore('member', {
     id: '',
     description: '',
     created_at: '',
-    num_decks: 0,
-    authenticated: false
+    num_decks: 0
   }),
 
   actions: {
-    async login(): Promise<void> {
+    async fetchMember(): Promise<void> {
       const session = useSessionStore()
-      session.setLoading(true)
-      const { data, error } = await supabase.auth.getSession()
 
-      if (error) {
-        throw new Error(error.message)
+      try {
+        const member = await fetchMemberById(session.user?.id ?? '')
+        this.setMember(member)
+      } catch (error: any) {
+        Logger.error(`Error fetching member: ${error.message}`)
+        throw error
       }
-
-      const member = await fetchMemberById(data.session?.user.id ?? '')
-
-      this.authenticated = data.session?.user.aud === 'authenticated'
-      this.setMember(member)
-      session.setLoading(false)
     },
 
     setMember(member: Member | null): void {
-      if (!member) return
+      if (!member) {
+        Logger.warn('Attempted to set null member')
+        return
+      }
 
+      Logger.debug(`Setting member data for: ${member.display_name}`)
       this.id = member.id ?? ''
       this.display_name = member.display_name ?? ''
       this.description = member.description ?? ''
