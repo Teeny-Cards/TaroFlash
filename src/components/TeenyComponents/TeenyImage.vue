@@ -12,5 +12,5 @@ const props = defineProps({
   }
 })
 
-const Image = defineAsyncComponent(() => import(`../../assets/${props.src}`))
+const Image = defineAsyncComponent(() => import(`../../assets/items/${props.src}.svg`))
 </script>

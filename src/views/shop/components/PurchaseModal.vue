@@ -3,7 +3,7 @@
     class="bg-parchment-dark p-15 rounded-31 flex flex-col gap-16 items-center justify-between w-149 h-156 shadow-modal"
   >
     <div class="flex flex-col items-center gap-4">
-      <TeenyImage :src="`items/${item.item_key}.svg`" class="w-41 h-41" />
+      <TeenyImage :src="item.item_key" class="w-41 h-41" />
       <h2 class="text-3xl text-brown-dark">{{ item.name }}</h2>
       <p class="text-lg text-grey text-center">{{ item.description }}</p>
     </div>

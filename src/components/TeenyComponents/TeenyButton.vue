@@ -11,22 +11,12 @@
     @click.stop
     teeny-button
   >
-    <div
-      v-if="iconLeft"
-      class="btn-icon"
-      :class="iconVariantClass[props.variant]"
-      teeny-button__icon-left
-    >
-      <TeenyIcon v-if="iconLeft" :src="iconLeft" :size="iconSize" />
+    <div v-if="iconLeft" class="btn-icon" teeny-button__icon-left>
+      <TeenyIcon v-if="iconLeft" :src="iconLeft" :size="iconSize[props.size]" />
     </div>
     <slot></slot>
-    <div
-      v-if="iconRight"
-      class="btn-icon"
-      :class="iconVariantClass[props.variant]"
-      teeny-button__icon-right
-    >
-      <TeenyIcon v-if="iconRight" :src="iconRight" :size="iconSize" />
+    <div v-if="iconRight" class="btn-icon" teeny-button__icon-right>
+      <TeenyIcon v-if="iconRight" :src="iconRight" :size="iconSize[props.size]" />
     </div>
   </button>
 </template>
@@ -49,13 +39,6 @@ const props = defineProps({
     },
     default: 'base'
   },
-  iconSize: {
-    type: String,
-    validator(value: string) {
-      return ['large', 'base', 'small', 'teeny'].includes(value)
-    },
-    default: 'small'
-  },
   inverted: Boolean,
   iconOnly: Boolean,
   iconRight: String,
@@ -76,9 +59,10 @@ const sizeClass: { [key: string]: string } = {
   teeny: 'btn-teeny'
 }
 
-const iconVariantClass: { [key: string]: string } = {
-  interaction: 'btn-icon-interaction',
-  muted: 'btn-icon-muted',
-  danger: 'btn-icon-danger'
+const iconSize: { [key: string]: string } = {
+  large: 'large',
+  base: 'base',
+  small: 'small',
+  teeny: 'teeny'
 }
 </script>

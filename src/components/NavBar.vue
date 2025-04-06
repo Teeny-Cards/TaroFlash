@@ -21,12 +21,14 @@
             @click="routeToShop"
           ></TeenyButton>
           <TeenyButton
-            icon-left="user"
+            icon-left="apps"
             icon-only
             icon-size="base"
             inverted
-            class="ring-8 ring-blue p-1.5"
-          ></TeenyButton>
+            class="relative ring-8 ring-blue p-1.5"
+          >
+            <AppMenu />
+          </TeenyButton>
         </div>
       </div>
     </div>
@@ -41,6 +43,7 @@
 import { RouterLink } from 'vue-router'
 import TeenyModal from './TeenyComponents/TeenyModal.vue'
 import MemberCard from './MemberCard.vue'
+import AppMenu from './AppMenu.vue'
 import { ref } from 'vue'
 import TeenyButton from './TeenyComponents/TeenyButton.vue'
 import { useRouter, useRoute } from 'vue-router'
