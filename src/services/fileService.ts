@@ -1,4 +1,3 @@
-// import { TeenyError } from '@/utils/TeenyError'
 import { supabase } from '@/supabaseClient'
 import { useMemberStore } from '@/stores/member'
 

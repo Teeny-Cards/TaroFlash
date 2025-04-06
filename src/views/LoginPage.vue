@@ -9,7 +9,6 @@ import LoginDialogue from '@/components/LoginDialogue.vue'
 import { useMemberStore } from '@/stores/member'
 import router from '@/router'
 import { supabase } from '@/supabaseClient'
-import { TeenyError } from '@/utils/TeenyError'
 
 const user = useMemberStore()
 
@@ -20,7 +19,7 @@ async function signInWithEmail(email: string, password: string): Promise<void> {
   })
 
   if (error) {
-    throw new TeenyError(error.message)
+    throw new Error(error.message)
   }
 
   await user.login()

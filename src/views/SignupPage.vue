@@ -7,7 +7,6 @@
 <script setup lang="ts">
 import LoginDialogue from '@/components/LoginDialogue.vue'
 import { supabase } from '@/supabaseClient'
-import { TeenyError } from '@/utils/TeenyError'
 
 async function signUpNewUser(email: string, password: string) {
   const { error } = await supabase.auth.signUp({
@@ -16,7 +15,7 @@ async function signUpNewUser(email: string, password: string) {
   })
 
   if (error) {
-    throw new TeenyError(error.message)
+    throw new Error(error.message)
   }
 }
 </script>

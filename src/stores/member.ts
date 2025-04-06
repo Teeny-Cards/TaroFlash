@@ -1,5 +1,4 @@
 import { supabase } from '@/supabaseClient'
-import { TeenyError } from '@/utils/TeenyError'
 import { fetchMemberById } from '@/services/memberService'
 import { defineStore } from 'pinia'
 import { useSessionStore } from './session'
@@ -21,7 +20,7 @@ export const useMemberStore = defineStore('member', {
       const { data, error } = await supabase.auth.getSession()
 
       if (error) {
-        throw new TeenyError(error.message)
+        throw new Error(error.message)
       }
 
       const member = await fetchMemberById(data.session?.user.id ?? '')
