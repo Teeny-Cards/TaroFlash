@@ -1,11 +1,10 @@
 import { supabase } from '@/supabaseClient'
-import { TeenyError } from '@/utils/TeenyError'
 
 export async function fetchShopItems(): Promise<ShopItem[]> {
   const { data, error } = await supabase.from('shop_items').select('*')
 
   if (error) {
-    throw new TeenyError(error.message)
+    throw new Error(error.message)
   }
 
   return data
@@ -19,6 +18,6 @@ export async function upsertPurchase(purchase: Purchase): Promise<void> {
   })
 
   if (error) {
-    throw new TeenyError(error.message)
+    throw new Error(error.message)
   }
 }

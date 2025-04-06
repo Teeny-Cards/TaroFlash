@@ -2,7 +2,7 @@ type Card = {
   front_text: string
   back_text: string
   deck_id?: string
-  id?: number
+  id?: string
   last_updated?: Date
 }
 
