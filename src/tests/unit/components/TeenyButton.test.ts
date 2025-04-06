@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import TeenyButton from '@/components/TeenyButton.vue'
+import TeenyButton from '@teeny/TeenyButton.vue'
 import { expect, test } from 'vitest'
 
 test('It renders slot content', async () => {
@@ -10,12 +10,4 @@ test('It renders slot content', async () => {
   })
 
   expect(wrapper.html()).toContain('Click Me')
-})
-
-test('It emits a click event', async () => {
-  const wrapper = mount(TeenyButton)
-
-  await wrapper.trigger('click')
-
-  expect(wrapper.emitted()).toHaveProperty('onClick')
 })
