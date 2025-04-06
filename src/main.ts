@@ -5,11 +5,12 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import Logger from './utils/logger'
 
+Logger.setLogLevel(import.meta.env.VITE_LOG_LEVEL)
+
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
 
-app.config.globalProperties.$logger = Logger
-
 app.mount('#app')
+Logger.info('Application mounted')
