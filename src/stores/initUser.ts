@@ -6,16 +6,14 @@ export async function initUser(): Promise<boolean> {
   const session = useSessionStore()
   const memberStore = useMemberStore()
 
-  if (session.authenticated && memberStore.id) {
-    return true
-  }
+  if (session.authenticated && memberStore.id) return true
 
   try {
     session.setLoading(true)
     await session.restoreSession()
 
     if (session.authenticated && session.user?.id) {
-      await memberStore.fetchMember()
+      await memberStore.fetchMember(session.user.id)
     }
   } catch (e: any) {
     Logger.error(`Error initializing user: ${e.message}`)
