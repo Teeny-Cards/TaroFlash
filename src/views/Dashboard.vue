@@ -7,6 +7,7 @@
         <TeenyDeck :deck="deck" />
       </div>
     </div>
+    <inventory />
   </div>
 </template>
 
@@ -15,6 +16,7 @@ import { onMounted, ref } from 'vue'
 import { fetchUserDecks } from '@/services/deckService'
 import { useMessageStore } from '@/stores/message'
 import TeenyDeck from '@teeny/TeenyDeck.vue'
+import inventory from '@/components/inventory.vue'
 
 const loading = ref(true)
 const messageStore = useMessageStore()
