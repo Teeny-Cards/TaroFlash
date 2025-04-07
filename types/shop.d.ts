@@ -13,3 +13,7 @@ declare type Purchase = {
   member_id: string
   quantity: number
 }
+
+declare type PurchaseItem = purchase & {
+  shop_item: ShopItem
+}
