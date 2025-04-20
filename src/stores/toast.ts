@@ -3,13 +3,11 @@ import generateUID from '@/utils/uid'
 
 interface State {
   toasts: TeenyToast[]
-  currentAlert: TeenyAlert | null
 }
 
-export const useMessageStore = defineStore('message', {
+export const useToastStore = defineStore('toast', {
   state: (): State => ({
-    toasts: [],
-    currentAlert: null
+    toasts: []
   }),
 
   getters: {
@@ -20,26 +18,10 @@ export const useMessageStore = defineStore('message', {
       message: '',
       subMessage: '',
       id: ''
-    }),
-
-    defaultAlert: (): TeenyAlert => ({
-      title: '',
-      message: '',
-      actions: [{ label: 'Close', action: () => {} }],
-      id: generateUID()
     })
   },
 
   actions: {
-    alert(alert: TeenyAlert): void {
-      const newAlert = { ...this.defaultAlert, ...alert }
-      this.currentAlert = newAlert
-    },
-
-    removeAlert(): void {
-      this.currentAlert = null
-    },
-
     addToast(toast: TeenyToast): void {
       const newToast = { ...this.defaultToast, ...toast, id: generateUID() }
       this.toasts.push(newToast)

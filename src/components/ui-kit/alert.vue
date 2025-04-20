@@ -1,5 +1,5 @@
 <template>
-  <teleport to="[teeny-alert-container]">
+  <teleport to="[alert-container]">
     <Transition
       enter-from-class="scale-90 opacity-0"
       enter-to-class="scale-100 opacity-100"
@@ -9,7 +9,7 @@
       leave-active-class="transition-all transform"
     >
       <div
-        teeny-modal
+        ui-kit-alert
         v-if="open"
         class="fixed inset-0 flex items-center justify-center px-4 pointer-events-auto py-7"
         @click="close"
@@ -65,7 +65,7 @@ function releaseScroll(): void {
 function close(e: Event) {
   const target = e.target as HTMLElement
 
-  if (target.hasAttribute('teeny-modal')) {
+  if (target.hasAttribute('ui-kit-alert')) {
     releaseScroll()
     emit('close')
   }

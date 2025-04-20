@@ -102,7 +102,7 @@ import Card from '@/components/card.vue'
 import ListItem from '@/components/DeckView/ListItem.vue'
 import EditCardModal from '@/components/DeckView/EditCardModal.vue'
 import DeckSettingsModal from '@/components/DeckView/DeckSettingsModal.vue'
-import { useMessageStore } from '@/stores/message'
+import { useToastStore } from '@/stores/toast'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { deleteCardById } from '@/services/cardService'
@@ -116,7 +116,7 @@ const props = defineProps({
   }
 })
 
-const messageStore = useMessageStore()
+const toastStore = useToastStore()
 const router = useRouter()
 
 const currentDeck = ref<Deck>()
@@ -136,27 +136,7 @@ function routeBack(): void {
 }
 
 function onDeleteCard(card: Card): void {
-  messageStore.alert({
-    title: 'Delete Card',
-    message: `Are you sure you want to delete ${card.front_text}?`,
-    actions: [
-      {
-        label: 'Cancel',
-        variant: 'muted',
-        iconLeft: 'close',
-        action: () => messageStore.removeAlert()
-      },
-      {
-        label: 'Delete',
-        variant: 'danger',
-        iconLeft: 'delete',
-        action: () => {
-          messageStore.removeAlert()
-          deleteCard(card)
-        }
-      }
-    ]
-  })
+  // TODO: Delete Card
 }
 
 async function addCard(): Promise<void> {
@@ -178,7 +158,7 @@ async function getDeck(): Promise<void> {
   try {
     currentDeck.value = await fetchDeckById(props.id)
   } catch (e: any) {
-    messageStore.error(e.message)
+    toastStore.error(e.message)
     router.push({ name: 'dashboard' })
   }
 }
@@ -220,9 +200,9 @@ async function onSaveCards(cards: Card[]): Promise<void> {
     }
 
     editCardModalVisible.value = false
-    messageStore.success('Saved Successfully')
+    toastStore.success('Saved Successfully')
   } catch (e: any) {
-    messageStore.error(e.message)
+    toastStore.error(e.message)
   }
 }
 
@@ -235,9 +215,9 @@ async function deleteCard(card: Card) {
     await deleteCardById(card.id)
     currentDeck.value = await fetchDeckById(props.id)
 
-    messageStore.success('Deleted Successfully')
+    toastStore.success('Deleted Successfully')
   } catch (e: any) {
-    messageStore.error(e.message)
+    toastStore.error(e.message)
   }
 }
 </script>

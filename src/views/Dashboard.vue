@@ -14,12 +14,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { fetchUserDecks } from '@/services/deckService'
-import { useMessageStore } from '@/stores/message'
+import { useToastStore } from '@/stores/toast'
 import Deck from '@/components/deck.vue'
 import inventory from '@/components/inventory.vue'
 
 const loading = ref(true)
-const messageStore = useMessageStore()
+const toastStore = useToastStore()
 const decks = ref<Deck[]>([])
 
 onMounted(async () => {
@@ -27,7 +27,7 @@ onMounted(async () => {
     decks.value = await fetchUserDecks()
     loading.value = false
   } catch (e: any) {
-    messageStore.error(e.message)
+    toastStore.error(e.message)
   }
 })
 </script>
