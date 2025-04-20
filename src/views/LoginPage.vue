@@ -9,11 +9,11 @@ import LoginDialogue from '@/components/login-dialog.vue'
 import router from '@/router'
 import { initUser } from '@/stores/initUser'
 import { useSessionStore } from '@/stores/session'
-import { useMessageStore } from '@/stores/message'
+import { useToastStore } from '@/stores/toast'
 import { onMounted } from 'vue'
 
 const session = useSessionStore()
-const messageStore = useMessageStore()
+const toastStore = useToastStore()
 
 onMounted(async () => {
   const authenticated = await initUser()
@@ -28,7 +28,7 @@ async function loginWithEmail(email: string, password: string): Promise<void> {
     await session.login(email, password)
     router.push({ name: 'dashboard' })
   } catch (e: any) {
-    messageStore.error(e.message)
+    toastStore.error(e.message)
   }
 }
 </script>

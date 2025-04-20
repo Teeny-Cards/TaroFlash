@@ -1,5 +1,5 @@
 <template>
-  <teleport to="[teeny-modal-container]">
+  <teleport to="[modal-container]">
     <div
       v-if="backdrop && open"
       class="fixed inset-0 bg-black/25 pointer-events-auto backdrop-blur-xs"
@@ -13,7 +13,7 @@
       leave-active-class="transition-all transform"
     >
       <div
-        teeny-modal
+        ui-kit-modal
         v-if="open"
         class="fixed inset-0 flex items-center justify-center px-4 pointer-events-auto py-7"
         @click="close"
@@ -67,7 +67,7 @@ function releaseScroll(): void {
 function close(e: Event) {
   const target = e.target as HTMLElement
 
-  if (target.hasAttribute('teeny-modal')) {
+  if (target.hasAttribute('ui-kit-modal')) {
     emit('close')
   }
 }
