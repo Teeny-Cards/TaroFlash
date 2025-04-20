@@ -33,16 +33,15 @@
     </div>
   </div>
 
-  <TeenyModal :open="selected_item !== undefined" @close="selected_item = undefined">
+  <ui-kit:modal :open="selected_item !== undefined" @close="selected_item = undefined">
     <PurchaseModal :item="selected_item!" @purchased="submitPurchase(selected_item!)" />
-  </TeenyModal>
+  </ui-kit:modal>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import ShopItem from '@/components/ShopView/ShopItem.vue'
 import { fetchShopItems, upsertPurchase } from '@/services/shopService'
-import TeenyModal from '@teeny/TeenyModal.vue'
 import PurchaseModal from '@/components/ShopView/PurchaseModal.vue'
 import { useMemberStore } from '@/stores/member'
 

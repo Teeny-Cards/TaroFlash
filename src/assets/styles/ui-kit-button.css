@@ -1,6 +1,6 @@
 @layer components {
   /* Base button styles */
-  .teeny-btn {
+  .ui-kit-btn {
     --btn-main-color: var(--color-blue);
     --btn-tertiary-color: var(--color-white);
 
@@ -19,7 +19,7 @@
     cursor: pointer;
   }
 
-  .teeny-btn .btn-icon {
+  .ui-kit-btn .btn-icon {
     color: var(--btn-main-color);
     background-color: var(--btn-tertiary-color);
 
@@ -31,53 +31,53 @@
   }
 
   /* Button variants */
-  .teeny-btn.btn-interaction {
+  .ui-kit-btn.btn-interaction {
     --btn-main-color: var(--color-blue);
     --btn-tertiary-color: var(--color-white);
   }
-  .teeny-btn.btn-muted {
+  .ui-kit-btn.btn-muted {
     --btn-main-color: var(--color-grey);
     --btn-tertiary-color: var(--color-white);
   }
-  .teeny-btn.btn-danger {
+  .ui-kit-btn.btn-danger {
     --btn-main-color: var(--color-red);
     --btn-tertiary-color: var(--color-white);
   }
 
   /* Inverted styles */
-  .teeny-btn.btn-inverted.btn-interaction {
+  .ui-kit-btn.btn-inverted.btn-interaction {
     --btn-main-color: var(--color-white);
     --btn-tertiary-color: var(--color-blue);
   }
-  .teeny-btn.btn-inverted.btn-muted {
+  .ui-kit-btn.btn-inverted.btn-muted {
     --btn-main-color: var(--color-white);
     --btn-tertiary-color: var(--color-grey);
   }
-  .teeny-btn.btn-inverted.btn-danger {
+  .ui-kit-btn.btn-inverted.btn-danger {
     --btn-main-color: var(--color-white);
     --btn-tertiary-color: var(--color-red);
   }
 
   /* Button sizes */
-  .teeny-btn.btn-large {
+  .ui-kit-btn.btn-large {
     --btn-font-size: var(--text-lg);
     --btn-border-radius: var(--radius-4);
     --btn-gap: --spacing(2);
     --btn-padding: --spacing(1.5) --spacing(2.5);
   }
-  .teeny-btn.btn-base {
+  .ui-kit-btn.btn-base {
     --btn-font-size: var(--text-base);
     --btn-border-radius: var(--radius-4);
     --btn-gap: --spacing(2);
     --btn-padding: --spacing(1.5) --spacing(2.5);
   }
-  .teeny-btn.btn-small {
+  .ui-kit-btn.btn-small {
     --btn-font-size: var(--text-sm);
     --btn-border-radius: var(--radius-3);
     --btn-gap: --spacing(1.5);
     --btn-padding: --spacing(1) --spacing(1);
   }
-  .teeny-btn.btn-teeny {
+  .ui-kit-btn.btn-xs {
     --btn-font-size: var(--text-sm);
     --btn-border-radius: var(--radius-3);
     --btn-gap: --spacing(1.5);
@@ -85,28 +85,28 @@
   }
 
   /* Icon-only buttons */
-  .teeny-btn.btn-icon-only,
-  .teeny-btn.btn-inverted.btn-icon-only {
+  .ui-kit-btn.btn-icon-only,
+  .ui-kit-btn.btn-inverted.btn-icon-only {
     --btn-padding: --spacing(2);
     --btn-border-radius: var(--radius-4);
     --btn-tertiary-color: var(--color-white);
   }
-  .teeny-btn.btn-icon-only .btn-icon {
+  .ui-kit-btn.btn-icon-only .btn-icon {
     background-color: transparent;
     color: var(--btn-tertiary-color);
   }
 
-  .teeny-btn.btn-icon-only.btn-small {
+  .ui-kit-btn.btn-icon-only.btn-small {
     --btn-padding: --spacing(1);
   }
 
-  .teeny-btn.btn-icon-only.btn-inverted.btn-interaction {
+  .ui-kit-btn.btn-icon-only.btn-inverted.btn-interaction {
     --btn-tertiary-color: var(--color-blue);
   }
-  .teeny-btn.btn-icon-only.btn-inverted.btn-muted {
+  .ui-kit-btn.btn-icon-only.btn-inverted.btn-muted {
     --btn-tertiary-color: var(--color-grey);
   }
-  .teeny-btn.btn-icon-only.btn-inverted.btn-danger {
+  .ui-kit-btn.btn-icon-only.btn-inverted.btn-danger {
     --btn-tertiary-color: var(--color-red);
   }
 

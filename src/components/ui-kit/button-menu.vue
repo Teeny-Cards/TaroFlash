@@ -6,19 +6,19 @@
       :toggleDropdown="toggleDropdown"
       :open="dropdownVisible"
     >
-      <TeenyButton
+      <ui-kit:button
         teeny-dropdown-trigger
         :variant="variant"
         :inverted="inverted"
         @click="toggleDropdown"
       >
         {{ triggerLabel }}
-      </TeenyButton>
+      </ui-kit:button>
     </slot>
     <div v-if="dropdownVisible" class="absolute right-0 z-10 mt-2 lg:left-0 top-full">
       <slot name="dropdown" :closeDropdown="closeDropdown">
         <div class="flex flex-col gap-1.5 items-end lg:items-start">
-          <TeenyButton
+          <ui-kit:button
             v-for="action in actions"
             teeny-dropdown__action
             class="transition-all duration-100 transform scale-75 shadow opacity-0"
@@ -32,7 +32,7 @@
             @click="onOptionClick(action)"
           >
             {{ action.label }}
-          </TeenyButton>
+          </ui-kit:button>
         </div>
       </slot>
     </div>
@@ -40,7 +40,6 @@
 </template>
 
 <script setup lang="ts">
-import TeenyButton from './TeenyButton.vue'
 import { onUnmounted, ref } from 'vue'
 import { onMounted } from 'vue'
 import { nextTick } from 'vue'
@@ -49,7 +48,7 @@ defineProps({
   triggerLabel: String,
   variant: String,
   inverted: Boolean,
-  actions: Array<TeenyButton>
+  actions: Array<any>
 })
 
 onMounted(() => {
@@ -63,7 +62,7 @@ onUnmounted(() => {
 const teenyDropdown = ref<HTMLDivElement>()
 const dropdownVisible = ref(false)
 
-function onOptionClick(action: TeenyButton): void {
+function onOptionClick(action: any): void {
   action.action()
   closeDropdown()
 }

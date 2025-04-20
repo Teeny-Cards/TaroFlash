@@ -18,7 +18,7 @@ import { ref, type PropType, onMounted, computed } from 'vue'
 
 const props = defineProps({
   toast: {
-    type: Object as PropType<TeenyToast>,
+    type: Object as PropType<any>,
     required: true
   }
 })

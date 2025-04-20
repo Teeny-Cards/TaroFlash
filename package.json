@@ -47,6 +47,7 @@
     "supabase": "^2.20.5",
     "tailwindcss": "^4.1.3",
     "typescript": "~5.8.3",
+    "unplugin-vue-components": "^28.5.0",
     "vite": "^6.2.5",
     "vite-svg-loader": "^5.1.0",
     "vitepress": "^1.6.3",

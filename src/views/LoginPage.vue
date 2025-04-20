@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import LoginDialogue from '@/components/LoginDialogue.vue'
+import LoginDialogue from '@/components/login-dialog.vue'
 import router from '@/router'
 import { initUser } from '@/stores/initUser'
 import { useSessionStore } from '@/stores/session'

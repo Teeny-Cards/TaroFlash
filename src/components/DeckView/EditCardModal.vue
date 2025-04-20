@@ -7,45 +7,45 @@
       <h1 class="text-2xl text-grey font-semibold font-primary">Edit Card</h1>
     </div>
     <div edit-card-modal__body class="flex flex-col items-center w-full gap-2">
-      <TeenyIcon
+      <ui-kit:icon
         src="expand-less"
         size="large"
         class="text-grey cursor-pointer"
         @click="scrollUp"
-      ></TeenyIcon>
+      ></ui-kit:icon>
       <div
         edit-card-modal__card-list
         ref="cardListEl"
         class="overflow-y-auto h-[306.42px] w-full flex flex-col gap-4 snap-mandatory snap-y scroll-hidden scroll-smooth"
       >
         <div
-          edit-card-modal__teeny-card-editor
+          edit-card-modal__UIKit-card-editor
           v-for="card in cards"
           :key="card.id"
           class="flex w-full gap-4 px-20 overflow-x-auto shrink-0 snap-mandatory snap-x scroll-hidden font-primary snap-center"
         >
-          <TeenyCardEditor :card="card" @front-input="updateFront" @back-input="updateBack" />
+          <CardEditor :card="card" @front-input="updateFront" @back-input="updateBack" />
         </div>
       </div>
 
-      <TeenyIcon
+      <ui-kit:icon
         src="expand-more"
         size="large"
         class="text-grey cursor-pointer"
         @click="scrollDown"
-      ></TeenyIcon>
+      ></ui-kit:icon>
     </div>
     <div edit-card-modal__actions class="w-full flex justify-center gap-2.5">
-      <TeenyButton variant="muted" icon-left="close" @click="$emit('cancel')">Cancel</TeenyButton>
-      <TeenyButton icon-left="check" @click="save">Save</TeenyButton>
+      <ui-kit:button variant="muted" icon-left="close" @click="$emit('cancel')"
+        >Cancel</ui-kit:button
+      >
+      <ui-kit:button icon-left="check" @click="save">Save</ui-kit:button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import TeenyIcon from '@teeny/TeenyIcon.vue'
-import TeenyButton from '@teeny/TeenyButton.vue'
-import TeenyCardEditor from '@teeny/TeenyCardEditor.vue'
+import CardEditor from '@/components/card-editor.vue'
 import { ref, type PropType, onMounted } from 'vue'
 
 const CONTAINER_HEIGHT = 306.42

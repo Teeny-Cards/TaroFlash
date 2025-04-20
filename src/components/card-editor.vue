@@ -1,7 +1,7 @@
 <template>
-  <TeenyCard size="large" class="snap-center overflow-hidden">
+  <Card size="large" class="snap-center overflow-hidden">
     <div class="relative flex items-center justify-center w-full h-full">
-      <TeenyIcon
+      <ui-kit:icon
         src="add-image"
         size="large"
         class="absolute cursor-pointer text-orange top-4 left-4"
@@ -17,8 +17,8 @@
         ref="frontCardInput"
       />
     </div>
-  </TeenyCard>
-  <TeenyCard size="large" class="snap-center overflow-hidden">
+  </Card>
+  <Card size="large" class="snap-center overflow-hidden">
     <textarea
       teeny-card-editor__input="back"
       name="back_text"
@@ -29,12 +29,11 @@
       @input="onBackChanged"
       ref="backCardInput"
     />
-  </TeenyCard>
+  </Card>
 </template>
 
 <script setup lang="ts">
-import TeenyCard from './TeenyCard.vue'
-import TeenyIcon from './TeenyIcon.vue'
+import Card from '@/components/card.vue'
 import { onMounted, ref, type PropType } from 'vue'
 
 const props = defineProps({

@@ -26,10 +26,10 @@ Since the TeenyButton uses a standard html button element under the hood, you ca
 
 Example of a basic button:
 
-<TeenyButton>Save</TeenyButton>
+<ui-kit:button>Save</TeenyButton>
 
 ```html
-<TeenyButton @click="console.log('save')">Save</TeenyButton>
+<ui-kit:button @click="console.log('save')">Save</TeenyButton>
 ```
 
 ## Incorporating Icons
@@ -38,10 +38,10 @@ To enhance the button's visual appeal, the component supports the inclusion of i
 
 Example with a left-aligned icon:
 
-<TeenyButton icon-left="close">Close</TeenyButton>
+<ui-kit:button icon-left="close">Close</TeenyButton>
 
 ```html
-<TeenyButton icon-left="close">Close</TeenyButton>
+<ui-kit:button icon-left="close">Close</TeenyButton>
 ```
 
 ### Icon Only
@@ -50,10 +50,10 @@ The Teeny Button also accepts an optional `icon-only` prop, which allows you to 
 
 Example of an icon-only button:
 
-<TeenyButton icon-left="close" icon-only></TeenyButton>
+<ui-kit:button icon-left="close" icon-only></TeenyButton>
 
 ```html
-<TeenyButton icon-left="close" icon-only></TeenyButton>
+<ui-kit:button icon-left="close" icon-only></TeenyButton>
 ```
 
 ## Adjustable Sizes
@@ -63,17 +63,17 @@ Adapt the Teeny Button to fit various UI contexts by setting the size prop. Avai
 Illustration of different sizes:
 
 <div class="flex gap-2 items-center">
-  <TeenyButton size="large" icon-left="check">Large</TeenyButton>
-  <TeenyButton size="base" icon-left="check">Base</TeenyButton>
-  <TeenyButton size="small" icon-left="check">Small</TeenyButton>
-  <TeenyButton size="teeny" icon-left="check">Teeny</TeenyButton>
+  <ui-kit:button size="large" icon-left="check">Large</TeenyButton>
+  <ui-kit:button size="base" icon-left="check">Base</TeenyButton>
+  <ui-kit:button size="small" icon-left="check">Small</TeenyButton>
+  <ui-kit:button size="teeny" icon-left="check">Teeny</TeenyButton>
 </div>
 
 ```html
-<TeenyButton size="large" icon-left="check">Large</TeenyButton>
-<TeenyButton size="base" icon-left="check">Base</TeenyButton>
-<TeenyButton size="small" icon-left="check">Small</TeenyButton>
-<TeenyButton size="teeny" icon-left="check">Teeny</TeenyButton>
+<ui-kit:button size="large" icon-left="check">Large</TeenyButton>
+<ui-kit:button size="base" icon-left="check">Base</TeenyButton>
+<ui-kit:button size="small" icon-left="check">Small</TeenyButton>
+<ui-kit:button size="teeny" icon-left="check">Teeny</TeenyButton>
 ```
 
 ## Variants for Different Contexts
@@ -85,15 +85,15 @@ The button's appearance can be further customized by using the `variant` prop, w
 Example showcasing various variants:
 
 <div class="flex gap-2 items-center">
-  <TeenyButton icon-left="check">Interaction</TeenyButton>
-  <TeenyButton variant="muted" icon-left="close">Muted</TeenyButton>
-  <TeenyButton variant="danger" icon-left="delete">Danger</TeenyButton>
+  <ui-kit:button icon-left="check">Interaction</TeenyButton>
+  <ui-kit:button variant="muted" icon-left="close">Muted</TeenyButton>
+  <ui-kit:button variant="danger" icon-left="delete">Danger</TeenyButton>
 </div>
 
 ```html
-<TeenyButton icon-left="check">Interaction</TeenyButton>
-<TeenyButton variant="muted" icon-left="close">Muted</TeenyButton>
-<TeenyButton variant="danger" icon-left="delete">Danger</TeenyButton>
+<ui-kit:button icon-left="check">Interaction</TeenyButton>
+<ui-kit:button variant="muted" icon-left="close">Muted</TeenyButton>
+<ui-kit:button variant="danger" icon-left="delete">Danger</TeenyButton>
 ```
 
 ### Inverted
@@ -103,15 +103,15 @@ In addition to color variants, the Teeny Button also supports an `inverted` prop
 Example of an inverted variant:
 
 <div class="p-4 bg-parchment rounded-[20px] flex gap-2">
-<TeenyButton inverted icon-left="check">Interaction</TeenyButton>
-<TeenyButton inverted variant="muted" icon-left="close">Muted</TeenyButton>
-<TeenyButton inverted variant="danger" icon-left="delete">Danger</TeenyButton>
+<ui-kit:button inverted icon-left="check">Interaction</TeenyButton>
+<ui-kit:button inverted variant="muted" icon-left="close">Muted</TeenyButton>
+<ui-kit:button inverted variant="danger" icon-left="delete">Danger</TeenyButton>
 </div>
 
 ```html
-<TeenyButton inverted icon-left="check">Interaction</TeenyButton>
-<TeenyButton inverted variant="muted" icon-left="close">Muted</TeenyButton>
-<TeenyButton inverted variant="danger" icon-left="delete">Danger</TeenyButton>
+<ui-kit:button inverted icon-left="check">Interaction</TeenyButton>
+<ui-kit:button inverted variant="muted" icon-left="close">Muted</TeenyButton>
+<ui-kit:button inverted variant="danger" icon-left="delete">Danger</TeenyButton>
 ```
 
 ## Detailed Prop Specifications

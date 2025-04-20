@@ -2,9 +2,14 @@ import { defineStore } from 'pinia'
 import type { User } from '@supabase/supabase-js'
 import { getSession, login } from '@/services/sessionService'
 
+interface State {
+  user: User | undefined
+  loading: boolean
+}
+
 export const useSessionStore = defineStore('session', {
-  state: () => ({
-    user: undefined as User | undefined,
+  state: (): State => ({
+    user: undefined,
     loading: false
   }),
 
@@ -25,8 +30,8 @@ export const useSessionStore = defineStore('session', {
   },
 
   getters: {
-    authenticated(state): boolean {
-      return Boolean(state.user?.aud === 'authenticated')
+    authenticated({ user }): boolean {
+      return Boolean(user?.aud === 'authenticated')
     }
   }
 })

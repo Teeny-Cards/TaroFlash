@@ -1,5 +1,5 @@
 <script setup>
-import TeenyCard from '@/components/TeenyCard.vue'
+import Card from '@/components/Card.vue'
 </script>
 
 # Teeny Card
@@ -13,11 +13,11 @@ In its most simple form the TeenyCard allows the passing in of a component as a 
 example:
 
 <div class="p-4 bg-parchment rounded-[20px] flex justify-center gap-2">
-  <TeenyCard>Example</TeenyCard>
+  <Card>Example</TeenyCard>
 </div>
 
 ```vue
-<TeenyCard>Example</TeenyCard>
+<Card>Example</TeenyCard>
 ```
 
 ## Sizes
@@ -28,15 +28,15 @@ example:
 
 <div class="flex flex-col gap-6">
   <div class="p-4 bg-parchment rounded-[20px] flex flex-wrap justify-center items-center gap-2">
-    <TeenyCard size="large">Large</TeenyCard>
-    <TeenyCard size="base">Base</TeenyCard>
-    <TeenyCard size="small">Small</TeenyCard>
+    <Card size="large">Large</TeenyCard>
+    <Card size="base">Base</TeenyCard>
+    <Card size="small">Small</TeenyCard>
   </div>
 
   <div class="p-4 bg-parchment rounded-[20px] flex flex-wrap justify-center items-center gap-2">
     <span>xs</span>
-    <TeenyCard size="xs"></TeenyCard>
-    <TeenyCard size="teeny"></TeenyCard>
+    <Card size="xs"></TeenyCard>
+    <Card size="teeny"></TeenyCard>
     <span>Teeny</span>
   </div>
 </div>

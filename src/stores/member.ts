@@ -1,9 +1,13 @@
 import { fetchMemberById } from '@/services/memberService'
 import { defineStore } from 'pinia'
 
+interface State {
+  member: Member | null
+}
+
 export const useMemberStore = defineStore('member', {
-  state: () => ({
-    member: null as Member | null
+  state: (): State => ({
+    member: null
   }),
 
   actions: {

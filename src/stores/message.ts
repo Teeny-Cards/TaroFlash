@@ -1,10 +1,15 @@
 import { defineStore } from 'pinia'
 import generateUID from '@/utils/uid'
 
+interface State {
+  toasts: TeenyToast[]
+  currentAlert: TeenyAlert | null
+}
+
 export const useMessageStore = defineStore('message', {
-  state: () => ({
-    toasts: [] as TeenyToast[],
-    currentAlert: null as TeenyAlert | null
+  state: (): State => ({
+    toasts: [],
+    currentAlert: null
   }),
 
   getters: {
