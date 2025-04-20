@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import LoginDialogue from '@/components/LoginDialogue.vue'
+import LoginDialogue from '@/components/login-dialog.vue'
 import { supabase } from '@/supabaseClient'
 
 async function signUpNewUser(email: string, password: string) {

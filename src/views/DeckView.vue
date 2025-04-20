@@ -2,13 +2,13 @@
   <div v-if="loading">Loading...</div>
   <section v-else tid="deck-view" class="flex flex-col items-center gap-6">
     <div tid="top-actions" class="w-full">
-      <TeenyButton
-        size="teeny"
+      <ui-kit:button
+        size="xs"
         icon-left="chevron-left"
-        icon-size="teeny"
+        icon-size="xs"
         variant="muted"
         @click="routeBack"
-        >Back</TeenyButton
+        >Back</ui-kit:button
       >
     </div>
     <div
@@ -19,14 +19,14 @@
         tid="body-header"
         class="sticky top-0 flex flex-col items-center gap-6 w-max sm:flex-row sm:items-end lg:flex-col lg:items-start"
       >
-        <TeenyCard size="large" class="relative overflow-hidden">
+        <Card size="large" class="relative overflow-hidden">
           <div v-if="currentDeck?.image_url" class="absolute inset-0">
             <img
               :src="currentDeck.image_url"
               alt="Deck Image preview"
               class="object-cover w-full h-full"
             /></div
-        ></TeenyCard>
+        ></Card>
         <div tid="header-content" class="flex flex-col items-center gap-6 sm:items-start">
           <div tid="header-title" class="flex flex-col items-center gap-2 sm:items-start">
             <h1 class="w-64 m-0 text-4xl text-center font-primary text-grey-dark sm:text-left">
@@ -36,14 +36,14 @@
               {{ currentDeck?.description }}
             </h2>
             <div tid="header-created-by" class="flex items-center gap-2 text-blue">
-              <TeenyIcon src="user" />
+              <ui-kit:icon src="user" />
               <h2 class="text-base font-semibold font-primary">
                 {{ currentDeck?.member?.display_name }}
               </h2>
             </div>
           </div>
           <div tid="header-actions" class="flex items-center gap-2.5">
-            <TeenyButton icon-left="play" fancy-hover>Study</TeenyButton>
+            <ui-kit:button icon-left="play" fancy-hover>Study</ui-kit:button>
             <DeckSettingsModal :deck="currentDeck" />
           </div>
         </div>
@@ -54,18 +54,18 @@
         class="flex flex-col gap-4 justify-center items-center w-full self-center"
       >
         <h1 class="text-2xl font-semibold text-grey-dark">No Cards</h1>
-        <TeenyButton icon-left="add" fancy-hover @click="addCard">Add Card</TeenyButton>
+        <ui-kit:button icon-left="add" fancy-hover @click="addCard">Add Card</ui-kit:button>
       </div>
       <div v-else tid="card-list-container" class="flex flex-col items-center gap-8 w-full">
         <div tid="card-list__actions" class="flex justify-center gap-2.5 w-full">
-          <TeenyButton
+          <ui-kit:button
             icon-only
             icon-left="close"
             variant="muted"
             @click="cancelSelectionMode"
-          ></TeenyButton>
-          <TeenyButton icon-only icon-left="move-item"></TeenyButton>
-          <TeenyButton icon-only icon-left="delete" variant="danger"></TeenyButton>
+          ></ui-kit:button>
+          <ui-kit:button icon-only icon-left="move-item"></ui-kit:button>
+          <ui-kit:button icon-only icon-left="delete" variant="danger"></ui-kit:button>
         </div>
         <div tid="card-list" class="flex gap-2 flex-col w-full">
           <template v-for="card in currentDeck?.cards" :key="card.id">
@@ -81,12 +81,12 @@
             <div class="w-full border-dashed border-b border-b-grey"></div>
           </template>
         </div>
-        <TeenyButton icon-left="add" fancy-hover @click="addCard">Add Card</TeenyButton>
+        <ui-kit:button icon-left="add" fancy-hover @click="addCard">Add Card</ui-kit:button>
       </div>
     </div>
   </section>
 
-  <TeenyModal @close="editCardModalVisible = false" :open="editCardModalVisible">
+  <ui-kit:modal @close="editCardModalVisible = false" :open="editCardModalVisible">
     <EditCardModal
       v-if="currentDeck?.cards?.length ?? 0 > 0"
       @cancel="editCardModalVisible = false"
@@ -94,17 +94,14 @@
       :cards="currentDeck?.cards ?? []"
       :focussedCardId="editCardModalFocusedCardId"
     />
-  </TeenyModal>
+  </ui-kit:modal>
 </template>
 
 <script setup lang="ts">
-import TeenyCard from '@teeny/TeenyCard.vue'
-import TeenyIcon from '@teeny/TeenyIcon.vue'
-import TeenyButton from '@teeny/TeenyButton.vue'
-import TeenyModal from '@teeny/TeenyModal.vue'
+import Card from '@/components/card.vue'
 import ListItem from '@/components/DeckView/ListItem.vue'
 import EditCardModal from '@/components/DeckView/EditCardModal.vue'
-import DeckSettingsModal from '@/components/DeckSettingsModal.vue'
+import DeckSettingsModal from '@/components/DeckView/DeckSettingsModal.vue'
 import { useMessageStore } from '@/stores/message'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'

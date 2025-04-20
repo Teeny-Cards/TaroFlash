@@ -11,7 +11,7 @@
           ></div>
         </div>
         <div class="flex gap-4">
-          <TeenyButton
+          <ui-kit:button
             icon-left="store"
             icon-size="base"
             icon-only
@@ -19,8 +19,8 @@
             class="ring-8 ring-blue p-1.5"
             :class="{ 'ring-pink': isActive('shop') }"
             @click="routeToShop"
-          ></TeenyButton>
-          <TeenyButton
+          ></ui-kit:button>
+          <ui-kit:button
             icon-left="apps"
             icon-only
             icon-size="base"
@@ -28,24 +28,22 @@
             class="relative ring-8 ring-blue p-1.5"
           >
             <AppMenu />
-          </TeenyButton>
+          </ui-kit:button>
         </div>
       </div>
     </div>
   </nav>
 
-  <TeenyModal :open="member_card_open" backdrop @close="member_card_open = false">
+  <ui-kit:modal :open="member_card_open" backdrop @close="member_card_open = false">
     <MemberCard />
-  </TeenyModal>
+  </ui-kit:modal>
 </template>
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import TeenyModal from './TeenyComponents/TeenyModal.vue'
-import MemberCard from './MemberCard.vue'
-import AppMenu from './AppMenu.vue'
+import MemberCard from './member-card.vue'
+import AppMenu from './app-menu.vue'
 import { ref } from 'vue'
-import TeenyButton from './TeenyComponents/TeenyButton.vue'
 import { useRouter, useRoute } from 'vue-router'
 
 defineProps({

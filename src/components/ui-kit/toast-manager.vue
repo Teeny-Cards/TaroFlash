@@ -1,7 +1,7 @@
 <template>
-  <div teeny-toast-manager>
+  <div uikit-toast-manager>
     <teleport to="[teeny-toast-container]">
-      <TeenyToast
+      <ui-kit:toast
         v-for="(toast, index) in toasts"
         :key="index"
         :toast="toast"
@@ -14,12 +14,11 @@
 <script setup lang="ts">
 import { useMessageStore } from '@/stores/message'
 import { storeToRefs } from 'pinia'
-import TeenyToast from './TeenyToast.vue'
 
 const messageStore = useMessageStore()
 const { toasts } = storeToRefs(messageStore)
 
-function onCloseToast(toast: TeenyToast): void {
+function onCloseToast(toast: any): void {
   messageStore.removeToast(toast)
 }
 </script>

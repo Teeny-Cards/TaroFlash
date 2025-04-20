@@ -30,7 +30,7 @@ To use the Teeny Icon component, simply import it into your component file and i
 
 ```vue
 <template>
-  <TeenyIcon src="close" />
+  <ui-kit:icon src="close" />
 </template>
 
 <script setup>
@@ -42,10 +42,10 @@ The `src` prop accepts a string corresponding to the SVG icon's filename located
 
 example of a basic icon:
 
-<TeenyIcon src="close" />
+<ui-kit:icon src="close" />
 
 ```vue
-<TeenyIcon src="close" />
+<ui-kit:icon src="close" />
 ```
 
 ## Size
@@ -55,27 +55,27 @@ The Teeny Icon component also accepts an optional `size` prop, which allows you 
 example of different sizes:
 
 <div class="flex gap-2 items-center">
-  <TeenyIcon src="delete" size="large" />
-  <TeenyIcon src="delete" size="base" />
-  <TeenyIcon src="delete" size="small" />
-  <TeenyIcon src="delete" size="teeny" />
+  <ui-kit:icon src="delete" size="large" />
+  <ui-kit:icon src="delete" size="base" />
+  <ui-kit:icon src="delete" size="small" />
+  <ui-kit:icon src="delete" size="teeny" />
 </div>
 
 ```vue
-<TeenyIcon src="delete" size="large" />
-<TeenyIcon src="delete" size="base" />
-<TeenyIcon src="delete" size="small" />
-<TeenyIcon src="delete" size="teeny" />
+<ui-kit:icon src="delete" size="large" />
+<ui-kit:icon src="delete" size="base" />
+<ui-kit:icon src="delete" size="small" />
+<ui-kit:icon src="delete" size="teeny" />
 ```
 
 ## Styling
 
 Since the icon component, under the hood, is a simple SVG wrapper, you can easily apply color to the icon by adding a text color class to the component.
 
-<TeenyIcon src="delete" class="text-red" />
+<ui-kit:icon src="delete" class="text-red" />
 
 ```vue
-<TeenyIcon src="delete" class="text-red" />
+<ui-kit:icon src="delete" class="text-red" />
 ```
 
 ## Available Icons
@@ -84,7 +84,7 @@ The Teeny Icon component can render any svg in the `src/assets/svgs` directory. 
 
   <div class="grid grid-cols-4 gap-4">
     <div v-for="icon in icons" :key="icon" class="py-8 px-1 flex flex-col gap-4 justify-center items-center bg-parchment rounded-[8px]">
-      <TeenyIcon :src="icon" />
+      <ui-kit:icon :src="icon" />
       <span class="text-center">{{ icon }}</span>
     </div>
   </div>

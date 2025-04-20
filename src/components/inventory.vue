@@ -1,5 +1,5 @@
 <template>
-  <TeenyModal open backdrop>
+  <ui-kit:modal open backdrop>
     <div class="bg-parchment-dark rounded-10 w-254 h-163 flex flex-col">
       <div class="w-full flex justify-center items-center py-5">
         <h2 class="text-4xl text-brown-dark">Inventory</h2>
@@ -12,7 +12,7 @@
             :key="purchase.id"
             class="w-34 h-34 bg-parchment-dark rounded-4 p-2.5 cursor-pointer relative hover:ring-4 hover:ring-blue transition-all"
           >
-            <TeenyImage :src="purchase.shop_item.item_key" class="w-full h-full" />
+            <ui-kit:image :src="purchase.shop_item.item_key" class="w-full h-full" />
             <div
               class="absolute bottom-2 right-2 text-white bg-blue rounded-full flex justify-center items-center w-6.75 h-6.75 outline-4 outline-parchment-dark"
             >

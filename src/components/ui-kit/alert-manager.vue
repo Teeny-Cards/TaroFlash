@@ -1,12 +1,12 @@
 <template>
   <div teeny-alert-manager>
     <teleport to="[teeny-alert-container]">
-      <TeenyAlert
+      <ui-kit:alert
         :open="currentAlert !== null"
         :title="currentAlert?.title"
         :message="currentAlert?.message"
       >
-        <TeenyButton
+        <ui-kit:button
           @click="action1.action"
           :variant="action1.variant"
           :inverted="action1.inverted"
@@ -16,8 +16,8 @@
           :size="action1.size"
         >
           {{ action1.label }}
-        </TeenyButton>
-        <TeenyButton
+        </ui-kit:button>
+        <ui-kit:button
           v-if="action2"
           @click="action2.action"
           :variant="action2.variant"
@@ -28,8 +28,8 @@
           :size="action2.size"
         >
           {{ action2.label }}
-        </TeenyButton>
-      </TeenyAlert>
+        </ui-kit:button>
+      </ui-kit:alert>
     </teleport>
   </div>
 </template>
@@ -37,18 +37,16 @@
 <script setup lang="ts">
 import { useMessageStore } from '@/stores/message'
 import { storeToRefs } from 'pinia'
-import TeenyAlert from './TeenyAlert.vue'
-import TeenyButton from './TeenyButton.vue'
 import { computed, type ComputedRef } from 'vue'
 
 const messageStore = useMessageStore()
 const { currentAlert } = storeToRefs(messageStore)
 
-const action1: ComputedRef<TeenyButton> = computed(() => {
-  return currentAlert.value?.actions[0] as TeenyButton
+const action1: ComputedRef<any> = computed(() => {
+  return currentAlert.value?.actions[0]
 })
 
-const action2: ComputedRef<TeenyButton | undefined> = computed(() => {
+const action2: ComputedRef<any | undefined> = computed(() => {
   return currentAlert.value?.actions[1]
 })
 

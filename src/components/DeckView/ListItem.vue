@@ -3,7 +3,7 @@
     class="hover:font-bold group px-4 py-2 w-full flex items-center justify-between cursor-pointer hover:bg-(image:--stripe-blue-bg) rounded-[28px]"
   >
     <div class="flex items-center gap-6 group-hover:text-white" tabindex="0" role="button">
-      <TeenyCard size="xs" />
+      <Card size="xs" />
       {{ card.front_text }}
     </div>
     <span class="group-hover:text-white">{{ card.back_text }}</span>
@@ -18,34 +18,31 @@
       }"
       @click.stop="emit('selectCard', card)"
     >
-      <TeenyIcon
+      <ui-kit:icon
         v-if="selected"
         src="check"
         class="text-blue"
         :class="{ 'text-white': selected }"
       />
     </div>
-    <TeenyButtonMenu v-else :actions="moreMenuActions">
+    <ui-kit:button-menu v-else :actions="moreMenuActions">
       <template #trigger="{ toggleDropdown }">
-        <TeenyButton
+        <ui-kit:button
           @click="toggleDropdown"
           icon-only
           variant="muted"
           size="small"
           class="group-hover:bg-white group-hover:text-blue hover:bg-blue-light hover:ring-white hover:ring-3 hover:text-white"
         >
-          <TeenyIcon src="more" />
-        </TeenyButton>
+          <ui-kit:icon src="more" />
+        </ui-kit:button>
       </template>
-    </TeenyButtonMenu>
+    </ui-kit:button-menu>
   </div>
 </template>
 
 <script setup lang="ts">
-import TeenyCard from '@teeny/TeenyCard.vue'
-import TeenyIcon from '@teeny/TeenyIcon.vue'
-import TeenyButton from '@teeny/TeenyButton.vue'
-import TeenyButtonMenu from '@teeny/TeenyButtonMenu.vue'
+import Card from '@/components/card.vue'
 import type { PropType } from 'vue'
 
 const props = defineProps({
@@ -63,7 +60,7 @@ const emit = defineEmits<{
   (e: 'deleteCard', card: Card): void
 }>()
 
-const moreMenuActions: TeenyButton[] = [
+const moreMenuActions: Object[] = [
   {
     label: 'Select',
     action: () => emit('selectCard', props.card),

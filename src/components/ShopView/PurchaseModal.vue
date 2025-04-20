@@ -3,18 +3,16 @@
     class="bg-parchment-dark p-15 rounded-31 flex flex-col gap-16 items-center justify-between w-149 h-156 shadow-modal"
   >
     <div class="flex flex-col items-center gap-4">
-      <TeenyImage :src="item.item_key" class="w-41 h-41" />
+      <ui-kit:image :src="item.item_key" class="w-41 h-41" />
       <h2 class="text-3xl text-brown-dark">{{ item.name }}</h2>
       <p class="text-lg text-grey text-center">{{ item.description }}</p>
     </div>
-    <TeenyButton icon-left="check" @click="purchase">Purchase</TeenyButton>
+    <ui-kit:button icon-left="check" @click="purchase">Purchase</ui-kit:button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { type PropType } from 'vue'
-import TeenyImage from '@teeny/TeenyImage.vue'
-import TeenyButton from '@teeny/TeenyButton.vue'
 
 const emit = defineEmits<{
   (e: 'purchased', item: ShopItem): void

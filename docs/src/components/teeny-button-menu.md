@@ -53,10 +53,10 @@ interface Action {
 
 example:
 
-<TeenyButtonMenu trigger-label="Menu" :actions="moreMenuActions" />
+<ui-kit:button-menu trigger-label="Menu" :actions="moreMenuActions" />
 
 ```vue
-<TeenyButtonMenu trigger-label="Menu" :actions="moreMenuActions" />
+<ui-kit:button-menu trigger-label="Menu" :actions="moreMenuActions" />
 
 <script setup>
 import TeenyButtonMenu from '@/components/TeenyButtonMenu.vue'
@@ -91,10 +91,10 @@ The trigger button can be customized using the `variant` and `inverted` props. T
 
 example:
 
-<TeenyButtonMenu trigger-label="Menu" :actions="moreMenuActions" variant="danger" />
+<ui-kit:button-menu trigger-label="Menu" :actions="moreMenuActions" variant="danger" />
 
 ```vue
-<TeenyButtonMenu trigger-label="Menu" :actions="moreMenuActions" variant="danger" />
+<ui-kit:button-menu trigger-label="Menu" :actions="moreMenuActions" variant="danger" />
 ```
 
 ## Custom Trigger
@@ -103,16 +103,16 @@ You can also use a custom trigger by using the `trigger` slot. The slot receives
 
 example:
 
-<TeenyButtonMenu :actions="moreMenuActions">
-  <template #trigger="{ toggleDropdown, open }">
-    <TeenyButton @click="toggleDropdown" :icon-left="open ? 'expand-less' : 'expand-more'" icon-only></TeenyButton>
-  </template>
+<ui-kit:button-menu :actions="moreMenuActions">
+<template #trigger="{ toggleDropdown, open }">
+<ui-kit:button @click="toggleDropdown" :icon-left="open ? 'expand-less' : 'expand-more'" icon-only></TeenyButton>
+</template>
 </TeenyButtonMenu>
 
 ```vue
-<TeenyButtonMenu :actions="moreMenuActions">
+<ui-kit:button-menu :actions="moreMenuActions">
   <template #trigger="{ toggleDropdown, open }">
-    <TeenyButton @click="toggleDropdown" :icon-left="open ? 'expand-less' : 'expand-more'" icon-only></TeenyButton>
+    <ui-kit:button @click="toggleDropdown" :icon-left="open ? 'expand-less' : 'expand-more'" icon-only></TeenyButton>
   </template>
 </TeenyButtonMenu>
 ```
@@ -123,13 +123,14 @@ You can also use a custom dropdown content by using the `dropdown` slot. The slo
 
 example:
 
-<TeenyButtonMenu trigger-label="Menu" :actions="moreMenuActions">
-  <template #dropdown="{ closeDropdown }">
-    <div class="bg-parchment p-4 rounded-[10px] w-max">
-      <p>Custom dropdown content</p>
-      <TeenyButton @click="closeDropdown">Close</TeenyButton>
-    </div>
-  </template>
+<ui-kit:button-menu trigger-label="Menu" :actions="moreMenuActions">
+<template #dropdown="{ closeDropdown }">
+
+<div class="bg-parchment p-4 rounded-[10px] w-max">
+<p>Custom dropdown content</p>
+<ui-kit:button @click="closeDropdown">Close</TeenyButton>
+</div>
+</template>
 </TeenyButtonMenu>
 
 ## Detailed Prop Specifications

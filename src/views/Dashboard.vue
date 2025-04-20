@@ -4,10 +4,10 @@
     <div class="flex gap-4">
       <div v-if="loading">Loading</div>
       <div v-else v-for="(deck, index) in decks" :key="index">
-        <TeenyDeck :deck="deck" />
+        <Deck :deck="deck" />
       </div>
     </div>
-    <inventory />
+    <!-- <inventory /> -->
   </div>
 </template>
 
@@ -15,7 +15,7 @@
 import { onMounted, ref } from 'vue'
 import { fetchUserDecks } from '@/services/deckService'
 import { useMessageStore } from '@/stores/message'
-import TeenyDeck from '@teeny/TeenyDeck.vue'
+import Deck from '@/components/deck.vue'
 import inventory from '@/components/inventory.vue'
 
 const loading = ref(true)
