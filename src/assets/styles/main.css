@@ -6,6 +6,9 @@
 @import 'custom-styles.css';
 
 @theme {
+  /* --*: initial; */
+  --spacing: 4px;
+
   --color-*: initial;
   --color-blue: #11b7d4;
   --color-blue-light: #41a9df;
@@ -19,6 +22,8 @@
   --color-orange-light: #f7d279;
   --color-yellow: #f6f3df;
   --color-yellow-light: #fcfae4;
+  --color-purple: #bea0df;
+  --color-purple-dark: #ad89d8;
   --color-pink: #f388a5;
   --color-pink-light: #f599b3;
   --color-grey: #959595;
@@ -87,6 +92,22 @@
   --leaf-blue-bg: url('../backgrounds/leaf-blue.svg');
 
   --bg-sm: --spacing(20);
+
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 32px;
+  --text-4xl: 40px;
+  --text-5xl: 48px;
+
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
 }
 
 @layer base {

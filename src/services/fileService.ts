@@ -3,7 +3,7 @@ import { useMemberStore } from '@/stores/member'
 import Logger from '@/utils/logger'
 
 export async function uploadImage(bucket: string, file: File): Promise<string> {
-  Logger.info(`Uploading image to bucket: ${bucket}`)
+  Logger.debug(`Uploading image to bucket: ${bucket}`)
   const user_id = useMemberStore().id
   const file_path = `${user_id}/${file.name}`
 

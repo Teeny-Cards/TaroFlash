@@ -15,6 +15,7 @@
       <div
         ui-kit-modal
         v-if="open"
+        ref="ui-kit-modal"
         class="fixed inset-0 flex items-center justify-center px-4 pointer-events-auto py-7"
         @click="close"
       >
@@ -25,7 +26,8 @@
 </template>
 
 <script setup lang="ts">
-import { onUnmounted, ref, watch } from 'vue'
+import { onUnmounted, watch, useTemplateRef, nextTick } from 'vue'
+import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
 
 const emit = defineEmits<{ (event: 'close'): void }>()
 
@@ -37,32 +39,11 @@ const props = defineProps({
   backdrop: Boolean
 })
 
-const scrollTop = ref(document.documentElement.scrollTop)
-const released = ref(false)
+const modal = useTemplateRef<HTMLDivElement>('ui-kit-modal')
 
 onUnmounted(() => {
-  releaseScroll()
+  enableBodyScroll(modal.value)
 })
-
-function captureScroll(): void {
-  scrollTop.value = document.documentElement.scrollTop
-  document.body.style.position = 'fixed'
-  document.body.style.top = `${-scrollTop.value}px`
-  document.body.style.width = '100%'
-
-  released.value = false
-}
-
-function releaseScroll(): void {
-  if (released.value) return
-
-  document.body.style.position = ''
-  document.body.style.top = ''
-  document.body.style.width = ''
-  window.scrollTo(0, scrollTop.value)
-
-  released.value = true
-}
 
 function close(e: Event) {
   const target = e.target as HTMLElement
@@ -74,11 +55,12 @@ function close(e: Event) {
 
 watch(
   () => props.open,
-  (open) => {
+  async (open) => {
     if (open) {
-      captureScroll()
+      await nextTick()
+      disableBodyScroll(modal.value, { reserveScrollBarGap: true })
     } else {
-      releaseScroll()
+      enableBodyScroll(modal.value)
     }
   }
 )

@@ -1,22 +1,14 @@
-const LOGGERS: { [key: number]: ((message: string) => void) | undefined } = {
-  0: () => {},
-  1: console.error,
-  2: console.warn,
-  3: console.info,
-  4: console.debug
-}
-
-const LEVEL: { [key: number]: string } = {
-  0: 'none',
-  1: 'error',
-  2: 'warn',
-  3: 'info',
-  4: 'debug'
+const LEVELS: { [key: string]: number } = {
+  none: 0,
+  error: 1,
+  warn: 2,
+  info: 3,
+  debug: 4
 }
 
 type Log = {
   message: string
-  level: number
+  log_type: string
   timestamp: string
   trace: string
 }
@@ -28,9 +20,9 @@ declare global {
 }
 
 export default class Logger {
-  static log_level: number = 0
+  static log_level: number = Number(import.meta.env.VITE_LOG_LEVEL)
 
-  static setLogLevel(level: number = 0): void {
+  static setLogLevel(level: number): void {
     if (level < 0 || level > 4) {
       throw new Error('Invalid log level')
     }
@@ -39,22 +31,22 @@ export default class Logger {
   }
 
   static info(message: string): void {
-    this._log(message, 3)
+    this._log(message, 'info')
   }
 
   static warn(message: string): void {
-    this._log(message, 2)
+    this._log(message, 'warn')
   }
 
   static error(message: string): void {
-    this._log(message, 1)
+    this._log(message, 'error')
   }
 
   static debug(message: string): void {
-    this._log(message, 4)
+    this._log(message, 'debug')
   }
 
-  private static _log(message: string, level: number = 0): void {
+  private static _log(message: string, log_type: string): void {
     if (!window.logs) {
       window.logs = []
     }
@@ -64,13 +56,13 @@ export default class Logger {
 
     window.logs.push({
       message: message,
-      level,
+      log_type,
       timestamp: new Date().toISOString(),
       trace: callerTrace
     })
 
-    if (level <= this.log_level) {
-      LOGGERS[level]?.(`[${LEVEL[level]}] ${formattedMessage}`)
+    if (LEVELS[log_type] <= this.log_level) {
+      ;(console as any)[log_type]?.(`[${log_type}] ${formattedMessage}`)
     }
   }
 
