@@ -17,6 +17,7 @@ export async function initUser(): Promise<boolean> {
     }
   } catch (e: any) {
     Logger.error(`Error initializing user: ${e.message}`)
+    return false
   } finally {
     session.setLoading(false)
   }

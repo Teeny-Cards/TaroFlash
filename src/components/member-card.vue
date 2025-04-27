@@ -8,7 +8,7 @@
     </div>
     <div
       member-card__body
-      class="bg-green bg-(image:--bank-note-green-bg) bg-(length:--bg-sm) wave flex flex-col gap-6 pb-3 pt-9 px-8 items-center h-full"
+      class="bg-green bg-(image:--bank-note-green-bg) bg-(length:--bg-sm) wave-top flex flex-col gap-6 pb-3 pt-9 px-8 items-center h-full"
     >
       <div member-card__avatar class="h-full flex flex-col justify-center">
         <div class="w-50 h-50 bg-parchment-dark rounded-19 border-parchment-dark border-10"></div>
