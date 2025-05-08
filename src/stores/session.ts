@@ -4,13 +4,13 @@ import { getSession, login } from '@/services/sessionService'
 
 interface State {
   user: User | undefined
-  loading: boolean
+  loadingCount: number
 }
 
 export const useSessionStore = defineStore('session', {
   state: (): State => ({
     user: undefined,
-    loading: false
+    loadingCount: 0
   }),
 
   actions: {
@@ -24,14 +24,22 @@ export const useSessionStore = defineStore('session', {
       this.user = session?.user
     },
 
-    setLoading(value: boolean): void {
-      this.loading = value
+    startLoading(): void {
+      this.loadingCount++
+    },
+
+    stopLoading(): void {
+      this.loadingCount--
     }
   },
 
   getters: {
     authenticated({ user }): boolean {
       return Boolean(user?.aud === 'authenticated')
+    },
+
+    isLoading({ loadingCount }): boolean {
+      return loadingCount > 0
     }
   }
 })

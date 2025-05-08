@@ -9,7 +9,7 @@ export async function initUser(): Promise<boolean> {
   if (session.authenticated && memberStore.id) return true
 
   try {
-    session.setLoading(true)
+    session.startLoading()
     await session.restoreSession()
 
     if (session.authenticated && session.user?.id) {
@@ -19,7 +19,7 @@ export async function initUser(): Promise<boolean> {
     Logger.error(`Error initializing user: ${e.message}`)
     return false
   } finally {
-    session.setLoading(false)
+    session.stopLoading()
   }
 
   return session.authenticated

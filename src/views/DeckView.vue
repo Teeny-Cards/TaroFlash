@@ -1,6 +1,5 @@
 <template>
-  <div v-if="loading">Loading...</div>
-  <section v-else tid="deck-view" class="flex flex-col items-center gap-6">
+  <section tid="deck-view" class="flex flex-col items-center gap-6">
     <div tid="top-actions" class="w-full">
       <ui-kit:button
         size="xs"
@@ -95,6 +94,8 @@
       :focussedCardId="editCardModalFocusedCardId"
     />
   </ui-kit:modal>
+
+  <!-- <StudyModal /> -->
 </template>
 
 <script setup lang="ts">
@@ -102,7 +103,9 @@ import Card from '@/components/card.vue'
 import ListItem from '@/components/DeckView/ListItem.vue'
 import EditCardModal from '@/components/DeckView/EditCardModal.vue'
 import DeckSettingsModal from '@/components/DeckView/DeckSettingsModal.vue'
+import StudyModal from '@/components/study-modal.vue'
 import { useToastStore } from '@/stores/toast'
+import { useSessionStore } from '@/stores/session'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { deleteCardById } from '@/services/cardService'
@@ -117,18 +120,19 @@ const props = defineProps({
 })
 
 const toastStore = useToastStore()
+const sessionStore = useSessionStore()
 const router = useRouter()
 
 const currentDeck = ref<Deck>()
-const loading = ref(true)
 const editCardModalVisible = ref(false)
 const editCardModalFocusedCardId = ref()
 const selectionModeActive = ref(false)
 const selectedCards = ref<Card[]>([])
 
 onMounted(async () => {
+  sessionStore.startLoading()
   await getDeck()
-  loading.value = false
+  sessionStore.stopLoading()
 })
 
 function routeBack(): void {
