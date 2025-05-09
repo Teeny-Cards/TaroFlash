@@ -28,12 +28,10 @@
       </div>
       <div class="h-21.25 w-full"></div>
     </div>
-  </TeenyModal>
+  </ui-kit:modal>
 </template>
 
 <script setup lang="ts">
-import TeenyModal from '@teeny/TeenyModal.vue'
-import TeenyImage from './TeenyComponents/TeenyImage.vue'
 import { fetchPurchaseItems } from '@/services/shopService'
 import { computed, onMounted, ref } from 'vue'
 

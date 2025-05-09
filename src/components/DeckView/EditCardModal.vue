@@ -23,7 +23,7 @@
           class="overflow-y-auto h-[306.42px] w-full flex flex-col gap-4 snap-mandatory snap-y scroll-hidden scroll-smooth"
         >
           <div
-            data-testid="edit-card-modal__UIKit-card-editor"
+            data-testid="edit-card-modal__card-editor"
             v-for="card in cards"
             :key="card.id"
             class="flex w-full gap-4 px-20 overflow-x-auto shrink-0 snap-mandatory snap-x scroll-hidden font-primary snap-center"

@@ -71,30 +71,36 @@
   --radius-31: --spacing(31); /* 124px */
   --radius-full: 9999px;
 
-  --shadow-*: initial;
   --shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.15);
   --shadow-modal: 8px 8px 42.9px 0px rgba(0, 0, 0, 0.25);
   --shadow-apps: 5px 5px 25px 0px rgba(0, 0, 0, 0.25);
 
-  --font-primary: 'Tilt Neon', sans-serif;
-  --aspect-card: 7 / 9;
-
-  --container-app: 1400px;
-
-  --grid-template-columns-deck-view-lg: 284px minmax(811px, 1024px);
-  --grid-template-columns-deck-desktop: repeat(4, 192px);
-
   /* Backgrounds */
-  --jupiter-green-bg: url('../backgrounds/jupiter-green.svg');
-  --stripe-blue-bg: url('../backgrounds/stripe-blue.svg');
-  --curve-green-bg: url('../backgrounds/curve-green.svg');
-  --bank-note-green-bg: url('../backgrounds/bank-note-green.svg');
-  --leaf-blue-bg: url('../backgrounds/leaf-blue.svg');
+  --stripe-blue-bg: url('../assets/backgrounds/stripe-blue.svg');
+  --curve-green-bg: url('../assets/backgrounds/curve-green.svg');
+  --bank-note-green-bg: url('../assets/backgrounds/bank-note-green.svg');
 
   /* New Background Paradigms */
-  --diagonal-stripes: url('../backgrounds/diagonal-stripes.svg');
+  --diagonal-stripes: url('../assets/backgrounds/diagonal-stripes.svg');
 
+  /* Transitions */
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-150: 150ms;
+
+  /* Breakpoints */
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
+
+  /* Other Utilities */
   --bg-sm: --spacing(20);
+  --blur-4: 4px;
+  --aspect-card: 7 / 9;
+  
+  /* Typography */
+  --font-primary: 'Tilt Neon', sans-serif;
 
   --text-xs: 12px;
   --text-xs--line-height: calc(1 / 0.75);
@@ -125,12 +131,6 @@
 
   --text-6xl: 60px;
   --text-6xl--line-height: 1;
-
-  --breakpoint-sm: 40rem;
-  --breakpoint-md: 48rem;
-  --breakpoint-lg: 64rem;
-  --breakpoint-xl: 80rem;
-  --breakpoint-2xl: 96rem;
 }
 
 @layer base {
