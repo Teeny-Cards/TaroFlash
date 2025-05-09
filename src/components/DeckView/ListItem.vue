@@ -3,7 +3,7 @@
     class="hover:font-bold group px-4 py-2 w-full flex items-center justify-between cursor-pointer hover:bg-(image:--stripe-blue-bg) rounded-[28px]"
   >
     <div class="flex items-center gap-6 group-hover:text-white" tabindex="0" role="button">
-      <Card size="xs" />
+      <Card size="2xs" />
       {{ card.front_text }}
     </div>
     <span class="group-hover:text-white">{{ card.back_text }}</span>

@@ -17,19 +17,19 @@ const bonuses: StreakBonus[] = [
   { threshold: 3, bonus: 0.01, status: 'copper' }
 ]
 
+const EASE_MIN = 1.3
+const EASE_MAX = 2.65
+const EASE_DENOMINATOR = 10
+const EASE_INCREMENT = 0.01
+const EASE_DECREMENT = 0.05
+const MIN_INTERVAL = 1 // 1 minute
+const MAX_INTERVAL = minutesInYear
+const YOUNG_BOUNDARY = minutesInDay
+const MATURE_BOUNDARY = minutesInDay * 21 // 3 weeks
+const FUZZ_FACTOR = 1
+
 // SRC = Spaced Repetition Card
 export default class SRC {
-  private readonly EASE_MIN = 1.3
-  private readonly EASE_MAX = 2.65
-  private readonly EASE_DENOMINATOR = 10
-  private readonly EASE_INCREMENT = 0.01
-  private readonly EASE_DECREMENT = 0.05
-  private readonly MIN_INTERVAL = 1 // 1 minute
-  private readonly MAX_INTERVAL = minutesInYear
-  private readonly YOUNG_BOUNDARY = minutesInDay
-  private readonly MATURE_BOUNDARY = minutesInDay * 21 // 3 weeks
-  private readonly FUZZ_FACTOR = 1
-
   dueDate: Date
   lastUpdated: Date
   state: CardState
@@ -39,12 +39,12 @@ export default class SRC {
   streak: number
 
   constructor(card: Card) {
-    this.dueDate = card.dueDate ?? new Date()
-    this.lastUpdated = card.lastUpdated ?? new Date()
+    this.dueDate = card.due_date ?? new Date()
+    this.lastUpdated = card.updated_at ?? new Date()
     this.state = card.state ?? 'new'
     this.interval = card.interval ?? 6
     this.ease = card.ease ?? 2.5
-    this.leechCount = card.leechCount ?? 0
+    this.leechCount = card.leech_count ?? 0
     this.streak = card.streak ?? 0
   }
 
@@ -65,9 +65,9 @@ export default class SRC {
       return minutesInDay
     }
 
-    const d = this.interval * (this.ease / this.EASE_DENOMINATOR)
+    const d = this.interval * (this.ease / EASE_DENOMINATOR)
     const interval = Math.floor(this.interval + d + this.fuzz)
-    return Math.min(interval, this.MAX_INTERVAL)
+    return Math.min(interval, MAX_INTERVAL)
   }
 
   get failInterval(): number {
@@ -79,9 +79,9 @@ export default class SRC {
       return 10
     }
 
-    const d = this.interval * (this.ease / this.EASE_DENOMINATOR)
+    const d = this.interval * (this.ease / EASE_DENOMINATOR)
     const interval = Math.floor(this.interval - d)
-    return Math.max(interval, this.MIN_INTERVAL)
+    return Math.max(interval, MIN_INTERVAL)
   }
 
   get streakBonus(): number {
@@ -119,11 +119,11 @@ export default class SRC {
 
   private calculateEaseFactor(pass: boolean): void {
     if (pass) {
-      const ease = Math.round((this.ease + this.EASE_INCREMENT + this.streakBonus) * 100) / 100
-      this.ease = Math.min(ease, this.EASE_MAX)
+      const ease = Math.round((this.ease + EASE_INCREMENT + this.streakBonus) * 100) / 100
+      this.ease = Math.min(ease, EASE_MAX)
     } else {
-      const ease = Math.round((this.ease - this.EASE_DECREMENT) * 100) / 100
-      this.ease = Math.max(ease, this.EASE_MIN)
+      const ease = Math.round((this.ease - EASE_DECREMENT) * 100) / 100
+      this.ease = Math.max(ease, EASE_MIN)
     }
   }
 
@@ -134,13 +134,13 @@ export default class SRC {
       this.state = 'learning'
     } else if (
       (this.state === 'learning' || this.state === 'relearn') &&
-      this.interval >= this.YOUNG_BOUNDARY &&
-      this.interval < this.MATURE_BOUNDARY
+      this.interval >= YOUNG_BOUNDARY &&
+      this.interval < MATURE_BOUNDARY
     ) {
       this.state = 'young'
     } else if (
       (this.state === 'young' || this.state === 'relearn') &&
-      this.interval >= this.MATURE_BOUNDARY
+      this.interval >= MATURE_BOUNDARY
     ) {
       this.state = 'mature'
     }
