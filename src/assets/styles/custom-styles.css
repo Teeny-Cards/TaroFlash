@@ -16,6 +16,11 @@
   mask: var(--mask);
 }
 
+.pointy-bottom {
+  mask: conic-gradient(from -70deg at bottom, #0000, #000 1deg 139deg, #0000 140deg) 50%/87.92px
+    100%;
+}
+
 .scroll-hidden {
   -ms-overflow-style: none;
   scrollbar-width: none;
