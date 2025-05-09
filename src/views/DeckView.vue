@@ -95,7 +95,7 @@
     />
   </ui-kit:modal>
 
-  <!-- <StudyModal /> -->
+  <StudyModal />
 </template>
 
 <script setup lang="ts">
