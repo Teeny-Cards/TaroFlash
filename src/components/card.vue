@@ -1,12 +1,12 @@
 <template>
   <transition
     mode="out-in"
-    enter-from-class="motion-enabled:rotate-y-90 -translate-y-6"
-    enter-to-class="motion-enabled:rotate-y-0"
+    enter-from-class="motion-safe:rotate-y-90 -translate-y-6"
+    enter-to-class="motion-safe:rotate-y-0"
     enter-active-class="transition-[all] ease-in-out duration-150"
-    leave-from-class="motion-enabled:rotate-y-0"
-    leave-to-class="motion-enabled:rotate-y-90 -translate-y-6"
-    leave-active-class="motion-enabled:transition-[all] ease-in-out duration-150"
+    leave-from-class="motion-safe:rotate-y-0"
+    leave-to-class="motion-safe:rotate-y-90 -translate-y-6"
+    leave-active-class="motion-safe:transition-[all] ease-in-out duration-150"
   >
     <div
       v-if="showBack"
