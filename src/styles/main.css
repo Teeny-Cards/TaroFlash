@@ -4,6 +4,7 @@
 @import 'ui-kit/button.css';
 @import 'ui-kit/input.css';
 @import 'custom-styles.css';
+@import 'custom-variants.css';
 
 @theme {
   --*: initial;
@@ -86,6 +87,7 @@
   /* Transitions */
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-150: 150ms;
+  --duration-100: 100ms;
 
   /* Breakpoints */
   --breakpoint-sm: 40rem;
