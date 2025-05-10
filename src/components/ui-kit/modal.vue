@@ -10,7 +10,7 @@
     >
       <div
         v-if="backdrop && open"
-        class="fixed inset-0 bg-black/25 pointer-events-auto backdrop-blur-4"
+        class="backdrop-blur-4 pointer-events-auto fixed inset-0 bg-black/25"
       ></div>
     </Transition>
     <Transition
@@ -25,7 +25,7 @@
         data-testid="ui-kit-modal"
         v-if="open"
         ref="ui-kit-modal"
-        class="fixed inset-0 flex items-center justify-center px-4 pointer-events-auto py-7"
+        class="pointer-events-auto fixed inset-0 flex items-center justify-center px-4 py-7"
         @click="close"
       >
         <slot></slot>
@@ -37,8 +37,12 @@
 <script setup lang="ts">
 import { onUnmounted, watch, useTemplateRef, nextTick } from 'vue'
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
+import { onMounted } from 'vue'
 
-const emit = defineEmits<{ (event: 'close'): void }>()
+const emit = defineEmits<{
+  (event: 'close'): void
+  (event: 'opened'): void
+}>()
 
 const props = defineProps({
   open: {
@@ -50,7 +54,16 @@ const props = defineProps({
 
 const modal = useTemplateRef<HTMLDivElement>('ui-kit-modal')
 
+onMounted(async () => {
+  if (props.open) {
+    await nextTick()
+    if (!modal.value) return
+    disableBodyScroll(modal.value, { reserveScrollBarGap: true })
+  }
+})
+
 onUnmounted(() => {
+  if (!modal.value) return
   enableBodyScroll(modal.value)
 })
 
@@ -66,9 +79,13 @@ watch(
   () => props.open,
   async (open) => {
     if (open) {
+      emit('opened')
       await nextTick()
+
+      if (!modal.value) return
       disableBodyScroll(modal.value, { reserveScrollBarGap: true })
     } else {
+      if (!modal.value) return
       enableBodyScroll(modal.value)
     }
   }

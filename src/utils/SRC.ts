@@ -1,22 +1,6 @@
 import { differenceInHours, formatDistanceToNowStrict, addMinutes } from 'date-fns'
 import { minutesInYear, minutesInDay } from 'date-fns/constants'
 
-interface StreakBonus {
-  threshold: number
-  bonus: number
-  status: streakStatus
-}
-
-type streakStatus = 'diamond' | 'gold' | 'silver' | 'bronze' | 'copper' | 'none'
-
-const bonuses: StreakBonus[] = [
-  { threshold: 21, bonus: 0.05, status: 'diamond' },
-  { threshold: 13, bonus: 0.04, status: 'gold' },
-  { threshold: 8, bonus: 0.03, status: 'silver' },
-  { threshold: 5, bonus: 0.02, status: 'bronze' },
-  { threshold: 3, bonus: 0.01, status: 'copper' }
-]
-
 const EASE_MIN = 1.3
 const EASE_MAX = 2.65
 const EASE_DENOMINATOR = 10
@@ -30,22 +14,18 @@ const FUZZ_FACTOR = 1
 
 // SRC = Spaced Repetition Card
 export default class SRC {
-  dueDate: Date
-  lastUpdated: Date
+  due_date: Date
+  updated_at: Date
   state: CardState
   interval: number
   ease: number
-  leechCount: number
-  streak: number
 
   constructor(card: Card) {
-    this.dueDate = card.due_date ?? new Date()
-    this.lastUpdated = card.updated_at ?? new Date()
+    this.due_date = card.due_date ?? new Date()
+    this.updated_at = card.updated_at ?? new Date()
     this.state = card.state ?? 'new'
     this.interval = card.interval ?? 6
     this.ease = card.ease ?? 2.5
-    this.leechCount = card.leech_count ?? 0
-    this.streak = card.streak ?? 0
   }
 
   get passIntervalString(): string {
@@ -66,7 +46,7 @@ export default class SRC {
     }
 
     const d = this.interval * (this.ease / EASE_DENOMINATOR)
-    const interval = Math.floor(this.interval + d + this.fuzz)
+    const interval = Math.floor(this.interval + d + this.get_fuzz())
     return Math.min(interval, MAX_INTERVAL)
   }
 
@@ -84,42 +64,40 @@ export default class SRC {
     return Math.max(interval, MIN_INTERVAL)
   }
 
-  get streakBonus(): number {
-    return bonuses.find(({ threshold }) => this.streak >= threshold)?.bonus ?? 0
-  }
-
-  get streakStatus(): streakStatus {
-    return bonuses.find(({ threshold }) => this.streak >= threshold)?.status ?? 'none'
-  }
-
   get updatedToday(): boolean {
-    return differenceInHours(new Date(), this.lastUpdated) < 24
+    return differenceInHours(new Date(), this.updated_at) < 24
+  }
+
+  get fuzzString(): string {
+    const fuzz = this.get_fuzz()
+    const sign = Math.sign(fuzz) >= 0 ? '+' : '-'
+    const absoluteFuzz = Math.abs(fuzz)
+    const timeDistance = formatDistanceToNowStrict(addMinutes(new Date(), absoluteFuzz))
+
+    return `${sign}${timeDistance}`
   }
 
   public pass(): void {
-    this.streak++
     this.calculateEaseFactor(true)
     this.promoteCard()
 
     this.interval = this.passInterval
-    this.dueDate = new Date(this.dueDate.setDate(this.dueDate.getDate() + this.interval))
-    this.lastUpdated = new Date()
+    this.due_date = new Date(this.due_date.setDate(this.due_date.getDate() + this.interval))
+    this.updated_at = new Date()
   }
 
   public fail(): void {
-    this.streak = 0
     this.calculateEaseFactor(false)
-    this.updateLeechCount()
     this.demoteCard()
 
     this.interval = this.failInterval
-    this.dueDate = new Date(this.dueDate.setDate(this.dueDate.getDate() + this.interval))
-    this.lastUpdated = new Date()
+    this.due_date = new Date(this.due_date.setDate(this.due_date.getDate() + this.interval))
+    this.updated_at = new Date()
   }
 
   private calculateEaseFactor(pass: boolean): void {
     if (pass) {
-      const ease = Math.round((this.ease + EASE_INCREMENT + this.streakBonus) * 100) / 100
+      const ease = Math.round((this.ease + EASE_INCREMENT) * 100) / 100
       this.ease = Math.min(ease, EASE_MAX)
     } else {
       const ease = Math.round((this.ease - EASE_DECREMENT) * 100) / 100
@@ -154,22 +132,7 @@ export default class SRC {
     }
   }
 
-  private updateLeechCount(): void {
-    if (this.state === 'mature' || this.state === 'young') {
-      this.leechCount++
-    }
-  }
-
-  get fuzzString(): string {
-    const fuzz = this.fuzz
-    const sign = Math.sign(fuzz) >= 0 ? '+' : '-'
-    const absoluteFuzz = Math.abs(fuzz)
-    const timeDistance = formatDistanceToNowStrict(addMinutes(new Date(), absoluteFuzz))
-
-    return `${sign}${timeDistance}`
-  }
-
-  get fuzz(): number {
+  private get_fuzz(): number {
     const MIN_FUZZ = 5
     const MAX_FUZZ = minutesInDay / 2
 
