@@ -9,8 +9,7 @@ type Card = {
   state?: CardState
   interval?: number
   ease?: number
-  leech_count?: number
-  streak?: number
+  order?: number
 }
 
 type CardState = 'new' | 'learning' | 'young' | 'mature' | 'relearn'

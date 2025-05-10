@@ -1,0 +1,7 @@
+@custom-variant motion-enabled {
+  @media (prefers-reduced-motion: no-preference) {
+    .allow-motion & {
+      @slot;
+    }
+  }
+}
