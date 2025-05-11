@@ -23,15 +23,16 @@ const frontRevealed = ref(false)
 const backReavealed = ref(studySession?.cardRevealed)
 
 function showBack() {
-  return (
-    backReavealed.value || studySession?.cardRevealed
-  )
+  return backReavealed.value || studySession?.cardRevealed
 }
 
 function revealFront(timeout = 150) {
   setTimeout(() => {
     frontRevealed.value = true
-    backReavealed.value = studySession?.cardRevealed || studySession?.studiedCardIds.has(studySession?.visibleCard?.id!)
+    backReavealed.value =
+      studySession?.cardRevealed ||
+      studySession?.studiedCardIds.has(studySession?.visibleCard?.id!) ||
+      studySession?.failedCardIds.has(studySession?.visibleCard?.id!)
   }, timeout)
 }
 

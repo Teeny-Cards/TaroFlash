@@ -49,6 +49,7 @@ import { provide, type PropType, reactive } from 'vue'
 export type StudySession = {
   cards: Card[]
   studiedCardIds: Set<string>
+  failedCardIds: Set<string>
   lastStudiedCard: Card | undefined
   activeCard: Card | undefined
   visibleCard: Card | undefined
@@ -72,6 +73,7 @@ defineEmits<{
 const studySession: StudySession = reactive({
   cards: [] as Card[],
   studiedCardIds: new Set<string>(),
+  failedCardIds: new Set<string>(),
   lastStudiedCard: undefined as Card | undefined,
   activeCard: undefined as Card | undefined,
   visibleCard: undefined as Card | undefined,
@@ -81,27 +83,44 @@ const studySession: StudySession = reactive({
 provide('studySession', studySession)
 
 function setupStudySession() {
-  studySession.cards = props.deck?.cards ?? []
-  studySession.activeCard = props.deck?.cards?.[0]
+  studySession.cards = [...(props.deck?.cards ?? [])]
+  studySession.activeCard = studySession?.activeCard ?? props.deck?.cards?.[0]
   studySession.visibleCard = studySession.activeCard
 }
 
 function markStudied(card: Card) {
   if (card.id) {
     studySession.studiedCardIds.add(card.id)
-    studySession.lastStudiedCard = card
   }
 }
 
-function advanceCard(repeat: boolean = false) {
-  const remaining = props.deck?.cards?.filter((c) => !studySession.studiedCardIds.has(c.id!)) ?? []
-  studySession.activeCard = repeat ? studySession.activeCard : remaining[0] // shuffle card to somewhere else
+function markFailed(card: Card) {
+  if (card.id) {
+    studySession.failedCardIds.add(card.id)
+  }
+}
+
+function advanceCard(failed: boolean = false) {
+  if (!studySession.activeCard) return
+
+  if (failed) {
+    markFailed(studySession.activeCard)
+  } else {
+    markStudied(studySession.activeCard)
+  }
+
+  studySession.lastStudiedCard = studySession.activeCard
+  
+  const remaining = studySession.cards.filter(
+    (c) => !studySession.studiedCardIds.has(c.id!) && !studySession.failedCardIds.has(c.id!)
+  )
+
+  studySession.activeCard = remaining[0]
   studySession.visibleCard = studySession.activeCard
   studySession.cardRevealed = false
 }
 
 function onCorrect() {
-  if (studySession.activeCard) markStudied(studySession.activeCard)
   advanceCard()
 }
 
