@@ -1,12 +1,13 @@
 <template>
-  <ui-kit:modal :open="open" @close="$emit('closed')" @opened="onOpen" backdrop>
+  <ui-kit:modal :open="open" @close="$emit('closed')" @opened="setupStudySession" backdrop>
     <div
       data-testid="study-modal"
       class="bg-parchment-dark rounded-8 shadow-modal flex h-170 w-268 flex-col items-center overflow-hidden pb-6"
     >
       <div
         data-testid="study-modal__header"
-        class="bg-purple-dark pointy-bottom relative flex w-full justify-center bg-(image:--diagonal-stripes) bg-(length:--bg-sm) px-13 py-11.5"
+        class="bg-purple-dark pointy-bottom relative flex w-full justify-center bg-(image:--diagonal-stripes)
+          bg-(length:--bg-sm) px-13 py-11.5"
       >
         <div data-testid="study-modal__actions" class="absolute top-0 left-0 p-4">
           <ui-kit:button
@@ -26,17 +27,15 @@
         class="grid h-full w-full grid-cols-[1fr_auto_1fr] content-center"
       >
         <div></div>
-        <Cards :current-card="current_card" :card-revealed="card_revealed" />
+        <Cards />
         <Buttons
-          :current-card="current_card"
-          :card-revealed="card_revealed"
-          @reveal="card_revealed = true"
+          @reveal="studySession.cardRevealed = true"
           @correct="onCorrect"
           @incorrect="onIncorrect"
         />
       </div>
 
-      <Track :current-card="current_card" />
+      <Track @cardClicked="onCardClicked" />
     </div>
   </ui-kit:modal>
 </template>
@@ -45,9 +44,16 @@
 import Track from './track.vue'
 import Cards from './cards.vue'
 import Buttons from './buttons.vue'
-import { provide, type PropType } from 'vue'
-import { toRef } from 'vue'
-import { ref } from 'vue'
+import { provide, type PropType, reactive } from 'vue'
+
+export type StudySession = {
+  cards: Card[]
+  studiedCardIds: Set<string>
+  lastStudiedCard: Card | undefined
+  activeCard: Card | undefined
+  visibleCard: Card | undefined
+  cardRevealed: boolean
+}
 
 const props = defineProps({
   open: {
@@ -63,23 +69,48 @@ defineEmits<{
   (e: 'closed'): void
 }>()
 
-provide('deck', toRef(props, 'deck'))
+const studySession: StudySession = reactive({
+  cards: [] as Card[],
+  studiedCardIds: new Set<string>(),
+  lastStudiedCard: undefined as Card | undefined,
+  activeCard: undefined as Card | undefined,
+  visibleCard: undefined as Card | undefined,
+  cardRevealed: false
+})
 
-const card_revealed = ref(false)
+provide('studySession', studySession)
 
-function onOpen() {
-  current_card.value = props.deck?.cards?.[0]
+function setupStudySession() {
+  studySession.cards = props.deck?.cards ?? []
+  studySession.activeCard = props.deck?.cards?.[0]
+  studySession.visibleCard = studySession.activeCard
 }
 
-const current_card = ref<Card>()
+function markStudied(card: Card) {
+  if (card.id) {
+    studySession.studiedCardIds.add(card.id)
+    studySession.lastStudiedCard = card
+  }
+}
+
+function advanceCard(repeat: boolean = false) {
+  const remaining = props.deck?.cards?.filter((c) => !studySession.studiedCardIds.has(c.id!)) ?? []
+  studySession.activeCard = repeat ? studySession.activeCard : remaining[0] // shuffle card to somewhere else
+  studySession.visibleCard = studySession.activeCard
+  studySession.cardRevealed = false
+}
 
 function onCorrect() {
-  card_revealed.value = false
-  current_card.value = props.deck?.cards?.[current_card.value?.order ?? 0 + 1]
+  if (studySession.activeCard) markStudied(studySession.activeCard)
+  advanceCard()
 }
 
 function onIncorrect() {
-  card_revealed.value = false
-  current_card.value = props.deck?.cards?.[current_card.value?.order ?? 0]
+  advanceCard(true)
+}
+
+function onCardClicked(card: Card) {
+  studySession.cardRevealed = false
+  studySession.visibleCard = card
 }
 </script>
