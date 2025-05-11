@@ -6,12 +6,16 @@
     <template v-if="cardRevealed">
       <button
         class="bg-purple-dark cursor-pointer rounded-full px-13 py-4 text-white"
+        :class="{ 'opacity-50': disabled }"
+        :disabled="disabled"
         @click="$emit('correct')"
       >
         Got It!
       </button>
       <button
         class="text-brown-dark cursor-pointer rounded-full bg-white px-13 py-4"
+        :class="{ 'opacity-50': disabled }"
+        :disabled="disabled"
         @click="$emit('incorrect')"
       >
         Nope!
@@ -29,11 +33,17 @@
 </template>
 
 <script setup lang="ts">
-import { type PropType } from 'vue'
+import { inject, computed } from 'vue'
+import type { StudySession } from './index.vue'
 
-defineProps({
-  cardRevealed: Boolean,
-  currentCard: Object as PropType<Card>
+const studySession = inject<StudySession>('studySession')
+
+const cardRevealed = computed(() => {
+  return studySession?.cardRevealed || studySession?.studiedCardIds.has(studySession?.activeCard?.id!)
+})
+
+const disabled = computed(() => {
+  return studySession?.studiedCardIds.has(studySession?.activeCard?.id!)
 })
 
 defineEmits<{

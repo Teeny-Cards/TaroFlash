@@ -1,21 +1,14 @@
 <template>
   <div data-testid="study-modal__cards" class="flex gap-4">
-    <Card size="large" :show-back="frontRevealed">{{ currentCard?.front_text }}</Card>
-    <Card size="large" :show-back="cardRevealed">{{ currentCard?.back_text }}</Card>
+    <Card size="large" :show-back="frontRevealed">{{ studySession?.visibleCard?.front_text }}</Card>
+    <Card size="large" :show-back="showBack()">{{ studySession?.visibleCard?.back_text }}</Card>
   </div>
 </template>
 
 <script setup lang="ts">
 import Card from '@/components/card.vue'
-import { onMounted } from 'vue'
-import { ref } from 'vue'
-import { watch } from 'vue'
-import { type PropType } from 'vue'
-
-const props = defineProps({
-  currentCard: Object as PropType<Card>,
-  cardRevealed: Boolean
-})
+import { watch, ref, onMounted, inject } from 'vue'
+import type { StudySession } from './index.vue'
 
 const emit = defineEmits<{
   (e: 'cardRevealed', value: boolean): void
@@ -25,27 +18,29 @@ onMounted(() => {
   revealFront(200)
 })
 
+const studySession = inject<StudySession>('studySession')
 const frontRevealed = ref(false)
+const backReavealed = ref(studySession?.cardRevealed)
+
+function showBack() {
+  return (
+    backReavealed.value || studySession?.cardRevealed
+  )
+}
 
 function revealFront(timeout = 150) {
-  const startTime = performance.now()
-
-  function animate(currentTime: DOMHighResTimeStamp) {
-    if (currentTime - startTime >= timeout) {
-      frontRevealed.value = true
-      return
-    }
-    requestAnimationFrame(animate)
-  }
-
-  requestAnimationFrame(animate)
+  setTimeout(() => {
+    frontRevealed.value = true
+    backReavealed.value = studySession?.cardRevealed || studySession?.studiedCardIds.has(studySession?.visibleCard?.id!)
+  }, timeout)
 }
 
 watch(
-  () => props.currentCard,
+  () => studySession?.visibleCard,
   (newVal, oldVal) => {
     if (newVal !== oldVal) {
       frontRevealed.value = false
+      backReavealed.value = false
       revealFront(350)
       emit('cardRevealed', false)
     }
