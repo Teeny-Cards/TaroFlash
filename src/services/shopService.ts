@@ -1,5 +1,4 @@
 import { supabase } from '@/supabaseClient'
-import { useMemberStore } from '@/stores/member'
 
 export async function fetchShopItems(): Promise<ShopItem[]> {
   const { data, error } = await supabase.from('shop_items').select('*')
@@ -23,13 +22,11 @@ export async function upsertPurchase(purchase: Purchase): Promise<void> {
   }
 }
 
-export async function fetchPurchaseItems(): Promise<PurchaseItem[]> {
-  const member = useMemberStore()
-
+export async function fetchPurchaseItems(member_id: string): Promise<PurchaseItem[]> {
   const { data, error } = await supabase
     .from('purchases')
     .select('item_id, quantity, shop_item:shop_items(*)')
-    .eq('member_id', member.id)
+    .eq('member_id', member_id)
 
   if (error) {
     throw new Error(error.message)

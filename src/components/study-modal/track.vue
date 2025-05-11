@@ -7,9 +7,8 @@
       <button
         v-for="card in studySession?.cards"
         :key="card.id"
-        class="aspect-card bg-parchment rounded-1.5 group flex w-4.75
-          min-w-4.75 cursor-pointer justify-center transition-[all] duration-100 hover:min-w-6
-          focus:outline-none"
+        class="aspect-card bg-parchment rounded-1.5 group flex w-4.75 min-w-4.75 cursor-pointer justify-center
+          transition-[all] duration-100 hover:min-w-6 focus:outline-none"
         :class="{
           '!bg-purple-dark !min-w-6': isActive(card),
           '!bg-purple': isStudied(card),
@@ -28,7 +27,7 @@
 
     <div data-testid="study-modal-track__count">
       <p class="text-brown-dark text-base">
-        {{ studySession?.activeCard?.order ?? 0
+        {{ (studySession?.activeCard?.order ?? 0) + 1
         }}<span class="text-xs">/{{ studySession?.cards?.length }}</span>
       </p>
     </div>
@@ -62,7 +61,7 @@ function isNext(card: Card) {
 
   if (lastStudiedOrder === undefined) return false
   if (lastStudiedOrder === studySession?.cards.length) return false
-  
+
   return card.order === lastStudiedOrder + 1
 }
 
