@@ -28,17 +28,17 @@ onMounted(() => {
 const frontRevealed = ref(false)
 
 function revealFront(timeout = 150) {
-  const startTime = performance.now();
-  
+  const startTime = performance.now()
+
   function animate(currentTime: DOMHighResTimeStamp) {
     if (currentTime - startTime >= timeout) {
-      frontRevealed.value = true;
-      return;
+      frontRevealed.value = true
+      return
     }
-    requestAnimationFrame(animate);
+    requestAnimationFrame(animate)
   }
-  
-  requestAnimationFrame(animate);
+
+  requestAnimationFrame(animate)
 }
 
 watch(

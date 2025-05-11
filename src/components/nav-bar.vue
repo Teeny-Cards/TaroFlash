@@ -1,13 +1,13 @@
 <template>
-  <nav class="w-full bg-blue font-primary sticky top-0 z-10 flex justify-center h-17">
-    <div class="w-full max-w-app flex justify-between items-center px-4 sm:px-16">
+  <nav class="bg-blue font-primary sticky top-0 z-10 flex h-17 w-full justify-center">
+    <div class="max-w-app flex w-full items-center justify-between px-4 sm:px-16">
       <RouterLink to="/dashboard" class="text-4xl text-white">TeenyCards</RouterLink>
-      <div class="flex gap-6 items-end">
-        <div class="flex gap-2.25 mt-6">
+      <div class="flex items-end gap-6">
+        <div class="mt-6 flex gap-2.25">
           <div
             v-for="i in 5"
             :key="i"
-            class="w-17 h-17 bg-pink-light rounded-8 border-parchment border-6 ring-blue ring-8"
+            class="bg-pink-light rounded-8 border-parchment ring-blue h-17 w-17 border-6 ring-8"
           ></div>
         </div>
         <div class="flex gap-4">
@@ -16,7 +16,7 @@
             icon-size="base"
             icon-only
             inverted
-            class="ring-8 ring-blue p-1.5"
+            class="ring-blue p-1.5 ring-8"
             :class="{ 'ring-pink': isActive('shop') }"
             @click="routeToShop"
           ></ui-kit:button>
@@ -25,7 +25,7 @@
             icon-only
             icon-size="base"
             inverted
-            class="relative ring-8 ring-blue p-1.5"
+            class="ring-blue relative p-1.5 ring-8"
           >
             <AppMenu />
           </ui-kit:button>

@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="open"
-    class="absolute top-16 right-0 w-60 h-90 bg-parchment-dark shadow-apps rounded-16"
+    class="bg-parchment-dark shadow-apps rounded-16 absolute top-16 right-0 h-90 w-60"
   ></div>
 </template>
 

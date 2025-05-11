@@ -1,18 +1,18 @@
 <template>
   <div
-    class="grid grid-cols-[165px] grid-rows-[148px_29px_34px_46px] justify-items-center items-start cursor-pointer relative group"
+    class="group relative grid cursor-pointer grid-cols-[165px] grid-rows-[148px_29px_34px_46px] items-start justify-items-center"
   >
     <div
-      class="absolute -inset-4 rounded-8 group-hover:bg-parchment-dark -z-1 transition-colors duration-75"
+      class="rounded-8 group-hover:bg-parchment-dark absolute -inset-4 -z-1 transition-colors duration-75"
     ></div>
-    <ui-kit:image class="w-29 h-29" :src="item.item_key" />
-    <p class="text-xl text-center text-brown-dark">{{ item.name }}</p>
-    <p class="shop-item__description text-xs text-center text-grey w-32 h-8.5">
+    <ui-kit:image class="h-29 w-29" :src="item.item_key" />
+    <p class="text-brown-dark text-center text-xl">{{ item.name }}</p>
+    <p class="shop-item__description text-grey h-8.5 w-32 text-center text-xs">
       {{ item.description }}
     </p>
     <div class="flex items-center self-center">
       <ui-kit:icon src="paperclip" size="small" class="text-blue" />
-      <p class="text-sm text-center text-brown-dark">{{ item.price }}</p>
+      <p class="text-brown-dark text-center text-sm">{{ item.price }}</p>
     </div>
   </div>
 </template>
