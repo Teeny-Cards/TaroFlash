@@ -34,12 +34,14 @@
 <script setup lang="ts">
 import { fetchPurchaseItems } from '@/services/shopService'
 import { computed, onMounted, ref } from 'vue'
+import { useMemberStore } from '@/stores/member'
 
 const INV_SLOTS = 12
 const purchases = ref<PurchaseItem[]>([])
+const memberStore = useMemberStore()
 const empty_slots = computed(() => INV_SLOTS - purchases.value.length)
 
 onMounted(async () => {
-  purchases.value = await fetchPurchaseItems()
+  purchases.value = await fetchPurchaseItems(memberStore.id)
 })
 </script>

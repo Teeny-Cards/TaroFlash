@@ -50,9 +50,9 @@ export type StudySession = {
   cards: Card[]
   studiedCardIds: Set<string>
   failedCardIds: Set<string>
-  lastStudiedCard: Card | undefined
-  activeCard: Card | undefined
-  visibleCard: Card | undefined
+  lastStudiedCard?: Card
+  activeCard?: Card
+  visibleCard?: Card
   cardRevealed: boolean
 }
 
@@ -71,12 +71,12 @@ defineEmits<{
 }>()
 
 const studySession: StudySession = reactive({
-  cards: [] as Card[],
+  cards: [],
   studiedCardIds: new Set<string>(),
   failedCardIds: new Set<string>(),
-  lastStudiedCard: undefined as Card | undefined,
-  activeCard: undefined as Card | undefined,
-  visibleCard: undefined as Card | undefined,
+  lastStudiedCard: undefined,
+  activeCard: undefined,
+  visibleCard: undefined,
   cardRevealed: false
 })
 
@@ -110,7 +110,7 @@ function advanceCard(failed: boolean = false) {
   }
 
   studySession.lastStudiedCard = studySession.activeCard
-  
+
   const remaining = studySession.cards.filter(
     (c) => !studySession.studiedCardIds.has(c.id!) && !studySession.failedCardIds.has(c.id!)
   )

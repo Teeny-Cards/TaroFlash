@@ -17,14 +17,16 @@ import { fetchUserDecks } from '@/services/deckService'
 import { useToastStore } from '@/stores/toast'
 import Deck from '@/components/deck.vue'
 import inventory from '@/components/inventory.vue'
+import { useMemberStore } from '@/stores/member'
 
 const loading = ref(true)
 const toastStore = useToastStore()
 const decks = ref<Deck[]>([])
+const memberStore = useMemberStore()
 
 onMounted(async () => {
   try {
-    decks.value = await fetchUserDecks()
+    decks.value = await fetchUserDecks(memberStore.id)
     loading.value = false
   } catch (e: any) {
     toastStore.error(e.message)

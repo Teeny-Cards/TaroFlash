@@ -1,7 +1,7 @@
 <template>
   <div data-testid="study-modal__cards" class="flex gap-4">
     <Card size="large" :show-back="frontRevealed">{{ studySession?.visibleCard?.front_text }}</Card>
-    <Card size="large" :show-back="showBack()">{{ studySession?.visibleCard?.back_text }}</Card>
+    <Card size="large" :show-back="showBack">{{ studySession?.visibleCard?.back_text }}</Card>
   </div>
 </template>
 
@@ -9,6 +9,7 @@
 import Card from '@/components/card.vue'
 import { watch, ref, onMounted, inject } from 'vue'
 import type { StudySession } from './index.vue'
+import { computed } from 'vue';
 
 const emit = defineEmits<{
   (e: 'cardRevealed', value: boolean): void
@@ -22,9 +23,9 @@ const studySession = inject<StudySession>('studySession')
 const frontRevealed = ref(false)
 const backReavealed = ref(studySession?.cardRevealed)
 
-function showBack() {
+const showBack = computed(() => {
   return backReavealed.value || studySession?.cardRevealed
-}
+})
 
 function revealFront(timeout = 150) {
   setTimeout(() => {

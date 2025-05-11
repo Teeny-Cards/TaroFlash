@@ -1,5 +1,5 @@
 <template>
-  <Card size="large" class="snap-center overflow-hidden">
+  <Card size="large" class="snap-center overflow-hidden" show-back>
     <div class="relative flex h-full w-full items-center justify-center">
       <ui-kit:icon
         src="add-image"
@@ -18,7 +18,7 @@
       />
     </div>
   </Card>
-  <Card size="large" class="snap-center overflow-hidden">
+  <Card size="large" class="snap-center overflow-hidden" show-back>
     <textarea
       teeny-card-editor__input="back"
       name="back_text"
