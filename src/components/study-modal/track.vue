@@ -7,18 +7,19 @@
       <button
         v-for="card in studySession?.cards"
         :key="card.id"
-        class="aspect-card bg-parchment rounded-1.5 hover:bg-purple-dark group flex w-4.75
+        class="aspect-card bg-parchment rounded-1.5 group flex w-4.75
           min-w-4.75 cursor-pointer justify-center transition-[all] duration-100 hover:min-w-6
           focus:outline-none"
         :class="{
           '!bg-purple-dark !min-w-6': isActive(card),
-          'bg-purple': isStudied(card)
+          '!bg-purple': isStudied(card),
+          '!bg-grey-light': isFailed(card)
         }"
         @click="onClickCard(card)"
       >
         <div class="hidden group-hover:block">
           <ui-kit:tooltip
-            :text="isStudied(card) || isActive(card) ? card.front_text : '?'"
+            :text="isStudied(card) || isActive(card) || isFailed(card) ? card.front_text : '?'"
             open
           />
         </div>
@@ -48,6 +49,10 @@ function isStudied(card: Card) {
   return studySession?.studiedCardIds.has(card.id!)
 }
 
+function isFailed(card: Card) {
+  return studySession?.failedCardIds.has(card.id!)
+}
+
 function isActive(card: Card) {
   return card.id === studySession?.activeCard?.id
 }
@@ -62,7 +67,7 @@ function isNext(card: Card) {
 }
 
 function onClickCard(card: Card) {
-  if (isStudied(card) || isNext(card)) {
+  if (isStudied(card) || isFailed(card) || isNext(card)) {
     emit('cardClicked', card)
   }
 }
