@@ -1,15 +1,15 @@
 <template>
   <Card size="large" class="snap-center overflow-hidden">
-    <div class="relative flex items-center justify-center w-full h-full">
+    <div class="relative flex h-full w-full items-center justify-center">
       <ui-kit:icon
         src="add-image"
         size="large"
-        class="absolute cursor-pointer text-orange top-4 left-4"
+        class="text-orange absolute top-4 left-4 cursor-pointer"
       />
       <textarea
         teeny-card-editor__input="front"
         name="front_text"
-        class="w-full text-2xl text-center bg-transparent resize-none text-grey-dark focus:outline-hidden"
+        class="text-grey-dark w-full resize-none bg-transparent text-center text-2xl focus:outline-hidden"
         rows="1"
         placeholder="Front"
         :value="card.front_text"
@@ -22,7 +22,7 @@
     <textarea
       teeny-card-editor__input="back"
       name="back_text"
-      class="w-full text-2xl text-center bg-transparent resize-none focus:outline-hidden text-grey-dark"
+      class="text-grey-dark w-full resize-none bg-transparent text-center text-2xl focus:outline-hidden"
       rows="1"
       placeholder="Back"
       :value="card.back_text"

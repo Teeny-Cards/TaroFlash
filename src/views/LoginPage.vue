@@ -1,5 +1,5 @@
 <template>
-  <section class="w-full flex justify-center pt-32">
+  <section class="flex w-full justify-center pt-32">
     <LoginDialogue signIn @signedIn="loginWithEmail" />
   </section>
 </template>

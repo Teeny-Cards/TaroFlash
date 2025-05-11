@@ -6,7 +6,7 @@
           <img
             :src="deck.image_url"
             alt="Deck Image preview"
-            class="object-cover w-full h-full"
+            class="h-full w-full object-cover"
           /></div
       ></Card>
     </RouterLink>
