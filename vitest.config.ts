@@ -18,6 +18,8 @@ export default mergeConfig(
           '**/main.ts',
           '**/supabaseClient.ts',
           '**/router/**',
+          '**/src/services/**',
+          '**/src/components/ui-kit/_index.ts',
           ...coverageConfigDefaults.exclude
         ]
       }

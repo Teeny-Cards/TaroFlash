@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { SpacedRepetition, type SRConfig, type SRRating } from '@/utils/SpacedRepetition'
+import { SpacedRepetition } from '@/utils/SpacedRepetition'
 import { subHours } from 'date-fns'
 import { minutesInDay } from 'date-fns/constants'
 
 describe('SpacedRepetition', () => {
   // Default test configuration
-  const defaultConfig: SRConfig = {
+  const defaultConfig = {
     easeMin: 1.3,
     easeMax: 2.65,
     easeIncrement: 0.01,
@@ -18,7 +18,7 @@ describe('SpacedRepetition', () => {
     fuzzFactor: 1
   }
 
-  const createCard = (overrides = {}): Card => ({
+  const createCard = (overrides = {}) => ({
     front_text: 'Test front',
     back_text: 'Test back',
     id: '1',
@@ -62,7 +62,7 @@ describe('SpacedRepetition', () => {
 
     it('should handle a new card with no previous values', () => {
       const sr = new SpacedRepetition(defaultConfig)
-      const newCard: Card = {
+      const newCard = {
         front_text: 'New card',
         back_text: 'New card back'
       }
@@ -93,7 +93,7 @@ describe('SpacedRepetition', () => {
       expect(result.ease).toBeCloseTo(2.5)
 
       // Interval should increase by 15%
-      expect(result.interval).toBeGreaterThan(card.interval!)
+      expect(result.interval).toBeGreaterThan(card.interval)
 
       // State should remain learning if interval is below youngBoundary
       expect(result.state).toBe('learning')
@@ -108,7 +108,7 @@ describe('SpacedRepetition', () => {
       expect(result.ease).toBeCloseTo(2.51)
 
       // Interval should increase by ease factor
-      expect(result.interval).toBeGreaterThan(card.interval!)
+      expect(result.interval).toBeGreaterThan(card.interval)
 
       // State should remain learning if interval is below youngBoundary
       expect(result.state).toBe('learning')
@@ -123,7 +123,7 @@ describe('SpacedRepetition', () => {
       expect(result.ease).toBeCloseTo(2.56)
 
       // Interval should increase more than with a "good" rating
-      expect(result.interval).toBeGreaterThan(card.interval!)
+      expect(result.interval).toBeGreaterThan(card.interval)
 
       // State should remain learning if interval is below youngBoundary
       expect(result.state).toBe('learning')
@@ -210,7 +210,7 @@ describe('SpacedRepetition', () => {
 
       // Each preview should have rating, interval, and formatted properties
       previews.forEach((preview, index) => {
-        expect(preview).toHaveProperty('rating', index as SRRating)
+        expect(preview).toHaveProperty('rating', index)
         expect(preview).toHaveProperty('interval')
         expect(preview).toHaveProperty('formatted')
       })
@@ -277,7 +277,7 @@ describe('SpacedRepetition', () => {
       // A good rating should promote from relearn to young if interval is high enough
       const result = sr.review(card, 2)
 
-      if (result.interval! >= defaultConfig.youngBoundary) {
+      if (result.interval >= defaultConfig.youngBoundary) {
         expect(result.state).toBe('young')
       } else {
         expect(result.state).toBe('relearn')
@@ -303,7 +303,7 @@ describe('SpacedRepetition', () => {
 
       const sr = new SpacedRepetition(defaultConfig)
       const card = createCard()
-      const baseInterval = card.interval! * card.ease!
+      const baseInterval = card.interval * card.ease
 
       const result = sr.review(card, 2) // Good rating
 
@@ -317,7 +317,7 @@ describe('SpacedRepetition', () => {
 
       const sr = new SpacedRepetition(defaultConfig)
       const card = createCard()
-      const baseInterval = card.interval! * card.ease!
+      const baseInterval = card.interval * card.ease
 
       const result = sr.review(card, 2) // Good rating
 
@@ -331,7 +331,7 @@ describe('SpacedRepetition', () => {
 
       const sr = new SpacedRepetition(defaultConfig)
       const card = createCard()
-      const baseInterval = Math.floor(card.interval! * card.ease!)
+      const baseInterval = Math.floor(card.interval * card.ease)
 
       const result = sr.review(card, 2) // Good rating
 
