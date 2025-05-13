@@ -1,5 +1,4 @@
 import { fileURLToPath, URL } from 'node:url'
-import path from 'path'
 import svgLoader from 'vite-svg-loader'
 
 import { defineConfig } from 'vite'
