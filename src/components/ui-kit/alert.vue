@@ -11,15 +11,15 @@
       <div
         ui-kit-alert
         v-if="open"
-        class="fixed inset-0 flex items-center justify-center px-4 pointer-events-auto py-7"
+        class="pointer-events-auto fixed inset-0 flex items-center justify-center px-4 py-7"
         @click="close"
       >
-        <div class="px-8 py-8 bg-white rounded-12 flex flex-col items-center gap-8 shadow-modal">
-          <h1 class="text-2xl font-semibold font-primary text-grey-dark text-center">
+        <div class="rounded-12 shadow-modal flex flex-col items-center gap-8 bg-white px-8 py-8">
+          <h1 class="font-primary text-grey-dark text-center text-2xl font-semibold">
             {{ title }}
           </h1>
-          <p class="text-lg font-primary text-center text-grey">{{ message }}</p>
-          <div class="w-full flex justify-center gap-2.5">
+          <p class="font-primary text-grey text-center text-lg">{{ message }}</p>
+          <div class="flex w-full justify-center gap-2.5">
             <slot></slot>
           </div>
         </div>

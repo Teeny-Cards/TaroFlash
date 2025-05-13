@@ -84,7 +84,7 @@ describe('UI Kit Input', () => {
     
     // Check that the v-model is updated
     expect(wrapper.emitted('update:modelValue')).toBeTruthy()
-    expect(wrapper.emitted('update:modelValue')![0]).toEqual(['test value'])
+    expect(wrapper.emitted('update:modelValue')[0]).toEqual(['test value'])
   })
   
   // Test prop validation

@@ -1,12 +1,11 @@
 import { deleteCardsByDeckId } from '@/services/cardService'
 import { supabase } from '@/supabaseClient'
-import { useMemberStore } from '@/stores/member'
 import Logger from '@/utils/logger'
 
-export async function createDeck(deck: Deck): Promise<any> {
+export async function createDeck(deck: Deck, member_id: string): Promise<any> {
   const { id, ...data } = deck
 
-  data.member_id = useMemberStore().id
+  data.member_id = member_id
 
   const { error } = await supabase.from('decks').insert(data)
 
@@ -16,11 +15,11 @@ export async function createDeck(deck: Deck): Promise<any> {
   }
 }
 
-export async function fetchUserDecks(): Promise<Deck[]> {
+export async function fetchUserDecks(member_id: string): Promise<Deck[]> {
   const { data, error } = await supabase
     .from('decks')
     .select('description, title, image_url, id')
-    .eq('member_id', useMemberStore().id)
+    .eq('member_id', member_id)
 
   if (error) {
     Logger.error(error.message)
@@ -35,6 +34,7 @@ export async function fetchDeckById(id: string): Promise<Deck> {
     .from('decks')
     .select('*, cards(*), member:members(display_name)')
     .eq('id', id)
+    .order('order', { ascending: true, referencedTable: 'cards' })
     .single()
 
   if (error) {

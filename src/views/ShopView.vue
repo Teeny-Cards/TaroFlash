@@ -1,8 +1,8 @@
 <template>
-  <div class="flex flex-col gap-16 items-center pt-4">
-    <div class="w-full h-34 bg-orange rounded-4"></div>
-    <div class="w-full flex flex-col gap-2.5 items-center justify-center">
-      <div class="flex gap-2.5 items-center">
+  <div class="flex flex-col items-center gap-16 pt-4">
+    <div class="bg-orange rounded-4 h-34 w-full"></div>
+    <div class="flex w-full flex-col items-center justify-center gap-2.5">
+      <div class="flex items-center gap-2.5">
         <h2 class="nav-item bg-pink selected">Power Ups</h2>
         <h2 class="nav-item bg-orange">Stationary</h2>
         <h2 class="nav-item bg-green">Stickers</h2>
@@ -13,7 +13,7 @@
       </p>
     </div>
     <div class="flex flex-col gap-16">
-      <div class="flex gap-13 justify-center w-full">
+      <div class="flex w-full justify-center gap-13">
         <ShopItem
           v-for="item in shop_items.power_ups"
           :key="item.name"
@@ -21,8 +21,8 @@
           @click="selected_item = item"
         />
       </div>
-      <div class="w-full h-0.25 bg-brown-light"></div>
-      <div class="flex gap-13 justify-center w-full">
+      <div class="bg-brown-light h-0.25 w-full"></div>
+      <div class="flex w-full justify-center gap-13">
         <ShopItem
           v-for="item in shop_items.stationary"
           :key="item.name"

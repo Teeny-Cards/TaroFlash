@@ -12,37 +12,39 @@
     </div>
     <div
       tid="body"
-      class="flex flex-col items-center gap-6 sm:gap-16 w-full lg:flex-row lg:gap-26 lg:items-start"
+      class="flex w-full flex-col items-center gap-6 sm:gap-16 lg:flex-row lg:items-start lg:gap-26"
     >
       <div
         tid="body-header"
-        class="sticky top-0 flex flex-col items-center gap-6 w-max sm:flex-row sm:items-end lg:flex-col lg:items-start"
+        class="sticky top-0 flex w-max flex-col items-center gap-6 sm:flex-row sm:items-end lg:flex-col lg:items-start"
       >
         <Card size="large" class="relative overflow-hidden">
           <div v-if="currentDeck?.image_url" class="absolute inset-0">
             <img
               :src="currentDeck.image_url"
               alt="Deck Image preview"
-              class="object-cover w-full h-full"
+              class="h-full w-full object-cover"
             /></div
         ></Card>
         <div tid="header-content" class="flex flex-col items-center gap-6 sm:items-start">
           <div tid="header-title" class="flex flex-col items-center gap-2 sm:items-start">
-            <h1 class="w-64 m-0 text-4xl text-center font-primary text-grey-dark sm:text-left">
+            <h1 class="font-primary text-grey-dark m-0 w-64 text-center text-4xl sm:text-left">
               {{ currentDeck?.title }}
             </h1>
-            <h2 class="w-64 text-sm text-center text-grey sm:text-left">
+            <h2 class="text-grey w-64 text-center text-sm sm:text-left">
               {{ currentDeck?.description }}
             </h2>
-            <div tid="header-created-by" class="flex items-center gap-2 text-blue">
+            <div tid="header-created-by" class="text-blue flex items-center gap-2">
               <ui-kit:icon src="user" />
-              <h2 class="text-base font-semibold font-primary">
+              <h2 class="font-primary text-base font-semibold">
                 {{ currentDeck?.member?.display_name }}
               </h2>
             </div>
           </div>
           <div tid="header-actions" class="flex items-center gap-2.5">
-            <ui-kit:button icon-left="play" fancy-hover>Study</ui-kit:button>
+            <ui-kit:button icon-left="play" fancy-hover @click="studyModalOpen = true"
+              >Study</ui-kit:button
+            >
             <DeckSettingsModal :deck="currentDeck" />
           </div>
         </div>
@@ -50,13 +52,13 @@
       <div
         v-if="currentDeck?.cards?.length === 0"
         tid="empty-state"
-        class="flex flex-col gap-4 justify-center items-center w-full self-center"
+        class="flex w-full flex-col items-center justify-center gap-4 self-center"
       >
-        <h1 class="text-2xl font-semibold text-grey-dark">No Cards</h1>
+        <h1 class="text-grey-dark text-2xl font-semibold">No Cards</h1>
         <ui-kit:button icon-left="add" fancy-hover @click="addCard">Add Card</ui-kit:button>
       </div>
-      <div v-else tid="card-list-container" class="flex flex-col items-center gap-8 w-full">
-        <div tid="card-list__actions" class="flex justify-center gap-2.5 w-full">
+      <div v-else tid="card-list-container" class="flex w-full flex-col items-center gap-8">
+        <div tid="card-list__actions" class="flex w-full justify-center gap-2.5">
           <ui-kit:button
             icon-only
             icon-left="close"
@@ -66,7 +68,7 @@
           <ui-kit:button icon-only icon-left="move-item"></ui-kit:button>
           <ui-kit:button icon-only icon-left="delete" variant="danger"></ui-kit:button>
         </div>
-        <div tid="card-list" class="flex gap-2 flex-col w-full">
+        <div tid="card-list" class="flex w-full flex-col gap-2">
           <template v-for="card in currentDeck?.cards" :key="card.id">
             <ListItem
               tid="card-list__item"
@@ -77,7 +79,7 @@
               @selectCard="(card: Card) => onSelectCard(card)"
               @deleteCard="(card: Card) => onDeleteCard(card)"
             />
-            <div class="w-full border-dashed border-b border-b-grey"></div>
+            <div class="border-b-grey w-full border-b border-dashed"></div>
           </template>
         </div>
         <ui-kit:button icon-left="add" fancy-hover @click="addCard">Add Card</ui-kit:button>
@@ -95,7 +97,11 @@
     />
   </ui-kit:modal>
 
-  <StudyModal />
+  <StudyModal
+    :open="studyModalOpen && Boolean(currentDeck?.cards?.length ?? 0 > 0)"
+    :deck="currentDeck"
+    @closed="studyModalOpen = false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -103,7 +109,7 @@ import Card from '@/components/card.vue'
 import ListItem from '@/components/DeckView/ListItem.vue'
 import EditCardModal from '@/components/DeckView/EditCardModal.vue'
 import DeckSettingsModal from '@/components/DeckView/DeckSettingsModal.vue'
-import StudyModal from '@/components/study-modal.vue'
+import StudyModal from '@/components/study-modal/index.vue'
 import { useToastStore } from '@/stores/toast'
 import { useSessionStore } from '@/stores/session'
 import { onMounted, ref } from 'vue'
@@ -128,6 +134,7 @@ const editCardModalVisible = ref(false)
 const editCardModalFocusedCardId = ref()
 const selectionModeActive = ref(false)
 const selectedCards = ref<Card[]>([])
+const studyModalOpen = ref(false)
 
 onMounted(async () => {
   sessionStore.startLoading()
