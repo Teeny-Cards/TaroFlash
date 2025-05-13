@@ -3,7 +3,7 @@
     type="file"
     @change="handleFileChange"
     accept="image/*"
-    class="absolute inset-0 opacity-0 cursor-pointer"
+    class="absolute inset-0 cursor-pointer opacity-0"
   />
 
   <slot></slot>

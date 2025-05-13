@@ -2,15 +2,15 @@
   <div data-test-id="edit-card-modal-container" class="relative">
     <div
       data-testid="edit-card-modal"
-      class="w-full lg:max-w-max bg-parchment-dark rounded-11 flex flex-col items-center justify-center shadow-modal overflow-hidden pb-6"
+      class="bg-parchment-dark rounded-11 shadow-modal flex w-full flex-col items-center justify-center overflow-hidden pb-6 lg:max-w-max"
     >
       <div
         data-testid="edit-card-modal__title"
-        class="flex justify-center w-full bg-purple-dark wave-bottom pt-12 pb-16 text-white"
+        class="bg-purple-dark wave-bottom flex w-full justify-center pt-12 pb-16 text-white"
       >
-        <h1 class="text-3xl font-semibold font-primary">Edit Card</h1>
+        <h1 class="font-primary text-3xl font-semibold">Edit Card</h1>
       </div>
-      <div data-testid="edit-card-modal__body" class="flex flex-col items-center w-full gap-2">
+      <div data-testid="edit-card-modal__body" class="flex w-full flex-col items-center gap-2">
         <ui-kit:icon
           src="expand-less"
           size="large"
@@ -20,13 +20,13 @@
         <div
           data-testid="edit-card-modal__card-list"
           ref="cardListEl"
-          class="overflow-y-auto h-[306.42px] w-full flex flex-col gap-4 snap-mandatory snap-y scroll-hidden scroll-smooth"
+          class="scroll-hidden flex h-[306.42px] w-full snap-y snap-mandatory flex-col gap-4 overflow-y-auto scroll-smooth"
         >
           <div
-            data-testid="edit-card-modal__UIKit-card-editor"
+            data-testid="edit-card-modal__card-editor"
             v-for="card in cards"
             :key="card.id"
-            class="flex w-full gap-4 px-20 overflow-x-auto shrink-0 snap-mandatory snap-x scroll-hidden font-primary snap-center"
+            class="scroll-hidden font-primary flex w-full shrink-0 snap-x snap-mandatory snap-center gap-4 overflow-x-auto px-20"
           >
             <CardEditor :card="card" @front-input="updateFront" @back-input="updateBack" />
           </div>
@@ -43,7 +43,7 @@
 
     <div
       data-testid="edit-card-modal__actions"
-      class="w-full flex justify-end gap-2.5 absolute -bottom-5 px-8"
+      class="absolute -bottom-5 flex w-full justify-end gap-2.5 px-8"
     >
       <ui-kit:button variant="muted" icon-left="close" @click="$emit('cancel')"
         >Cancel</ui-kit:button

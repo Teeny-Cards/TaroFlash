@@ -1,0 +1,7 @@
+@custom-variant motion-safe {
+  @media (prefers-reduced-motion: no-preference) {
+    body:not(.motion-safe) & {
+      @slot;
+    }
+  }
+}
