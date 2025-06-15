@@ -16,18 +16,16 @@
         }"
         @click="onClickCard(card)"
       >
-        <div class="hidden group-hover:block">
-          <ui-kit:tooltip
-            :text="isStudied(card) || isActive(card) || isFailed(card) ? card.front_text : '?'"
-            open
-          />
-        </div>
+        <ui-kit:tooltip
+          :text="isStudied(card) || isActive(card) || isFailed(card) ? card.front_text : '?'"
+          position="top-right"
+        />
       </button>
     </div>
 
     <div data-testid="study-modal-track__count">
       <p class="text-brown-dark text-base">
-        {{ (studySession?.activeCard?.order ?? 0) + 1
+        {{ studySession?.activeCard?.order ?? 0
         }}<span class="text-xs">/{{ studySession?.cards?.length }}</span>
       </p>
     </div>

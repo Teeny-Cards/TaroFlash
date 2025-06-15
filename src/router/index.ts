@@ -24,6 +24,7 @@ const router = createRouter({
       path: '/',
       name: 'authenticated',
       component: AppView,
+      redirect: '/dashboard',
       beforeEnter: async () => {
         const authenticated = await initUser()
         if (!authenticated) return { name: 'signin' }
