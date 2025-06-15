@@ -1,0 +1,39 @@
+.ui-kit-tooltip {
+  @apply pointer-events-none absolute right-0 left-0 flex translate-x-1/2;
+}
+
+.ui-kit-tooltip.tooltip--hidden {
+  @apply hidden;
+}
+
+.ui-kit-tooltip.tooltip--top-right {
+  @apply bottom-full;
+}
+
+.ui-kit-tooltip.tooltip--bottom-right {
+  @apply top-full;
+}
+
+.ui-kit-tooltip .ui-kit-tooltip__line {
+  @apply w-4 border-dashed border-white;
+}
+
+.ui-kit-tooltip.tooltip--top-right .ui-kit-tooltip__line {
+  @apply rounded-tl-full border-t-2 border-l-2;
+}
+
+.ui-kit-tooltip.tooltip--bottom-right .ui-kit-tooltip__line {
+  @apply rounded-bl-full border-b-2 border-l-2;
+}
+
+.ui-kit-tooltip .ui-kit-tooltip__bubble {
+  @apply min-h-7 min-w-7 rounded-full bg-white px-3 py-1.5 shadow;
+}
+
+.ui-kit-tooltip.tooltip--top-right .ui-kit-tooltip__bubble {
+  @apply -translate-y-1/2;
+}
+
+.ui-kit-tooltip.tooltip--bottom-right .ui-kit-tooltip__bubble {
+  @apply translate-y-1/2;
+}

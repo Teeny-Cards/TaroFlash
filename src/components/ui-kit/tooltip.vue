@@ -1,19 +1,65 @@
 <template>
-  <div
-    v-if="open"
+  <span
     data-testid="ui-kit-tooltip"
-    class="absolute -mt-7 flex -translate-1/2 flex-col items-center"
+    class="ui-kit-tooltip"
+    :class="[position_class[position], { 'tooltip--hidden': !open }]"
+    :aria-hidden="!open"
+    ref="ui-kit-tooltip"
+    role="tooltip"
   >
-    <div class="min-h-7 min-w-7 rounded-full bg-white px-3 py-1.5 shadow">
+    <div class="ui-kit-tooltip__line"></div>
+
+    <div class="ui-kit-tooltip__bubble">
       <p class="text-purple-dark text-xs">{{ text }}</p>
     </div>
-    <div class="h-6 border border-dashed border-white shadow"></div>
-  </div>
+  </span>
 </template>
 
 <script setup lang="ts">
-defineProps({
-  open: Boolean,
-  text: String
+import { ref, onMounted, useTemplateRef } from 'vue'
+
+type Props = {
+  text: string
+  position?:
+    | 'top'
+    | 'bottom'
+    | 'left'
+    | 'right'
+    | 'top-right'
+    | 'bottom-right'
+    | 'top-left'
+    | 'bottom-left'
+}
+
+const { text, position = 'top-right' } = defineProps<Props>()
+
+const open = ref(false)
+const tooltip = useTemplateRef('ui-kit-tooltip')
+
+const position_class: { [key: string]: string } = {
+  top: 'tooltip--top',
+  bottom: 'tooltip--bottom',
+  left: 'tooltip--left',
+  right: 'tooltip--right',
+  'top-right': 'tooltip--top-right',
+  'bottom-right': 'tooltip--bottom-right',
+  'top-left': 'tooltip--top-left',
+  'bottom-left': 'tooltip--bottom-left'
+}
+
+onMounted(() => {
+  if (tooltip.value) {
+    const parent = tooltip.value.parentElement
+
+    if (parent) {
+      parent.style.position = 'relative'
+      parent.addEventListener('mouseenter', () => {
+        open.value = true
+      })
+      parent.addEventListener('mouseleave', () => {
+        open.value = false
+      })
+    }
+  }
 })
 </script>
