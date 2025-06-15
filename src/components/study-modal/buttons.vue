@@ -11,6 +11,7 @@
         @click="$emit('correct')"
       >
         Got It!
+        <ui-kit:tooltip :text="formatInterval(3)" position="top-right" />
       </button>
       <button
         class="text-brown-dark cursor-pointer rounded-full bg-white px-13 py-4"
@@ -19,6 +20,7 @@
         @click="$emit('incorrect')"
       >
         Nope!
+        <ui-kit:tooltip :text="formatInterval(1)" position="bottom-right" />
       </button>
     </template>
     <template v-else>
@@ -35,16 +37,27 @@
 <script setup lang="ts">
 import { inject, computed } from 'vue'
 import type { StudySession } from './index.vue'
+import { DateTime } from 'luxon'
+import { type Grade } from 'ts-fsrs'
 
 const studySession = inject<StudySession>('studySession')
 
 const cardRevealed = computed(() => {
-  return studySession?.cardRevealed || studySession?.studiedCardIds.has(studySession?.activeCard?.id!)
+  return (
+    studySession?.cardRevealed || studySession?.studiedCardIds.has(studySession?.activeCard?.id!)
+  )
 })
 
 const disabled = computed(() => {
   return studySession?.studiedCardIds.has(studySession?.activeCard?.id!)
 })
+
+function formatInterval(grade: Grade) {
+  const date = studySession?.activeCardOptions?.[grade].card.due
+
+  if (!date) return ''
+  return DateTime.fromJSDate(date).toRelative({ padding: 1000 })
+}
 
 defineEmits<{
   (e: 'reveal'): void

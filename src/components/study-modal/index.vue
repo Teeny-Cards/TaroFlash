@@ -44,7 +44,16 @@
 import Track from './track.vue'
 import Cards from './cards.vue'
 import Buttons from './buttons.vue'
-import { provide, type PropType, reactive } from 'vue'
+import { provide, reactive } from 'vue'
+import { updateCardById } from '@/services/cardService'
+import {
+  createEmptyCard,
+  FSRS,
+  generatorParameters,
+  Rating,
+  type Card as FSRSCard,
+  type RecordLog
+} from 'ts-fsrs'
 
 export type StudySession = {
   cards: Card[]
@@ -52,23 +61,14 @@ export type StudySession = {
   failedCardIds: Set<string>
   lastStudiedCard?: Card
   activeCard?: Card
+  activeCardOptions?: RecordLog
   visibleCard?: Card
   cardRevealed: boolean
+  fsrsInstance?: FSRS
 }
 
-const props = defineProps({
-  open: {
-    type: Boolean,
-    default: false
-  },
-  deck: {
-    type: Object as PropType<Deck>
-  }
-})
-
-defineEmits<{
-  (e: 'closed'): void
-}>()
+defineEmits<{ (e: 'closed'): void }>()
+const { open = false, deck } = defineProps<{ open: boolean; deck: Deck }>()
 
 const studySession: StudySession = reactive({
   cards: [],
@@ -77,21 +77,39 @@ const studySession: StudySession = reactive({
   lastStudiedCard: undefined,
   activeCard: undefined,
   visibleCard: undefined,
-  cardRevealed: false
+  cardRevealed: false,
+  activeCardOptions: undefined,
+  fsrsInstance: undefined
 })
 
 provide('studySession', studySession)
 
 function setupStudySession() {
-  studySession.cards = [...(props.deck?.cards ?? [])]
-  studySession.activeCard = studySession?.activeCard ?? props.deck?.cards?.[0]
+  studySession.cards = [...(deck?.cards ?? [])]
+  studySession.activeCard = studySession?.activeCard ?? deck?.cards?.[0]
   studySession.visibleCard = studySession.activeCard
+
+  const params = generatorParameters({ enable_fuzz: true })
+  studySession.fsrsInstance = new FSRS(params)
+
+  const now = new Date()
+
+  console.log(studySession.activeCard?.state)
+
+  const card =
+    studySession.activeCard?.state === 0
+      ? createEmptyCard(now)
+      : (studySession.activeCard as unknown as FSRSCard)
+
+  studySession.activeCardOptions = studySession.fsrsInstance.repeat(card, now)
 }
 
-function markStudied(card: Card) {
-  if (card.id) {
-    studySession.studiedCardIds.add(card.id)
-  }
+async function markStudied(card: Card) {
+  const reviewew_card = studySession.activeCardOptions![Rating.Good].card
+  const new_card_data = Object.assign(card, reviewew_card)
+
+  await updateCardById(new_card_data)
+  studySession.studiedCardIds.add(card.id!)
 }
 
 function markFailed(card: Card) {

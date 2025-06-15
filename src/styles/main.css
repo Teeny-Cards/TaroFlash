@@ -1,8 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap');
 
 @import 'tailwindcss';
-@import 'ui-kit/button.css';
-@import 'ui-kit/input.css';
+@import 'ui-kit/';
 @import 'custom-styles.css';
 @import 'custom-variants.css';
 
@@ -100,7 +99,7 @@
   --bg-sm: --spacing(20);
   --blur-4: 4px;
   --aspect-card: 7 / 9;
-  
+
   /* Typography */
   --font-primary: 'Tilt Neon', sans-serif;
 
