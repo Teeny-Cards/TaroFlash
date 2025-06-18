@@ -1,3 +1,105 @@
+<script setup lang="ts">
+import Track from './track.vue'
+import Cards from './cards.vue'
+import Buttons from './buttons.vue'
+import { provide } from 'vue'
+import { updateReviewByCardId } from '@/services/cardService'
+import { useStudySession } from '@/composables/useStudySession'
+import {
+  createEmptyCard,
+  FSRS,
+  generatorParameters,
+  Rating,
+  type Card as FSRSCard,
+  type RecordLog
+} from 'ts-fsrs'
+
+defineEmits<{ (e: 'closed'): void }>()
+const { open = false, deck } = defineProps<{ open: boolean; deck: Deck }>()
+
+const {
+  cards,
+  studiedCardIds,
+  failedCardIds,
+  lastStudiedCard,
+  activeCard,
+  visibleCard,
+  cardRevealed,
+  activeCardOptions,
+  fsrsInstance
+} = useStudySession()
+
+function setupStudySession() {
+  cards.value = [...(deck?.cards ?? [])]
+  activeCard.value = activeCard.value ?? deck?.cards?.[0]
+  visibleCard.value = activeCard.value
+
+  const params = generatorParameters({ enable_fuzz: true })
+  fsrsInstance.value = new FSRS(params)
+
+  const now = new Date()
+
+  const card = Boolean(activeCard.value?.review)
+    ? (activeCard.value?.review as unknown as FSRSCard)
+    : createEmptyCard(now)
+
+  activeCardOptions.value = fsrsInstance.value!.repeat(card, now)
+}
+
+async function markStudied(card_id: string) {
+  const reviewed_card = activeCardOptions.value![Rating.Good].card
+
+  await updateReviewByCardId(card_id, reviewed_card)
+  studiedCardIds.value.add(card_id)
+}
+
+async function markFailed(card_id: string) {
+  const reviewed_card = activeCardOptions.value![Rating.Again].card
+  await updateReviewByCardId(card_id, reviewed_card)
+
+  failedCardIds.value.add(card_id)
+}
+
+async function advanceCard(failed: boolean = false) {
+  if (!activeCard.value?.id) return
+
+  if (failed) {
+    await markFailed(activeCard.value.id)
+  } else {
+    await markStudied(activeCard.value.id)
+  }
+
+  lastStudiedCard.value = activeCard.value
+
+  const remaining = cards.value.filter(
+    (c) => !studiedCardIds.value.has(c.id!) && !failedCardIds.value.has(c.id!)
+  )
+
+  activeCard.value = remaining[0]
+  visibleCard.value = activeCard.value
+  cardRevealed.value = false
+
+  const card = Boolean(activeCard.value?.review)
+    ? (activeCard.value?.review as unknown as FSRSCard)
+    : createEmptyCard(new Date())
+
+  activeCardOptions.value = fsrsInstance!.value!.repeat(card, new Date())
+}
+
+function onCorrect() {
+  advanceCard()
+}
+
+function onIncorrect() {
+  advanceCard(true)
+}
+
+function onCardClicked(card: Card) {
+  cardRevealed.value = false
+  visibleCard.value = card
+}
+</script>
+
 <template>
   <ui-kit:modal :open="open" @close="$emit('closed')" @opened="setupStudySession" backdrop>
     <div
@@ -27,127 +129,32 @@
         class="grid h-full w-full grid-cols-[1fr_auto_1fr] content-center"
       >
         <div></div>
-        <Cards />
+        <Cards
+          :visibleCard="visibleCard"
+          :cardRevealed="cardRevealed"
+          :studiedCardIds="studiedCardIds"
+          :failedCardIds="failedCardIds"
+        />
         <Buttons
-          @reveal="studySession.cardRevealed = true"
+          :activeCard="activeCard"
+          :activeCardOptions="activeCardOptions"
+          :cardRevealed="cardRevealed"
+          :studiedCardIds="studiedCardIds"
+          :failedCardIds="failedCardIds"
+          @reveal="cardRevealed = true"
           @correct="onCorrect"
           @incorrect="onIncorrect"
         />
       </div>
 
-      <Track @cardClicked="onCardClicked" />
+      <Track
+        @cardClicked="onCardClicked"
+        :cards="cards"
+        :studiedCardIds="studiedCardIds"
+        :failedCardIds="failedCardIds"
+        :lastStudiedCard="lastStudiedCard"
+        :activeCard="activeCard"
+      />
     </div>
   </ui-kit:modal>
 </template>
-
-<script setup lang="ts">
-import Track from './track.vue'
-import Cards from './cards.vue'
-import Buttons from './buttons.vue'
-import { provide, reactive } from 'vue'
-import { updateCardById } from '@/services/cardService'
-import {
-  createEmptyCard,
-  FSRS,
-  generatorParameters,
-  Rating,
-  type Card as FSRSCard,
-  type RecordLog
-} from 'ts-fsrs'
-
-export type StudySession = {
-  cards: Card[]
-  studiedCardIds: Set<string>
-  failedCardIds: Set<string>
-  lastStudiedCard?: Card
-  activeCard?: Card
-  activeCardOptions?: RecordLog
-  visibleCard?: Card
-  cardRevealed: boolean
-  fsrsInstance?: FSRS
-}
-
-defineEmits<{ (e: 'closed'): void }>()
-const { open = false, deck } = defineProps<{ open: boolean; deck: Deck }>()
-
-const studySession: StudySession = reactive({
-  cards: [],
-  studiedCardIds: new Set<string>(),
-  failedCardIds: new Set<string>(),
-  lastStudiedCard: undefined,
-  activeCard: undefined,
-  visibleCard: undefined,
-  cardRevealed: false,
-  activeCardOptions: undefined,
-  fsrsInstance: undefined
-})
-
-provide('studySession', studySession)
-
-function setupStudySession() {
-  studySession.cards = [...(deck?.cards ?? [])]
-  studySession.activeCard = studySession?.activeCard ?? deck?.cards?.[0]
-  studySession.visibleCard = studySession.activeCard
-
-  const params = generatorParameters({ enable_fuzz: true })
-  studySession.fsrsInstance = new FSRS(params)
-
-  const now = new Date()
-
-  console.log(studySession.activeCard?.state)
-
-  const card =
-    studySession.activeCard?.state === 0
-      ? createEmptyCard(now)
-      : (studySession.activeCard as unknown as FSRSCard)
-
-  studySession.activeCardOptions = studySession.fsrsInstance.repeat(card, now)
-}
-
-async function markStudied(card: Card) {
-  const reviewew_card = studySession.activeCardOptions![Rating.Good].card
-  const new_card_data = Object.assign(card, reviewew_card)
-
-  await updateCardById(new_card_data)
-  studySession.studiedCardIds.add(card.id!)
-}
-
-function markFailed(card: Card) {
-  if (card.id) {
-    studySession.failedCardIds.add(card.id)
-  }
-}
-
-function advanceCard(failed: boolean = false) {
-  if (!studySession.activeCard) return
-
-  if (failed) {
-    markFailed(studySession.activeCard)
-  } else {
-    markStudied(studySession.activeCard)
-  }
-
-  studySession.lastStudiedCard = studySession.activeCard
-
-  const remaining = studySession.cards.filter(
-    (c) => !studySession.studiedCardIds.has(c.id!) && !studySession.failedCardIds.has(c.id!)
-  )
-
-  studySession.activeCard = remaining[0]
-  studySession.visibleCard = studySession.activeCard
-  studySession.cardRevealed = false
-}
-
-function onCorrect() {
-  advanceCard()
-}
-
-function onIncorrect() {
-  advanceCard(true)
-}
-
-function onCardClicked(card: Card) {
-  studySession.cardRevealed = false
-  studySession.visibleCard = card
-}
-</script>
