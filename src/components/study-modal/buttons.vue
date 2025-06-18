@@ -3,7 +3,7 @@
     data-testid="study-modal__buttons"
     class="flex flex-col justify-center gap-2 justify-self-center text-xl"
   >
-    <template v-if="cardRevealed">
+    <template v-if="revealed">
       <button
         class="bg-purple-dark cursor-pointer rounded-full px-13 py-4 text-white"
         :class="{ 'opacity-50': disabled }"
@@ -35,25 +35,28 @@
 </template>
 
 <script setup lang="ts">
-import { inject, computed } from 'vue'
-import type { StudySession } from './index.vue'
+import { computed } from 'vue'
 import { DateTime } from 'luxon'
-import { type Grade } from 'ts-fsrs'
+import { type Grade, type RecordLog } from 'ts-fsrs'
 
-const studySession = inject<StudySession>('studySession')
+const { activeCard, activeCardOptions, cardRevealed, studiedCardIds, failedCardIds } = defineProps<{
+  activeCard: Card | undefined
+  activeCardOptions: RecordLog | undefined
+  cardRevealed: boolean
+  studiedCardIds: Set<string>
+  failedCardIds: Set<string>
+}>()
 
-const cardRevealed = computed(() => {
-  return (
-    studySession?.cardRevealed || studySession?.studiedCardIds.has(studySession?.activeCard?.id!)
-  )
+const revealed = computed(() => {
+  return cardRevealed || studiedCardIds.has(activeCard?.id!) || failedCardIds.has(activeCard?.id!)
 })
 
 const disabled = computed(() => {
-  return studySession?.studiedCardIds.has(studySession?.activeCard?.id!)
+  return studiedCardIds.has(activeCard?.id!)
 })
 
 function formatInterval(grade: Grade) {
-  const date = studySession?.activeCardOptions?.[grade].card.due
+  const date = activeCardOptions?.[grade].card.due
 
   if (!date) return ''
   return DateTime.fromJSDate(date).toRelative({ padding: 1000 })

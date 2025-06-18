@@ -5,7 +5,7 @@
         border-dashed px-1"
     >
       <button
-        v-for="card in studySession?.cards"
+        v-for="card in cards"
         :key="card.id"
         class="aspect-card bg-parchment rounded-1.5 group flex w-4.75 min-w-4.75 cursor-pointer justify-center
           transition-[all] duration-100 hover:min-w-6 focus:outline-none"
@@ -25,40 +25,42 @@
 
     <div data-testid="study-modal-track__count">
       <p class="text-brown-dark text-base">
-        {{ studySession?.activeCard?.order ?? 0
-        }}<span class="text-xs">/{{ studySession?.cards?.length }}</span>
+        {{ activeCard?.order ?? 0 }}<span class="text-xs">/{{ cards.length }}</span>
       </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { inject } from 'vue'
-import type { StudySession } from './index.vue'
+const { cards, studiedCardIds, failedCardIds, lastStudiedCard, activeCard } = defineProps<{
+  cards: Card[]
+  studiedCardIds: Set<string>
+  failedCardIds: Set<string>
+  lastStudiedCard: Card | undefined
+  activeCard: Card | undefined
+}>()
 
 const emit = defineEmits<{
   (e: 'cardClicked', card: Card): void
 }>()
 
-const studySession = inject<StudySession>('studySession')
-
 function isStudied(card: Card) {
-  return studySession?.studiedCardIds.has(card.id!)
+  return studiedCardIds.has(card.id!)
 }
 
 function isFailed(card: Card) {
-  return studySession?.failedCardIds.has(card.id!)
+  return failedCardIds.has(card.id!)
 }
 
 function isActive(card: Card) {
-  return card.id === studySession?.activeCard?.id
+  return card.id === activeCard?.id
 }
 
 function isNext(card: Card) {
-  const lastStudiedOrder = studySession?.lastStudiedCard?.order
+  const lastStudiedOrder = lastStudiedCard?.order
 
   if (lastStudiedOrder === undefined) return false
-  if (lastStudiedOrder === studySession?.cards.length) return false
+  if (lastStudiedOrder === cards.length) return false
 
   return card.order === lastStudiedOrder + 1
 }
