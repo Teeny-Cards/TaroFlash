@@ -33,7 +33,7 @@
     </div>
   </div>
 
-  <ui-kit:modal :open="selected_item !== undefined" @close="selected_item = undefined">
+  <ui-kit:modal :open="selected_item !== undefined" @closed="selected_item = undefined">
     <PurchaseModal :item="selected_item!" @purchased="submitPurchase(selected_item!)" />
   </ui-kit:modal>
 </template>

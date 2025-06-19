@@ -7,7 +7,7 @@
       @click="open = true"
     ></ui-kit:button>
   </slot>
-  <ui-kit:modal :open="open" @close="open = false">
+  <ui-kit:modal :open="open" @closed="open = false">
     <div
       tid="deck-settings-modal"
       class="rounded-16 shadow-modal flex flex-col justify-between gap-22 bg-white px-14 py-10"

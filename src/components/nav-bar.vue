@@ -34,7 +34,7 @@
     </div>
   </nav>
 
-  <ui-kit:modal :open="member_card_open" backdrop @close="member_card_open = false">
+  <ui-kit:modal :open="member_card_open" backdrop @closed="member_card_open = false">
     <MemberCard />
   </ui-kit:modal>
 </template>
