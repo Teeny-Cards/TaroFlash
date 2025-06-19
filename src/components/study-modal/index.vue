@@ -40,7 +40,7 @@ function onCardRevealed() {
 <template>
   <ui-kit:modal
     :open="open"
-    @close="$emit('closed')"
+    @closed="$emit('closed')"
     @opened="setupStudySession(deck.cards)"
     backdrop
   >

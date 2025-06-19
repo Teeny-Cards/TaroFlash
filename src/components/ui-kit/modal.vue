@@ -40,7 +40,7 @@ import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
 import { onMounted } from 'vue'
 
 const emit = defineEmits<{
-  (event: 'close'): void
+  (event: 'closed'): void
   (event: 'opened'): void
 }>()
 
@@ -71,7 +71,7 @@ function close(e: Event) {
   const target = e.target as HTMLElement
 
   if (target.hasAttribute('data-testid') && target.getAttribute('data-testid') === 'ui-kit-modal') {
-    emit('close')
+    emit('closed')
   }
 }
 

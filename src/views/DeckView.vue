@@ -16,7 +16,8 @@
     >
       <div
         tid="body-header"
-        class="sticky top-0 flex w-max flex-col items-center gap-6 sm:flex-row sm:items-end lg:flex-col lg:items-start"
+        class="sticky top-0 flex w-max flex-col items-center gap-6 sm:flex-row sm:items-end lg:flex-col
+          lg:items-start"
       >
         <Card size="large" class="relative overflow-hidden">
           <div v-if="currentDeck?.image_url" class="absolute inset-0">
@@ -87,7 +88,7 @@
     </div>
   </section>
 
-  <ui-kit:modal @close="editCardModalVisible = false" :open="editCardModalVisible">
+  <ui-kit:modal @closed="editCardModalVisible = false" :open="editCardModalVisible">
     <EditCardModal
       v-if="currentDeck?.cards?.length ?? 0 > 0"
       @cancel="editCardModalVisible = false"
@@ -99,7 +100,7 @@
 
   <StudyModal
     :open="studyModalOpen && Boolean(currentDeck?.cards?.length ?? 0 > 0)"
-    :deck="currentDeck"
+    :deck="currentDeck!"
     @closed="studyModalOpen = false"
   />
 </template>
