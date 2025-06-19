@@ -25,23 +25,22 @@
 
     <div data-testid="study-modal-track__count">
       <p class="text-brown-dark text-base">
-        {{ activeCard?.order ?? 0 }}<span class="text-xs">/{{ cards.length }}</span>
+        {{ currentCard?.order ?? 0 }}<span class="text-xs">/{{ cards.length }}</span>
       </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const { cards, studiedCardIds, failedCardIds, lastStudiedCard, activeCard } = defineProps<{
+const { cards, studiedCardIds, failedCardIds, currentCard } = defineProps<{
   cards: Card[]
   studiedCardIds: Set<string>
   failedCardIds: Set<string>
-  lastStudiedCard: Card | undefined
-  activeCard: Card | undefined
+  currentCard: Card | undefined
 }>()
 
 const emit = defineEmits<{
-  (e: 'cardClicked', card: Card): void
+  (e: 'card-clicked', card: Card): void
 }>()
 
 function isStudied(card: Card) {
@@ -53,21 +52,10 @@ function isFailed(card: Card) {
 }
 
 function isActive(card: Card) {
-  return card.id === activeCard?.id
-}
-
-function isNext(card: Card) {
-  const lastStudiedOrder = lastStudiedCard?.order
-
-  if (lastStudiedOrder === undefined) return false
-  if (lastStudiedOrder === cards.length) return false
-
-  return card.order === lastStudiedOrder + 1
+  return card.id === currentCard?.id
 }
 
 function onClickCard(card: Card) {
-  if (isStudied(card) || isFailed(card) || isNext(card)) {
-    emit('cardClicked', card)
-  }
+  emit('card-clicked', card)
 }
 </script>

@@ -1,5 +1,6 @@
 import { supabase } from '@/supabaseClient'
 import Logger from '@/utils/logger'
+import { useMemberStore } from '@/stores/member'
 
 export async function saveCards(cards: Card[]): Promise<Card[]> {
   const { data, error } = await supabase.from('cards').upsert(cards).select()
@@ -12,8 +13,13 @@ export async function saveCards(cards: Card[]): Promise<Card[]> {
   return data
 }
 
-export async function updateCardById(card: Card): Promise<Card> {
-  const { error, data } = await supabase.from('cards').update(card).eq('id', card.id).single()
+export async function updateReviewByCardId(id: string, review: Review): Promise<Card> {
+  const member_id = useMemberStore().id
+
+  const { error, data } = await supabase
+    .from('reviews')
+    .upsert({ ...review, member_id, card_id: id }, { onConflict: 'card_id' })
+    .single()
 
   if (error) {
     Logger.error(error.message)
