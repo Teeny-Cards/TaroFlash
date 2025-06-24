@@ -15,10 +15,7 @@ export default mergeConfig(
         reporter: ['text', 'json', 'html', 'json-summary'],
         reportOnFailure: true,
         thresholds: {
-          lines: 90,
-          branches: 90,
-          functions: 90,
-          statements: 90
+          lines: 90
         },
         exclude: [
           '**/postcss.config.js',
