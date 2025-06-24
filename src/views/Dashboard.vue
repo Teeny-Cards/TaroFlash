@@ -1,8 +1,8 @@
 <template>
   <div class="flex h-full flex-col gap-4">
-    <h1 class="text-grey-dark text-2xl font-semibold">All Decks</h1>
+    <h1 class="text-grey-dark text-2xl font-semibold">{{ $t('dashboard.due') }}</h1>
     <div class="flex gap-4">
-      <div v-if="loading">Loading</div>
+      <div v-if="loading">{{ $t('common.loading') }}</div>
       <div v-else v-for="(deck, index) in decks" :key="index">
         <Deck :deck="deck" />
       </div>
