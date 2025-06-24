@@ -3,8 +3,8 @@ import { supabase } from '@/supabaseClient'
 import Logger from '@/utils/logger'
 import { DateTime } from 'luxon'
 
-export async function createDeck(deck: Deck, member_id: string): Promise<any> {
-  const { id, ...data } = deck
+export async function createDeck(deck: Deck, member_id: number): Promise<any> {
+  const { ...data } = deck
 
   data.member_id = member_id
 
@@ -16,14 +16,14 @@ export async function createDeck(deck: Deck, member_id: string): Promise<any> {
   }
 }
 
-export async function fetchMemberDecks(member_id: string): Promise<Deck[]> {
-  const today_iso = DateTime.now().toISODate()
+export async function fetchMemberDecks(member_id: number): Promise<Deck[]> {
+  const end_of_day = DateTime.now().endOf('day').toISO()
 
   const { data, error } = await supabase
     .from('decks')
     .select('description,title, image_url, id, due_cards:cards(*, review:reviews!inner(*))')
     .eq('member_id', member_id)
-    .lte('cards.reviews.due', today_iso)
+    .lte('cards.reviews.due', end_of_day)
 
   if (error) {
     Logger.error(error.message)
@@ -33,7 +33,7 @@ export async function fetchMemberDecks(member_id: string): Promise<Deck[]> {
   return data
 }
 
-export async function fetchDeckById(id: string): Promise<Deck> {
+export async function fetchDeckById(id: number): Promise<Deck> {
   const { data, error } = await supabase
     .from('decks')
     .select('*, cards(*, review:reviews(*)), member:members(display_name)')
@@ -49,7 +49,7 @@ export async function fetchDeckById(id: string): Promise<Deck> {
   return data
 }
 
-export async function updateDeckById(id: string, deck: Deck): Promise<void> {
+export async function updateDeckById(id: number, deck: Deck): Promise<void> {
   const { error } = await supabase.from('decks').update(deck).eq('id', id)
 
   if (error) {
@@ -58,7 +58,7 @@ export async function updateDeckById(id: string, deck: Deck): Promise<void> {
   }
 }
 
-export async function deleteDeckById(id: string): Promise<void> {
+export async function deleteDeckById(id: number): Promise<void> {
   const { error } = await supabase.from('decks').delete().eq('id', id)
 
   if (error) {

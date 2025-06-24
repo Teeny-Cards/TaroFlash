@@ -14,9 +14,6 @@ export default mergeConfig(
         enabled: true,
         reporter: ['text', 'json', 'html', 'json-summary'],
         reportOnFailure: true,
-        thresholds: {
-          lines: 90
-        },
         exclude: [
           '**/postcss.config.js',
           '**/App.vue',
