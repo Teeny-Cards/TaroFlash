@@ -1,15 +1,13 @@
 import { ref, computed } from 'vue'
-import {
-  createEmptyCard,
-  FSRS,
-  generatorParameters,
-  type RecordLogItem,
-  type IPreview
-} from 'ts-fsrs'
-import { updateReviewByCardId } from '@/services/cardService'
+import { createEmptyCard, FSRS, generatorParameters, type IPreview } from 'ts-fsrs'
+import { DateTime } from 'luxon'
 
 export type ViewState = 'studying' | 'previewing' | 'completed'
 export type CardDisplayState = 'hidden' | 'revealed'
+
+type StudySessionConfig = {
+  study_all_cards?: boolean
+}
 
 export function useStudySession() {
   const _PARAMS = generatorParameters({ enable_fuzz: true })
@@ -18,8 +16,8 @@ export function useStudySession() {
   const view_state = ref<ViewState>('studying')
   const current_card_state = ref<CardDisplayState>('hidden')
   const cards_in_deck = ref<Card[]>([])
-  const studied_card_ids = ref<Set<string>>(new Set())
-  const failed_card_ids = ref<Set<string>>(new Set())
+  const studied_card_ids = ref<Set<number>>(new Set())
+  const failed_card_ids = ref<Set<number>>(new Set())
 
   const _active_card = ref<Card | undefined>(undefined) // card that is currently being reviewed
   const _preview_card = ref<Card | undefined>(undefined) // already reviewed card that is being previewed
@@ -36,8 +34,13 @@ export function useStudySession() {
     return _active_card_review_options.value?.[id]
   })
 
-  function setupStudySession(cards?: Card[]) {
-    cards_in_deck.value = cards ?? []
+  function setupStudySession(cards?: Card[], config?: StudySessionConfig) {
+    const now = DateTime.now()
+    const _cards = config?.study_all_cards
+      ? cards
+      : cards?.filter((c) => c.review?.due && DateTime.fromISO(c.review.due as string) <= now)
+
+    cards_in_deck.value = _cards ?? []
     advanceSession()
   }
 

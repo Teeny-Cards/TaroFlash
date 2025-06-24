@@ -37,11 +37,7 @@ onUnmounted(() => {
 function close(e: Event) {
   const target = e.target as HTMLElement
 
-  if (
-    closeOnBackdropClick &&
-    target.dataset.testid &&
-    target.dataset.testid === 'ui-kit-modal-backdrop'
-  ) {
+  if (closeOnBackdropClick && target.dataset.testid === 'ui-kit-modal-backdrop') {
     emit('closed')
   }
 }

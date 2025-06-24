@@ -1,5 +1,5 @@
 <template>
-  <Card size="large" class="snap-center overflow-hidden" show-back>
+  <Card size="large" class="snap-center overflow-hidden" :revealed="true">
     <div class="relative flex h-full w-full items-center justify-center">
       <ui-kit:icon
         src="add-image"
@@ -11,20 +11,20 @@
         name="front_text"
         class="text-grey-dark w-full resize-none bg-transparent text-center text-2xl focus:outline-hidden"
         rows="1"
-        placeholder="Front"
+        :placeholder="$t('card.placeholder-front')"
         :value="card.front_text"
         @input="onFrontChanged"
         ref="frontCardInput"
       />
     </div>
   </Card>
-  <Card size="large" class="snap-center overflow-hidden" show-back>
+  <Card size="large" class="snap-center overflow-hidden" :revealed="true">
     <textarea
       teeny-card-editor__input="back"
       name="back_text"
       class="text-grey-dark w-full resize-none bg-transparent text-center text-2xl focus:outline-hidden"
       rows="1"
-      placeholder="Back"
+      :placeholder="$t('card.placeholder-back')"
       :value="card.back_text"
       @input="onBackChanged"
       ref="backCardInput"

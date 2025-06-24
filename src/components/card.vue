@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-const { size = 'base', revealed = false } = defineProps<{
+const { size = 'base' } = defineProps<{
   size?: 'large' | 'base' | 'small' | 'xs' | '2xs' | '3xs'
   revealed?: Boolean
 }>()
