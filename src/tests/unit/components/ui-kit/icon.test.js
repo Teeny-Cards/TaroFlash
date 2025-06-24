@@ -21,7 +21,7 @@ describe('UI Kit Icon', () => {
   it('renders properly with required props', () => {
     const wrapper = shallowMount(Icon, {
       props: {
-        src: 'test-icon'
+        src: 'add'
       }
     })
     expect(wrapper.exists()).toBe(true)
@@ -32,10 +32,10 @@ describe('UI Kit Icon', () => {
     it('applies default size class when no size is provided', () => {
       const wrapper = shallowMount(Icon, {
         props: {
-          src: 'test-icon'
+          src: 'add'
         }
       })
-      
+
       // The default size is 'base'
       expect(wrapper.attributes('class')).toContain('w-5 h-5')
     })
@@ -43,44 +43,44 @@ describe('UI Kit Icon', () => {
     it('applies large size class', () => {
       const wrapper = shallowMount(Icon, {
         props: {
-          src: 'test-icon',
+          src: 'add',
           size: 'large'
         }
       })
-      
+
       expect(wrapper.attributes('class')).toContain('w-8  h-8')
     })
 
     it('applies base size class', () => {
       const wrapper = shallowMount(Icon, {
         props: {
-          src: 'test-icon',
+          src: 'add',
           size: 'base'
         }
       })
-      
+
       expect(wrapper.attributes('class')).toContain('w-5 h-5')
     })
 
     it('applies small size class', () => {
       const wrapper = shallowMount(Icon, {
         props: {
-          src: 'test-icon',
+          src: 'add',
           size: 'small'
         }
       })
-      
+
       expect(wrapper.attributes('class')).toContain('w-4 h-4')
     })
 
     it('applies xs size class', () => {
       const wrapper = shallowMount(Icon, {
         props: {
-          src: 'test-icon',
+          src: 'add',
           size: 'xs'
         }
       })
-      
+
       expect(wrapper.attributes('class')).toContain('w-3 h-3')
     })
   })

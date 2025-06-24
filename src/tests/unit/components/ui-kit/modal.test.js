@@ -94,8 +94,7 @@ describe('UI Kit Modal', () => {
     expect(wrapper.find('.bg-black\\/25').exists()).toBe(false)
   })
 
-  // Test click outside to close
-  it('emits close event when clicking outside', async () => {
+  it('emits close event when clicking backdrop', async () => {
     const wrapper = shallowMount(Modal, {
       props: {
         open: true
@@ -108,14 +107,10 @@ describe('UI Kit Modal', () => {
       }
     })
 
-    // Find the modal element
-    const modalElement = wrapper.find('[data-testid="ui-kit-modal"]')
+    const backdrop = wrapper.find('[data-testid="ui-kit-modal-backdrop"]')
+    await backdrop.trigger('click')
 
-    // Trigger click on the modal element (which should close it)
-    await modalElement.trigger('click')
-
-    // Should emit close event
-    expect(wrapper.emitted('close')).toBeTruthy()
+    expect(wrapper.emitted('closed')).toBeTruthy()
   })
 
   it('does not emit close event when clicking inside', async () => {

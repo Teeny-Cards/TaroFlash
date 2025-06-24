@@ -1,5 +1,11 @@
 import { ref, computed } from 'vue'
-import { createEmptyCard, FSRS, generatorParameters, type RecordLogItem } from 'ts-fsrs'
+import {
+  createEmptyCard,
+  FSRS,
+  generatorParameters,
+  type RecordLogItem,
+  type IPreview
+} from 'ts-fsrs'
 import { updateReviewByCardId } from '@/services/cardService'
 
 export type ViewState = 'studying' | 'previewing' | 'completed'
@@ -17,25 +23,22 @@ export function useStudySession() {
 
   const _active_card = ref<Card | undefined>(undefined) // card that is currently being reviewed
   const _preview_card = ref<Card | undefined>(undefined) // already reviewed card that is being previewed
-
-  const last_studied_card = ref<Card | undefined>(undefined)
+  const _active_card_review_options = ref<{ [key: string]: IPreview } | undefined>(undefined)
 
   const current_card = computed(() => {
     return view_state.value === 'studying' ? _active_card.value : _preview_card.value
   })
 
+  const active_card_review_options = computed(() => {
+    const id = _active_card.value?.id
+    if (!id) return undefined
+
+    return _active_card_review_options.value?.[id]
+  })
+
   function setupStudySession(cards?: Card[]) {
     cards_in_deck.value = cards ?? []
     advanceSession()
-  }
-
-  async function review(record: RecordLogItem) {
-    if (current_card.value != _active_card.value || !_active_card.value?.id) return
-
-    await updateReviewByCardId(_active_card.value.id, record.card)
-
-    studied_card_ids.value.add(_active_card.value.id)
-    last_studied_card.value = _active_card.value
   }
 
   function setPreviewCard(card: Card) {
@@ -45,13 +48,17 @@ export function useStudySession() {
     if (isStudied || isFailed) {
       _preview_card.value = card
       view_state.value = 'previewing'
-    } else if (card.id === _active_card.value?.id) {
+    } else {
       _preview_card.value = undefined
       view_state.value = 'studying'
     }
   }
 
   function advanceSession() {
+    if (current_card.value === _active_card.value && _active_card.value?.id) {
+      studied_card_ids.value.add(_active_card.value.id)
+    }
+
     const nextCard = cards_in_deck.value.find(
       (c) => !studied_card_ids.value.has(c.id!) && !failed_card_ids.value.has(c.id!)
     )
@@ -61,14 +68,21 @@ export function useStudySession() {
     }
 
     _active_card.value = nextCard
-    _preview_card.value = nextCard
     current_card_state.value = 'hidden'
+    setActive_card_review_options()
   }
 
-  function getActiveCardReviewOptions() {
-    const review_card = _active_card.value?.review
+  function setActive_card_review_options() {
+    const card = _active_card.value
+    if (!card) return
 
-    return review_card ? _FSRS_INSTANCE.repeat(review_card, new Date()) : undefined
+    const cache = { ..._active_card_review_options.value }
+    const id = card.id
+
+    if (!id || cache[id] || !card.review) return
+
+    cache[id] = _FSRS_INSTANCE.repeat(card.review, new Date())
+    _active_card_review_options.value = cache
   }
 
   return {
@@ -78,10 +92,9 @@ export function useStudySession() {
     current_card_state,
     current_card,
     view_state,
-    getActiveCardReviewOptions,
+    active_card_review_options,
     advanceSession,
     setupStudySession,
-    setPreviewCard,
-    review
+    setPreviewCard
   }
 }

@@ -9,7 +9,7 @@
     leave-active-class="motion-safe:transition-[all] ease-in-out duration-150"
   >
     <div
-      v-if="showBack"
+      v-if="revealed"
       data-testid="ui-kit-card"
       class="flex shrink-0 items-center justify-center bg-white p-3"
       :class="[defaultClasses, sizeClasses[size]]"
@@ -26,16 +26,10 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
-  size: {
-    type: String,
-    validator(value: string) {
-      return ['large', 'base', 'small', 'xs', '2xs', '3xs'].includes(value)
-    },
-    default: 'base'
-  },
-  showBack: Boolean
-})
+const { size = 'base', revealed = false } = defineProps<{
+  size?: 'large' | 'base' | 'small' | 'xs' | '2xs' | '3xs'
+  revealed?: Boolean
+}>()
 
 const defaultClasses = 'aspect-card'
 

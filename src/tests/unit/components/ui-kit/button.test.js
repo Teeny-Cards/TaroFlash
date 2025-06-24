@@ -151,7 +151,7 @@ describe('UI Kit Button', () => {
       const wrapper = shallowMount(Button, {
         ...globalConfig,
         props: {
-          iconLeft: 'test-icon'
+          iconLeft: 'add'
         }
       })
 
@@ -163,7 +163,7 @@ describe('UI Kit Button', () => {
       const wrapper = shallowMount(Button, {
         ...globalConfig,
         props: {
-          iconRight: 'test-icon'
+          iconRight: 'add'
         }
       })
 
@@ -186,7 +186,7 @@ describe('UI Kit Button', () => {
         ...globalConfig,
         props: {
           size: 'large',
-          iconLeft: 'test-icon'
+          iconLeft: 'add'
         }
       })
 
