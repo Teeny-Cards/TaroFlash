@@ -12,7 +12,11 @@ export default mergeConfig(
       setupFiles: ['./src/tests/setup.js'],
       coverage: {
         enabled: true,
-        reporter: ['text', 'json', 'html'],
+        reporter: ['text', 'json', 'html', 'json-summary'],
+        reportOnFailure: true,
+        thresholds: {
+          lines: 90
+        },
         exclude: [
           '**/postcss.config.js',
           '**/App.vue',
