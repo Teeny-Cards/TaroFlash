@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const { cards, studiedCardIds, failedCardIds, currentCard } = defineProps<{
   cards: Card[]
-  studiedCardIds: Set<string>
-  failedCardIds: Set<string>
+  studiedCardIds: Set<number>
+  failedCardIds: Set<number>
   currentCard: Card | undefined
 }>()
 

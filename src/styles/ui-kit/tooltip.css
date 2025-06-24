@@ -1,9 +1,5 @@
 .ui-kit-tooltip {
-  @apply pointer-events-none absolute right-0 left-0 flex translate-x-1/2;
-}
-
-.ui-kit-tooltip.tooltip--hidden {
-  @apply hidden;
+  @apply pointer-events-none absolute right-0 left-0 translate-x-1/2;
 }
 
 .ui-kit-tooltip.tooltip--top-right {
