@@ -21,6 +21,9 @@ export default mergeConfig(
           '**/router/**',
           '**/src/services/**',
           '**/src/components/ui-kit/_index.ts',
+          '**/types/**',
+          '**/src/utils/logger.ts',
+          '**/src/utils/uid.ts',
           ...coverageConfigDefaults.exclude
         ]
       }

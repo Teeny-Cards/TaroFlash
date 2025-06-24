@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, describe, it, vi } from 'vitest'
+import { expect, it, vi } from 'vitest'
 import StudyModal from '@/components/study-modal/index.vue'
 
 const mocks = vi.hoisted(() => {
@@ -12,132 +12,130 @@ vi.mock('@/services/cardService', () => ({
   updateReviewByCardId: mocks.updateReviewByCardId
 }))
 
-describe('study-modal', () => {
-  it('renders modal with correct open prop', async () => {
-    const wrapper = mount(StudyModal, {
-      props: {
-        open: true,
-        deck: {
-          title: 'Test Deck',
-          cards: []
-        }
-      },
-      global: {
-        stubs: ['teleport']
+it('renders modal with correct open prop', async () => {
+  const wrapper = mount(StudyModal, {
+    props: {
+      open: true,
+      deck: {
+        title: 'Test Deck',
+        cards: []
       }
-    })
-
-    expect(wrapper.exists()).toBe(true)
-    expect(wrapper.find('[data-testid="ui-kit-modal"]').exists()).toBe(true)
+    },
+    global: {
+      stubs: ['teleport']
+    }
   })
 
-  it('sets up study session with deck.cards when modal is opened', async () => {
-    const cards = [{ id: '1', front_text: 'Front', back_text: 'Back' }]
+  expect(wrapper.exists()).toBe(true)
+  expect(wrapper.find('[data-testid="ui-kit-modal"]').exists()).toBe(true)
+})
 
-    const wrapper = mount(StudyModal, {
-      props: {
-        open: true,
-        deck: {
-          title: 'Test Deck',
-          cards
-        }
-      },
-      global: {
-        stubs: ['teleport']
+it('sets up study session with deck.cards when modal is opened', async () => {
+  const cards = [{ id: '1', front_text: 'Front', back_text: 'Back' }]
+
+  const wrapper = mount(StudyModal, {
+    props: {
+      open: true,
+      deck: {
+        title: 'Test Deck',
+        cards
       }
-    })
-
-    await wrapper.vm.$nextTick()
-
-    expect(wrapper.vm.cards_in_deck).toMatchObject(cards)
-    expect(wrapper.vm.current_card).toMatchObject(cards[0])
+    },
+    global: {
+      stubs: ['teleport']
+    }
   })
 
-  it('displays deck title in header', async () => {
-    const wrapper = mount(StudyModal, {
-      props: {
-        open: true,
-        deck: {
-          title: 'Test Deck',
-          cards: []
-        }
-      },
-      global: {
-        stubs: ['teleport']
-      }
-    })
+  await wrapper.vm.$nextTick()
 
-    expect(wrapper.find('[data-testid="study-modal__header"]').text()).toContain('Test Deck')
+  expect(wrapper.vm.cards_in_deck).toMatchObject(cards)
+  expect(wrapper.vm.current_card).toMatchObject(cards[0])
+})
+
+it('displays deck title in header', async () => {
+  const wrapper = mount(StudyModal, {
+    props: {
+      open: true,
+      deck: {
+        title: 'Test Deck',
+        cards: []
+      }
+    },
+    global: {
+      stubs: ['teleport']
+    }
   })
 
-  it('emits closed event when close button is clicked', async () => {
-    const wrapper = mount(StudyModal, {
-      props: {
-        open: true,
-        deck: {
-          title: 'Test Deck',
-          cards: []
-        }
-      },
-      global: {
-        stubs: ['teleport']
+  expect(wrapper.find('[data-testid="study-modal__header"]').text()).toContain('Test Deck')
+})
+
+it('emits closed event when close button is clicked', async () => {
+  const wrapper = mount(StudyModal, {
+    props: {
+      open: true,
+      deck: {
+        title: 'Test Deck',
+        cards: []
       }
-    })
-
-    await wrapper
-      .find('[data-testid="study-modal__actions"] [data-testid="ui-kit-button"]')
-      .trigger('click')
-
-    expect(wrapper.emitted('closed')).toBeTruthy()
+    },
+    global: {
+      stubs: ['teleport']
+    }
   })
 
-  it('updates current_card_state to revealed when revealed event is emitted', async () => {
-    const wrapper = mount(StudyModal, {
-      props: {
-        open: true,
-        deck: {
-          title: 'Test Deck',
-          cards: []
-        }
-      },
-      global: {
-        stubs: ['teleport']
+  await wrapper
+    .find('[data-testid="study-modal__actions"] [data-testid="ui-kit-button"]')
+    .trigger('click')
+
+  expect(wrapper.emitted('closed')).toBeTruthy()
+})
+
+it('updates current_card_state to revealed when revealed event is emitted', async () => {
+  const wrapper = mount(StudyModal, {
+    props: {
+      open: true,
+      deck: {
+        title: 'Test Deck',
+        cards: []
       }
-    })
-
-    await wrapper.findComponent({ name: 'RatingButtons' }).vm.$emit('revealed')
-
-    expect(wrapper.vm.current_card_state).toBe('revealed')
+    },
+    global: {
+      stubs: ['teleport']
+    }
   })
 
-  it('updates the card and session when reviewed event is emitted', async () => {
-    const cards = [
-      { id: '1', front_text: 'Front 1', back_text: 'Back 1' },
-      { id: '2', front_text: 'Front 2', back_text: 'Back 2' }
-    ]
+  await wrapper.findComponent({ name: 'RatingButtons' }).vm.$emit('revealed')
 
-    const wrapper = mount(StudyModal, {
-      props: {
-        open: true,
-        deck: {
-          title: 'Test Deck',
-          cards
-        }
-      },
-      global: {
-        stubs: ['teleport']
+  expect(wrapper.vm.current_card_state).toBe('revealed')
+})
+
+it('updates the card and session when reviewed event is emitted', async () => {
+  const cards = [
+    { id: '1', front_text: 'Front 1', back_text: 'Back 1' },
+    { id: '2', front_text: 'Front 2', back_text: 'Back 2' }
+  ]
+
+  const wrapper = mount(StudyModal, {
+    props: {
+      open: true,
+      deck: {
+        title: 'Test Deck',
+        cards
       }
-    })
-
-    wrapper.vm.current_card_state = 'revealed'
-    await wrapper.vm.$nextTick()
-
-    const reviewOptions = wrapper.vm.active_card_review_options
-    const ratingButtons = wrapper.findComponent({ name: 'RatingButtons' })
-    await ratingButtons.vm.$emit('reviewed', reviewOptions?.[2])
-
-    expect(mocks.updateReviewByCardId).toHaveBeenCalled()
-    expect(wrapper.vm.current_card).toMatchObject(cards[1])
-    expect(wrapper.vm.studied_card_ids.has('1')).toBe(true)
+    },
+    global: {
+      stubs: ['teleport']
+    }
   })
+
+  wrapper.vm.current_card_state = 'revealed'
+  await wrapper.vm.$nextTick()
+
+  const reviewOptions = wrapper.vm.active_card_review_options
+  const ratingButtons = wrapper.findComponent({ name: 'RatingButtons' })
+  await ratingButtons.vm.$emit('reviewed', reviewOptions?.[2])
+
+  expect(mocks.updateReviewByCardId).toHaveBeenCalled()
+  expect(wrapper.vm.current_card).toMatchObject(cards[1])
+  expect(wrapper.vm.studied_card_ids.has('1')).toBe(true)
 })

@@ -16,83 +16,81 @@ vi.mock('vue', async () => {
   }
 })
 
-describe('UI Kit Icon', () => {
-  // Test basic rendering
-  it('renders properly with required props', () => {
+// Test basic rendering
+it('renders properly with required props', () => {
+  const wrapper = shallowMount(Icon, {
+    props: {
+      src: 'add'
+    }
+  })
+  expect(wrapper.exists()).toBe(true)
+})
+
+// Test size classes
+describe('sizes', () => {
+  it('applies default size class when no size is provided', () => {
     const wrapper = shallowMount(Icon, {
       props: {
         src: 'add'
       }
     })
-    expect(wrapper.exists()).toBe(true)
+
+    // The default size is 'base'
+    expect(wrapper.attributes('class')).toContain('w-5 h-5')
   })
 
-  // Test size classes
-  describe('sizes', () => {
-    it('applies default size class when no size is provided', () => {
-      const wrapper = shallowMount(Icon, {
-        props: {
-          src: 'add'
-        }
-      })
-
-      // The default size is 'base'
-      expect(wrapper.attributes('class')).toContain('w-5 h-5')
+  it('applies large size class', () => {
+    const wrapper = shallowMount(Icon, {
+      props: {
+        src: 'add',
+        size: 'large'
+      }
     })
 
-    it('applies large size class', () => {
-      const wrapper = shallowMount(Icon, {
-        props: {
-          src: 'add',
-          size: 'large'
-        }
-      })
-
-      expect(wrapper.attributes('class')).toContain('w-8  h-8')
-    })
-
-    it('applies base size class', () => {
-      const wrapper = shallowMount(Icon, {
-        props: {
-          src: 'add',
-          size: 'base'
-        }
-      })
-
-      expect(wrapper.attributes('class')).toContain('w-5 h-5')
-    })
-
-    it('applies small size class', () => {
-      const wrapper = shallowMount(Icon, {
-        props: {
-          src: 'add',
-          size: 'small'
-        }
-      })
-
-      expect(wrapper.attributes('class')).toContain('w-4 h-4')
-    })
-
-    it('applies xs size class', () => {
-      const wrapper = shallowMount(Icon, {
-        props: {
-          src: 'add',
-          size: 'xs'
-        }
-      })
-
-      expect(wrapper.attributes('class')).toContain('w-3 h-3')
-    })
+    expect(wrapper.attributes('class')).toContain('w-8  h-8')
   })
 
-  // Test prop validation
-  it('validates size prop values', () => {
-    const validator = Icon.props.size.validator
+  it('applies base size class', () => {
+    const wrapper = shallowMount(Icon, {
+      props: {
+        src: 'add',
+        size: 'base'
+      }
+    })
 
-    expect(validator('large')).toBe(true)
-    expect(validator('base')).toBe(true)
-    expect(validator('small')).toBe(true)
-    expect(validator('xs')).toBe(true)
-    expect(validator('invalid')).toBe(false)
+    expect(wrapper.attributes('class')).toContain('w-5 h-5')
   })
+
+  it('applies small size class', () => {
+    const wrapper = shallowMount(Icon, {
+      props: {
+        src: 'add',
+        size: 'small'
+      }
+    })
+
+    expect(wrapper.attributes('class')).toContain('w-4 h-4')
+  })
+
+  it('applies xs size class', () => {
+    const wrapper = shallowMount(Icon, {
+      props: {
+        src: 'add',
+        size: 'xs'
+      }
+    })
+
+    expect(wrapper.attributes('class')).toContain('w-3 h-3')
+  })
+})
+
+// Test prop validation
+it('validates size prop values', () => {
+  const validator = Icon.props.size.validator
+
+  expect(validator('large')).toBe(true)
+  expect(validator('base')).toBe(true)
+  expect(validator('small')).toBe(true)
+  expect(validator('xs')).toBe(true)
+  expect(validator('invalid')).toBe(false)
 })
