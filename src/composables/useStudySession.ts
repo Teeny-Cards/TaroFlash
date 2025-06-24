@@ -38,7 +38,7 @@ export function useStudySession() {
     const now = DateTime.now()
     const _cards = config?.study_all_cards
       ? cards
-      : cards?.filter((c) => c.review?.due && DateTime.fromISO(c.review.due as string) <= now)
+      : cards?.filter((c) => !c.review?.due || DateTime.fromISO(c.review.due as string) <= now)
 
     cards_in_deck.value = _cards ?? []
     advanceSession()
