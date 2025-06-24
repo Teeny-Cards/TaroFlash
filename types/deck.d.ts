@@ -1,13 +1,14 @@
 type Deck = {
-  id?: string
-  title?: string
+  id?: number
+  created_at?: string
+  updated_at?: string
   description?: string
   is_public?: boolean
-  card_count?: number
-  member_id?: string
+  title?: string
+  member_id?: number
   member?: { display_name: string }
   cards?: Card[]
   tags?: string[]
-  created_at?: string
   image_url?: string
+  due_cards?: Card[]
 }

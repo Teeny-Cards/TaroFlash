@@ -4,7 +4,7 @@ import StudyCard from './study-card.vue'
 import RatingButtons from './rating-buttons.vue'
 import { useStudySession } from '@/composables/useStudySession'
 import { type RecordLogItem } from 'ts-fsrs'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { updateReviewByCardId } from '@/services/cardService'
 
 defineEmits<{ (e: 'closed'): void }>()
@@ -23,6 +23,8 @@ const {
   setPreviewCard
 } = useStudySession()
 
+const setupOnce = ref(false)
+
 const isPreviewingOrRevealed = computed(() => {
   return view_state.value === 'previewing' || current_card_state.value === 'revealed'
 })
@@ -39,12 +41,15 @@ function onCardRevealed() {
 }
 
 function setup() {
-  setupStudySession(deck.cards)
+  if (!setupOnce.value) {
+    setupStudySession(deck.cards)
+    setupOnce.value = true
+  }
 }
 </script>
 
 <template>
-  <ui-kit:modal :open="open" @opened="setup" backdrop>
+  <ui-kit:modal :open="open" @opened="setup" @closed="$emit('closed')" backdrop>
     <div
       data-testid="study-modal"
       class="bg-parchment-dark rounded-8 shadow-modal flex h-170 w-268 flex-col items-center overflow-hidden pb-6"
