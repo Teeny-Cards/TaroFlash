@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import HistoryTrack from './history-track.vue'
-import StudyCards from './study-cards.vue'
+import StudyCard from './study-card.vue'
 import RatingButtons from './rating-buttons.vue'
 import { useStudySession } from '@/composables/useStudySession'
 import { type RecordLogItem } from 'ts-fsrs'
 import { computed } from 'vue'
+import { updateReviewByCardId } from '@/services/cardService'
 
 defineEmits<{ (e: 'closed'): void }>()
 const { open = false, deck } = defineProps<{ open: boolean; deck: Deck }>()
@@ -16,11 +17,10 @@ const {
   view_state,
   studied_card_ids,
   failed_card_ids,
-  getActiveCardReviewOptions,
+  active_card_review_options,
   setupStudySession,
   advanceSession,
-  setPreviewCard,
-  review
+  setPreviewCard
 } = useStudySession()
 
 const isPreviewingOrRevealed = computed(() => {
@@ -28,22 +28,23 @@ const isPreviewingOrRevealed = computed(() => {
 })
 
 async function onCardReviewed(item: RecordLogItem) {
-  await review(item)
+  if (!current_card.value?.id || view_state.value !== 'studying') return
+
+  await updateReviewByCardId(current_card.value.id, item.card)
   advanceSession()
 }
 
 function onCardRevealed() {
   current_card_state.value = 'revealed'
 }
+
+function setup() {
+  setupStudySession(deck.cards)
+}
 </script>
 
 <template>
-  <ui-kit:modal
-    :open="open"
-    @closed="$emit('closed')"
-    @opened="setupStudySession(deck.cards)"
-    backdrop
-  >
+  <ui-kit:modal :open="open" @opened="setup" backdrop>
     <div
       data-testid="study-modal"
       class="bg-parchment-dark rounded-8 shadow-modal flex h-170 w-268 flex-col items-center overflow-hidden pb-6"
@@ -66,15 +67,18 @@ function onCardRevealed() {
       </div>
 
       <div
-        v-if="open"
         data-testid="study-modal__body"
         class="grid h-full w-full grid-cols-[1fr_auto_1fr] content-center"
       >
         <div data-testid="study-modal__powerup"></div>
-        <study-cards :card="current_card" :revealed="isPreviewingOrRevealed" />
+        <study-card
+          :card="current_card"
+          :revealed="current_card_state === 'revealed'"
+          :previewing="view_state === 'previewing'"
+        />
 
         <rating-buttons
-          :options="getActiveCardReviewOptions()"
+          :options="active_card_review_options"
           :show-options="isPreviewingOrRevealed"
           :disabled="view_state !== 'studying'"
           @reviewed="onCardReviewed"

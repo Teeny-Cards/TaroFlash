@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
 
 const { options, showOptions, disabled } = defineProps<{
-  options: RecordLog | undefined
+  options?: RecordLog
   showOptions: boolean
   disabled: boolean
 }>()
@@ -31,11 +31,12 @@ function onRatingClicked(grade: Grade) {
 
 <template>
   <div
-    data-testid="study-modal__buttons"
+    data-testid="rating-buttons"
     class="flex flex-col justify-center gap-2 justify-self-center text-xl"
   >
     <template v-if="showOptions">
       <button
+        data-testid="rating-buttons__good"
         class="bg-purple-dark cursor-pointer rounded-full px-13 py-4 text-white"
         :class="{ 'opacity-50': disabled }"
         :disabled="disabled"
@@ -45,6 +46,7 @@ function onRatingClicked(grade: Grade) {
         <ui-kit:tooltip :text="getRatingTimeFormat(Rating.Good)" position="top-right" />
       </button>
       <button
+        data-testid="rating-buttons__again"
         class="text-brown-dark cursor-pointer rounded-full bg-white px-13 py-4"
         :class="{ 'opacity-50': disabled }"
         :disabled="disabled"
@@ -56,6 +58,7 @@ function onRatingClicked(grade: Grade) {
     </template>
     <template v-else>
       <button
+        data-testid="rating-buttons__show"
         class="bg-purple-dark cursor-pointer rounded-full px-13 py-4 text-white"
         @click="$emit('revealed')"
       >

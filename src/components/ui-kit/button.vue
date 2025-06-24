@@ -1,5 +1,6 @@
 <template>
   <button
+    data-testid="ui-kit-button"
     class="ui-kit-btn"
     :class="{
       [sizeClass[props.size]]: true,
@@ -9,7 +10,6 @@
       'btn-fancy-hover': props.fancyHover
     }"
     @click.stop
-    uikit-button
   >
     <div v-if="iconLeft" class="btn-icon" uikit-button__icon-left>
       <ui-kit:icon v-if="iconLeft" :src="iconLeft" :size="iconSize[props.size]" />
