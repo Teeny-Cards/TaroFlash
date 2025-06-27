@@ -10,7 +10,7 @@
   >
     <div
       v-if="revealed"
-      data-testid="ui-kit-card"
+      data-testid="card"
       class="flex shrink-0 items-center justify-center bg-white p-3"
       :class="[defaultClasses, sizeClasses[size]]"
     >
@@ -18,8 +18,8 @@
     </div>
     <div
       v-else
-      data-testid="ui-kit-card"
-      class="bg-purple-dark relative shrink-0 p-3"
+      data-testid="card"
+      class="bg-green relative shrink-0 p-3"
       :class="[defaultClasses, sizeClasses[size]]"
     ></div>
   </transition>

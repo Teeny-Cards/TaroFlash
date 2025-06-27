@@ -2,7 +2,7 @@
   <div class="flex flex-col items-center gap-16 pt-4">
     <div class="bg-orange rounded-4 h-34 w-full"></div>
     <div class="flex w-full flex-col items-center justify-center gap-2.5">
-      <div class="flex items-center gap-2.5">
+      <div class="flex items-center gap-2.5 text-2xl">
         <h2 class="nav-item bg-pink selected">Power Ups</h2>
         <h2 class="nav-item bg-orange">Stationary</h2>
         <h2 class="nav-item bg-green">Stickers</h2>
@@ -71,7 +71,7 @@ function groupItemsByCategory(items: ShopItem[]) {
 async function submitPurchase(item: ShopItem) {
   await upsertPurchase({
     item_id: item.id,
-    member_id: memberStore.id,
+    member_id: memberStore.id!,
     quantity: 1
   })
 
