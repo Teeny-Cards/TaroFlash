@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import Card from '@/components/card.vue'
-import ListItem from '@/components/deck-view/ListItem.vue'
-import EditCardModal from '@/components/deck-view/EditCardModal.vue'
-import DeckSettingsModal from '@/components/deck-view/DeckSettingsModal.vue'
+import ListItem from '@/components/deck-view/list-item.vue'
+import EditCardModal from '@/components/deck-view/edit-card-modal.vue'
 import StudyModal from '@/components/study-modal/index.vue'
 import { useToastStore } from '@/stores/toast'
 import { useSessionStore } from '@/stores/session'
@@ -142,52 +140,17 @@ async function deleteCard(card: Card) {
         >{{ $t('common.back') }}</ui-kit:button
       >
     </div>
+
     <div
       tid="body"
       class="flex w-full flex-col items-center gap-6 sm:gap-16 lg:flex-row lg:items-start lg:gap-26"
     >
       <div
-        tid="body-header"
-        class="sticky top-0 flex w-max flex-col items-center gap-6 sm:flex-row sm:items-end lg:flex-col
-          lg:items-start"
-      >
-        <Card size="large" class="relative overflow-hidden">
-          <div v-if="currentDeck?.image_path" class="absolute inset-0">
-            <img
-              :src="currentDeck.image_path"
-              alt="Deck Image preview"
-              class="h-full w-full object-cover"
-            /></div
-        ></Card>
-        <div tid="header-content" class="flex flex-col items-center gap-6 sm:items-start">
-          <div tid="header-title" class="flex flex-col items-center gap-2 sm:items-start">
-            <h1 class="font-primary text-grey-dark m-0 w-64 text-center text-4xl sm:text-left">
-              {{ currentDeck?.title }}
-            </h1>
-            <h2 class="text-grey w-64 text-center text-sm sm:text-left">
-              {{ currentDeck?.description }}
-            </h2>
-            <div tid="header-created-by" class="text-blue flex items-center gap-2">
-              <ui-kit:icon src="user" />
-              <h2 class="font-primary text-base font-semibold">
-                {{ currentDeck?.member?.display_name }}
-              </h2>
-            </div>
-          </div>
-          <div tid="header-actions" class="flex items-center gap-2.5">
-            <ui-kit:button icon-left="play" fancy-hover @click="studyModalOpen = true">{{
-              $t('common.study')
-            }}</ui-kit:button>
-            <DeckSettingsModal :deck="currentDeck" />
-          </div>
-        </div>
-      </div>
-      <div
         v-if="currentDeck?.cards?.length === 0"
         tid="empty-state"
         class="flex w-full flex-col items-center justify-center gap-4 self-center"
       >
-        <h1 class="text-grey-dark text-2xl font-semibold">{{ $t('deck-view.no-cards') }}</h1>
+        <h1 class="text-grey-dark text-3xl font-semibold">{{ $t('deck-view.no-cards') }}</h1>
         <ui-kit:button icon-left="add" fancy-hover @click="addCard">
           {{ $t('deck-view.add-card') }}
         </ui-kit:button>
