@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Card from '@/components/card.vue'
-import ListItem from '@/components/DeckView/ListItem.vue'
-import EditCardModal from '@/components/DeckView/EditCardModal.vue'
-import DeckSettingsModal from '@/components/DeckView/DeckSettingsModal.vue'
+import ListItem from '@/components/deck-view/ListItem.vue'
+import EditCardModal from '@/components/deck-view/EditCardModal.vue'
+import DeckSettingsModal from '@/components/deck-view/DeckSettingsModal.vue'
 import StudyModal from '@/components/study-modal/index.vue'
 import { useToastStore } from '@/stores/toast'
 import { useSessionStore } from '@/stores/session'
@@ -152,9 +152,9 @@ async function deleteCard(card: Card) {
           lg:items-start"
       >
         <Card size="large" class="relative overflow-hidden">
-          <div v-if="currentDeck?.image_url" class="absolute inset-0">
+          <div v-if="currentDeck?.image_path" class="absolute inset-0">
             <img
-              :src="currentDeck.image_url"
+              :src="currentDeck.image_path"
               alt="Deck Image preview"
               class="h-full w-full object-cover"
             /></div
