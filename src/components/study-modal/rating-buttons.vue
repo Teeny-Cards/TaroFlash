@@ -32,7 +32,7 @@ function onRatingClicked(grade: Grade) {
 <template>
   <div
     data-testid="rating-buttons"
-    class="flex flex-col justify-center gap-2 justify-self-center text-xl"
+    class="flex flex-col justify-center gap-2 justify-self-center text-2xl"
   >
     <template v-if="showOptions">
       <button

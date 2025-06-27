@@ -1,7 +1,7 @@
 <template>
   <div class="rounded-12 border border-gray-400 p-4">
     <div class="flex w-96 flex-col items-center gap-8 p-8">
-      <h1 class="text-2xl font-bold">{{ signText }}</h1>
+      <h1 class="text-3xl font-bold">{{ signText }}</h1>
       <input
         type="email"
         placeholder="Email"

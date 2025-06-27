@@ -37,7 +37,7 @@ function onDeckClicked(deck: Deck) {
 <template>
   <div class="flex h-full flex-col gap-16">
     <div class="flex flex-col gap-4">
-      <h1 class="text-grey-dark text-2xl">{{ $t('dashboard.due') }}</h1>
+      <h1 class="text-grey-dark text-3xl">{{ $t('dashboard.due') }}</h1>
       <div class="flex gap-4">
         <Deck
           v-for="(deck, index) in due_decks"
@@ -49,7 +49,7 @@ function onDeckClicked(deck: Deck) {
     </div>
 
     <div class="flex flex-col gap-4">
-      <h1 class="text-grey-dark text-2xl">All Decks</h1>
+      <h1 class="text-grey-dark text-3xl">All Decks</h1>
       <div class="flex gap-4">
         <Deck
           v-for="(deck, index) in decks"

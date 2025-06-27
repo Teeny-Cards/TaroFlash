@@ -38,7 +38,7 @@ onMounted(() => {
     <div class="ui-kit-tooltip__line"></div>
 
     <div class="ui-kit-tooltip__bubble">
-      <p class="text-purple-dark text-xs">{{ text }}</p>
+      <p class="text-purple-dark text-sm">{{ text }}</p>
     </div>
   </span>
 </template>

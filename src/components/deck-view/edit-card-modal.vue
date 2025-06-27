@@ -76,7 +76,7 @@ function scrollUp(): void {
         data-testid="edit-card-modal__title"
         class="bg-purple-dark wave-bottom flex w-full justify-center pt-12 pb-16 text-white"
       >
-        <h1 class="font-primary text-3xl font-semibold">{{ $t('edit-card-modal.title') }}</h1>
+        <h1 class="font-primary text-5xl font-semibold">{{ $t('edit-card-modal.title') }}</h1>
       </div>
       <div
         data-testid="edit-card-modal__body"
