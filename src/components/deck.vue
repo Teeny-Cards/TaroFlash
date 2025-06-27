@@ -32,7 +32,7 @@ const numCardsDue = computed(() => {
   <div data-testid="deck" class="relative flex w-max flex-col gap-2.5">
     <Card
       size="small"
-      class="border-parchment-dark relative cursor-pointer overflow-hidden border-8"
+      class="border-brown-100-dark relative cursor-pointer overflow-hidden border-8"
       :revealed="true"
       @click="$emit('clicked')"
     >
@@ -45,14 +45,14 @@ const numCardsDue = computed(() => {
 
     <div
       v-if="numCardsDue"
-      class="bg-red ring-parchment absolute -top-2 -right-2 flex h-7.5 w-7.5 items-center justify-center
-        rounded-full ring-4"
+      class="ring-brown-100 absolute -top-2 -right-2 flex h-7.5 w-7.5 items-center justify-center rounded-full
+        bg-red-500 ring-4"
     >
       <h2 class="text-base text-white">{{ numCardsDue }}</h2>
     </div>
 
     <div>
-      <h2 class="text-md text-brown-dark">{{ deck.title }}</h2>
+      <h2 class="text-md text-brown-700">{{ deck.title }}</h2>
     </div>
   </div>
 

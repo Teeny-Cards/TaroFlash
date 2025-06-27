@@ -1,14 +1,14 @@
 <template>
   <div class="flex flex-col items-center gap-16 pt-4">
-    <div class="bg-orange rounded-4 h-34 w-full"></div>
+    <div class="rounded-4 h-34 w-full bg-orange-500"></div>
     <div class="flex w-full flex-col items-center justify-center gap-2.5">
       <div class="flex items-center gap-2.5 text-2xl">
         <h2 class="nav-item bg-pink selected">Power Ups</h2>
-        <h2 class="nav-item bg-orange">Stationary</h2>
-        <h2 class="nav-item bg-green">Stickers</h2>
+        <h2 class="nav-item bg-orange-500">Stationary</h2>
+        <h2 class="nav-item bg-green-400">Stickers</h2>
         <h2 class="nav-item bg-arctic">Misclaneous</h2>
       </div>
-      <p class="text-brown-dark">
+      <p class="text-brown-700">
         Power ups can be used to gain an edge and score more paper clips.
       </p>
     </div>
@@ -21,7 +21,7 @@
           @click="selected_item = item"
         />
       </div>
-      <div class="bg-brown-light h-0.25 w-full"></div>
+      <div class="bg-brown-500 h-0.25 w-full"></div>
       <div class="flex w-full justify-center gap-13">
         <ShopItem
           v-for="item in shop_items.stationary"

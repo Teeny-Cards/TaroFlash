@@ -15,10 +15,10 @@
         @click="close"
       >
         <div class="rounded-12 shadow-modal flex flex-col items-center gap-8 bg-white px-8 py-8">
-          <h1 class="font-primary text-grey-dark text-center text-3xl font-semibold">
+          <h1 class="font-primary text-grey-700 text-center text-3xl font-semibold">
             {{ title }}
           </h1>
-          <p class="font-primary text-grey text-center text-xl">{{ message }}</p>
+          <p class="font-primary text-grey-500 text-center text-xl">{{ message }}</p>
           <div class="flex w-full justify-center gap-2.5">
             <slot></slot>
           </div>

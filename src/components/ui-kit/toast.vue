@@ -7,7 +7,7 @@
     leave-to-class="translate-x-full"
     leave-active-class="transition-transform transform"
   >
-    <div ui-kit-toast v-if="open" class="p-4 text-white shadow-lg rounded-8 w-72" :class="color">
+    <div ui-kit-toast v-if="open" class="rounded-8 w-72 p-4 text-white shadow-lg" :class="color">
       {{ toast.message }}
     </div>
   </transition>
@@ -33,11 +33,11 @@ const timeout = ref<NodeJS.Timeout>()
 const color = computed(() => {
   switch (props.toast.state) {
     case 'info':
-      return 'bg-blue'
+      return 'bg-blue-500'
     case 'warn':
-      return 'bg-orange'
+      return 'bg-orange-500'
     case 'error':
-      return 'bg-red'
+      return 'bg-red-500'
     default:
       return 'bg-pink'
   }

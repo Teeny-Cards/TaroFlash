@@ -7,7 +7,7 @@ defineProps<{ card: Card }>()
 <template>
   <div
     data-testid="card-list__item"
-    class="text-grey-dark grid w-full cursor-pointer grid-cols-[auto_1fr_1fr_auto] items-center gap-6 py-3"
+    class="text-grey-700 grid w-full cursor-pointer grid-cols-[auto_1fr_1fr_auto] items-center gap-6 py-3"
   >
     <card size="2xs" />
     <p>{{ card.front_text }}</p>

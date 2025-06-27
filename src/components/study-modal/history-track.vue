@@ -30,18 +30,18 @@ function onClickCard(card: Card) {
 <template>
   <div data-testid="history-track" class="flex flex-col items-center">
     <div
-      class="scroll-hidden border-grey flex h-8 max-w-189 shrink-0 items-center gap-1 overflow-x-auto border-x
-        border-dashed px-1"
+      class="scroll-hidden border-grey-500 flex h-8 max-w-189 shrink-0 items-center gap-1 overflow-x-auto
+        border-x border-dashed px-1"
     >
       <button
         v-for="card in cards"
         :key="card.id"
-        class="aspect-card bg-parchment rounded-1.5 group flex w-4.75 min-w-4.75 cursor-pointer justify-center
+        class="aspect-card bg-brown-100 rounded-1.5 group flex w-4.75 min-w-4.75 cursor-pointer justify-center
           transition-[all] duration-100 hover:min-w-6 focus:outline-none"
         :class="{
-          '!bg-purple-dark !min-w-6': isActive(card),
-          '!bg-purple': isStudied(card),
-          '!bg-grey-light': isFailed(card)
+          '!min-w-6 !bg-purple-500': isActive(card),
+          '!bg-purple-400': isStudied(card),
+          '!bg-grey-300': isFailed(card)
         }"
         @click="onClickCard(card)"
       >
@@ -53,7 +53,7 @@ function onClickCard(card: Card) {
     </div>
 
     <div data-testid="history-track__count">
-      <p class="text-brown-dark text-lg">
+      <p class="text-brown-700 text-lg">
         {{ currentCard?.order ?? 0 }}<span class="text-sm">/{{ cards.length }}</span>
       </p>
     </div>

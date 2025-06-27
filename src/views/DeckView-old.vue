@@ -150,7 +150,7 @@ async function deleteCard(card: Card) {
         tid="empty-state"
         class="flex w-full flex-col items-center justify-center gap-4 self-center"
       >
-        <h1 class="text-grey-dark text-3xl font-semibold">{{ $t('deck-view.no-cards') }}</h1>
+        <h1 class="text-grey-700 text-3xl font-semibold">{{ $t('deck-view.no-cards') }}</h1>
         <ui-kit:button icon-left="add" fancy-hover @click="addCard">
           {{ $t('deck-view.add-card') }}
         </ui-kit:button>
@@ -177,7 +177,7 @@ async function deleteCard(card: Card) {
               @selectCard="(card: Card) => onSelectCard(card)"
               @deleteCard="(card: Card) => onDeleteCard(card)"
             />
-            <div class="border-b-grey w-full border-b border-dashed"></div>
+            <div class="border-b-grey-500 w-full border-b border-dashed"></div>
           </template>
         </div>
         <ui-kit:button icon-left="add" fancy-hover @click="addCard">{{

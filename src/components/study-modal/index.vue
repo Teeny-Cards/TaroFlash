@@ -52,11 +52,11 @@ function setup() {
   <ui-kit:modal :open="open" @opened="setup" @closed="$emit('closed')" backdrop>
     <div
       data-testid="study-modal"
-      class="bg-parchment-dark rounded-8 shadow-modal flex h-170 w-268 flex-col items-center overflow-hidden pb-6"
+      class="brown-300 rounded-8 shadow-modal flex h-170 w-268 flex-col items-center overflow-hidden pb-6"
     >
       <div
         data-testid="study-modal__header"
-        class="bg-purple-dark pointy-bottom relative flex w-full justify-center bg-(image:--diagonal-stripes)
+        class="pointy-bottom relative flex w-full justify-center bg-purple-500 bg-(image:--diagonal-stripes)
           bg-(length:--bg-sm) px-13 py-11.5"
       >
         <div data-testid="study-modal__actions" class="absolute top-0 left-0 p-4">
