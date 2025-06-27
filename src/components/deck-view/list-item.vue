@@ -1,12 +1,15 @@
 <template>
   <div
-    class="group flex w-full cursor-pointer items-center justify-between rounded-[28px] px-4 py-2 hover:bg-(image:--stripe-blue-bg) hover:font-bold"
+    class="group text-grey-dark flex w-full cursor-pointer items-center justify-between rounded-[28px] px-4
+      py-2 hover:bg-(image:--stripe-blue-bg) hover:font-bold"
   >
     <div class="flex items-center gap-6 group-hover:text-white" tabindex="0" role="button">
       <Card size="2xs" />
       {{ card.front_text }}
     </div>
+
     <span class="group-hover:text-white">{{ card.back_text }}</span>
+
     <div
       v-if="selectionModeActive"
       tid="select-radio-button"
@@ -25,6 +28,7 @@
         :class="{ 'text-white': selected }"
       />
     </div>
+
     <ui-kit:button-menu v-else :actions="moreMenuActions">
       <template #trigger="{ toggleDropdown }">
         <ui-kit:button
@@ -32,7 +36,8 @@
           icon-only
           variant="muted"
           size="small"
-          class="group-hover:text-blue hover:bg-blue-light group-hover:bg-white hover:text-white hover:ring-3 hover:ring-white"
+          class="group-hover:text-blue hover:bg-blue-light group-hover:bg-white hover:text-white hover:ring-3
+            hover:ring-white"
         >
           <ui-kit:icon src="more" />
         </ui-kit:button>
