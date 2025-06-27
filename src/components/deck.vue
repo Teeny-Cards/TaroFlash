@@ -48,7 +48,7 @@ const numCardsDue = computed(() => {
       class="bg-red ring-parchment absolute -top-2 -right-2 flex h-7.5 w-7.5 items-center justify-center
         rounded-full ring-4"
     >
-      <h2 class="text-sm text-white">{{ numCardsDue }}</h2>
+      <h2 class="text-base text-white">{{ numCardsDue }}</h2>
     </div>
 
     <div>

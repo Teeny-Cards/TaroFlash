@@ -18,8 +18,8 @@ defineEmits<{ (e: 'study'): void }>()
         class="flex h-full w-full flex-col justify-between px-4 pb-4"
       >
         <div class="flex flex-col gap-2.5">
-          <h1 class="text-brown-dark text-2xl">{{ deck.title }}</h1>
-          <p class="text-brown-dark text-xs">{{ deck.description }}</p>
+          <h1 class="text-brown-dark text-3xl">{{ deck.title }}</h1>
+          <p class="text-brown-dark text-sm">{{ deck.description }}</p>
         </div>
         <button
           data-testid="deck-preview__study-button"

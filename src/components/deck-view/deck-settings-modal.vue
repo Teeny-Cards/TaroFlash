@@ -14,7 +14,7 @@
     >
       <div tid="settings-modal-header" class="flex w-full items-center justify-center gap-12">
         <div class="bg-grey h-0.75 w-30 rounded-full"></div>
-        <h1 class="font-primary text-grey text-3xl tracking-wider">Deck Settings</h1>
+        <h1 class="font-primary text-grey text-5xl tracking-wider">Deck Settings</h1>
         <div class="bg-grey h-0.75 w-30 rounded-full"></div>
       </div>
       <div tid="settings-modal-body" class="relative flex h-full w-full gap-16">
@@ -35,7 +35,7 @@
               placeholder="Add a short description to your deck."
               v-model="description"
             />
-            <div class="font-primary text-grey-dark flex flex-col gap-8 text-xl">
+            <div class="font-primary text-grey-dark flex flex-col gap-8 text-2xl">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                   <ui-kit:icon src="public" class="text-leaf-dark"></ui-kit:icon>
@@ -65,7 +65,7 @@
                 <ui-kit:toggle :checked="newCards" @click="newCards = !newCards" />
               </div>
               <div class="flex items-center gap-2.5 font-light">
-                <p v-for="(tag, index) in deck?.tags" :key="index" class="text-grey text-sm">
+                <p v-for="(tag, index) in deck?.tags" :key="index" class="text-grey text-base">
                   #{{ tag }}
                 </p>
               </div>

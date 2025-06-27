@@ -2,7 +2,7 @@
   <ui-kit:modal open backdrop>
     <div class="bg-parchment-dark rounded-10 flex h-163 w-254 flex-col">
       <div class="flex w-full items-center justify-center py-5">
-        <h2 class="text-brown-dark text-4xl">Inventory</h2>
+        <h2 class="text-brown-dark text-6xl">Inventory</h2>
       </div>
       <div class="bg-parchment flex h-full gap-7 p-7">
         <div class="bg-parchment-dark rounded-6 h-full w-78.75"></div>
@@ -10,11 +10,13 @@
           <div
             v-for="purchase in purchases"
             :key="purchase.id"
-            class="bg-parchment-dark rounded-4 hover:ring-blue relative h-34 w-34 cursor-pointer p-2.5 transition-all hover:ring-4"
+            class="bg-parchment-dark rounded-4 hover:ring-blue relative h-34 w-34 cursor-pointer p-2.5 transition-all
+              hover:ring-4"
           >
             <ui-kit:image :src="purchase.shop_item.item_key" class="h-full w-full" />
             <div
-              class="bg-blue outline-parchment-dark absolute right-2 bottom-2 flex h-6.75 w-6.75 items-center justify-center rounded-full text-white outline-4"
+              class="bg-blue outline-parchment-dark absolute right-2 bottom-2 flex h-6.75 w-6.75 items-center
+                justify-center rounded-full text-white outline-4"
             >
               {{ purchase.quantity }}
             </div>

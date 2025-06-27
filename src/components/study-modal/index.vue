@@ -68,7 +68,7 @@ function setup() {
             @click="$emit('closed')"
           ></ui-kit:button>
         </div>
-        <h1 class="text-3xl text-white">Studying {{ deck?.title }}</h1>
+        <h1 class="text-5xl text-white">Studying {{ deck?.title }}</h1>
       </div>
 
       <div

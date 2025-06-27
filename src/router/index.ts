@@ -4,7 +4,7 @@ import ShopView from '@/views/ShopView.vue'
 import LoginPage from '@/views/LoginPage.vue'
 import SignupPage from '@/views/SignupPage.vue'
 import AppView from '@/views/AppView.vue'
-import DeckView from '@/views/DeckView.vue'
+import DeckView from '@/views/deck-view.vue'
 import { initUser } from '@/stores/initUser'
 
 const router = createRouter({

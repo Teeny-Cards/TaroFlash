@@ -53,8 +53,8 @@ function onClickCard(card: Card) {
     </div>
 
     <div data-testid="history-track__count">
-      <p class="text-brown-dark text-base">
-        {{ currentCard?.order ?? 0 }}<span class="text-xs">/{{ cards.length }}</span>
+      <p class="text-brown-dark text-lg">
+        {{ currentCard?.order ?? 0 }}<span class="text-sm">/{{ cards.length }}</span>
       </p>
     </div>
   </div>
