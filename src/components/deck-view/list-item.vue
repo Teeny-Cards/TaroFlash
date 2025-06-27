@@ -1,7 +1,7 @@
 <template>
   <div
-    class="group text-grey-dark flex w-full cursor-pointer items-center justify-between rounded-[28px] px-4
-      py-2 hover:bg-(image:--stripe-blue-bg) hover:font-bold"
+    class="group text-grey-700 flex w-full cursor-pointer items-center justify-between rounded-[28px] px-4 py-2
+      hover:bg-(image:--stripe-blue-500-bg) hover:font-bold"
   >
     <div class="flex items-center gap-6 group-hover:text-white" tabindex="0" role="button">
       <Card size="2xs" />
@@ -15,7 +15,7 @@
       tid="select-radio-button"
       class="flex h-7 w-7 items-center justify-center rounded-full"
       :class="{
-        'bg-blue-light': selected,
+        'bg-blue-500': selected,
         'bg-white': !selected,
         'group-hover:ring-3 group-hover:ring-white': selected
       }"
@@ -24,7 +24,7 @@
       <ui-kit:icon
         v-if="selected"
         src="check"
-        class="text-blue"
+        class="text-blue-500"
         :class="{ 'text-white': selected }"
       />
     </div>
@@ -36,7 +36,7 @@
           icon-only
           variant="muted"
           size="small"
-          class="group-hover:text-blue hover:bg-blue-light group-hover:bg-white hover:text-white hover:ring-3
+          class="group-hover:bg-white group-hover:text-blue-500 hover:bg-blue-500 hover:text-white hover:ring-3
             hover:ring-white"
         >
           <ui-kit:icon src="more" />

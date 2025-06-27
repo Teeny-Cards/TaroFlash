@@ -9,33 +9,26 @@
   --*: initial;
   --spacing: 4px;
 
-  --color-*: initial;
-  --color-blue: #11b7d4;
-  --color-blue-light: #41a9df;
-  --color-arctic: #9ad5f3;
-  --color-arctic-light: #b4dbef;
-  --color-green: #a4c6ae;
-  --color-leaf-dark: #469659;
-  --color-leaf: #e4edd9;
-  --color-leaf-light: #ecf8e2;
-  --color-orange: #fbc56f;
-  --color-orange-light: #f7d279;
-  --color-yellow: #f6f3df;
-  --color-yellow-light: #fcfae4;
-  --color-purple: #bea0df;
-  --color-purple-dark: #ad89d8;
-  --color-pink: #f388a5;
-  --color-pink-light: #f599b3;
-  --color-grey: #959595;
-  --color-grey-light: #d2d2d2;
-  --color-grey-dark: #4f4f4f;
-  --color-red: #f66a6a;
-  --color-brown-light: #b6b197;
-  --color-brown-dark: #744e2a;
-  --color-parchment: #f3f1ea;
-  --color-parchment-dark: #e7e0d5;
   --color-white: #ffffff;
   --color-black: #000000;
+
+  --color-blue-500: #11b7d4;
+  --color-green-400: #a4c6ae;
+  --color-green-300: #e4edd9;
+  --color-green-200: #e8f6e7;
+  --color-purple-500: #ad89d8;
+  --color-purple-400: #bea0df;
+  --color-pink-500: #f388a5;
+  --color-pink-400: #f599b3;
+  --color-red-500: #e66061;
+  --color-orange-500: #fbc56f;
+  --color-brown-700: #744e2a;
+  --color-brown-500: #b8b1a9;
+  --color-brown-300: #e7e0d5;
+  --color-brown-100: #f3f1ea;
+  --color-grey-700: #4f4f4f;
+  --color-grey-500: #959595;
+  --color-grey-300: #d2d2d2;
 
   --radius-1: --spacing(1); /* 4px */
   --radius-1_5: --spacing(1.5); /* 6px */
@@ -77,9 +70,9 @@
   --shadow-apps: 5px 5px 25px 0px rgba(0, 0, 0, 0.25);
 
   /* Backgrounds */
-  --stripe-blue-bg: url('../assets/backgrounds/stripe-blue.svg');
-  --curve-green-bg: url('../assets/backgrounds/curve-green.svg');
-  --bank-note-green-bg: url('../assets/backgrounds/bank-note-green.svg');
+  --stripe-blue-500-bg: url('../assets/backgrounds/stripe-blue.svg');
+  --curve-green-400-bg: url('../assets/backgrounds/curve-green.svg');
+  --bank-note-green-400-bg: url('../assets/backgrounds/bank-note-green.svg');
 
   /* New Background Paradigms */
   --diagonal-stripes: url('../assets/backgrounds/diagonal-stripes.svg');

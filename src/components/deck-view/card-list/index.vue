@@ -7,7 +7,7 @@ defineProps<{ deck: Deck }>()
 <template>
   <div
     data-testid="card-list"
-    class="divide-brown-light flex w-full flex-col divide-y-1 divide-dashed"
+    class="divide-brown-500 flex w-full flex-col divide-y-1 divide-dashed"
   >
     <list-item v-for="card in deck.cards" :key="card.id" :card="card" />
   </div>

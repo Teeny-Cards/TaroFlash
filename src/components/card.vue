@@ -19,7 +19,7 @@
     <div
       v-else
       data-testid="card"
-      class="bg-green relative shrink-0 p-3"
+      class="relative shrink-0 bg-green-400 p-3"
       :class="[defaultClasses, sizeClasses[size]]"
     ></div>
   </transition>

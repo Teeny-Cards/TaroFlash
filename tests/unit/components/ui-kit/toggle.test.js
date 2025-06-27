@@ -15,9 +15,9 @@ it('renders properly in unchecked state', () => {
   // Container should have white background when unchecked
   const container = wrapper.find('div')
   expect(container.classes()).toContain('bg-white')
-  expect(container.classes()).not.toContain('bg-leaf-dark')
+  expect(container.classes()).not.toContain('bg-green-400')
 
-  // Toggle handle should have grey background and no transform when unchecked
+  // Toggle handle should have grey-500 background and no transform when unchecked
   const handle = container.find('div')
   expect(handle.classes()).toContain('bg-grey')
   expect(handle.classes()).not.toContain('bg-white')
@@ -35,9 +35,9 @@ it('renders properly in checked state', () => {
 
   expect(wrapper.exists()).toBe(true)
 
-  // Container should have leaf-dark background when checked
+  // Container should have green-400 background when checked
   const container = wrapper.find('div')
-  expect(container.classes()).toContain('bg-leaf-dark')
+  expect(container.classes()).toContain('bg-green-400')
   expect(container.classes()).not.toContain('bg-white')
 
   // Toggle handle should have white background and transform when checked
@@ -65,7 +65,7 @@ it('updates UI when checked prop changes', async () => {
 
   // Should now be checked
   container = wrapper.find('div')
-  expect(container.classes()).toContain('bg-leaf-dark')
+  expect(container.classes()).toContain('bg-green-400')
 
   // Update back to unchecked
   await wrapper.setProps({ checked: false })

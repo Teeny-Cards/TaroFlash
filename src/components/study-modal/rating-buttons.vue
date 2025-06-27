@@ -37,7 +37,7 @@ function onRatingClicked(grade: Grade) {
     <template v-if="showOptions">
       <button
         data-testid="rating-buttons__good"
-        class="bg-purple-dark cursor-pointer rounded-full px-13 py-4 text-white"
+        class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white"
         :class="{ 'opacity-50': disabled }"
         :disabled="disabled"
         @click="onRatingClicked(Rating.Good)"
@@ -47,7 +47,7 @@ function onRatingClicked(grade: Grade) {
       </button>
       <button
         data-testid="rating-buttons__again"
-        class="text-brown-dark cursor-pointer rounded-full bg-white px-13 py-4"
+        class="text-brown-700 cursor-pointer rounded-full bg-white px-13 py-4"
         :class="{ 'opacity-50': disabled }"
         :disabled="disabled"
         @click="onRatingClicked(Rating.Again)"
@@ -59,7 +59,7 @@ function onRatingClicked(grade: Grade) {
     <template v-else>
       <button
         data-testid="rating-buttons__show"
-        class="bg-purple-dark cursor-pointer rounded-full px-13 py-4 text-white"
+        class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white"
         @click="$emit('revealed')"
       >
         Show!
