@@ -21,7 +21,7 @@ export async function fetchMemberDecks(member_id: number): Promise<Deck[]> {
 
   const { data, error } = await supabase
     .from('decks')
-    .select('description,title, image_url, id, due_cards:cards(*, review:reviews!inner(*))')
+    .select('description,title, image_path, id, due_cards:cards(*, review:reviews!inner(*))')
     .eq('member_id', member_id)
     .lte('cards.reviews.due', end_of_day)
 

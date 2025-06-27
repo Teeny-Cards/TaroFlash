@@ -9,6 +9,6 @@ type Deck = {
   member?: { display_name: string }
   cards?: Card[]
   tags?: string[]
-  image_url?: string
+  image_path?: string
   due_cards?: Card[]
 }

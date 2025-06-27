@@ -17,8 +17,8 @@ export const useMemberStore = defineStore('member', {
   },
 
   getters: {
-    id({ member }): string {
-      return member?.id ?? ''
+    id({ member }): number | undefined {
+      return member?.id
     },
     display_name({ member }): string {
       return member?.display_name ?? ''
