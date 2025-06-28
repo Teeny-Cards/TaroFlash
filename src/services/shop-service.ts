@@ -22,7 +22,7 @@ export async function upsertPurchase(purchase: Purchase): Promise<void> {
   }
 }
 
-export async function fetchPurchaseItems(member_id: string): Promise<PurchaseItem[]> {
+export async function fetchPurchaseItems(member_id: number): Promise<PurchaseItem[]> {
   const { data, error } = await supabase
     .from('purchases')
     .select('item_id, quantity, shop_item:shop_items(*)')

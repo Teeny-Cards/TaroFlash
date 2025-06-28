@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import ShopItem from '@/components/shop-view/shop-item.vue'
-import { fetchShopItems, upsertPurchase } from '@/services/shopService'
+import { fetchShopItems, upsertPurchase } from '@/services/shop-service'
 import PurchaseModal from '@/components/shop-view/purchase-modal.vue'
 import { useMemberStore } from '@/stores/member'
 
