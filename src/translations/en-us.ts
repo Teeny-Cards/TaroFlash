@@ -9,5 +9,7 @@ export default {
   'edit-card-modal.title': 'Edit Card',
   'dashboard.due': 'Due',
   'deck-view.add-card': 'Add Card',
-  'deck-view.no-cards': 'No Cards'
+  'deck-view.no-cards': 'No Cards',
+  'deck-view.tabs.card-view': 'Card View',
+  'deck-view.tabs.list-view': 'List View'
 }

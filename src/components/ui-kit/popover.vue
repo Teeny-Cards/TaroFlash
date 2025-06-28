@@ -103,7 +103,7 @@ function handleMouseEnterTrigger() {
         <div data-testid="ui-kit-popover__arrow" ref="ui-kit-popover__arrow">
           <slot name="arrow" :positions="{ left: arrow_left, top: arrow_top }">
             <div
-              class="brown-300 rounded-1 -z-10 h-5 w-5 rotate-45"
+              class="bg-brown-300 rounded-1 -z-10 h-5 w-5 rotate-45"
               :style="{
                 position: 'absolute',
                 left: arrow_left,

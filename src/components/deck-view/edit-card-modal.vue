@@ -69,8 +69,8 @@ function scrollUp(): void {
   <div data-test-id="edit-card-modal-container" class="relative">
     <div
       data-testid="edit-card-modal"
-      class="brown-300 rounded-11 shadow-modal flex w-full flex-col items-center justify-center overflow-hidden
-        pb-6 lg:max-w-max"
+      class="bg-brown-300 rounded-11 shadow-modal flex w-full flex-col items-center justify-center
+        overflow-hidden pb-6 lg:max-w-max"
     >
       <div
         data-testid="edit-card-modal__title"

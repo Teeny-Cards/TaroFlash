@@ -52,7 +52,7 @@ function setup() {
   <ui-kit:modal :open="open" @opened="setup" @closed="$emit('closed')" backdrop>
     <div
       data-testid="study-modal"
-      class="brown-300 rounded-8 shadow-modal flex h-170 w-268 flex-col items-center overflow-hidden pb-6"
+      class="bg-brown-300 rounded-8 shadow-modal flex h-170 w-268 flex-col items-center overflow-hidden pb-6"
     >
       <div
         data-testid="study-modal__header"

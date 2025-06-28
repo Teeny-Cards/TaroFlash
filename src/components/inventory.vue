@@ -1,16 +1,16 @@
 <template>
   <ui-kit:modal open backdrop>
-    <div class="brown-300 rounded-10 flex h-163 w-254 flex-col">
+    <div class="bg-brown-300 rounded-10 flex h-163 w-254 flex-col">
       <div class="flex w-full items-center justify-center py-5">
         <h2 class="text-brown-700 text-6xl">Inventory</h2>
       </div>
       <div class="bg-brown-100 flex h-full gap-7 p-7">
-        <div class="brown-300 rounded-6 h-full w-78.75"></div>
+        <div class="bg-brown-300 rounded-6 h-full w-78.75"></div>
         <div class="grid grid-cols-4 gap-3.5">
           <div
             v-for="purchase in purchases"
             :key="purchase.id"
-            class="brown-300 rounded-4 relative h-34 w-34 cursor-pointer p-2.5 transition-all hover:ring-4
+            class="bg-brown-300 rounded-4 relative h-34 w-34 cursor-pointer p-2.5 transition-all hover:ring-4
               hover:ring-blue-500"
           >
             <ui-kit:image :src="purchase.shop_item.item_key" class="h-full w-full" />
