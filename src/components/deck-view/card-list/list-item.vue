@@ -7,7 +7,7 @@ export type NavigationData = {
 import Card from '@/components/card.vue'
 import { useTemplateRef, watchEffect, computed } from 'vue'
 
-const { focused, selectedColumn, selectionStart } = defineProps<{
+const { editing, focused, selectedColumn, selectionStart } = defineProps<{
   front_text: string
   back_text: string
   editing: boolean
@@ -30,10 +30,11 @@ const inputMap = {
 } as const
 
 const textareaClass = computed(() => ({
-  'rounded-5 text-grey-700 resize-none bg-white p-6 transition-[height] duration-75 focus:outline-none':
-    true,
-  'h-85.5 ring-2 ring-blue-500': focused,
-  'h-27.75': !focused
+  'text-grey-700 resize-none transition-all duration-100': true,
+  'h-5.25': !editing,
+  'rounded-5 bg-white p-6 focus:outline-none': editing,
+  'h-85.5 ring-2 ring-blue-500': focused && editing,
+  'h-27.75': !focused && editing
 }))
 
 function emitDirection(e: KeyboardEvent) {
@@ -75,37 +76,17 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div
-    v-if="editing"
-    data-testid="card-list__item"
-    class="text-grey-700 grid w-full grid-cols-[auto_1fr_1fr] gap-6 py-3"
-  >
+  <div data-testid="card-list__item"
+    class="text-grey-700 grid w-full grid-cols-[auto_1fr_1fr_auto] gap-6 py-3 items-center"
+    :class="{ 'items-start': editing }">
     <card size="2xs" />
-    <textarea
-      data-testid="card-list__item-front-input"
-      :class="textareaClass"
-      ref="front-input"
-      @focus="onFocus"
-      :value="front_text"
-    />
+    <textarea data-testid="card-list__item-front-input" :class="textareaClass" :disabled="!editing" ref="front-input"
+      @focus="onFocus" :value="front_text" />
 
-    <textarea
-      data-testid="card-list__item-back-input"
-      :class="textareaClass"
-      ref="back-input"
-      @focus="onFocus"
-      :value="back_text"
-    />
-  </div>
-  <div
-    v-else
-    data-testid="card-list__item"
-    class="text-grey-700 grid w-full cursor-pointer grid-cols-[auto_1fr_1fr_auto] items-center gap-6 py-3"
-  >
-    <card size="2xs" />
-    <p>{{ front_text }}</p>
-    <p>{{ back_text }}</p>
-    <ui-kit:button icon-only variant="muted" size="small">
+    <textarea data-testid="card-list__item-back-input" :class="textareaClass" :disabled="!editing" ref="back-input"
+      @focus="onFocus" :value="back_text" />
+
+    <ui-kit:button v-if="!editing" icon-only variant="muted" size="small">
       <ui-kit:icon src="more" />
     </ui-kit:button>
   </div>

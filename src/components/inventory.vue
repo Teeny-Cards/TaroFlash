@@ -15,8 +15,8 @@
               {{ purchase.quantity }}
             </div>
           </div>
-          <div v-for="i in empty_slots" :key="i"
-            class="border-brown-100-dark rounded-4 h-34 w-34 border-2 border-dashed"></div>
+          <div v-for="i in empty_slots" :key="i" class="border-brown-300 rounded-4 h-34 w-34 border-2 border-dashed">
+          </div>
         </div>
       </div>
       <div class="h-21.25 w-full"></div>
