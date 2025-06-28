@@ -1,4 +1,4 @@
-import { supabase } from '@/supabaseClient'
+import { supabase } from '@/supabase-client'
 
 export async function fetchShopItems(): Promise<ShopItem[]> {
   const { data, error } = await supabase.from('shop_items').select('*')

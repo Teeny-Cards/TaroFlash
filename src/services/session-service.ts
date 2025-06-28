@@ -1,4 +1,4 @@
-import { supabase } from '@/supabaseClient'
+import { supabase } from '@/supabase-client'
 import type { Session } from '@supabase/supabase-js'
 
 export async function getSession(): Promise<Session | null> {
