@@ -7,7 +7,7 @@ defineEmits<{ (e: 'study'): void }>()
   <ui-kit:popover>
     <div
       data-testid="deck-preview"
-      class="brown-300 rounded-7 flex h-87.5 w-62.75 flex-col gap-4 overflow-hidden"
+      class="bg-brown-300 rounded-7 flex h-87.5 w-62.75 flex-col gap-4 overflow-hidden"
     >
       <div data-testid="deck-preview__image" class="pointy-bottom-sm h-32.75 w-full shrink-0">
         <img :src="imageUrl" alt="Deck Image preview" class="h-full w-full object-cover" />
@@ -33,7 +33,7 @@ defineEmits<{ (e: 'study'): void }>()
 
     <template #arrow="{ positions }">
       <div
-        class="brown-300 rounded-1 -z-10 h-5 w-5 rotate-45"
+        class="bg-brown-300 rounded-1 -z-10 h-5 w-5 rotate-45"
         :style="{
           position: 'absolute',
           left: positions.left,

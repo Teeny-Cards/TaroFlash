@@ -1,6 +1,6 @@
 <template>
   <NavBar :display_name="member.display_name" />
-  <main class="h-full w-full max-w-326 px-4 pt-7 sm:px-16">
+  <main class="h-full w-full max-w-375 px-4 pt-7 sm:px-16">
     <RouterView />
   </main>
 </template>

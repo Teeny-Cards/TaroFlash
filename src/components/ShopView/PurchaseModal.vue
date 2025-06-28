@@ -1,6 +1,7 @@
 <template>
   <div
-    class="brown-300 rounded-31 shadow-modal flex h-156 w-149 flex-col items-center justify-between gap-16 p-15"
+    class="bg-brown-300 rounded-31 shadow-modal flex h-156 w-149 flex-col items-center justify-between gap-16
+      p-15"
   >
     <div class="flex flex-col items-center gap-4">
       <ui-kit:image :src="item.item_key" class="h-41 w-41" />

@@ -8,7 +8,8 @@ defineEmits<{ (e: 'study-clicked'): void; (e: 'settings-clicked'): void }>()
 <template>
   <div
     data-testid="overview-panel"
-    class="flex w-max flex-col items-center gap-6 sm:flex-row sm:items-end lg:flex-col lg:items-start"
+    class="sticky top-24 flex w-max flex-col items-center gap-6 sm:flex-row sm:items-end lg:flex-col
+      lg:items-start"
   >
     <card size="large" class="relative overflow-hidden"></card>
 
