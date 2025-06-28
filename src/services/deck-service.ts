@@ -1,5 +1,5 @@
 import { deleteCardsByDeckId } from '@/services/card-service'
-import { supabase } from '@/supabaseClient'
+import { supabase } from '@/supabase-client'
 import Logger from '@/utils/logger'
 import { DateTime } from 'luxon'
 

@@ -18,7 +18,7 @@ export default mergeConfig(
           '**/postcss.config.js',
           '**/App.vue',
           '**/main.ts',
-          '**/supabaseClient.ts',
+          '**/supabase-client.ts',
           '**/router/**',
           '**/src/services/**',
           '**/src/components/ui-kit/_index.ts',

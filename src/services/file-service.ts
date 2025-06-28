@@ -1,4 +1,4 @@
-import { supabase } from '@/supabaseClient'
+import { supabase } from '@/supabase-client'
 import { useMemberStore } from '@/stores/member'
 import Logger from '@/utils/logger'
 
