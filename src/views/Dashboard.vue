@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { fetchMemberDecks } from '@/services/deckService'
+import { fetchMemberDecks } from '@/services/deck-service'
 import { useToastStore } from '@/stores/toast'
 import Deck from '@/components/deck.vue'
 import { useMemberStore } from '@/stores/member'
@@ -39,24 +39,14 @@ function onDeckClicked(deck: Deck) {
     <div class="flex flex-col gap-4">
       <h1 class="text-grey-700 text-3xl">{{ $t('dashboard.due') }}</h1>
       <div class="flex gap-4">
-        <Deck
-          v-for="(deck, index) in due_decks"
-          :key="index"
-          :deck="deck"
-          @clicked="() => onDeckClicked(deck)"
-        />
+        <Deck v-for="(deck, index) in due_decks" :key="index" :deck="deck" @clicked="() => onDeckClicked(deck)" />
       </div>
     </div>
 
     <div class="flex flex-col gap-4">
       <h1 class="text-grey-700 text-3xl">All Decks</h1>
       <div class="flex gap-4">
-        <Deck
-          v-for="(deck, index) in decks"
-          :key="index"
-          :deck="deck"
-          @clicked="() => onDeckClicked(deck)"
-        />
+        <Deck v-for="(deck, index) in decks" :key="index" :deck="deck" @clicked="() => onDeckClicked(deck)" />
       </div>
     </div>
   </div>

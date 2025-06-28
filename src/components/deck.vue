@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Card from '@/components/card.vue'
-import { getImageUrl } from '@/services/fileService'
+import { getImageUrl } from '@/services/file-service'
 import { onMounted, ref, computed } from 'vue'
 import deckPreview from './deck-preview.vue'
 import StudyModal from './study-modal/index.vue'
@@ -30,12 +30,8 @@ const numCardsDue = computed(() => {
 
 <template>
   <div data-testid="deck" class="relative flex w-max flex-col gap-2.5">
-    <Card
-      size="small"
-      class="border-brown-100-dark relative cursor-pointer overflow-hidden border-8"
-      :revealed="true"
-      @click="$emit('clicked')"
-    >
+    <Card size="small" class="border-brown-100-dark relative cursor-pointer overflow-hidden border-8" :revealed="true"
+      @click="$emit('clicked')">
       <div v-if="image_url" class="absolute inset-0">
         <img :src="image_url" alt="Deck Image preview" class="h-full w-full object-cover" />
       </div>
@@ -43,11 +39,8 @@ const numCardsDue = computed(() => {
       <deck-preview :deck="deck" :image-url="image_url" @study="onStudyClicked" />
     </Card>
 
-    <div
-      v-if="numCardsDue"
-      class="ring-brown-100 absolute -top-2 -right-2 flex h-7.5 w-7.5 items-center justify-center rounded-full
-        bg-red-500 ring-4"
-    >
+    <div v-if="numCardsDue" class="ring-brown-100 absolute -top-2 -right-2 flex h-7.5 w-7.5 items-center justify-center rounded-full
+        bg-red-500 ring-4">
       <h2 class="text-base text-white">{{ numCardsDue }}</h2>
     </div>
 

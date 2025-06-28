@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { User } from '@supabase/supabase-js'
-import { getSession, login } from '@/services/sessionService'
+import { getSession, login } from '@/services/session-service'
 
 interface State {
   user: User | undefined

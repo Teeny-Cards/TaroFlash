@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import OverviewPanel from '@/components/deck-view/overview-panel.vue'
 import { onMounted, ref } from 'vue'
-import { fetchDeckById } from '@/services/deckService'
+import { fetchDeckById } from '@/services/deck-service'
 import StudyModal from '@/components/study-modal/index.vue'
 import CardList from '@/components/deck-view/card-list/index.vue'
 import { useI18n } from 'vue-i18n'
