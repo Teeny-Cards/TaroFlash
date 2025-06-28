@@ -30,7 +30,7 @@ const numCardsDue = computed(() => {
 
 <template>
   <div data-testid="deck" class="relative flex w-max flex-col gap-2.5">
-    <Card size="small" class="border-brown-100-dark relative cursor-pointer overflow-hidden border-8" :revealed="true"
+    <Card size="small" class="border-brown-300 relative cursor-pointer overflow-hidden border-8" :revealed="true"
       @click="$emit('clicked')">
       <div v-if="image_url" class="absolute inset-0">
         <img :src="image_url" alt="Deck Image preview" class="h-full w-full object-cover" />

@@ -14,7 +14,7 @@ const { id: deck_id } = defineProps<{
 
 const deck = ref<Deck>()
 const studyModalOpen = ref(false)
-const editing = ref(true)
+const editing = ref(false)
 
 const tabs = [
   {
@@ -31,7 +31,7 @@ onMounted(async () => {
     const id = Number(deck_id)
     deck.value = await fetchDeckById(id)
   } catch (e: any) {
-    //
+    // TODO
   }
 })
 </script>
@@ -43,7 +43,14 @@ onMounted(async () => {
     <div class="w-full">
       <ui-kit:tabs :tabs="tabs" class="pb-4">
         <template #actions>
-          <ui-kit:button icon-only icon-left="edit" size="xs"></ui-kit:button>
+          <ui-kit:button v-if="!editing" icon-only icon-left="edit" size="xs" @click="editing = true"></ui-kit:button>
+
+          <div class="flex gap-1.5">
+            <ui-kit:button v-if="editing" icon-only icon-left="close" size="xs" variant="danger"
+              @click="editing = false"></ui-kit:button>
+            <ui-kit:button v-if="editing" icon-only icon-left="check" size="xs"
+              @click="editing = false"></ui-kit:button>
+          </div>
         </template>
       </ui-kit:tabs>
 
