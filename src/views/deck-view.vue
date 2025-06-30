@@ -5,6 +5,8 @@ import { fetchDeckById } from '@/services/deck-service'
 import StudyModal from '@/components/study-modal/index.vue'
 import CardList from '@/components/deck-view/card-list/index.vue'
 import { useI18n } from 'vue-i18n'
+import { useEditableCards } from '@/composables/use-editable-cards'
+import { updateCards } from '@/services/card-service'
 
 const { t } = useI18n()
 
@@ -15,6 +17,8 @@ const { id: deck_id } = defineProps<{
 const deck = ref<Deck>()
 const studyModalOpen = ref(false)
 const editing = ref(false)
+let cardEdits: ReturnType<typeof useEditableCards> | undefined
+
 
 const tabs = [
   {
@@ -30,10 +34,27 @@ onMounted(async () => {
   try {
     const id = Number(deck_id)
     deck.value = await fetchDeckById(id)
+
+    cardEdits = useEditableCards(deck.value.cards ?? [])
   } catch (e: any) {
     // TODO
   }
 })
+
+async function saveEdits() {
+  const changed = cardEdits?.getChangedCards()
+  if (!changed) return
+
+  if (changed.length > 0) {
+    await updateCards(changed)
+    cardEdits?.markAllClean()
+  }
+}
+
+function discardEdits() {
+  cardEdits?.resetChanges()
+  editing.value = false
+}
 </script>
 
 <template>
@@ -47,16 +68,17 @@ onMounted(async () => {
 
           <div class="flex gap-1.5">
             <ui-kit:button v-if="editing" icon-only icon-left="close" size="xs" variant="danger"
-              @click="editing = false"></ui-kit:button>
-            <ui-kit:button v-if="editing" icon-only icon-left="check" size="xs"
-              @click="editing = false"></ui-kit:button>
+              @click="discardEdits"></ui-kit:button>
+            <ui-kit:button v-if="editing" icon-only icon-left="check" size="xs" @click="saveEdits()"
+              :disabled="!cardEdits?.isDirty"></ui-kit:button>
           </div>
         </template>
       </ui-kit:tabs>
 
       <ui-kit:divider />
 
-      <card-list v-if="deck" :deck="deck" :editing="editing" />
+      <card-list v-if="deck" :cards="cardEdits?.editedCards ?? []" :editing="editing"
+        @updated="cardEdits?.updateCard" />
     </div>
   </section>
 

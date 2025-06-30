@@ -3,7 +3,10 @@ import { ref } from 'vue'
 import ListItem from './list-item.vue'
 import { type NavigationData } from './list-item.vue'
 
-const { deck, editing } = defineProps<{ deck: Deck; editing: boolean }>()
+const { cards, editing } = defineProps<{ cards: Card[]; editing: boolean }>()
+const emit = defineEmits<{
+  (e: 'updated', id: number, prop: 'front_text' | 'back_text', value: string): void
+}>()
 
 const selected_card_index = ref<number>(0)
 const selected_column = ref<'front' | 'back'>('front')
@@ -20,7 +23,7 @@ function onNavigate(data: NavigationData) {
   const newIndex =
     data.direction === 'up' ? selected_card_index.value - 1 : selected_card_index.value + 1
 
-  if (newIndex >= 0 && newIndex < (deck.cards?.length ?? Infinity)) {
+  if (newIndex >= 0 && newIndex < (cards.length ?? Infinity)) {
     selection_start = data.selection_start
     selected_card_index.value = newIndex
   }
@@ -39,21 +42,18 @@ function onFocus(direction: 'left' | 'right', index: number) {
 
   selected_card_index.value = index
 }
+
+function onUpdated(id: number, prop: 'front_text' | 'back_text', value: string) {
+  emit('updated', id, prop, value)
+}
 </script>
 
 <template>
   <div data-testid="card-list" class="divide-brown-500 flex w-full flex-col">
-    <template v-for="(card, index) in deck.cards" :key="card.id">
-      <list-item
-        :front_text="card.front_text"
-        :back_text="card.back_text"
-        :editing="editing"
-        :selection-start="selection_start"
-        :selected-column="selected_column"
-        :focused="selected_card_index === index"
-        @focused="(direction) => onFocus(direction, index)"
-        @navigated="onNavigate"
-      />
+    <template v-for="(card, index) in cards" :key="card.id">
+      <list-item :card="card" :editing="editing" :selection-start="selection_start" :selected-column="selected_column"
+        :focused="selected_card_index === index" @focused="(direction) => onFocus(direction, index)"
+        @navigated="onNavigate" @updated="onUpdated" />
       <ui-kit:divider dashed />
     </template>
   </div>

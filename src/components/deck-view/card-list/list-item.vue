@@ -7,9 +7,8 @@ export type NavigationData = {
 import Card from '@/components/card.vue'
 import { useTemplateRef, watchEffect, computed } from 'vue'
 
-const { editing, focused, selectedColumn, selectionStart } = defineProps<{
-  front_text: string
-  back_text: string
+const { editing, focused, selectedColumn, selectionStart, card } = defineProps<{
+  card: Card
   editing: boolean
   focused: boolean
   selectionStart: number
@@ -19,6 +18,7 @@ const { editing, focused, selectedColumn, selectionStart } = defineProps<{
 const emit = defineEmits<{
   (e: 'focused', direction: 'left' | 'right'): void
   (e: 'navigated', data: NavigationData): void
+  (e: 'updated', id: number, prop: 'front_text' | 'back_text', value: string): void
 }>()
 
 const front_input = useTemplateRef<HTMLTextAreaElement>('front-input')
@@ -54,10 +54,18 @@ function emitDirection(e: KeyboardEvent) {
 
 function onFocus(e: Event) {
   const target = e.target as HTMLTextAreaElement
-  target.scrollIntoView({ behavior: 'smooth', block: 'center' })
+
+  if (!focused) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
 
   if (target === front_input.value) emit('focused', 'left')
   if (target === back_input.value) emit('focused', 'right')
+}
+
+function onInput(e: Event, prop: 'front_text' | 'back_text') {
+  const target = e.target as HTMLTextAreaElement
+  emit('updated', card.id!, prop, target.value)
 }
 
 watchEffect(() => {
@@ -81,10 +89,10 @@ watchEffect(() => {
     :class="{ 'items-start': editing }">
     <card size="2xs" />
     <textarea data-testid="card-list__item-front-input" :class="textareaClass" :disabled="!editing" ref="front-input"
-      @focus="onFocus" :value="front_text" />
+      @focus="onFocus" :value="card.front_text" @input="onInput($event, 'front_text')" />
 
     <textarea data-testid="card-list__item-back-input" :class="textareaClass" :disabled="!editing" ref="back-input"
-      @focus="onFocus" :value="back_text" />
+      @focus="onFocus" :value="card.back_text" @input="onInput($event, 'back_text')" />
 
     <ui-kit:button v-if="!editing" icon-only variant="muted" size="small">
       <ui-kit:icon src="more" />
