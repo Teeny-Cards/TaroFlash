@@ -2,8 +2,10 @@ import { supabase } from '@/supabase-client'
 import Logger from '@/utils/logger'
 import { useMemberStore } from '@/stores/member'
 
-export async function saveCards(cards: Card[]): Promise<Card[]> {
-  const { data, error } = await supabase.from('cards').upsert(cards).select()
+export async function updateCards(cards: Card[]): Promise<Card[]> {
+  const sanitized = cards.map(({ review, ...rest }) => rest)
+
+  const { data, error } = await supabase.from('cards').upsert(sanitized).select()
 
   if (error) {
     Logger.error(error.message)
