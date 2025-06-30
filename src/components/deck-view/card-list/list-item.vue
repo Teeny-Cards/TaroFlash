@@ -54,10 +54,7 @@ function emitDirection(e: KeyboardEvent) {
 
 function onFocus(e: Event) {
   const target = e.target as HTMLTextAreaElement
-
-  if (!focused) {
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  }
+  target.scrollIntoView({ behavior: 'smooth', block: 'center' })
 
   if (target === front_input.value) emit('focused', 'left')
   if (target === back_input.value) emit('focused', 'right')

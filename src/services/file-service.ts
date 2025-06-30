@@ -12,7 +12,8 @@ type TransformOptions = {
 
 type Bucket = 'deck-images'
 
-export async function uploadImage(bucket: string, file: File, member_id: string): Promise<string> {
+export async function uploadImage(bucket: string, file: File): Promise<string> {
+  const member_id = useMemberStore().id
   const file_path = `${member_id}/${file.name}`
 
   try {

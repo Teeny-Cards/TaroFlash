@@ -1,9 +1,11 @@
 import { deleteCardsByDeckId } from '@/services/card-service'
 import { supabase } from '@/supabase-client'
+import { useMemberStore } from '@/stores/member'
 import Logger from '@/utils/logger'
 import { DateTime } from 'luxon'
 
-export async function createDeck(deck: Deck, member_id: number): Promise<any> {
+export async function createDeck(deck: Deck): Promise<any> {
+  const member_id = useMemberStore().id
   const { ...data } = deck
 
   data.member_id = member_id
@@ -16,7 +18,8 @@ export async function createDeck(deck: Deck, member_id: number): Promise<any> {
   }
 }
 
-export async function fetchMemberDecks(member_id: number): Promise<Deck[]> {
+export async function fetchMemberDecks(): Promise<Deck[]> {
+  const member_id = useMemberStore().id
   const end_of_day = DateTime.now().endOf('day').toISO()
 
   const { data, error } = await supabase
