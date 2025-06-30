@@ -3,22 +3,16 @@ import { computed, onMounted, ref } from 'vue'
 import { fetchMemberDecks } from '@/services/deck-service'
 import { useToastStore } from '@/stores/toast'
 import Deck from '@/components/deck.vue'
-import { useMemberStore } from '@/stores/member'
 import { useRouter } from 'vue-router'
 
 const loading = ref(true)
 const toastStore = useToastStore()
 const decks = ref<Deck[]>([])
-const memberStore = useMemberStore()
 const router = useRouter()
 
 onMounted(async () => {
   try {
-    if (!memberStore.id) {
-      return
-    }
-
-    decks.value = await fetchMemberDecks(memberStore.id)
+    decks.value = await fetchMemberDecks()
     loading.value = false
   } catch (e: any) {
     toastStore.error(e.message)
