@@ -31,7 +31,7 @@ function groupItemsByCategory(items: ShopItem[]) {
 async function submitPurchase(item: ShopItem) {
   await upsertPurchase({
     item_id: item.id,
-    member_id: memberStore.id!,
+    member_id: memberStore.id,
     quantity: 1
   })
 

@@ -5,7 +5,8 @@ import { type NavigationData } from './list-item.vue'
 
 const { cards, editing } = defineProps<{ cards: Card[]; editing: boolean }>()
 const emit = defineEmits<{
-  (e: 'updated', id: number, prop: 'front_text' | 'back_text', value: string): void
+  (e: 'updated', id: number, prop: 'front_text' | 'back_text', value: string): void,
+  (e: 'add-card'): void
 }>()
 
 const selected_card_index = ref<number>(0)
@@ -49,12 +50,16 @@ function onUpdated(id: number, prop: 'front_text' | 'back_text', value: string) 
 </script>
 
 <template>
-  <div data-testid="card-list" class="divide-brown-500 flex w-full flex-col">
+  <div data-testid="card-list" class="divide-brown-500 flex w-full flex-col relative">
     <template v-for="(card, index) in cards" :key="card.id">
       <list-item :card="card" :editing="editing" :selection-start="selection_start" :selected-column="selected_column"
         :focused="selected_card_index === index" @focused="(direction) => onFocus(direction, index)"
         @navigated="onNavigate" @updated="onUpdated" />
+
       <ui-kit:divider dashed />
     </template>
+
+    <ui-kit:button v-if="editing" icon-only icon-left="add" class="absolute top-3 -right-8" @click="emit('add-card')">
+    </ui-kit:button>
   </div>
 </template>
