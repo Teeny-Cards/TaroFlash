@@ -1,6 +1,5 @@
 import { supabase } from '@/supabase-client'
 import Logger from '@/utils/logger'
-import { useMemberStore } from '@/stores/member'
 
 export async function updateCards(cards: Card[]): Promise<Card[]> {
   const sanitized = cards.map(({ review, ...rest }) => rest)
@@ -16,11 +15,9 @@ export async function updateCards(cards: Card[]): Promise<Card[]> {
 }
 
 export async function createCard(card: Card): Promise<Card> {
-  const member_id = useMemberStore().id
-
   const { data, error } = await supabase
     .from('cards')
-    .insert({ ...card, member_id })
+    .insert({ ...card })
     .select()
     .single()
 
@@ -33,11 +30,9 @@ export async function createCard(card: Card): Promise<Card> {
 }
 
 export async function updateReviewByCardId(id: number, review: Review): Promise<Card> {
-  const member_id = useMemberStore().id
-
   const { error, data } = await supabase
     .from('reviews')
-    .upsert({ ...review, member_id, card_id: id }, { onConflict: 'card_id' })
+    .upsert({ ...review, card_id: id }, { onConflict: 'card_id' })
     .single()
 
   if (error) {

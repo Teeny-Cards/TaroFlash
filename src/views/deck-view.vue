@@ -35,7 +35,7 @@ onMounted(async () => {
     const id = Number(deck_id)
     deck.value = await fetchDeckById(id)
 
-    cardEdits = useEditableCards(deck.value.cards ?? [])
+    cardEdits = useEditableCards(deck.value.cards ?? [], deck.value.id)
   } catch (e: any) {
     // TODO
   }
@@ -46,8 +46,14 @@ async function saveEdits() {
   if (!changed) return
 
   if (changed.length > 0) {
-    await updateCards(changed)
-    cardEdits?.markAllClean()
+    try {
+      await updateCards(changed)
+      deck.value = await fetchDeckById(Number(deck_id))
+      cardEdits = useEditableCards(deck.value.cards ?? [], deck.value.id)
+      editing.value = false
+    } catch (e: any) {
+      // TODO
+    }
   }
 }
 
@@ -61,7 +67,7 @@ function discardEdits() {
   <section data-testid="deck-view" class="flex h-full items-start gap-15 pt-12">
     <overview-panel v-if="deck" :deck="deck" @study-clicked="studyModalOpen = true" />
 
-    <div class="w-full">
+    <div class="w-full relative">
       <ui-kit:tabs :tabs="tabs" class="pb-4">
         <template #actions>
           <ui-kit:button v-if="!editing" icon-only icon-left="edit" size="xs" @click="editing = true"></ui-kit:button>
@@ -77,8 +83,8 @@ function discardEdits() {
 
       <ui-kit:divider />
 
-      <card-list v-if="deck" :cards="cardEdits?.editedCards ?? []" :editing="editing"
-        @updated="cardEdits?.updateCard" />
+      <card-list v-if="deck" :cards="cardEdits?.editedCards ?? []" :editing="editing" @updated="cardEdits?.updateCard"
+        @add-card="cardEdits?.addCard" />
     </div>
   </section>
 
