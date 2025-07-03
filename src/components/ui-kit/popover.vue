@@ -1,118 +1,76 @@
-<script lang="ts" setup>
-import { useTemplateRef, computed, ref } from 'vue'
+<script setup lang="ts">
+import { ref, computed, useTemplateRef } from 'vue'
 import { useFloating, shift, flip, autoUpdate, arrow, offset } from '@floating-ui/vue'
 
-const open = ref(false)
-const hovering = ref(false)
-const timeout = ref<number>()
+const ARROW_SIZE = 10
 
-const popover_trigger = useTemplateRef('ui-kit-popover__trigger')
-const popover = useTemplateRef('ui-kit-popover')
-const popover_arrow = useTemplateRef('ui-kit-popover__arrow')
+const triggerRef = useTemplateRef('triggerRef')
+const popoverRef = useTemplateRef('popoverRef')
+const arrowRef = useTemplateRef('arrowRef')
 
-const { floatingStyles, middlewareData, placement } = useFloating(popover_trigger, popover, {
-  placement: 'right-end',
+const { placement, middlewareData, floatingStyles } = useFloating(triggerRef, popoverRef, {
+  placement: 'top',
+  strategy: 'fixed',
   whileElementsMounted: autoUpdate,
-  middleware: [offset(24), shift({ padding: 24 }), flip(), arrow({ element: popover_arrow })]
+  middleware: [
+    offset(() => ARROW_SIZE + 14),
+    shift({ padding: 24 }),
+    flip({
+      fallbackPlacements: ['right-end', 'left-end']
+    }),
+    arrow({ element: arrowRef })
+  ]
 })
 
-const arrow_left = computed(() => {
-  if (
-    placement.value === 'left' ||
-    placement.value === 'left-start' ||
-    placement.value === 'left-end'
-  ) {
-    return 'calc(100% - 10px)'
-  } else if (
-    placement.value === 'right' ||
-    placement.value === 'right-start' ||
-    placement.value === 'right-end'
-  ) {
-    return '-10px'
-  }
+const isSide = (side: string) => placement.value.startsWith(side)
 
-  return middlewareData.value.arrow?.x != null ? `${middlewareData.value.arrow.x}px` : ''
+const arrowLeft = computed(() => {
+  if (isSide('left')) return `calc(100% - ${ARROW_SIZE}px)` // arrow on right edge
+  if (isSide('right')) return `-${ARROW_SIZE}px` // arrow on left edge
+
+  const x = middlewareData.value.arrow?.x
+  return x ? `${x}px` : ''
 })
 
-const arrow_top = computed(() => {
-  if (
-    placement.value === 'top' ||
-    placement.value === 'top-start' ||
-    placement.value === 'top-end'
-  ) {
-    return 'calc(100% - 10px)'
-  } else if (
-    placement.value === 'bottom' ||
-    placement.value === 'bottom-start' ||
-    placement.value === 'bottom-end'
-  ) {
-    return '-10px'
-  }
+const arrowTop = computed(() => {
+  if (isSide('top')) return `calc(100% - ${ARROW_SIZE}px)` // arrow on bottom edge
+  if (isSide('bottom')) return `-${ARROW_SIZE}px` // arrow on top edge
 
-  return middlewareData.value.arrow?.y != null ? `${middlewareData.value.arrow.y}px` : ''
+  const y = middlewareData.value.arrow?.y
+  return y ? `${y}px` : ''
 })
-
-function schedulePopoverClose() {
-  timeout.value = window.setTimeout(() => {
-    if (!hovering.value) {
-      open.value = false
-    }
-  }, 0)
-}
-
-function handleMouseLeavePopover() {
-  hovering.value = false
-  schedulePopoverClose()
-}
-
-function handleMouseEnterTrigger() {
-  window.clearTimeout(timeout.value)
-  open.value = true
-}
 </script>
 
 <template>
-  <div
-    data-testid="ui-kit-popover__trigger"
-    ref="ui-kit-popover__trigger"
-    class="absolute inset-0 z-10"
-    @mouseenter="handleMouseEnterTrigger"
-    @mouseleave="schedulePopoverClose"
-  ></div>
-
-  <teleport to="[popover-container]">
+  <!-- Trigger -->
+  <div data-testid="popover-trigger" ref="triggerRef" class="group absolute inset-0 z-10">
     <Transition
       enter-from-class="opacity-0"
       enter-to-class="opacity-100"
-      enter-active-class="transition-[opacity] ease-in-out duration-100"
+      enter-active-class="transition-opacity duration-100 ease-in-out"
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
-      leave-active-class="transition-[opacity] ease-in-out duration-100"
+      leave-active-class="transition-opacity duration-100 ease-in-out"
     >
       <div
-        v-if="open"
-        data-testid="ui-kit-popover"
-        ref="ui-kit-popover"
-        class="shadow-popover rounded-7 pointer-events-auto"
+        ref="popoverRef"
+        data-testid="popover"
+        class="shadow-popover rounded-7 pointer-events-auto relative z-10 hidden group-hover:block hover:block"
         :style="floatingStyles"
-        @mouseenter="hovering = true"
-        @mouseleave="handleMouseLeavePopover"
       >
         <slot></slot>
 
-        <div data-testid="ui-kit-popover__arrow" ref="ui-kit-popover__arrow">
-          <slot name="arrow" :positions="{ left: arrow_left, top: arrow_top }">
-            <div
-              class="bg-brown-300 rounded-1 -z-10 h-5 w-5 rotate-45"
-              :style="{
-                position: 'absolute',
-                left: arrow_left,
-                top: arrow_top
-              }"
-            ></div>
-          </slot>
-        </div>
+        <div
+          ref="arrowRef"
+          data-testid="popover-arrow"
+          class="bg-brown-300 rounded-1 -z-10 h-5 w-5 rotate-45"
+          :style="{
+            position: 'absolute',
+            left: arrowLeft,
+            top: arrowTop
+          }"
+        />
       </div>
     </Transition>
-  </teleport>
+  </div>
 </template>

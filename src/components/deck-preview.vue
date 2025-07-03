@@ -30,22 +30,11 @@ defineEmits<{ (e: 'study'): void }>()
         <button
           data-testid="deck-preview__study-button"
           class="cursor-pointer rounded-full bg-blue-500 py-2.5 text-white"
-          @click="$emit('study')"
+          @click.prevent="$emit('study')"
         >
           {{ $t('common.study') }}
         </button>
       </div>
     </div>
-
-    <template #arrow="{ positions }">
-      <div
-        class="bg-brown-300 rounded-1 -z-10 h-5 w-5 rotate-45"
-        :style="{
-          position: 'absolute',
-          left: positions.left,
-          top: positions.top
-        }"
-      ></div>
-    </template>
   </ui-kit:popover>
 </template>
