@@ -7,15 +7,21 @@ defineEmits<{ (e: 'study'): void }>()
   <ui-kit:popover>
     <div
       data-testid="deck-preview"
-      class="bg-brown-300 rounded-7 flex h-87.5 w-62.75 flex-col gap-4 overflow-hidden"
+      class="bg-brown-300 rounded-7 flex w-62.75 flex-col gap-4 overflow-hidden"
     >
       <div data-testid="deck-preview__image" class="pointy-bottom-sm h-32.75 w-full shrink-0">
-        <img :src="imageUrl" alt="Deck Image preview" class="h-full w-full object-cover" />
+        <img
+          v-if="imageUrl"
+          :src="imageUrl"
+          alt="Deck Image preview"
+          class="h-full w-full object-cover"
+        />
+        <div v-else class="h-full w-full bg-purple-400 bg-(image:--diagonal-stripes)"></div>
       </div>
 
       <div
         data-testid="deck-preview__content"
-        class="flex h-full w-full flex-col justify-between px-4 pb-4"
+        class="flex h-full w-full flex-col justify-between gap-8 px-4 pb-4"
       >
         <div class="flex flex-col gap-2.5">
           <h1 class="text-brown-700 text-3xl">{{ deck.title }}</h1>

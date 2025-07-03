@@ -11,7 +11,7 @@
     <div
       v-if="revealed"
       data-testid="card"
-      class="flex shrink-0 items-center justify-center bg-white p-3"
+      class="flex shrink-0 items-center justify-center p-3"
       :class="[defaultClasses, sizeClasses[size]]"
     >
       <slot></slot>
