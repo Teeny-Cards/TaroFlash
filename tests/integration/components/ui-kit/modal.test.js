@@ -73,7 +73,7 @@ it('renders backdrop when backdrop prop is true', () => {
     }
   })
 
-  expect(wrapper.find('.bg-black\\/25').exists()).toBe(true)
+  expect(wrapper.find('[data-testid="ui-kit-modal-backdrop"]').classes()).not.toContain('opacity-0')
 })
 
 it('does not render backdrop when backdrop prop is false', () => {
@@ -90,7 +90,7 @@ it('does not render backdrop when backdrop prop is false', () => {
     }
   })
 
-  expect(wrapper.find('.bg-black\\/25').exists()).toBe(false)
+  expect(wrapper.find('[data-testid="ui-kit-modal-backdrop"]').classes()).toContain('opacity-0')
 })
 
 it('emits close event when clicking backdrop', async () => {
