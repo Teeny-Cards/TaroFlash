@@ -3,7 +3,7 @@
 
   <div
     v-if="sessionStore.isLoading"
-    class="bg-green absolute inset-0 z-10 flex items-center justify-center"
+    class="absolute inset-0 z-10 flex items-center justify-center bg-green-400"
   >
     Loading
   </div>

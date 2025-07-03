@@ -1,8 +1,10 @@
 @layer components {
   /* Base button styles */
   .ui-kit-btn {
-    --btn-main-color: var(--color-blue);
+    --btn-main-color: var(--color-blue-500);
     --btn-tertiary-color: var(--color-white);
+
+    @apply h-max w-max;
 
     background-color: var(--btn-main-color);
     color: var(--btn-tertiary-color);
@@ -32,30 +34,30 @@
 
   /* Button variants */
   .ui-kit-btn.btn-interaction {
-    --btn-main-color: var(--color-blue);
+    --btn-main-color: var(--color-blue-500);
     --btn-tertiary-color: var(--color-white);
   }
   .ui-kit-btn.btn-muted {
-    --btn-main-color: var(--color-grey);
+    --btn-main-color: var(--color-grey-500);
     --btn-tertiary-color: var(--color-white);
   }
   .ui-kit-btn.btn-danger {
-    --btn-main-color: var(--color-red);
+    --btn-main-color: var(--color-red-500);
     --btn-tertiary-color: var(--color-white);
   }
 
   /* Inverted styles */
   .ui-kit-btn.btn-inverted.btn-interaction {
     --btn-main-color: var(--color-white);
-    --btn-tertiary-color: var(--color-blue);
+    --btn-tertiary-color: var(--color-blue-500);
   }
   .ui-kit-btn.btn-inverted.btn-muted {
     --btn-main-color: var(--color-white);
-    --btn-tertiary-color: var(--color-grey);
+    --btn-tertiary-color: var(--color-grey-500);
   }
   .ui-kit-btn.btn-inverted.btn-danger {
     --btn-main-color: var(--color-white);
-    --btn-tertiary-color: var(--color-red);
+    --btn-tertiary-color: var(--color-red-500);
   }
 
   /* Button sizes */
@@ -101,13 +103,13 @@
   }
 
   .ui-kit-btn.btn-icon-only.btn-inverted.btn-interaction {
-    --btn-tertiary-color: var(--color-blue);
+    --btn-tertiary-color: var(--color-blue-500);
   }
   .ui-kit-btn.btn-icon-only.btn-inverted.btn-muted {
-    --btn-tertiary-color: var(--color-grey);
+    --btn-tertiary-color: var(--color-grey-500);
   }
   .ui-kit-btn.btn-icon-only.btn-inverted.btn-danger {
-    --btn-tertiary-color: var(--color-red);
+    --btn-tertiary-color: var(--color-red-500);
   }
 
   .btn-fancy-hover {
@@ -118,12 +120,12 @@
     position: absolute;
     inset: --spacing(-1);
     opacity: 0;
-    background-color: var(--color-blue);
+    background-color: var(--color-blue-500);
     z-index: -1;
     border-radius: var(--radius-5);
   }
   .btn-fancy-hover:hover {
-    background: var(--stripe-blue-bg), var(--color-blue);
+    background: var(--stripe-blue-bg), var(--color-blue-500);
   }
   .btn-fancy-hover:hover::before {
     opacity: 1;

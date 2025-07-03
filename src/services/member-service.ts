@@ -1,4 +1,4 @@
-import { supabase } from '@/supabaseClient'
+import { supabase } from '@/supabase-client'
 import Logger from '@/utils/logger'
 
 export async function fetchMemberById(id: string): Promise<Member | null> {

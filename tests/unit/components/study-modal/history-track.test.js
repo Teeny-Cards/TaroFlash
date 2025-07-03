@@ -44,7 +44,7 @@ it('renders multiple cards with default (unstudied) state', () => {
 
   expect(wrapper.findAll('button').length).toBe(3)
   expect(
-    wrapper.findAll('button').every((button) => button.classes().includes('bg-parchment'))
+    wrapper.findAll('button').every((button) => button.classes().includes('bg-brown-100'))
   ).toBe(true)
 })
 
@@ -69,7 +69,7 @@ it('renders a studied card correctly', () => {
   })
 
   expect(wrapper.findAll('button').length).toBe(3)
-  expect(wrapper.findAll('button')[1].classes()).toContain('!bg-purple')
+  expect(wrapper.findAll('button')[1].classes()).toContain('!bg-purple-400')
 })
 
 it('renders a failed card correctly', () => {
@@ -93,7 +93,7 @@ it('renders a failed card correctly', () => {
   })
 
   expect(wrapper.findAll('button').length).toBe(3)
-  expect(wrapper.findAll('button')[1].classes()).toContain('!bg-grey-light')
+  expect(wrapper.findAll('button')[1].classes()).toContain('!bg-grey-300')
 })
 
 it('renders the active card correctly', () => {
@@ -117,7 +117,7 @@ it('renders the active card correctly', () => {
   })
 
   expect(wrapper.findAll('button').length).toBe(3)
-  expect(wrapper.findAll('button')[1].classes()).toContain('!bg-purple-dark')
+  expect(wrapper.findAll('button')[1].classes()).toContain('!bg-purple-500')
 })
 
 it('Emits card-clicked event on button click', () => {

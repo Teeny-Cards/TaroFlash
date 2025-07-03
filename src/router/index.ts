@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Dashboard from '@/views/Dashboard.vue'
-import ShopView from '@/views/ShopView.vue'
+import Dashboard from '@/views/dashboard.vue'
+import ShopView from '@/views/shop-view.vue'
 import LoginPage from '@/views/LoginPage.vue'
 import SignupPage from '@/views/SignupPage.vue'
-import AppView from '@/views/AppView.vue'
-import DeckView from '@/views/DeckView.vue'
+import AppView from '@/views/app-view.vue'
+import DeckView from '@/views/deck-view.vue'
 import { initUser } from '@/stores/initUser'
 
 const router = createRouter({

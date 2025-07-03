@@ -24,15 +24,15 @@ We use Tailwind CSS as our primary styling framework, which allows us to create 
 ## Color Palette
 
 Use Tailwind's color utility classes to apply text, background, border, and other color styles directly to HTML elements.
-Tailwind’s naming convention simplifies the application of colors, e.g., `bg-blue` for backgrounds or `text-red` for text.
+Tailwind’s naming convention simplifies the application of colors, e.g., `bg-blue-500` for backgrounds or `text-red` for text.
 
 The palette is constrained to the colors below and is designed to be accessible and adaptable, ensuring consistency across different components and layouts.
 
 <div class="grid grid-cols-7 gap-2 py-10">
   <div v-for="color in colors" :key="color.label">
       <div class=" w-full h-12 rounded-[8px]" :style="{ backgroundColor: color.hex }"></div>
-      <div class="font-medium text-sm text-grey-dark">{{ color.label }}</div>
-      <div class="text-xs text-grey">{{ color.hex }}</div>
+      <div class="font-medium text-base text-grey-dark">{{ color.label }}</div>
+      <div class="text-sm text-grey">{{ color.hex }}</div>
     </div>
 </div>
 
