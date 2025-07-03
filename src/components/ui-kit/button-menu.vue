@@ -1,27 +1,17 @@
 <template>
   <div teeny-dropdown class="relative w-max" ref="teenyDropdown">
-    <slot
-      teeny-dropdown__trigger
-      name="trigger"
-      :toggleDropdown="toggleDropdown"
-      :open="dropdownVisible"
-    >
-      <ui-kit:button
-        teeny-dropdown-trigger
-        :variant="variant"
-        :inverted="inverted"
-        @click="toggleDropdown"
-      >
+    <slot name="trigger" :toggleDropdown="toggleDropdown" :open="dropdownVisible">
+      <ui-kit:button :variant="variant" :inverted="inverted" @click="toggleDropdown">
         {{ triggerLabel }}
       </ui-kit:button>
     </slot>
-    <div v-if="dropdownVisible" class="absolute right-0 z-10 mt-2 lg:left-0 top-full">
+    <div v-if="dropdownVisible" class="absolute top-full right-0 z-10 mt-2 lg:left-0">
       <slot name="dropdown" :closeDropdown="closeDropdown">
-        <div class="flex flex-col gap-1.5 items-end lg:items-start">
+        <div class="flex flex-col items-end gap-1.5 lg:items-start">
           <ui-kit:button
             v-for="action in actions"
             teeny-dropdown__action
-            class="transition-all duration-100 transform scale-75 shadow opacity-0"
+            class="scale-75 transform opacity-0 shadow transition-all duration-100"
             :key="action.label"
             :variant="action.variant"
             :inverted="action.inverted"

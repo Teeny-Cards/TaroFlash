@@ -69,14 +69,14 @@ function scrollUp(): void {
   <div data-test-id="edit-card-modal-container" class="relative">
     <div
       data-testid="edit-card-modal"
-      class="bg-parchment-dark rounded-11 shadow-modal flex w-full flex-col items-center justify-center
+      class="bg-brown-300 rounded-11 shadow-modal flex w-full flex-col items-center justify-center
         overflow-hidden pb-6 lg:max-w-max"
     >
       <div
         data-testid="edit-card-modal__title"
-        class="bg-purple-dark wave-bottom flex w-full justify-center pt-12 pb-16 text-white"
+        class="wave-bottom flex w-full justify-center bg-purple-500 pt-12 pb-16 text-white"
       >
-        <h1 class="font-primary text-3xl font-semibold">{{ $t('edit-card-modal.title') }}</h1>
+        <h1 class="font-primary text-5xl font-semibold">{{ $t('edit-card-modal.title') }}</h1>
       </div>
       <div
         data-testid="edit-card-modal__body"
@@ -85,7 +85,7 @@ function scrollUp(): void {
         <ui-kit:icon
           src="expand-less"
           size="large"
-          class="text-brown-dark cursor-pointer"
+          class="text-brown-700 cursor-pointer"
           @click="scrollUp"
         ></ui-kit:icon>
 
@@ -108,7 +108,7 @@ function scrollUp(): void {
         <ui-kit:icon
           src="expand-more"
           size="large"
-          class="text-brown-dark cursor-pointer"
+          class="text-brown-700 cursor-pointer"
           @click="scrollDown"
         ></ui-kit:icon>
       </div>

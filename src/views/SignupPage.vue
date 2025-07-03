@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import LoginDialogue from '@/components/login-dialog.vue'
-import { supabase } from '@/supabaseClient'
+import { supabase } from '@/supabase-client'
 
 async function signUpNewUser(email: string, password: string) {
   const { error } = await supabase.auth.signUp({

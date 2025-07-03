@@ -4,12 +4,12 @@
       <ui-kit:icon
         src="add-image"
         size="large"
-        class="text-orange absolute top-4 left-4 cursor-pointer"
+        class="absolute top-4 left-4 cursor-pointer text-orange-500"
       />
       <textarea
         teeny-card-editor__input="front"
         name="front_text"
-        class="text-grey-dark w-full resize-none bg-transparent text-center text-2xl focus:outline-hidden"
+        class="text-grey-700 w-full resize-none bg-transparent text-center text-3xl focus:outline-hidden"
         rows="1"
         :placeholder="$t('card.placeholder-front')"
         :value="card.front_text"
@@ -22,7 +22,7 @@
     <textarea
       teeny-card-editor__input="back"
       name="back_text"
-      class="text-grey-dark w-full resize-none bg-transparent text-center text-2xl focus:outline-hidden"
+      class="text-grey-700 w-full resize-none bg-transparent text-center text-3xl focus:outline-hidden"
       rows="1"
       :placeholder="$t('card.placeholder-back')"
       :value="card.back_text"

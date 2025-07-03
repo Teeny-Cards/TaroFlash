@@ -10,7 +10,7 @@ const emit = defineEmits<{
 
 const {
   open = false,
-  backdrop = true,
+  backdrop = false,
   closeOnBackdropClick = true
 } = defineProps({
   open: Boolean,
@@ -70,9 +70,10 @@ watch(
       leave-active-class="transition-[opacity] ease-in-out duration-150"
     >
       <div
-        v-if="backdrop && open"
+        v-if="open"
         data-testid="ui-kit-modal-backdrop"
         class="backdrop-blur-4 pointer-events-auto fixed inset-0 bg-black/25"
+        :class="{ 'opacity-0': !backdrop }"
         @click="close"
       ></div>
     </Transition>

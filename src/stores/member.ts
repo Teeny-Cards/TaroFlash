@@ -1,4 +1,4 @@
-import { fetchMemberById } from '@/services/memberService'
+import { fetchMemberById } from '@/services/member-service'
 import { defineStore } from 'pinia'
 
 interface State {
@@ -17,8 +17,8 @@ export const useMemberStore = defineStore('member', {
   },
 
   getters: {
-    id({ member }): string {
-      return member?.id ?? ''
+    id({ member }): number | undefined {
+      return member?.id
     },
     display_name({ member }): string {
       return member?.display_name ?? ''

@@ -1,12 +1,11 @@
-import { deleteCardsByDeckId } from '@/services/cardService'
-import { supabase } from '@/supabaseClient'
+import { deleteCardsByDeckId } from '@/services/card-service'
+import { supabase } from '@/supabase-client'
+import { useMemberStore } from '@/stores/member'
 import Logger from '@/utils/logger'
 import { DateTime } from 'luxon'
 
-export async function createDeck(deck: Deck, member_id: number): Promise<any> {
+export async function createDeck(deck: Deck): Promise<any> {
   const { ...data } = deck
-
-  data.member_id = member_id
 
   const { error } = await supabase.from('decks').insert(data)
 
@@ -16,14 +15,15 @@ export async function createDeck(deck: Deck, member_id: number): Promise<any> {
   }
 }
 
-export async function fetchMemberDecks(member_id: number): Promise<Deck[]> {
+export async function fetchMemberDecks(): Promise<Deck[]> {
+  const member_id = useMemberStore().id
   const end_of_day = DateTime.now().endOf('day').toISO()
 
   const { data, error } = await supabase
     .from('decks')
-    .select('description,title, image_url, id, due_cards:cards(*, review:reviews!inner(*))')
+    .select('description,title, image_path, id, due_cards:cards(*, review:reviews(*))')
     .eq('member_id', member_id)
-    .lte('cards.reviews.due', end_of_day)
+    .or(`id.is.null,due.lte.${end_of_day}`, { referencedTable: 'cards.reviews' })
 
   if (error) {
     Logger.error(error.message)
@@ -38,7 +38,7 @@ export async function fetchDeckById(id: number): Promise<Deck> {
     .from('decks')
     .select('*, cards(*, review:reviews(*)), member:members(display_name)')
     .eq('id', id)
-    .order('order', { ascending: true, referencedTable: 'cards' })
+    .order('order', { ascending: false, referencedTable: 'cards' })
     .single()
 
   if (error) {
