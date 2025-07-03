@@ -19,6 +19,8 @@ const emit = defineEmits<{
   (e: 'focused', direction: 'left' | 'right'): void
   (e: 'navigated', data: NavigationData): void
   (e: 'updated', id: number, prop: 'front_text' | 'back_text', value: string): void
+  (e: 'selected', id: number): void
+  (e: 'deleted', id: number): void
 }>()
 
 const front_input = useTemplateRef<HTMLTextAreaElement>('front-input')
@@ -36,6 +38,28 @@ const textareaClass = computed(() => ({
   'h-85.5 ring-2 ring-blue-500': focused && editing,
   'h-27.75': !focused && editing
 }))
+
+const actions = [
+  {
+    label: 'Select',
+    action: () => emit('selected', card.id!),
+    inverted: true,
+    iconRight: 'check'
+  },
+  {
+    label: 'Move',
+    action: () => {},
+    inverted: true,
+    iconRight: 'arrow-forward'
+  },
+  {
+    label: 'Delete',
+    action: () => emit('deleted', card.id!),
+    variant: 'danger',
+    inverted: true,
+    iconRight: 'delete'
+  }
+]
 
 function emitDirection(e: KeyboardEvent) {
   if (!e.altKey) return
@@ -81,18 +105,44 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div data-testid="card-list__item"
-    class="text-grey-700 grid w-full grid-cols-[auto_1fr_1fr_auto] gap-6 py-3 items-center"
-    :class="{ 'items-start': editing }">
+  <div
+    data-testid="card-list__item"
+    class="text-grey-700 grid w-full grid-cols-[auto_1fr_1fr_auto] items-center gap-6 py-3"
+    :class="{ 'items-start': editing }"
+  >
     <card size="2xs" />
-    <textarea data-testid="card-list__item-front-input" :class="textareaClass" :disabled="!editing" ref="front-input"
-      @focus="onFocus" :value="card.front_text" @input="onInput($event, 'front_text')" />
+    <textarea
+      data-testid="card-list__item-front-input"
+      :class="textareaClass"
+      :disabled="!editing"
+      ref="front-input"
+      :value="card.front_text"
+      @focus="onFocus"
+      @input="onInput($event, 'front_text')"
+    />
 
-    <textarea data-testid="card-list__item-back-input" :class="textareaClass" :disabled="!editing" ref="back-input"
-      @focus="onFocus" :value="card.back_text" @input="onInput($event, 'back_text')" />
+    <textarea
+      data-testid="card-list__item-back-input"
+      :class="textareaClass"
+      :disabled="!editing"
+      ref="back-input"
+      :value="card.back_text"
+      @focus="onFocus"
+      @input="onInput($event, 'back_text')"
+    />
 
-    <ui-kit:button v-if="!editing" icon-only variant="muted" size="small">
-      <ui-kit:icon src="more" />
-    </ui-kit:button>
+    <ui-kit:button-menu :actions="actions" v-if="!editing">
+      <template #trigger="{ toggleDropdown, open }">
+        <ui-kit:button
+          v-if="!editing"
+          icon-only
+          variant="muted"
+          size="small"
+          @click="toggleDropdown"
+        >
+          <ui-kit:icon src="more" />
+        </ui-kit:button>
+      </template>
+    </ui-kit:button-menu>
   </div>
 </template>
