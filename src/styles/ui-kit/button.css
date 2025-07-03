@@ -4,6 +4,8 @@
     --btn-main-color: var(--color-blue-500);
     --btn-tertiary-color: var(--color-white);
 
+    @apply h-max w-max;
+
     background-color: var(--btn-main-color);
     color: var(--btn-tertiary-color);
     font-family: var(--font-primary);
