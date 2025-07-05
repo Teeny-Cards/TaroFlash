@@ -7,6 +7,7 @@ import CardList from '@/components/deck-view/card-list/index.vue'
 import { useI18n } from 'vue-i18n'
 import { useEditableCards } from '@/composables/use-editable-cards'
 import { updateCards, deleteCardsById } from '@/services/card-service'
+import confirmationAlert from '@/components/confirmation-alert.vue'
 
 const { t } = useI18n()
 
@@ -17,6 +18,8 @@ const { id: deck_id } = defineProps<{
 const deck = ref<Deck>()
 const studyModalOpen = ref(false)
 const editing = ref(false)
+const deleteCardConfirmationOpen = ref(false)
+const cardsToDelete = ref<number[]>([])
 let cardEdits: ReturnType<typeof useEditableCards> | undefined
 
 const tabs = [
@@ -74,8 +77,21 @@ function selectCard(id: number) {
 }
 
 function deleteCards(ids: number[]) {
-  deleteCardsById(ids)
-  refetchCards()
+  cardsToDelete.value = ids
+  deleteCardConfirmationOpen.value = true
+}
+
+async function confirmDeleteCards() {
+  await deleteCardsById(cardsToDelete.value)
+  await refetchCards()
+
+  cardsToDelete.value = []
+  deleteCardConfirmationOpen.value = false
+}
+
+function cancelDeleteCards() {
+  cardsToDelete.value = []
+  deleteCardConfirmationOpen.value = false
 }
 </script>
 
@@ -130,4 +146,12 @@ function deleteCards(ids: number[]) {
   </section>
 
   <study-modal v-if="deck" :open="studyModalOpen" :deck="deck" @closed="studyModalOpen = false" />
+
+  <confirmation-alert
+    :open="deleteCardConfirmationOpen"
+    :cancel-label="$t('common.cancel')"
+    :confirm-label="$t('common.confirm')"
+    @confirm="confirmDeleteCards"
+    @cancel="cancelDeleteCards"
+  />
 </template>
