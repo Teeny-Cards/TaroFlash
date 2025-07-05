@@ -149,8 +149,7 @@ function cancelDeleteCards() {
 
   <confirmation-alert
     :open="deleteCardConfirmationOpen"
-    :cancel-label="$t('common.cancel')"
-    :confirm-label="$t('common.confirm')"
+    :confirm-label="$t('common.delete')"
     @confirm="confirmDeleteCards"
     @cancel="cancelDeleteCards"
   />
