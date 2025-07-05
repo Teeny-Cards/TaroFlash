@@ -5,6 +5,7 @@
   "common.cancel": "Cancel",
   "common.save": "Save",
   "common.delete": "Delete",
+  "common.confirm": "Confirm",
   "card.placeholder-front": "Front",
   "card.placeholder-back": "Back",
   "edit-card-modal.title": "Edit Card",

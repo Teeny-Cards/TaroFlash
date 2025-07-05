@@ -10,9 +10,7 @@ const emit = defineEmits<{
   (e: 'cards-deleted', ids: number[]): void
 }>()
 
-const deleteCardConfirmationOpen = ref(false)
 const cardsToDelete = ref<number[]>([])
-
 const selected_card_index = ref<number>(0)
 const selected_column = ref<'front' | 'back'>('front')
 let selection_start = 0
@@ -54,18 +52,7 @@ function onUpdated(id: number, prop: 'front_text' | 'back_text', value: string) 
 
 function onDeleteCard(id: number) {
   cardsToDelete.value.push(id)
-  deleteCardConfirmationOpen.value = true
-}
-
-function confirmDeleteCards() {
   emit('cards-deleted', cardsToDelete.value)
-  cardsToDelete.value = []
-  deleteCardConfirmationOpen.value = false
-}
-
-function cancelDeleteCards() {
-  cardsToDelete.value = []
-  deleteCardConfirmationOpen.value = false
 }
 </script>
 
@@ -95,21 +82,4 @@ function cancelDeleteCards() {
       @click="emit('add-card')"
     />
   </div>
-
-  <ui-kit:modal :open="deleteCardConfirmationOpen">
-    <div class="bg-brown-300 rounded-5 shadow-modal flex flex-col gap-8 p-10">
-      <div class="flex flex-col gap-2">
-        <h1 class="text-grey-700 text-5xl">{{ $t('alert.delete-card') }}</h1>
-        <p class="text-grey-700">{{ $t('alert.delete-card.message') }}</p>
-      </div>
-      <div class="flex w-full gap-2">
-        <ui-kit:button variant="muted" icon-left="close" @click="cancelDeleteCards">{{
-          $t('common.cancel')
-        }}</ui-kit:button>
-        <ui-kit:button variant="danger" icon-left="delete" @click="confirmDeleteCards">{{
-          $t('common.delete')
-        }}</ui-kit:button>
-      </div>
-    </div>
-  </ui-kit:modal>
 </template>
