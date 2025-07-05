@@ -1,0 +1,18 @@
+{
+  "common.loading": "Loading",
+  "common.study": "Study",
+  "common.back": "Back",
+  "common.cancel": "Cancel",
+  "common.save": "Save",
+  "common.delete": "Delete",
+  "card.placeholder-front": "Front",
+  "card.placeholder-back": "Back",
+  "edit-card-modal.title": "Edit Card",
+  "dashboard.due": "Due",
+  "deck-view.add-card": "Add Card",
+  "deck-view.no-cards": "No Cards",
+  "deck-view.tabs.card-view": "Card View",
+  "deck-view.tabs.list-view": "List View",
+  "alert.delete-card": "Delete Card?",
+  "alert.delete-card.message": "Are you sure you want to delete this card?"
+}

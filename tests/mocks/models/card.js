@@ -1,7 +1,6 @@
 import { build, sequence } from 'mimicry-js'
 import { faker } from '@faker-js/faker'
 
-// Review builder comes first
 export const review_builder = build({
   fields: {
     due: () => faker.date.future(),
@@ -17,7 +16,6 @@ export const review_builder = build({
   }
 })
 
-// Card builder second — reference works correctly now
 export const card_builder = build({
   fields: {
     id: () => faker.number.int({ min: 1, max: 100 }),

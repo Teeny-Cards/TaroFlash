@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import Card from '@/components/card.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 defineProps<{ deck: Deck }>()
 defineEmits<{ (e: 'study-clicked'): void; (e: 'settings-clicked'): void }>()
@@ -14,11 +17,17 @@ defineEmits<{ (e: 'study-clicked'): void; (e: 'settings-clicked'): void }>()
     <card size="large" class="relative overflow-hidden"></card>
 
     <div class="flex flex-col items-center gap-2 sm:items-start">
-      <h1 class="text-grey-700 w-64 text-center text-5xl sm:text-left">
+      <h1
+        data-testid="overview-panel__title"
+        class="text-grey-700 w-64 text-center text-5xl sm:text-left"
+      >
         {{ deck.title }}
       </h1>
 
-      <h2 class="text-grey-500 w-64 text-center sm:text-left">
+      <h2
+        data-testid="overview-panel__description"
+        class="text-grey-500 w-64 text-center sm:text-left"
+      >
         {{ deck.description }}
       </h2>
 
@@ -31,10 +40,17 @@ defineEmits<{ (e: 'study-clicked'): void; (e: 'settings-clicked'): void }>()
     </div>
 
     <div class="flex items-center gap-2.5">
-      <ui-kit:button icon-left="play" fancy-hover @click="$emit('study-clicked')">{{
-        $t('common.study')
-      }}</ui-kit:button>
       <ui-kit:button
+        data-testid="overview-panel__study-button"
+        icon-left="play"
+        fancy-hover
+        @click="$emit('study-clicked')"
+      >
+        {{ t('common.study') }}
+      </ui-kit:button>
+
+      <ui-kit:button
+        data-testid="overview-panel__settings-button"
         icon-left="settings"
         variant="muted"
         icon-only
