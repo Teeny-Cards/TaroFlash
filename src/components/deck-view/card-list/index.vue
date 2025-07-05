@@ -10,9 +10,9 @@ const emit = defineEmits<{
   (e: 'cards-deleted', ids: number[]): void
 }>()
 
-const cardsToDelete = ref<number[]>([])
-const selected_card_index = ref<number>(0)
-const selected_column = ref<'front' | 'back'>('front')
+const selected_cards = ref<number[]>([])
+const current_card_index = ref<number>(0)
+const current_column = ref<'front' | 'back'>('front')
 let selection_start = 0
 let navigating = false
 
@@ -21,14 +21,14 @@ function onNavigate(data: NavigationData) {
 
   navigating = true
 
-  if (selected_card_index.value === undefined || selected_card_index.value < 0) return
+  if (current_card_index.value === undefined || current_card_index.value < 0) return
 
   const newIndex =
-    data.direction === 'up' ? selected_card_index.value - 1 : selected_card_index.value + 1
+    data.direction === 'up' ? current_card_index.value - 1 : current_card_index.value + 1
 
   if (newIndex >= 0 && newIndex < (cards.length ?? Infinity)) {
     selection_start = data.selection_start
-    selected_card_index.value = newIndex
+    current_card_index.value = newIndex
   }
 
   requestAnimationFrame(() => {
@@ -38,12 +38,12 @@ function onNavigate(data: NavigationData) {
 
 function onFocus(direction: 'left' | 'right', index: number) {
   if (direction === 'left') {
-    selected_column.value = 'front'
+    current_column.value = 'front'
   } else {
-    selected_column.value = 'back'
+    current_column.value = 'back'
   }
 
-  selected_card_index.value = index
+  current_card_index.value = index
 }
 
 function onUpdated(id: number, prop: 'front_text' | 'back_text', value: string) {
@@ -51,8 +51,8 @@ function onUpdated(id: number, prop: 'front_text' | 'back_text', value: string) 
 }
 
 function onDeleteCard(id: number) {
-  cardsToDelete.value.push(id)
-  emit('cards-deleted', cardsToDelete.value)
+  selected_cards.value.push(id)
+  emit('cards-deleted', selected_cards.value)
 }
 </script>
 
@@ -63,8 +63,8 @@ function onDeleteCard(id: number) {
         :card="card"
         :editing="editing"
         :selection-start="selection_start"
-        :selected-column="selected_column"
-        :focused="selected_card_index === index"
+        :selected-column="current_column"
+        :focused="current_card_index === index"
         @focused="(direction) => onFocus(direction, index)"
         @navigated="onNavigate"
         @updated="onUpdated"
