@@ -66,7 +66,7 @@ export function useStudySession() {
   function _filterDueCards(cards: Card[] = [], config?: StudySessionConfig): Card[] {
     const now = DateTime.now()
     return config?.study_all_cards
-      ? cards
+      ? [...cards]
       : cards.filter((c) => !c.review?.due || DateTime.fromISO(c.review.due as string) <= now)
   }
 
