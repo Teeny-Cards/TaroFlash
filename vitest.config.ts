@@ -12,7 +12,7 @@ export default mergeConfig(
       setupFiles: ['./tests/setup.js'],
       coverage: {
         enabled: true,
-        reporter: ['text', 'json', 'html', 'json-summary'],
+        reporter: ['text', 'html', 'json-summary'],
         reportOnFailure: true,
         exclude: [
           '**/postcss.config.js',

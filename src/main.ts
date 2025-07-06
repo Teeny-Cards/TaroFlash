@@ -4,18 +4,16 @@ import router from './router'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createI18n } from 'vue-i18n'
-import enUS from './translations/en-us'
 import Logger from './utils/logger'
 import registerUIKitComponents from './components/ui-kit/_index'
+import messages from '@intlify/unplugin-vue-i18n/messages'
 
 Logger.setLogLevel(import.meta.env.VITE_LOG_LEVEL)
 
 const i18n = createI18n({
   locale: 'en-us',
   legacy: false,
-  messages: {
-    'en-us': enUS
-  }
+  messages
 })
 
 const app = createApp(App)

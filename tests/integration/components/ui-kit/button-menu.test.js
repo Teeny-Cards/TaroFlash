@@ -101,7 +101,7 @@ it('renders actions correctly', async () => {
   await wrapper.vm.toggleDropdown(mockEvent)
 
   // Should render action buttons
-  const actionButtons = wrapper.findAll('[teeny-dropdown__action]')
+  const actionButtons = wrapper.findAll('[data-testid="button-menu__action"]')
   expect(actionButtons.length).toBe(2)
   expect(actionButtons[0].text()).toBe('Action 1')
   expect(actionButtons[1].text()).toBe('Action 2')

@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { expect, it } from 'vitest'
 import HistoryTrack from '@/components/study-modal/history-track.vue'
+import { CardBuilder } from '@tests/mocks/models/card'
 
 it('renders correctly with no cards', () => {
   const wrapper = mount(HistoryTrack, {
@@ -23,11 +24,7 @@ it('renders correctly with no cards', () => {
 })
 
 it('renders multiple cards with default (unstudied) state', () => {
-  const cards = [
-    { id: '1', front_text: 'Card 1' },
-    { id: '2', front_text: 'Card 2' },
-    { id: '3', front_text: 'Card 3' }
-  ]
+  const cards = CardBuilder().many(3)
   const wrapper = mount(HistoryTrack, {
     global: {
       stubs: {
@@ -49,11 +46,7 @@ it('renders multiple cards with default (unstudied) state', () => {
 })
 
 it('renders a studied card correctly', () => {
-  const cards = [
-    { id: '1', front_text: 'Card 1' },
-    { id: '2', front_text: 'Card 2' },
-    { id: '3', front_text: 'Card 3' }
-  ]
+  const cards = CardBuilder().many(3)
   const wrapper = mount(HistoryTrack, {
     global: {
       stubs: {
@@ -62,7 +55,7 @@ it('renders a studied card correctly', () => {
     },
     props: {
       cards,
-      studiedCardIds: new Set(['2']),
+      studiedCardIds: new Set([cards[1].id]),
       failedCardIds: new Set(),
       currentCard: undefined
     }
@@ -73,11 +66,7 @@ it('renders a studied card correctly', () => {
 })
 
 it('renders a failed card correctly', () => {
-  const cards = [
-    { id: '1', front_text: 'Card 1' },
-    { id: '2', front_text: 'Card 2' },
-    { id: '3', front_text: 'Card 3' }
-  ]
+  const cards = CardBuilder().many(3)
   const wrapper = mount(HistoryTrack, {
     global: {
       stubs: {
@@ -87,7 +76,7 @@ it('renders a failed card correctly', () => {
     props: {
       cards,
       studiedCardIds: new Set(),
-      failedCardIds: new Set(['2']),
+      failedCardIds: new Set([cards[1].id]),
       currentCard: undefined
     }
   })
@@ -97,11 +86,7 @@ it('renders a failed card correctly', () => {
 })
 
 it('renders the active card correctly', () => {
-  const cards = [
-    { id: '1', front_text: 'Card 1' },
-    { id: '2', front_text: 'Card 2' },
-    { id: '3', front_text: 'Card 3' }
-  ]
+  const cards = CardBuilder().many(3)
   const wrapper = mount(HistoryTrack, {
     global: {
       stubs: {
@@ -112,20 +97,16 @@ it('renders the active card correctly', () => {
       cards,
       studiedCardIds: new Set(),
       failedCardIds: new Set(),
-      currentCard: cards[1]
+      currentCard: cards[0]
     }
   })
 
   expect(wrapper.findAll('button').length).toBe(3)
-  expect(wrapper.findAll('button')[1].classes()).toContain('!bg-purple-500')
+  expect(wrapper.findAll('button')[0].classes()).toContain('!bg-purple-500')
 })
 
 it('Emits card-clicked event on button click', () => {
-  const cards = [
-    { id: '1', front_text: 'Card 1' },
-    { id: '2', front_text: 'Card 2' },
-    { id: '3', front_text: 'Card 3' }
-  ]
+  const cards = CardBuilder().many(3)
   const wrapper = mount(HistoryTrack, {
     global: {
       stubs: {

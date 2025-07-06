@@ -7,6 +7,7 @@ import CardList from '@/components/deck-view/card-list/index.vue'
 import { useI18n } from 'vue-i18n'
 import { useEditableCards } from '@/composables/use-editable-cards'
 import { updateCards, deleteCardsById } from '@/services/card-service'
+import confirmationAlert from '@/components/confirmation-alert.vue'
 
 const { t } = useI18n()
 
@@ -17,6 +18,8 @@ const { id: deck_id } = defineProps<{
 const deck = ref<Deck>()
 const studyModalOpen = ref(false)
 const editing = ref(false)
+const deleteCardConfirmationOpen = ref(false)
+const cardsToDelete = ref<number[]>([])
 let cardEdits: ReturnType<typeof useEditableCards> | undefined
 
 const tabs = [
@@ -74,8 +77,26 @@ function selectCard(id: number) {
 }
 
 function deleteCards(ids: number[]) {
-  deleteCardsById(ids)
-  refetchCards()
+  cardsToDelete.value = ids
+  deleteCardConfirmationOpen.value = true
+}
+
+async function confirmDeleteCards() {
+  await deleteCardsById(cardsToDelete.value)
+  await refetchCards()
+
+  cardsToDelete.value = []
+  deleteCardConfirmationOpen.value = false
+}
+
+function cancelDeleteCards() {
+  cardsToDelete.value = []
+  deleteCardConfirmationOpen.value = false
+}
+
+function onAddCard() {
+  editing.value = true
+  cardEdits?.addCard()
 }
 </script>
 
@@ -83,7 +104,7 @@ function deleteCards(ids: number[]) {
   <section data-testid="deck-view" class="flex h-full items-start gap-15 pt-12">
     <overview-panel v-if="deck" :deck="deck" @study-clicked="studyModalOpen = true" />
 
-    <div class="relative w-full">
+    <div class="relative flex h-full w-full flex-col">
       <ui-kit:tabs :tabs="tabs" class="pb-4">
         <template #actions>
           <ui-kit:button
@@ -94,9 +115,8 @@ function deleteCards(ids: number[]) {
             @click="editing = true"
           ></ui-kit:button>
 
-          <div class="flex gap-1.5">
+          <div v-else class="flex gap-1.5">
             <ui-kit:button
-              v-if="editing"
               icon-only
               icon-left="close"
               size="xs"
@@ -105,7 +125,6 @@ function deleteCards(ids: number[]) {
             ></ui-kit:button>
 
             <ui-kit:button
-              v-if="editing"
               icon-only
               icon-left="check"
               size="xs"
@@ -123,11 +142,18 @@ function deleteCards(ids: number[]) {
         :cards="cardEdits?.editedCards ?? []"
         :editing="editing"
         @updated="cardEdits?.updateCard"
-        @add-card="cardEdits?.addCard"
+        @add-card="onAddCard"
         @cards-deleted="deleteCards"
       />
     </div>
   </section>
 
   <study-modal v-if="deck" :open="studyModalOpen" :deck="deck" @closed="studyModalOpen = false" />
+
+  <confirmation-alert
+    :open="deleteCardConfirmationOpen"
+    :confirm-label="t('common.delete')"
+    @confirm="confirmDeleteCards"
+    @cancel="cancelDeleteCards"
+  />
 </template>
