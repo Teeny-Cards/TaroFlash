@@ -1,6 +1,6 @@
-import { expect, test, describe, vi } from 'vitest'
+import { expect, test, describe } from 'vitest'
 import { useStudySession } from '@/composables/use-study-session'
-import { card_builder } from '@tests/mocks/models/card'
+import { CardBuilder } from '@tests/mocks/models/card'
 import { DateTime } from 'luxon'
 
 describe('Initial State', () => {
@@ -28,7 +28,7 @@ describe('Initial State', () => {
 describe('setupStudySession', () => {
   test('When study_all_cards is true, all input cards are set', () => {
     const { setupStudySession, cards_in_deck } = useStudySession()
-    const cards = card_builder.many(3, { traits: 'with_review' })
+    const cards = CardBuilder().many(3, { traits: 'with_review' })
 
     setupStudySession(cards, { study_all_cards: true })
     expect(cards_in_deck.value).toEqual(cards)
@@ -36,7 +36,7 @@ describe('setupStudySession', () => {
 
   test('When study_all_cards is false and cards have due in future, they are filtered out', () => {
     const { setupStudySession, cards_in_deck } = useStudySession()
-    const cards = card_builder.many(3, { traits: 'with_review' })
+    const cards = CardBuilder().many(3, { traits: 'with_review' })
 
     const today = DateTime.now().toISO()
 
@@ -52,7 +52,7 @@ describe('setupStudySession', () => {
 describe('startSession', () => {
   test('Sets _active_card', () => {
     const { setupStudySession, startSession, current_card } = useStudySession()
-    const cards = card_builder.many(3)
+    const cards = CardBuilder().many(3)
 
     setupStudySession(cards)
     startSession()
@@ -65,7 +65,7 @@ describe('advanceToNextCard', () => {
   test('Adds current card to studied_card_ids by default', () => {
     const { setupStudySession, startSession, advanceToNextCard, studied_card_ids } =
       useStudySession()
-    const cards = card_builder.many(3)
+    const cards = CardBuilder().many(3)
 
     setupStudySession(cards)
     startSession()
@@ -81,7 +81,7 @@ describe('advanceToNextCard', () => {
   test('Adds current card to failed_card_ids if rating is Again', () => {
     const { setupStudySession, startSession, advanceToNextCard, failed_card_ids } =
       useStudySession()
-    const cards = card_builder.many(3)
+    const cards = CardBuilder().many(3)
 
     setupStudySession(cards)
     startSession()
@@ -97,7 +97,7 @@ describe('advanceToNextCard', () => {
   test('Picks the next unstudied/unfailed card', () => {
     const { setupStudySession, startSession, advanceToNextCard, current_card, failed_card_ids } =
       useStudySession()
-    const cards = card_builder.many(3)
+    const cards = CardBuilder().many(3)
 
     setupStudySession(cards)
     startSession()
@@ -113,7 +113,7 @@ describe('advanceToNextCard', () => {
 
   test('Creates a review object if it’s missing on the next card', () => {
     const { setupStudySession, startSession, advanceToNextCard, current_card } = useStudySession()
-    const cards = card_builder.many(3)
+    const cards = CardBuilder().many(3)
 
     expect(cards[0].review).toBeUndefined()
     expect(cards[1].review).toBeUndefined()
@@ -132,7 +132,7 @@ describe('advanceToNextCard', () => {
   test("Resets current_card_state to 'hidden'", () => {
     const { setupStudySession, startSession, advanceToNextCard, current_card_state } =
       useStudySession()
-    const cards = card_builder.many(3)
+    const cards = CardBuilder().many(3)
 
     setupStudySession(cards)
     startSession()
@@ -147,7 +147,7 @@ describe('advanceToNextCard', () => {
   test('Computes review options for active card', () => {
     const { setupStudySession, startSession, advanceToNextCard, active_card_review_options } =
       useStudySession()
-    const cards = card_builder.many(3)
+    const cards = CardBuilder().many(3)
 
     expect(active_card_review_options.value).toBeUndefined()
 
@@ -169,7 +169,7 @@ describe('setPreviewCard', () => {
       studied_card_ids
     } = useStudySession()
 
-    const cards = card_builder.many(3)
+    const cards = CardBuilder().many(3)
     setupStudySession(cards)
     startSession()
 
@@ -185,7 +185,7 @@ describe('setPreviewCard', () => {
     const { setupStudySession, startSession, setPreviewCard, view_state, current_card } =
       useStudySession()
 
-    const cards = card_builder.many(3)
+    const cards = CardBuilder().many(3)
     setupStudySession(cards)
     startSession()
 
@@ -202,7 +202,7 @@ describe('setPreviewCard', () => {
 describe('current_card (computed)', () => {
   test("Returns _active_card when view_state is 'studying'", () => {
     const { setupStudySession, startSession, current_card, view_state } = useStudySession()
-    const cards = card_builder.many(3)
+    const cards = CardBuilder().many(3)
 
     setupStudySession(cards)
     startSession()
@@ -217,7 +217,7 @@ describe('current_card (computed)', () => {
   test("Returns _preview_card when view_state is 'previewing'", () => {
     const { setupStudySession, startSession, setPreviewCard, current_card, studied_card_ids } =
       useStudySession()
-    const cards = card_builder.many(3)
+    const cards = CardBuilder().many(3)
 
     setupStudySession(cards)
     startSession()
@@ -238,7 +238,7 @@ describe('active_card_review_options (computed)', () => {
 
   test('Returns correct preview object from _active_card_review_options', () => {
     const { setupStudySession, startSession, active_card_review_options } = useStudySession()
-    const cards = card_builder.many(3)
+    const cards = CardBuilder().many(3)
 
     setupStudySession(cards)
     startSession()

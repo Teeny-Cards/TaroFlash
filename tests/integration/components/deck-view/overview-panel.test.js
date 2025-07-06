@@ -1,10 +1,10 @@
 import { mount } from '@vue/test-utils'
 import { expect, test } from 'vitest'
 import OverviewPanel from '@/components/deck-view/overview-panel.vue'
-import { deck_builder } from '@tests/mocks/models/deck'
+import { DeckBuilder } from '@tests/mocks/models/deck'
 
 test('Renders deck title and description', () => {
-  const deck = deck_builder.one()
+  const deck = DeckBuilder().one()
   const wrapper = mount(OverviewPanel, { props: { deck } })
 
   expect(wrapper.exists()).toBe(true)
@@ -13,8 +13,8 @@ test('Renders deck title and description', () => {
   expect(wrapper.find('[data-testid="overview-panel__description"]').text()).toBe(deck.description)
 })
 
-test('Emits study-clicked event when study button is clicked', () => {
-  const deck = deck_builder.one()
+test('Emits study-clicked event when study button is clicked and deck has cards', () => {
+  const deck = DeckBuilder().one({ traits: 'with_cards' })
   const wrapper = mount(OverviewPanel, { props: { deck } })
 
   wrapper.find('[data-testid="overview-panel__study-button"]').trigger('click')
@@ -22,8 +22,17 @@ test('Emits study-clicked event when study button is clicked', () => {
   expect(wrapper.emitted('study-clicked')).toBeTruthy()
 })
 
+test('Does not emit study-clicked event when study button is clicked and deck has no cards', () => {
+  const deck = DeckBuilder().one()
+  const wrapper = mount(OverviewPanel, { props: { deck } })
+
+  wrapper.find('[data-testid="overview-panel__study-button"]').trigger('click')
+
+  expect(wrapper.emitted('study-clicked')).toBeFalsy()
+})
+
 test('Emits settings-clicked event when settings button is clicked', () => {
-  const deck = deck_builder.one()
+  const deck = DeckBuilder().one()
   const wrapper = mount(OverviewPanel, { props: { deck } })
 
   wrapper.find('[data-testid="overview-panel__settings-button"]').trigger('click')

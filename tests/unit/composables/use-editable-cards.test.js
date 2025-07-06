@@ -1,10 +1,10 @@
-import { expect, test, describe, vi } from 'vitest'
+import { expect, test, describe } from 'vitest'
 import { useEditableCards } from '@/composables/use-editable-cards'
-import { card_builder } from '@tests/mocks/models/card'
+import { CardBuilder } from '@tests/mocks/models/card'
 
 describe('Initialization', () => {
   test('Initializes editedCards with copies of initialCards', () => {
-    const initialCards = card_builder.many(3)
+    const initialCards = CardBuilder().many(3)
     const { editedCards } = useEditableCards(initialCards)
 
     expect(editedCards).toHaveLength(3)
@@ -13,19 +13,19 @@ describe('Initialization', () => {
   })
 
   test('Initializes dirtyMap as empty', () => {
-    const { dirtyMap } = useEditableCards(card_builder.many(3))
+    const { dirtyMap } = useEditableCards(CardBuilder().many(3))
     expect(dirtyMap.size).toBe(0)
   })
 
   test('isDirty is false initially', () => {
-    const { isDirty } = useEditableCards(card_builder.many(3))
+    const { isDirty } = useEditableCards(CardBuilder().many(3))
     expect(isDirty.value).toBe(false)
   })
 })
 
 describe('addCard', () => {
   test('Adds a new card with empty front_text/back_text at start of editedCards', () => {
-    const { editedCards, addCard } = useEditableCards(card_builder.many(3))
+    const { editedCards, addCard } = useEditableCards(CardBuilder().many(3))
     const max = Math.max(...editedCards.map((card) => card.order ?? 0)) + 1
 
     addCard()
@@ -38,7 +38,7 @@ describe('addCard', () => {
   })
 
   test('New card includes deck_id if provided', () => {
-    const { editedCards, addCard } = useEditableCards(card_builder.many(3), 1)
+    const { editedCards, addCard } = useEditableCards(CardBuilder().many(3), 1)
 
     addCard()
 
@@ -56,7 +56,7 @@ describe('addCard', () => {
 
 describe('updateCard', () => {
   test('Updates matching card’s key with new value', () => {
-    const initialCards = card_builder.many(3)
+    const initialCards = CardBuilder().many(3)
     const { editedCards, updateCard } = useEditableCards(initialCards)
 
     expect(editedCards[0].front_text).not.toBe('New Front')
@@ -67,7 +67,7 @@ describe('updateCard', () => {
   })
 
   test('Adds card id to dirtyMap if value changed', () => {
-    const initialCards = card_builder.many(3)
+    const initialCards = CardBuilder().many(3)
     const { dirtyMap, updateCard } = useEditableCards(initialCards)
 
     expect(dirtyMap.size).toBe(0)
@@ -79,7 +79,7 @@ describe('updateCard', () => {
   })
 
   test('Does NOT add to dirtyMap if value is the same as initial value', () => {
-    const initialCards = card_builder.many(3)
+    const initialCards = CardBuilder().many(3)
     const { dirtyMap, updateCard } = useEditableCards(initialCards)
 
     expect(dirtyMap.size).toBe(0)
@@ -90,7 +90,7 @@ describe('updateCard', () => {
   })
 
   test('Does nothing if card id not found', () => {
-    const initialCards = card_builder.many(3)
+    const initialCards = CardBuilder().many(3)
     const { dirtyMap, updateCard } = useEditableCards(initialCards)
 
     expect(dirtyMap.size).toBe(0)
@@ -103,7 +103,7 @@ describe('updateCard', () => {
 
 describe('getChangedCards', () => {
   test('Returns only cards that have been changed (in dirtyMap)', () => {
-    const initialCards = card_builder.many(3)
+    const initialCards = CardBuilder().many(3)
     const { updateCard, getChangedCards } = useEditableCards(initialCards)
 
     updateCard(initialCards[0].id, 'front_text', 'New Front')
@@ -114,7 +114,7 @@ describe('getChangedCards', () => {
   })
 
   test('Includes new cards in the changed list', () => {
-    const initialCards = card_builder.many(3)
+    const initialCards = CardBuilder().many(3)
     const { addCard, getChangedCards } = useEditableCards(initialCards)
 
     addCard()
@@ -126,7 +126,7 @@ describe('getChangedCards', () => {
 
 describe('resetChanges', () => {
   test('Resets all fields in editedCards to match initialCards', () => {
-    const initialCards = card_builder.many(3)
+    const initialCards = CardBuilder().many(3)
     const { updateCard, resetChanges, editedCards } = useEditableCards(initialCards)
 
     updateCard(initialCards[0].id, 'front_text', 'New Front')
@@ -138,7 +138,7 @@ describe('resetChanges', () => {
   })
 
   test('Clears dirtyMap', () => {
-    const initialCards = card_builder.many(3)
+    const initialCards = CardBuilder().many(3)
     const { dirtyMap, updateCard, resetChanges } = useEditableCards(initialCards)
 
     updateCard(initialCards[0].id, 'front_text', 'New Front')
@@ -152,7 +152,7 @@ describe('resetChanges', () => {
   })
 
   test('isDirty is false after reset', () => {
-    const initialCards = card_builder.many(3)
+    const initialCards = CardBuilder().many(3)
     const { isDirty, updateCard, resetChanges } = useEditableCards(initialCards)
 
     updateCard(initialCards[0].id, 'front_text', 'New Front')
@@ -168,7 +168,7 @@ describe('resetChanges', () => {
 
 describe('isDirty (computed)', () => {
   test('Returns true if dirtyMap has at least one id', () => {
-    const initialCards = card_builder.many(3)
+    const initialCards = CardBuilder().many(3)
     const { isDirty, updateCard } = useEditableCards(initialCards)
 
     updateCard(initialCards[0].id, 'front_text', 'New Front')
@@ -177,7 +177,7 @@ describe('isDirty (computed)', () => {
   })
 
   test('Returns false otherwise', () => {
-    const initialCards = card_builder.many(3)
+    const initialCards = CardBuilder().many(3)
     const { isDirty } = useEditableCards(initialCards)
 
     expect(isDirty.value).toBe(false)
