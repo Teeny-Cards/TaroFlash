@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 export type NavigationData = {
-  selection_start: number
+  selection_start?: number
   direction: 'up' | 'down'
 }
 
