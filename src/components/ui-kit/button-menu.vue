@@ -10,7 +10,8 @@
         <div class="flex flex-col items-end gap-1.5 lg:items-start">
           <ui-kit:button
             v-for="action in actions"
-            teeny-dropdown__action
+            data-testid="button-menu__action"
+            :data-action="action.label"
             class="scale-75 transform opacity-0 shadow transition-all duration-100"
             :key="action.label"
             :variant="action.variant"
@@ -61,7 +62,7 @@ async function toggleDropdown(e: Event): Promise<void> {
   e.stopPropagation()
 
   if (dropdownVisible.value) {
-    const nodeList = teenyDropdown.value?.querySelectorAll('[teeny-dropdown__action]')
+    const nodeList = teenyDropdown.value?.querySelectorAll('[data-testid="button-menu__action"]')
     const actions = nodeList ? [...nodeList] : []
 
     await animateActionsOut(actions, 25)
@@ -70,7 +71,7 @@ async function toggleDropdown(e: Event): Promise<void> {
     dropdownVisible.value = true
     await nextTick()
 
-    const nodeList = teenyDropdown.value?.querySelectorAll('[teeny-dropdown__action]')
+    const nodeList = teenyDropdown.value?.querySelectorAll('[data-testid="button-menu__action"]')
     const actions = nodeList ? [...nodeList] : []
     animateActionsIn(actions, 25)
   }
