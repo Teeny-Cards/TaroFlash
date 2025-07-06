@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import Card from '@/components/card.vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-defineProps<{ deck: Deck }>()
+const { deck } = defineProps<{ deck: Deck }>()
 defineEmits<{ (e: 'study-clicked'): void; (e: 'settings-clicked'): void }>()
+
+const study_disabled = computed(() => {
+  return deck.cards?.length === 0
+})
 </script>
 
 <template>
@@ -44,6 +49,7 @@ defineEmits<{ (e: 'study-clicked'): void; (e: 'settings-clicked'): void }>()
         data-testid="overview-panel__study-button"
         icon-left="play"
         fancy-hover
+        :disabled="study_disabled"
         @click="$emit('study-clicked')"
       >
         {{ t('common.study') }}
