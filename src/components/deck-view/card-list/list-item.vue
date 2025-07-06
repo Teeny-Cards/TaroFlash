@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 export type NavigationData = {
   selection_start?: number
   direction: 'up' | 'down'
@@ -16,7 +20,8 @@ const { editing, focused, selectedColumn, selectionStart, card } = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'focused', direction: 'left' | 'right'): void
+  (e: 'focusin', direction: 'left' | 'right'): void
+  (e: 'focusout'): void
   (e: 'navigated', data: NavigationData): void
   (e: 'updated', id: number, prop: 'front_text' | 'back_text', value: string): void
   (e: 'selected', id: number): void
@@ -69,8 +74,8 @@ function emitDirection(e: KeyboardEvent) {
     ArrowUp: () => emit('navigated', { selection_start: target.selectionStart, direction: 'up' }),
     ArrowDown: () =>
       emit('navigated', { selection_start: target.selectionStart, direction: 'down' }),
-    ArrowLeft: () => emit('focused', 'left'),
-    ArrowRight: () => emit('focused', 'right')
+    ArrowLeft: () => emit('focusin', 'left'),
+    ArrowRight: () => emit('focusin', 'right')
   }
 
   keyMap[e.key]?.()
@@ -80,8 +85,8 @@ function onFocus(e: Event) {
   const target = e.target as HTMLTextAreaElement
   target.scrollIntoView({ behavior: 'smooth', block: 'center' })
 
-  if (target === front_input.value) emit('focused', 'left')
-  if (target === back_input.value) emit('focused', 'right')
+  if (target === front_input.value) emit('focusin', 'left')
+  if (target === back_input.value) emit('focusin', 'right')
 }
 
 function onInput(e: Event, prop: 'front_text' | 'back_text') {
@@ -113,21 +118,25 @@ watchEffect(() => {
     <card size="2xs" />
     <textarea
       data-testid="card-list__item-front-input"
+      ref="front-input"
+      :placeholder="t('card.placeholder-front')"
       :class="textareaClass"
       :disabled="!editing"
-      ref="front-input"
       :value="card.front_text"
-      @focus="onFocus"
+      @focusin="onFocus"
+      @focusout="emit('focusout')"
       @input="onInput($event, 'front_text')"
     />
 
     <textarea
       data-testid="card-list__item-back-input"
+      ref="back-input"
+      :placeholder="t('card.placeholder-back')"
       :class="textareaClass"
       :disabled="!editing"
-      ref="back-input"
       :value="card.back_text"
-      @focus="onFocus"
+      @focusin="onFocus"
+      @focusout="emit('focusout')"
       @input="onInput($event, 'back_text')"
     />
 

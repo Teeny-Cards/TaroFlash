@@ -1,0 +1,5 @@
+{
+  "localesDirectory": "./src/locales",
+  "defaultLocale": "en",
+  "fileFormat": "json"
+}
