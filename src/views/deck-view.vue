@@ -107,30 +107,18 @@ function onAddCard() {
     <div class="relative flex h-full w-full flex-col">
       <ui-kit:tabs :tabs="tabs" class="pb-4">
         <template #actions>
-          <ui-kit:button
-            v-if="!editing"
-            icon-only
-            icon-left="edit"
-            size="xs"
-            @click="editing = true"
-          ></ui-kit:button>
+          <ui-kit:button v-if="!editing" icon-left="edit" @click="editing = true">
+            {{ t('common.edit') }}
+          </ui-kit:button>
 
           <div v-else class="flex gap-1.5">
-            <ui-kit:button
-              icon-only
-              icon-left="close"
-              size="xs"
-              variant="danger"
-              @click="discardEdits"
-            ></ui-kit:button>
+            <ui-kit:button icon-left="close" variant="danger" @click="discardEdits">
+              {{ t('common.cancel') }}
+            </ui-kit:button>
 
-            <ui-kit:button
-              icon-only
-              icon-left="check"
-              size="xs"
-              @click="saveEdits()"
-              :disabled="!cardEdits?.isDirty"
-            ></ui-kit:button>
+            <ui-kit:button icon-left="check" @click="saveEdits()" :disabled="!cardEdits?.isDirty">
+              {{ t('common.save') }}
+            </ui-kit:button>
           </div>
         </template>
       </ui-kit:tabs>

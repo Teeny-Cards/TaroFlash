@@ -6,6 +6,8 @@
   "common.save": "Save",
   "common.delete": "Delete",
   "common.confirm": "Confirm",
+  "common.edit": "Edit",
+
   "card.placeholder-front": "Front",
   "card.placeholder-back": "Back",
   "edit-card-modal.title": "Edit Card",
