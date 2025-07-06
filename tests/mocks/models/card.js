@@ -24,7 +24,7 @@ export const CardBuilder = () => {
       id: sequence(),
       front_text: () => faker.word.words({ count: { min: 5, max: 10 } }),
       back_text: () => faker.word.words({ count: { min: 5, max: 10 } }),
-      deck_id: () => sequence(),
+      deck_id: sequence(),
       created_at: () => faker.date.past(),
       updated_at: () => faker.date.past(),
       order: sequence(),
