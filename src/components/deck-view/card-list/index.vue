@@ -88,6 +88,7 @@ function onDeleteCard(id: number) {
 
     <ui-kit:button
       v-if="editing"
+      data-testid="card-list__add-card-button"
       icon-only
       icon-left="add"
       class="absolute top-3 -right-8"
