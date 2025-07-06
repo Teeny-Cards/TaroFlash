@@ -11,7 +11,9 @@ export type EditableCard = {
 export function useEditableCards(initialCards: EditableCard[], deck_id?: number) {
   const editedCards = reactive(initialCards.map((card) => ({ ...card })))
   const dirtyMap = reactive(new Set<number>())
+
   const nextOrder = computed(() => {
+    if (editedCards.length === 0) return 1
     return Math.max(...editedCards.map((card) => card.order ?? 0)) + 1
   })
 
@@ -41,13 +43,19 @@ export function useEditableCards(initialCards: EditableCard[], deck_id?: number)
   }
 
   function resetChanges() {
-    initialCards.forEach((card, i) => {
-      Object.assign(editedCards[i], { ...card })
-    })
-    dirtyMap.clear()
-  }
+    const initialMap = new Map(initialCards.map((card) => [card.id, card]))
 
-  function markAllClean() {
+    for (let i = editedCards.length - 1; i >= 0; i--) {
+      const card = editedCards[i]
+      const original = initialMap.get(card.id)
+
+      if (original) {
+        Object.assign(card, { ...original })
+      } else {
+        editedCards.splice(i, 1)
+      }
+    }
+
     dirtyMap.clear()
   }
 
@@ -58,7 +66,6 @@ export function useEditableCards(initialCards: EditableCard[], deck_id?: number)
     updateCard,
     getChangedCards,
     resetChanges,
-    markAllClean,
-    isDirty: computed(() => dirtyMap.size > 0)
+    isDirty: computed(() => dirtyMap.size > 0 || editedCards.length !== initialCards.length)
   }
 }

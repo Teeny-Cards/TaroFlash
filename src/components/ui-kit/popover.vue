@@ -42,7 +42,6 @@ const arrowTop = computed(() => {
 </script>
 
 <template>
-  <!-- Trigger -->
   <div data-testid="popover-trigger" ref="triggerRef" class="group absolute inset-0 z-10">
     <Transition
       enter-from-class="opacity-0"
@@ -63,7 +62,7 @@ const arrowTop = computed(() => {
         <div
           ref="arrowRef"
           data-testid="popover-arrow"
-          class="bg-brown-300 rounded-1 -z-10 h-5 w-5 rotate-45"
+          class="bg-brown-300 rounded-1 shadow-popover -z-10 h-5 w-5 rotate-45"
           :style="{
             position: 'absolute',
             left: arrowLeft,

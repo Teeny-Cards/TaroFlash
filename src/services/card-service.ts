@@ -53,7 +53,7 @@ export async function deleteCardsByDeckId(deck_id: number): Promise<void> {
 }
 
 export async function deleteCardsById(ids: number[]): Promise<void> {
-  const { data, error } = await supabase.from('cards').delete().in('id', ids)
+  const { error } = await supabase.from('cards').delete().in('id', ids)
 
   if (error) {
     Logger.error(error.message)

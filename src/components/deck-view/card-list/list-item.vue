@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 export type NavigationData = {
-  selection_start: number
+  selection_start?: number
   direction: 'up' | 'down'
 }
 
@@ -132,9 +132,10 @@ watchEffect(() => {
     />
 
     <ui-kit:button-menu :actions="actions" v-if="!editing">
-      <template #trigger="{ toggleDropdown, open }">
+      <template #trigger="{ toggleDropdown }">
         <ui-kit:button
           v-if="!editing"
+          data-testid="card-list__item-more-button"
           icon-only
           variant="muted"
           size="small"
