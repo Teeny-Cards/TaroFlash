@@ -66,6 +66,6 @@ export function useEditableCards(initialCards: EditableCard[], deck_id?: number)
     updateCard,
     getChangedCards,
     resetChanges,
-    isDirty: computed(() => dirtyMap.size > 0)
+    isDirty: computed(() => dirtyMap.size > 0 || editedCards.length !== initialCards.length)
   }
 }

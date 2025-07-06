@@ -61,6 +61,7 @@ function onDeleteCard(id: number) {
 
 <template>
   <div
+    data-testid="card-list__empty-state"
     v-if="!cards.length"
     class="text-grey-500 flex h-50 flex-col items-center justify-center gap-4"
   >

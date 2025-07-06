@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { expect, it } from 'vitest'
 import HistoryTrack from '@/components/study-modal/history-track.vue'
-import { card_builder } from '@tests/mocks/models/card'
+import { CardBuilder } from '@tests/mocks/models/card'
 
 it('renders correctly with no cards', () => {
   const wrapper = mount(HistoryTrack, {
@@ -24,7 +24,7 @@ it('renders correctly with no cards', () => {
 })
 
 it('renders multiple cards with default (unstudied) state', () => {
-  const cards = card_builder.many(3)
+  const cards = CardBuilder().many(3)
   const wrapper = mount(HistoryTrack, {
     global: {
       stubs: {
@@ -46,7 +46,7 @@ it('renders multiple cards with default (unstudied) state', () => {
 })
 
 it('renders a studied card correctly', () => {
-  const cards = card_builder.many(3)
+  const cards = CardBuilder().many(3)
   const wrapper = mount(HistoryTrack, {
     global: {
       stubs: {
@@ -66,7 +66,7 @@ it('renders a studied card correctly', () => {
 })
 
 it('renders a failed card correctly', () => {
-  const cards = card_builder.many(3)
+  const cards = CardBuilder().many(3)
   const wrapper = mount(HistoryTrack, {
     global: {
       stubs: {
@@ -86,7 +86,7 @@ it('renders a failed card correctly', () => {
 })
 
 it('renders the active card correctly', () => {
-  const cards = card_builder.many(3)
+  const cards = CardBuilder().many(3)
   const wrapper = mount(HistoryTrack, {
     global: {
       stubs: {
@@ -106,7 +106,7 @@ it('renders the active card correctly', () => {
 })
 
 it('Emits card-clicked event on button click', () => {
-  const cards = card_builder.many(3)
+  const cards = CardBuilder().many(3)
   const wrapper = mount(HistoryTrack, {
     global: {
       stubs: {
