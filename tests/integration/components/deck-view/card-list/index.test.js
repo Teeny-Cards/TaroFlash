@@ -116,7 +116,7 @@ test('Sets current card when and correct column when left card is focused', asyn
 
   wrapper.vm.current_card_index = 1
 
-  await wrapper.find('[data-testid="card-list__item-front-input"]').trigger('focus')
+  await wrapper.find('[data-testid="card-list__item-front-input"]').trigger('focusin')
 
   expect(wrapper.vm.current_card_index).toBe(0)
   expect(wrapper.vm.current_column).toBe('front')
@@ -133,10 +133,26 @@ test('Sets current card when and correct column when right card is focused', asy
 
   wrapper.vm.current_card_index = 1
 
-  await wrapper.find('[data-testid="card-list__item-back-input"]').trigger('focus')
+  await wrapper.find('[data-testid="card-list__item-back-input"]').trigger('focusin')
 
   expect(wrapper.vm.current_card_index).toBe(0)
   expect(wrapper.vm.current_column).toBe('back')
+})
+
+test('Resets current card index when focusout event is emitted', async () => {
+  const cards = CardBuilder().many(3)
+  const wrapper = mount(CardList, {
+    props: {
+      cards,
+      editing: true
+    }
+  })
+
+  wrapper.vm.current_card_index = 1
+
+  await wrapper.find('[data-testid="card-list__item-front-input"]').trigger('focusout')
+
+  expect(wrapper.vm.current_card_index).toBe(-1)
 })
 
 test('Emits updated event when card is updated', async () => {
