@@ -2,6 +2,9 @@
 import { ref } from 'vue'
 import ListItem from './list-item.vue'
 import { type NavigationData } from './list-item.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const { cards, editing } = defineProps<{ cards: Card[]; editing: boolean }>()
 const emit = defineEmits<{
@@ -27,7 +30,7 @@ function onNavigate(data: NavigationData) {
     data.direction === 'up' ? current_card_index.value - 1 : current_card_index.value + 1
 
   if (newIndex >= 0 && newIndex < (cards.length ?? Infinity)) {
-    selection_start = data.selection_start
+    selection_start = data.selection_start ?? 0
     current_card_index.value = newIndex
   }
 
@@ -57,7 +60,15 @@ function onDeleteCard(id: number) {
 </script>
 
 <template>
-  <div data-testid="card-list" class="relative flex w-full flex-col">
+  <div
+    v-if="!cards.length"
+    class="text-grey-500 flex h-50 flex-col items-center justify-center gap-4"
+  >
+    <span>{{ t('deck-view.empty-state.no-cards') }}</span>
+    <ui-kit:button icon-left="add" @click="emit('add-card')">Add Card</ui-kit:button>
+  </div>
+
+  <div v-else data-testid="card-list" class="relative flex w-full flex-col">
     <template v-for="(card, index) in cards" :key="card.id">
       <list-item
         :card="card"
@@ -68,7 +79,7 @@ function onDeleteCard(id: number) {
         @focused="(direction) => onFocus(direction, index)"
         @navigated="onNavigate"
         @updated="onUpdated"
-        @deleted="onDeleteCard(card.id!)"
+        @deleted="onDeleteCard"
       />
 
       <ui-kit:divider dashed />

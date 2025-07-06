@@ -43,9 +43,19 @@ export function useEditableCards(initialCards: EditableCard[], deck_id?: number)
   }
 
   function resetChanges() {
-    initialCards.forEach((card, i) => {
-      Object.assign(editedCards[i], { ...card })
-    })
+    const initialMap = new Map(initialCards.map((card) => [card.id, card]))
+
+    for (let i = editedCards.length - 1; i >= 0; i--) {
+      const card = editedCards[i]
+      const original = initialMap.get(card.id)
+
+      if (original) {
+        Object.assign(card, { ...original })
+      } else {
+        editedCards.splice(i, 1)
+      }
+    }
+
     dirtyMap.clear()
   }
 

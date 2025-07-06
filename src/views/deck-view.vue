@@ -93,13 +93,18 @@ function cancelDeleteCards() {
   cardsToDelete.value = []
   deleteCardConfirmationOpen.value = false
 }
+
+function onAddCard() {
+  editing.value = true
+  cardEdits?.addCard()
+}
 </script>
 
 <template>
   <section data-testid="deck-view" class="flex h-full items-start gap-15 pt-12">
     <overview-panel v-if="deck" :deck="deck" @study-clicked="studyModalOpen = true" />
 
-    <div class="relative w-full">
+    <div class="relative flex h-full w-full flex-col">
       <ui-kit:tabs :tabs="tabs" class="pb-4">
         <template #actions>
           <ui-kit:button
@@ -110,9 +115,8 @@ function cancelDeleteCards() {
             @click="editing = true"
           ></ui-kit:button>
 
-          <div class="flex gap-1.5">
+          <div v-else class="flex gap-1.5">
             <ui-kit:button
-              v-if="editing"
               icon-only
               icon-left="close"
               size="xs"
@@ -121,7 +125,6 @@ function cancelDeleteCards() {
             ></ui-kit:button>
 
             <ui-kit:button
-              v-if="editing"
               icon-only
               icon-left="check"
               size="xs"
@@ -139,7 +142,7 @@ function cancelDeleteCards() {
         :cards="cardEdits?.editedCards ?? []"
         :editing="editing"
         @updated="cardEdits?.updateCard"
-        @add-card="cardEdits?.addCard"
+        @add-card="onAddCard"
         @cards-deleted="deleteCards"
       />
     </div>
@@ -149,7 +152,7 @@ function cancelDeleteCards() {
 
   <confirmation-alert
     :open="deleteCardConfirmationOpen"
-    :confirm-label="$t('common.delete')"
+    :confirm-label="t('common.delete')"
     @confirm="confirmDeleteCards"
     @cancel="cancelDeleteCards"
   />
