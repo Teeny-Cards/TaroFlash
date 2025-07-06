@@ -12,7 +12,6 @@ const i18n = createI18n({
 })
 
 const app = createApp({})
-app.use(i18n)
 registerUIKitComponents(app)
 
 // Copy the globally registered components into test-utils config
