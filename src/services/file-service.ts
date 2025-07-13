@@ -32,6 +32,10 @@ export function getImageUrl(bucket: Bucket, file_path: string, options?: Transfo
     options = undefined
   }
 
+  // TODO: remove this after upgrading to paid supabase plan.
+  // Free plan does not support image transformations
+  options = undefined
+
   const full_path = `${useMemberStore().id}/${file_path}`
   return supabase.storage.from(bucket).getPublicUrl(full_path, { transform: options }).data
     .publicUrl
