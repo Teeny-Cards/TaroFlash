@@ -34,13 +34,9 @@ const numCardsDue = computed(() => {
       size="small"
       class="border-brown-300 relative cursor-pointer overflow-hidden border-8 bg-purple-400
         bg-(image:--diagonal-stripes)"
-      :revealed="true"
       @click="$emit('clicked')"
+      :image_url="image_url"
     >
-      <div v-if="image_url" class="absolute inset-0">
-        <img :src="image_url" alt="Deck Image preview" class="h-full w-full object-cover" />
-      </div>
-
       <deck-preview :deck="deck" :image-url="image_url" @study="onStudyClicked" />
     </Card>
 
