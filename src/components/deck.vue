@@ -16,7 +16,7 @@ onMounted(() => {
     return
   }
 
-  image_url.value = getImageUrl('deck-images', deck.image_path, { width: 138, height: 177.42 })
+  image_url.value = getImageUrl('deck-images', deck.image_path)
 })
 
 function onStudyClicked() {
