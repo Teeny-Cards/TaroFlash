@@ -10,6 +10,12 @@
 
   "card.placeholder-front": "Front",
   "card.placeholder-back": "Back",
+
+  "study.nope!": "Nope!",
+  "study.got-it!": "Got It!",
+  "study.show!": "Show!",
+  "study.study-in": "Study again in",
+
   "edit-card-modal.title": "Edit Card",
   "dashboard.due": "Due",
   "deck-view.add-card": "Add Card",
