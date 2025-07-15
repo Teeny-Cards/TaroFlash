@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { DateTime } from 'luxon'
 import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const { options, showOptions, disabled } = defineProps<{
   options?: RecordLog
@@ -17,7 +20,9 @@ function getRatingTimeFormat(grade: Grade) {
   const date = options?.[grade].card.due
 
   if (!date) return ''
-  return DateTime.fromJSDate(date).toRelative({ padding: 1000 })
+
+  const timeString = DateTime.fromJSDate(date).toRelative({ padding: 1000 })
+  return `${t('study.study-in')} ${timeString}`
 }
 
 function onRatingClicked(grade: Grade) {
@@ -42,7 +47,7 @@ function onRatingClicked(grade: Grade) {
         :disabled="disabled"
         @click="onRatingClicked(Rating.Good)"
       >
-        Got It!
+        {{ t('study.got-it!') }}
         <ui-kit:tooltip :text="getRatingTimeFormat(Rating.Good)" position="top-right" />
       </button>
       <button
@@ -52,7 +57,7 @@ function onRatingClicked(grade: Grade) {
         :disabled="disabled"
         @click="onRatingClicked(Rating.Again)"
       >
-        Nope!
+        {{ t('study.nope!') }}
         <ui-kit:tooltip :text="getRatingTimeFormat(Rating.Again)" position="bottom-right" />
       </button>
     </template>
@@ -62,7 +67,7 @@ function onRatingClicked(grade: Grade) {
         class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white"
         @click="$emit('revealed')"
       >
-        Show!
+        {{ t('study.show!') }}
       </button>
     </template>
   </div>

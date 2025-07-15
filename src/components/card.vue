@@ -12,7 +12,7 @@
       v-if="revealed"
       data-testid="card"
       class="flex shrink-0 items-center justify-center p-3"
-      :class="[defaultClasses, sizeClasses[size]]"
+      :class="[defaultClasses, sizeClasses[size], { 'bg-white': revealed }]"
     >
       <slot></slot>
     </div>
@@ -21,7 +21,11 @@
       data-testid="card"
       class="relative shrink-0 bg-green-400 p-3"
       :class="[defaultClasses, sizeClasses[size]]"
-    ></div>
+    >
+      <div v-if="image_url" class="absolute inset-0">
+        <img :src="image_url" alt="Deck Image preview" class="h-full w-full object-cover" />
+      </div>
+    </div>
   </transition>
 </template>
 
@@ -29,6 +33,7 @@
 const { size = 'base' } = defineProps<{
   size?: 'large' | 'base' | 'small' | 'xs' | '2xs' | '3xs'
   revealed?: Boolean
+  image_url?: string
 }>()
 
 const defaultClasses = 'aspect-card'

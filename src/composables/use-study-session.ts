@@ -86,7 +86,7 @@ export function useStudySession() {
       (c) => !studied_card_ids.value.has(c.id!) && !failed_card_ids.value.has(c.id!)
     )
 
-    if (nextCard && nextCard.review === undefined) {
+    if (nextCard && !nextCard.review) {
       nextCard.review = createEmptyCard(new Date())
     }
 
