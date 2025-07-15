@@ -27,16 +27,7 @@ export async function uploadImage(bucket: string, file: File): Promise<string> {
   }
 }
 
-export function getImageUrl(bucket: Bucket, file_path: string, options?: TransformOptions): string {
-  if (import.meta.env.DEV) {
-    options = undefined
-  }
-
-  // TODO: remove this after upgrading to paid supabase plan.
-  // Free plan does not support image transformations
-  options = undefined
-
+export function getImageUrl(bucket: Bucket, file_path: string): string {
   const full_path = `${useMemberStore().id}/${file_path}`
-  return supabase.storage.from(bucket).getPublicUrl(full_path, { transform: options }).data
-    .publicUrl
+  return supabase.storage.from(bucket).getPublicUrl(full_path).data.publicUrl
 }
