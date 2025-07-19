@@ -18,8 +18,8 @@ type OpenArgs = {
 }
 
 type AlertArgs = {
-  title: string
-  message: string
+  title?: string
+  message?: string
   confirmLabel?: string
   cancelLabel?: string
   backdrop?: boolean
@@ -29,36 +29,32 @@ type AlertArgs = {
 const modal_stack = ref<ModalEntry[]>([])
 
 export function useModal() {
-  function openAlertModal(args: AlertArgs) {
-    const { title, message, confirmLabel, cancelLabel, backdrop, closeOnBackdropClick } = args
-
-    const alert = openModal({
+  function openAlertModal(args?: AlertArgs) {
+    return openModal({
       component: confirmationAlert,
-      backdrop,
-      closeOnBackdropClick,
+      backdrop: args?.backdrop ?? true,
+      closeOnBackdropClick: args?.closeOnBackdropClick,
       props: {
-        title,
-        message,
-        confirmLabel,
-        cancelLabel
+        title: args?.title,
+        message: args?.message,
+        confirmLabel: args?.confirmLabel,
+        cancelLabel: args?.cancelLabel
       }
     })
-
-    return alert
   }
 
   function openModal(args: OpenArgs) {
     let resolveFn!: (result: boolean) => void
 
     const id = Symbol('modal')
-    const result = new Promise<boolean>((resolve) => {
+    const response = new Promise<boolean>((resolve) => {
       resolveFn = resolve
     })
 
-    const close = (resultValue: boolean = false) => {
+    const close = (responseValue: boolean = false) => {
       const index = modal_stack.value.findIndex((m) => m.id === id)
       if (index !== -1) {
-        modal_stack.value[index].resolve(resultValue)
+        modal_stack.value[index].resolve(responseValue)
         modal_stack.value.splice(index, 1)
       }
     }
@@ -80,17 +76,17 @@ export function useModal() {
     return {
       id,
       close,
-      result
+      response
     }
   }
 
-  function closeModal(id?: symbol, result: boolean = false) {
+  function closeModal(id?: symbol, response: boolean = false) {
     let index = modal_stack.value.findIndex((m) => m.id === id)
     index = index === -1 ? modal_stack.value.length - 1 : index
 
     if (index !== -1 && modal_stack.value[index].closeOnBackdropClick) {
       const modal = modal_stack.value[index]
-      modal.resolve(result)
+      modal.resolve(response)
       modal_stack.value.splice(index, 1)
     }
   }
