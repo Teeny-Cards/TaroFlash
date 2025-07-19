@@ -40,7 +40,7 @@ function close(e: Event) {
   <div
     data-testid="ui-kit-modal"
     ref="ui-kit-modal"
-    class="pointer-events-auto fixed inset-0 flex items-center justify-center px-4 py-7"
+    class="pointer-events-auto fixed -inset-15 flex items-center justify-center px-4 py-7"
     :class="{ 'backdrop-blur-4 bg-black/25': backdrop }"
     @click="close"
   >

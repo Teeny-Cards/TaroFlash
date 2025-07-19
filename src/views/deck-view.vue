@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import OverviewPanel from '@/components/deck-view/overview-panel.vue'
 import { onMounted, ref, inject } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 import { fetchDeckById } from '@/services/deck-service'
 import StudyModal from '@/components/study-modal/index.vue'
 import CardList from '@/components/deck-view/card-list/index.vue'
@@ -41,6 +42,27 @@ onMounted(async () => {
     cardEdits = useEditableCards(deck.value.cards ?? [], deck.value.id)
   } catch (e: any) {
     // TODO
+  }
+})
+
+onBeforeRouteLeave(async (to, from) => {
+  if (editing.value) {
+    const modal = openModal({
+      component: confirmationAlert,
+      backdrop: true,
+      props: {
+        title: t('alert.leave-page'),
+        message: t('alert.leave-page.message'),
+        confirmLabel: t('alert.leave-page.stay'),
+        cancelLabel: t('common.leave')
+      }
+    })
+
+    const result = await modal.result
+
+    if (result) {
+      return false
+    }
   }
 })
 
