@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import OverviewPanel from '@/components/deck-view/overview-panel.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, inject } from 'vue'
 import { fetchDeckById } from '@/services/deck-service'
 import StudyModal from '@/components/study-modal/index.vue'
 import CardList from '@/components/deck-view/card-list/index.vue'
 import { useI18n } from 'vue-i18n'
 import { useEditableCards } from '@/composables/use-editable-cards'
 import { updateCards, deleteCardsById } from '@/services/card-service'
+import { useModal } from '@/composables/use-modal'
 import confirmationAlert from '@/components/confirmation-alert.vue'
 
 const { t } = useI18n()
@@ -14,6 +15,8 @@ const { t } = useI18n()
 const { id: deck_id } = defineProps<{
   id: string
 }>()
+
+const { openModal } = useModal()
 
 const deck = ref<Deck>()
 const studyModalOpen = ref(false)
@@ -98,6 +101,17 @@ function onAddCard() {
   editing.value = true
   cardEdits?.addCard()
 }
+
+function onEditClicked() {
+  // editing.value = true
+
+  const modal = openModal({
+    component: confirmationAlert,
+    props: {
+      confirmLabel: t('common.delete')
+    }
+  })
+}
 </script>
 
 <template>
@@ -107,7 +121,7 @@ function onAddCard() {
     <div class="relative flex h-full w-full flex-col">
       <ui-kit:tabs :tabs="tabs" class="pb-4">
         <template #actions>
-          <ui-kit:button v-if="!editing" icon-left="edit" @click="editing = true">
+          <ui-kit:button v-if="!editing" icon-left="edit" @click="onEditClicked">
             {{ t('common.edit') }}
           </ui-kit:button>
 
@@ -136,12 +150,5 @@ function onAddCard() {
     </div>
   </section>
 
-  <study-modal v-if="deck" :open="studyModalOpen" :deck="deck" @closed="studyModalOpen = false" />
-
-  <confirmation-alert
-    :open="deleteCardConfirmationOpen"
-    :confirm-label="t('common.delete')"
-    @confirm="confirmDeleteCards"
-    @cancel="cancelDeleteCards"
-  />
+  <!-- <study-modal v-if="deck" :open="studyModalOpen" :deck="deck" @closed="studyModalOpen = false" /> -->
 </template>
