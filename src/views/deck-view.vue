@@ -46,15 +46,14 @@ onMounted(async () => {
 
 onBeforeRouteLeave(async () => {
   if (cardEdits?.isDirty.value) {
-    const alert = openAlertModal({
-      backdrop: true,
+    const { response } = openAlertModal({
       title: t('alert.leave-page'),
       message: t('alert.leave-page.message'),
       confirmLabel: t('common.leave'),
       cancelLabel: t('alert.leave-page.stay')
     })
 
-    return await alert.result
+    return await response
   }
 })
 
@@ -94,16 +93,13 @@ function selectCard(id: number) {
 async function deleteCards(ids: number[]) {
   if (!ids.length) return
 
-  const alert = openAlertModal({
-    backdrop: true,
+  const { response: confirmed } = openAlertModal({
     title: t('alert.delete-card'),
     message: t('alert.delete-card.message'),
     confirmLabel: t('common.delete')
   })
 
-  const confirmed = await alert.result
-
-  if (confirmed) {
+  if (await confirmed) {
     await deleteCardsById(ids)
     await refetchCards()
   }
