@@ -21,8 +21,6 @@ const { openModal } = useModal()
 const deck = ref<Deck>()
 const studyModalOpen = ref(false)
 const editing = ref(false)
-const deleteCardConfirmationOpen = ref(false)
-const cardsToDelete = ref<number[]>([])
 let cardEdits: ReturnType<typeof useEditableCards> | undefined
 
 const tabs = [
@@ -79,38 +77,29 @@ function selectCard(id: number) {
   // cardEdits?.selectCard(id)
 }
 
-function deleteCards(ids: number[]) {
-  cardsToDelete.value = ids
-  deleteCardConfirmationOpen.value = true
-}
+async function deleteCards(ids: number[]) {
+  if (!ids.length) return
 
-async function confirmDeleteCards() {
-  await deleteCardsById(cardsToDelete.value)
-  await refetchCards()
+  const modal = openModal({
+    component: confirmationAlert,
+    props: {
+      title: t('alert.delete-card'),
+      message: t('alert.delete-card.message'),
+      confirmLabel: t('common.delete')
+    }
+  })
 
-  cardsToDelete.value = []
-  deleteCardConfirmationOpen.value = false
-}
+  const result = await modal.result
 
-function cancelDeleteCards() {
-  cardsToDelete.value = []
-  deleteCardConfirmationOpen.value = false
+  if (result) {
+    await deleteCardsById(ids)
+    await refetchCards()
+  }
 }
 
 function onAddCard() {
   editing.value = true
   cardEdits?.addCard()
-}
-
-function onEditClicked() {
-  // editing.value = true
-
-  const modal = openModal({
-    component: confirmationAlert,
-    props: {
-      confirmLabel: t('common.delete')
-    }
-  })
 }
 </script>
 
@@ -121,7 +110,7 @@ function onEditClicked() {
     <div class="relative flex h-full w-full flex-col">
       <ui-kit:tabs :tabs="tabs" class="pb-4">
         <template #actions>
-          <ui-kit:button v-if="!editing" icon-left="edit" @click="onEditClicked">
+          <ui-kit:button v-if="!editing" icon-left="edit" @click="editing = true">
             {{ t('common.edit') }}
           </ui-kit:button>
 
