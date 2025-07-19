@@ -25,7 +25,10 @@ const buttonHoverClasses = `
 </script>
 
 <template>
-  <div data-testid="confirmation-alert" class="rounded-2 shadow-modal flex flex-col bg-white">
+  <div
+    data-testid="confirmation-alert"
+    class="rounded-2 shadow-modal flex w-115 max-w-115 flex-col bg-white"
+  >
     <div class="flex flex-col gap-2 p-10">
       <h1 class="text-brown-700 text-4xl">{{ title ?? t('alert.generic-title') }}</h1>
       <p class="text-brown-500">{{ message ?? t('alert.generic-message') }}</p>
