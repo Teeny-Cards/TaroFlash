@@ -9,18 +9,14 @@ defineProps<{
   close: (result?: boolean) => void
 }>()
 
-defineEmits<{
-  (e: 'confirm'): void
-  (e: 'cancel'): void
-}>()
-
 const { t } = useI18n()
 
-const buttonClasses = 'group relative'
+const buttonClasses =
+  'group relative w-full cursor-pointer p-4 text-lg hover:text-blue-500 text-brown-700'
 const buttonHoverClasses = `
-  rounded-2 absolute -inset-0.5 flex items-center
-  justify-center border-3 border-blue-500 bg-white opacity-0 transition-[all]
-  duration-100 ease-in-out group-hover:opacity-100 group-focus:opacity-100 focus:outline-none text-blue-500
+  rounded-2 absolute -inset-0.5 flex border-3 border-blue-500
+  opacity-0 transition-[all] duration-100 ease-in-out
+  group-hover:opacity-100 group-focus:opacity-100 focus:outline-none
   `
 </script>
 
@@ -34,19 +30,14 @@ const buttonHoverClasses = `
       <p class="text-brown-500">{{ message ?? t('alert.generic-message') }}</p>
     </div>
 
-    <div
-      class="border-brown-300 divide-brown-300 *:text-brown-700 flex w-full divide-x border-t *:w-full
-        *:cursor-pointer *:p-4 *:text-lg"
-    >
+    <div class="border-brown-300 divide-brown-300 flex w-full divide-x border-t">
       <button
         data-testid="confirmation-alert__cancel"
         :class="buttonClasses"
         @click="() => close(false)"
       >
         {{ cancelLabel ?? t('common.cancel') }}
-        <div :class="buttonHoverClasses">
-          {{ cancelLabel ?? t('common.cancel') }}
-        </div>
+        <div :class="buttonHoverClasses" />
       </button>
       <button
         data-testid="confirmation-alert__confirm"
@@ -54,9 +45,7 @@ const buttonHoverClasses = `
         @click="() => close(true)"
       >
         {{ confirmLabel ?? t('common.continue') }}
-        <div :class="buttonHoverClasses">
-          {{ confirmLabel ?? t('common.continue') }}
-        </div>
+        <div :class="buttonHoverClasses" />
       </button>
     </div>
   </div>

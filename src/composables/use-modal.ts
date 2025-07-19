@@ -26,7 +26,7 @@ type AlertArgs = {
   closeOnBackdropClick?: boolean
 }
 
-const modalStack = ref<ModalEntry[]>([])
+const modal_stack = ref<ModalEntry[]>([])
 
 export function useModal() {
   function openAlertModal(args: AlertArgs) {
@@ -56,10 +56,10 @@ export function useModal() {
     })
 
     const close = (resultValue: boolean = false) => {
-      const index = modalStack.value.findIndex((m) => m.id === id)
+      const index = modal_stack.value.findIndex((m) => m.id === id)
       if (index !== -1) {
-        modalStack.value[index].resolve(resultValue)
-        modalStack.value.splice(index, 1)
+        modal_stack.value[index].resolve(resultValue)
+        modal_stack.value.splice(index, 1)
       }
     }
 
@@ -75,7 +75,7 @@ export function useModal() {
       resolve: resolveFn
     }
 
-    modalStack.value.push(entry)
+    modal_stack.value.push(entry)
 
     return {
       id,
@@ -85,15 +85,15 @@ export function useModal() {
   }
 
   function closeModal(id?: symbol, result: boolean = false) {
-    let index = modalStack.value.findIndex((m) => m.id === id)
-    index = index === -1 ? modalStack.value.length - 1 : index
+    let index = modal_stack.value.findIndex((m) => m.id === id)
+    index = index === -1 ? modal_stack.value.length - 1 : index
 
-    if (index !== -1) {
-      const modal = modalStack.value[index]
+    if (index !== -1 && modal_stack.value[index].closeOnBackdropClick) {
+      const modal = modal_stack.value[index]
       modal.resolve(result)
-      modalStack.value.splice(index, 1)
+      modal_stack.value.splice(index, 1)
     }
   }
 
-  return { openModal, closeModal, modalStack, openAlertModal }
+  return { openModal, closeModal, openAlertModal, modal_stack }
 }
