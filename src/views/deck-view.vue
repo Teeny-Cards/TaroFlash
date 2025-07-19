@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import OverviewPanel from '@/components/deck-view/overview-panel.vue'
-import { onMounted, ref, inject } from 'vue'
+import { onMounted, ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import { fetchDeckById } from '@/services/deck-service'
-import StudyModal from '@/components/study-modal/index.vue'
+// import StudyModal from '@/components/study-modal/index.vue'
 import CardList from '@/components/deck-view/card-list/index.vue'
 import { useI18n } from 'vue-i18n'
 import { useEditableCards } from '@/composables/use-editable-cards'
 import { updateCards, deleteCardsById } from '@/services/card-service'
 import { useModal } from '@/composables/use-modal'
-import confirmationAlert from '@/components/confirmation-alert.vue'
 
 const { t } = useI18n()
 
@@ -17,7 +16,7 @@ const { id: deck_id } = defineProps<{
   id: string
 }>()
 
-const { openModal } = useModal()
+const { openAlertModal } = useModal()
 
 const deck = ref<Deck>()
 const studyModalOpen = ref(false)
@@ -45,24 +44,17 @@ onMounted(async () => {
   }
 })
 
-onBeforeRouteLeave(async (to, from) => {
-  if (editing.value) {
-    const modal = openModal({
-      component: confirmationAlert,
+onBeforeRouteLeave(async () => {
+  if (cardEdits?.isDirty.value) {
+    const alert = openAlertModal({
       backdrop: true,
-      props: {
-        title: t('alert.leave-page'),
-        message: t('alert.leave-page.message'),
-        confirmLabel: t('alert.leave-page.stay'),
-        cancelLabel: t('common.leave')
-      }
+      title: t('alert.leave-page'),
+      message: t('alert.leave-page.message'),
+      confirmLabel: t('common.leave'),
+      cancelLabel: t('alert.leave-page.stay')
     })
 
-    const result = await modal.result
-
-    if (result) {
-      return false
-    }
+    return await alert.result
   }
 })
 
@@ -102,18 +94,16 @@ function selectCard(id: number) {
 async function deleteCards(ids: number[]) {
   if (!ids.length) return
 
-  const modal = openModal({
-    component: confirmationAlert,
-    props: {
-      title: t('alert.delete-card'),
-      message: t('alert.delete-card.message'),
-      confirmLabel: t('common.delete')
-    }
+  const alert = openAlertModal({
+    backdrop: true,
+    title: t('alert.delete-card'),
+    message: t('alert.delete-card.message'),
+    confirmLabel: t('common.delete')
   })
 
-  const result = await modal.result
+  const confirmed = await alert.result
 
-  if (result) {
+  if (confirmed) {
     await deleteCardsById(ids)
     await refetchCards()
   }
