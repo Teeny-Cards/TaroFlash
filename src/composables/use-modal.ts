@@ -1,4 +1,3 @@
-import confirmationAlert from '@/components/ui-kit/alert.vue'
 import { ref, markRaw } from 'vue'
 
 type ModalEntry = {

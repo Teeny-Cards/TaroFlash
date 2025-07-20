@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { expect, it } from 'vitest'
-import RatingButtons from '@/components/study-modal/rating-buttons.vue'
+import RatingButtons from '@/components/modals/study-modal/rating-buttons.vue'
 
 it('renders correctly when showOptions is false', () => {
   const wrapper = mount(RatingButtons, {
