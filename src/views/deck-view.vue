@@ -3,14 +3,16 @@ import OverviewPanel from '@/components/deck-view/overview-panel.vue'
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import { fetchDeckById } from '@/services/deck-service'
-// import StudyModal from '@/components/study-modal/index.vue'
+import StudyModal from '@/components/modals/study-modal/index.vue'
 import CardList from '@/components/deck-view/card-list/index.vue'
 import { useI18n } from 'vue-i18n'
 import { useEditableCards } from '@/composables/use-editable-cards'
 import { updateCards, deleteCardsById } from '@/services/card-service'
 import { useAlert } from '@/composables/use-alert'
+import { useModal } from '@/composables/use-modal'
 
 const { t } = useI18n()
+const modal = useModal()
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -18,7 +20,6 @@ const { id: deck_id } = defineProps<{
 
 const alert = useAlert()
 const deck = ref<Deck>()
-const studyModalOpen = ref(false)
 const editing = ref(false)
 let cardEdits: ReturnType<typeof useEditableCards> | undefined
 
@@ -55,6 +56,15 @@ onBeforeRouteLeave(async () => {
     return await response
   }
 })
+
+function onStudyClicked() {
+  modal.open({
+    component: StudyModal,
+    props: {
+      deck: deck.value!
+    }
+  })
+}
 
 async function saveEdits() {
   const changed = cardEdits?.getChangedCards()
@@ -113,7 +123,7 @@ function onAddCard() {
 
 <template>
   <section data-testid="deck-view" class="flex h-full items-start gap-15 pt-12">
-    <overview-panel v-if="deck" :deck="deck" @study-clicked="studyModalOpen = true" />
+    <overview-panel v-if="deck" :deck="deck" @study-clicked="onStudyClicked" />
 
     <div class="relative flex h-full w-full flex-col">
       <ui-kit:tabs :tabs="tabs" class="pb-4">

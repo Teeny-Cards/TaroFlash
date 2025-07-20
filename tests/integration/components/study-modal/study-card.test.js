@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { expect, it, vi } from 'vitest'
-import StudyCard from '@/components/study-modal/study-card.vue'
+import StudyCard from '@/components/modals/study-modal/study-card.vue'
 
 it('renders both Card components with correct text bindings', async () => {
   vi.useFakeTimers()

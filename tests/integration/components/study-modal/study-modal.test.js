@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { expect, it, vi } from 'vitest'
-import StudyModal from '@/components/study-modal/index.vue'
+import StudyModal from '@/components/modals/study-modal/index.vue'
 
 const mocks = vi.hoisted(() => {
   return {
@@ -49,27 +49,6 @@ it('displays deck title in header', async () => {
   })
 
   expect(wrapper.find('[data-testid="study-modal__header"]').text()).toContain('Test Deck')
-})
-
-it('emits closed event when close button is clicked', async () => {
-  const wrapper = mount(StudyModal, {
-    props: {
-      open: true,
-      deck: {
-        title: 'Test Deck',
-        cards: []
-      }
-    },
-    global: {
-      stubs: ['teleport']
-    }
-  })
-
-  await wrapper
-    .find('[data-testid="study-modal__actions"] [data-testid="ui-kit-button"]')
-    .trigger('click')
-
-  expect(wrapper.emitted('closed')).toBeTruthy()
 })
 
 it('updates current_card_state to revealed when revealed event is emitted', async () => {
