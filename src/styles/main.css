@@ -4,6 +4,7 @@
 @import 'ui-kit/';
 @import 'custom-styles.css';
 @import 'custom-variants.css';
+@import 'animations.css';
 
 @theme {
   --*: initial;
@@ -20,7 +21,10 @@
   --color-purple-400: #bea0df;
   --color-pink-500: #f388a5;
   --color-pink-400: #f599b3;
+  --color-red-600: #d44c4c;
   --color-red-500: #e66061;
+  --color-red-400: #f97b7b;
+  --color-red-300: #ffa399;
   --color-orange-500: #fbc56f;
   --color-orange-400: #f7d279;
   --color-brown-700: #744e2a;
@@ -77,11 +81,15 @@
 
   /* New Background Paradigms */
   --diagonal-stripes: url('../assets/backgrounds/diagonal-stripes.svg');
+  --saw: url('../assets/backgrounds/saw.svg');
 
   /* Transitions */
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-150: 150ms;
   --duration-100: 100ms;
+
+  /* Animations */
+  --animate-bg-slide: background-slide 2s linear infinite;
 
   /* Breakpoints */
   --breakpoint-sm: 40rem;
