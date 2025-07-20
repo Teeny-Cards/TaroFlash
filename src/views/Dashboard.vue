@@ -11,8 +11,7 @@ import { useModal } from '@/composables/use-modal'
 const toastStore = useToastStore()
 const router = useRouter()
 
-const { openModal } = useModal()
-
+const modal = useModal()
 const loading = ref(true)
 const decks = ref<Deck[]>([])
 const create_deck_modal = ref()
@@ -39,7 +38,7 @@ function onDeckClicked(deck: Deck) {
 }
 
 function onCreateDeckClicked() {
-  create_deck_modal.value = openModal({
+  create_deck_modal.value = modal.open({
     component: CreateDeckModal,
     backdrop: true,
     props: {

@@ -20,7 +20,7 @@ type OpenArgs = {
 const modal_stack = ref<ModalEntry[]>([])
 
 export function useModal() {
-  function openModal(args: OpenArgs) {
+  function open(args: OpenArgs) {
     let resolveFn!: (result: boolean) => void
 
     const id = Symbol('modal')
@@ -57,7 +57,7 @@ export function useModal() {
     }
   }
 
-  function closeModal(id?: symbol, response: boolean = false) {
+  function close(id?: symbol, response: boolean = false) {
     let index = modal_stack.value.findIndex((m) => m.id === id)
     index = index === -1 ? modal_stack.value.length - 1 : index
 
@@ -68,5 +68,5 @@ export function useModal() {
     }
   }
 
-  return { openModal, closeModal, modal_stack }
+  return { open, close, modal_stack }
 }
