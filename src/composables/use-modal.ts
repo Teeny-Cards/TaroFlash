@@ -1,4 +1,4 @@
-import confirmationAlert from '@/components/confirmation-alert.vue'
+import confirmationAlert from '@/components/ui-kit/alert.vue'
 import { ref, markRaw } from 'vue'
 
 type ModalEntry = {
@@ -17,32 +17,9 @@ type OpenArgs = {
   closeOnBackdropClick?: boolean
 }
 
-type AlertArgs = {
-  title?: string
-  message?: string
-  confirmLabel?: string
-  cancelLabel?: string
-  backdrop?: boolean
-  closeOnBackdropClick?: boolean
-}
-
 const modal_stack = ref<ModalEntry[]>([])
 
 export function useModal() {
-  function openAlertModal(args?: AlertArgs) {
-    return openModal({
-      component: confirmationAlert,
-      backdrop: args?.backdrop ?? true,
-      closeOnBackdropClick: args?.closeOnBackdropClick,
-      props: {
-        title: args?.title,
-        message: args?.message,
-        confirmLabel: args?.confirmLabel,
-        cancelLabel: args?.cancelLabel
-      }
-    })
-  }
-
   function openModal(args: OpenArgs) {
     let resolveFn!: (result: boolean) => void
 
@@ -91,5 +68,5 @@ export function useModal() {
     }
   }
 
-  return { openModal, closeModal, openAlertModal, modal_stack }
+  return { openModal, closeModal, modal_stack }
 }

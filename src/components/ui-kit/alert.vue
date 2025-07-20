@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n'
 
+export type AlertType = 'warn' | 'info'
+
 defineProps<{
   cancelLabel?: string
   confirmLabel?: string
   message?: string
   title?: string
+  type?: AlertType
   close: (result?: boolean) => void
 }>()
 

@@ -8,7 +8,7 @@ import CardList from '@/components/deck-view/card-list/index.vue'
 import { useI18n } from 'vue-i18n'
 import { useEditableCards } from '@/composables/use-editable-cards'
 import { updateCards, deleteCardsById } from '@/services/card-service'
-import { useModal } from '@/composables/use-modal'
+import { useAlert } from '@/composables/use-alert'
 
 const { t } = useI18n()
 
@@ -16,7 +16,7 @@ const { id: deck_id } = defineProps<{
   id: string
 }>()
 
-const { openAlertModal } = useModal()
+const alert = useAlert()
 
 const deck = ref<Deck>()
 const studyModalOpen = ref(false)
@@ -46,7 +46,7 @@ onMounted(async () => {
 
 onBeforeRouteLeave(async () => {
   if (cardEdits?.isDirty.value) {
-    const { response } = openAlertModal({
+    const { response } = alert.warn({
       title: t('alert.leave-page'),
       message: t('alert.leave-page.message'),
       confirmLabel: t('common.leave'),
@@ -91,11 +91,12 @@ function selectCard(id: number) {
 }
 
 async function deleteCards(ids: number[]) {
-  if (!ids.length) return
+  const count = ids.length
+  if (!count) return
 
-  const { response: confirmed } = openAlertModal({
-    title: t('alert.delete-card'),
-    message: t('alert.delete-card.message'),
+  const { response: confirmed } = alert.warn({
+    title: t('alert.delete-card', { count }),
+    message: t('alert.delete-card.message', { count }),
     confirmLabel: t('common.delete')
   })
 
