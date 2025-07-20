@@ -1,98 +1,74 @@
 <script setup lang="ts">
-import { onUnmounted, watch, useTemplateRef, nextTick } from 'vue'
+import { onUnmounted, useTemplateRef, watchEffect, computed } from 'vue'
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
-import { onMounted } from 'vue'
+import { useModal } from '@/composables/use-modal'
 
-const emit = defineEmits<{
-  (event: 'closed'): void
-  (event: 'opened'): void
-}>()
-
-const {
-  open = false,
-  backdrop = false,
-  closeOnBackdropClick = true
-} = defineProps({
-  open: Boolean,
-  backdrop: Boolean,
-  closeOnBackdropClick: Boolean
-})
-
-const modal = useTemplateRef<HTMLDivElement>('ui-kit-modal')
-
-onMounted(async () => {
-  if (open) {
-    await nextTick()
-    if (!modal.value) return
-    disableBodyScroll(modal.value, { reserveScrollBarGap: true })
-    emit('opened')
-  }
-})
+const { modal_stack } = useModal()
+const modal_container = useTemplateRef<HTMLDivElement>('ui-kit-modal-container')
 
 onUnmounted(() => {
-  if (!modal.value) return
-  enableBodyScroll(modal.value)
+  if (!modal_container.value) return
+  enableBodyScroll(modal_container.value)
 })
 
-function close(e: Event) {
-  const target = e.target as HTMLElement
+function close() {
+  let modal = modal_stack.value.at(-1)
 
-  if (closeOnBackdropClick && target.dataset.testid === 'ui-kit-modal-backdrop') {
-    emit('closed')
+  if (modal && modal.closeOnBackdropClick) {
+    modal.resolve(false)
+    modal_stack.value.pop()
   }
 }
 
-watch(
-  () => open,
-  async (open) => {
-    if (open) {
-      emit('opened')
-      await nextTick()
+watchEffect(() => {
+  if (!modal_container.value) return
 
-      if (!modal.value) return
-      disableBodyScroll(modal.value, { reserveScrollBarGap: true })
-    } else {
-      if (!modal.value) return
-      enableBodyScroll(modal.value)
-    }
+  if (modal_stack.value.length > 0) {
+    disableBodyScroll(modal_container.value, { reserveScrollBarGap: true })
+  } else {
+    enableBodyScroll(modal_container.value)
   }
-)
+})
+
+const show_backdrop = computed(() => {
+  return modal_stack.value.some((m) => m.backdrop)
+})
 </script>
 
 <template>
-  <teleport to="[modal-container]">
-    <Transition
-      enter-from-class="opacity-0"
-      enter-to-class="opacity-100"
-      enter-active-class="transition-[opacity] ease-in-out duration-150"
-      leave-from-class="opacity-100"
-      leave-to-class="opacity-0"
-      leave-active-class="transition-[opacity] ease-in-out duration-150"
+  <transition
+    enter-from-class="opacity-0"
+    enter-to-class="opacity-100"
+    enter-active-class="transition-[opacity] ease-in-out duration-150"
+    leave-from-class="opacity-100"
+    leave-to-class="opacity-0"
+    leave-active-class="transition-[opacity] ease-in-out duration-150"
+  >
+    <div
+      v-if="modal_stack.length > 0"
+      data-testid="ui-kit-modal-backdrop"
+      ref="ui-kit-modal"
+      class="pointer-events-auto fixed inset-0 flex items-center justify-center px-4 py-7"
+      :class="{ 'backdrop-blur-4 bg-black/25': show_backdrop }"
+      @click="close"
     >
-      <div
-        v-if="open"
-        data-testid="ui-kit-modal-backdrop"
-        class="backdrop-blur-4 pointer-events-auto fixed inset-0 bg-black/25"
-        :class="{ 'opacity-0': !backdrop }"
-        @click="close"
-      ></div>
-    </Transition>
-    <Transition
-      enter-from-class="scale-90 opacity-0"
-      enter-to-class="scale-100 opacity-100"
-      enter-active-class="transition-[all] ease-in-out duration-150"
-      leave-from-class="scale-100 opacity-100"
-      leave-to-class="scale-90 opacity-0"
-      leave-active-class="transition-[all] ease-in-out duration-150"
-    >
-      <div
-        data-testid="ui-kit-modal"
-        v-if="open"
-        ref="ui-kit-modal"
-        class="fixed inset-0 flex items-center justify-center px-4 py-7 *:pointer-events-auto"
-      >
-        <slot></slot>
-      </div>
-    </Transition>
-  </teleport>
+      <slot></slot>
+    </div>
+  </transition>
+
+  <transition-group
+    data-testid="ui-kit-modal-container"
+    tag="div"
+    class="pointer-events-none fixed inset-0 z-20 flex items-center justify-center *:pointer-events-auto"
+    enter-from-class="scale-90 opacity-0"
+    enter-to-class="scale-100 opacity-100"
+    enter-active-class="transition-[all] ease-in-out duration-150"
+    leave-from-class="scale-100 opacity-100"
+    leave-to-class="scale-90 opacity-0"
+    leave-active-class="transition-[all] ease-in-out duration-150"
+  >
+    <div data-testid="ui-kit-modal" v-for="modal in modal_stack" :key="modal.id">
+      <component :is="modal.component" v-bind="modal.componentProps" />
+    </div>
+  </transition-group>
 </template>

@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { expect, it } from 'vitest'
-import HistoryTrack from '@/components/study-modal/history-track.vue'
+import HistoryTrack from '@/components/modals/study-modal/history-track.vue'
 import { CardBuilder } from '@tests/mocks/models/card'
 
 it('renders correctly with no cards', () => {

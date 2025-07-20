@@ -3,13 +3,15 @@ import Card from '@/components/card.vue'
 import { getImageUrl } from '@/services/file-service'
 import { onMounted, ref, computed } from 'vue'
 import deckPreview from './deck-preview.vue'
-import StudyModal from './study-modal/index.vue'
+import StudyModal from './modals/study-modal/index.vue'
+import { useModal } from '@/composables/use-modal'
+
+const modal = useModal()
 
 const { deck } = defineProps<{ deck: Deck }>()
 defineEmits<{ (e: 'clicked'): void }>()
 
 const image_url = ref('')
-const study_modal_open = ref(false)
 
 onMounted(() => {
   if (!deck.image_path) {
@@ -20,7 +22,12 @@ onMounted(() => {
 })
 
 function onStudyClicked() {
-  study_modal_open.value = true
+  modal.open({
+    component: StudyModal,
+    props: {
+      deck
+    }
+  })
 }
 
 const numCardsDue = computed(() => {
@@ -52,6 +59,4 @@ const numCardsDue = computed(() => {
       <h2 class="text-md text-brown-700">{{ deck.title }}</h2>
     </div>
   </div>
-
-  <StudyModal :open="study_modal_open" @closed="study_modal_open = false" :deck="deck" />
 </template>
