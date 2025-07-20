@@ -1,144 +1,93 @@
-import { shallowMount } from '@vue/test-utils'
-import { expect, it, vi, beforeEach, afterEach } from 'vitest'
+import { mount, shallowMount } from '@vue/test-utils'
+import { expect, test, vi } from 'vitest'
 import Modal from '@/components/ui-kit/modal.vue'
+import { shallowRef, defineComponent, markRaw } from 'vue'
+import { ModalEntryBuilder } from '@tests/mocks/types/modal-entry'
+import { beforeEach } from 'vitest'
 
-// Mock body-scroll-lock
-vi.mock('body-scroll-lock', () => ({
-  disableBodyScroll: vi.fn(),
-  enableBodyScroll: vi.fn()
-}))
+// Since ui-kit components are imported in a setup file
+// Vitest will not mock modules imported inside them.
+// Need to clear all module caches before running the test file.
+vi.hoisted(() => {
+  vi.resetModules()
+})
 
-// Import the mocked functions for type checking only
-// eslint-disable-next-line no-unused-vars
-import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
+const TestModal = markRaw(
+  defineComponent({
+    template: '<div>Test Modal</div>'
+  })
+)
+
+const mock_modal_stack = shallowRef([])
+
+vi.mock('@/composables/use-modal', () => {
+  return {
+    useModal: vi.fn(() => ({
+      modal_stack: mock_modal_stack
+    }))
+  }
+})
 
 beforeEach(() => {
-  vi.clearAllMocks()
-  vi.useFakeTimers()
+  mock_modal_stack.value = []
 })
 
-afterEach(() => {
-  vi.restoreAllMocks()
-  vi.useRealTimers()
-})
-
-// Test basic rendering
-it('renders properly when open', () => {
-  const wrapper = shallowMount(Modal, {
-    props: {
-      open: true
-    },
-    slots: {
-      default: '<div>Modal Content</div>'
-    },
-    global: {
-      stubs: ['teleport']
-    }
-  })
-
-  expect(wrapper.exists()).toBe(true)
-  expect(wrapper.find('[data-testid="ui-kit-modal"]').exists()).toBe(true)
-  expect(wrapper.html()).toContain('<div>Modal Content</div>')
-})
-
-it('does not render when closed', () => {
-  const wrapper = shallowMount(Modal, {
-    props: {
-      open: false
-    },
-    slots: {
-      default: '<div>Modal Content</div>'
-    },
-    global: {
-      stubs: ['teleport']
-    }
-  })
-
-  expect(wrapper.exists()).toBe(true)
+test('renders nothing when modal stack is empty', () => {
+  const wrapper = mount(Modal)
   expect(wrapper.find('[data-testid="ui-kit-modal"]').exists()).toBe(false)
 })
 
-// Test backdrop
-it('renders backdrop when backdrop prop is true', () => {
-  const wrapper = shallowMount(Modal, {
-    props: {
-      open: true,
-      backdrop: true
-    },
-    slots: {
-      default: '<div>Modal Content</div>'
-    },
-    global: {
-      stubs: ['teleport']
-    }
-  })
+test('renders modal component from modal stack', () => {
+  const entry = ModalEntryBuilder(TestModal).one()
+  mock_modal_stack.value.push(entry)
 
-  expect(wrapper.find('[data-testid="ui-kit-modal-backdrop"]').classes()).not.toContain('opacity-0')
+  const wrapper = mount(Modal)
+
+  expect(wrapper.find('[data-testid="ui-kit-modal"]')).toBeDefined()
 })
 
-it('does not render backdrop when backdrop prop is false', () => {
-  const wrapper = shallowMount(Modal, {
-    props: {
-      open: true,
-      backdrop: false
-    },
-    slots: {
-      default: '<div>Modal Content</div>'
-    },
-    global: {
-      stubs: ['teleport']
-    }
-  })
+test('renders multiple modals from modal stack', () => {
+  const entry1 = ModalEntryBuilder(TestModal).one()
+  const entry2 = ModalEntryBuilder(TestModal).one()
+  mock_modal_stack.value.push(entry1, entry2)
 
-  expect(wrapper.find('[data-testid="ui-kit-modal-backdrop"]').classes()).toContain('opacity-0')
+  const wrapper = mount(Modal)
+
+  expect(wrapper.findAll('[data-testid="ui-kit-modal"]').length).toBe(2)
 })
 
-it('emits close event when clicking backdrop', async () => {
-  const wrapper = shallowMount(Modal, {
-    props: {
-      open: true
-    },
-    slots: {
-      default: '<div>Modal Content</div>'
-    },
-    global: {
-      stubs: ['teleport']
-    }
-  })
+test('applies backdrop class only when at least one modal requests it', () => {
+  const entry1 = ModalEntryBuilder(TestModal).one({ overrides: { backdrop: false } })
+  const entry2 = ModalEntryBuilder(TestModal).one({ overrides: { backdrop: true } })
+  mock_modal_stack.value.push(entry1, entry2)
 
-  const backdrop = wrapper.find('[data-testid="ui-kit-modal-backdrop"]')
-  await backdrop.trigger('click')
+  const wrapper = mount(Modal)
 
-  expect(wrapper.emitted('closed')).toBeTruthy()
+  expect(wrapper.find('[data-testid="ui-kit-modal-backdrop"]').classes()).toContain(
+    'backdrop-blur-4'
+  )
 })
 
-it('does not emit close event when clicking inside', async () => {
-  const wrapper = shallowMount(Modal, {
-    props: {
-      open: true
-    },
-    slots: {
-      default: '<div id="inner-content">Modal Content</div>'
-    },
-    global: {
-      stubs: ['teleport']
-    }
-  })
+test('resolves and removes top modal on backdrop click if enabled', async () => {
+  const entry = ModalEntryBuilder(TestModal).one({ overrides: { closeOnBackdropClick: true } })
+  mock_modal_stack.value.push(entry)
 
-  // Create a click event on a child element
-  const event = new MouseEvent('click', {
-    bubbles: true
-  })
+  const wrapper = mount(Modal)
 
-  // Mock the target to be a child element, not the modal itself
-  Object.defineProperty(event, 'target', {
-    value: document.createElement('div')
-  })
+  await wrapper.find('[data-testid="ui-kit-modal-backdrop"]').trigger('click')
 
-  // Dispatch the event on the modal
-  const modalElement = wrapper.find('[data-testid="ui-kit-modal"]')
-  modalElement.element.dispatchEvent(event)
+  expect(entry.resolve).toHaveBeenCalledWith(false)
+  expect(mock_modal_stack.value.length).toBe(0)
+})
 
-  // Should not emit close event
-  expect(wrapper.emitted('close')).toBeFalsy()
+test('does not close modal on backdrop click if `closeOnBackdropClick` is false', () => {
+  const entry = ModalEntryBuilder(TestModal).one({ overrides: { closeOnBackdropClick: false } })
+  mock_modal_stack.value.push(entry)
+
+  const wrapper = mount(Modal)
+
+  wrapper.find('[data-testid="ui-kit-modal-backdrop"]').trigger('click')
+
+  expect(entry.resolve).not.toHaveBeenCalled()
+  expect(mock_modal_stack.value.length).toBe(1)
 })

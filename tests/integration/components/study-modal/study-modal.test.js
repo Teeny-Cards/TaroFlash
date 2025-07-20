@@ -12,24 +12,6 @@ vi.mock('@/services/card-service', () => ({
   updateReviewByCardId: mocks.updateReviewByCardId
 }))
 
-it('renders modal with correct open prop', async () => {
-  const wrapper = mount(StudyModal, {
-    props: {
-      open: true,
-      deck: {
-        title: 'Test Deck',
-        cards: []
-      }
-    },
-    global: {
-      stubs: ['teleport']
-    }
-  })
-
-  expect(wrapper.exists()).toBe(true)
-  expect(wrapper.find('[data-testid="ui-kit-modal"]').exists()).toBe(true)
-})
-
 it('sets up study session with deck.cards when modal is opened', async () => {
   const cards = [{ id: '1', front_text: 'Front', back_text: 'Back' }]
 
