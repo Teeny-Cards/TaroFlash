@@ -17,7 +17,6 @@ const { id: deck_id } = defineProps<{
 }>()
 
 const alert = useAlert()
-
 const deck = ref<Deck>()
 const studyModalOpen = ref(false)
 const editing = ref(false)

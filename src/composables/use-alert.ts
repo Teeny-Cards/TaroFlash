@@ -11,7 +11,7 @@ type AlertArgs = {
 }
 
 export function useAlert() {
-  const { openModal } = useModal()
+  const modal = useModal()
 
   function warn(args?: AlertArgs) {
     return _openAlert('warn', args)
@@ -22,7 +22,7 @@ export function useAlert() {
   }
 
   function _openAlert(type: AlertType, args?: AlertArgs) {
-    return openModal({
+    return modal.open({
       component: alert,
       backdrop: args?.backdrop ?? true,
       closeOnBackdropClick: args?.closeOnBackdropClick,
