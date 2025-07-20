@@ -56,6 +56,8 @@ function onUpdated(id: number, prop: 'front_text' | 'back_text', value: string) 
 function onDeleteCard(id: number) {
   selected_cards.value.push(id)
   emit('cards-deleted', selected_cards.value)
+
+  selected_cards.value = []
 }
 </script>
 
