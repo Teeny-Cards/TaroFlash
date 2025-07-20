@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+	xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 72 72" preserveAspectRatio="xMidYMid" width="72" height="72" style="shape-rendering: auto; background: transparent;">
+	<g id="pattern-group" transform="scale(0.28125)">
+
+
+
+
+
+		<g data-idx="0" data-dup="b" dx="-384" dy="-128" style="opacity: 1; transform-origin: -256px 0px; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -128, 0, 0, 1); animation: 1s linear 0s infinite normal forwards running animate; transform-box: view-box;">
+			<g transform="translate(-384,-128)">
+				<polygon points="33.491,-1 32,-0.006 96,42.659 32,85.329 96,128 32,170.664 96,213.328 32,255.994 33.509,257 
+	161.509,257 160,255.994 224,213.328 160,170.664 224,128 160,85.329 224,42.659 160,-0.006 161.491,-1" fill="#A0C8D7" data-fill="c1" style="fill: rgba(243, 241, 234, 0.2);"></polygon>
+			</g>
+		</g>
+		<g data-idx="0" data-dup="b" dx="-128" dy="-128" style="opacity: 1; transform-origin: 0px 0px; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -128, 0, 0, 1); animation: 1s linear 0s infinite normal forwards running animate; transform-box: view-box;">
+			<g transform="translate(-128,-128)">
+				<polygon points="33.491,-1 32,-0.006 96,42.659 32,85.329 96,128 32,170.664 96,213.328 32,255.994 33.509,257 
+	161.509,257 160,255.994 224,213.328 160,170.664 224,128 160,85.329 224,42.659 160,-0.006 161.491,-1" fill="#A0C8D7" data-fill="c1" style="fill: rgba(243, 241, 234, 0.2);"></polygon>
+			</g>
+		</g>
+		<g data-idx="0" data-dup="b" dx="128" dy="-128" style="opacity: 1; transform-origin: 256px 0px; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -128, 0, 0, 1); animation: 1s linear 0s infinite normal forwards running animate; transform-box: view-box;">
+			<g transform="translate(128,-128)">
+				<polygon points="33.491,-1 32,-0.006 96,42.659 32,85.329 96,128 32,170.664 96,213.328 32,255.994 33.509,257 
+	161.509,257 160,255.994 224,213.328 160,170.664 224,128 160,85.329 224,42.659 160,-0.006 161.491,-1" fill="#A0C8D7" data-fill="c1" style="fill: rgba(243, 241, 234, 0.2);"></polygon>
+			</g>
+		</g>
+		<g data-idx="0" data-dup="b" dx="-384" dy="128" style="opacity: 1; transform-origin: -256px 256px; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -128, 0, 0, 1); animation: 1s linear 0s infinite normal forwards running animate; transform-box: view-box;">
+			<g transform="translate(-384,128)">
+				<polygon points="33.491,-1 32,-0.006 96,42.659 32,85.329 96,128 32,170.664 96,213.328 32,255.994 33.509,257 
+	161.509,257 160,255.994 224,213.328 160,170.664 224,128 160,85.329 224,42.659 160,-0.006 161.491,-1" fill="#A0C8D7" data-fill="c1" style="fill: rgba(243, 241, 234, 0.2);"></polygon>
+			</g>
+		</g>
+		<g data-idx="0" data-dup="b" dx="-384" dy="384" style="opacity: 1; transform-origin: -256px 512px; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -128, 0, 0, 1); animation: 1s linear 0s infinite normal forwards running animate; transform-box: view-box;">
+			<g transform="translate(-384,384)">
+				<polygon points="33.491,-1 32,-0.006 96,42.659 32,85.329 96,128 32,170.664 96,213.328 32,255.994 33.509,257 
+	161.509,257 160,255.994 224,213.328 160,170.664 224,128 160,85.329 224,42.659 160,-0.006 161.491,-1" fill="#A0C8D7" data-fill="c1" style="fill: rgba(243, 241, 234, 0.2);"></polygon>
+			</g>
+		</g>
+		<g data-idx="0" data-dup="b" dx="-128" dy="128" style="opacity: 1; transform-origin: 0px 256px; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -128, 0, 0, 1); animation: 1s linear 0s infinite normal forwards running animate; transform-box: view-box;">
+			<g transform="translate(-128,128)">
+				<polygon points="33.491,-1 32,-0.006 96,42.659 32,85.329 96,128 32,170.664 96,213.328 32,255.994 33.509,257 
+	161.509,257 160,255.994 224,213.328 160,170.664 224,128 160,85.329 224,42.659 160,-0.006 161.491,-1" fill="#A0C8D7" data-fill="c1" style="fill: rgba(243, 241, 234, 0.2);"></polygon>
+			</g>
+		</g>
+		<g data-idx="0" data-dup="b" dx="-128" dy="384" style="opacity: 1; transform-origin: 0px 512px; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -128, 0, 0, 1); animation: 1s linear 0s infinite normal forwards running animate; transform-box: view-box;">
+			<g transform="translate(-128,384)">
+				<polygon points="33.491,-1 32,-0.006 96,42.659 32,85.329 96,128 32,170.664 96,213.328 32,255.994 33.509,257 
+	161.509,257 160,255.994 224,213.328 160,170.664 224,128 160,85.329 224,42.659 160,-0.006 161.491,-1" fill="#A0C8D7" data-fill="c1" style="fill: rgba(243, 241, 234, 0.2);"></polygon>
+			</g>
+		</g>
+		<g data-idx="0" data-dup="b" dx="128" dy="128" style="opacity: 1; transform-origin: 256px 256px; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -128, 0, 0, 1); animation: 1s linear 0s infinite normal forwards running animate; transform-box: view-box;">
+			<g transform="translate(128,128)">
+				<polygon points="33.491,-1 32,-0.006 96,42.659 32,85.329 96,128 32,170.664 96,213.328 32,255.994 33.509,257 
+	161.509,257 160,255.994 224,213.328 160,170.664 224,128 160,85.329 224,42.659 160,-0.006 161.491,-1" fill="#A0C8D7" data-fill="c1" style="fill: rgba(243, 241, 234, 0.2);"></polygon>
+			</g>
+		</g>
+		<g data-idx="0" data-dup="b" dx="128" dy="384" style="opacity: 1; transform-origin: 256px 512px; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -128, 0, 0, 1); animation: 1s linear 0s infinite normal forwards running animate; transform-box: view-box;">
+			<g transform="translate(128,384)">
+				<polygon points="33.491,-1 32,-0.006 96,42.659 32,85.329 96,128 32,170.664 96,213.328 32,255.994 33.509,257 
+	161.509,257 160,255.994 224,213.328 160,170.664 224,128 160,85.329 224,42.659 160,-0.006 161.491,-1" fill="#A0C8D7" data-fill="c1" style="fill: rgba(243, 241, 234, 0.2);"></polygon>
+			</g>
+		</g>
+	</g>
+	<style type="text/css">@keyframes animate { 0.00% {transform: translate(-128.00px,0.00px) rotate(0.00deg) scale(1.00, 1.00) skew(0deg, 0.00deg) ;opacity: 1.00;}2.00% {transform: translate(-122.88px,0.00px) rotate(0.00deg) ;}4.00% {transform: translate(-117.76px,0.00px) rotate(0.00deg) ;}10.00% {transform: translate(-102.40px,0.00px) rotate(0.00deg) ;}16.00% {transform: translate(-87.04px,0.00px) rotate(0.00deg) ;}22.00% {transform: translate(-71.68px,0.00px) rotate(0.00deg) ;}32.00% {transform: translate(-46.08px,0.00px) rotate(0.00deg) ;}38.00% {transform: translate(-30.72px,0.00px) rotate(0.00deg) ;}40.00% {transform: translate(-25.60px,0.00px) rotate(0.00deg) ;}46.00% {transform: translate(-10.24px,0.00px) rotate(0.00deg) ;}56.00% {transform: translate(15.36px,0.00px) rotate(0.00deg) ;}62.00% {transform: translate(30.72px,0.00px) rotate(0.00deg) ;}64.00% {transform: translate(35.84px,0.00px) rotate(0.00deg) ;}70.00% {transform: translate(51.20px,0.00px) rotate(0.00deg) ;}80.00% {transform: translate(76.80px,0.00px) rotate(0.00deg) ;}86.00% {transform: translate(92.16px,0.00px) rotate(0.00deg) ;}92.00% {transform: translate(107.52px,0.00px) rotate(0.00deg) ;}100.00% {transform: translate(128.00px,0.00px) rotate(0.00deg) ;} }</style>	<!-- [ldio] generated by https://loading.io --></svg>

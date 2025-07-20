@@ -1,25 +1,26 @@
 <script setup lang="ts">
 import OverviewPanel from '@/components/deck-view/overview-panel.vue'
 import { onMounted, ref } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 import { fetchDeckById } from '@/services/deck-service'
-import StudyModal from '@/components/study-modal/index.vue'
+import StudyModal from '@/components/modals/study-modal/index.vue'
 import CardList from '@/components/deck-view/card-list/index.vue'
 import { useI18n } from 'vue-i18n'
 import { useEditableCards } from '@/composables/use-editable-cards'
 import { updateCards, deleteCardsById } from '@/services/card-service'
-import confirmationAlert from '@/components/confirmation-alert.vue'
+import { useAlert } from '@/composables/use-alert'
+import { useModal } from '@/composables/use-modal'
 
 const { t } = useI18n()
+const modal = useModal()
 
 const { id: deck_id } = defineProps<{
   id: string
 }>()
 
+const alert = useAlert()
 const deck = ref<Deck>()
-const studyModalOpen = ref(false)
 const editing = ref(false)
-const deleteCardConfirmationOpen = ref(false)
-const cardsToDelete = ref<number[]>([])
 let cardEdits: ReturnType<typeof useEditableCards> | undefined
 
 const tabs = [
@@ -42,6 +43,28 @@ onMounted(async () => {
     // TODO
   }
 })
+
+onBeforeRouteLeave(async () => {
+  if (cardEdits?.isDirty.value) {
+    const { response } = alert.warn({
+      title: t('alert.leave-page'),
+      message: t('alert.leave-page.message'),
+      confirmLabel: t('common.leave'),
+      cancelLabel: t('alert.leave-page.stay')
+    })
+
+    return await response
+  }
+})
+
+function onStudyClicked() {
+  modal.open({
+    component: StudyModal,
+    props: {
+      deck: deck.value!
+    }
+  })
+}
 
 async function saveEdits() {
   const changed = cardEdits?.getChangedCards()
@@ -76,22 +99,20 @@ function selectCard(id: number) {
   // cardEdits?.selectCard(id)
 }
 
-function deleteCards(ids: number[]) {
-  cardsToDelete.value = ids
-  deleteCardConfirmationOpen.value = true
-}
+async function deleteCards(ids: number[]) {
+  const count = ids.length
+  if (!count) return
 
-async function confirmDeleteCards() {
-  await deleteCardsById(cardsToDelete.value)
-  await refetchCards()
+  const { response: confirmed } = alert.warn({
+    title: t('alert.delete-card', { count }),
+    message: t('alert.delete-card.message', { count }),
+    confirmLabel: t('common.delete')
+  })
 
-  cardsToDelete.value = []
-  deleteCardConfirmationOpen.value = false
-}
-
-function cancelDeleteCards() {
-  cardsToDelete.value = []
-  deleteCardConfirmationOpen.value = false
+  if (await confirmed) {
+    await deleteCardsById(ids)
+    await refetchCards()
+  }
 }
 
 function onAddCard() {
@@ -102,7 +123,7 @@ function onAddCard() {
 
 <template>
   <section data-testid="deck-view" class="flex h-full items-start gap-15 pt-12">
-    <overview-panel v-if="deck" :deck="deck" @study-clicked="studyModalOpen = true" />
+    <overview-panel v-if="deck" :deck="deck" @study-clicked="onStudyClicked" />
 
     <div class="relative flex h-full w-full flex-col">
       <ui-kit:tabs :tabs="tabs" class="pb-4">
@@ -136,12 +157,5 @@ function onAddCard() {
     </div>
   </section>
 
-  <study-modal v-if="deck" :open="studyModalOpen" :deck="deck" @closed="studyModalOpen = false" />
-
-  <confirmation-alert
-    :open="deleteCardConfirmationOpen"
-    :confirm-label="t('common.delete')"
-    @confirm="confirmDeleteCards"
-    @cancel="cancelDeleteCards"
-  />
+  <!-- <study-modal v-if="deck" :open="studyModalOpen" :deck="deck" @closed="studyModalOpen = false" /> -->
 </template>
