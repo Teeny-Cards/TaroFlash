@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CardEditor from '@/components/card-editor.vue'
+import CardEditor from '@/components/modals/card-editor.vue'
 import { ref, type PropType, onMounted } from 'vue'
 
 const CONTAINER_HEIGHT = 334.28

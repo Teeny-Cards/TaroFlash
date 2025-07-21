@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import MemberCard from './member-card.vue'
+import MemberCard from './modals/member-card.vue'
 import AppMenu from './app-menu.vue'
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
