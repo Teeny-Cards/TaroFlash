@@ -25,6 +25,7 @@
       <div v-if="image_url" class="absolute inset-0">
         <img :src="image_url" alt="Deck Image preview" class="h-full w-full object-cover" />
       </div>
+      <slot></slot>
     </div>
   </transition>
 </template>
