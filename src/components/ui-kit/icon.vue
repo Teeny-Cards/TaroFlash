@@ -1,23 +1,32 @@
 <template>
-  <Icon :icon="src" :class="iconSize[size]"></Icon>
+  <Icon :src="src" :class="iconSize[size]"></Icon>
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
+import { defineComponent, h, type Component } from 'vue'
 
-const props = defineProps({
-  src: {
-    type: String,
-    required: true
-  },
-  size: {
-    type: String,
-    validator: (value: string) => ['large', 'base', 'small', 'xs'].includes(value),
-    default: 'base'
-  }
+type IconSize = 'large' | 'base' | 'small' | 'xs'
+
+const { src, size = 'base' } = defineProps<{
+  src: string
+  size?: IconSize
+}>()
+
+// Import all icons
+const icons: Record<string, Component> = import.meta.glob('../../assets/icons/*.svg', {
+  eager: true,
+  import: 'default'
 })
 
-const Icon = defineAsyncComponent(() => import(`../../assets/icons/${props.src}.svg`))
+const Icon = defineComponent({
+  props: {
+    src: { type: String, required: true }
+  },
+  setup(props) {
+    const icon = icons[`../../assets/icons/${props.src}.svg`]
+    return () => h(icon)
+  }
+})
 
 const iconSize: { [key: string]: string } = {
   large: 'w-8  h-8',
