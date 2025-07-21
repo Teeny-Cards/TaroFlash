@@ -10,7 +10,6 @@ type ModalEntry = {
 }
 
 type OpenArgs = {
-  component: any
   props?: Record<string, any>
   backdrop?: boolean
   closeOnBackdropClick?: boolean
@@ -19,7 +18,7 @@ type OpenArgs = {
 const modal_stack = ref<ModalEntry[]>([])
 
 export function useModal() {
-  function open(args: OpenArgs) {
+  function open(component: any, args: OpenArgs) {
     let resolveFn!: (result: boolean) => void
 
     const id = Symbol('modal')
@@ -39,7 +38,7 @@ export function useModal() {
       backdrop: args.backdrop ?? false,
       closeOnBackdropClick: args.closeOnBackdropClick ?? true,
       id,
-      component: markRaw(args.component),
+      component: markRaw(component),
       componentProps: {
         ...args.props,
         close

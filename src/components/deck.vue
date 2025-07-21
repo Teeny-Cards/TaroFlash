@@ -22,8 +22,7 @@ onMounted(() => {
 })
 
 function onStudyClicked() {
-  modal.open({
-    component: StudyModal,
+  modal.open(StudyModal, {
     props: {
       deck
     }
