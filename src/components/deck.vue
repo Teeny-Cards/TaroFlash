@@ -43,7 +43,9 @@ const numCardsDue = computed(() => {
       @click="$emit('clicked')"
       :image_url="image_url"
     >
-      <deck-preview :deck="deck" :image-url="image_url" @study="onStudyClicked" />
+      <template #back>
+        <deck-preview :deck="deck" :image-url="image_url" @study="onStudyClicked" />
+      </template>
     </Card>
 
     <div
