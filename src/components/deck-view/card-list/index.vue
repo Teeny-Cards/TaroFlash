@@ -86,7 +86,7 @@ function onDeleteCard(id: number) {
         @deleted="onDeleteCard"
       />
 
-      <ui-kit:divider dashed />
+      <ui-kit:divider v-if="index < cards.length - 1" dashed />
     </template>
 
     <ui-kit:button

@@ -46,7 +46,7 @@ onMounted(async () => {
 
 onBeforeRouteLeave(async () => {
   if (cardEdits?.isDirty.value) {
-    const { response } = alert.warn({
+    const { response } = alert.info({
       title: t('alert.leave-page'),
       message: t('alert.leave-page.message'),
       confirmLabel: t('common.leave'),
@@ -58,8 +58,7 @@ onBeforeRouteLeave(async () => {
 })
 
 function onStudyClicked() {
-  modal.open({
-    component: StudyModal,
+  modal.open(StudyModal, {
     props: {
       deck: deck.value!
     }

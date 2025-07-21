@@ -22,8 +22,7 @@ export function useAlert() {
   }
 
   function _openAlert(type: AlertType, args?: AlertArgs) {
-    return modal.open({
-      component: alert,
+    return modal.open(alert, {
       backdrop: args?.backdrop ?? true,
       closeOnBackdropClick: args?.closeOnBackdropClick,
       props: {

@@ -38,8 +38,7 @@ function onDeckClicked(deck: Deck) {
 }
 
 function onCreateDeckClicked() {
-  create_deck_modal.value = modal.open({
-    component: CreateDeckModal,
+  create_deck_modal.value = modal.open(CreateDeckModal, {
     backdrop: true,
     props: {
       onCreated: createDeck
