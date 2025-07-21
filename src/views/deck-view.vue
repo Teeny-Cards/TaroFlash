@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import OverviewPanel from '@/components/deck-view/overview-panel.vue'
+import OverviewPanel from '@/components/views/deck-view/overview-panel.vue'
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import { fetchDeckById } from '@/services/deck-service'
 import StudyModal from '@/components/modals/study-modal/index.vue'
-import CardList from '@/components/deck-view/card-list/index.vue'
+import CardList from '@/components/views/deck-view/card-list/index.vue'
 import { useI18n } from 'vue-i18n'
 import { useEditableCards } from '@/composables/use-editable-cards'
 import { updateCards, deleteCardsById } from '@/services/card-service'
