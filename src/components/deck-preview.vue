@@ -30,7 +30,7 @@ defineEmits<{ (e: 'study'): void }>()
         <button
           data-testid="deck-preview__study-button"
           class="cursor-pointer rounded-full bg-blue-500 py-2.5 text-white"
-          @click.prevent="$emit('study')"
+          @click.stop="$emit('study')"
         >
           {{ $t('common.study') }}
         </button>
