@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { ref, reactive } from 'vue'
+import { reactive } from 'vue'
 import NameImageConfig from './name-image-config.vue'
 import AdditionalSettings from './additional-settings.vue'
 import HeaderConfig from './header-config.vue'
+import { deleteDeckById } from '@/services/deck-service'
+import { useAlert } from '@/composables/use-alert'
+import { useRouter } from 'vue-router'
 
 const { t } = useI18n()
+const alert = useAlert()
+const router = useRouter()
 
 const { deck, close } = defineProps<{
   deck?: Deck
@@ -24,6 +29,22 @@ const settings = reactive<Deck>({
 
 function onSave() {
   emit('saved', settings)
+}
+
+async function onDeleted() {
+  const delete_alert = alert.warn({
+    title: t('alert.delete-deck'),
+    message: t('alert.delete-deck.message'),
+    confirmLabel: t('common.delete')
+  })
+
+  if ((await delete_alert.response) && deck?.id) {
+    await deleteDeckById(deck.id)
+    router.push({ name: 'dashboard' })
+    close()
+  }
+
+  delete_alert.close()
 }
 </script>
 
@@ -51,8 +72,19 @@ function onSave() {
       <ui-kit:button variant="muted" icon-left="close" @click="close" class="ring-brown-300 ring-7">
         {{ t('common.cancel') }}
       </ui-kit:button>
+
+      <ui-kit:button
+        v-if="deck"
+        icon-left="check"
+        @click="onDeleted()"
+        variant="danger"
+        class="ring-brown-300 ring-7"
+      >
+        {{ t('common.delete') }}
+      </ui-kit:button>
+
       <ui-kit:button icon-left="check" @click="onSave" class="ring-brown-300 ring-7">
-        {{ t('common.create') }}
+        {{ deck ? t('common.save') : t('common.create') }}
       </ui-kit:button>
     </div>
   </div>

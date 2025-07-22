@@ -67,7 +67,7 @@ const show_backdrop = computed(() => {
     leave-to-class="scale-90 opacity-0"
     leave-active-class="transition-[all] ease-in-out duration-150"
   >
-    <div data-testid="ui-kit-modal" v-for="modal in modal_stack" :key="modal.id">
+    <div data-testid="ui-kit-modal" v-for="modal in modal_stack" :key="modal.id" class="absolute">
       <component :is="modal.component" v-bind="modal.componentProps" />
     </div>
   </transition-group>

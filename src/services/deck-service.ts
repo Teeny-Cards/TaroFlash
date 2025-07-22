@@ -63,6 +63,4 @@ export async function deleteDeckById(id: number): Promise<void> {
     Logger.error(error.message)
     throw new Error(error.message)
   }
-
-  await deleteCardsByDeckId(id)
 }
