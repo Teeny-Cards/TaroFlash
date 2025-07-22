@@ -2,15 +2,22 @@
 import Card from '@/components/card.vue'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useModal } from '@/composables/use-modal'
+import deckSettings from '@/components/modals/deck-settings/index.vue'
 
 const { t } = useI18n()
+const modal = useModal()
 
 const { deck } = defineProps<{ deck: Deck }>()
-defineEmits<{ (e: 'study-clicked'): void; (e: 'settings-clicked'): void }>()
+defineEmits<{ (e: 'study-clicked'): void }>()
 
 const study_disabled = computed(() => {
   return deck.cards?.length === 0
 })
+
+function onSettingsClicked() {
+  modal.open(deckSettings, { props: { deck }, backdrop: true })
+}
 </script>
 
 <template>
@@ -60,7 +67,7 @@ const study_disabled = computed(() => {
         icon-left="settings"
         variant="muted"
         icon-only
-        @click="$emit('settings-clicked')"
+        @click="onSettingsClicked()"
       ></ui-kit:button>
     </div>
   </div>

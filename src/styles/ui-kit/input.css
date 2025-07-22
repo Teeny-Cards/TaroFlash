@@ -1,29 +1,29 @@
 @layer components {
-  .teeny-input {
-    padding: calc(var(--spacing) * 3) calc(var(--spacing) * 6);
-    border-radius: var(--radius-5);
-    width: 100%;
-    background-color: var(--color-white);
-    font-size: var(--text-base);
-  }
-  .teeny-input input {
-    border-bottom: 1px dashed var(--color-grey);
-    color: var(--color-grey);
-    font-family: var(--font-primary);
-    width: 100%;
-  }
-  .teeny-input input:focus {
-    outline: none;
+  .ui-kit-input {
+    @apply bg-brown-100 rounded-5 w-full px-6 py-3;
   }
 
-  .teeny-input.input-large {
-    padding: calc(var(--spacing) * 4) calc(var(--spacing) * 6);
-    border-radius: var(--radius-7);
+  .ui-kit-input.ui-kit-input--lg {
+    @apply rounded-5.5;
   }
-  .teeny-input.input-large input {
-    font-size: var(--text-xl);
-    font-weight: bold;
-    color: var(--color-grey-dark);
-    border-bottom: 1px dashed var(--color-grey-dark);
+
+  .ui-kit-input input {
+    @apply border-brown-700 text-brown-700 placeholder:text-brown-500 w-full min-w-0 border-b border-dashed bg-transparent outline-none;
+  }
+
+  .ui-kit-input.ui-kit-input--text-left input {
+    @apply text-left;
+  }
+
+  .ui-kit-input.ui-kit-input--text-right input {
+    @apply text-right;
+  }
+
+  .ui-kit-input.ui-kit-input--text-center input {
+    @apply text-center;
+  }
+
+  .ui-kit-input.ui-kit-input--lg input {
+    @apply text-lg;
   }
 }
