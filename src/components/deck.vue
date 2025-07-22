@@ -2,7 +2,7 @@
 import Card from '@/components/card.vue'
 import { getImageUrl } from '@/services/file-service'
 import { onMounted, ref, computed } from 'vue'
-import deckPreview from './deck-preview.vue'
+import deckPreview from './popovers/deck-preview.vue'
 import StudyModal from './modals/study-modal/index.vue'
 import { useModal } from '@/composables/use-modal'
 
@@ -22,6 +22,7 @@ onMounted(() => {
 })
 
 function onStudyClicked() {
+  console.log(deck)
   modal.open(StudyModal, {
     props: {
       deck

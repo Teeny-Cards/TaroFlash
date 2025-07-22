@@ -5,9 +5,7 @@ import Logger from '@/utils/logger'
 import { DateTime } from 'luxon'
 
 export async function createDeck(deck: Deck): Promise<any> {
-  const { ...data } = deck
-
-  const { error } = await supabase.from('decks').insert(data)
+  const { error } = await supabase.from('decks').insert(deck)
 
   if (error) {
     Logger.error(error.message)
@@ -65,6 +63,4 @@ export async function deleteDeckById(id: number): Promise<void> {
     Logger.error(error.message)
     throw new Error(error.message)
   }
-
-  await deleteCardsByDeckId(id)
 }

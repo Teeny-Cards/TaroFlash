@@ -5,7 +5,7 @@ import { useToastStore } from '@/stores/toast'
 import Deck from '@/components/deck.vue'
 import { useRouter } from 'vue-router'
 import { createDeck as upstreamCreateDeck } from '@/services/deck-service'
-import CreateDeckModal from '@/components/modals/create-deck.vue'
+import deckSettings from '@/components/modals/deck-settings/index.vue'
 import { useModal } from '@/composables/use-modal'
 
 const toastStore = useToastStore()
@@ -38,10 +38,10 @@ function onDeckClicked(deck: Deck) {
 }
 
 function onCreateDeckClicked() {
-  create_deck_modal.value = modal.open(CreateDeckModal, {
+  create_deck_modal.value = modal.open(deckSettings, {
     backdrop: true,
     props: {
-      onCreated: createDeck
+      onSaved: createDeck
     }
   })
 }
