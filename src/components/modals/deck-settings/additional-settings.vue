@@ -4,10 +4,10 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
 const description = defineModel<string>('description')
-const isPublic = defineModel<boolean>('is-public', { default: true })
-const isSpaced = defineModel<boolean>('is-spaced', { default: true })
-const autoPlay = defineModel<boolean>('auto-play', { default: true })
-const onlyNewCards = defineModel<boolean>('only-new-cards', { default: true })
+const isPublic = defineModel<boolean>('is-public')
+const isSpaced = defineModel<boolean>('is-spaced')
+const autoPlay = defineModel<boolean>('auto-play')
+const onlyNewCards = defineModel<boolean>('only-new-cards')
 </script>
 
 <template>
