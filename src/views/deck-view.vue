@@ -72,7 +72,7 @@ async function saveEdits() {
   if (changed.length > 0) {
     try {
       await updateCards(changed)
-      await refetchCards()
+      await refetchDeck()
       editing.value = false
     } catch (e: any) {
       // TODO
@@ -80,7 +80,7 @@ async function saveEdits() {
   }
 }
 
-async function refetchCards() {
+async function refetchDeck() {
   try {
     deck.value = await fetchDeckById(Number(deck_id))
     cardEdits = useEditableCards(deck.value.cards ?? [], deck.value.id)
@@ -110,7 +110,7 @@ async function deleteCards(ids: number[]) {
 
   if (await confirmed) {
     await deleteCardsById(ids)
-    await refetchCards()
+    await refetchDeck()
   }
 }
 
@@ -122,7 +122,12 @@ function onAddCard() {
 
 <template>
   <section data-testid="deck-view" class="flex h-full items-start gap-15 pt-12">
-    <overview-panel v-if="deck" :deck="deck" @study-clicked="onStudyClicked" />
+    <overview-panel
+      v-if="deck"
+      :deck="deck"
+      @study-clicked="onStudyClicked"
+      @updated="refetchDeck"
+    />
 
     <div class="relative flex h-full w-full flex-col">
       <ui-kit:tabs :tabs="tabs" class="pb-4">
@@ -155,6 +160,4 @@ function onAddCard() {
       />
     </div>
   </section>
-
-  <!-- <study-modal v-if="deck" :open="studyModalOpen" :deck="deck" @closed="studyModalOpen = false" /> -->
 </template>

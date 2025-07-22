@@ -4,7 +4,7 @@ import { reactive } from 'vue'
 import NameImageConfig from './name-image-config.vue'
 import AdditionalSettings from './additional-settings.vue'
 import HeaderConfig from './header-config.vue'
-import { deleteDeckById } from '@/services/deck-service'
+import { deleteDeckById, updateDeckById } from '@/services/deck-service'
 import { useAlert } from '@/composables/use-alert'
 import { useRouter } from 'vue-router'
 
@@ -17,10 +17,6 @@ const { deck, close } = defineProps<{
   close: (response?: boolean) => void
 }>()
 
-const emit = defineEmits<{
-  (e: 'saved', deck: Deck): void
-}>()
-
 const settings = reactive<Deck>({
   title: deck?.title,
   description: deck?.description,
@@ -28,7 +24,10 @@ const settings = reactive<Deck>({
 })
 
 function onSave() {
-  emit('saved', settings)
+  if (deck?.id) {
+    updateDeckById(deck.id, settings)
+  }
+  close(true)
 }
 
 async function onDeleted() {
