@@ -126,7 +126,7 @@ function onAddCard() {
       v-if="deck"
       :deck="deck"
       @study-clicked="onStudyClicked"
-      @updated="refetchDeck"
+      @updated="refetchDeck()"
     />
 
     <div class="relative flex h-full w-full flex-col">
