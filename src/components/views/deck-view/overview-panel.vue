@@ -9,14 +9,18 @@ const { t } = useI18n()
 const modal = useModal()
 
 const { deck } = defineProps<{ deck: Deck }>()
-defineEmits<{ (e: 'study-clicked'): void }>()
+const emit = defineEmits<{ (e: 'study-clicked'): void; (e: 'updated'): void }>()
 
 const study_disabled = computed(() => {
   return deck.cards?.length === 0
 })
 
-function onSettingsClicked() {
-  modal.open(deckSettings, { props: { deck }, backdrop: true })
+async function onSettingsClicked() {
+  const { response } = modal.open(deckSettings, { props: { deck }, backdrop: true })
+
+  if (await response) {
+    emit('updated')
+  }
 }
 </script>
 
