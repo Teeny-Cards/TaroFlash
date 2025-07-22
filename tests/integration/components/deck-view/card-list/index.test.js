@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { expect, test, vi, beforeEach, afterEach } from 'vitest'
-import CardList from '@/components/deck-view/card-list/index.vue'
+import CardList from '@/components/views/deck-view/card-list/index.vue'
 import { CardBuilder } from '@tests/mocks/models/card'
 
 let originalScrollIntoView

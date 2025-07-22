@@ -1,26 +1,20 @@
 <template>
-  <label class="flex cursor-pointer items-center justify-between gap-2">
-    <span class="text-brown-700">
+  <label
+    data-testid="ui-kit-toggle"
+    class="ui-kit-toggle"
+    :class="{ 'ui-kit-toggle--checked': checked }"
+  >
+    <span data-testid="ui-kit-toggle__label" class="ui-kit-toggle__label">
       <slot></slot>
     </span>
 
-    <span
-      class="flex w-12 items-center rounded-full p-1 transition-colors"
-      :class="{ 'bg-green-400': checked, 'bg-white': !checked }"
-    >
+    <span data-testid="ui-kit-toggle__switch" class="ui-kit-toggle__switch">
       <input type="checkbox" v-model="checked" class="hidden" />
-      <span
-        class="h-5 w-5 rounded-full transition-all"
-        :class="{ 'translate-x-full transform bg-white': checked, 'bg-brown-500': !checked }"
-      ></span>
+      <span data-testid="ui-kit-toggle__switch-handle" class="ui-kit-toggle__switch-handle"></span>
     </span>
   </label>
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  label?: string
-}>()
-
 const checked = defineModel<boolean>('checked')
 </script>

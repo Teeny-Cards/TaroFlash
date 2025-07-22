@@ -19,7 +19,7 @@ const emit = defineEmits<{
 const settings = reactive<Deck>({
   title: deck?.title,
   description: deck?.description,
-  is_public: deck?.is_public
+  is_public: deck?.is_public ?? true
 })
 
 function onSave() {
