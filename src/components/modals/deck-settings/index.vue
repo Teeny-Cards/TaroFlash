@@ -23,9 +23,9 @@ const settings = reactive<Deck>({
   is_public: deck?.is_public ?? true
 })
 
-function onSave() {
+async function onSave() {
   if (deck?.id) {
-    updateDeckById(deck.id, settings)
+    await updateDeckById(deck.id, settings)
   }
   close(true)
 }
