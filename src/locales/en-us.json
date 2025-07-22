@@ -9,6 +9,7 @@
   "common.edit": "Edit",
   "common.continue": "Continue",
   "common.leave": "Leave",
+  "common.create": "Create",
 
   "alert.generic-title": "Continue?",
   "alert.generic-message": "Are you sure you want to continue?",
@@ -28,6 +29,15 @@
 
   "edit-card-modal.title": "Edit Card",
   "dashboard.due": "Due",
+
+  "deck.description-placeholder": "Add a short description to your deck.",
+  "deck.title-placeholder": "Deck Name",
+  "deck.settings-modal.title": "Deck Configuration",
+  "deck.settings-modal.is-public": "Public Deck",
+  "deck.settings-modal.is-spaced": "Spaced Repetition",
+  "deck.settings-modal.auto-play": "Auto-Play Audio",
+  "deck.settings-modal.only-new-cards": "Only Study New Cards",
+
   "deck-view.add-card": "Add Card",
   "deck-view.no-cards": "No Cards",
   "deck-view.tabs.card-view": "Card View",

@@ -22,6 +22,7 @@ onMounted(() => {
 })
 
 function onStudyClicked() {
+  console.log(deck)
   modal.open(StudyModal, {
     props: {
       deck
