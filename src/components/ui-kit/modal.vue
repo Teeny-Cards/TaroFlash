@@ -49,7 +49,7 @@ const show_backdrop = computed(() => {
       data-testid="ui-kit-modal-backdrop"
       ref="ui-kit-modal"
       class="pointer-events-auto fixed inset-0 flex items-center justify-center px-4 py-7"
-      :class="{ 'backdrop-blur-4 bg-black/25': show_backdrop }"
+      :class="{ 'backdrop-blur-4 bg-black/10': show_backdrop }"
       @click="close"
     >
       <slot></slot>
@@ -67,7 +67,7 @@ const show_backdrop = computed(() => {
     leave-to-class="scale-90 opacity-0"
     leave-active-class="transition-[all] ease-in-out duration-150"
   >
-    <div data-testid="ui-kit-modal" v-for="modal in modal_stack" :key="modal.id">
+    <div data-testid="ui-kit-modal" v-for="modal in modal_stack" :key="modal.id" class="absolute">
       <component :is="modal.component" v-bind="modal.componentProps" />
     </div>
   </transition-group>
