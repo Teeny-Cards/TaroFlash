@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, useTemplateRef } from 'vue'
+import { computed, useTemplateRef } from 'vue'
 import { useFloating, shift, flip, autoUpdate, arrow, offset } from '@floating-ui/vue'
 
 const ARROW_SIZE = 10
@@ -42,7 +42,11 @@ const arrowTop = computed(() => {
 </script>
 
 <template>
-  <div data-testid="popover-trigger" ref="triggerRef" class="group absolute inset-0 z-10">
+  <div
+    data-testid="ui-kit-popover-container"
+    ref="triggerRef"
+    class="ui-kit-popover-container group"
+  >
     <Transition
       enter-from-class="opacity-0"
       enter-to-class="opacity-100"
@@ -53,16 +57,16 @@ const arrowTop = computed(() => {
     >
       <div
         ref="popoverRef"
-        data-testid="popover"
-        class="shadow-popover rounded-7 pointer-events-auto relative z-10 hidden group-hover:block hover:block"
+        data-testid="ui-kit-popover"
+        class="ui-kit-popover"
         :style="floatingStyles"
       >
         <slot></slot>
 
         <div
           ref="arrowRef"
-          data-testid="popover-arrow"
-          class="bg-brown-300 rounded-1 shadow-popover -z-10 h-5 w-5 rotate-45"
+          data-testid="ui-kit-popover__arrow"
+          class="ui-kit-popover__arrow"
           :style="{
             position: 'absolute',
             left: arrowLeft,

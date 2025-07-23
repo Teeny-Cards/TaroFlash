@@ -1,0 +1,13 @@
+@layer components {
+  .ui-kit-popover-container {
+    @apply absolute inset-0 z-10;
+  }
+
+  .ui-kit-popover {
+    @apply shadow-popover rounded-7 pointer-events-auto relative z-10 hidden group-hover:block hover:block;
+  }
+
+  .ui-kit-popover__arrow {
+    @apply bg-brown-300 rounded-1 shadow-popover -z-10 h-5 w-5 rotate-45;
+  }
+}
