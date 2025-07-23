@@ -1,6 +1,6 @@
 @layer components {
   .ui-kit-popover-container {
-    @apply absolute inset-0 z-10;
+    @apply absolute inset-0;
   }
 
   .ui-kit-popover {
@@ -9,5 +9,25 @@
 
   .ui-kit-popover__arrow {
     @apply bg-brown-300 rounded-1 shadow-popover -z-10 h-5 w-5 rotate-45;
+  }
+
+  .ui-kit-popover__bridge {
+    @apply absolute inset-0;
+  }
+
+  .ui-kit-popover--top .ui-kit-popover__bridge {
+    @apply top-full -bottom-6;
+  }
+
+  .ui-kit-popover--bottom .ui-kit-popover__bridge {
+    @apply -top-6 bottom-full;
+  }
+
+  .ui-kit-popover--left .ui-kit-popover__bridge {
+    @apply -right-6 left-full;
+  }
+
+  .ui-kit-popover--right .ui-kit-popover__bridge {
+    @apply right-full -left-6;
   }
 }

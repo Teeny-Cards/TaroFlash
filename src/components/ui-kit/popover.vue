@@ -39,6 +39,8 @@ const arrowTop = computed(() => {
   const y = middlewareData.value.arrow?.y
   return y ? `${y}px` : ''
 })
+
+const side = computed(() => placement.value.split('-')[0])
 </script>
 
 <template>
@@ -59,10 +61,11 @@ const arrowTop = computed(() => {
         ref="popoverRef"
         data-testid="ui-kit-popover"
         class="ui-kit-popover"
+        :class="`ui-kit-popover--${side}`"
         :style="floatingStyles"
       >
+        <span data-testid="ui-kit-popover__bridge" class="ui-kit-popover__bridge"></span>
         <slot></slot>
-
         <div
           ref="arrowRef"
           data-testid="ui-kit-popover__arrow"
