@@ -48,7 +48,7 @@ function onRatingClicked(grade: Grade) {
         @click="onRatingClicked(Rating.Good)"
       >
         {{ t('study.got-it!') }}
-        <ui-kit:tooltip :text="getRatingTimeFormat(Rating.Good)" position="top-right" />
+        <ui-kit:tooltip :text="getRatingTimeFormat(Rating.Good)" />
       </button>
       <button
         data-testid="rating-buttons__again"
@@ -58,7 +58,7 @@ function onRatingClicked(grade: Grade) {
         @click="onRatingClicked(Rating.Again)"
       >
         {{ t('study.nope!') }}
-        <ui-kit:tooltip :text="getRatingTimeFormat(Rating.Again)" position="bottom-right" />
+        <ui-kit:tooltip :text="getRatingTimeFormat(Rating.Again)" />
       </button>
     </template>
     <template v-else>

@@ -47,7 +47,6 @@ function onClickCard(card: Card) {
       >
         <ui-kit:tooltip
           :text="isStudied(card) || isActive(card) || isFailed(card) ? card.front_text : '?'"
-          position="top-right"
         />
       </button>
     </div>
