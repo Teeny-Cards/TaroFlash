@@ -26,7 +26,7 @@ const { placement, floatingStyles } = useFloating(triggerRef, popoverRef, {
     offset(() => 24),
     shift({ padding: 24 }),
     flip({
-      fallbackPlacements: ['right', 'left', 'bottom']
+      fallbackPlacements: ['right', 'left', 'top', 'bottom']
     })
   ]
 })

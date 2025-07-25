@@ -58,7 +58,7 @@ function onRatingClicked(grade: Grade) {
         @click="onRatingClicked(Rating.Again)"
       >
         {{ t('study.nope!') }}
-        <ui-kit:tooltip :text="getRatingTimeFormat(Rating.Again)" />
+        <ui-kit:tooltip :text="getRatingTimeFormat(Rating.Again)" placement="bottom" />
       </button>
     </template>
     <template v-else>
