@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useModal } from '@/composables/use-modal'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
+import { getImageUrl } from '@/services/file-service'
 
 const { t } = useI18n()
 const modal = useModal()
@@ -13,6 +14,10 @@ const emit = defineEmits<{ (e: 'study-clicked'): void; (e: 'updated'): void }>()
 
 const study_disabled = computed(() => {
   return deck.cards?.length === 0
+})
+
+const image_url = computed(() => {
+  return deck.image_path ? getImageUrl('deck-images', deck.image_path) : ''
 })
 
 async function onSettingsClicked() {
@@ -30,7 +35,7 @@ async function onSettingsClicked() {
     class="sticky top-24 flex w-max flex-col items-center gap-6 sm:flex-row sm:items-end lg:flex-col
       lg:items-start"
   >
-    <card size="large" class="relative overflow-hidden"></card>
+    <card size="large" class="border-brown-300 relative border-8" :image_url="image_url"></card>
 
     <div class="flex flex-col items-center gap-2 sm:items-start">
       <h1

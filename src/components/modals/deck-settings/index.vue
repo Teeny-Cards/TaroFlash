@@ -20,7 +20,8 @@ const { deck, close } = defineProps<{
 const settings = reactive<Deck>({
   title: deck?.title,
   description: deck?.description,
-  is_public: deck?.is_public ?? true
+  is_public: deck?.is_public ?? true,
+  image_path: deck?.image_path
 })
 
 async function onSave() {
@@ -56,7 +57,7 @@ async function onDeleted() {
       <header-config />
 
       <section data-testid="deck-settings__body" class="flex gap-9 p-12 pt-8">
-        <name-image-config v-model:title="settings.title" />
+        <name-image-config v-model:title="settings.title" :image-name="settings.image_path" />
         <additional-settings
           v-model:description="settings.description"
           v-model:is-public="settings.is_public"
