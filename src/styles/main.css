@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap');
 
 @import 'tailwindcss';
-@import 'ui-kit/';
+@import 'components';
 @import 'custom-styles.css';
 @import 'custom-variants.css';
 @import 'animations.css';

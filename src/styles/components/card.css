@@ -1,0 +1,65 @@
+.card {
+  @apply aspect-card shrink-0 p-3;
+}
+
+.card.card--revealed {
+  @apply flex items-center justify-center bg-white;
+}
+
+.card.card--hidden {
+  @apply relative bg-green-400;
+}
+
+.card.card--large {
+  @apply rounded-12 max-w-65 min-w-65 text-3xl;
+}
+
+.card.card--base {
+  @apply rounded-10 max-w-48 min-w-48 text-2xl;
+}
+
+.card.card--small {
+  @apply rounded-8 max-w-34.5 min-w-34.5 text-lg;
+}
+
+.card.card--xs {
+  @apply rounded-6 max-w-25.5 min-w-25.5 text-base;
+}
+
+.card.card--2xs {
+  @apply rounded-3 max-w-10.75 min-w-10.75 text-sm;
+}
+
+.card.card--3xs {
+  @apply rounded-2 max-w-7 min-w-7 text-sm;
+}
+
+.card__image {
+  @apply absolute inset-0 overflow-hidden;
+}
+
+/* TUNED*/
+.card--large .card__image {
+  border-radius: 40px;
+}
+
+.card--base .card__image {
+  border-radius: 34px;
+}
+
+.card--small .card__image {
+  border-radius: 24px;
+}
+
+/* NEEDS TUNING */
+.card--xs .card__image {
+  border-radius: 20.5px;
+}
+
+.card--2xs .card__image {
+  border-radius: 12.5px;
+}
+
+.card--3xs .card__image {
+  border-radius: 8.5px;
+}
