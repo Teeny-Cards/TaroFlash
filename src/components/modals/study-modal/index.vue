@@ -46,7 +46,7 @@ function onCardRevealed() {
 
 function setup() {
   if (!setupOnce.value) {
-    setupStudySession(deck.cards)
+    setupStudySession(deck.cards, { study_all_cards: true })
     startSession()
     setupOnce.value = true
   }
