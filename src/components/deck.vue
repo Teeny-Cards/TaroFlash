@@ -1,28 +1,19 @@
 <script setup lang="ts">
 import Card from '@/components/card.vue'
-import { getImageUrl } from '@/services/file-service'
-import { onMounted, ref, computed } from 'vue'
+import { computed } from 'vue'
 import deckPreview from './popovers/deck-preview.vue'
 import StudyModal from './modals/study-modal/index.vue'
 import { useModal } from '@/composables/use-modal'
+import { useDeckConfiguration } from '@/composables/use-deck-configuration'
 
 const modal = useModal()
 
 const { deck } = defineProps<{ deck: Deck }>()
 defineEmits<{ (e: 'clicked'): void }>()
 
-const image_url = ref('')
-
-onMounted(() => {
-  if (!deck.image_path) {
-    return
-  }
-
-  image_url.value = getImageUrl('deck-images', deck.image_path)
-})
+const { image_url } = useDeckConfiguration(deck)
 
 function onStudyClicked() {
-  console.log(deck)
   modal.open(StudyModal, {
     props: {
       deck
@@ -39,8 +30,7 @@ const numCardsDue = computed(() => {
   <div data-testid="deck" class="relative flex w-max flex-col gap-2.5">
     <Card
       size="small"
-      class="border-brown-300 relative cursor-pointer overflow-hidden border-8 bg-purple-400
-        bg-(image:--diagonal-stripes)"
+      class="border-brown-300 relative cursor-pointer overflow-hidden border-8"
       @click="$emit('clicked')"
       :image_url="image_url"
     >
