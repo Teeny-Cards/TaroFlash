@@ -5,11 +5,9 @@
 <script setup lang="ts">
 import { defineComponent, h, type Component } from 'vue'
 
-type IconSize = 'large' | 'base' | 'small' | 'xs'
-
 const { src, size = 'base' } = defineProps<{
   src: string
-  size?: IconSize
+  size?: '4xl' | '3xl' | '2xl' | 'xl' | 'large' | 'base' | 'small' | 'xs'
 }>()
 
 // Import all icons
@@ -29,6 +27,10 @@ const Icon = defineComponent({
 })
 
 const iconSize: { [key: string]: string } = {
+  '4xl': 'w-16 h-16',
+  '3xl': 'w-14 h-14',
+  '2xl': 'w-12 h-12',
+  xl: 'w-10 h-10',
   large: 'w-8  h-8',
   base: 'w-5 h-5',
   small: 'w-4 h-4',

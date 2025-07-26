@@ -9,6 +9,15 @@ const { size = 'base' } = defineProps<{
 
 const show_image = ref(true)
 
+const icon_size: { [key: string]: string } = {
+  large: '4xl',
+  base: '2xl',
+  small: 'large',
+  xs: 'base',
+  '2xs': 'small',
+  '3xs': 'xs'
+}
+
 function onImageError() {
   show_image.value = false
 }
@@ -36,6 +45,10 @@ function onImageError() {
           @error="onImageError"
         />
       </div>
+      <div v-else class="flex h-full w-full items-center justify-center">
+        <ui-kit:icon src="teeny-cards" :size="icon_size[size]" class="text-brown-300" />
+      </div>
+
       <slot name="back"></slot>
     </div>
   </transition>
