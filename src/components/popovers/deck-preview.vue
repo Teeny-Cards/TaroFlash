@@ -6,12 +6,16 @@ import deckSettings from '@/components/modals/deck-settings/index.vue'
 const modal = useModal()
 
 const { deck } = defineProps<{ deck: Deck; imageUrl?: string }>()
-defineEmits<{ (e: 'study'): void }>()
+const emit = defineEmits<{ (e: 'study'): void; (e: 'updated'): void }>()
 
 const show_image = ref(true)
 
-function onSettingsClicked() {
-  modal.open(deckSettings, { props: { deck }, backdrop: true })
+async function onSettingsClicked() {
+  const { response } = modal.open(deckSettings, { props: { deck }, backdrop: true })
+
+  if (await response) {
+    emit('updated')
+  }
 }
 
 function onImageError() {
