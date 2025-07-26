@@ -10,7 +10,7 @@ import { useEditableCards } from '@/composables/use-editable-cards'
 import { updateCards, deleteCardsById } from '@/services/card-service'
 import { useAlert } from '@/composables/use-alert'
 import { useModal } from '@/composables/use-modal'
-import { useDeckConfiguration } from '@/composables/use-deck-configuration'
+import { useDeck } from '@/composables/use-deck'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -83,7 +83,7 @@ async function refetchDeck() {
   try {
     deck.value = await fetchDeck(Number(deck_id))
     cardEdits = useEditableCards(deck.value.cards ?? [], deck.value.id)
-    image_url.value = useDeckConfiguration(deck.value).image_url.value
+    image_url.value = useDeck(deck.value).image_url.value
   } catch (e: any) {
     // TODO
   }

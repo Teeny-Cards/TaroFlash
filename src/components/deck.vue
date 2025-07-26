@@ -4,14 +4,14 @@ import { computed } from 'vue'
 import deckPreview from './popovers/deck-preview.vue'
 import StudyModal from './modals/study-modal/index.vue'
 import { useModal } from '@/composables/use-modal'
-import { useDeckConfiguration } from '@/composables/use-deck-configuration'
+import { useDeck } from '@/composables/use-deck'
 
 const modal = useModal()
 
 const { deck } = defineProps<{ deck: Deck }>()
 defineEmits<{ (e: 'clicked'): void; (e: 'updated'): void }>()
 
-const { image_url } = useDeckConfiguration(deck)
+const { image_url } = useDeck(deck)
 
 function onStudyClicked() {
   modal.open(StudyModal, {
