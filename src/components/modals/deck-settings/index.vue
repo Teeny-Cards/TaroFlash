@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { reactive } from 'vue'
 import NameImageConfig from './name-image-config.vue'
 import AdditionalSettings from './additional-settings.vue'
 import HeaderConfig from './header-config.vue'
-import { deleteDeckById, updateDeckById } from '@/services/deck-service'
 import { useAlert } from '@/composables/use-alert'
 import { useRouter } from 'vue-router'
+import { useDeckConfiguration } from '@/composables/use-deck-configuration'
 
 const { t } = useI18n()
 const alert = useAlert()
@@ -17,16 +16,24 @@ const { deck, close } = defineProps<{
   close: (response?: boolean) => void
 }>()
 
-const settings = reactive<Deck>({
-  title: deck?.title,
-  description: deck?.description,
-  is_public: deck?.is_public ?? true
-})
+const emit = defineEmits<{
+  (e: 'created', deck: Deck): void
+}>()
+
+const { settings, image_url, saveDeck, deleteDeck, uploadImage, removeImage } =
+  useDeckConfiguration(deck)
+
+function onImageUploaded(file: File) {
+  uploadImage(file)
+}
+
+function onImageRemoved() {
+  removeImage()
+}
 
 async function onSave() {
-  if (deck?.id) {
-    await updateDeckById(deck.id, settings)
-  }
+  await saveDeck()
+  emit('created', settings)
   close(true)
 }
 
@@ -37,13 +44,11 @@ async function onDeleted() {
     confirmLabel: t('common.delete')
   })
 
-  if ((await delete_alert.response) && deck?.id) {
-    await deleteDeckById(deck.id)
+  if (await delete_alert.response) {
+    await deleteDeck()
     router.push({ name: 'dashboard' })
     close()
   }
-
-  delete_alert.close()
 }
 </script>
 
@@ -56,7 +61,12 @@ async function onDeleted() {
       <header-config />
 
       <section data-testid="deck-settings__body" class="flex gap-9 p-12 pt-8">
-        <name-image-config v-model:title="settings.title" />
+        <name-image-config
+          v-model:title="settings.title"
+          :image-url="image_url"
+          @image-uploaded="onImageUploaded"
+          @image-removed="onImageRemoved"
+        />
         <additional-settings
           v-model:description="settings.description"
           v-model:is-public="settings.is_public"

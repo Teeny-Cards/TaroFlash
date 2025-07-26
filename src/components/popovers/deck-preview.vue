@@ -1,14 +1,21 @@
 <script lang="ts" setup>
+import { ref } from 'vue'
 import { useModal } from '@/composables/use-modal'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
 
 const modal = useModal()
 
-const { deck } = defineProps<{ deck: Deck; imageUrl: string }>()
+const { deck } = defineProps<{ deck: Deck; imageUrl?: string }>()
 defineEmits<{ (e: 'study'): void }>()
+
+const show_image = ref(true)
 
 function onSettingsClicked() {
   modal.open(deckSettings, { props: { deck }, backdrop: true })
+}
+
+function onImageError() {
+  show_image.value = false
 }
 </script>
 
@@ -24,10 +31,11 @@ function onSettingsClicked() {
         class="pointy-bottom-sm relative h-32.75 w-full shrink-0"
       >
         <img
-          v-if="imageUrl"
+          v-if="imageUrl && show_image"
           :src="imageUrl"
           alt="Deck Image preview"
           class="h-full w-full object-cover"
+          @error="onImageError"
         />
         <div v-else class="h-full w-full bg-purple-400 bg-(image:--diagonal-stripes)"></div>
         <ui-kit:button
