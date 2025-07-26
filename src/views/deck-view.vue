@@ -2,7 +2,7 @@
 import OverviewPanel from '@/components/views/deck-view/overview-panel.vue'
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
-import { fetchDeckById } from '@/services/deck-service'
+import { fetchDeck } from '@/services/deck-service'
 import StudyModal from '@/components/modals/study-modal/index.vue'
 import CardList from '@/components/views/deck-view/card-list/index.vue'
 import { useI18n } from 'vue-i18n'
@@ -81,7 +81,7 @@ async function saveEdits() {
 
 async function refetchDeck() {
   try {
-    deck.value = await fetchDeckById(Number(deck_id))
+    deck.value = await fetchDeck(Number(deck_id))
     cardEdits = useEditableCards(deck.value.cards ?? [], deck.value.id)
     image_url.value = useDeckConfiguration(deck.value).image_url.value
   } catch (e: any) {

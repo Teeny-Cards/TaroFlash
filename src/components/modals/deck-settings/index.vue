@@ -4,20 +4,14 @@ import NameImageConfig from './name-image-config.vue'
 import AdditionalSettings from './additional-settings.vue'
 import HeaderConfig from './header-config.vue'
 import { useAlert } from '@/composables/use-alert'
-import { useRouter } from 'vue-router'
 import { useDeckConfiguration } from '@/composables/use-deck-configuration'
 
 const { t } = useI18n()
 const alert = useAlert()
-const router = useRouter()
 
 const { deck, close } = defineProps<{
   deck?: Deck
   close: (response?: boolean) => void
-}>()
-
-const emit = defineEmits<{
-  (e: 'created', deck: Deck): void
 }>()
 
 const { settings, image_url, saveDeck, deleteDeck, uploadImage, removeImage } =
@@ -33,21 +27,19 @@ function onImageRemoved() {
 
 async function onSave() {
   await saveDeck()
-  emit('created', settings)
   close(true)
 }
 
 async function onDeleted() {
-  const delete_alert = alert.warn({
+  const { response } = alert.warn({
     title: t('alert.delete-deck'),
     message: t('alert.delete-deck.message'),
     confirmLabel: t('common.delete')
   })
 
-  if (await delete_alert.response) {
+  if (await response) {
     await deleteDeck()
-    router.push({ name: 'dashboard' })
-    close()
+    close(true)
   }
 }
 </script>
@@ -85,7 +77,7 @@ async function onDeleted() {
       <ui-kit:button
         v-if="deck"
         icon-left="check"
-        @click="onDeleted()"
+        @click="onDeleted"
         variant="danger"
         class="ring-brown-300 ring-7"
       >
