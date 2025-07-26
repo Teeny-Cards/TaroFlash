@@ -1,4 +1,4 @@
-import { mount, shallowMount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import { expect, test, vi } from 'vitest'
 import Modal from '@/components/ui-kit/modal.vue'
 import { shallowRef, defineComponent, markRaw } from 'vue'
