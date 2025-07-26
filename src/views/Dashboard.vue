@@ -41,7 +41,7 @@ function onCreateDeckClicked() {
   create_deck_modal.value = modal.open(deckSettings, {
     backdrop: true,
     props: {
-      onSaved: createDeck
+      onCreated: createDeck
     }
   })
 }

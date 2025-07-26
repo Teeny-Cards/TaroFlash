@@ -16,6 +16,10 @@ const { deck, close } = defineProps<{
   close: (response?: boolean) => void
 }>()
 
+const emit = defineEmits<{
+  (e: 'created', deck: Deck): void
+}>()
+
 const { settings, image_url, saveDeck, deleteDeck, uploadImage, removeImage } =
   useDeckConfiguration(deck)
 
@@ -29,6 +33,7 @@ function onImageRemoved() {
 
 async function onSave() {
   await saveDeck()
+  emit('created', settings)
   close(true)
 }
 
