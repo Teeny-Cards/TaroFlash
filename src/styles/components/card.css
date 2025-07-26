@@ -7,7 +7,7 @@
 }
 
 .card.card--hidden {
-  @apply relative bg-green-400;
+  @apply relative bg-purple-400 bg-(image:--diagonal-stripes);
 }
 
 .card.card--large {

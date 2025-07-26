@@ -1,4 +1,3 @@
-import { deleteCardsByDeckId } from '@/services/card-service'
 import { supabase } from '@/supabase-client'
 import { useMemberStore } from '@/stores/member'
 import Logger from '@/utils/logger'
@@ -9,7 +8,7 @@ export async function createDeck(deck: Deck): Promise<any> {
 
   if (error) {
     Logger.error(error.message)
-    throw new Error(error.message)
+    throw error
   }
 }
 
@@ -19,13 +18,13 @@ export async function fetchMemberDecks(): Promise<Deck[]> {
 
   const { data, error } = await supabase
     .from('decks')
-    .select('description,title, image_path, id, due_cards:cards(*, review:reviews(*))')
+    .select('description,title, id, updated_at, due_cards:cards(*, review:reviews(*))')
     .eq('member_id', member_id)
     .or(`id.is.null,due.lte.${end_of_day}`, { referencedTable: 'cards.reviews' })
 
   if (error) {
     Logger.error(error.message)
-    throw new Error(error.message)
+    throw error
   }
 
   return data
@@ -41,7 +40,7 @@ export async function fetchDeckById(id: number): Promise<Deck> {
 
   if (error) {
     Logger.error(error.message)
-    throw new Error(error.message)
+    throw error
   }
 
   return data
@@ -52,7 +51,7 @@ export async function updateDeckById(id: number, deck: Deck): Promise<void> {
 
   if (error) {
     Logger.error(error.message)
-    throw new Error(error.message)
+    throw error
   }
 }
 
@@ -61,6 +60,6 @@ export async function deleteDeckById(id: number): Promise<void> {
 
   if (error) {
     Logger.error(error.message)
-    throw new Error(error.message)
+    throw error
   }
 }

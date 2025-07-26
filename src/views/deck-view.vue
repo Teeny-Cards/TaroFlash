@@ -10,15 +10,17 @@ import { useEditableCards } from '@/composables/use-editable-cards'
 import { updateCards, deleteCardsById } from '@/services/card-service'
 import { useAlert } from '@/composables/use-alert'
 import { useModal } from '@/composables/use-modal'
-
-const { t } = useI18n()
-const modal = useModal()
+import { useDeckConfiguration } from '@/composables/use-deck-configuration'
 
 const { id: deck_id } = defineProps<{
   id: string
 }>()
 
+const { t } = useI18n()
+const modal = useModal()
 const alert = useAlert()
+
+const image_url = ref<string | undefined>()
 const deck = ref<Deck>()
 const editing = ref(false)
 let cardEdits: ReturnType<typeof useEditableCards> | undefined
@@ -35,10 +37,7 @@ const tabs = [
 
 onMounted(async () => {
   try {
-    const id = Number(deck_id)
-    deck.value = await fetchDeckById(id)
-
-    cardEdits = useEditableCards(deck.value.cards ?? [], deck.value.id)
+    await refetchDeck()
   } catch (e: any) {
     // TODO
   }
@@ -84,6 +83,7 @@ async function refetchDeck() {
   try {
     deck.value = await fetchDeckById(Number(deck_id))
     cardEdits = useEditableCards(deck.value.cards ?? [], deck.value.id)
+    image_url.value = useDeckConfiguration(deck.value).image_url.value
   } catch (e: any) {
     // TODO
   }
@@ -125,6 +125,7 @@ function onAddCard() {
     <overview-panel
       v-if="deck"
       :deck="deck"
+      :image-url="image_url"
       @study-clicked="onStudyClicked"
       @updated="refetchDeck()"
     />
