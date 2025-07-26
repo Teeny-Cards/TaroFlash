@@ -21,6 +21,7 @@ export async function fetchMemberDecks(): Promise<Deck[]> {
     .select('description,title, id, updated_at, due_cards:cards(*, review:reviews(*))')
     .eq('member_id', member_id)
     .or(`id.is.null,due.lte.${end_of_day}`, { referencedTable: 'cards.reviews' })
+    .order('created_at')
 
   if (error) {
     Logger.error(error.message)
