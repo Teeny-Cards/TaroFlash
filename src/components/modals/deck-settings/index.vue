@@ -4,7 +4,7 @@ import NameImageConfig from './name-image-config.vue'
 import AdditionalSettings from './additional-settings.vue'
 import HeaderConfig from './header-config.vue'
 import { useAlert } from '@/composables/use-alert'
-import { useDeckConfiguration } from '@/composables/use-deck-configuration'
+import { useDeck } from '@/composables/use-deck'
 
 const { t } = useI18n()
 const alert = useAlert()
@@ -14,8 +14,7 @@ const { deck, close } = defineProps<{
   close: (response?: boolean) => void
 }>()
 
-const { settings, image_url, saveDeck, deleteDeck, uploadImage, removeImage } =
-  useDeckConfiguration(deck)
+const { settings, image_url, saveDeck, deleteDeck, uploadImage, removeImage } = useDeck(deck)
 
 function onImageUploaded(file: File) {
   uploadImage(file)
@@ -70,7 +69,12 @@ async function onDeleted() {
       data-testid="deck-settings__actions"
       class="absolute -bottom-2 flex w-full justify-end gap-3 px-10.5"
     >
-      <ui-kit:button variant="muted" icon-left="close" @click="close" class="ring-brown-300 ring-7">
+      <ui-kit:button
+        variant="muted"
+        icon-left="close"
+        @click="close(false)"
+        class="ring-brown-300 ring-7"
+      >
         {{ t('common.cancel') }}
       </ui-kit:button>
 
