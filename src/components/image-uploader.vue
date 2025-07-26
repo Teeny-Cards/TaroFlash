@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from 'vue'
+import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
 import Logger from '@/utils/logger'
 
 export type ImageUploadEvent = {
@@ -11,10 +11,33 @@ const emit = defineEmits<{
   (e: 'image-uploaded', event: ImageUploadEvent): void
 }>()
 
-const selectedFile = ref()
+const selectedFile = ref<File>()
 const loading = ref(false)
+const dragging = ref(false)
 
 const fileInput = useTemplateRef<HTMLInputElement>('fileInput')
+
+onMounted(() => {
+  document.addEventListener('dragover', startDrag)
+  document.addEventListener('drop', endDrag)
+  document.addEventListener('dragleave', endDrag)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('dragover', startDrag)
+  document.removeEventListener('drop', endDrag)
+  document.removeEventListener('dragleave', endDrag)
+})
+
+function startDrag(e: DragEvent) {
+  e.preventDefault()
+  dragging.value = true
+}
+
+function endDrag(e: DragEvent) {
+  e.preventDefault()
+  dragging.value = false
+}
 
 function triggerDialog() {
   fileInput.value?.click()
@@ -65,5 +88,5 @@ function getImagePreview(file: File): Promise<string> {
     accept="image/*"
     class="absolute inset-0 cursor-pointer opacity-0"
   />
-  <slot :trigger="triggerDialog" :loading="loading" />
+  <slot :trigger="triggerDialog" :loading="loading" :dragging="dragging" />
 </template>

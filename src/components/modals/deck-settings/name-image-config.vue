@@ -3,39 +3,44 @@ import { useI18n } from 'vue-i18n'
 import Card from '@/components/card.vue'
 import imageUploader from '@/components/image-uploader.vue'
 import { type ImageUploadEvent } from '@/components/image-uploader.vue'
-import { computed, ref } from 'vue'
-import { getImageUrl } from '@/services/file-service'
+import { ref } from 'vue'
 
 const { t } = useI18n()
 
-const { imageName } = defineProps<{
-  imageName?: string
+const { imageUrl } = defineProps<{ imageUrl?: string }>()
+
+const emit = defineEmits<{
+  (e: 'image-uploaded', file: File): void
+  (e: 'image-removed'): void
 }>()
 
 const title = defineModel<string>('title')
 
-const imageData = ref<ImageUploadEvent | undefined>()
+const preview_image = ref<string | undefined>(imageUrl)
 
 function onImageUploaded(event: ImageUploadEvent) {
-  imageData.value = event
+  preview_image.value = event.preview
+  emit('image-uploaded', event.file)
 }
 
-const image_url = computed(() => {
-  return imageName ? getImageUrl('deck-images', imageName) : ''
-})
-
-const deck_image = computed(() => {
-  return imageData.value?.preview ?? image_url.value
-})
+function onImageRemoved() {
+  preview_image.value = undefined
+  emit('image-removed')
+}
 </script>
 
 <template>
   <div class="relative flex flex-col items-center pb-6">
-    <Card class="border-brown-100 border-6" :image_url="deck_image">
+    <Card class="border-brown-100 border-6" :image_url="preview_image">
       <template #back>
-        <image-uploader v-slot="{ trigger, loading }" @image-uploaded="onImageUploaded">
+        <image-uploader v-slot="{ trigger, loading, dragging }" @image-uploaded="onImageUploaded">
+          <div
+            v-if="dragging"
+            class="absolute -inset-1.5 rounded-[inherit] border-6 border-blue-400"
+          ></div>
+
           <ui-kit:button
-            v-if="!deck_image"
+            v-if="!preview_image"
             @click="trigger"
             inverted
             variant="muted"
@@ -46,7 +51,7 @@ const deck_image = computed(() => {
 
           <ui-kit:button
             v-else
-            @click="imageData = undefined"
+            @click="onImageRemoved"
             inverted
             variant="muted"
             icon-left="remove-image"

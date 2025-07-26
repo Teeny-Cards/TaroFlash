@@ -1,3 +1,19 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const { size = 'base' } = defineProps<{
+  size?: 'large' | 'base' | 'small' | 'xs' | '2xs' | '3xs'
+  revealed?: Boolean
+  image_url?: string
+}>()
+
+const show_image = ref(true)
+
+function onImageError() {
+  show_image.value = false
+}
+</script>
+
 <template>
   <transition
     mode="out-in"
@@ -12,18 +28,15 @@
       <slot></slot>
     </div>
     <div v-else data-testid="card" class="card card--hidden" :class="`card--${size}`">
-      <div v-if="image_url" class="card__image">
-        <img :src="image_url" alt="Deck Image preview" class="h-full w-full object-cover" />
+      <div v-if="image_url && show_image" class="card__image">
+        <img
+          :src="image_url"
+          alt="Deck Image preview"
+          class="h-full w-full object-cover"
+          @error="onImageError"
+        />
       </div>
       <slot name="back"></slot>
     </div>
   </transition>
 </template>
-
-<script setup lang="ts">
-const { size = 'base' } = defineProps<{
-  size?: 'large' | 'base' | 'small' | 'xs' | '2xs' | '3xs'
-  revealed?: Boolean
-  image_url?: string
-}>()
-</script>
