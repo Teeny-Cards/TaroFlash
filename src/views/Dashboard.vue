@@ -4,7 +4,6 @@ import { fetchMemberDecks } from '@/services/deck-service'
 import { useToastStore } from '@/stores/toast'
 import Deck from '@/components/deck.vue'
 import { useRouter } from 'vue-router'
-import { createDeck as upstreamCreateDeck } from '@/services/deck-service'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
 import { useModal } from '@/composables/use-modal'
 
@@ -14,7 +13,6 @@ const router = useRouter()
 const modal = useModal()
 const loading = ref(true)
 const decks = ref<Deck[]>([])
-const create_deck_modal = ref()
 
 onMounted(async () => {
   await refetchDecks()
@@ -37,19 +35,12 @@ function onDeckClicked(deck: Deck) {
   router.push({ name: 'deck', params: { id: deck.id } })
 }
 
-function onCreateDeckClicked() {
-  create_deck_modal.value = modal.open(deckSettings, {
-    backdrop: true,
-    props: {
-      onCreated: createDeck
-    }
-  })
-}
+async function onCreateDeckClicked() {
+  const { response } = modal.open(deckSettings, { backdrop: true })
 
-async function createDeck(deck: Deck) {
-  await upstreamCreateDeck(deck)
-  await refetchDecks()
-  create_deck_modal.value.close()
+  if (await response) {
+    await refetchDecks()
+  }
 }
 </script>
 
@@ -63,6 +54,7 @@ async function createDeck(deck: Deck) {
           :key="index"
           :deck="deck"
           @clicked="() => onDeckClicked(deck)"
+          @updated="refetchDecks"
         />
       </div>
     </div>
@@ -75,6 +67,7 @@ async function createDeck(deck: Deck) {
           :key="index"
           :deck="deck"
           @clicked="() => onDeckClicked(deck)"
+          @updated="refetchDecks"
         />
       </div>
       <ui-kit:button icon-left="add" @click="onCreateDeckClicked">Create Deck</ui-kit:button>

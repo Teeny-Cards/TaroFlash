@@ -1,10 +1,11 @@
 import { reactive, ref, computed } from 'vue'
-import { deleteDeckById, updateDeckById } from '@/services/deck-service'
+import { deleteDeck as upstreamDeleteDeck, upsertDeck } from '@/services/deck-service'
 import { deleteDeckImage, getDeckImageUrl, uploadDeckImage } from '@/services/file-service'
 import { DateTime } from 'luxon'
 
 export function useDeckConfiguration(deck?: Deck) {
   const settings = reactive<Deck>({
+    id: deck?.id,
     title: deck?.title,
     description: deck?.description,
     is_public: deck?.is_public ?? true,
@@ -20,20 +21,18 @@ export function useDeckConfiguration(deck?: Deck) {
   })
 
   async function saveDeck() {
-    if (deck?.id) {
-      settings.updated_at = DateTime.now().toISO()
+    settings.updated_at = DateTime.now().toISO()
 
-      await _maybeDeleteOldImage()
-      await _maybeUploadImage()
-      await updateDeckById(deck.id, settings)
-    }
+    await _maybeDeleteOldImage()
+    await _maybeUploadImage()
+    await upsertDeck(settings)
   }
 
   async function deleteDeck() {
     if (!deck?.id) return
 
     try {
-      await deleteDeckById(deck.id)
+      await upstreamDeleteDeck(deck.id)
     } catch (e: any) {
       console.error(e)
     }
