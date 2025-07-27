@@ -14,7 +14,7 @@ const {
 } = defineProps<{
   placeholder?: string
   textAlign?: 'left' | 'center' | 'right'
-  size?: 'base' | 'lg'
+  size?: 'sm' | 'base' | 'lg'
 }>()
 
 const value = defineModel<string>('value')
