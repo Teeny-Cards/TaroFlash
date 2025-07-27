@@ -3,6 +3,10 @@
     @apply bg-brown-100 rounded-5 w-full px-6 py-3;
   }
 
+  .ui-kit-input.ui-kit-input--sm {
+    @apply rounded-3.5 px-3 py-2 text-sm;
+  }
+
   .ui-kit-input.ui-kit-input--lg {
     @apply rounded-5.5;
   }

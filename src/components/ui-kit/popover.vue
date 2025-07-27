@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed, useTemplateRef } from 'vue'
 import { useFloating, shift, flip, autoUpdate, arrow, offset } from '@floating-ui/vue'
+import { useAudio } from '@/composables/use-audio'
 
 const ARROW_SIZE = 10
 
 const triggerRef = useTemplateRef('triggerRef')
 const popoverRef = useTemplateRef('popoverRef')
 const arrowRef = useTemplateRef('arrowRef')
+const audio = useAudio()
 
 const { placement, middlewareData, floatingStyles } = useFloating(triggerRef, popoverRef, {
   placement: 'top',
@@ -41,6 +43,10 @@ const arrowTop = computed(() => {
 })
 
 const side = computed(() => placement.value.split('-')[0])
+
+function onMouseEnter() {
+  audio.play('click_04')
+}
 </script>
 
 <template>
@@ -48,6 +54,7 @@ const side = computed(() => placement.value.split('-')[0])
     data-testid="ui-kit-popover-container"
     ref="triggerRef"
     class="ui-kit-popover-container group"
+    @mouseenter="onMouseEnter"
   >
     <Transition
       enter-from-class="opacity-0"

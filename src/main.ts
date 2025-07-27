@@ -7,6 +7,7 @@ import { createI18n } from 'vue-i18n'
 import Logger from './utils/logger'
 import registerUIKitComponents from './components/ui-kit/_index'
 import messages from '@intlify/unplugin-vue-i18n/messages'
+import { useAudio } from './composables/use-audio'
 
 Logger.setLogLevel(import.meta.env.VITE_LOG_LEVEL)
 
@@ -17,6 +18,9 @@ const i18n = createI18n({
 })
 
 const app = createApp(App)
+
+const audio = useAudio()
+audio.preload()
 
 app.use(createPinia())
 app.use(i18n)
