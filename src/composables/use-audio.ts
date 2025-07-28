@@ -1,10 +1,12 @@
 // useAudio.ts
 import { Howl, Howler } from 'howler'
 import { ref } from 'vue'
+import { useLogger } from '@/composables/use-logger'
 
 const loadedSounds = new Map<string, Howl>()
 const isInitialized = ref(false)
 const ASSET_PATH = '/src/assets/audio/'
+const logger = useLogger()
 
 type PlayOptions = {
   volume?: number
@@ -45,10 +47,13 @@ export function useAudio() {
 
   const play = (key: SoundKey, options: PlayOptions = {}) => {
     const sound = loadedSounds.get(key)
+
     if (sound) {
       sound.volume(options.volume ?? 1)
       sound.play()
-    } else console.warn(`Sound "${key}" not loaded.`)
+    } else {
+      logger.warn(`Sound "${key}" not loaded.`)
+    }
   }
 
   const playRandom = (keys: SoundKey[], options: PlayOptions = {}) => {
