@@ -17,7 +17,10 @@ export const useMemberStore = defineStore('member', {
   },
 
   getters: {
-    id({ member }): number | undefined {
+    has_member({ member }): boolean {
+      return Boolean(member)
+    },
+    id({ member }): string | undefined {
       return member?.id
     },
     display_name({ member }): string {
@@ -28,9 +31,6 @@ export const useMemberStore = defineStore('member', {
     },
     description({ member }): string {
       return member?.description ?? ''
-    },
-    num_decks({ member }): number {
-      return member?.num_decks ?? 0
     }
   }
 })

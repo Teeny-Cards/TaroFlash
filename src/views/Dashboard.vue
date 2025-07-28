@@ -7,9 +7,11 @@ import { useRouter } from 'vue-router'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
 import MemberApplication from '@/components/modals/member-application.vue'
 import { useModal } from '@/composables/use-modal'
+import { useMemberStore } from '@/stores/member'
 
 const toastStore = useToastStore()
 const router = useRouter()
+const memberStore = useMemberStore()
 
 const modal = useModal()
 const loading = ref(true)
@@ -19,7 +21,9 @@ onMounted(async () => {
   await refetchDecks()
   loading.value = false
 
-  modal.open(MemberApplication, { backdrop: true })
+  if (!memberStore.has_member) {
+    modal.open(MemberApplication, { backdrop: true })
+  }
 })
 
 const due_decks = computed(() => {

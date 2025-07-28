@@ -1,22 +1,32 @@
 <script setup lang="ts">
 import MemberCard from '@/components/modals/member-card.vue'
 import { useI18n } from 'vue-i18n'
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { DateTime } from 'luxon'
-import { type MemberCardTheme } from '@/components/modals/member-card.vue'
 import { useAudio } from '@/composables/use-audio'
+import { upsertMember } from '@/services/member-service'
+import { useSessionStore } from '@/stores/session'
+
+const { close } = defineProps<{
+  close: (response?: boolean) => void
+}>()
 
 const { t } = useI18n()
 const audio = useAudio()
+const sessionStore = useSessionStore()
 
 const created_at = DateTime.now().toISO()
 const created_at_formatted = DateTime.fromISO(created_at).toFormat('LLL d, yyyy')
 
-const member_name = ref('')
-const card_comment = ref('')
-const selected_theme = ref<MemberCardTheme>('green-400')
+const member = reactive<Member>({
+  display_name: '',
+  description: '',
+  id: sessionStore.user_id
+})
 
-const themes: MemberCardTheme[] = [
+const selected_theme = ref<MemberTheme>('green-400')
+
+const themes: MemberTheme[] = [
   'green-400',
   'blue-500',
   'purple-500',
@@ -25,7 +35,7 @@ const themes: MemberCardTheme[] = [
   'orange-500'
 ]
 
-function setTheme(theme: MemberCardTheme) {
+function setTheme(theme: MemberTheme) {
   if (theme === selected_theme.value) {
     audio.play('digi_powerdown')
     return
@@ -34,14 +44,20 @@ function setTheme(theme: MemberCardTheme) {
   audio.play('etc_camera_shutter')
   selected_theme.value = theme
 }
+
+async function onConfirm() {
+  await upsertMember(member)
+  audio.play('double-pop-down')
+  close(true)
+}
 </script>
 
 <template>
   <div data-testid="member-application" class="drop-shadow-modal grid grid-cols-[auto_auto]">
     <member-card
       :created-at="created_at"
-      :display-name="member_name"
-      :card-comment="card_comment"
+      :display-name="member.display_name"
+      :card-comment="member.description"
       card-title="Debut Deck Builder"
       :theme="selected_theme"
     />
@@ -65,7 +81,10 @@ function setTheme(theme: MemberCardTheme) {
       </div>
 
       <div class="grid grid-cols-[1fr_auto] gap-x-12 gap-y-6">
-        <ui-kit:input :label="t('member-application.member-name')" v-model:value="member_name" />
+        <ui-kit:input
+          :label="t('member-application.member-name')"
+          v-model:value="member.display_name"
+        />
 
         <div class="flex flex-col gap-1.5">
           <span class="text-brown-500">{{ t('member-application.title') }}</span>
@@ -80,7 +99,7 @@ function setTheme(theme: MemberCardTheme) {
           :label="t('member-application.card-comment')"
           :placeholder="t('member-card.description-placeholder')"
           class="col-span-2"
-          v-model:value="card_comment"
+          v-model:value="member.description"
         />
 
         <div class="col-span-2 flex flex-col gap-1.5">
@@ -116,9 +135,12 @@ function setTheme(theme: MemberCardTheme) {
         </div>
       </div>
 
-      <ui-kit:button icon-left="check" class="ring-brown-300 absolute right-8 -bottom-5 ring-7">{{
-        t('common.confirm')
-      }}</ui-kit:button>
+      <ui-kit:button
+        icon-left="check"
+        class="ring-brown-300 absolute right-8 -bottom-5 ring-7"
+        @click="onConfirm"
+        >{{ t('common.confirm') }}</ui-kit:button
+      >
     </div>
   </div>
 </template>
