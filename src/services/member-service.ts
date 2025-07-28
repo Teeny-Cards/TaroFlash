@@ -1,11 +1,13 @@
 import { supabase } from '@/supabase-client'
-import Logger from '@/utils/logger'
+import { useLogger } from '@/composables/use-logger'
+
+const logger = useLogger()
 
 export async function fetchMemberById(id: string): Promise<Member | null> {
   const { data, error } = await supabase.from('members').select('*').eq('id', id).single()
 
   if (error) {
-    Logger.error(error.message)
+    logger.error(error.message)
     return null
   }
 

@@ -1,10 +1,11 @@
 import { useSessionStore } from '@/stores/session'
 import { useMemberStore } from '@/stores/member'
-import Logger from '@/utils/logger'
+import { useLogger } from '@/composables/use-logger'
 
 export async function initUser(): Promise<boolean> {
   const session = useSessionStore()
   const memberStore = useMemberStore()
+  const logger = useLogger()
 
   if (session.authenticated && memberStore.id) return true
 
@@ -16,7 +17,7 @@ export async function initUser(): Promise<boolean> {
       await memberStore.fetchMember(session.user.id)
     }
   } catch (e: any) {
-    Logger.error(`Error initializing user: ${e.message}`)
+    logger.error(`Error initializing user: ${e.message}`)
     return false
   } finally {
     session.stopLoading()
