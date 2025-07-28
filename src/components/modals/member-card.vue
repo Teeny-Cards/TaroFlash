@@ -5,20 +5,12 @@ import { DateTime } from 'luxon'
 
 const { t } = useI18n()
 
-export type MemberCardTheme =
-  | 'green-400'
-  | 'blue-500'
-  | 'purple-500'
-  | 'pink-500'
-  | 'red-500'
-  | 'orange-500'
-
-const { createdAt } = defineProps<{
+const { createdAt = DateTime.now().toISO() } = defineProps<{
   createdAt: string
-  displayName: string
-  cardComment: string
+  displayName?: string
+  cardComment?: string
   cardTitle: string
-  theme: MemberCardTheme
+  theme: MemberTheme
 }>()
 
 const created_on = computed(() => {
