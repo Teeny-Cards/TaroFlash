@@ -1,3 +1,5 @@
+import { ref } from 'vue'
+
 const LEVELS: { [key: string]: number } = {
   none: 0,
   error: 1,
@@ -19,39 +21,39 @@ declare global {
   }
 }
 
-export default class Logger {
-  static log_level: number = Number(import.meta.env.VITE_LOG_LEVEL)
+let log_level = ref(Number(import.meta.env.VITE_LOG_LEVEL))
 
-  static setLogLevel(level: number): void {
+export function useLogger() {
+  function setLogLevel(level: number): void {
     if (level < 0 || level > 4) {
       throw new Error('Invalid log level')
     }
 
-    this.log_level = level
+    log_level.value = level
   }
 
-  static info(message: string): void {
-    this._log(message, 'info')
+  function info(message: string): void {
+    _log(message, 'info')
   }
 
-  static warn(message: string): void {
-    this._log(message, 'warn')
+  function warn(message: string): void {
+    _log(message, 'warn')
   }
 
-  static error(message: string): void {
-    this._log(message, 'error')
+  function error(message: string): void {
+    _log(message, 'error')
   }
 
-  static debug(message: string): void {
-    this._log(message, 'debug')
+  function debug(message: string): void {
+    _log(message, 'debug')
   }
 
-  private static _log(message: string, log_type: string): void {
+  function _log(message: string, log_type: string): void {
     if (!window.logs) {
       window.logs = []
     }
 
-    const callerTrace = this._getCallerTrace()
+    const callerTrace = _getCallerTrace()
     const formattedMessage = `${callerTrace} - ${message}`
 
     window.logs.push({
@@ -61,12 +63,12 @@ export default class Logger {
       trace: callerTrace
     })
 
-    if (LEVELS[log_type] <= this.log_level) {
+    if (LEVELS[log_type] <= log_level.value) {
       ;(console as any)[log_type]?.(`[${log_type}] ${formattedMessage}`)
     }
   }
 
-  private static _getCallerTrace(skipFile = 'logger.ts'): string {
+  function _getCallerTrace(skipFile = 'logger.ts'): string {
     const stack = new Error().stack
     if (!stack) return 'unknown'
 
@@ -93,5 +95,13 @@ export default class Logger {
     }
 
     return 'unknown'
+  }
+
+  return {
+    setLogLevel,
+    info,
+    warn,
+    error,
+    debug
   }
 }

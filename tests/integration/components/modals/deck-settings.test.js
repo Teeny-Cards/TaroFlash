@@ -43,6 +43,12 @@ vi.mock('@/composables/use-alert', () => ({
   }))
 }))
 
+vi.mock('@/composables/use-audio', () => ({
+  useAudio: vi.fn(() => ({
+    play: vi.fn()
+  }))
+}))
+
 it('Renders Cancel, Delete, and Save buttons when a deck exists', async () => {
   const wrapper = mount(DeckSettings, {
     props: {
@@ -50,7 +56,12 @@ it('Renders Cancel, Delete, and Save buttons when a deck exists', async () => {
       close: vi.fn()
     },
     global: {
-      plugins: [createTestingPinia({ createSpy: vi.fn })]
+      plugins: [createTestingPinia({ createSpy: vi.fn })],
+      provide: {
+        'modal-context': {
+          registerBackdropCloseListener: vi.fn(() => vi.fn())
+        }
+      }
     }
   })
 
@@ -65,7 +76,12 @@ it('Renders Cancel and Create buttons when a deck does not exist', async () => {
       close: vi.fn()
     },
     global: {
-      plugins: [createTestingPinia({ createSpy: vi.fn })]
+      plugins: [createTestingPinia({ createSpy: vi.fn })],
+      provide: {
+        'modal-context': {
+          registerBackdropCloseListener: vi.fn(() => vi.fn())
+        }
+      }
     }
   })
 
@@ -81,7 +97,12 @@ it('Calls close function when Cancel button is clicked', async () => {
       close
     },
     global: {
-      plugins: [createTestingPinia({ createSpy: vi.fn })]
+      plugins: [createTestingPinia({ createSpy: vi.fn })],
+      provide: {
+        'modal-context': {
+          registerBackdropCloseListener: vi.fn(() => vi.fn())
+        }
+      }
     }
   })
 
@@ -97,7 +118,12 @@ it('Calls close function when Save button is clicked', async () => {
       close
     },
     global: {
-      plugins: [createTestingPinia({ createSpy: vi.fn })]
+      plugins: [createTestingPinia({ createSpy: vi.fn })],
+      provide: {
+        'modal-context': {
+          registerBackdropCloseListener: vi.fn(() => vi.fn())
+        }
+      }
     }
   })
 
@@ -114,7 +140,12 @@ it('Calls close function when Delete button is clicked', async () => {
       close
     },
     global: {
-      plugins: [createTestingPinia({ createSpy: vi.fn })]
+      plugins: [createTestingPinia({ createSpy: vi.fn })],
+      provide: {
+        'modal-context': {
+          registerBackdropCloseListener: vi.fn(() => vi.fn())
+        }
+      }
     }
   })
 
@@ -130,7 +161,12 @@ it('Calls deleteDeck function when Delete button is clicked', async () => {
       close: vi.fn()
     },
     global: {
-      plugins: [createTestingPinia({ createSpy: vi.fn })]
+      plugins: [createTestingPinia({ createSpy: vi.fn })],
+      provide: {
+        'modal-context': {
+          registerBackdropCloseListener: vi.fn(() => vi.fn())
+        }
+      }
     }
   })
 
@@ -146,7 +182,12 @@ it('Calls saveDeck function when Save button is clicked', async () => {
       close: vi.fn()
     },
     global: {
-      plugins: [createTestingPinia({ createSpy: vi.fn })]
+      plugins: [createTestingPinia({ createSpy: vi.fn })],
+      provide: {
+        'modal-context': {
+          registerBackdropCloseListener: vi.fn(() => vi.fn())
+        }
+      }
     }
   })
 
@@ -162,7 +203,12 @@ it('Calls uploadImage function when image is uploaded', async () => {
       close: vi.fn()
     },
     global: {
-      plugins: [createTestingPinia({ createSpy: vi.fn })]
+      plugins: [createTestingPinia({ createSpy: vi.fn })],
+      provide: {
+        'modal-context': {
+          registerBackdropCloseListener: vi.fn(() => vi.fn())
+        }
+      }
     }
   })
 

@@ -1,14 +1,26 @@
 <script setup lang="ts">
-import { onUnmounted, useTemplateRef, watchEffect, computed } from 'vue'
+import { onUnmounted, useTemplateRef, watchEffect, computed, provide } from 'vue'
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
 import { useModal } from '@/composables/use-modal'
 
+export type ModalContext = {
+  registerBackdropCloseListener: (listener: () => void) => () => void
+}
+
 const { modal_stack } = useModal()
 const modal_container = useTemplateRef<HTMLDivElement>('ui-kit-modal-container')
+const backdrop_listeners = new Set<() => void>()
 
 onUnmounted(() => {
   if (!modal_container.value) return
   enableBodyScroll(modal_container.value)
+})
+
+provide<ModalContext>('modal-context', {
+  registerBackdropCloseListener: (listener: () => void) => {
+    backdrop_listeners.add(listener)
+    return () => backdrop_listeners.delete(listener)
+  }
 })
 
 function close() {
@@ -17,6 +29,11 @@ function close() {
   if (modal && modal.closeOnBackdropClick) {
     modal.resolve(false)
     modal_stack.value.pop()
+
+    for (const listener of backdrop_listeners) {
+      listener()
+      backdrop_listeners.delete(listener)
+    }
   }
 }
 
@@ -39,10 +56,10 @@ const show_backdrop = computed(() => {
   <transition
     enter-from-class="opacity-0"
     enter-to-class="opacity-100"
-    enter-active-class="transition-[opacity] ease-in-out duration-150"
+    enter-active-class="transition-[opacity] ease-in-out duration-100"
     leave-from-class="opacity-100"
     leave-to-class="opacity-0"
-    leave-active-class="transition-[opacity] ease-in-out duration-150"
+    leave-active-class="transition-[opacity] ease-in-out duration-100"
   >
     <div
       v-if="modal_stack.length > 0"
@@ -62,10 +79,10 @@ const show_backdrop = computed(() => {
     class="pointer-events-none fixed inset-0 z-20 flex items-center justify-center *:pointer-events-auto"
     enter-from-class="scale-90 opacity-0"
     enter-to-class="scale-100 opacity-100"
-    enter-active-class="transition-[all] ease-in-out duration-150"
+    enter-active-class="transition-[all] ease-in-out duration-100"
     leave-from-class="scale-100 opacity-100"
     leave-to-class="scale-90 opacity-0"
-    leave-active-class="transition-[all] ease-in-out duration-150"
+    leave-active-class="transition-[all] ease-in-out duration-100"
   >
     <div data-testid="ui-kit-modal" v-for="modal in modal_stack" :key="modal.id" class="absolute">
       <component :is="modal.component" v-bind="modal.componentProps" />

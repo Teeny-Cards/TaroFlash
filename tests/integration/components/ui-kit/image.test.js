@@ -1,22 +1,29 @@
-import { shallowMount } from '@vue/test-utils'
+import { shallowMount, flushPromises } from '@vue/test-utils'
 import { expect, it, vi } from 'vitest'
 import Image from '@/components/ui-kit/image.vue'
 
-// Mock the async component import
-vi.mock('vue', async () => {
-  const actual = await vi.importActual('vue')
+const { mockedConsoleWarn } = vi.hoisted(() => {
+  vi.resetModules()
+
   return {
-    ...actual,
-    defineAsyncComponent: vi.fn((loader) => {
-      return {
-        name: 'MockedSvgImage',
-        template: '<div class="mocked-svg-image"></div>'
-      }
-    })
+    mockedConsoleWarn: vi.fn()
   }
 })
 
-// Test basic rendering
+vi.mock('@/assets/images/binder-clip.svg', () => ({
+  default: '/mocked/binder-clip.svg'
+}))
+
+vi.mock('@/assets/images/highlighter.svg', () => ({
+  default: '/mocked/highlighter.svg'
+}))
+
+vi.mock('@/composables/use-logger', () => {
+  return {
+    useLogger: vi.fn(() => ({ warn: mockedConsoleWarn }))
+  }
+})
+
 it('renders properly with required src prop', () => {
   const wrapper = shallowMount(Image, {
     props: {
@@ -27,13 +34,17 @@ it('renders properly with required src prop', () => {
   expect(wrapper.exists()).toBe(true)
 })
 
-// Test src prop is required
-it('requires src prop', () => {
-  expect(Image.props.src.required).toBe(true)
+it('does not render img element before image loads', async () => {
+  const wrapper = shallowMount(Image, {
+    props: {
+      src: 'binder-clip'
+    }
+  })
+
+  expect(wrapper.find('img').exists()).toBe(false)
 })
 
-// Test src prop is passed to the async component
-it('passes src prop to the async component', () => {
+it('renders img element with correct attributes after image loads', async () => {
   const testSrc = 'binder-clip'
   const wrapper = shallowMount(Image, {
     props: {
@@ -41,22 +52,25 @@ it('passes src prop to the async component', () => {
     }
   })
 
-  // Check that the teeny-image attribute is set with the src value
-  expect(wrapper.attributes('teeny-image')).toBe(testSrc)
+  await flushPromises()
+
+  const img = wrapper.find('img')
+  expect(img.exists()).toBe(true)
+  expect(img.attributes('alt')).toBe(testSrc)
+  expect(img.attributes('src')).toBe('/mocked/binder-clip.svg')
+  expect(img.classes()).toContain('h-full')
+  expect(img.classes()).toContain('w-full')
 })
 
-// Test with different src values
-it('renders with different src values', async () => {
-  const wrapper = shallowMount(Image, {
+it('warns when image is not found', async () => {
+  const testSrc = 'non-existent-image'
+  shallowMount(Image, {
     props: {
-      src: 'binder-clip'
+      src: testSrc
     }
   })
 
-  expect(wrapper.attributes('teeny-image')).toBe('binder-clip')
+  await flushPromises()
 
-  // Update src prop
-  await wrapper.setProps({ src: 'image2' })
-
-  expect(wrapper.attributes('teeny-image')).toBe('image2')
+  expect(mockedConsoleWarn).toHaveBeenCalledWith(`No image found for: ${testSrc}`)
 })
