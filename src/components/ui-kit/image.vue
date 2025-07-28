@@ -1,16 +1,26 @@
 <template>
-  <Image :teeny-image="src" />
+  <img v-if="imageUrl" :src="imageUrl" :alt="src" class="h-full w-full" />
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
+import { ref, onMounted } from 'vue'
 
-const props = defineProps({
-  src: {
-    type: String,
-    required: true
-  }
+const { src } = defineProps<{ src: string }>()
+
+const imageUrl = ref<string | null>(null)
+
+const modules = import.meta.glob('../../assets/images/*.{png,jpg,jpeg,svg}', {
+  import: 'default' // returns URL as default export
 })
 
-const Image = defineAsyncComponent(() => import(`../../assets/items/${props.src}.svg`))
+onMounted(async () => {
+  const matchingKey = Object.keys(modules).find((key) => key.includes(src))
+
+  if (!matchingKey) {
+    throw new Error(`No image found for: ${src}`)
+  }
+
+  const image = await modules[matchingKey]() // lazy load!
+  imageUrl.value = image as string
+})
 </script>
