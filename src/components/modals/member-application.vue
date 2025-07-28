@@ -22,9 +22,7 @@ const themes: MemberCardTheme[] = [
   'purple-500',
   'pink-500',
   'red-500',
-  'orange-500',
-  'brown-700',
-  'grey-700'
+  'orange-500'
 ]
 
 function setTheme(theme: MemberCardTheme) {

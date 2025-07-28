@@ -5,6 +5,7 @@ import { useToastStore } from '@/stores/toast'
 import Deck from '@/components/deck.vue'
 import { useRouter } from 'vue-router'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
+import MemberApplication from '@/components/modals/member-application.vue'
 import { useModal } from '@/composables/use-modal'
 
 const toastStore = useToastStore()
@@ -17,6 +18,8 @@ const decks = ref<Deck[]>([])
 onMounted(async () => {
   await refetchDecks()
   loading.value = false
+
+  modal.open(MemberApplication, { backdrop: true })
 })
 
 const due_decks = computed(() => {

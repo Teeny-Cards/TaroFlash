@@ -12,23 +12,13 @@ export type MemberCardTheme =
   | 'pink-500'
   | 'red-500'
   | 'orange-500'
-  | 'brown-700'
-  | 'grey-700'
 
 const { createdAt } = defineProps<{
   createdAt: string
   displayName: string
   cardComment: string
   cardTitle: string
-  theme:
-    | 'green-400'
-    | 'blue-500'
-    | 'purple-500'
-    | 'pink-500'
-    | 'red-500'
-    | 'orange-500'
-    | 'brown-700'
-    | 'grey-700'
+  theme: MemberCardTheme
 }>()
 
 const created_on = computed(() => {
