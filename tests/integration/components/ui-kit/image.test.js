@@ -2,6 +2,14 @@ import { shallowMount, flushPromises } from '@vue/test-utils'
 import { expect, it, vi } from 'vitest'
 import Image from '@/components/ui-kit/image.vue'
 
+const { mockedConsoleWarn } = vi.hoisted(() => {
+  vi.resetModules()
+
+  return {
+    mockedConsoleWarn: vi.fn()
+  }
+})
+
 vi.mock('@/assets/images/binder-clip.svg', () => ({
   default: '/mocked/binder-clip.svg'
 }))
@@ -9,6 +17,12 @@ vi.mock('@/assets/images/binder-clip.svg', () => ({
 vi.mock('@/assets/images/highlighter.svg', () => ({
   default: '/mocked/highlighter.svg'
 }))
+
+vi.mock('@/composables/use-logger', () => {
+  return {
+    useLogger: vi.fn(() => ({ warn: mockedConsoleWarn }))
+  }
+})
 
 it('renders properly with required src prop', () => {
   const wrapper = shallowMount(Image, {
@@ -48,17 +62,15 @@ it('renders img element with correct attributes after image loads', async () => 
   expect(img.classes()).toContain('w-full')
 })
 
-it('handles error when image is not found', async () => {
-  const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-
-  const wrapper = shallowMount(Image, {
+it('warns when image is not found', async () => {
+  const testSrc = 'non-existent-image'
+  shallowMount(Image, {
     props: {
-      src: 'non-existent-image'
+      src: testSrc
     }
   })
 
-  expect(wrapper.exists()).toBe(true)
-  expect(wrapper.find('img').exists()).toBe(false)
+  await flushPromises()
 
-  consoleSpy.mockRestore()
+  expect(mockedConsoleWarn).toHaveBeenCalledWith(`No image found for: ${testSrc}`)
 })
