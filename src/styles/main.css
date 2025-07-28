@@ -39,7 +39,9 @@
   --radius-1_5: --spacing(1.5); /* 6px */
   --radius-2: --spacing(2); /* 8px */
   --radius-3: --spacing(3); /* 12px */
+  --radius-3_5: --spacing(3.5); /* 14px */
   --radius-4: --spacing(4); /* 16px */
+  --radius-4_5: --spacing(4.5); /* 18px */
   --radius-5: --spacing(5); /* 20px */
   --radius-5_5: --spacing(5.5); /* 22px */
   --radius-6: --spacing(6); /* 24px */
@@ -78,12 +80,12 @@
   /* Backgrounds */
   --stripe-blue-500-bg: url('../assets/backgrounds/stripe-blue.svg');
   --curve-green-400-bg: url('../assets/backgrounds/curve-green.svg');
-  --bank-note-green-400-bg: url('../assets/backgrounds/bank-note-green.svg');
 
   /* New Background Paradigms */
   --diagonal-stripes: url('../assets/backgrounds/diagonal-stripes.svg');
   --saw: url('../assets/backgrounds/saw.svg');
   --wave: url('../assets/backgrounds/wave.svg');
+  --bank-note: url('../assets/backgrounds/bank-note.svg');
 
   /* Transitions */
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
