@@ -1,5 +1,7 @@
 import { supabase } from '@/supabase-client'
-import Logger from '@/utils/logger'
+import { useLogger } from '@/composables/use-logger'
+
+const logger = useLogger()
 
 export async function updateCards(cards: Card[]): Promise<Card[]> {
   const sanitized = cards.map(({ review, ...rest }) => rest)
@@ -7,7 +9,7 @@ export async function updateCards(cards: Card[]): Promise<Card[]> {
   const { data, error } = await supabase.from('cards').upsert(sanitized).select()
 
   if (error) {
-    Logger.error(error.message)
+    logger.error(error.message)
     throw new Error(error.message)
   }
 
@@ -22,7 +24,7 @@ export async function createCard(card: Card): Promise<Card> {
     .single()
 
   if (error) {
-    Logger.error(error.message)
+    logger.error(error.message)
     throw new Error(error.message)
   }
 
@@ -36,7 +38,7 @@ export async function updateReviewByCardId(id: number, review: Review): Promise<
     .single()
 
   if (error) {
-    Logger.error(error.message)
+    logger.error(error.message)
     throw new Error(error.message)
   }
 
@@ -47,7 +49,7 @@ export async function deleteCardsByDeckId(deck_id: number): Promise<void> {
   const { error } = await supabase.from('cards').delete().eq('deck_id', deck_id)
 
   if (error) {
-    Logger.error(error.message)
+    logger.error(error.message)
     throw new Error(error.message)
   }
 }
@@ -56,7 +58,7 @@ export async function deleteCardsById(ids: number[]): Promise<void> {
   const { error } = await supabase.from('cards').delete().in('id', ids)
 
   if (error) {
-    Logger.error(error.message)
+    logger.error(error.message)
     throw new Error(error.message)
   }
 }

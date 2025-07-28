@@ -1,48 +1,21 @@
-<template>
-  <button
-    data-testid="ui-kit-button"
-    class="ui-kit-btn"
-    :class="{
-      [sizeClass[props.size]]: true,
-      [variantClass[props.variant]]: true,
-      'btn-inverted': props.inverted,
-      'btn-icon-only': props.iconOnly,
-      'btn-fancy-hover': props.fancyHover
-    }"
-    @click.stop
-  >
-    <div v-if="iconLeft" class="btn-icon" uikit-button__icon-left>
-      <ui-kit:icon v-if="iconLeft" :src="iconLeft" :size="iconSize[props.size]" />
-    </div>
-    <slot></slot>
-    <div v-if="iconRight" class="btn-icon" uikit-button__icon-right>
-      <ui-kit:icon v-if="iconRight" :src="iconRight" :size="iconSize[props.size]" />
-    </div>
-  </button>
-</template>
-
 <script setup lang="ts">
-const props = defineProps({
-  variant: {
-    type: String,
-    validator(value: string) {
-      return ['interaction', 'muted', 'danger'].includes(value)
-    },
-    default: 'interaction'
-  },
-  size: {
-    type: String,
-    validator(value: string) {
-      return ['large', 'base', 'small', 'xs'].includes(value)
-    },
-    default: 'base'
-  },
-  inverted: Boolean,
-  iconOnly: Boolean,
-  iconRight: String,
-  iconLeft: String,
-  fancyHover: Boolean
-})
+const {
+  variant = 'interaction',
+  size = 'base',
+  inverted = false,
+  iconOnly = false,
+  iconRight,
+  iconLeft,
+  fancyHover = false
+} = defineProps<{
+  variant?: 'interaction' | 'muted' | 'danger'
+  size?: 'large' | 'base' | 'small' | 'xs'
+  inverted?: boolean
+  iconOnly?: boolean
+  iconRight?: string
+  iconLeft?: string
+  fancyHover?: boolean
+}>()
 
 const variantClass: { [key: string]: string } = {
   interaction: 'btn-interaction',
@@ -64,3 +37,26 @@ const iconSize: { [key: string]: string } = {
   xs: 'xs'
 }
 </script>
+
+<template>
+  <button
+    data-testid="ui-kit-button"
+    class="ui-kit-btn"
+    :class="{
+      [sizeClass[size]]: true,
+      [variantClass[variant]]: true,
+      'btn-inverted': inverted,
+      'btn-icon-only': iconOnly,
+      'btn-fancy-hover': fancyHover
+    }"
+    @click.stop
+  >
+    <div v-if="iconLeft" class="btn-icon" uikit-button__icon-left>
+      <ui-kit:icon v-if="iconLeft" :src="iconLeft" :size="iconSize[size]" />
+    </div>
+    <slot></slot>
+    <div v-if="iconRight" class="btn-icon" uikit-button__icon-right>
+      <ui-kit:icon v-if="iconRight" :src="iconRight" :size="iconSize[size]" />
+    </div>
+  </button>
+</template>

@@ -1,7 +1,9 @@
 import { supabase } from '@/supabase-client'
 import { useMemberStore } from '@/stores/member'
-import Logger from '@/utils/logger'
+import { useLogger } from '@/composables/use-logger'
 import { DateTime } from 'luxon'
+
+const logger = useLogger()
 
 export async function fetchMemberDecks(): Promise<Deck[]> {
   const member_id = useMemberStore().id
@@ -15,7 +17,7 @@ export async function fetchMemberDecks(): Promise<Deck[]> {
     .order('created_at')
 
   if (error) {
-    Logger.error(error.message)
+    logger.error(error.message)
     throw error
   }
 
@@ -31,7 +33,7 @@ export async function fetchDeck(id: number): Promise<Deck> {
     .single()
 
   if (error) {
-    Logger.error(error.message)
+    logger.error(error.message)
     throw error
   }
 
@@ -42,7 +44,7 @@ export async function upsertDeck(deck: Deck): Promise<void> {
   const { error } = await supabase.from('decks').upsert(deck, { onConflict: 'id' })
 
   if (error) {
-    Logger.error(error.message)
+    logger.error(error.message)
     throw error
   }
 }
@@ -51,7 +53,7 @@ export async function deleteDeck(id: number): Promise<void> {
   const { error } = await supabase.from('decks').delete().eq('id', id)
 
   if (error) {
-    Logger.error(error.message)
+    logger.error(error.message)
     throw error
   }
 }

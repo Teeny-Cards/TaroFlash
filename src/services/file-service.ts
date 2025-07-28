@@ -1,8 +1,10 @@
 import { supabase } from '@/supabase-client'
 import { useMemberStore } from '@/stores/member'
-import Logger from '@/utils/logger'
+import { useLogger } from '@/composables/use-logger'
 
 type Bucket = 'deck-images'
+
+const logger = useLogger()
 
 export async function uploadDeckImage(deck_id: number, file: File): Promise<void> {
   await uploadImage('deck-images', `deck-${deck_id}`, file)
@@ -23,7 +25,7 @@ export async function uploadImage(bucket: string, image_name: string, file: File
   const { error } = await supabase.storage.from(bucket).upload(file_path, file, { upsert: true })
 
   if (error) {
-    Logger.error(`Error uploading file: ${error.message}`)
+    logger.error(`Error uploading file: ${error.message}`)
     throw new Error(error.message)
   }
 }
@@ -35,7 +37,7 @@ export async function deleteImage(bucket: string, file_name: string): Promise<vo
   const { error } = await supabase.storage.from(bucket).remove([full_path])
 
   if (error) {
-    Logger.error(`Error deleting file: ${error.message}`)
+    logger.error(`Error deleting file: ${error.message}`)
     throw new Error(error.message)
   }
 }
