@@ -13,3 +13,12 @@ export async function fetchMemberById(id: string): Promise<Member | null> {
 
   return data
 }
+
+export async function upsertMember(member: Member): Promise<void> {
+  const { error } = await supabase.from('members').upsert(member, { onConflict: 'id' })
+
+  if (error) {
+    logger.error(error.message)
+    throw error
+  }
+}

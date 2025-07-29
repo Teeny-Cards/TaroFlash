@@ -6,6 +6,20 @@
 @import 'custom-variants.css';
 @import 'animations.css';
 
+@source inline("bg-green-400");
+@source inline("bg-blue-500");
+@source inline("bg-purple-500");
+@source inline("bg-pink-500");
+@source inline("bg-red-500");
+@source inline("bg-orange-500");
+
+@source inline("text-green-400");
+@source inline("text-blue-500");
+@source inline("text-purple-500");
+@source inline("text-pink-500");
+@source inline("text-red-500");
+@source inline("text-orange-500");
+
 @theme {
   --*: initial;
   --spacing: 4px;
@@ -45,6 +59,7 @@
   --radius-5: --spacing(5); /* 20px */
   --radius-5_5: --spacing(5.5); /* 22px */
   --radius-6: --spacing(6); /* 24px */
+  --radius-6_5: --spacing(6.5); /* 26px */
   --radius-7: --spacing(7); /* 28px */
   --radius-8: --spacing(8); /* 32px */
   --radius-9: --spacing(9); /* 36px */
@@ -74,6 +89,7 @@
 
   --shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.15);
   --shadow-modal: 8px 8px 42.9px 0px rgba(0, 0, 0, 0.25);
+  --drop-shadow-modal: 8px 8px 42.9px rgba(0, 0, 0, 0.25);
   --shadow-popover: 4px 4px 6px 0px rgba(0, 0, 0, 0.16);
   --shadow-apps: 5px 5px 25px 0px rgba(0, 0, 0, 0.25);
 
@@ -111,34 +127,34 @@
   --font-primary: 'Tilt Neon', sans-serif;
 
   --text-sm: 12px;
-  --text-sm--line-height: calc(1.25 / 0.875);
+  --text-sm--line-height: 133%;
 
   --text-base: 14px;
-  --text-base--line-height: calc(1.5 / 1);
+  --text-base--line-height: 143%;
 
   --text-lg: 16px;
-  --text-lg--line-height: calc(1.75 / 1.125);
+  --text-lg--line-height: 150%;
 
   --text-xl: 18px;
-  --text-xl--line-height: calc(1.75 / 1.25);
+  --text-xl--line-height: 140%;
 
   --text-2xl: 20px;
-  --text-2xl--line-height: calc(2 / 1.5);
+  --text-2xl--line-height: 140%;
 
   --text-3xl: 24px;
-  --text-3xl--line-height: calc(2.25 / 1.875);
+  --text-3xl--line-height: 133%;
 
   --text-4xl: 30px;
-  --text-4xl--line-height: calc(2.5 / 2.25);
+  --text-4xl--line-height: 120%;
 
   --text-5xl: 32px;
-  --text-5xl--line-height: 1;
+  --text-5xl--line-height: 111%;
 
   --text-6xl: 40px;
-  --text-6xl--line-height: 1;
+  --text-6xl--line-height: 100%;
 
   --text-7xl: 48px;
-  --text-7xl--line-height: 1;
+  --text-7xl--line-height: 100%;
 }
 
 @layer base {
