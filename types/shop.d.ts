@@ -10,7 +10,7 @@ declare type ShopItem = {
 declare type Purchase = {
   id?: string
   item_id: string
-  member_id?: number
+  member_id?: string
   quantity: number
 }
 

@@ -43,12 +43,44 @@ beforeEach(async () => {
   useAudio = module.useAudio
 })
 
+describe('useAudio composable', () => {
+  test('sets Howler.autoUnlock to false on initialization', () => {
+    useAudio()
+    expect(mockHowler.autoUnlock).toBe(false)
+  })
+})
+
 describe('preload', () => {
   test('creates Howl instances for all sound sources', () => {
     const { preload } = useAudio()
 
     preload()
     expect(mockHowlConstructor).toHaveBeenCalled()
+  })
+
+  test('creates Howl instances with correct configuration', () => {
+    const { preload } = useAudio()
+
+    preload()
+
+    // Check that each Howl was created with correct src and preload options
+    const expectedSources = [
+      'double-pop-up.wav',
+      'double-pop-down.wav',
+      'click_04.wav',
+      'etc_woodblock_stuck.wav',
+      'digi_powerdown.wav',
+      'trash_crumple_short.wav',
+      'chime_short_chord_up.wav',
+      'etc_camera_shutter.wav'
+    ]
+
+    expectedSources.forEach((source, index) => {
+      expect(mockHowlConstructor).toHaveBeenNthCalledWith(index + 1, {
+        src: [`/src/assets/audio/${source}`],
+        preload: true
+      })
+    })
   })
 
   test('sets isInitialized to true after preloading', () => {
@@ -69,6 +101,19 @@ describe('preload', () => {
     const secondCallCount = mockHowlConstructor.mock.calls.length
 
     expect(secondCallCount).toBe(firstCallCount)
+  })
+
+  test('multiple instances share the same initialization state', () => {
+    const audio1 = useAudio()
+    const audio2 = useAudio()
+
+    expect(audio1.isInitialized.value).toBe(false)
+    expect(audio2.isInitialized.value).toBe(false)
+
+    audio1.preload()
+
+    expect(audio1.isInitialized.value).toBe(true)
+    expect(audio2.isInitialized.value).toBe(true)
   })
 })
 
@@ -96,6 +141,27 @@ describe('play', () => {
     expect(mockHowl.play).toHaveBeenCalled()
   })
 
+  test('works with all valid sound keys', () => {
+    const { play } = useAudio()
+    const validKeys = [
+      'double-pop-up',
+      'double-pop-down',
+      'click_04',
+      'etc_woodblock_stuck',
+      'digi_powerdown',
+      'trash_crumple_short',
+      'chime_short_chord_up',
+      'etc_camera_shutter'
+    ]
+
+    validKeys.forEach((key) => {
+      vi.clearAllMocks()
+      play(key)
+      expect(mockHowl.volume).toHaveBeenCalledWith(1)
+      expect(mockHowl.play).toHaveBeenCalled()
+    })
+  })
+
   test('logs warning when sound key does not exist', () => {
     const { play } = useAudio()
 
@@ -111,6 +177,17 @@ describe('play', () => {
 
     expect(mockHowl.volume).not.toHaveBeenCalled()
     expect(mockHowl.play).not.toHaveBeenCalled()
+  })
+
+  test('works without preloading (should warn)', async () => {
+    // Create fresh instance without preloading
+    vi.resetModules()
+    const { useAudio: freshUseAudio } = await import('@/composables/use-audio')
+    const { play } = freshUseAudio()
+
+    play('double-pop-up')
+
+    expect(mocks.warn).toHaveBeenCalledWith('Sound "double-pop-up" not loaded.')
   })
 })
 
@@ -146,6 +223,16 @@ describe('playRandom', () => {
     expect(mockHowl.play).toHaveBeenCalled()
   })
 
+  test('plays last sound when Math.random returns close to 1', () => {
+    Math.random.mockReturnValue(0.99)
+    const { playRandom } = useAudio()
+
+    playRandom(['double-pop-up', 'click_04', 'digi_powerdown'])
+
+    expect(mockHowl.volume).toHaveBeenCalledWith(1)
+    expect(mockHowl.play).toHaveBeenCalled()
+  })
+
   test('applies volume options correctly', () => {
     Math.random.mockReturnValue(0)
     const { playRandom } = useAudio()
@@ -155,10 +242,43 @@ describe('playRandom', () => {
     expect(mockHowl.volume).toHaveBeenCalledWith(0.3)
   })
 
+  test('handles single sound array', () => {
+    Math.random.mockReturnValue(0.5) // Should still select the only sound
+    const { playRandom } = useAudio()
+
+    playRandom(['double-pop-up'])
+
+    expect(mockHowl.volume).toHaveBeenCalledWith(1)
+    expect(mockHowl.play).toHaveBeenCalled()
+  })
+
   test('handles empty array gracefully', () => {
     const { playRandom } = useAudio()
 
     expect(() => playRandom([])).not.toThrow()
+    // Should not attempt to play anything
+    expect(mockHowl.play).not.toHaveBeenCalled()
+  })
+
+  test('handles array with non-existent sound keys', () => {
+    Math.random.mockReturnValue(0)
+    const { playRandom } = useAudio()
+
+    playRandom(['non-existent-sound'])
+
+    expect(mocks.warn).toHaveBeenCalledWith('Sound "non-existent-sound" not loaded.')
+    expect(mockHowl.play).not.toHaveBeenCalled()
+  })
+
+  test('handles mixed valid and invalid sound keys', () => {
+    Math.random.mockReturnValue(0.5) // Should select second item (valid)
+    const { playRandom } = useAudio()
+
+    playRandom(['non-existent-sound', 'double-pop-up'])
+
+    expect(mockHowl.volume).toHaveBeenCalledWith(1)
+    expect(mockHowl.play).toHaveBeenCalled()
+    expect(mocks.warn).not.toHaveBeenCalled()
   })
 })
 
@@ -196,6 +316,34 @@ describe('isPlaying', () => {
     expect(result).toBe(false)
     expect(mockHowl.playing).not.toHaveBeenCalled()
   })
+
+  test('works with all valid sound keys', () => {
+    const { isPlaying } = useAudio()
+    const validKeys = [
+      'double-pop-up',
+      'double-pop-down',
+      'click_04',
+      'etc_woodblock_stuck',
+      'digi_powerdown',
+      'trash_crumple_short',
+      'chime_short_chord_up',
+      'etc_camera_shutter'
+    ]
+
+    validKeys.forEach((key) => {
+      mockHowl.playing.mockReturnValue(true)
+      const result = isPlaying(key)
+      expect(result).toBe(true)
+    })
+  })
+
+  test('does not log warnings for non-existent sounds', () => {
+    const { isPlaying } = useAudio()
+
+    isPlaying('non-existent-sound')
+
+    expect(mocks.warn).not.toHaveBeenCalled()
+  })
 })
 
 describe('stop', () => {
@@ -219,6 +367,34 @@ describe('stop', () => {
 
     expect(mockHowl.stop).not.toHaveBeenCalled()
   })
+
+  test('works with all valid sound keys', () => {
+    const { stop } = useAudio()
+    const validKeys = [
+      'double-pop-up',
+      'double-pop-down',
+      'click_04',
+      'etc_woodblock_stuck',
+      'digi_powerdown',
+      'trash_crumple_short',
+      'chime_short_chord_up',
+      'etc_camera_shutter'
+    ]
+
+    validKeys.forEach((key) => {
+      vi.clearAllMocks()
+      stop(key)
+      expect(mockHowl.stop).toHaveBeenCalled()
+    })
+  })
+
+  test('does not log warnings for non-existent sounds', () => {
+    const { stop } = useAudio()
+
+    stop('non-existent-sound')
+
+    expect(mocks.warn).not.toHaveBeenCalled()
+  })
 })
 
 describe('muteAll', () => {
@@ -236,5 +412,26 @@ describe('muteAll', () => {
     muteAll(false)
 
     expect(mockHowler.mute).toHaveBeenCalledWith(false)
+  })
+
+  test('works without preloading', () => {
+    const { muteAll } = useAudio()
+
+    muteAll(true)
+
+    expect(mockHowler.mute).toHaveBeenCalledWith(true)
+  })
+
+  test('can be called multiple times', () => {
+    const { muteAll } = useAudio()
+
+    muteAll(true)
+    muteAll(false)
+    muteAll(true)
+
+    expect(mockHowler.mute).toHaveBeenCalledTimes(3)
+    expect(mockHowler.mute).toHaveBeenNthCalledWith(1, true)
+    expect(mockHowler.mute).toHaveBeenNthCalledWith(2, false)
+    expect(mockHowler.mute).toHaveBeenNthCalledWith(3, true)
   })
 })

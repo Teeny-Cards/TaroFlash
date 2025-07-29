@@ -1,12 +1,12 @@
 import { supabase } from '@/supabase-client'
-import { useMemberStore } from '@/stores/member'
+import { useSessionStore } from '@/stores/session'
 import { useLogger } from '@/composables/use-logger'
 import { DateTime } from 'luxon'
 
 const logger = useLogger()
 
 export async function fetchMemberDecks(): Promise<Deck[]> {
-  const member_id = useMemberStore().id
+  const member_id = useSessionStore().user_id
   const end_of_day = DateTime.now().endOf('day').toISO()
 
   const { data, error } = await supabase

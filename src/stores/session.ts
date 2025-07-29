@@ -40,6 +40,10 @@ export const useSessionStore = defineStore('session', {
 
     isLoading({ loadingCount }): boolean {
       return loadingCount > 0
+    },
+
+    user_id({ user }): string | undefined {
+      return user?.id
     }
   }
 })

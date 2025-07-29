@@ -27,7 +27,6 @@
             inverted
             class="relative p-1.5 ring-8 ring-blue-500"
           >
-            <AppMenu />
           </ui-kit:button>
         </div>
       </div>
@@ -42,7 +41,6 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import MemberCard from './modals/member-card.vue'
-import AppMenu from './app-menu.vue'
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 

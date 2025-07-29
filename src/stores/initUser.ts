@@ -7,21 +7,25 @@ export async function initUser(): Promise<boolean> {
   const memberStore = useMemberStore()
   const logger = useLogger()
 
-  if (session.authenticated && memberStore.id) return true
+  const tryFetchMember = async () => {
+    if (session.user_id && !memberStore.has_member) {
+      await memberStore.fetchMember(session.user_id)
+    }
+  }
+
+  session.startLoading()
 
   try {
-    session.startLoading()
-    await session.restoreSession()
-
-    if (session.authenticated && session.user?.id) {
-      await memberStore.fetchMember(session.user.id)
+    if (!session.authenticated) {
+      await session.restoreSession()
     }
+
+    await tryFetchMember()
+    return session.authenticated
   } catch (e: any) {
     logger.error(`Error initializing user: ${e.message}`)
     return false
   } finally {
     session.stopLoading()
   }
-
-  return session.authenticated
 }
