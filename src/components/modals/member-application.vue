@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import MemberCard from '@/components/modals/member-card.vue'
 import { useI18n } from 'vue-i18n'
-import { reactive, ref } from 'vue'
+import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { DateTime } from 'luxon'
 import { useAudio } from '@/composables/use-audio'
 import { upsertMember } from '@/services/member-service'
 import { useSessionStore } from '@/stores/session'
+import { inject } from 'vue'
+import type { ModalContext } from '@/components/ui-kit/modal.vue'
 
 const { close } = defineProps<{
   close: (response?: boolean) => void
@@ -14,6 +16,7 @@ const { close } = defineProps<{
 const { t } = useI18n()
 const audio = useAudio()
 const sessionStore = useSessionStore()
+const { registerBackdropCloseListener } = inject('modal-context') as ModalContext
 
 const created_at = DateTime.now().toISO()
 const created_at_formatted = DateTime.fromISO(created_at).toFormat('LLL d, yyyy')
@@ -34,6 +37,19 @@ const themes: MemberTheme[] = [
   'red-500',
   'orange-500'
 ]
+
+let cleanupBackdropListener: () => void
+onMounted(() => {
+  audio.play('double-pop-up')
+
+  cleanupBackdropListener = registerBackdropCloseListener(() => {
+    audio.play('double-pop-down')
+  })
+})
+
+onBeforeUnmount(() => {
+  cleanupBackdropListener()
+})
 
 function setTheme(theme: MemberTheme) {
   if (theme === selected_theme.value) {
