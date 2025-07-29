@@ -3,10 +3,11 @@ import { Howl, Howler } from 'howler'
 import { ref } from 'vue'
 import { useLogger } from '@/composables/use-logger'
 
-const loadedSounds = new Map<string, Howl>()
-const isInitialized = ref(false)
 const ASSET_PATH = '/src/assets/audio/'
 const logger = useLogger()
+
+const loadedSounds = new Map<string, Howl>()
+const isInitialized = ref(false)
 
 type PlayOptions = {
   volume?: number
