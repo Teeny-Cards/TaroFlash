@@ -23,6 +23,8 @@ const alert = useAlert()
 const image_url = ref<string | undefined>()
 const deck = ref<Deck>()
 const editing = ref(false)
+const active_tab = ref(0)
+
 let cardEdits: ReturnType<typeof useEditableCards> | undefined
 
 const tabs = [
@@ -31,7 +33,8 @@ const tabs = [
     icon: 'list'
   },
   {
-    label: t('deck-view.tabs.card-view')
+    label: t('deck-view.tabs.card-view'),
+    icon: 'teeny-cards'
   }
 ]
 
@@ -131,8 +134,8 @@ function onAddCard() {
     />
 
     <div class="relative flex h-full w-full flex-col">
-      <ui-kit:tabs :tabs="tabs" class="pb-4">
-        <template #actions>
+      <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" class="pb-4">
+        <!-- <template #actions>
           <ui-kit:button v-if="!editing" icon-left="edit" @click="editing = true">
             {{ t('common.edit') }}
           </ui-kit:button>
@@ -146,7 +149,7 @@ function onAddCard() {
               {{ t('common.save') }}
             </ui-kit:button>
           </div>
-        </template>
+        </template> -->
       </ui-kit:tabs>
 
       <ui-kit:divider />
