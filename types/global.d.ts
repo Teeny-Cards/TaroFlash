@@ -7,6 +7,7 @@ declare module 'howler' {
       loop?: boolean
       volume?: number
       onload?: () => void
+      onunlock?: () => void
     })
     play(): void
     pause(): void

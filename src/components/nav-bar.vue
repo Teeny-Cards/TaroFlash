@@ -1,7 +1,10 @@
 <template>
   <nav class="font-primary sticky top-0 z-10 flex h-17 w-full justify-center bg-blue-500">
     <div class="flex w-full max-w-375 items-center justify-between px-4 sm:px-16">
-      <RouterLink to="/dashboard" class="text-6xl text-white">TeenyCards</RouterLink>
+      <RouterLink to="/dashboard" class="flex items-center text-6xl text-white">
+        <ui-kit:image src="taro-logo_3" class="max-w-12" />
+        <div>TaroCards</div>
+      </RouterLink>
       <div class="flex items-end gap-6">
         <div class="mt-6 flex gap-2.25">
           <div
@@ -32,25 +35,18 @@
       </div>
     </div>
   </nav>
-
-  <!-- <ui-kit:modal :open="member_card_open" backdrop @closed="member_card_open = false">
-    <MemberCard />
-  </ui-kit:modal> -->
 </template>
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import MemberCard from './modals/member-card.vue'
-import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
-defineProps({
+defineProps<{
   display_name: String
-})
+}>()
 
 const router = useRouter()
 const route = useRoute()
-const member_card_open = ref(false)
 
 function isActive(routeName: string) {
   return route.name === routeName
