@@ -1,49 +1,50 @@
 <script lang="ts" setup>
+import { useAudio } from '@/composables/use-audio'
+
 type Tab = {
   label: string
   icon?: string
 }
 
-defineProps<{
-  tabs: Tab[]
+defineProps<{ tabs: Tab[] }>()
+const emit = defineEmits<{
+  (e: 'update:activeTab', index: number): void
 }>()
+
+const active_tab = defineModel<number>('activeTab')
+const audio = useAudio()
+
+function onTabClick(index: number) {
+  if (active_tab.value === index) {
+    audio.play('digi_powerdown')
+    return
+  }
+
+  audio.play('etc_camera_shutter')
+  emit('update:activeTab', index)
+}
+
+function onTabHover(active: boolean) {
+  if (!active) audio.play('click_04')
+}
 </script>
 
 <template>
-  <div data-testid="ui-kit-tabs" class="flex w-full items-center justify-between gap-2.5">
-    <div data-testid="ui-kit-tabs__tabs" class="flex items-center gap-1.5">
-      <div
-        v-for="tab in tabs"
-        data-testid="ui-kit-tabs__tab"
-        class="rounded-4 flex cursor-pointer items-center gap-2.5 px-3 py-1.5 text-xl text-white"
-      >
-        <slot :tab="tab">
-          <ui-kit:icon v-if="tab.icon" :src="tab.icon" />
-          <span>{{ tab.label }}</span>
-        </slot>
-      </div>
-    </div>
+  <div data-testid="ui-kit-tabs__tabs" class="ui-kit-tabs">
+    <div
+      v-for="(tab, index) in tabs"
+      data-testid="ui-kit-tabs__tab"
+      class="ui-kit-tabs__tab group"
+      :class="{ 'ui-kit-tabs__tab--active': active_tab === index }"
+      @click="onTabClick(index)"
+      @mouseenter="onTabHover(active_tab === index)"
+    >
+      <ui-kit:icon v-if="tab.icon" :src="tab.icon" class="ui-kit-tabs__tab-icon" />
+      <span class="ui-kit-tabs__tab-label">{{ tab.label }}</span>
 
-    <div data-testid="ui-kit-tabs__actions">
-      <slot name="actions"></slot>
+      <span v-if="active_tab !== index" class="ui-kit-tabs__tab-tooltip">
+        {{ tab.label }}
+      </span>
     </div>
   </div>
 </template>
-
-<style>
-[data-testid='ui-kit-tabs__tab'] {
-  background-color: var(--color-pink-400);
-}
-[data-testid='ui-kit-tabs__tab']:nth-child(2) {
-  background-color: var(--color-purple-400);
-}
-[data-testid='ui-kit-tabs__tab']:nth-child(3) {
-  background-color: var(--color-orange-400);
-}
-[data-testid='ui-kit-tabs__tab']:nth-child(4) {
-  background-color: var(--color-green-400);
-}
-[data-testid='ui-kit-tabs__tab']:nth-child(5) {
-  background-color: var(--color-blue-400);
-}
-</style>

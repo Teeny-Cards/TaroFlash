@@ -1,3 +1,14 @@
+<script setup lang="ts">
+const { textAlign = 'left', size = 'base' } = defineProps<{
+  label?: string
+  placeholder?: string
+  textAlign?: 'left' | 'center' | 'right'
+  size?: 'sm' | 'base' | 'lg'
+}>()
+
+const value = defineModel<string>('value')
+</script>
+
 <template>
   <label
     data-testid="ui-kit-input-container"
@@ -10,14 +21,3 @@
     </div>
   </label>
 </template>
-
-<script setup lang="ts">
-const { textAlign = 'left', size = 'base' } = defineProps<{
-  label?: string
-  placeholder?: string
-  textAlign?: 'left' | 'center' | 'right'
-  size?: 'sm' | 'base' | 'lg'
-}>()
-
-const value = defineModel<string>('value')
-</script>
