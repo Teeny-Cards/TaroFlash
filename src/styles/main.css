@@ -1,10 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap');
 
 @import 'tailwindcss';
-@import 'components';
-@import 'custom-styles.css';
-@import 'custom-variants.css';
-@import 'animations.css';
+@import '@/styles/custom-styles.css';
+@import '@/styles/custom-variants.css';
+@import '@/styles/animations.css';
 
 @source inline("bg-green-400");
 @source inline("bg-blue-500");
