@@ -42,11 +42,10 @@
   }
 
   .ui-kit-tabs__tab-tooltip {
-    @apply border-brown-300 border;
     @apply absolute -top-6;
     @apply rounded-full p-2;
     @apply text-brown-700 text-sm;
     @apply hidden group-hover:block;
-    @apply shadow-button bg-brown-100 whitespace-nowrap;
+    @apply shadow-button bg-white whitespace-nowrap;
   }
 }

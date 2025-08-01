@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useAudio } from '@/composables/use-audio'
+
 const {
   variant = 'interaction',
   size = 'base',
@@ -16,6 +18,8 @@ const {
   iconLeft?: string
   fancyHover?: boolean
 }>()
+
+const audio = useAudio()
 
 const variantClass: { [key: string]: string } = {
   interaction: 'btn-interaction',
@@ -50,6 +54,7 @@ const iconSize: { [key: string]: string } = {
       'btn-fancy-hover': fancyHover
     }"
     @click.stop
+    @mouseenter="audio.play('click_07')"
   >
     <div v-if="iconLeft" class="btn-icon" uikit-button__icon-left>
       <ui-kit:icon v-if="iconLeft" :src="iconLeft" :size="iconSize[size]" />

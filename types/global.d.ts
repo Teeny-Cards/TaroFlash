@@ -6,9 +6,8 @@ declare module 'howler' {
       autoplay?: boolean
       loop?: boolean
       volume?: number
-      onload?: () => void
-      onunlock?: () => void
     })
+
     play(): void
     pause(): void
     stop(): void
@@ -16,6 +15,8 @@ declare module 'howler' {
     duration(): number
     playing(): boolean
     volume(volume: number): void
+    on(event: string, callback: () => void): void
+    once(event: string, callback: () => void): void
   }
 
   export class Howler {

@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n'
+import { useAudio } from '@/composables/use-audio'
 
 const { t } = useI18n()
+const audio = useAudio()
 
 export type NavigationData = {
   selection_start?: number
@@ -37,11 +39,10 @@ const inputMap = {
 } as const
 
 const textareaClass = computed(() => ({
-  'text-grey-700 resize-none transition-all duration-100': true,
-  'h-5.25': !editing,
-  'rounded-5 bg-white p-6 focus:outline-none': editing,
-  'h-85.5 ring-2 ring-blue-500': focused && editing,
-  'h-27.75': !focused && editing
+  'text-grey-700 resize-none transition-all duration-100 group-hover:bg-white py-2 px-3 rounded-4 focus:outline-none':
+    true,
+  'h-14.5 ring-1 ring-brown-100': !editing,
+  'rounded-5 bg-white p-6 h-46 ring-2 ring-blue-500': editing
 }))
 
 const actions = [
@@ -112,19 +113,25 @@ watchEffect(() => {
 <template>
   <div
     data-testid="card-list__item"
-    class="text-grey-700 grid w-full grid-cols-[auto_1fr_1fr_auto] items-center gap-6 py-3"
-    :class="{ 'items-start': editing }"
+    class="text-grey-700 group relative grid w-full grid-cols-[auto_1fr_1fr_auto] items-center gap-6 py-3"
+    @mouseenter="audio.play('click_04')"
+    @focusout="emit('focusout')"
   >
-    <card size="2xs" />
+    <div
+      class="rounded-6 bg-brown-300 absolute top-1 -right-3 bottom-1 -left-3 -z-1 hidden group-hover:block"
+    ></div>
+
+    <div class="flex h-full flex-col items-start">
+      <card size="2xs" />
+    </div>
+
     <textarea
       data-testid="card-list__item-front-input"
       ref="front-input"
       :placeholder="t('card.placeholder-front')"
       :class="textareaClass"
-      :disabled="!editing"
       :value="card.front_text"
       @focusin="onFocus"
-      @focusout="emit('focusout')"
       @input="onInput($event, 'front_text')"
     />
 
@@ -133,17 +140,14 @@ watchEffect(() => {
       ref="back-input"
       :placeholder="t('card.placeholder-back')"
       :class="textareaClass"
-      :disabled="!editing"
       :value="card.back_text"
       @focusin="onFocus"
-      @focusout="emit('focusout')"
       @input="onInput($event, 'back_text')"
     />
 
-    <ui-kit:button-menu :actions="actions" v-if="!editing">
+    <ui-kit:button-menu :actions="actions">
       <template #trigger="{ toggleDropdown }">
         <ui-kit:button
-          v-if="!editing"
           data-testid="card-list__item-more-button"
           icon-only
           variant="muted"
