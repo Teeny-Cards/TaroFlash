@@ -5,12 +5,14 @@ import { onBeforeRouteLeave } from 'vue-router'
 import { fetchDeck } from '@/services/deck-service'
 import StudyModal from '@/components/modals/study-modal/index.vue'
 import CardList from '@/components/views/deck-view/card-list/index.vue'
+import CardGrid from '@/components/views/deck-view/card-grid.vue'
 import { useI18n } from 'vue-i18n'
 import { useEditableCards } from '@/composables/use-editable-cards'
 import { updateCards, deleteCardsById } from '@/services/card-service'
 import { useAlert } from '@/composables/use-alert'
 import { useModal } from '@/composables/use-modal'
 import { useDeck } from '@/composables/use-deck'
+import { useAudio } from '@/composables/use-audio'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -19,10 +21,10 @@ const { id: deck_id } = defineProps<{
 const { t } = useI18n()
 const modal = useModal()
 const alert = useAlert()
+const audio = useAudio()
 
 const image_url = ref<string | undefined>()
 const deck = ref<Deck>()
-const editing = ref(false)
 const active_tab = ref(0)
 
 let cardEdits: ReturnType<typeof useEditableCards> | undefined
@@ -75,7 +77,6 @@ async function saveEdits() {
     try {
       await updateCards(changed)
       await refetchDeck()
-      editing.value = false
     } catch (e: any) {
       // TODO
     }
@@ -94,7 +95,6 @@ async function refetchDeck() {
 
 function discardEdits() {
   cardEdits?.resetChanges()
-  editing.value = false
 }
 
 function selectCard(id: number) {
@@ -112,13 +112,13 @@ async function deleteCards(ids: number[]) {
   })
 
   if (await confirmed) {
+    audio.play('trash_crumple_short')
     await deleteCardsById(ids)
     await refetchDeck()
   }
 }
 
 function onAddCard() {
-  editing.value = true
   cardEdits?.addCard()
 }
 </script>
@@ -134,34 +134,31 @@ function onAddCard() {
     />
 
     <div class="relative flex h-full w-full flex-col">
-      <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" class="pb-4">
-        <!-- <template #actions>
-          <ui-kit:button v-if="!editing" icon-left="edit" @click="editing = true">
-            {{ t('common.edit') }}
+      <div class="flex w-full justify-between">
+        <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" class="pb-4" />
+
+        <div v-if="cardEdits?.isDirty.value" class="flex gap-1.5">
+          <ui-kit:button icon-left="close" variant="danger" @click="discardEdits">
+            {{ t('common.cancel') }}
           </ui-kit:button>
 
-          <div v-else class="flex gap-1.5">
-            <ui-kit:button icon-left="close" variant="danger" @click="discardEdits">
-              {{ t('common.cancel') }}
-            </ui-kit:button>
-
-            <ui-kit:button icon-left="check" @click="saveEdits()" :disabled="!cardEdits?.isDirty">
-              {{ t('common.save') }}
-            </ui-kit:button>
-          </div>
-        </template> -->
-      </ui-kit:tabs>
+          <ui-kit:button icon-left="check" @click="saveEdits()" :disabled="!cardEdits?.isDirty">
+            {{ t('common.save') }}
+          </ui-kit:button>
+        </div>
+      </div>
 
       <ui-kit:divider />
 
       <card-list
-        v-if="deck"
+        v-if="deck && active_tab === 0"
         :cards="cardEdits?.editedCards ?? []"
-        :editing="editing"
         @updated="cardEdits?.updateCard"
         @add-card="onAddCard"
         @cards-deleted="deleteCards"
       />
+
+      <card-grid v-if="deck && active_tab === 1" :cards="cardEdits?.editedCards ?? []" />
     </div>
   </section>
 </template>

@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-const { cards, editing } = defineProps<{ cards: Card[]; editing: boolean }>()
+const { cards } = defineProps<{ cards: Card[] }>()
 const emit = defineEmits<{
   (e: 'updated', id: number, prop: 'front_text' | 'back_text', value: string): void
   (e: 'add-card'): void
@@ -14,8 +14,9 @@ const emit = defineEmits<{
 }>()
 
 const selected_cards = ref<number[]>([])
-const current_card_index = ref<number>(0)
+const current_card_index = ref<number>(-1)
 const current_column = ref<'front' | 'back'>('front')
+
 let selection_start = 0
 let navigating = false
 
@@ -75,7 +76,7 @@ function onDeleteCard(id: number) {
     <template v-for="(card, index) in cards" :key="card.id">
       <list-item
         :card="card"
-        :editing="editing"
+        :editing="current_card_index === index"
         :selection-start="selection_start"
         :selected-column="current_column"
         :focused="current_card_index === index"
@@ -89,13 +90,13 @@ function onDeleteCard(id: number) {
       <ui-kit:divider v-if="index < cards.length - 1" dashed />
     </template>
 
-    <ui-kit:button
+    <!-- <ui-kit:button
       v-if="editing"
       data-testid="card-list__add-card-button"
       icon-only
       icon-left="add"
       class="absolute top-3 -right-8"
       @click="emit('add-card')"
-    />
+    /> -->
   </div>
 </template>

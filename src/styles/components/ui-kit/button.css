@@ -2,12 +2,12 @@
   /* Base button styles */
   .ui-kit-btn {
     --btn-main-color: var(--color-blue-500);
-    --btn-tertiary-color: var(--color-white);
+    --btn-secondary-color: var(--color-white);
 
     @apply h-max w-max;
 
     background-color: var(--btn-main-color);
-    color: var(--btn-tertiary-color);
+    color: var(--btn-secondary-color);
     font-family: var(--font-primary);
     font-size: var(--btn-font-size);
     border-radius: var(--btn-border-radius);
@@ -21,9 +21,14 @@
     cursor: pointer;
   }
 
+  .ui-kit-btn:hover {
+    @apply ring-2 ring-(--btn-main-color);
+    @apply scale-105;
+  }
+
   .ui-kit-btn .btn-icon {
     color: var(--btn-main-color);
-    background-color: var(--btn-tertiary-color);
+    background-color: var(--btn-secondary-color);
 
     border-radius: var(--radius-full);
     display: flex;
@@ -35,29 +40,29 @@
   /* Button variants */
   .ui-kit-btn.btn-interaction {
     --btn-main-color: var(--color-blue-500);
-    --btn-tertiary-color: var(--color-white);
+    --btn-secondary-color: var(--color-white);
   }
   .ui-kit-btn.btn-muted {
     --btn-main-color: var(--color-grey-500);
-    --btn-tertiary-color: var(--color-white);
+    --btn-secondary-color: var(--color-white);
   }
   .ui-kit-btn.btn-danger {
     --btn-main-color: var(--color-red-500);
-    --btn-tertiary-color: var(--color-white);
+    --btn-secondary-color: var(--color-white);
   }
 
   /* Inverted styles */
   .ui-kit-btn.btn-inverted.btn-interaction {
     --btn-main-color: var(--color-white);
-    --btn-tertiary-color: var(--color-blue-500);
+    --btn-secondary-color: var(--color-blue-500);
   }
   .ui-kit-btn.btn-inverted.btn-muted {
     --btn-main-color: var(--color-white);
-    --btn-tertiary-color: var(--color-grey-500);
+    --btn-secondary-color: var(--color-grey-500);
   }
   .ui-kit-btn.btn-inverted.btn-danger {
     --btn-main-color: var(--color-white);
-    --btn-tertiary-color: var(--color-red-500);
+    --btn-secondary-color: var(--color-red-500);
   }
 
   /* Button sizes */
@@ -91,11 +96,11 @@
   .ui-kit-btn.btn-inverted.btn-icon-only {
     --btn-padding: --spacing(2);
     --btn-border-radius: var(--radius-4);
-    --btn-tertiary-color: var(--color-white);
+    --btn-secondary-color: var(--color-white);
   }
   .ui-kit-btn.btn-icon-only .btn-icon {
     background-color: transparent;
-    color: var(--btn-tertiary-color);
+    color: var(--btn-secondary-color);
   }
 
   .ui-kit-btn.btn-icon-only.btn-small {
@@ -103,16 +108,16 @@
   }
 
   .ui-kit-btn.btn-icon-only.btn-inverted.btn-interaction {
-    --btn-tertiary-color: var(--color-blue-500);
+    --btn-secondary-color: var(--color-blue-500);
   }
   .ui-kit-btn.btn-icon-only.btn-inverted.btn-muted {
-    --btn-tertiary-color: var(--color-grey-500);
+    --btn-secondary-color: var(--color-grey-500);
   }
   .ui-kit-btn.btn-icon-only.btn-inverted.btn-danger {
-    --btn-tertiary-color: var(--color-red-500);
+    --btn-secondary-color: var(--color-red-500);
   }
 
-  .btn-fancy-hover {
+  /* .btn-fancy-hover {
     position: relative;
   }
   .btn-fancy-hover::before {
@@ -131,6 +136,6 @@
     opacity: 1;
   }
   .btn-fancy-hover:hover {
-    --btn-tertiary-color: var(--color-white);
-  }
+    --btn-secondary-color: var(--color-white);
+  } */
 }

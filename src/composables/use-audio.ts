@@ -7,13 +7,14 @@ const logger = useLogger()
 
 const loadedSounds = new Map<string, Howl>()
 const isInitialized = ref(false)
+const isUnlocked = ref(false)
 
 type PlayOptions = {
   volume?: number
 }
 
 export function useAudio() {
-  Howler.autoUnlock = false
+  Howler.volume(0.5)
 
   const preload = () => {
     if (isInitialized.value) return
@@ -23,6 +24,15 @@ export function useAudio() {
     const sources = Object.entries(audioFiles).map(([path, url]) => {
       const filename = path.split('/').pop()!.split('.')[0]
       return { key: filename, url }
+    })
+
+    const sound = new Howl({
+      src: ['/src/assets/audio/double-pop-up.wav'],
+      volume: 0
+    })
+
+    sound.once('unlock', () => {
+      isUnlocked.value = true
     })
 
     sources.forEach((src) => {
@@ -38,6 +48,8 @@ export function useAudio() {
   }
 
   const play = (key: string, options: PlayOptions = {}) => {
+    if (!isUnlocked.value) return
+
     const sound = loadedSounds.get(key)
 
     if (sound) {

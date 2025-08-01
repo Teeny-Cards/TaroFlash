@@ -25,7 +25,7 @@ function onTabClick(index: number) {
 }
 
 function onTabHover(active: boolean) {
-  if (!active) audio.play('click_04')
+  if (!active) audio.play('click_07')
 }
 </script>
 
