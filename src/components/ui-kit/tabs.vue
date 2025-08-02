@@ -1,18 +1,33 @@
 <script lang="ts" setup>
 import { useAudio } from '@/composables/use-audio'
+import { useStorage } from '@/composables/use-storage'
+import { onMounted } from 'vue'
 
 type Tab = {
   label: string
   icon?: string
 }
 
-defineProps<{ tabs: Tab[] }>()
+const { storageKey } = defineProps<{
+  tabs: Tab[]
+  storageKey?: string
+}>()
 const emit = defineEmits<{
   (e: 'update:activeTab', index: number): void
 }>()
 
 const active_tab = defineModel<number>('activeTab')
 const audio = useAudio()
+const storage = useStorage()
+
+onMounted(() => {
+  if (!storageKey) return
+
+  const storedValue = storage.get(storageKey)
+  if (storedValue) {
+    emit('update:activeTab', Number(storedValue))
+  }
+})
 
 function onTabClick(index: number) {
   if (active_tab.value === index) {
@@ -21,6 +36,11 @@ function onTabClick(index: number) {
   }
 
   audio.play('etc_camera_shutter')
+
+  if (storageKey) {
+    storage.set(storageKey, index.toString())
+  }
+
   emit('update:activeTab', index)
 }
 

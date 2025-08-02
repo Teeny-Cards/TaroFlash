@@ -140,7 +140,12 @@ function onCancelEdit() {
 
     <div class="relative flex h-full w-full flex-col">
       <div class="flex w-full justify-between">
-        <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" class="pb-4" />
+        <ui-kit:tabs
+          :tabs="tabs"
+          v-model:activeTab="active_tab"
+          class="pb-4"
+          storage-key="deck-view-tabs"
+        />
 
         <div v-if="editing" class="flex gap-1.5">
           <ui-kit:button icon-left="close" variant="danger" @click="onCancelEdit">
