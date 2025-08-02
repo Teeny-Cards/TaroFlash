@@ -26,6 +26,7 @@ const audio = useAudio()
 const image_url = ref<string | undefined>()
 const deck = ref<Deck>()
 const active_tab = ref(0)
+const editing = ref(false)
 
 let cardEdits: ReturnType<typeof useEditableCards> | undefined
 
@@ -50,7 +51,7 @@ onMounted(async () => {
 
 onBeforeRouteLeave(async () => {
   if (cardEdits?.isDirty.value) {
-    const { response } = alert.info({
+    const { response } = alert.warn({
       title: t('alert.leave-page'),
       message: t('alert.leave-page.message'),
       confirmLabel: t('common.leave'),
@@ -81,6 +82,8 @@ async function saveEdits() {
       // TODO
     }
   }
+
+  editing.value = false
 }
 
 async function refetchDeck() {
@@ -97,10 +100,6 @@ function discardEdits() {
   cardEdits?.resetChanges()
 }
 
-function selectCard(id: number) {
-  // cardEdits?.selectCard(id)
-}
-
 async function deleteCards(ids: number[]) {
   const count = ids.length
   if (!count) return
@@ -112,14 +111,20 @@ async function deleteCards(ids: number[]) {
   })
 
   if (await confirmed) {
-    audio.play('trash_crumple_short')
     await deleteCardsById(ids)
     await refetchDeck()
+
+    audio.play('trash_crumple_short')
   }
 }
 
 function onAddCard() {
   cardEdits?.addCard()
+}
+
+function onCancelEdit() {
+  discardEdits()
+  editing.value = false
 }
 </script>
 
@@ -137,8 +142,8 @@ function onAddCard() {
       <div class="flex w-full justify-between">
         <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" class="pb-4" />
 
-        <div v-if="cardEdits?.isDirty.value" class="flex gap-1.5">
-          <ui-kit:button icon-left="close" variant="danger" @click="discardEdits">
+        <div v-if="editing" class="flex gap-1.5">
+          <ui-kit:button icon-left="close" variant="danger" @click="onCancelEdit">
             {{ t('common.cancel') }}
           </ui-kit:button>
 
@@ -146,6 +151,10 @@ function onAddCard() {
             {{ t('common.save') }}
           </ui-kit:button>
         </div>
+
+        <ui-kit:button v-else icon-left="edit" @click="editing = true">
+          {{ t('common.edit') }}
+        </ui-kit:button>
       </div>
 
       <ui-kit:divider />
@@ -153,6 +162,7 @@ function onAddCard() {
       <card-list
         v-if="deck && active_tab === 0"
         :cards="cardEdits?.editedCards ?? []"
+        :editing="editing"
         @updated="cardEdits?.updateCard"
         @add-card="onAddCard"
         @cards-deleted="deleteCards"
