@@ -1,64 +1,47 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
 import ListItem from './list-item.vue'
-import { type NavigationData } from './list-item.vue'
 import { useI18n } from 'vue-i18n'
+import { useSelection } from '@/composables/use-selection'
 
-const { t } = useI18n()
+const MAX_INPUT_LENGTH = 400
 
-const { cards } = defineProps<{ cards: Card[] }>()
+const { cards } = defineProps<{ cards: Card[]; editing: boolean }>()
 const emit = defineEmits<{
   (e: 'updated', id: number, prop: 'front_text' | 'back_text', value: string): void
   (e: 'add-card'): void
   (e: 'cards-deleted', ids: number[]): void
 }>()
 
-const selected_cards = ref<number[]>([])
-const current_card_index = ref<number>(-1)
-const current_column = ref<'front' | 'back'>('front')
+const { t } = useI18n()
 
-let selection_start = 0
-let navigating = false
+const { current_card_index, setCurrentCard, setCurrentColumn, selectCard } = useSelection(cards)
 
-function onNavigate(data: NavigationData) {
-  if (navigating) return
+function onDeleteCard(id?: number) {
+  if (!id) return
 
-  navigating = true
+  emit('cards-deleted', [id])
+}
 
-  if (current_card_index.value === undefined || current_card_index.value < 0) return
+function onFocus(e: Event, index: number) {
+  const target = e.target as HTMLTextAreaElement
+  const column = target.dataset['testid'] === 'front-input' ? 'front' : 'back'
 
-  const newIndex =
-    data.direction === 'up' ? current_card_index.value - 1 : current_card_index.value + 1
+  target.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  setCurrentCard(index)
+  setCurrentColumn(column)
+}
 
-  if (newIndex >= 0 && newIndex < (cards.length ?? Infinity)) {
-    selection_start = data.selection_start ?? 0
-    current_card_index.value = newIndex
+function onInput(e: Event, id?: number) {
+  if (!id) return
+
+  const target = e.target as HTMLTextAreaElement
+  const column = target.dataset['testid'] === 'front-input' ? 'front_text' : 'back_text'
+
+  if (target.value.length > MAX_INPUT_LENGTH) {
+    target.value = target.value.slice(0, MAX_INPUT_LENGTH)
   }
 
-  requestAnimationFrame(() => {
-    navigating = false
-  })
-}
-
-function onFocus(direction: 'left' | 'right', index: number) {
-  if (direction === 'left') {
-    current_column.value = 'front'
-  } else {
-    current_column.value = 'back'
-  }
-
-  current_card_index.value = index
-}
-
-function onUpdated(id: number, prop: 'front_text' | 'back_text', value: string) {
-  emit('updated', id, prop, value)
-}
-
-function onDeleteCard(id: number) {
-  selected_cards.value.push(id)
-  emit('cards-deleted', selected_cards.value)
-
-  selected_cards.value = []
+  emit('updated', id, column, target.value)
 }
 </script>
 
@@ -76,27 +59,63 @@ function onDeleteCard(id: number) {
     <template v-for="(card, index) in cards" :key="card.id">
       <list-item
         :card="card"
-        :editing="current_card_index === index"
-        :selection-start="selection_start"
-        :selected-column="current_column"
-        :focused="current_card_index === index"
-        @focusin="(direction) => onFocus(direction, index)"
-        @focusout="current_card_index = -1"
-        @navigated="onNavigate"
-        @updated="onUpdated"
+        :editing="editing"
         @deleted="onDeleteCard"
-      />
+        @focusout="setCurrentCard"
+        @selected="selectCard"
+      >
+        <div
+          class="flex w-full gap-4"
+          :class="{ editing: current_card_index === index, 'edit-mode': editing }"
+        >
+          <textarea
+            data-testid="front-input"
+            :placeholder="t('card.placeholder-front')"
+            :value="card.front_text"
+            :disabled="!editing"
+            @focusin="onFocus($event, index)"
+            @input="onInput($event, card.id)"
+          ></textarea>
+
+          <textarea
+            data-testid="back-input"
+            :placeholder="t('card.placeholder-back')"
+            :value="card.back_text"
+            :disabled="!editing"
+            @focusin="onFocus($event, index)"
+            @input="onInput($event, card.id)"
+          ></textarea>
+        </div>
+      </list-item>
 
       <ui-kit:divider v-if="index < cards.length - 1" dashed />
     </template>
 
-    <!-- <ui-kit:button
-      v-if="editing"
+    <ui-kit:button
       data-testid="card-list__add-card-button"
       icon-only
       icon-left="add"
-      class="absolute top-3 -right-8"
+      class="absolute top-3 -right-12"
       @click="emit('add-card')"
-    /> -->
+    />
   </div>
 </template>
+
+<style>
+@reference '@/styles/main.css';
+
+textarea {
+  @apply text-grey-700 focus:outline-none;
+  @apply transition-all duration-100;
+  @apply rounded-4 h-14.5 w-full resize-none px-3 py-2;
+  @apply overflow-hidden;
+}
+
+.edit-mode textarea {
+  @apply ring-brown-300 bg-white ring-2;
+}
+
+.editing textarea {
+  @apply h-46 ring-blue-500 group-hover:bg-white;
+}
+</style>
