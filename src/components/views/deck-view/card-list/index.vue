@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import ListItem from './list-item.vue'
 import { useI18n } from 'vue-i18n'
-import { useAlert } from '@/composables/use-alert'
-import { useAudio } from '@/composables/use-audio'
 import { type EditableCardValue, type EditableCardKey } from '@/composables/use-card-editor'
 
 const MAX_INPUT_LENGTH = 400
@@ -23,8 +21,6 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const alert = useAlert()
-const audio = useAudio()
 
 function onFocus(e: Event, id?: number) {
   const target = e.target as HTMLTextAreaElement
@@ -45,19 +41,6 @@ function onInput(e: Event, id?: number) {
 
   emit('card-updated', id, column, target.value)
 }
-
-async function onDelete(id?: number) {
-  const { response: confirmed } = alert.warn({
-    title: t('alert.delete-card'),
-    message: t('alert.delete-card.message'),
-    confirmLabel: t('common.delete')
-  })
-
-  if (await confirmed) {
-    emit('card-deleted', id)
-    audio.play('trash_crumple_short')
-  }
-}
 </script>
 
 <template>
@@ -76,8 +59,8 @@ async function onDelete(id?: number) {
         :card="card"
         :mode="mode"
         :selected="selectedCardIds.includes(card.id ?? -1)"
-        @deleted="onDelete"
         @focusout="emit('card-activated')"
+        @deleted="emit('card-deleted', card.id)"
         @selected="emit('card-selected', card.id)"
       >
         <div

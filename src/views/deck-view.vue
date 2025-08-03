@@ -11,6 +11,7 @@ import { useCardEditor } from '@/composables/use-card-editor'
 import { useAlert } from '@/composables/use-alert'
 import { useModal } from '@/composables/use-modal'
 import { useDeckEditor } from '@/composables/use-deck-editor'
+import { useAudio } from '@/composables/use-audio'
 import ContextualButtons from '@/components/views/deck-view/contextual-buttons.vue'
 
 const { id: deck_id } = defineProps<{
@@ -20,6 +21,7 @@ const { id: deck_id } = defineProps<{
 const { t } = useI18n()
 const modal = useModal()
 const alert = useAlert()
+const audio = useAudio()
 
 const image_url = ref<string | undefined>()
 const deck = ref<Deck>()
@@ -31,16 +33,18 @@ const {
   active_card_id,
   selected_card_ids,
   all_cards_selected,
-  isDirty,
+  is_dirty,
   addCard,
-  deleteCard,
+  deleteCards,
   updateCard,
   toggleSelectCard,
+  selectCard,
   setActiveCard,
   resetCards,
   saveCards,
-  toggleSelectAll
-} = useCardEditor(deck.value?.cards ?? [], deck.value?.id)
+  toggleSelectAll,
+  clearSelectedCards
+} = useCardEditor(deck.value?.cards ?? [], Number(deck_id))
 
 const tabs = [
   {
@@ -58,7 +62,7 @@ onMounted(async () => {
 })
 
 onBeforeRouteLeave(async () => {
-  if (isDirty.value) {
+  if (is_dirty.value) {
     const { response } = alert.warn({
       title: t('alert.leave-page'),
       message: t('alert.leave-page.message'),
@@ -87,21 +91,33 @@ async function onSaveClicked() {
 async function refetchDeck() {
   try {
     deck.value = await fetchDeck(Number(deck_id))
-    resetCards(deck.value.cards ?? [], deck.value.id)
     image_url.value = useDeckEditor(deck.value).image_url.value
+    resetCards(deck.value.cards)
   } catch (e: any) {
     // TODO
   }
 }
 
-function onCancelEdit() {
+function onCancel() {
   resetCards()
+  clearSelectedCards()
   mode.value = 'view'
 }
 
 async function onDeleteCard(id?: number) {
-  await deleteCard(id)
-  await refetchDeck()
+  const { response: confirmed } = alert.warn({
+    title: t('alert.delete-card'),
+    message: t('alert.delete-card.message'),
+    confirmLabel: t('common.delete')
+  })
+
+  if (await confirmed) {
+    selectCard(id)
+    await deleteCards()
+    await refetchDeck()
+
+    audio.play('trash_crumple_short')
+  }
 }
 
 function onSelectCard(id?: number) {
@@ -131,12 +147,12 @@ function onSelectCard(id?: number) {
 
         <contextual-buttons
           :mode="mode"
-          :is-dirty="isDirty"
+          :is-dirty="is_dirty"
           :all-selected="all_cards_selected"
           @edit="mode = 'edit'"
-          @cancel-edit="onCancelEdit"
-          @save-edit="onSaveClicked"
-          @select-all="toggleSelectAll"
+          @cancelled="onCancel"
+          @saved="onSaveClicked"
+          @all-selected="toggleSelectAll"
         />
       </div>
 
