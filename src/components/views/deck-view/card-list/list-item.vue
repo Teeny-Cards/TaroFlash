@@ -2,9 +2,10 @@
 import { useAudio } from '@/composables/use-audio'
 import Card from '@/components/card.vue'
 
-const { card, editing } = defineProps<{
+const { card, mode, selected } = defineProps<{
   card: Card
-  editing: boolean
+  mode: 'edit' | 'view' | 'select'
+  selected: boolean
 }>()
 
 const emit = defineEmits<{
@@ -38,13 +39,17 @@ const actions = [
 ]
 
 function onMouseEnter() {
-  if (!editing) return
+  if (mode !== 'edit') return
   audio.play('click_04')
 }
 </script>
 
 <template>
-  <ui-kit:list-item class="text-grey-700" :show-background="editing" @mouseenter="onMouseEnter">
+  <ui-kit:list-item
+    class="text-grey-700"
+    :show-background="mode === 'edit'"
+    @mouseenter="onMouseEnter"
+  >
     <template #before>
       <div class="flex h-full flex-col items-start">
         <card size="2xs" />
@@ -56,7 +61,7 @@ function onMouseEnter() {
     </template>
 
     <template #after>
-      <ui-kit:button-menu :actions="actions">
+      <ui-kit:button-menu v-if="mode !== 'select'" :actions="actions">
         <template #trigger="{ toggleDropdown }">
           <ui-kit:button
             data-testid="card-list__item-more-button"
@@ -69,6 +74,12 @@ function onMouseEnter() {
           </ui-kit:button>
         </template>
       </ui-kit:button-menu>
+
+      <ui-kit:radio
+        v-if="mode === 'select'"
+        :checked="selected"
+        @change="emit('selected', card.id)"
+      />
     </template>
   </ui-kit:list-item>
 </template>

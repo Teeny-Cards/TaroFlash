@@ -1,34 +1,35 @@
 <script lang="ts" setup>
 import ListItem from './list-item.vue'
 import { useI18n } from 'vue-i18n'
-import { useSelection } from '@/composables/use-selection'
+import { useAlert } from '@/composables/use-alert'
+import { useAudio } from '@/composables/use-audio'
 
 const MAX_INPUT_LENGTH = 400
 
-const { cards } = defineProps<{ cards: Card[]; editing: boolean }>()
+defineProps<{
+  cards: Card[]
+  activeCardId?: number
+  selectedCardIds: number[]
+  mode: 'edit' | 'view' | 'select'
+}>()
+
 const emit = defineEmits<{
-  (e: 'updated', id: number, prop: 'front_text' | 'back_text', value: string): void
   (e: 'add-card'): void
-  (e: 'cards-deleted', ids: number[]): void
+  (e: 'activate-card', id?: number): void
+  (e: 'select-card', id?: number): void
+  (e: 'delete-card', id?: number): void
+  (e: 'update-card', id: number, column: string, value: string): void
 }>()
 
 const { t } = useI18n()
+const alert = useAlert()
+const audio = useAudio()
 
-const { current_card_index, setCurrentCard, setCurrentColumn, selectCard } = useSelection(cards)
-
-function onDeleteCard(id?: number) {
-  if (!id) return
-
-  emit('cards-deleted', [id])
-}
-
-function onFocus(e: Event, index: number) {
+function onFocus(e: Event, id?: number) {
   const target = e.target as HTMLTextAreaElement
-  const column = target.dataset['testid'] === 'front-input' ? 'front' : 'back'
 
   target.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  setCurrentCard(index)
-  setCurrentColumn(column)
+  emit('activate-card', id)
 }
 
 function onInput(e: Event, id?: number) {
@@ -41,7 +42,20 @@ function onInput(e: Event, id?: number) {
     target.value = target.value.slice(0, MAX_INPUT_LENGTH)
   }
 
-  emit('updated', id, column, target.value)
+  emit('update-card', id, column, target.value)
+}
+
+async function onDelete(id?: number) {
+  const { response: confirmed } = alert.warn({
+    title: t('alert.delete-card'),
+    message: t('alert.delete-card.message'),
+    confirmLabel: t('common.delete')
+  })
+
+  if (await confirmed) {
+    emit('delete-card', id)
+    audio.play('trash_crumple_short')
+  }
 }
 </script>
 
@@ -59,21 +73,22 @@ function onInput(e: Event, id?: number) {
     <template v-for="(card, index) in cards" :key="card.id">
       <list-item
         :card="card"
-        :editing="editing"
-        @deleted="onDeleteCard"
-        @focusout="setCurrentCard"
-        @selected="selectCard"
+        :mode="mode"
+        :selected="selectedCardIds.includes(card.id ?? -1)"
+        @deleted="onDelete"
+        @focusout="emit('activate-card')"
+        @selected="emit('select-card', card.id)"
       >
         <div
           class="flex w-full gap-4"
-          :class="{ editing: current_card_index === index, 'edit-mode': editing }"
+          :class="{ editing: activeCardId === card.id, 'edit-mode': mode === 'edit' }"
         >
           <textarea
             data-testid="front-input"
             :placeholder="t('card.placeholder-front')"
             :value="card.front_text"
-            :disabled="!editing"
-            @focusin="onFocus($event, index)"
+            :disabled="mode !== 'edit'"
+            @focusin="onFocus($event, card.id)"
             @input="onInput($event, card.id)"
           ></textarea>
 
@@ -81,8 +96,8 @@ function onInput(e: Event, id?: number) {
             data-testid="back-input"
             :placeholder="t('card.placeholder-back')"
             :value="card.back_text"
-            :disabled="!editing"
-            @focusin="onFocus($event, index)"
+            :disabled="mode !== 'edit'"
+            @focusin="onFocus($event, card.id)"
             @input="onInput($event, card.id)"
           ></textarea>
         </div>
@@ -92,6 +107,7 @@ function onInput(e: Event, id?: number) {
     </template>
 
     <ui-kit:button
+      v-if="mode === 'edit'"
       data-testid="card-list__add-card-button"
       icon-only
       icon-left="add"
