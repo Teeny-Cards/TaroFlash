@@ -129,6 +129,15 @@ function onSelectCard(id?: number) {
   toggleSelectCard(id)
   mode.value = 'select'
 }
+
+function onCardActivated(id?: number) {
+  if (mode.value === 'view') {
+    mode.value = 'edit'
+    audio.play('etc_camera_reel')
+  }
+
+  activateCard(id)
+}
 </script>
 
 <template>

@@ -2,10 +2,11 @@
 import ListItem from './list-item.vue'
 import { useI18n } from 'vue-i18n'
 import { type EditableCardValue, type EditableCardKey } from '@/composables/use-card-editor'
+import { nextTick } from 'vue'
 
 const MAX_INPUT_LENGTH = 400
 
-defineProps<{
+const { mode, activeCardId } = defineProps<{
   cards: Card[]
   activeCardId?: number
   selectedCardIds: number[]
@@ -15,6 +16,7 @@ defineProps<{
 const emit = defineEmits<{
   (e: 'card-added'): void
   (e: 'card-activated', id?: number): void
+  (e: 'card-deactivated', id?: number): void
   (e: 'card-selected', id?: number): void
   (e: 'card-deleted', id?: number): void
   (e: 'card-updated', id: number, column: EditableCardKey, value: EditableCardValue): void
@@ -41,6 +43,15 @@ function onInput(e: Event, id?: number) {
 
   emit('card-updated', id, column, target.value)
 }
+
+async function onDblClick(e: MouseEvent, id?: number) {
+  const target = e.target as HTMLDivElement
+  const textarea = target.querySelector('[data-testid="front-input"]') as HTMLTextAreaElement
+
+  emit('card-activated', id)
+  await nextTick()
+  textarea?.focus()
+}
 </script>
 
 <template>
@@ -59,17 +70,19 @@ function onInput(e: Event, id?: number) {
         :card="card"
         :mode="mode"
         :selected="selectedCardIds.includes(card.id ?? -1)"
-        @focusout="emit('card-activated')"
+        @dblclick="onDblClick($event, card.id)"
+        @focusout="emit('card-deactivated', card.id)"
         @deleted="emit('card-deleted', card.id)"
         @selected="emit('card-selected', card.id)"
       >
         <div
           class="flex w-full gap-4"
-          :class="{
-            editing: activeCardId === card.id,
-            'edit-mode': mode === 'edit',
-            'select-mode': mode === 'select'
-          }"
+          :class="[
+            `mode--${mode}`,
+            {
+              active: activeCardId === card.id
+            }
+          ]"
         >
           <textarea
             data-testid="front-input"
@@ -112,18 +125,14 @@ textarea {
   @apply text-grey-700 focus:outline-none;
   @apply transition-all duration-100;
   @apply rounded-4 h-14.5 w-full resize-none px-3 py-2;
-  @apply overflow-hidden;
+  @apply pointer-events-none overflow-hidden;
 }
 
-.edit-mode textarea {
-  @apply ring-brown-300 bg-white ring-2;
+.mode--edit textarea {
+  @apply ring-brown-300 pointer-events-auto bg-white ring-2;
 }
 
-.editing textarea {
+.active textarea {
   @apply h-46 ring-blue-500 group-hover:bg-white;
-}
-
-.select-mode textarea {
-  @apply pointer-events-none;
 }
 </style>
