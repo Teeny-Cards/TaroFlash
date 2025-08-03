@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useAudio } from '@/composables/use-audio'
 import Card from '@/components/card.vue'
+import { computed } from 'vue'
 
 const { card, mode, selected } = defineProps<{
   card: Card
@@ -15,6 +16,9 @@ const emit = defineEmits<{
 }>()
 
 const audio = useAudio()
+const hover_mode = computed(() => {
+  return mode === 'select' || mode === 'edit'
+})
 
 const actions = [
   {
@@ -39,16 +43,24 @@ const actions = [
 ]
 
 function onMouseEnter() {
-  if (mode !== 'edit') return
+  if (!hover_mode.value) return
   audio.play('click_04')
+}
+
+function onCardClicked() {
+  if (mode !== 'select') return
+  audio.play('etc_camera_shutter')
+  emit('selected', card.id)
 }
 </script>
 
 <template>
   <ui-kit:list-item
     class="text-grey-700"
-    :show-background="mode === 'edit'"
+    :show-background="hover_mode"
+    :class="{ 'cursor-pointer': hover_mode }"
     @mouseenter="onMouseEnter"
+    @click="onCardClicked"
   >
     <template #before>
       <div class="flex h-full flex-col items-start">
@@ -78,7 +90,7 @@ function onMouseEnter() {
       <ui-kit:radio
         v-if="mode === 'select'"
         :checked="selected"
-        @change="emit('selected', card.id)"
+        @click.stop="emit('selected', card.id)"
       />
     </template>
   </ui-kit:list-item>
