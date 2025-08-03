@@ -57,6 +57,11 @@ const tabs = [
   }
 ]
 
+const tab_components: { [key: number]: any } = {
+  0: CardList,
+  1: CardGrid
+}
+
 onMounted(async () => {
   await refetchDeck()
 })
@@ -158,8 +163,8 @@ function onSelectCard(id?: number) {
 
       <ui-kit:divider />
 
-      <card-list
-        v-if="active_tab === 0"
+      <component
+        :is="tab_components[active_tab]"
         :cards="edited_cards"
         :active-card-id="active_card_id"
         :selected-card-ids="selected_card_ids"
@@ -170,8 +175,6 @@ function onSelectCard(id?: number) {
         @card-selected="onSelectCard"
         @card-deleted="onDeleteCard"
       />
-
-      <card-grid v-if="active_tab === 1" :cards="edited_cards" />
     </div>
   </section>
 </template>
