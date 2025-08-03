@@ -8,10 +8,10 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'cancel-edit'): void
-  (e: 'save-edit'): void
+  (e: 'cancelled'): void
+  (e: 'saved'): void
   (e: 'edit'): void
-  (e: 'select-all'): void
+  (e: 'all-selected'): void
 }>()
 
 const { t } = useI18n()
@@ -19,17 +19,20 @@ const { t } = useI18n()
 
 <template>
   <div v-if="mode === 'edit'" class="flex gap-1.5">
-    <ui-kit:button icon-left="close" variant="danger" @click="emit('cancel-edit')">
+    <ui-kit:button icon-left="close" variant="danger" @click="emit('cancelled')">
       {{ t('common.cancel') }}
     </ui-kit:button>
 
-    <ui-kit:button icon-left="check" @click="emit('save-edit')" :disabled="!isDirty">
+    <ui-kit:button icon-left="check" @click="emit('saved')" :disabled="!isDirty">
       {{ t('common.save') }}
     </ui-kit:button>
   </div>
 
-  <div v-else-if="mode === 'select'">
-    <ui-kit:radio :checked="allSelected" @click="emit('select-all')" />
+  <div v-else-if="mode === 'select'" class="flex gap-1.5">
+    <ui-kit:button icon-left="close" variant="danger" @click="emit('cancelled')">
+      {{ t('common.cancel') }}
+    </ui-kit:button>
+    <ui-kit:radio :checked="allSelected" @click="emit('all-selected')" />
   </div>
 
   <ui-kit:button v-else icon-left="edit" @click="emit('edit')">
