@@ -30,14 +30,16 @@ const {
   edited_cards,
   active_card_id,
   selected_card_ids,
+  all_cards_selected,
+  isDirty,
   addCard,
   deleteCard,
   updateCard,
-  selectCard,
+  toggleSelectCard,
   setActiveCard,
   resetCards,
   saveCards,
-  isDirty
+  toggleSelectAll
 } = useCardEditor(deck.value?.cards ?? [], deck.value?.id)
 
 const tabs = [
@@ -103,7 +105,7 @@ async function onDeleteCard(id?: number) {
 }
 
 function onSelectCard(id?: number) {
-  selectCard(id)
+  toggleSelectCard(id)
   mode.value = 'select'
 }
 </script>
@@ -130,9 +132,11 @@ function onSelectCard(id?: number) {
         <contextual-buttons
           :mode="mode"
           :is-dirty="isDirty"
+          :all-selected="all_cards_selected"
+          @edit="mode = 'edit'"
           @cancel-edit="onCancelEdit"
           @save-edit="onSaveClicked"
-          @edit="mode = 'edit'"
+          @select-all="toggleSelectAll"
         />
       </div>
 
@@ -144,11 +148,11 @@ function onSelectCard(id?: number) {
         :active-card-id="active_card_id"
         :selected-card-ids="selected_card_ids"
         :mode="mode"
-        @add-card="addCard"
-        @activate-card="setActiveCard"
-        @select-card="onSelectCard"
-        @delete-card="onDeleteCard"
-        @update-card="updateCard"
+        @card-added="addCard"
+        @card-updated="updateCard"
+        @card-activated="setActiveCard"
+        @card-selected="onSelectCard"
+        @card-deleted="onDeleteCard"
       />
 
       <card-grid v-if="active_tab === 1" :cards="edited_cards" />

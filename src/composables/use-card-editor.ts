@@ -1,17 +1,12 @@
 import { computed, toRaw, ref } from 'vue'
 import { updateCards, deleteCardsById } from '@/services/card-service'
 
-export type EditableCard = {
-  id?: number
-  front_text: string
-  back_text: string
-  order?: number
-  deleted?: boolean
-  [key: string]: any
-}
+export type EditableCard = Card & { deleted?: boolean }
+export type EditableCardKey = keyof EditableCard
+export type EditableCardValue = EditableCard[keyof EditableCard]
 
 export function useCardEditor(initialCards: EditableCard[], _deck_id?: number) {
-  const edited_cards = ref(initialCards.map((card) => ({ ...card })))
+  const edited_cards = ref<EditableCard[]>(initialCards.map((card) => ({ ...card })))
   let initial_cards = initialCards
 
   const deck_id = ref<number | undefined>(_deck_id)
@@ -24,12 +19,20 @@ export function useCardEditor(initialCards: EditableCard[], _deck_id?: number) {
     return Math.max(...edited_cards.value.map((card) => card.order ?? 0)) + 1
   })
 
+  const all_cards_selected = computed(() => {
+    return selected_card_ids.value.length === edited_cards.value.length
+  })
+
+  const isDirty = computed(
+    () => dirty_map.value.size > 0 || edited_cards.value.length !== initialCards.length
+  )
+
   function addCard() {
     edited_cards.value.unshift({
       front_text: '',
       back_text: '',
       order: nextOrder.value,
-      deck_id
+      deck_id: deck_id.value
     })
   }
 
@@ -38,12 +41,12 @@ export function useCardEditor(initialCards: EditableCard[], _deck_id?: number) {
     await deleteCardsById([id])
   }
 
-  function updateCard(id: number, key: string, value: string) {
+  function updateCard(id: number, key: EditableCardKey, value: EditableCardValue) {
     const card = edited_cards.value.find((c) => c.id === id)
     if (!card) return
 
     if (card[key] !== value) {
-      card[key] = value
+      ;(card as any)[key] = value
       dirty_map.value.add(id)
     }
   }
@@ -54,14 +57,36 @@ export function useCardEditor(initialCards: EditableCard[], _deck_id?: number) {
 
     if (index === -1) {
       selected_card_ids.value.push(id)
-    } else {
-      selected_card_ids.value.splice(index, 1)
     }
   }
 
-  function deselectCard(id: number) {
+  function selectAllCards() {
+    selected_card_ids.value = edited_cards.value.map((card) => card.id!)
+  }
+
+  function toggleSelectAll() {
+    if (all_cards_selected.value) {
+      clearSelection()
+    } else {
+      selectAllCards()
+    }
+  }
+
+  function deselectCard(id?: number) {
+    if (!id) return
     const index = selected_card_ids.value.indexOf(id)
     if (index !== -1) selected_card_ids.value.splice(index, 1)
+  }
+
+  function toggleSelectCard(id?: number) {
+    if (!id) return
+
+    const index = selected_card_ids.value.indexOf(id)
+    if (index === -1) {
+      selected_card_ids.value.push(id)
+    } else {
+      selected_card_ids.value.splice(index, 1)
+    }
   }
 
   function clearSelection() {
@@ -116,18 +141,20 @@ export function useCardEditor(initialCards: EditableCard[], _deck_id?: number) {
     dirty_map,
     active_card_id,
     selected_card_ids,
+    all_cards_selected,
     addCard,
     deleteCard,
     updateCard,
     selectCard,
+    selectAllCards,
+    toggleSelectAll,
     deselectCard,
+    toggleSelectCard,
     clearSelection,
     setActiveCard,
     getChangedCards,
     resetCards,
     saveCards,
-    isDirty: computed(
-      () => dirty_map.value.size > 0 || edited_cards.value.length !== initialCards.length
-    )
+    isDirty
   }
 }

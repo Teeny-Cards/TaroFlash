@@ -29,7 +29,7 @@ const { t } = useI18n()
   </div>
 
   <div v-else-if="mode === 'select'">
-    <ui-kit:radio :selected="allSelected" @change="emit('select-all')" />
+    <ui-kit:radio :checked="allSelected" @click="emit('select-all')" />
   </div>
 
   <ui-kit:button v-else icon-left="edit" @click="emit('edit')">

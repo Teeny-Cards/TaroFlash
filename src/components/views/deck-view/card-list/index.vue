@@ -3,6 +3,7 @@ import ListItem from './list-item.vue'
 import { useI18n } from 'vue-i18n'
 import { useAlert } from '@/composables/use-alert'
 import { useAudio } from '@/composables/use-audio'
+import { type EditableCardValue, type EditableCardKey } from '@/composables/use-card-editor'
 
 const MAX_INPUT_LENGTH = 400
 
@@ -14,11 +15,11 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'add-card'): void
-  (e: 'activate-card', id?: number): void
-  (e: 'select-card', id?: number): void
-  (e: 'delete-card', id?: number): void
-  (e: 'update-card', id: number, column: string, value: string): void
+  (e: 'card-added'): void
+  (e: 'card-activated', id?: number): void
+  (e: 'card-selected', id?: number): void
+  (e: 'card-deleted', id?: number): void
+  (e: 'card-updated', id: number, column: EditableCardKey, value: EditableCardValue): void
 }>()
 
 const { t } = useI18n()
@@ -29,7 +30,7 @@ function onFocus(e: Event, id?: number) {
   const target = e.target as HTMLTextAreaElement
 
   target.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  emit('activate-card', id)
+  emit('card-activated', id)
 }
 
 function onInput(e: Event, id?: number) {
@@ -42,7 +43,7 @@ function onInput(e: Event, id?: number) {
     target.value = target.value.slice(0, MAX_INPUT_LENGTH)
   }
 
-  emit('update-card', id, column, target.value)
+  emit('card-updated', id, column, target.value)
 }
 
 async function onDelete(id?: number) {
@@ -53,7 +54,7 @@ async function onDelete(id?: number) {
   })
 
   if (await confirmed) {
-    emit('delete-card', id)
+    emit('card-deleted', id)
     audio.play('trash_crumple_short')
   }
 }
@@ -66,7 +67,7 @@ async function onDelete(id?: number) {
     class="text-grey-500 flex h-50 flex-col items-center justify-center gap-4"
   >
     <span>{{ t('deck-view.empty-state.no-cards') }}</span>
-    <ui-kit:button icon-left="add" @click="emit('add-card')">Add Card</ui-kit:button>
+    <ui-kit:button icon-left="add" @click="emit('card-added')">Add Card</ui-kit:button>
   </div>
 
   <div v-else data-testid="card-list" class="relative flex w-full flex-col">
@@ -76,12 +77,16 @@ async function onDelete(id?: number) {
         :mode="mode"
         :selected="selectedCardIds.includes(card.id ?? -1)"
         @deleted="onDelete"
-        @focusout="emit('activate-card')"
-        @selected="emit('select-card', card.id)"
+        @focusout="emit('card-activated')"
+        @selected="emit('card-selected', card.id)"
       >
         <div
           class="flex w-full gap-4"
-          :class="{ editing: activeCardId === card.id, 'edit-mode': mode === 'edit' }"
+          :class="{
+            editing: activeCardId === card.id,
+            'edit-mode': mode === 'edit',
+            'select-mode': mode === 'select'
+          }"
         >
           <textarea
             data-testid="front-input"
@@ -108,11 +113,11 @@ async function onDelete(id?: number) {
 
     <ui-kit:button
       v-if="mode === 'edit'"
-      data-testid="card-list__add-card-button"
+      data-testid="card-list__card-added-button"
       icon-only
       icon-left="add"
       class="absolute top-3 -right-12"
-      @click="emit('add-card')"
+      @click="emit('card-added')"
     />
   </div>
 </template>
@@ -133,5 +138,9 @@ textarea {
 
 .editing textarea {
   @apply h-46 ring-blue-500 group-hover:bg-white;
+}
+
+.select-mode textarea {
+  @apply pointer-events-none;
 }
 </style>
