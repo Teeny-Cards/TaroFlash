@@ -47,7 +47,7 @@ function onMouseEnter() {
   audio.play('click_04')
 }
 
-function onCardClicked() {
+function onClick() {
   if (mode !== 'select') return
   audio.play('etc_camera_shutter')
   emit('selected', card.id)
@@ -60,7 +60,7 @@ function onCardClicked() {
     :show-background="hover_mode"
     :class="{ 'cursor-pointer': hover_mode }"
     @mouseenter="onMouseEnter"
-    @click="onCardClicked"
+    @click="onClick"
   >
     <template #before>
       <div class="flex h-full flex-col items-start">
@@ -68,9 +68,7 @@ function onCardClicked() {
       </div>
     </template>
 
-    <template #default>
-      <slot></slot>
-    </template>
+    <slot></slot>
 
     <template #after>
       <ui-kit:button-menu v-if="mode !== 'select'" :actions="actions">
