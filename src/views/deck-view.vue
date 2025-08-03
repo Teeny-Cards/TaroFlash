@@ -7,12 +7,11 @@ import StudyModal from '@/components/modals/study-modal/index.vue'
 import CardList from '@/components/views/deck-view/card-list/index.vue'
 import CardGrid from '@/components/views/deck-view/card-grid.vue'
 import { useI18n } from 'vue-i18n'
-import { useEditableCards } from '@/composables/use-editable-cards'
-import { updateCards, deleteCardsById } from '@/services/card-service'
+import { useCardEditor } from '@/composables/use-card-editor'
 import { useAlert } from '@/composables/use-alert'
 import { useModal } from '@/composables/use-modal'
 import { useDeck } from '@/composables/use-deck'
-import { useAudio } from '@/composables/use-audio'
+import ContextualButtons from '@/components/views/deck-view/contextual-buttons.vue'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -21,14 +20,25 @@ const { id: deck_id } = defineProps<{
 const { t } = useI18n()
 const modal = useModal()
 const alert = useAlert()
-const audio = useAudio()
 
 const image_url = ref<string | undefined>()
 const deck = ref<Deck>()
 const active_tab = ref(0)
-const editing = ref(false)
+const mode = ref<'edit' | 'view' | 'select'>('view')
 
-let cardEdits: ReturnType<typeof useEditableCards> | undefined
+const {
+  edited_cards,
+  active_card_id,
+  selected_card_ids,
+  addCard,
+  deleteCard,
+  updateCard,
+  selectCard,
+  setActiveCard,
+  resetCards,
+  saveCards,
+  isDirty
+} = useCardEditor(deck.value?.cards ?? [], deck.value?.id)
 
 const tabs = [
   {
@@ -42,15 +52,11 @@ const tabs = [
 ]
 
 onMounted(async () => {
-  try {
-    await refetchDeck()
-  } catch (e: any) {
-    // TODO
-  }
+  await refetchDeck()
 })
 
 onBeforeRouteLeave(async () => {
-  if (cardEdits?.isDirty.value) {
+  if (isDirty.value) {
     const { response } = alert.warn({
       title: t('alert.leave-page'),
       message: t('alert.leave-page.message'),
@@ -70,61 +76,35 @@ function onStudyClicked() {
   })
 }
 
-async function saveEdits() {
-  const changed = cardEdits?.getChangedCards()
-  if (!changed) return
-
-  if (changed.length > 0) {
-    try {
-      await updateCards(changed)
-      await refetchDeck()
-    } catch (e: any) {
-      // TODO
-    }
-  }
-
-  editing.value = false
+async function onSaveClicked() {
+  await saveCards()
+  await refetchDeck()
+  mode.value = 'view'
 }
 
 async function refetchDeck() {
   try {
     deck.value = await fetchDeck(Number(deck_id))
-    cardEdits = useEditableCards(deck.value.cards ?? [], deck.value.id)
+    resetCards(deck.value.cards ?? [], deck.value.id)
     image_url.value = useDeck(deck.value).image_url.value
   } catch (e: any) {
     // TODO
   }
 }
 
-function discardEdits() {
-  cardEdits?.resetChanges()
-}
-
-async function deleteCards(ids: number[]) {
-  const count = ids.length
-  if (!count) return
-
-  const { response: confirmed } = alert.warn({
-    title: t('alert.delete-card', { count }),
-    message: t('alert.delete-card.message', { count }),
-    confirmLabel: t('common.delete')
-  })
-
-  if (await confirmed) {
-    await deleteCardsById(ids)
-    await refetchDeck()
-
-    audio.play('trash_crumple_short')
-  }
-}
-
-function onAddCard() {
-  cardEdits?.addCard()
-}
-
 function onCancelEdit() {
-  discardEdits()
-  editing.value = false
+  resetCards()
+  mode.value = 'view'
+}
+
+async function onDeleteCard(id?: number) {
+  await deleteCard(id)
+  await refetchDeck()
+}
+
+function onSelectCard(id?: number) {
+  selectCard(id)
+  mode.value = 'select'
 }
 </script>
 
@@ -147,33 +127,31 @@ function onCancelEdit() {
           storage-key="deck-view-tabs"
         />
 
-        <div v-if="editing" class="flex gap-1.5">
-          <ui-kit:button icon-left="close" variant="danger" @click="onCancelEdit">
-            {{ t('common.cancel') }}
-          </ui-kit:button>
-
-          <ui-kit:button icon-left="check" @click="saveEdits()" :disabled="!cardEdits?.isDirty">
-            {{ t('common.save') }}
-          </ui-kit:button>
-        </div>
-
-        <ui-kit:button v-else icon-left="edit" @click="editing = true">
-          {{ t('common.edit') }}
-        </ui-kit:button>
+        <contextual-buttons
+          :mode="mode"
+          :is-dirty="isDirty"
+          @cancel-edit="onCancelEdit"
+          @save-edit="onSaveClicked"
+          @edit="mode = 'edit'"
+        />
       </div>
 
       <ui-kit:divider />
 
       <card-list
-        v-if="deck && active_tab === 0"
-        :cards="cardEdits?.editedCards ?? []"
-        :editing="editing"
-        @updated="cardEdits?.updateCard"
-        @add-card="onAddCard"
-        @cards-deleted="deleteCards"
+        v-if="active_tab === 0"
+        :cards="edited_cards"
+        :active-card-id="active_card_id"
+        :selected-card-ids="selected_card_ids"
+        :mode="mode"
+        @add-card="addCard"
+        @activate-card="setActiveCard"
+        @select-card="onSelectCard"
+        @delete-card="onDeleteCard"
+        @update-card="updateCard"
       />
 
-      <card-grid v-if="deck && active_tab === 1" :cards="cardEdits?.editedCards ?? []" />
+      <card-grid v-if="active_tab === 1" :cards="edited_cards" />
     </div>
   </section>
 </template>

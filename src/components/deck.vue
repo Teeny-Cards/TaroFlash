@@ -30,7 +30,7 @@ const numCardsDue = computed(() => {
   <div data-testid="deck" class="relative flex w-max flex-col gap-2.5">
     <Card
       size="small"
-      class="border-brown-300 relative cursor-pointer border-8"
+      class="relative cursor-pointer"
       @click="$emit('clicked')"
       :image_url="image_url"
     >
