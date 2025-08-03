@@ -10,7 +10,7 @@ import { useI18n } from 'vue-i18n'
 import { useCardEditor } from '@/composables/use-card-editor'
 import { useAlert } from '@/composables/use-alert'
 import { useModal } from '@/composables/use-modal'
-import { useDeck } from '@/composables/use-deck'
+import { useDeckEditor } from '@/composables/use-deck-editor'
 import ContextualButtons from '@/components/views/deck-view/contextual-buttons.vue'
 
 const { id: deck_id } = defineProps<{
@@ -86,7 +86,7 @@ async function refetchDeck() {
   try {
     deck.value = await fetchDeck(Number(deck_id))
     resetCards(deck.value.cards ?? [], deck.value.id)
-    image_url.value = useDeck(deck.value).image_url.value
+    image_url.value = useDeckEditor(deck.value).image_url.value
   } catch (e: any) {
     // TODO
   }

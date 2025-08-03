@@ -16,8 +16,8 @@ const mocks = vi.hoisted(() => {
   }
 })
 
-vi.mock('@/composables/use-deck', () => ({
-  useDeck: vi.fn(() => ({
+vi.mock('@/composables/use-deck-editor', () => ({
+  useDeckEditor: vi.fn(() => ({
     settings: {
       title: 'Test Deck',
       description: 'Test Description',
