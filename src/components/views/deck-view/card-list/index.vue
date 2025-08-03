@@ -6,34 +6,32 @@ import { nextTick } from 'vue'
 
 const MAX_INPUT_LENGTH = 400
 
-const { mode, activeCardId } = defineProps<{
+const { mode, activeCardIndex } = defineProps<{
   cards: Card[]
-  activeCardId?: number
-  selectedCardIds: number[]
+  activeCardIndex?: number
+  selectedCardIndices: number[]
   mode: 'edit' | 'view' | 'select'
 }>()
 
 const emit = defineEmits<{
   (e: 'card-added'): void
-  (e: 'card-activated', id?: number): void
-  (e: 'card-deactivated', id?: number): void
-  (e: 'card-selected', id?: number): void
-  (e: 'card-deleted', id?: number): void
-  (e: 'card-updated', id: number, column: EditableCardKey, value: EditableCardValue): void
+  (e: 'card-activated', index: number): void
+  (e: 'card-deactivated', index: number): void
+  (e: 'card-selected', index: number): void
+  (e: 'card-deleted', index: number): void
+  (e: 'card-updated', index: number, column: EditableCardKey, value: EditableCardValue): void
 }>()
 
 const { t } = useI18n()
 
-function onFocus(e: Event, id?: number) {
+function onFocus(e: Event, index: number) {
   const target = e.target as HTMLTextAreaElement
 
   target.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  emit('card-activated', id)
+  emit('card-activated', index)
 }
 
-function onInput(e: Event, id?: number) {
-  if (!id) return
-
+function onInput(e: Event, index: number) {
   const target = e.target as HTMLTextAreaElement
   const column = target.dataset['testid'] === 'front-input' ? 'front_text' : 'back_text'
 
@@ -41,14 +39,16 @@ function onInput(e: Event, id?: number) {
     target.value = target.value.slice(0, MAX_INPUT_LENGTH)
   }
 
-  emit('card-updated', id, column, target.value)
+  emit('card-updated', index, column, target.value)
 }
 
-async function onDblClick(e: MouseEvent, id?: number) {
+async function onDblClick(e: MouseEvent, index: number) {
+  if (mode !== 'view') return
+
   const target = e.target as HTMLDivElement
   const textarea = target.querySelector('[data-testid="front-input"]') as HTMLTextAreaElement
 
-  emit('card-activated', id)
+  emit('card-activated', index)
   await nextTick()
   textarea?.focus()
 }
@@ -69,18 +69,18 @@ async function onDblClick(e: MouseEvent, id?: number) {
       <list-item
         :card="card"
         :mode="mode"
-        :selected="selectedCardIds.includes(card.id ?? -1)"
-        @dblclick="onDblClick($event, card.id)"
-        @focusout="emit('card-deactivated', card.id)"
-        @deleted="emit('card-deleted', card.id)"
-        @selected="emit('card-selected', card.id)"
+        :selected="selectedCardIndices.includes(index)"
+        @dblclick="onDblClick($event, index)"
+        @focusout="emit('card-deactivated', index)"
+        @deleted="emit('card-deleted', index)"
+        @selected="emit('card-selected', index)"
       >
         <div
           class="flex w-full gap-4"
           :class="[
             `mode--${mode}`,
             {
-              active: activeCardId === card.id
+              active: activeCardIndex === index
             }
           ]"
         >
@@ -89,8 +89,8 @@ async function onDblClick(e: MouseEvent, id?: number) {
             :placeholder="t('card.placeholder-front')"
             :value="card.front_text"
             :disabled="mode !== 'edit'"
-            @focusin="onFocus($event, card.id)"
-            @input="onInput($event, card.id)"
+            @focusin="onFocus($event, index)"
+            @input="onInput($event, index)"
           ></textarea>
 
           <textarea
@@ -98,8 +98,8 @@ async function onDblClick(e: MouseEvent, id?: number) {
             :placeholder="t('card.placeholder-back')"
             :value="card.back_text"
             :disabled="mode !== 'edit'"
-            @focusin="onFocus($event, card.id)"
-            @input="onInput($event, card.id)"
+            @focusin="onFocus($event, index)"
+            @input="onInput($event, index)"
           ></textarea>
         </div>
       </list-item>

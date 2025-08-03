@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import OverviewPanel from '@/components/views/deck-view/overview-panel.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import { fetchDeck } from '@/services/deck-service'
 import StudyModal from '@/components/modals/study-modal/index.vue'
@@ -12,7 +12,7 @@ import { useAlert } from '@/composables/use-alert'
 import { useModal } from '@/composables/use-modal'
 import { useDeckEditor } from '@/composables/use-deck-editor'
 import { useAudio } from '@/composables/use-audio'
-import ContextualButtons from '@/components/views/deck-view/contextual-buttons.vue'
+import ContextMenu from '@/components/views/deck-view/context-menu.vue'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -26,24 +26,23 @@ const audio = useAudio()
 const image_url = ref<string | undefined>()
 const deck = ref<Deck>()
 const active_tab = ref(0)
-const mode = ref<'edit' | 'view' | 'select'>('view')
 
 const {
   edited_cards,
-  active_card_id,
-  selected_card_ids,
-  all_cards_selected,
-  is_dirty,
+  active_card_index,
+  selected_card_indices,
+  mode,
   addCard,
   deleteCards,
   updateCard,
   toggleSelectCard,
   selectCard,
-  setActiveCard,
+  activateCard,
+  deactivateCard,
   resetCards,
   saveCards,
-  toggleSelectAll,
-  clearSelectedCards
+  setMode,
+  warnIfDirty
 } = useCardEditor(deck.value?.cards ?? [], Number(deck_id))
 
 const tabs = [
@@ -64,20 +63,24 @@ const tab_components: { [key: number]: any } = {
 
 onMounted(async () => {
   await refetchDeck()
+  document.addEventListener('keydown', onEsc)
 })
 
 onBeforeRouteLeave(async () => {
-  if (is_dirty.value) {
-    const { response } = alert.warn({
-      title: t('alert.leave-page'),
-      message: t('alert.leave-page.message'),
-      confirmLabel: t('common.leave'),
-      cancelLabel: t('alert.leave-page.stay')
-    })
-
-    return await response
-  }
+  return await warnIfDirty()
 })
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', onEsc)
+})
+
+async function onEsc(e: KeyboardEvent) {
+  if (e.key !== 'Escape') return
+
+  if (mode.value !== 'view' && (await warnIfDirty())) {
+    cancelEdits()
+  }
+}
 
 function onStudyClicked() {
   modal.open(StudyModal, {
@@ -90,7 +93,7 @@ function onStudyClicked() {
 async function onSaveClicked() {
   await saveCards()
   await refetchDeck()
-  mode.value = 'view'
+  setMode('view')
 }
 
 async function refetchDeck() {
@@ -103,21 +106,23 @@ async function refetchDeck() {
   }
 }
 
-function onCancel() {
-  resetCards()
-  clearSelectedCards()
-  mode.value = 'view'
+function cancelEdits() {
+  setMode('view')
+  audio.play('digi_powerdown')
 }
 
-async function onDeleteCard(id?: number) {
+async function onDeleteCards(index?: number) {
+  const count = selected_card_indices.value.length + (index !== undefined ? 1 : 0)
+
   const { response: confirmed } = alert.warn({
-    title: t('alert.delete-card'),
-    message: t('alert.delete-card.message'),
+    title: t('alert.delete-card', { count }),
+    message: t('alert.delete-card.message', { count }),
     confirmLabel: t('common.delete')
   })
 
   if (await confirmed) {
-    selectCard(id)
+    if (index !== undefined) selectCard(index)
+
     await deleteCards()
     await refetchDeck()
 
@@ -125,18 +130,24 @@ async function onDeleteCard(id?: number) {
   }
 }
 
-function onSelectCard(id?: number) {
-  toggleSelectCard(id)
-  mode.value = 'select'
+function onSelectCard(index: number) {
+  toggleSelectCard(index)
+  setMode('select', false)
 }
 
-function onCardActivated(id?: number) {
+function onCardActivated(index: number) {
   if (mode.value === 'view') {
-    mode.value = 'edit'
+    setMode('edit')
     audio.play('etc_camera_reel')
   }
 
-  activateCard(id)
+  activateCard(index)
+}
+
+function onAddCard() {
+  addCard()
+  setMode('edit', false)
+  activateCard(0)
 }
 </script>
 
@@ -151,22 +162,16 @@ function onCardActivated(id?: number) {
     />
 
     <div class="relative flex h-full w-full flex-col">
-      <div class="flex w-full justify-between">
-        <ui-kit:tabs
-          :tabs="tabs"
-          v-model:activeTab="active_tab"
-          class="pb-4"
-          storage-key="deck-view-tabs"
-        />
+      <div class="flex w-full justify-between pb-4">
+        <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
 
-        <contextual-buttons
+        <context-menu
           :mode="mode"
-          :is-dirty="is_dirty"
-          :all-selected="all_cards_selected"
-          @edit="mode = 'edit'"
-          @cancelled="onCancel"
-          @saved="onSaveClicked"
-          @all-selected="toggleSelectAll"
+          :selectedCardIndices="selected_card_indices"
+          @new-card="onAddCard"
+          @mode-changed="setMode"
+          @save="onSaveClicked"
+          @delete="onDeleteCards"
         />
       </div>
 
@@ -174,15 +179,16 @@ function onCardActivated(id?: number) {
 
       <component
         :is="tab_components[active_tab]"
-        :cards="edited_cards"
-        :active-card-id="active_card_id"
-        :selected-card-ids="selected_card_ids"
         :mode="mode"
+        :cards="edited_cards"
+        :active-card-index="active_card_index"
+        :selected-card-indices="selected_card_indices"
         @card-added="addCard"
         @card-updated="updateCard"
-        @card-activated="setActiveCard"
+        @card-activated="onCardActivated"
+        @card-deactivated="deactivateCard"
         @card-selected="onSelectCard"
-        @card-deleted="onDeleteCard"
+        @card-deleted="onDeleteCards"
       />
     </div>
   </section>

@@ -10,9 +10,9 @@ const { card, mode, selected } = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'selected', id?: number): void
-  (e: 'deleted', id?: number): void
-  (e: 'moved', id?: number): void
+  (e: 'selected'): void
+  (e: 'deleted'): void
+  (e: 'moved'): void
 }>()
 
 const audio = useAudio()
@@ -23,19 +23,19 @@ const hover_mode = computed(() => {
 const actions = [
   {
     label: 'Select',
-    action: () => emit('selected', card.id),
+    action: () => emit('selected'),
     inverted: true,
     iconRight: 'check'
   },
   {
     label: 'Move',
-    action: () => emit('moved', card.id),
+    action: () => emit('moved'),
     inverted: true,
     iconRight: 'arrow-forward'
   },
   {
     label: 'Delete',
-    action: () => emit('deleted', card.id),
+    action: () => emit('deleted'),
     variant: 'danger',
     inverted: true,
     iconRight: 'delete'
@@ -50,7 +50,7 @@ function onMouseEnter() {
 function onClick() {
   if (mode !== 'select') return
   audio.play('etc_camera_shutter')
-  emit('selected', card.id)
+  emit('selected')
 }
 </script>
 
@@ -85,11 +85,7 @@ function onClick() {
         </template>
       </ui-kit:button-menu>
 
-      <ui-kit:radio
-        v-if="mode === 'select'"
-        :checked="selected"
-        @click.stop="emit('selected', card.id)"
-      />
+      <ui-kit:radio v-if="mode === 'select'" :checked="selected" @click.stop="emit('selected')" />
     </template>
   </ui-kit:list-item>
 </template>
