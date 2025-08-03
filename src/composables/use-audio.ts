@@ -8,6 +8,7 @@ const logger = useLogger()
 const loadedSounds = new Map<string, Howl>()
 const isInitialized = ref(false)
 const isUnlocked = ref(false)
+const playingSounds = ref<Howl[]>([])
 
 type PlayOptions = {
   volume?: number
@@ -47,7 +48,7 @@ export function useAudio() {
     isInitialized.value = true
   }
 
-  const play = (key: string, options: PlayOptions = {}) => {
+  const play = (key: string, options: PlayOptions = {}): Howl | undefined => {
     if (!isUnlocked.value) return
 
     const sound = loadedSounds.get(key)
@@ -55,6 +56,16 @@ export function useAudio() {
     if (sound) {
       sound.volume(options.volume ?? 1)
       sound.play()
+
+      sound.once('end', () => {
+        const index = playingSounds.value.indexOf(sound)
+        if (index !== -1) {
+          playingSounds.value.splice(index, 1)
+        }
+      })
+
+      playingSounds.value.push(sound)
+      return sound
     } else {
       logger.warn(`Sound "${key}" not loaded.`)
     }

@@ -16,7 +16,7 @@ const icons: Record<string, Component> = import.meta.glob('../../assets/icons/*.
   import: 'default'
 })
 
-const Icon = defineComponent({
+let Icon = defineComponent({
   props: {
     src: { type: String, required: true }
   },
