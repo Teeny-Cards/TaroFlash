@@ -5,7 +5,7 @@
         <ui-kit:image src="taro-logo_3" class="max-w-12" />
         <div>TaroCards</div>
       </RouterLink>
-      <div class="flex items-end gap-6">
+      <!-- <div class="flex items-end gap-6">
         <div class="mt-6 flex gap-2.25">
           <div
             v-for="i in 5"
@@ -32,7 +32,7 @@
           >
           </ui-kit:button>
         </div>
-      </div>
+      </div> -->
     </div>
   </nav>
 </template>

@@ -43,7 +43,11 @@ function onOptionClicked(option: SplitButtonOption) {
 </script>
 
 <template>
-  <div data-testid="ui-kit-split-button" class="ui-kit-split-button">
+  <div
+    data-testid="ui-kit-split-button"
+    class="ui-kit-split-button"
+    :class="{ 'ui-kit-split-button--ring': ring }"
+  >
     <button
       v-for="option in default_options"
       data-testid="ui-kit-split-button__default-option"
@@ -103,7 +107,11 @@ function onOptionClicked(option: SplitButtonOption) {
 }
 
 .ui-kit-split-button__ring {
-  @apply rounded-6 absolute -inset-2 -z-1 bg-white;
+  @apply rounded-6 ring-brown-300 absolute -inset-2 -z-1 bg-purple-500 bg-(image:--diagonal-stripes) ring-2;
+}
+
+.ui-kit-split-button--ring button {
+  @apply border-2 border-white;
 }
 
 .ui-kit-split-button__default-option {
