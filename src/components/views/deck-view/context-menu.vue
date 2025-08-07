@@ -2,9 +2,10 @@
 import { type SplitButtonOption } from '@/components/ui-kit/split-button.vue'
 import { computed } from 'vue'
 
-const { mode, selectedCardIndices } = defineProps<{
+const { mode, selectedCardIndices, allCardsSelected } = defineProps<{
   mode: 'edit' | 'view' | 'select'
   selectedCardIndices: number[]
+  allCardsSelected: boolean
 }>()
 
 const emit = defineEmits<{
@@ -15,6 +16,7 @@ const emit = defineEmits<{
   (e: 'delete'): void
   (e: 'save'): void
   (e: 'mode-changed', mode: 'edit' | 'view' | 'select'): void
+  (e: 'select-all'): void
 }>()
 
 const view_options: SplitButtonOption[] = [
@@ -84,6 +86,12 @@ const select_options = computed<SplitButtonOption[]>(() => [
     action: () => emit('delete')
   },
   {
+    label: allCardsSelected ? 'Deselect All' : 'Select All',
+    icon: allCardsSelected ? 'close' : 'check',
+    default: true,
+    action: () => emit('select-all')
+  },
+  {
     label: 'Move',
     icon: 'arrow-forward',
     default: true,
@@ -95,11 +103,11 @@ const select_options = computed<SplitButtonOption[]>(() => [
   }
 ])
 
-const options: { [key: string]: SplitButtonOption[] } = {
+const options = computed(() => ({
   view: view_options,
   edit: edit_options,
   select: select_options.value
-}
+}))
 
 function onOptionClicked(option: SplitButtonOption) {
   option.action?.()

@@ -32,11 +32,13 @@ const {
   active_card_index,
   selected_card_indices,
   mode,
+  all_cards_selected,
   addCard,
   deleteCards,
   updateCard,
   toggleSelectCard,
   selectCard,
+  toggleSelectAll,
   activateCard,
   deactivateCard,
   resetCards,
@@ -168,10 +170,12 @@ function onAddCard() {
         <context-menu
           :mode="mode"
           :selectedCardIndices="selected_card_indices"
+          :allCardsSelected="all_cards_selected"
           @new-card="onAddCard"
           @mode-changed="setMode"
           @save="onSaveClicked"
           @delete="onDeleteCards"
+          @select-all="toggleSelectAll"
         />
       </div>
 
