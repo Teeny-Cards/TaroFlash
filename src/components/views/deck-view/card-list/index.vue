@@ -106,15 +106,6 @@ async function onDblClick(e: MouseEvent, index: number) {
 
       <ui-kit:divider v-if="index < cards.length - 1" dashed />
     </template>
-
-    <ui-kit:button
-      v-if="mode === 'edit'"
-      data-testid="card-list__card-added-button"
-      icon-only
-      icon-left="add"
-      class="absolute top-3 -right-12"
-      @click="emit('card-added')"
-    />
   </div>
 </template>
 

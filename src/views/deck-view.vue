@@ -154,7 +154,7 @@ function onAddCard() {
 </script>
 
 <template>
-  <section data-testid="deck-view" class="flex h-full items-start gap-15 pt-12">
+  <section data-testid="deck-view" class="flex h-full items-start gap-15">
     <overview-panel
       v-if="deck"
       :deck="deck"
@@ -164,7 +164,7 @@ function onAddCard() {
     />
 
     <div class="relative flex h-full w-full flex-col">
-      <div class="flex w-full justify-between pb-4">
+      <div class="sticky top-17 z-10 flex w-full justify-between py-4">
         <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
 
         <context-menu
@@ -177,9 +177,11 @@ function onAddCard() {
           @delete="onDeleteCards"
           @select-all="toggleSelectAll"
         />
-      </div>
 
-      <ui-kit:divider />
+        <div
+          class="bg-brown-100 border-b-brown-500 absolute top-0 -right-3 bottom-0 -left-3 -z-10 border-b"
+        ></div>
+      </div>
 
       <component
         :is="tab_components[active_tab]"

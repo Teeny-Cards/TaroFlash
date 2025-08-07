@@ -30,7 +30,7 @@ const view_options: SplitButtonOption[] = [
   },
   {
     label: 'New Card',
-    icon: 'add',
+    icon: 'teeny-cards',
     default: true,
     action: () => emit('new-card')
   },
@@ -54,7 +54,7 @@ const edit_options: SplitButtonOption[] = [
   },
   {
     label: 'New',
-    icon: 'add',
+    icon: 'teeny-cards',
     default: true,
     action: () => emit('new-card')
   },
