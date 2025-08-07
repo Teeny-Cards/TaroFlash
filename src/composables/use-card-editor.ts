@@ -69,7 +69,8 @@ export function useCardEditor(initialCards: Card[], _deck_id?: number) {
   }
 
   function deselectCard(index: number) {
-    selected_card_indices.value.splice(index, 1)
+    const i = selected_card_indices.value.indexOf(index)
+    if (i !== -1) selected_card_indices.value.splice(i, 1)
   }
 
   function toggleSelectCard(index: number) {
@@ -98,6 +99,10 @@ export function useCardEditor(initialCards: Card[], _deck_id?: number) {
     return edited_cards.value
       .filter((card) => card.dirty || card.new)
       .map(({ deleted, dirty, new: _new, ...rest }) => rest)
+  }
+
+  function getSelectedCards(): Card[] {
+    return edited_cards.value.filter((card, index) => selected_card_indices.value.includes(index))
   }
 
   function resetCards(cards?: Card[], _deck_id?: number) {
@@ -136,10 +141,14 @@ export function useCardEditor(initialCards: Card[], _deck_id?: number) {
   }
 
   async function deleteCards() {
-    if (selected_card_indices.value.length <= 0) return
+    const cards = getSelectedCards()
+      .map((card) => card.id)
+      .filter((id) => id !== undefined)
+
+    if (cards.length <= 0) return
 
     try {
-      await deleteCardsById(selected_card_indices.value)
+      await deleteCardsById(cards)
     } catch (e: any) {
       // TODO
     } finally {
