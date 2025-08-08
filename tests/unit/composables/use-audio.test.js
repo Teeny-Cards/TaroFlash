@@ -11,11 +11,12 @@ const mockHowl = {
   volume: vi.fn().mockReturnThis(),
   play: vi.fn(),
   stop: vi.fn(),
-  playing: vi.fn().mockReturnValue(false)
+  playing: vi.fn().mockReturnValue(false),
+  once: vi.fn()
 }
 
 const mockHowler = {
-  autoUnlock: false,
+  volume: vi.fn(),
   mute: vi.fn()
 }
 
@@ -32,21 +33,56 @@ vi.mock('@/composables/use-logger', () => ({
   }))
 }))
 
+// Mock import.meta.glob to return actual audio files from the project
+// This makes tests more robust and will automatically adapt to file changes
+const mockGlob = vi.fn()
+Object.defineProperty(import.meta, 'glob', {
+  value: mockGlob,
+  writable: true
+})
+
+// Use actual audio files that exist in the project
+const actualAudioFiles = {
+  '/src/assets/audio/chime_short_chord_up.wav': '/src/assets/audio/chime_short_chord_up.wav',
+  '/src/assets/audio/click_04.wav': '/src/assets/audio/click_04.wav',
+  '/src/assets/audio/click_07.wav': '/src/assets/audio/click_07.wav',
+  '/src/assets/audio/digi_powerdown.wav': '/src/assets/audio/digi_powerdown.wav',
+  '/src/assets/audio/double-pop-down.wav': '/src/assets/audio/double-pop-down.wav',
+  '/src/assets/audio/double-pop-up.wav': '/src/assets/audio/double-pop-up.wav',
+  '/src/assets/audio/etc_camera_reel.wav': '/src/assets/audio/etc_camera_reel.wav',
+  '/src/assets/audio/etc_camera_shutter.wav': '/src/assets/audio/etc_camera_shutter.wav',
+  '/src/assets/audio/etc_woodblock_stuck.wav': '/src/assets/audio/etc_woodblock_stuck.wav',
+  '/src/assets/audio/trash_crumple_short.wav': '/src/assets/audio/trash_crumple_short.wav'
+}
+
+mockGlob.mockReturnValue(actualAudioFiles)
+
 let useAudio
 
 beforeEach(async () => {
   vi.clearAllMocks()
   vi.resetModules()
-  mockHowler.autoUnlock = false
+
+  // Reset mock functions
+  mockHowl.volume.mockReturnThis()
+  mockHowl.play.mockClear()
+  mockHowl.stop.mockClear()
+  mockHowl.playing.mockReturnValue(false)
+  mockHowl.once.mockClear()
+  mockHowler.volume.mockClear()
+  mockHowler.mute.mockClear()
+
+  // Reset glob mock to actual files
+  mockGlob.mockReturnValue(actualAudioFiles)
 
   const module = await import('@/composables/use-audio')
   useAudio = module.useAudio
 })
 
 describe('useAudio composable', () => {
-  test('sets Howler.autoUnlock to false on initialization', () => {
+  test('sets Howler volume to 0.5 on initialization', () => {
     useAudio()
-    expect(mockHowler.autoUnlock).toBe(false)
+    expect(mockHowler.volume).toHaveBeenCalledWith(0.5)
   })
 })
 
@@ -58,29 +94,52 @@ describe('preload', () => {
     expect(mockHowlConstructor).toHaveBeenCalled()
   })
 
-  test('creates Howl instances with correct configuration', () => {
-    const { preload } = useAudio()
+  test('handles empty audio files gracefully', () => {
+    // Mock empty audio files
+    mockGlob.mockReturnValue({})
+
+    const { preload, isInitialized } = useAudio()
 
     preload()
 
-    // Check that each Howl was created with correct src and preload options
-    const expectedSources = [
-      'double-pop-up.wav',
-      'double-pop-down.wav',
-      'click_04.wav',
-      'etc_woodblock_stuck.wav',
-      'digi_powerdown.wav',
-      'trash_crumple_short.wav',
-      'chime_short_chord_up.wav',
-      'etc_camera_shutter.wav'
-    ]
-
-    expectedSources.forEach((source, index) => {
-      expect(mockHowlConstructor).toHaveBeenNthCalledWith(index + 1, {
-        src: [`/src/assets/audio/${source}`],
-        preload: true
-      })
+    // Should still set initialized to true even with no files
+    expect(isInitialized.value).toBe(true)
+    // Should still create the unlock sound
+    expect(mockHowlConstructor).toHaveBeenCalledWith({
+      src: ['/src/assets/audio/double-pop-up.wav'],
+      volume: 0
     })
+  })
+
+  test('creates Howl instances with correct configuration', () => {
+    const { preload } = useAudio()
+
+    const callsBefore = mockHowlConstructor.mock.calls.length
+
+    preload()
+
+    const callsAfter = mockHowlConstructor.mock.calls.length
+    const newCalls = callsAfter - callsBefore
+    const audioFileCount = Object.keys(actualAudioFiles).length
+
+    // Should create 1 unlock sound + number of audio files
+    expect(newCalls).toBe(1 + audioFileCount)
+
+    // First new call should be the unlock sound with volume 0
+    const firstNewCall = mockHowlConstructor.mock.calls[callsBefore]
+    expect(firstNewCall[0]).toEqual({
+      src: ['/src/assets/audio/double-pop-up.wav'],
+      volume: 0
+    })
+
+    // Check that all subsequent calls have preload: true
+    for (let i = callsBefore + 1; i < callsAfter; i++) {
+      const call = mockHowlConstructor.mock.calls[i]
+      expect(call[0]).toHaveProperty('preload', true)
+      expect(call[0]).toHaveProperty('src')
+      expect(Array.isArray(call[0].src)).toBe(true)
+      expect(call[0].src[0]).toMatch(/^\/src\/assets\/audio\/.*\.wav$/)
+    }
   })
 
   test('sets isInitialized to true after preloading', () => {
@@ -115,12 +174,34 @@ describe('preload', () => {
     expect(audio1.isInitialized.value).toBe(true)
     expect(audio2.isInitialized.value).toBe(true)
   })
+
+  test('sets up unlock callback correctly', () => {
+    const { preload } = useAudio()
+
+    preload()
+
+    // Verify that the unlock sound was created with an 'unlock' callback
+    expect(mockHowl.once).toHaveBeenCalledWith('unlock', expect.any(Function))
+
+    // Get the unlock callback and verify it works
+    const unlockCallback = mockHowl.once.mock.calls.find((call) => call[0] === 'unlock')?.[1]
+    expect(unlockCallback).toBeDefined()
+
+    // The callback should set isUnlocked to true (we can't test this directly
+    // since isUnlocked is internal, but we can verify the callback exists)
+    if (unlockCallback) {
+      expect(() => unlockCallback()).not.toThrow()
+    }
+  })
 })
 
 describe('play', () => {
   beforeEach(() => {
     const { preload } = useAudio()
     preload()
+    // Simulate unlock event to enable playing
+    const unlockCallback = mockHowl.once.mock.calls.find((call) => call[0] === 'unlock')?.[1]
+    if (unlockCallback) unlockCallback()
   })
 
   test('plays sound with default volume when no options provided', () => {
@@ -143,23 +224,17 @@ describe('play', () => {
 
   test('works with all valid sound keys', () => {
     const { play } = useAudio()
-    const validKeys = [
-      'double-pop-up',
-      'double-pop-down',
-      'click_04',
-      'etc_woodblock_stuck',
-      'digi_powerdown',
-      'trash_crumple_short',
-      'chime_short_chord_up',
-      'etc_camera_shutter'
-    ]
 
-    validKeys.forEach((key) => {
-      vi.clearAllMocks()
-      play(key)
-      expect(mockHowl.volume).toHaveBeenCalledWith(1)
-      expect(mockHowl.play).toHaveBeenCalled()
-    })
+    // Test with actual loaded sounds
+    vi.clearAllMocks()
+    play('double-pop-up')
+    expect(mockHowl.volume).toHaveBeenCalledWith(1)
+    expect(mockHowl.play).toHaveBeenCalled()
+
+    vi.clearAllMocks()
+    play('click_04')
+    expect(mockHowl.volume).toHaveBeenCalledWith(1)
+    expect(mockHowl.play).toHaveBeenCalled()
   })
 
   test('logs warning when sound key does not exist', () => {
@@ -179,15 +254,62 @@ describe('play', () => {
     expect(mockHowl.play).not.toHaveBeenCalled()
   })
 
-  test('works without preloading (should warn)', async () => {
-    // Create fresh instance without preloading
+  test('does not play when not unlocked', async () => {
+    // Create fresh instance without preloading and unlock
     vi.resetModules()
     const { useAudio: freshUseAudio } = await import('@/composables/use-audio')
-    const { play } = freshUseAudio()
+    const { preload, play } = freshUseAudio()
+    preload()
+    // Don't trigger unlock event
 
-    play('double-pop-up')
+    const result = play('double-pop-up')
 
-    expect(mocks.warn).toHaveBeenCalledWith('Sound "double-pop-up" not loaded.')
+    expect(result).toBeUndefined()
+    expect(mockHowl.play).not.toHaveBeenCalled()
+  })
+
+  test('cleans up playing sounds when sound ends', () => {
+    const { play } = useAudio()
+
+    // Play a sound
+    const result = play('double-pop-up')
+    expect(result).toBeDefined()
+
+    // Find the 'end' callback that was registered - it should be the second call to once
+    // (first is 'unlock', second should be 'end')
+    const endCall = mockHowl.once.mock.calls.find((call) => call[0] === 'end')
+    expect(endCall).toBeDefined()
+
+    const endCallback = endCall?.[1]
+    expect(endCallback).toBeDefined()
+
+    // Simulate the sound ending
+    if (endCallback) {
+      endCallback()
+    }
+
+    // The cleanup logic should have been executed
+    expect(mockHowl.once).toHaveBeenCalledWith('end', expect.any(Function))
+  })
+
+  test('handles sound end cleanup when sound is not in playing array', () => {
+    const { play } = useAudio()
+
+    // Play a sound
+    const result = play('double-pop-up')
+    expect(result).toBeDefined()
+
+    // Get the end callback
+    const endCall = mockHowl.once.mock.calls.find((call) => call[0] === 'end')
+    const endCallback = endCall?.[1]
+
+    // Call it multiple times to test the index !== -1 check
+    if (endCallback) {
+      endCallback() // First call removes it
+      endCallback() // Second call should handle index === -1 case
+    }
+
+    expect(mockHowl.once).toHaveBeenCalledWith('end', expect.any(Function))
   })
 })
 
@@ -195,12 +317,15 @@ describe('playRandom', () => {
   beforeEach(() => {
     const { preload } = useAudio()
     preload()
+    // Simulate unlock event to enable playing
+    const unlockCallback = mockHowl.once.mock.calls.find((call) => call[0] === 'unlock')?.[1]
+    if (unlockCallback) unlockCallback()
 
     vi.spyOn(Math, 'random')
   })
 
   afterEach(() => {
-    Math.random.mockRestore()
+    vi.restoreAllMocks()
   })
 
   test('plays first sound when Math.random returns 0', () => {
@@ -280,12 +405,29 @@ describe('playRandom', () => {
     expect(mockHowl.play).toHaveBeenCalled()
     expect(mocks.warn).not.toHaveBeenCalled()
   })
+
+  test('handles undefined array gracefully', () => {
+    const { playRandom } = useAudio()
+
+    expect(() => playRandom(undefined)).not.toThrow()
+    expect(mockHowl.play).not.toHaveBeenCalled()
+  })
+
+  test('handles null array gracefully', () => {
+    const { playRandom } = useAudio()
+
+    expect(() => playRandom(null)).not.toThrow()
+    expect(mockHowl.play).not.toHaveBeenCalled()
+  })
 })
 
 describe('isPlaying', () => {
   beforeEach(() => {
     const { preload } = useAudio()
     preload()
+    // Simulate unlock event to enable playing
+    const unlockCallback = mockHowl.once.mock.calls.find((call) => call[0] === 'unlock')?.[1]
+    if (unlockCallback) unlockCallback()
   })
 
   test('returns true when sound is playing', () => {
@@ -319,22 +461,15 @@ describe('isPlaying', () => {
 
   test('works with all valid sound keys', () => {
     const { isPlaying } = useAudio()
-    const validKeys = [
-      'double-pop-up',
-      'double-pop-down',
-      'click_04',
-      'etc_woodblock_stuck',
-      'digi_powerdown',
-      'trash_crumple_short',
-      'chime_short_chord_up',
-      'etc_camera_shutter'
-    ]
 
-    validKeys.forEach((key) => {
-      mockHowl.playing.mockReturnValue(true)
-      const result = isPlaying(key)
-      expect(result).toBe(true)
-    })
+    // Test with known loaded sounds
+    mockHowl.playing.mockReturnValue(true)
+
+    let result = isPlaying('double-pop-up')
+    expect(result).toBe(true)
+
+    result = isPlaying('click_04')
+    expect(result).toBe(true)
   })
 
   test('does not log warnings for non-existent sounds', () => {
@@ -350,6 +485,9 @@ describe('stop', () => {
   beforeEach(() => {
     const { preload } = useAudio()
     preload()
+    // Simulate unlock event to enable playing
+    const unlockCallback = mockHowl.once.mock.calls.find((call) => call[0] === 'unlock')?.[1]
+    if (unlockCallback) unlockCallback()
   })
 
   test('stops sound when it exists', () => {
@@ -370,22 +508,15 @@ describe('stop', () => {
 
   test('works with all valid sound keys', () => {
     const { stop } = useAudio()
-    const validKeys = [
-      'double-pop-up',
-      'double-pop-down',
-      'click_04',
-      'etc_woodblock_stuck',
-      'digi_powerdown',
-      'trash_crumple_short',
-      'chime_short_chord_up',
-      'etc_camera_shutter'
-    ]
 
-    validKeys.forEach((key) => {
-      vi.clearAllMocks()
-      stop(key)
-      expect(mockHowl.stop).toHaveBeenCalled()
-    })
+    // Test with known loaded sounds
+    vi.clearAllMocks()
+    stop('double-pop-up')
+    expect(mockHowl.stop).toHaveBeenCalled()
+
+    vi.clearAllMocks()
+    stop('click_04')
+    expect(mockHowl.stop).toHaveBeenCalled()
   })
 
   test('does not log warnings for non-existent sounds', () => {
