@@ -157,6 +157,7 @@ function onAddCard() {
   <section data-testid="deck-view" class="flex h-full items-start gap-15">
     <overview-panel
       v-if="deck"
+      class="sticky top-23"
       :deck="deck"
       :image-url="image_url"
       @study-clicked="onStudyClicked"
@@ -164,7 +165,7 @@ function onAddCard() {
     />
 
     <div class="relative flex h-full w-full flex-col">
-      <div class="sticky top-17 z-10 flex w-full justify-between py-4">
+      <div class="sticky top-17 z-10 flex w-full justify-between py-6">
         <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
 
         <context-menu
