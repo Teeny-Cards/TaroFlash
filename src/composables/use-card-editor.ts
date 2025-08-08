@@ -1,18 +1,11 @@
 import { computed, ref } from 'vue'
 import { updateCards, deleteCardsById } from '@/services/card-service'
-import { useAlert } from '@/composables/use-alert'
-import { useI18n } from 'vue-i18n'
-import { useAudio } from '@/composables/use-audio'
 
 export type EditableCard = Card & { deleted?: boolean; dirty?: boolean; new?: boolean }
 export type EditableCardKey = keyof EditableCard
 export type EditableCardValue = EditableCard[keyof EditableCard]
 
 export function useCardEditor(initialCards: Card[], _deck_id?: number) {
-  const { t } = useI18n()
-  const alert = useAlert()
-  const audio = useAudio()
-
   const edited_cards = ref<EditableCard[]>(initialCards.map((card) => ({ ...card })))
   let initial_cards = initialCards
 
@@ -114,7 +107,7 @@ export function useCardEditor(initialCards: Card[], _deck_id?: number) {
   async function setMode(new_mode: 'edit' | 'view' | 'select', reset = true) {
     mode.value = new_mode
 
-    if (reset && (await warnIfDirty())) {
+    if (reset) {
       resetEdits()
     }
   }
@@ -123,21 +116,6 @@ export function useCardEditor(initialCards: Card[], _deck_id?: number) {
     resetCards()
     clearSelectedCards()
     deactivateCard(active_card_index.value)
-  }
-
-  function warnIfDirty() {
-    if (!is_dirty.value) return true
-
-    audio.play('etc_woodblock_stuck')
-
-    const { response } = alert.warn({
-      title: t('alert.leave-page'),
-      message: t('alert.leave-page.message'),
-      confirmLabel: t('common.leave'),
-      cancelLabel: t('alert.leave-page.stay')
-    })
-
-    return response
   }
 
   async function deleteCards() {
@@ -190,7 +168,6 @@ export function useCardEditor(initialCards: Card[], _deck_id?: number) {
     setMode,
     resetCards,
     saveCards,
-    resetEdits,
-    warnIfDirty
+    resetEdits
   }
 }

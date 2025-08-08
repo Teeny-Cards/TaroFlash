@@ -33,6 +33,7 @@ const {
   selected_card_indices,
   mode,
   all_cards_selected,
+  is_dirty,
   addCard,
   deleteCards,
   updateCard,
@@ -43,8 +44,7 @@ const {
   deactivateCard,
   resetCards,
   saveCards,
-  setMode,
-  warnIfDirty
+  setMode
 } = useCardEditor(deck.value?.cards ?? [], Number(deck_id))
 
 const tabs = [
@@ -76,6 +76,29 @@ onUnmounted(() => {
   document.removeEventListener('keydown', onEsc)
 })
 
+function warnIfDirty() {
+  if (!is_dirty.value) return true
+
+  audio.play('etc_woodblock_stuck')
+
+  const { response } = alert.warn({
+    title: t('alert.leave-page'),
+    message: t('alert.leave-page.message'),
+    confirmLabel: t('common.leave'),
+    cancelLabel: t('alert.leave-page.stay')
+  })
+
+  return response
+}
+
+async function trySetMode(new_mode: 'edit' | 'view' | 'select', reset = true) {
+  const res = warnIfDirty()
+
+  if (await res) {
+    setMode(new_mode, reset)
+  }
+}
+
 async function onEsc(e: KeyboardEvent) {
   if (e.key !== 'Escape') return
 
@@ -95,7 +118,7 @@ function onStudyClicked() {
 async function onSaveClicked() {
   await saveCards()
   await refetchDeck()
-  setMode('view')
+  trySetMode('view')
 }
 
 async function refetchDeck() {
@@ -109,7 +132,7 @@ async function refetchDeck() {
 }
 
 function cancelEdits() {
-  setMode('view')
+  trySetMode('view')
   audio.play('digi_powerdown')
 }
 
@@ -134,12 +157,12 @@ async function onDeleteCards(index?: number) {
 
 function onSelectCard(index: number) {
   toggleSelectCard(index)
-  setMode('select', false)
+  trySetMode('select', false)
 }
 
 function onCardActivated(index: number) {
   if (mode.value === 'view') {
-    setMode('edit')
+    trySetMode('edit')
     audio.play('etc_camera_reel')
   }
 
@@ -148,7 +171,7 @@ function onCardActivated(index: number) {
 
 function onAddCard() {
   addCard()
-  setMode('edit', false)
+  trySetMode('edit', false)
   activateCard(0)
 }
 </script>
@@ -173,7 +196,7 @@ function onAddCard() {
           :selectedCardIndices="selected_card_indices"
           :allCardsSelected="all_cards_selected"
           @new-card="onAddCard"
-          @mode-changed="setMode"
+          @mode-changed="trySetMode"
           @save="onSaveClicked"
           @delete="onDeleteCards"
           @select-all="toggleSelectAll"
