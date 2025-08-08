@@ -72,6 +72,7 @@ export function useAudio() {
   }
 
   const playRandom = (keys: string[], options: PlayOptions = {}) => {
+    if (!keys || keys.length === 0) return
     const key = keys[Math.floor(Math.random() * keys.length)]
     play(key, options)
   }
