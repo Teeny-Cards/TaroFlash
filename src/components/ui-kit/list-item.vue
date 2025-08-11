@@ -26,6 +26,6 @@ defineProps<{
 }
 
 .ui-kit-list-item__background {
-  @apply rounded-6 bg-brown-300 absolute top-1 -right-3 bottom-1 -left-3 -z-1 hidden group-hover:block;
+  @apply rounded-6 absolute top-1 -right-3 bottom-1 -left-3 -z-1 hidden bg-purple-400 bg-(image:--diagonal-stripes) group-hover:block;
 }
 </style>
