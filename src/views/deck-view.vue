@@ -139,13 +139,13 @@ function cancelEdits() {
 async function onDeleteCards(index?: number) {
   const count = selected_card_indices.value.length + (index !== undefined ? 1 : 0)
 
-  const { response: confirmed } = alert.warn({
+  const { response } = alert.warn({
     title: t('alert.delete-card', { count }),
     message: t('alert.delete-card.message', { count }),
     confirmLabel: t('common.delete')
   })
 
-  if (await confirmed) {
+  if (await response) {
     if (index !== undefined) selectCard(index)
 
     await deleteCards()

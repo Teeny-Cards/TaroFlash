@@ -67,6 +67,7 @@ async function onDblClick(e: MouseEvent, index: number) {
   <div v-else data-testid="card-list" class="relative flex w-full flex-col">
     <template v-for="(card, index) in cards" :key="card.id">
       <list-item
+        :class="`mode-${mode}`"
         :card="card"
         :mode="mode"
         :selected="selectedCardIndices.includes(index)"
@@ -77,12 +78,9 @@ async function onDblClick(e: MouseEvent, index: number) {
       >
         <div
           class="flex w-full gap-4"
-          :class="[
-            `mode--${mode}`,
-            {
-              active: activeCardIndex === index
-            }
-          ]"
+          :class="{
+            active: activeCardIndex === index
+          }"
         >
           <textarea
             data-testid="front-input"
@@ -119,7 +117,7 @@ textarea {
   @apply pointer-events-none overflow-hidden;
 }
 
-.mode--edit textarea {
+.mode-edit textarea {
   @apply ring-brown-300 pointer-events-auto bg-white ring-2;
 }
 
