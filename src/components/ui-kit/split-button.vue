@@ -51,6 +51,7 @@ function onOptionClicked(option: SplitButtonOption) {
     <button
       v-for="option in default_options"
       data-testid="ui-kit-split-button__default-option"
+      :data-option="option.label"
       class="ui-kit-split-button__default-option"
       :class="`ui-kit-split-button__default-option--${option.theme ?? 'blue'} `"
       @click="onOptionClicked(option)"
@@ -79,6 +80,7 @@ function onOptionClicked(option: SplitButtonOption) {
       <div
         v-for="option in non_default_options"
         data-testid="ui-kit-split-button__dropdown__option"
+        :data-option="option.label"
         class="ui-kit-split-button__dropdown__option"
         :class="`ui-kit-split-button__dropdown__option--${option.theme ?? 'blue'} `"
         @click="onOptionClicked(option)"

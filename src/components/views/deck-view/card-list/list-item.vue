@@ -56,6 +56,7 @@ function onClick() {
 
 <template>
   <ui-kit:list-item
+    data-testid="card-list__item"
     class="text-grey-700"
     :show-background="hover_mode"
     :class="{ 'cursor-pointer': hover_mode }"

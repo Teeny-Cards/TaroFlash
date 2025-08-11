@@ -39,7 +39,7 @@ test('renders card list when there are cards', () => {
 
   expect(wrapper.exists()).toBe(true)
   expect(wrapper.find('[data-testid="card-list"]').exists()).toBe(true)
-  expect(wrapper.findAll('[data-testid="ui-kit-list-item"]').length).toBe(3)
+  expect(wrapper.findAll('[data-testid="card-list__item"]').length).toBe(3)
 })
 
 test('Emits card-activated event when card is focused', async () => {
@@ -147,7 +147,7 @@ test('Emits card-selected event when card is selected', async () => {
   })
 
   // Click on the list item to select it
-  await wrapper.find('[data-testid="ui-kit-list-item"]').trigger('click')
+  await wrapper.find('[data-testid="card-list__item"]').trigger('click')
 
   expect(wrapper.emitted('card-selected')).toBeTruthy()
   expect(wrapper.emitted('card-selected')[0]).toEqual([0])
