@@ -1,5 +1,5 @@
 <template>
-  <component :is="iconComponent" :class="iconSize[size]" />
+  <component data-testid="ui-kit-icon" :is="iconComponent" :class="iconSize[size]" :alt="src" />
 </template>
 
 <script setup lang="ts">
