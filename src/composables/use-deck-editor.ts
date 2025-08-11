@@ -3,7 +3,7 @@ import { deleteDeck as upstreamDeleteDeck, upsertDeck } from '@/services/deck-se
 import { deleteDeckImage, getDeckImageUrl, uploadDeckImage } from '@/services/file-service'
 import { DateTime } from 'luxon'
 
-export function useDeck(deck?: Deck) {
+export function useDeckEditor(deck?: Deck) {
   const settings = reactive<Deck>({
     id: deck?.id,
     title: deck?.title,

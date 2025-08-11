@@ -4,7 +4,7 @@ import NameImageConfig from './name-image-config.vue'
 import AdditionalSettings from './additional-settings.vue'
 import HeaderConfig from './header-config.vue'
 import { useAlert } from '@/composables/use-alert'
-import { useDeck } from '@/composables/use-deck'
+import { useDeckEditor } from '@/composables/use-deck-editor'
 import { useAudio } from '@/composables/use-audio'
 import { inject, onBeforeUnmount, onMounted } from 'vue'
 import type { ModalContext } from '@/components/ui-kit/modal.vue'
@@ -20,7 +20,7 @@ const { registerBackdropCloseListener } = inject('modal-context') as ModalContex
 const { t } = useI18n()
 const alert = useAlert()
 const audio = useAudio()
-const { settings, image_url, saveDeck, deleteDeck, uploadImage, removeImage } = useDeck(deck)
+const { settings, image_url, saveDeck, deleteDeck, uploadImage, removeImage } = useDeckEditor(deck)
 
 onMounted(() => {
   audio.play('double-pop-up')

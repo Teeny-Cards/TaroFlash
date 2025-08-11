@@ -27,7 +27,7 @@ it('renders properly with default props', () => {
   })
 
   expect(wrapper.exists()).toBe(true)
-  expect(wrapper.attributes('teeny-dropdown')).toBe('')
+  expect(wrapper.attributes('data-testid')).toBe('ui-kit-button-menu')
 })
 
 // Test trigger label
