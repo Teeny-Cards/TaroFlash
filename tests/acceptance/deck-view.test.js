@@ -239,6 +239,7 @@ describe('DeckView User Flow Acceptance Tests', () => {
 
     it('user cancels edit with unsaved changes and sees confirmation dialog', async () => {
       const wrapper = await createDeckView()
+      mocks.warnMock.mockReturnValueOnce({ response: true })
 
       // User double-clicks to edit
       const firstCard = wrapper.find('[data-testid="card-list__item"]')
@@ -355,7 +356,7 @@ describe('DeckView User Flow Acceptance Tests', () => {
       // User's tab preference should be restored
       localStorageMock.getItem.mockReturnValue('1')
 
-      const wrapper = await createDeckView()
+      await createDeckView()
 
       // Verify localStorage was checked for saved preferences
       expect(localStorageMock.getItem).toHaveBeenCalledWith('deck-view-tabs')
