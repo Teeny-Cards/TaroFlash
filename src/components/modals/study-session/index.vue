@@ -5,7 +5,6 @@ import RatingButtons from './rating-buttons.vue'
 import { useStudySession } from '@/composables/use-study-session'
 import { type RecordLogItem } from 'ts-fsrs'
 import { computed } from 'vue'
-import { updateReviewByCardId } from '@/api/cards'
 
 const { deck } = defineProps<{ deck: Deck; close: (response?: boolean) => void }>()
 
@@ -17,19 +16,20 @@ const {
   studied_card_ids,
   failed_card_ids,
   active_card_review_options,
-  advanceToNextCard,
-  setPreviewCard
+  setupNextCard,
+  setPreviewCard,
+  reviewCard
 } = useStudySession(deck.cards, { study_all_cards: true })
 
 const isPreviewingOrRevealed = computed(() => {
   return mode.value === 'previewing' || current_card_state.value === 'revealed'
 })
 
-async function onCardReviewed(item: RecordLogItem) {
-  if (!current_card.value?.id || mode.value !== 'studying') return
-
-  await updateReviewByCardId(current_card.value.id, item.card)
-  advanceToNextCard(item.log.rating)
+function onCardReviewed(item: RecordLogItem) {
+  if (current_card.value?.id && mode.value === 'studying') {
+    reviewCard(item)
+    setupNextCard()
+  }
 }
 
 function onCardRevealed() {

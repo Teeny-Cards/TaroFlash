@@ -1,6 +1,14 @@
 import { ref, computed } from 'vue'
-import { createEmptyCard, FSRS, generatorParameters, Rating, type IPreview } from 'ts-fsrs'
+import {
+  createEmptyCard,
+  FSRS,
+  generatorParameters,
+  Rating,
+  type IPreview,
+  type RecordLogItem
+} from 'ts-fsrs'
 import { DateTime } from 'luxon'
+import { updateReviewByCardId } from '@/api/reviews'
 
 export type StudyMode = 'studying' | 'previewing' | 'completed'
 export type CardDisplayState = 'hidden' | 'revealed'
@@ -24,7 +32,7 @@ export function useStudySession(cards?: Card[], config?: StudySessionConfig) {
   const _review_options = ref<Record<number, IPreview>>({})
 
   // START SETUP
-  _setupNextCard()
+  setupNextCard()
   // END SETUP
 
   const current_card = computed(() =>
@@ -52,9 +60,18 @@ export function useStudySession(cards?: Card[], config?: StudySessionConfig) {
     }
   }
 
-  function advanceToNextCard(rating?: Rating) {
-    _markCurrentCardStudied(rating)
-    _setupNextCard()
+  function setupNextCard() {
+    _active_card.value = _pickNextCard()
+    current_card_state.value = 'hidden'
+    _computeReviewOptionsForActiveCard()
+  }
+
+  function reviewCard(item: RecordLogItem) {
+    _markCurrentCardStudied(item.log.rating)
+
+    if (current_card.value?.id) {
+      return updateReviewByCardId(current_card.value.id, item.card)
+    }
   }
 
   // private methods
@@ -74,12 +91,6 @@ export function useStudySession(cards?: Card[], config?: StudySessionConfig) {
     } else {
       studied_card_ids.value.add(card.id)
     }
-  }
-
-  function _setupNextCard() {
-    _active_card.value = _pickNextCard()
-    current_card_state.value = 'hidden'
-    _computeReviewOptionsForActiveCard()
   }
 
   function _pickNextCard(): Card | undefined {
@@ -117,7 +128,8 @@ export function useStudySession(cards?: Card[], config?: StudySessionConfig) {
     active_card_review_options,
 
     // control
-    advanceToNextCard,
-    setPreviewCard
+    setupNextCard,
+    setPreviewCard,
+    reviewCard
   }
 }
