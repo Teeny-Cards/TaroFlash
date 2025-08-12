@@ -4,21 +4,24 @@ import StudyCard from './study-card.vue'
 import RatingButtons from './rating-buttons.vue'
 import { useStudySession } from '@/composables/use-study-session'
 import { type RecordLogItem } from 'ts-fsrs'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 
 const { deck } = defineProps<{ deck: Deck; close: (response?: boolean) => void }>()
 
 const {
   mode,
-  cards_in_deck,
+  cards,
   current_card_state,
   current_card,
-  studied_card_ids,
-  failed_card_ids,
-  setupNextCard,
+  pickNextCard,
   setPreviewCard,
-  reviewCard
-} = useStudySession(deck.cards, { study_all_cards: true })
+  reviewCard,
+  setup
+} = useStudySession()
+
+onMounted(() => {
+  setup(deck.cards, { study_all_cards: true })
+})
 
 const isPreviewingOrRevealed = computed(() => {
   return mode.value === 'previewing' || current_card_state.value === 'revealed'
@@ -27,7 +30,7 @@ const isPreviewingOrRevealed = computed(() => {
 function onCardReviewed(item: RecordLogItem) {
   if (current_card.value?.id && mode.value === 'studying') {
     reviewCard(item)
-    setupNextCard()
+    pickNextCard()
   }
 }
 
@@ -78,12 +81,6 @@ function onCardRevealed() {
       />
     </div>
 
-    <history-track
-      :cards="cards_in_deck"
-      :studied-card-ids="studied_card_ids"
-      :failed-card-ids="failed_card_ids"
-      :current-card="current_card"
-      @card-clicked="setPreviewCard"
-    />
+    <history-track :cards="cards" :current-card="current_card" @card-clicked="setPreviewCard" />
   </div>
 </template>

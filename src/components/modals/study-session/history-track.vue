@@ -1,28 +1,20 @@
 <script setup lang="ts">
-const { cards, studiedCardIds, failedCardIds, currentCard } = defineProps<{
-  cards: Card[]
-  studiedCardIds: Set<number>
-  failedCardIds: Set<number>
+import { type StudyCard } from '@/composables/use-study-session'
+
+const { cards, currentCard } = defineProps<{
+  cards: StudyCard[]
   currentCard: Card | undefined
 }>()
 
 const emit = defineEmits<{
-  (e: 'card-clicked', card: Card): void
+  (e: 'card-clicked', card: StudyCard): void
 }>()
 
-function isStudied(card: Card) {
-  return studiedCardIds.has(card.id!)
-}
-
-function isFailed(card: Card) {
-  return failedCardIds.has(card.id!)
-}
-
-function isActive(card: Card) {
+function isActive(card: StudyCard) {
   return card.id === currentCard?.id
 }
 
-function onClickCard(card: Card) {
+function onClickCard(card: StudyCard) {
   emit('card-clicked', card)
 }
 </script>
@@ -40,14 +32,14 @@ function onClickCard(card: Card) {
           transition-[all] duration-100 hover:min-w-6 focus:outline-none"
         :class="{
           '!min-w-6 !bg-purple-500': isActive(card),
-          '!bg-purple-400': isStudied(card),
-          '!bg-grey-300': isFailed(card)
+          '!bg-purple-400': card.state === 'passed',
+          '!bg-grey-300': card.state === 'failed'
         }"
         @click="onClickCard(card)"
       >
-        <ui-kit:tooltip
+        <!-- <ui-kit:tooltip
           :text="isStudied(card) || isActive(card) || isFailed(card) ? card.front_text : '?'"
-        />
+        /> -->
       </button>
     </div>
 

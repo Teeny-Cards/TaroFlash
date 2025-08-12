@@ -21,8 +21,10 @@ function getRatingTimeFormat(grade: Grade) {
 
   if (!date) return ''
 
-  const timeString = DateTime.fromJSDate(date).toRelative({ padding: 1000 })
-  return `${t('study.study-in')} ${timeString}`
+  const time = DateTime.fromJSDate(date)
+  const timeString = time.toRelativeCalendar()
+
+  return t('study.study-again', { time: timeString })
 }
 
 function onRatingClicked(grade: Grade) {
