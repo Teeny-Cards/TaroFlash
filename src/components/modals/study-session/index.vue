@@ -10,10 +10,10 @@ import { updateReviewByCardId } from '@/api/card-service'
 const { deck } = defineProps<{ deck: Deck; close: (response?: boolean) => void }>()
 
 const {
+  mode,
   cards_in_deck,
   current_card_state,
   current_card,
-  view_state,
   studied_card_ids,
   failed_card_ids,
   active_card_review_options,
@@ -22,11 +22,11 @@ const {
 } = useStudySession(deck.cards, { study_all_cards: true })
 
 const isPreviewingOrRevealed = computed(() => {
-  return view_state.value === 'previewing' || current_card_state.value === 'revealed'
+  return mode.value === 'previewing' || current_card_state.value === 'revealed'
 })
 
 async function onCardReviewed(item: RecordLogItem) {
-  if (!current_card.value?.id || view_state.value !== 'studying') return
+  if (!current_card.value?.id || mode.value !== 'studying') return
 
   await updateReviewByCardId(current_card.value.id, item.card)
   advanceToNextCard(item.log.rating)
@@ -67,13 +67,13 @@ function onCardRevealed() {
       <study-card
         :card="current_card"
         :revealed="current_card_state === 'revealed'"
-        :previewing="view_state === 'previewing'"
+        :previewing="mode === 'previewing'"
       />
 
       <rating-buttons
         :options="active_card_review_options"
         :show-options="isPreviewingOrRevealed"
-        :disabled="view_state !== 'studying'"
+        :disabled="mode !== 'studying'"
         @reviewed="onCardReviewed"
         @revealed="onCardRevealed"
       />
