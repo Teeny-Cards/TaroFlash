@@ -15,7 +15,6 @@ const {
   current_card,
   studied_card_ids,
   failed_card_ids,
-  active_card_review_options,
   setupNextCard,
   setPreviewCard,
   reviewCard
@@ -71,7 +70,7 @@ function onCardRevealed() {
       />
 
       <rating-buttons
-        :options="active_card_review_options"
+        :options="current_card?.preview"
         :show-options="isPreviewingOrRevealed"
         :disabled="mode !== 'studying'"
         @reviewed="onCardReviewed"
