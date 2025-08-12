@@ -2,8 +2,8 @@
 import OverviewPanel from '@/components/views/deck-view/overview-panel.vue'
 import { onMounted, onUnmounted, ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
-import StudyModal from '@/components/modals/study-modal/index.vue'
 import { fetchDeck } from '@/api/deck-service'
+import StudySession from '@/components/modals/study-session/index.vue'
 import CardList from '@/components/views/deck-view/card-list/index.vue'
 import CardGrid from '@/components/views/deck-view/card-grid.vue'
 import { useI18n } from 'vue-i18n'
@@ -108,7 +108,7 @@ async function onEsc(e: KeyboardEvent) {
 }
 
 function onStudyClicked() {
-  modal.open(StudyModal, {
+  modal.open(StudySession, {
     props: {
       deck: deck.value!
     }
