@@ -9,13 +9,13 @@ type StudySessionConfig = {
   study_all_cards?: boolean
 }
 
-export function useStudySession() {
+export function useStudySession(cards?: Card[], config?: StudySessionConfig) {
   const _PARAMS = generatorParameters({ enable_fuzz: true })
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
 
   const view_state = ref<ViewState>('studying')
   const current_card_state = ref<CardDisplayState>('hidden')
-  const cards_in_deck = ref<Card[]>([])
+  const cards_in_deck = ref<Card[]>(_filterDueCards(cards, config))
   const studied_card_ids = ref<Set<number>>(new Set())
   const failed_card_ids = ref<Set<number>>(new Set())
 
@@ -23,23 +23,21 @@ export function useStudySession() {
   const _preview_card = ref<Card | undefined>(undefined)
   const _review_options = ref<Record<number, IPreview>>({})
 
+  // START SETUP
+  _setupNextCard()
+  // END SETUP
+
   const current_card = computed(() =>
     view_state.value === 'studying' ? _active_card.value : _preview_card.value
   )
 
   const active_card_review_options = computed(() => {
     const id = _active_card.value?.id
-    if (!id) return undefined
-    return _review_options.value?.[id]
+
+    if (id) {
+      return _review_options.value?.[id]
+    }
   })
-
-  function setupStudySession(cards?: Card[], config?: StudySessionConfig) {
-    cards_in_deck.value = _filterDueCards(cards, config)
-  }
-
-  function startSession() {
-    advanceToNextCard()
-  }
 
   function setPreviewCard(card: Card) {
     const isStudied = studied_card_ids.value.has(card.id!)
@@ -56,10 +54,7 @@ export function useStudySession() {
 
   function advanceToNextCard(rating?: Rating) {
     _markCurrentCardStudied(rating)
-
-    _active_card.value = _pickNextCard()
-    current_card_state.value = 'hidden'
-    _computeReviewOptionsForActiveCard()
+    _setupNextCard()
   }
 
   // private methods
@@ -79,6 +74,12 @@ export function useStudySession() {
     } else {
       studied_card_ids.value.add(card.id)
     }
+  }
+
+  function _setupNextCard() {
+    _active_card.value = _pickNextCard()
+    current_card_state.value = 'hidden'
+    _computeReviewOptionsForActiveCard()
   }
 
   function _pickNextCard(): Card | undefined {
@@ -116,8 +117,6 @@ export function useStudySession() {
     active_card_review_options,
 
     // control
-    setupStudySession,
-    startSession,
     advanceToNextCard,
     setPreviewCard
   }
