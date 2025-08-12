@@ -2,7 +2,7 @@ import { ref, computed } from 'vue'
 import { createEmptyCard, FSRS, generatorParameters, Rating, type IPreview } from 'ts-fsrs'
 import { DateTime } from 'luxon'
 
-export type ViewState = 'studying' | 'previewing' | 'completed'
+export type StudyMode = 'studying' | 'previewing' | 'completed'
 export type CardDisplayState = 'hidden' | 'revealed'
 
 type StudySessionConfig = {
@@ -13,7 +13,7 @@ export function useStudySession(cards?: Card[], config?: StudySessionConfig) {
   const _PARAMS = generatorParameters({ enable_fuzz: true })
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
 
-  const view_state = ref<ViewState>('studying')
+  const mode = ref<StudyMode>('studying')
   const current_card_state = ref<CardDisplayState>('hidden')
   const cards_in_deck = ref<Card[]>(_filterDueCards(cards, config))
   const studied_card_ids = ref<Set<number>>(new Set())
@@ -28,7 +28,7 @@ export function useStudySession(cards?: Card[], config?: StudySessionConfig) {
   // END SETUP
 
   const current_card = computed(() =>
-    view_state.value === 'studying' ? _active_card.value : _preview_card.value
+    mode.value === 'studying' ? _active_card.value : _preview_card.value
   )
 
   const active_card_review_options = computed(() => {
@@ -45,10 +45,10 @@ export function useStudySession(cards?: Card[], config?: StudySessionConfig) {
 
     if (isStudied || isFailed) {
       _preview_card.value = card
-      view_state.value = 'previewing'
+      mode.value = 'previewing'
     } else {
       _preview_card.value = undefined
-      view_state.value = 'studying'
+      mode.value = 'studying'
     }
   }
 
@@ -108,7 +108,7 @@ export function useStudySession(cards?: Card[], config?: StudySessionConfig) {
 
   return {
     // state
-    view_state,
+    mode,
     current_card_state,
     current_card,
     cards_in_deck,
