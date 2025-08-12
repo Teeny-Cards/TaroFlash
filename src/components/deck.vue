@@ -2,7 +2,7 @@
 import Card from '@/components/card.vue'
 import { computed } from 'vue'
 import deckPreview from './popovers/deck-preview.vue'
-import StudyModal from './modals/study-modal/index.vue'
+import StudyModal from './modals/study-session/index.vue'
 import { useModal } from '@/composables/use-modal'
 import { useDeckEditor } from '@/composables/use-deck-editor'
 
