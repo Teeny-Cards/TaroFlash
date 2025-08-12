@@ -1,4 +1,4 @@
-import { fetchMemberById } from '@/services/member-service'
+import { fetchMemberById } from '@/api/member-service'
 import { defineStore } from 'pinia'
 
 interface State {

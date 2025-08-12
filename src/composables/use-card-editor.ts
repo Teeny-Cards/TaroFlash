@@ -1,5 +1,5 @@
 import { computed, ref } from 'vue'
-import { updateCards, deleteCardsById } from '@/services/card-service'
+import { updateCards, deleteCardsById } from '@/api/card-service'
 
 export type EditableCard = Card & { deleted?: boolean; dirty?: boolean; new?: boolean }
 export type EditableCardKey = keyof EditableCard

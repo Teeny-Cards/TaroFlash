@@ -2,7 +2,7 @@ import { expect, test, describe, vi, beforeEach } from 'vitest'
 import { useCardEditor } from '@/composables/use-card-editor'
 import { CardBuilder } from '@tests/mocks/models/card'
 
-vi.mock('@/services/card-service', () => ({
+vi.mock('@/api/card-service', () => ({
   updateCards: vi.fn(),
   deleteCardsById: vi.fn()
 }))
@@ -420,7 +420,7 @@ describe('resetEdits', () => {
 
 describe('saveCards', () => {
   test('Calls updateCards with changed cards', async () => {
-    const { updateCards } = await import('@/services/card-service')
+    const { updateCards } = await import('@/api/card-service')
     const initialCards = CardBuilder().many(3)
     const { updateCard, saveCards } = useCardEditor(initialCards)
 
@@ -437,7 +437,7 @@ describe('saveCards', () => {
   })
 
   test('Does nothing when no cards changed', async () => {
-    const { updateCards } = await import('@/services/card-service')
+    const { updateCards } = await import('@/api/card-service')
     const initialCards = CardBuilder().many(3)
     const { saveCards } = useCardEditor(initialCards)
 
@@ -447,7 +447,7 @@ describe('saveCards', () => {
   })
 
   test('Handles errors gracefully', async () => {
-    const { updateCards } = await import('@/services/card-service')
+    const { updateCards } = await import('@/api/card-service')
     updateCards.mockRejectedValueOnce(new Error('Save failed'))
 
     const initialCards = CardBuilder().many(3)
@@ -462,7 +462,7 @@ describe('saveCards', () => {
 
 describe('deleteCards', () => {
   test('Calls deleteCardsById with selected card IDs', async () => {
-    const { deleteCardsById } = await import('@/services/card-service')
+    const { deleteCardsById } = await import('@/api/card-service')
     const initialCards = CardBuilder().many(3)
     const { selectCard, deleteCards } = useCardEditor(initialCards)
 
@@ -488,7 +488,7 @@ describe('deleteCards', () => {
   })
 
   test('Does nothing when no cards selected', async () => {
-    const { deleteCardsById } = await import('@/services/card-service')
+    const { deleteCardsById } = await import('@/api/card-service')
     const initialCards = CardBuilder().many(3)
     const { deleteCards } = useCardEditor(initialCards)
 
@@ -498,7 +498,7 @@ describe('deleteCards', () => {
   })
 
   test('Filters out cards without IDs', async () => {
-    const { deleteCardsById } = await import('@/services/card-service')
+    const { deleteCardsById } = await import('@/api/card-service')
     const initialCards = CardBuilder().many(2)
     const { selectCard, addCard, deleteCards, selected_card_indices } = useCardEditor(initialCards)
 
@@ -515,7 +515,7 @@ describe('deleteCards', () => {
   })
 
   test('Handles errors gracefully', async () => {
-    const { deleteCardsById } = await import('@/services/card-service')
+    const { deleteCardsById } = await import('@/api/card-service')
     deleteCardsById.mockRejectedValueOnce(new Error('Delete failed'))
 
     const initialCards = CardBuilder().many(3)
