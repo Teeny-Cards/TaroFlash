@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import ShopItem from '@/components/views/shop-view/shop-item.vue'
-import { fetchShopItems, upsertPurchase } from '@/services/shop-service'
+import { fetchShopItems, upsertPurchase } from '@/api/shop-service'
 import { useMemberStore } from '@/stores/member'
 
 const shop_items = ref<{ [key: string]: ShopItem[] }>({})
