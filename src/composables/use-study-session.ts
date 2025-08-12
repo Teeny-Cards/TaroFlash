@@ -17,19 +17,20 @@ type StudySessionConfig = {
   study_all_cards?: boolean
 }
 
+type StudyCard = Card & { preview?: IPreview }
+
 export function useStudySession(cards?: Card[], config?: StudySessionConfig) {
   const _PARAMS = generatorParameters({ enable_fuzz: true })
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
 
   const mode = ref<StudyMode>('studying')
   const current_card_state = ref<CardDisplayState>('hidden')
-  const cards_in_deck = ref<Card[]>(_filterDueCards(cards, config))
+  const cards_in_deck = ref<StudyCard[]>(_setupCards(cards, config))
   const studied_card_ids = ref<Set<number>>(new Set())
   const failed_card_ids = ref<Set<number>>(new Set())
 
-  const _active_card = ref<Card | undefined>(undefined)
-  const _preview_card = ref<Card | undefined>(undefined)
-  const _review_options = ref<Record<number, IPreview>>({})
+  const _active_card = ref<StudyCard | undefined>(undefined)
+  const _preview_card = ref<StudyCard | undefined>(undefined)
 
   // START SETUP
   setupNextCard()
@@ -39,15 +40,7 @@ export function useStudySession(cards?: Card[], config?: StudySessionConfig) {
     mode.value === 'studying' ? _active_card.value : _preview_card.value
   )
 
-  const active_card_review_options = computed(() => {
-    const id = _active_card.value?.id
-
-    if (id) {
-      return _review_options.value?.[id]
-    }
-  })
-
-  function setPreviewCard(card: Card) {
+  function setPreviewCard(card: StudyCard) {
     const isStudied = studied_card_ids.value.has(card.id!)
     const isFailed = failed_card_ids.value.has(card.id!)
 
@@ -61,9 +54,11 @@ export function useStudySession(cards?: Card[], config?: StudySessionConfig) {
   }
 
   function setupNextCard() {
-    _active_card.value = _pickNextCard()
     current_card_state.value = 'hidden'
-    _computeReviewOptionsForActiveCard()
+
+    _active_card.value = cards_in_deck.value.find(
+      (c) => !studied_card_ids.value.has(c.id!) && !failed_card_ids.value.has(c.id!)
+    )
   }
 
   function reviewCard(item: RecordLogItem) {
@@ -75,11 +70,20 @@ export function useStudySession(cards?: Card[], config?: StudySessionConfig) {
   }
 
   // private methods
-  function _filterDueCards(cards: Card[] = [], config?: StudySessionConfig): Card[] {
+  function _setupCards(cards: Card[] = [], config?: StudySessionConfig): StudyCard[] {
     const now = DateTime.now()
-    return config?.study_all_cards
+
+    // Filter out cards that are not due if we are not studying all cards
+    const filtered = config?.study_all_cards
       ? [...cards]
       : cards.filter((c) => !c.review?.due || DateTime.fromISO(c.review.due as string) <= now)
+
+    // Compute the review options for each card
+    return filtered.map((c) => {
+      const review = c.review ?? (createEmptyCard(new Date()) as Review)
+      const preview = _FSRS_INSTANCE.repeat(review, new Date())
+      return { ...c, review, preview }
+    })
   }
 
   function _markCurrentCardStudied(rating?: Rating) {
@@ -93,41 +97,13 @@ export function useStudySession(cards?: Card[], config?: StudySessionConfig) {
     }
   }
 
-  function _pickNextCard(): Card | undefined {
-    const nextCard = cards_in_deck.value.find(
-      (c) => !studied_card_ids.value.has(c.id!) && !failed_card_ids.value.has(c.id!)
-    )
-
-    if (nextCard && !nextCard.review) {
-      nextCard.review = createEmptyCard(new Date())
-    }
-
-    return nextCard
-  }
-
-  function _computeReviewOptionsForActiveCard() {
-    const card = _active_card.value
-    if (!card?.id || !card.review) return
-
-    if (_review_options.value[card.id]) return
-
-    _review_options.value = {
-      ..._review_options.value,
-      [card.id]: _FSRS_INSTANCE.repeat(card.review, new Date())
-    }
-  }
-
   return {
-    // state
     mode,
     current_card_state,
     current_card,
     cards_in_deck,
     studied_card_ids,
     failed_card_ids,
-    active_card_review_options,
-
-    // control
     setupNextCard,
     setPreviewCard,
     reviewCard
