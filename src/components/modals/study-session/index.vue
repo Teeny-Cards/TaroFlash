@@ -5,7 +5,7 @@ import RatingButtons from './rating-buttons.vue'
 import { useStudySession } from '@/composables/use-study-session'
 import { type RecordLogItem } from 'ts-fsrs'
 import { computed } from 'vue'
-import { updateReviewByCardId } from '@/api/card-service'
+import { updateReviewByCardId } from '@/api/cards'
 
 const { deck } = defineProps<{ deck: Deck; close: (response?: boolean) => void }>()
 
