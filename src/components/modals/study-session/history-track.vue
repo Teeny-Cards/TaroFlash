@@ -1,17 +1,30 @@
 <script setup lang="ts">
-import { type StudyCard } from '@/composables/use-study-session'
+import { type StudyCard, type StudyMode } from '@/composables/use-study-session'
+import { computed } from 'vue'
 
-const { cards, currentCard } = defineProps<{
+const { cards, activeCard, previewCard, mode } = defineProps<{
   cards: StudyCard[]
-  currentCard: Card | undefined
+  mode: StudyMode
+  activeCard: Card | undefined
+  previewCard: Card | undefined
 }>()
 
 const emit = defineEmits<{
   (e: 'card-clicked', card: StudyCard): void
 }>()
 
+const current_card = computed(() => {
+  if (mode === 'studying') return activeCard
+  if (mode === 'previewing') return previewCard
+  return undefined
+})
+
 function isActive(card: StudyCard) {
-  return card.id === currentCard?.id
+  return card.id === activeCard?.id
+}
+
+function isPreviewing(card: StudyCard) {
+  return card.id === previewCard?.id
 }
 
 function onClickCard(card: StudyCard) {
@@ -31,7 +44,7 @@ function onClickCard(card: StudyCard) {
         class="aspect-card bg-brown-100 rounded-1.5 group flex w-4.75 min-w-4.75 cursor-pointer justify-center
           transition-[all] duration-100 hover:min-w-6 focus:outline-none"
         :class="{
-          '!min-w-6 !bg-purple-500': isActive(card),
+          '!min-w-6 !bg-purple-500': isActive(card) || isPreviewing(card),
           '!bg-purple-400': card.state === 'passed',
           '!bg-grey-300': card.state === 'failed'
         }"
@@ -45,7 +58,7 @@ function onClickCard(card: StudyCard) {
 
     <div data-testid="history-track__count">
       <p class="text-brown-700 text-lg">
-        {{ currentCard?.order ?? 0 }}<span class="text-sm">/{{ cards.length }}</span>
+        {{ current_card?.order ?? 0 }}<span class="text-sm">/{{ cards.length }}</span>
       </p>
     </div>
   </div>

@@ -13,6 +13,8 @@ const {
   cards,
   current_card_state,
   current_card,
+  active_card,
+  preview_card,
   pickNextCard,
   setPreviewCard,
   reviewCard,
@@ -20,7 +22,7 @@ const {
 } = useStudySession()
 
 onMounted(() => {
-  setup(deck.cards, { study_all_cards: true })
+  setup(deck.cards)
 })
 
 const isPreviewingOrRevealed = computed(() => {
@@ -81,6 +83,12 @@ function onCardRevealed() {
       />
     </div>
 
-    <history-track :cards="cards" :current-card="current_card" @card-clicked="setPreviewCard" />
+    <history-track
+      :cards="cards"
+      :mode="mode"
+      :active-card="active_card"
+      :preview-card="preview_card"
+      @card-clicked="setPreviewCard"
+    />
   </div>
 </template>
