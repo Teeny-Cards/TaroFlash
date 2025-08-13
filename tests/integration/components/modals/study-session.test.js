@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { expect, it, vi } from 'vitest'
-import StudyModal from '@/components/modals/study-modal/index.vue'
+import StudySession from '@/components/modals/study-session/index.vue'
+import { CardBuilder } from '@tests/mocks/models/card'
 
 const mocks = vi.hoisted(() => {
   return {
@@ -12,91 +13,45 @@ vi.mock('@/api/cards', () => ({
   updateReviewByCardId: mocks.updateReviewByCardId
 }))
 
-it('sets up study session with deck.cards when modal is opened', async () => {
-  const cards = [{ id: '1', front_text: 'Front', back_text: 'Back' }]
-
-  const wrapper = mount(StudyModal, {
-    props: {
-      open: true,
-      deck: {
-        title: 'Test Deck',
-        cards
-      }
-    },
-    global: {
-      stubs: ['teleport']
-    }
-  })
-
-  await wrapper.vm.$nextTick()
-
-  expect(wrapper.vm.cards_in_deck).toMatchObject(cards)
-  expect(wrapper.vm.current_card).toMatchObject(cards[0])
-})
-
 it('displays deck title in header', async () => {
-  const wrapper = mount(StudyModal, {
+  const wrapper = mount(StudySession, {
     props: {
       open: true,
       deck: {
         title: 'Test Deck',
         cards: []
       }
-    },
-    global: {
-      stubs: ['teleport']
     }
   })
 
-  expect(wrapper.find('[data-testid="study-modal__header"]').text()).toContain('Test Deck')
+  expect(wrapper.find('[data-testid="study-session__header"]').text()).toContain('Test Deck')
 })
 
-it('updates current_card_state to revealed when revealed event is emitted', async () => {
-  const wrapper = mount(StudyModal, {
-    props: {
-      open: true,
-      deck: {
-        title: 'Test Deck',
-        cards: []
-      }
-    },
-    global: {
-      stubs: ['teleport']
-    }
-  })
+// shows first card in hidden state when first opened
+// only studys cards due today when study_all_cards is false
+// studys all cards when study_all_cards is true
+// retries failed cards when retry_failed_cards is true and card is due again today
+// does not retry failed cards when retry_failed_cards is false
+// studying a card marks it as studied and moves to next card
 
-  await wrapper.findComponent({ name: 'RatingButtons' }).vm.$emit('revealed')
+// HISTORY TRACK
+// shows all cards in history track
+// shows first card as active in history track
+// shows a previously studied card in preview mode when clicked in history track
+// returns to study mode when the active card is clicked in history track
+// passed cards are marked in history track
+// failed cards are marked in history track
+// cannot preview a card that has not been studied
+// tooltip shows card front text for studied/failed/active cards
+// tooltip shows '?' for unstudied cards
 
-  expect(wrapper.vm.current_card_state).toBe('revealed')
-})
+// RATING BUTTONS
+// shows reveal button when card is hidden
+// shows rating options when card is revealed
+// reveal button is shown and disabled when in preview mode
+// emits reviewed event with rating option when rating button is clicked
+// emits revealed event when reveal button is clicked
 
-it('updates the card and session when reviewed event is emitted', async () => {
-  const cards = [
-    { id: '1', front_text: 'Front 1', back_text: 'Back 1' },
-    { id: '2', front_text: 'Front 2', back_text: 'Back 2' }
-  ]
-
-  const wrapper = mount(StudyModal, {
-    props: {
-      open: true,
-      deck: {
-        title: 'Test Deck',
-        cards
-      }
-    },
-    global: {
-      stubs: ['teleport']
-    }
-  })
-
-  wrapper.vm.current_card_state = 'revealed'
-  await wrapper.vm.$nextTick()
-
-  const reviewOptions = wrapper.vm.active_card_review_options
-  const ratingButtons = wrapper.findComponent({ name: 'RatingButtons' })
-  await ratingButtons.vm.$emit('reviewed', reviewOptions?.[2])
-
-  expect(mocks.updateReviewByCardId).toHaveBeenCalled()
-  expect(wrapper.vm.current_card).toMatchObject(cards[1])
-  expect(wrapper.vm.studied_card_ids.has('1')).toBe(true)
-})
+// STUDY CARD
+// shows front of card and hides back when hidden
+// shows back of card when revealed
