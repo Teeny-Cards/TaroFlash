@@ -43,15 +43,15 @@ function onCardRevealed() {
 
 <template>
   <div
-    data-testid="study-modal"
+    data-testid="study-session"
     class="bg-brown-300 rounded-8 shadow-modal flex h-170 w-268 flex-col items-center overflow-hidden pb-6"
   >
     <div
-      data-testid="study-modal__header"
+      data-testid="study-session__header"
       class="pointy-bottom relative flex w-full justify-center bg-purple-500 bg-(image:--diagonal-stripes)
         bg-(length:--bg-sm) px-13 py-11.5"
     >
-      <div data-testid="study-modal__actions" class="absolute top-0 left-0 p-4">
+      <div data-testid="study-session__actions" class="absolute top-0 left-0 p-4">
         <ui-kit:button
           icon-left="close"
           variant="muted"
@@ -64,10 +64,10 @@ function onCardRevealed() {
     </div>
 
     <div
-      data-testid="study-modal__body"
+      data-testid="study-session__body"
       class="grid h-full w-full grid-cols-[1fr_auto_1fr] content-center"
     >
-      <div data-testid="study-modal__powerup"></div>
+      <div data-testid="study-session__powerup"></div>
       <study-card
         :card="current_card"
         :revealed="current_card_state === 'revealed'"
