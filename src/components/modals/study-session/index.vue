@@ -4,7 +4,7 @@ import StudyCard from './study-card.vue'
 import RatingButtons from './rating-buttons.vue'
 import { useStudySession } from '@/composables/use-study-session'
 import { type RecordLogItem } from 'ts-fsrs'
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 
 const { deck } = defineProps<{ deck: Deck; close: (response?: boolean) => void }>()
 
@@ -19,11 +19,9 @@ const {
   setPreviewCard,
   reviewCard,
   setup
-} = useStudySession()
+} = useStudySession(deck.config)
 
-onMounted(() => {
-  setup(deck.cards)
-})
+setup(deck.cards)
 
 const isPreviewingOrRevealed = computed(() => {
   return mode.value === 'previewing' || current_card_state.value === 'revealed'
@@ -44,6 +42,7 @@ function onCardRevealed() {
 <template>
   <div
     data-testid="study-session"
+    :data-mode="mode"
     class="bg-brown-300 rounded-8 shadow-modal flex h-170 w-268 flex-col items-center overflow-hidden pb-6"
   >
     <div

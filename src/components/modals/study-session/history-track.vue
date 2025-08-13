@@ -27,6 +27,13 @@ function isPreviewing(card: StudyCard) {
   return card.id === previewCard?.id
 }
 
+function cardState(card: StudyCard) {
+  if (isActive(card)) return 'active'
+  if (isPreviewing(card)) return 'previewing'
+
+  return card.state
+}
+
 function onClickCard(card: StudyCard) {
   emit('card-clicked', card)
 }
@@ -40,14 +47,11 @@ function onClickCard(card: StudyCard) {
     >
       <button
         v-for="card in cards"
+        data-testid="history-track__card"
         :key="card.id"
         class="aspect-card bg-brown-100 rounded-1.5 group flex w-4.75 min-w-4.75 cursor-pointer justify-center
           transition-[all] duration-100 hover:min-w-6 focus:outline-none"
-        :class="{
-          '!min-w-6 !bg-purple-500': isActive(card) || isPreviewing(card),
-          '!bg-purple-400': card.state === 'passed',
-          '!bg-grey-300': card.state === 'failed'
-        }"
+        :class="`history-track__card--${cardState(card)}`"
         @click="onClickCard(card)"
       >
         <!-- <ui-kit:tooltip
@@ -63,3 +67,20 @@ function onClickCard(card: StudyCard) {
     </div>
   </div>
 </template>
+
+<style>
+@reference '@/styles/main.css';
+
+.history-track__card--active {
+  @apply !min-w-6 !bg-purple-500;
+}
+.history-track__card--previewing {
+  @apply !min-w-6 !bg-purple-500;
+}
+.history-track__card--passed {
+  @apply !bg-purple-400;
+}
+.history-track__card--failed {
+  @apply !bg-grey-300;
+}
+</style>

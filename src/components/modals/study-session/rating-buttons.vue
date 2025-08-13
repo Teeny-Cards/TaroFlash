@@ -5,7 +5,11 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-const { options, showOptions, disabled } = defineProps<{
+const {
+  options,
+  showOptions,
+  disabled = false
+} = defineProps<{
   options?: RecordLog
   showOptions: boolean
   disabled: boolean
