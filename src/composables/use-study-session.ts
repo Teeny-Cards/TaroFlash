@@ -16,17 +16,12 @@ export type StudyCard = Card & { preview?: IPreview; state: ReviewState }
 
 type ReviewState = 'failed' | 'passed' | 'unreviewed'
 
-type StudySessionConfig = {
-  study_all_cards: boolean
-  retry_failed_cards: boolean
-}
-
-const defaultConfig: StudySessionConfig = {
+const defaultConfig: DeckConfig = {
   study_all_cards: true,
   retry_failed_cards: true
 }
 
-export function useStudySession(config: StudySessionConfig = defaultConfig) {
+export function useStudySession(config: DeckConfig = defaultConfig) {
   const _PARAMS = generatorParameters({ enable_fuzz: true })
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
   const _cards_in_deck = ref<StudyCard[]>([])
@@ -86,7 +81,11 @@ export function useStudySession(config: StudySessionConfig = defaultConfig) {
     // Filter out cards that are not due if we are not studying all cards
     const filtered = config.study_all_cards
       ? [...cards]
-      : cards.filter((c) => !c.review?.due || DateTime.fromISO(c.review.due as string) <= now)
+      : cards.filter(
+          (c) =>
+            !c.review?.due ||
+            DateTime.fromISO(c.review.due as string).startOf('day') <= now.startOf('day')
+        )
 
     // Compute the review options for each card
     return filtered.map(_setupCard)
@@ -95,7 +94,8 @@ export function useStudySession(config: StudySessionConfig = defaultConfig) {
   function _setupCard(card: Card): StudyCard {
     const review = card.review ?? (createEmptyCard(new Date()) as Review)
     const preview = _FSRS_INSTANCE.repeat(review, new Date())
-    return { ...card, review, preview, state: 'unreviewed' }
+
+    return { state: 'unreviewed', review, preview, ...card }
   }
 
   function _markCurrentCardStudied(rating?: Rating) {
@@ -114,7 +114,7 @@ export function useStudySession(config: StudySessionConfig = defaultConfig) {
     const due_today = DateTime.fromJSDate(card.review?.due as Date).hasSame(DateTime.now(), 'day')
     if (!due_today) return
 
-    const retry_card = _setupCard({ ...card })
+    const retry_card = _setupCard(card)
     _retry_cards.value.push(retry_card)
   }
 
