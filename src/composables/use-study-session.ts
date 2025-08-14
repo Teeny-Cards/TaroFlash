@@ -1,124 +1,135 @@
 import { ref, computed } from 'vue'
-import { createEmptyCard, FSRS, generatorParameters, Rating, type IPreview } from 'ts-fsrs'
+import {
+  createEmptyCard,
+  FSRS,
+  generatorParameters,
+  Rating,
+  type IPreview,
+  type RecordLogItem
+} from 'ts-fsrs'
 import { DateTime } from 'luxon'
+import { updateReviewByCardId } from '@/api/reviews'
 
-export type ViewState = 'studying' | 'previewing' | 'completed'
+export type StudyMode = 'studying' | 'previewing' | 'completed'
 export type CardDisplayState = 'hidden' | 'revealed'
+export type StudyCard = Card & { preview?: IPreview; state: ReviewState }
 
-type StudySessionConfig = {
-  study_all_cards?: boolean
+type ReviewState = 'failed' | 'passed' | 'unreviewed'
+
+const defaultConfig: DeckConfig = {
+  study_all_cards: true,
+  retry_failed_cards: true
 }
 
-export function useStudySession() {
+export function useStudySession(config: DeckConfig = defaultConfig) {
   const _PARAMS = generatorParameters({ enable_fuzz: true })
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
+  const _cards_in_deck = ref<StudyCard[]>([])
+  const _retry_cards = ref<StudyCard[]>([])
 
-  const view_state = ref<ViewState>('studying')
+  const mode = ref<StudyMode>('studying')
   const current_card_state = ref<CardDisplayState>('hidden')
-  const cards_in_deck = ref<Card[]>([])
-  const studied_card_ids = ref<Set<number>>(new Set())
-  const failed_card_ids = ref<Set<number>>(new Set())
 
-  const _active_card = ref<Card | undefined>(undefined)
-  const _preview_card = ref<Card | undefined>(undefined)
-  const _review_options = ref<Record<number, IPreview>>({})
+  const active_card = ref<StudyCard | undefined>(undefined)
+  const preview_card = ref<StudyCard | undefined>(undefined)
 
   const current_card = computed(() =>
-    view_state.value === 'studying' ? _active_card.value : _preview_card.value
+    mode.value === 'studying' ? active_card.value : preview_card.value
   )
 
-  const active_card_review_options = computed(() => {
-    const id = _active_card.value?.id
-    if (!id) return undefined
-    return _review_options.value?.[id]
+  const cards = computed(() => {
+    if (!config.retry_failed_cards) return _cards_in_deck.value
+
+    return [..._cards_in_deck.value, ..._retry_cards.value]
   })
 
-  function setupStudySession(cards?: Card[], config?: StudySessionConfig) {
-    cards_in_deck.value = _filterDueCards(cards, config)
+  function setup(cards?: Card[]) {
+    _cards_in_deck.value = _setupCards(cards)
+    pickNextCard()
   }
 
-  function startSession() {
-    advanceToNextCard()
-  }
-
-  function setPreviewCard(card: Card) {
-    const isStudied = studied_card_ids.value.has(card.id!)
-    const isFailed = failed_card_ids.value.has(card.id!)
-
-    if (isStudied || isFailed) {
-      _preview_card.value = card
-      view_state.value = 'previewing'
+  function setPreviewCard(card: StudyCard) {
+    if (card.state !== 'unreviewed') {
+      preview_card.value = card
+      mode.value = 'previewing'
     } else {
-      _preview_card.value = undefined
-      view_state.value = 'studying'
+      preview_card.value = undefined
+      mode.value = 'studying'
     }
   }
 
-  function advanceToNextCard(rating?: Rating) {
-    _markCurrentCardStudied(rating)
-
-    _active_card.value = _pickNextCard()
+  function pickNextCard() {
     current_card_state.value = 'hidden'
-    _computeReviewOptionsForActiveCard()
+    active_card.value = cards.value.find((c) => c.state === 'unreviewed')
+  }
+
+  function reviewCard(item: RecordLogItem) {
+    if (!current_card.value) return
+
+    current_card.value.review = item.card
+    _markCurrentCardStudied(item.log.rating)
+
+    if (current_card.value?.id) {
+      return updateReviewByCardId(current_card.value.id, item.card)
+    }
   }
 
   // private methods
-  function _filterDueCards(cards: Card[] = [], config?: StudySessionConfig): Card[] {
+  function _setupCards(cards: Card[] = []): StudyCard[] {
     const now = DateTime.now()
-    return config?.study_all_cards
-      ? [...cards]
-      : cards.filter((c) => !c.review?.due || DateTime.fromISO(c.review.due as string) <= now)
+
+    // Filter out cards that are not due if we are not studying all cards
+    const filtered = config.study_all_cards
+      ? cards
+      : cards.filter(
+          (c) =>
+            !c.review?.due ||
+            DateTime.fromISO(c.review.due as string).startOf('day') <= now.startOf('day')
+        )
+
+    // Compute the review options for each card
+    return filtered.map(_setupCard)
+  }
+
+  function _setupCard(card: Card): StudyCard {
+    const review = card.review ?? (createEmptyCard(new Date()) as Review)
+    const preview = _FSRS_INSTANCE.repeat(review, new Date())
+
+    return { state: 'unreviewed', ...card, review, preview }
   }
 
   function _markCurrentCardStudied(rating?: Rating) {
     const card = current_card.value
-    if (!card || card !== _active_card.value || !card.id) return
+    if (!card || card !== active_card.value || !card.id) return
 
     if (rating === Rating.Again) {
-      failed_card_ids.value.add(card.id)
+      card.state = 'failed'
+      _retryCard(card)
     } else {
-      studied_card_ids.value.add(card.id)
+      card.state = 'passed'
     }
   }
 
-  function _pickNextCard(): Card | undefined {
-    const nextCard = cards_in_deck.value.find(
-      (c) => !studied_card_ids.value.has(c.id!) && !failed_card_ids.value.has(c.id!)
-    )
+  function _retryCard(card: StudyCard) {
+    if (!config.retry_failed_cards) return
 
-    if (nextCard && !nextCard.review) {
-      nextCard.review = createEmptyCard(new Date())
-    }
+    const due_today = DateTime.fromISO(card.review?.due as string).hasSame(DateTime.now(), 'day')
+    if (!due_today) return
 
-    return nextCard
-  }
-
-  function _computeReviewOptionsForActiveCard() {
-    const card = _active_card.value
-    if (!card?.id || !card.review) return
-
-    if (_review_options.value[card.id]) return
-
-    _review_options.value = {
-      ..._review_options.value,
-      [card.id]: _FSRS_INSTANCE.repeat(card.review, new Date())
-    }
+    const retry_card = _setupCard(card)
+    _retry_cards.value.push(retry_card)
   }
 
   return {
-    // state
-    view_state,
+    mode,
     current_card_state,
     current_card,
-    cards_in_deck,
-    studied_card_ids,
-    failed_card_ids,
-    active_card_review_options,
-
-    // control
-    setupStudySession,
-    startSession,
-    advanceToNextCard,
-    setPreviewCard
+    active_card,
+    preview_card,
+    cards,
+    setup,
+    pickNextCard,
+    setPreviewCard,
+    reviewCard
   }
 }
