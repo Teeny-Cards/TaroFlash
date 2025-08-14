@@ -1,9 +1,9 @@
 <template>
-  <Icon :src="src" :class="iconSize[size]"></Icon>
+  <component data-testid="ui-kit-icon" :is="iconComponent" :class="iconSize[size]" :alt="src" />
 </template>
 
 <script setup lang="ts">
-import { defineComponent, h, type Component } from 'vue'
+import { type Component, computed } from 'vue'
 
 const { src, size = 'base' } = defineProps<{
   src: string
@@ -16,14 +16,10 @@ const icons: Record<string, Component> = import.meta.glob('../../assets/icons/*.
   import: 'default'
 })
 
-const Icon = defineComponent({
-  props: {
-    src: { type: String, required: true }
-  },
-  setup(props) {
-    const icon = icons[`../../assets/icons/${props.src}.svg`]
-    return () => h(icon)
-  }
+const iconComponent = computed(() => {
+  const icon = icons[`../../assets/icons/${src}.svg`]
+  if (!icon) console.warn(`Missing icon: ${src}`)
+  return icon
 })
 
 const iconSize: { [key: string]: string } = {
