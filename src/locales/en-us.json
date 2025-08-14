@@ -42,7 +42,7 @@
   "study.nope!": "Nope!",
   "study.got-it!": "Got It!",
   "study.show!": "Show!",
-  "study.study-in": "Study again in",
+  "study.study-again": "Study again {time}",
 
   "edit-card-modal.title": "Edit Card",
   "dashboard.due": "Due",

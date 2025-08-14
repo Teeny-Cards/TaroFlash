@@ -1,6 +1,6 @@
 import { reactive, ref, computed } from 'vue'
-import { deleteDeck as upstreamDeleteDeck, upsertDeck } from '@/api/deck-service'
-import { deleteDeckImage, getDeckImageUrl, uploadDeckImage } from '@/api/file-service'
+import { deleteDeck as upstreamDeleteDeck, upsertDeck } from '@/api/decks'
+import { deleteDeckImage, getDeckImageUrl, uploadDeckImage } from '@/api/files'
 import { DateTime } from 'luxon'
 
 export function useDeckEditor(deck?: Deck) {
