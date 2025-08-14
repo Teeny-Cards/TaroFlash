@@ -40,7 +40,8 @@ export const CardBuilder = () => {
       created_at: () => faker.date.past().toISOString(),
       updated_at: () => faker.date.past().toISOString(),
       order: sequence(),
-      review: undefined
+      review: undefined,
+      state: 'unreviewed'
     },
     traits: {
       with_not_due_review: {

@@ -80,7 +80,7 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
 
     // Filter out cards that are not due if we are not studying all cards
     const filtered = config.study_all_cards
-      ? [...cards]
+      ? cards
       : cards.filter(
           (c) =>
             !c.review?.due ||
@@ -95,7 +95,7 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     const review = card.review ?? (createEmptyCard(new Date()) as Review)
     const preview = _FSRS_INSTANCE.repeat(review, new Date())
 
-    return { state: 'unreviewed', review, preview, ...card }
+    return { state: 'unreviewed', ...card, review, preview }
   }
 
   function _markCurrentCardStudied(rating?: Rating) {
@@ -111,7 +111,9 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
   }
 
   function _retryCard(card: StudyCard) {
-    const due_today = DateTime.fromJSDate(card.review?.due as Date).hasSame(DateTime.now(), 'day')
+    if (!config.retry_failed_cards) return
+
+    const due_today = DateTime.fromISO(card.review?.due as string).hasSame(DateTime.now(), 'day')
     if (!due_today) return
 
     const retry_card = _setupCard(card)
