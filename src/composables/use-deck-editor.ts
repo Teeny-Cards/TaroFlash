@@ -1,9 +1,9 @@
 import { reactive, ref, computed } from 'vue'
-import { deleteDeck as upstreamDeleteDeck, upsertDeck } from '@/services/deck-service'
-import { deleteDeckImage, getDeckImageUrl, uploadDeckImage } from '@/services/file-service'
+import { deleteDeck as upstreamDeleteDeck, upsertDeck } from '@/api/deck-service'
+import { deleteDeckImage, getDeckImageUrl, uploadDeckImage } from '@/api/file-service'
 import { DateTime } from 'luxon'
 
-export function useDeck(deck?: Deck) {
+export function useDeckEditor(deck?: Deck) {
   const settings = reactive<Deck>({
     id: deck?.id,
     title: deck?.title,
