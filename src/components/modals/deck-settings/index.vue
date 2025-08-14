@@ -4,29 +4,45 @@ import NameImageConfig from './name-image-config.vue'
 import AdditionalSettings from './additional-settings.vue'
 import HeaderConfig from './header-config.vue'
 import { useAlert } from '@/composables/use-alert'
-import { useDeck } from '@/composables/use-deck'
-
-const { t } = useI18n()
-const alert = useAlert()
+import { useDeckEditor } from '@/composables/use-deck-editor'
+import { useAudio } from '@/composables/use-audio'
+import { inject, onBeforeUnmount, onMounted } from 'vue'
+import type { ModalContext } from '@/components/ui-kit/modal.vue'
 
 const { deck, close } = defineProps<{
   deck?: Deck
   close: (response?: boolean) => void
 }>()
 
-const { settings, image_url, saveDeck, deleteDeck, uploadImage, removeImage } = useDeck(deck)
+let cleanupBackdropListener: () => void
+const { registerBackdropCloseListener } = inject('modal-context') as ModalContext
 
-function onImageUploaded(file: File) {
-  uploadImage(file)
-}
+const { t } = useI18n()
+const alert = useAlert()
+const audio = useAudio()
+const { settings, image_url, saveDeck, deleteDeck, uploadImage, removeImage } = useDeckEditor(deck)
 
-function onImageRemoved() {
-  removeImage()
-}
+onMounted(() => {
+  audio.play('double-pop-up')
+
+  cleanupBackdropListener = registerBackdropCloseListener(() => {
+    audio.play('double-pop-down')
+  })
+})
+
+onBeforeUnmount(() => {
+  cleanupBackdropListener()
+})
 
 async function onSave() {
   await saveDeck()
+  audio.play('double-pop-down')
   close(true)
+}
+
+function onClose() {
+  audio.play('double-pop-down')
+  close(false)
 }
 
 async function onDeleted() {
@@ -38,6 +54,7 @@ async function onDeleted() {
 
   if (await response) {
     await deleteDeck()
+    audio.play('trash_crumple_short')
     close(true)
   }
 }
@@ -55,8 +72,8 @@ async function onDeleted() {
         <name-image-config
           v-model:title="settings.title"
           :image-url="image_url"
-          @image-uploaded="onImageUploaded"
-          @image-removed="onImageRemoved"
+          @image-uploaded="uploadImage"
+          @image-removed="removeImage"
         />
         <additional-settings
           v-model:description="settings.description"
@@ -72,7 +89,7 @@ async function onDeleted() {
       <ui-kit:button
         variant="muted"
         icon-left="close"
-        @click="close(false)"
+        @click="onClose"
         class="ring-brown-300 ring-7"
       >
         {{ t('common.cancel') }}

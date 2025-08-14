@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
-import Logger from '@/utils/logger'
+import { useLogger } from '@/composables/use-logger'
 
 export type ImageUploadEvent = {
   preview: string
@@ -16,6 +16,7 @@ const loading = ref(false)
 const dragging = ref(false)
 
 const fileInput = useTemplateRef<HTMLInputElement>('fileInput')
+const logger = useLogger()
 
 onMounted(() => {
   document.addEventListener('dragover', startDrag)
@@ -57,7 +58,7 @@ async function handleFileChange(event: Event): Promise<void> {
         emit('image-uploaded', { preview, file: selectedFile.value })
       } catch (err) {
         // TODO: Show error toast
-        Logger.error((err as Error).message)
+        logger.error((err as Error).message)
         throw err
       }
     }
