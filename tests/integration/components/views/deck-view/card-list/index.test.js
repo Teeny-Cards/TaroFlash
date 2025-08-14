@@ -18,7 +18,8 @@ test('renders empty state when there are no cards', () => {
   const wrapper = mount(CardList, {
     props: {
       cards: [],
-      editing: false
+      selectedCardIndices: [],
+      mode: 'view'
     }
   })
 
@@ -31,7 +32,8 @@ test('renders card list when there are cards', () => {
   const wrapper = mount(CardList, {
     props: {
       cards,
-      editing: false
+      selectedCardIndices: [],
+      mode: 'view'
     }
   })
 
@@ -40,171 +42,123 @@ test('renders card list when there are cards', () => {
   expect(wrapper.findAll('[data-testid="card-list__item"]').length).toBe(3)
 })
 
-test("Navigating 'down' moves current_card_index forward (if within bounds)", async () => {
+test('Emits card-activated event when card is focused', async () => {
   const cards = CardBuilder().many(3)
   const wrapper = mount(CardList, {
     props: {
       cards,
-      editing: false
+      selectedCardIndices: [],
+      mode: 'edit'
     }
   })
 
-  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', altKey: true }))
-  await wrapper.vm.$nextTick()
+  await wrapper.find('[data-testid="front-input"]').trigger('focusin')
 
-  expect(wrapper.vm.current_card_index).toBe(1)
+  expect(wrapper.emitted('card-activated')).toBeTruthy()
+  expect(wrapper.emitted('card-activated')[0]).toEqual([0])
 })
 
-test("Navigating 'up' moves current_card_index backward (if within bounds)", async () => {
+test('Emits card-deactivated event when card loses focus', async () => {
   const cards = CardBuilder().many(3)
   const wrapper = mount(CardList, {
     props: {
       cards,
-      editing: false
+      selectedCardIndices: [],
+      mode: 'edit'
     }
   })
 
-  wrapper.vm.current_card_index = 2
+  await wrapper.find('[data-testid="front-input"]').trigger('focusout')
 
-  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', altKey: true }))
-  await wrapper.vm.$nextTick()
-
-  expect(wrapper.vm.current_card_index).toBe(1)
+  expect(wrapper.emitted('card-deactivated')).toBeTruthy()
+  expect(wrapper.emitted('card-deactivated')[0]).toEqual([0])
 })
 
-test('Does not update index if navigating flag is set', async () => {
+test('Emits card-updated event when card input changes', async () => {
   const cards = CardBuilder().many(3)
   const wrapper = mount(CardList, {
     props: {
       cards,
-      editing: false
+      selectedCardIndices: [],
+      mode: 'edit'
     }
   })
 
-  wrapper.vm.navigating = true
-  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', altKey: true }))
-  await wrapper.vm.$nextTick()
+  const frontInput = wrapper.find('[data-testid="front-input"]')
+  await frontInput.setValue('New front text')
+  await frontInput.trigger('input')
 
-  expect(wrapper.vm.current_card_index).toBe(0)
+  expect(wrapper.emitted('card-updated')).toBeTruthy()
+  expect(wrapper.emitted('card-updated')[0]).toEqual([0, 'front_text', 'New front text'])
 })
 
-test('Does not update index if out of bounds', async () => {
+test('Emits card-updated event when back input changes', async () => {
   const cards = CardBuilder().many(3)
   const wrapper = mount(CardList, {
     props: {
       cards,
-      editing: false
+      selectedCardIndices: [],
+      mode: 'edit'
     }
   })
 
-  wrapper.vm.current_card_index = 2
+  const backInput = wrapper.find('[data-testid="back-input"]')
+  await backInput.setValue('New back text')
+  await backInput.trigger('input')
 
-  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', altKey: true }))
-  await wrapper.vm.$nextTick()
-
-  expect(wrapper.vm.current_card_index).toBe(2)
+  expect(wrapper.emitted('card-updated')).toBeTruthy()
+  expect(wrapper.emitted('card-updated')[0]).toEqual([0, 'back_text', 'New back text'])
 })
 
-test('Sets current card when and correct column when left card is focused', async () => {
+test('Emits card-deleted event when delete action is clicked', async () => {
   const cards = CardBuilder().many(3)
   const wrapper = mount(CardList, {
     props: {
       cards,
-      editing: true
+      selectedCardIndices: [],
+      mode: 'view'
     }
   })
 
-  wrapper.vm.current_card_index = 1
-
-  await wrapper.find('[data-testid="card-list__item-front-input"]').trigger('focusin')
-
-  expect(wrapper.vm.current_card_index).toBe(0)
-  expect(wrapper.vm.current_column).toBe('front')
-})
-
-test('Sets current card when and correct column when right card is focused', async () => {
-  const cards = CardBuilder().many(3)
-  const wrapper = mount(CardList, {
-    props: {
-      cards,
-      editing: true
-    }
-  })
-
-  wrapper.vm.current_card_index = 1
-
-  await wrapper.find('[data-testid="card-list__item-back-input"]').trigger('focusin')
-
-  expect(wrapper.vm.current_card_index).toBe(0)
-  expect(wrapper.vm.current_column).toBe('back')
-})
-
-test('Resets current card index when focusout event is emitted', async () => {
-  const cards = CardBuilder().many(3)
-  const wrapper = mount(CardList, {
-    props: {
-      cards,
-      editing: true
-    }
-  })
-
-  wrapper.vm.current_card_index = 1
-
-  await wrapper.find('[data-testid="card-list__item-front-input"]').trigger('focusout')
-
-  expect(wrapper.vm.current_card_index).toBe(-1)
-})
-
-test('Emits updated event when card is updated', async () => {
-  const cards = CardBuilder().many(3)
-  const wrapper = mount(CardList, {
-    props: {
-      cards,
-      editing: true
-    }
-  })
-
-  await wrapper.find('[data-testid="card-list__item-front-input"]').setValue('New Value')
-
-  expect(wrapper.emitted('updated')).toBeTruthy()
-  expect(wrapper.emitted('updated')[0]).toEqual([cards[0].id, 'front_text', 'New Value'])
-})
-
-test('Emits add-card event when add card button is clicked', async () => {
-  const cards = CardBuilder().many(3)
-  const wrapper = mount(CardList, {
-    props: {
-      cards,
-      editing: true
-    }
-  })
-
-  await wrapper.find('[data-testid="card-list__add-card-button"]').trigger('click')
-
-  expect(wrapper.emitted('add-card')).toBeTruthy()
-})
-
-test('Emits cards-deleted event when card is deleted', async () => {
-  const cards = CardBuilder().many(3)
-  const wrapper = mount(CardList, {
-    props: {
-      cards,
-      editing: false
-    }
-  })
-
+  // Click the more button to open the dropdown
   await wrapper.find('[data-testid="card-list__item-more-button"]').trigger('click')
-  await wrapper.find('[data-action="Delete"]').trigger('click')
 
-  expect(wrapper.emitted('cards-deleted')).toBeTruthy()
-  expect(wrapper.emitted('cards-deleted')[0]).toEqual([[cards[0].id]])
+  // Wait for the dropdown to appear
+  await wrapper.vm.$nextTick()
+
+  // Find and click the delete button using data-action attribute
+  const deleteButton = wrapper.find('[data-action="Delete"]')
+  expect(deleteButton.exists()).toBe(true)
+
+  await deleteButton.trigger('click')
+
+  expect(wrapper.emitted('card-deleted')).toBeTruthy()
+  expect(wrapper.emitted('card-deleted')[0]).toEqual([0])
 })
 
-test('Emits add-card event when empty state add card button is clicked', async () => {
+test('Emits card-selected event when card is selected', async () => {
+  const cards = CardBuilder().many(3)
+  const wrapper = mount(CardList, {
+    props: {
+      cards,
+      selectedCardIndices: [],
+      mode: 'select'
+    }
+  })
+
+  // Click on the list item to select it
+  await wrapper.find('[data-testid="card-list__item"]').trigger('click')
+
+  expect(wrapper.emitted('card-selected')).toBeTruthy()
+  expect(wrapper.emitted('card-selected')[0]).toEqual([0])
+})
+
+test('Emits card-added event when empty state add card button is clicked', async () => {
   const wrapper = mount(CardList, {
     props: {
       cards: [],
-      editing: true
+      selectedCardIndices: [],
+      mode: 'edit'
     }
   })
 
@@ -212,5 +166,5 @@ test('Emits add-card event when empty state add card button is clicked', async (
     .find('[data-testid="card-list__empty-state"] [data-testid="ui-kit-button"]')
     .trigger('click')
 
-  expect(wrapper.emitted('add-card')).toBeTruthy()
+  expect(wrapper.emitted('card-added')).toBeTruthy()
 })

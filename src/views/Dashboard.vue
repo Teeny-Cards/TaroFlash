@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { fetchMemberDecks } from '@/services/deck-service'
+import { fetchMemberDecks } from '@/api/deck-service'
 import { useToastStore } from '@/stores/toast'
 import Deck from '@/components/deck.vue'
 import { useRouter } from 'vue-router'

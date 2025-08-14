@@ -58,7 +58,7 @@ function onImageError() {
 @reference '@/styles/main.css';
 
 .card {
-  @apply aspect-card shrink-0 p-3;
+  @apply aspect-card border-brown-300 shrink-0 p-3;
 }
 
 .card.card--revealed {
@@ -70,15 +70,15 @@ function onImageError() {
 }
 
 .card.card--large {
-  @apply rounded-12 max-w-65 min-w-65 text-3xl;
+  @apply rounded-14 max-w-65 min-w-65 border-8 text-3xl;
 }
 
 .card.card--base {
-  @apply rounded-10 max-w-48 min-w-48 text-2xl;
+  @apply rounded-10 max-w-48 min-w-48 border-6 text-2xl;
 }
 
 .card.card--small {
-  @apply rounded-8 max-w-34.5 min-w-34.5 text-lg;
+  @apply rounded-8 max-w-34.5 min-w-34.5 border-6 text-lg;
 }
 
 .card.card--xs {
@@ -86,7 +86,7 @@ function onImageError() {
 }
 
 .card.card--2xs {
-  @apply rounded-3 max-w-10.75 min-w-10.75 text-sm;
+  @apply rounded-3.5 max-w-10.75 min-w-10.75 border-3 text-sm;
 }
 
 .card.card--3xs {
@@ -99,15 +99,15 @@ function onImageError() {
 
 /* TUNED*/
 .card--large .card__image {
-  border-radius: 40px;
+  border-radius: 48px;
 }
 
 .card--base .card__image {
-  border-radius: 34px;
+  border-radius: 32px;
 }
 
 .card--small .card__image {
-  border-radius: 24px;
+  border-radius: 26px;
 }
 
 /* NEEDS TUNING */

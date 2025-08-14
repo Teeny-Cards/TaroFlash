@@ -27,10 +27,9 @@ async function onSettingsClicked() {
 <template>
   <div
     data-testid="overview-panel"
-    class="sticky top-24 flex w-max flex-col items-center gap-6 sm:flex-row sm:items-end lg:flex-col
-      lg:items-start"
+    class="flex w-max flex-col items-center gap-6 sm:flex-row sm:items-end lg:flex-col lg:items-start"
   >
-    <card size="large" class="border-brown-300 relative border-8" :image_url="imageUrl"></card>
+    <card size="large" class="relative" :image_url="imageUrl"></card>
 
     <div class="flex flex-col items-center gap-2 sm:items-start">
       <h1
