@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import ShopItem from '@/components/views/shop-view/shop-item.vue'
-import { fetchShopItems, upsertPurchase } from '@/services/shop-service'
-import PurchaseModal from '@/components/views/shop-view/purchase-modal.vue'
+import { fetchShopItems, upsertPurchase } from '@/api/shop-service'
 import { useMemberStore } from '@/stores/member'
 
 const shop_items = ref<{ [key: string]: ShopItem[] }>({})
@@ -96,8 +95,4 @@ async function submitPurchase(item: ShopItem) {
       </div>
     </div>
   </div>
-
-  <ui-kit:modal :open="selected_item !== undefined" @closed="selected_item = undefined">
-    <PurchaseModal :item="selected_item!" @purchased="submitPurchase(selected_item!)" />
-  </ui-kit:modal>
 </template>

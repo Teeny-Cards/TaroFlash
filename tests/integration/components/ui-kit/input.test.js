@@ -5,9 +5,15 @@ import Input from '@/components/ui-kit/input.vue'
 test('renders the input element with default props', () => {
   const wrapper = shallowMount(Input)
   expect(wrapper.exists()).toBe(true)
-  expect(wrapper.classes()).toContain('ui-kit-input')
-  expect(wrapper.classes()).toContain('ui-kit-input--text-left')
-  expect(wrapper.classes()).toContain('ui-kit-input--base')
+
+  // Check the container element classes
+  expect(wrapper.classes()).toContain('ui-kit-input-container')
+  expect(wrapper.classes()).toContain('ui-kit-input-container--text-left')
+  expect(wrapper.classes()).toContain('ui-kit-input-container--base')
+
+  // Check that the input wrapper exists
+  expect(wrapper.find('[data-testid="ui-kit-input"]').exists()).toBe(true)
+  expect(wrapper.find('input').exists()).toBe(true)
 })
 
 test('Applies correct text alignment class based on prop', () => {
@@ -16,7 +22,7 @@ test('Applies correct text alignment class based on prop', () => {
       textAlign: 'right'
     }
   })
-  expect(wrapper.classes()).toContain('ui-kit-input--text-right')
+  expect(wrapper.classes()).toContain('ui-kit-input-container--text-right')
 })
 
 test('Applies correct size class based on prop', () => {
@@ -25,7 +31,7 @@ test('Applies correct size class based on prop', () => {
       size: 'lg'
     }
   })
-  expect(wrapper.classes()).toContain('ui-kit-input--lg')
+  expect(wrapper.classes()).toContain('ui-kit-input-container--lg')
 })
 
 test('Accepts and displays a custom placeholder', () => {
@@ -35,6 +41,15 @@ test('Accepts and displays a custom placeholder', () => {
     }
   })
   expect(wrapper.find('input').attributes('placeholder')).toBe('Enter your name')
+})
+
+test('Displays label when provided', () => {
+  const wrapper = shallowMount(Input, {
+    props: {
+      label: 'Username'
+    }
+  })
+  expect(wrapper.find('span').text()).toBe('Username')
 })
 
 test('Binds model value using v-model (initial + updates)', async () => {
@@ -48,4 +63,22 @@ test('Binds model value using v-model (initial + updates)', async () => {
   await wrapper.find('input').setValue('Updated value')
   expect(wrapper.emitted('update:value')).toBeTruthy()
   expect(wrapper.emitted('update:value')[0]).toEqual(['Updated value'])
+})
+
+test('Applies center text alignment correctly', () => {
+  const wrapper = shallowMount(Input, {
+    props: {
+      textAlign: 'center'
+    }
+  })
+  expect(wrapper.classes()).toContain('ui-kit-input-container--text-center')
+})
+
+test('Applies small size class correctly', () => {
+  const wrapper = shallowMount(Input, {
+    props: {
+      size: 'sm'
+    }
+  })
+  expect(wrapper.classes()).toContain('ui-kit-input-container--sm')
 })

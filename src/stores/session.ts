@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { User } from '@supabase/supabase-js'
-import { getSession, login } from '@/services/session-service'
+import { getSession, login } from '@/api/session-service'
 
 interface State {
   user: User | undefined
@@ -40,6 +40,10 @@ export const useSessionStore = defineStore('session', {
 
     isLoading({ loadingCount }): boolean {
       return loadingCount > 0
+    },
+
+    user_id({ user }): string | undefined {
+      return user?.id
     }
   }
 })

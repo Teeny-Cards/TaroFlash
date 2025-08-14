@@ -1,11 +1,15 @@
 <template>
-  <div teeny-dropdown class="relative w-max" ref="teenyDropdown">
+  <div data-testid="ui-kit-button-menu" class="relative w-max" ref="teenyDropdown">
     <slot name="trigger" :toggleDropdown="toggleDropdown" :open="dropdownVisible">
       <ui-kit:button :variant="variant" :inverted="inverted" @click="toggleDropdown">
         {{ triggerLabel }}
       </ui-kit:button>
     </slot>
-    <div v-if="dropdownVisible" class="absolute top-full right-0 z-10 mt-2 lg:left-0">
+    <div
+      v-if="dropdownVisible"
+      data-testid="ui-kit-button-menu__dropdown"
+      class="absolute top-full right-0 z-10 mt-2 lg:left-0"
+    >
       <slot name="dropdown" :closeDropdown="closeDropdown">
         <div class="flex flex-col items-end gap-1.5 lg:items-start">
           <ui-kit:button

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed, useTemplateRef } from 'vue'
 import { useFloating, shift, flip, autoUpdate, arrow, offset } from '@floating-ui/vue'
+import { useAudio } from '@/composables/use-audio'
 
 const ARROW_SIZE = 10
 
 const triggerRef = useTemplateRef('triggerRef')
 const popoverRef = useTemplateRef('popoverRef')
 const arrowRef = useTemplateRef('arrowRef')
+const audio = useAudio()
 
 const { placement, middlewareData, floatingStyles } = useFloating(triggerRef, popoverRef, {
   placement: 'top',
@@ -41,6 +43,10 @@ const arrowTop = computed(() => {
 })
 
 const side = computed(() => placement.value.split('-')[0])
+
+function onMouseEnter() {
+  audio.play('click_04')
+}
 </script>
 
 <template>
@@ -48,6 +54,7 @@ const side = computed(() => placement.value.split('-')[0])
     data-testid="ui-kit-popover-container"
     ref="triggerRef"
     class="ui-kit-popover-container group"
+    @mouseenter="onMouseEnter"
   >
     <Transition
       enter-from-class="opacity-0"
@@ -80,3 +87,39 @@ const side = computed(() => placement.value.split('-')[0])
     </Transition>
   </div>
 </template>
+
+<style>
+@reference '@/styles/main.css';
+
+.ui-kit-popover-container {
+  @apply absolute inset-0;
+}
+
+.ui-kit-popover {
+  @apply shadow-popover rounded-7 pointer-events-auto relative z-10 hidden group-hover:block hover:block;
+}
+
+.ui-kit-popover__arrow {
+  @apply bg-brown-300 rounded-1 shadow-popover -z-10 h-5 w-5 rotate-45;
+}
+
+.ui-kit-popover__bridge {
+  @apply absolute inset-0;
+}
+
+.ui-kit-popover--top .ui-kit-popover__bridge {
+  @apply top-full -bottom-6;
+}
+
+.ui-kit-popover--bottom .ui-kit-popover__bridge {
+  @apply -top-6 bottom-full;
+}
+
+.ui-kit-popover--left .ui-kit-popover__bridge {
+  @apply -right-6 left-full;
+}
+
+.ui-kit-popover--right .ui-kit-popover__bridge {
+  @apply right-full -left-6;
+}
+</style>
