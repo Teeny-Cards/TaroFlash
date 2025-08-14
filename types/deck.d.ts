@@ -10,4 +10,10 @@ type Deck = {
   cards?: Card[]
   tags?: string[]
   due_cards?: Card[]
+  config?: DeckConfig
+}
+
+type DeckConfig = {
+  study_all_cards: boolean
+  retry_failed_cards: boolean
 }

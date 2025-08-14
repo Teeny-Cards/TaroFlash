@@ -6,8 +6,8 @@ export const DeckBuilder = () => {
   return build({
     fields: {
       id: sequence(),
-      created_at: () => faker.date.past(),
-      updated_at: () => faker.date.past(),
+      created_at: () => faker.date.past().toISOString(),
+      updated_at: () => faker.date.past().toISOString(),
       description: () => faker.word.words({ count: { min: 1, max: 10 } }),
       is_public: () => faker.datatype.boolean(),
       title: () => faker.word.words({ count: { min: 1, max: 3 } }),
@@ -18,7 +18,11 @@ export const DeckBuilder = () => {
       cards: () => [],
       tags: () => [],
       image_path: () => faker.image.url(),
-      due_cards: () => []
+      due_cards: () => [],
+      config: () => ({
+        study_all_cards: false,
+        retry_failed_cards: true
+      })
     },
     traits: {
       with_cards: {
@@ -26,9 +30,16 @@ export const DeckBuilder = () => {
           cards: () => CardBuilder().many(faker.number.int({ min: 3, max: 10 }))
         }
       },
-      with_due_cards: {
+      with_some_due_cards: {
         overrides: {
-          due_cards: () => CardBuilder().many(faker.number.int({ min: 1, max: 10 }))
+          cards: () => [
+            ...CardBuilder().many(faker.number.int({ min: 1, max: 10 }), {
+              traits: 'with_due_review'
+            }),
+            ...CardBuilder().many(faker.number.int({ min: 1, max: 10 }), {
+              traits: 'with_not_due_review'
+            })
+          ]
         }
       }
     }
