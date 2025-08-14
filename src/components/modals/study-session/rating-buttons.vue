@@ -5,7 +5,11 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-const { options, showOptions, disabled } = defineProps<{
+const {
+  options,
+  showOptions,
+  disabled = false
+} = defineProps<{
   options?: RecordLog
   showOptions: boolean
   disabled: boolean
@@ -21,8 +25,10 @@ function getRatingTimeFormat(grade: Grade) {
 
   if (!date) return ''
 
-  const timeString = DateTime.fromJSDate(date).toRelative({ padding: 1000 })
-  return `${t('study.study-in')} ${timeString}`
+  const time = DateTime.fromJSDate(date)
+  const timeString = time.toRelativeCalendar()
+
+  return t('study.study-again', { time: timeString })
 }
 
 function onRatingClicked(grade: Grade) {
