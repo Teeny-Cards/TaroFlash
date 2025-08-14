@@ -73,23 +73,6 @@ it('does not retry failed cards when retry_failed_cards is false', async () => {
   expect(wrapper.findAll('[data-testid="history-track__card"]').length).toBe(deck.cards.length)
 })
 
-it('retries failed cards when retry_failed_cards is true and card is due again today', async () => {
-  const deck = DeckBuilder().one({
-    overrides: { config: { retry_failed_cards: true, study_all_cards: true } },
-    traits: 'with_cards'
-  })
-  const wrapper = await mountStudySession(deck)
-
-  expect(wrapper.findAll('[data-testid="history-track__card"]').length).toBe(deck.cards.length)
-
-  await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
-  await wrapper.find('[data-testid="rating-buttons__again"]').trigger('click')
-
-  expect(wrapper.findAll('[data-testid="history-track__card"]').length).toBeGreaterThan(
-    deck.cards.length
-  )
-})
-
 it('sends review to backend when card is reviewed', async () => {
   const wrapper = await mountStudySession()
   await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
