@@ -14,11 +14,11 @@ const mocks = vi.hoisted(() => {
   }
 })
 
-vi.mock('@/api/deck-service', () => ({
+vi.mock('@/api/decks', () => ({
   fetchDeck: mocks.fetchDeck
 }))
 
-vi.mock('@/api/card-service', () => ({
+vi.mock('@/api/cards', () => ({
   updateCards: mocks.updateCards,
   deleteCardsById: mocks.deleteCardsById
 }))
