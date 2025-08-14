@@ -21,7 +21,7 @@ export function useStudySession() {
 
   const _active_card = ref<Card | undefined>(undefined)
   const _preview_card = ref<Card | undefined>(undefined)
-  const _active_card_review_options = ref<Record<number, IPreview>>({})
+  const _review_options = ref<Record<number, IPreview>>({})
 
   const current_card = computed(() =>
     view_state.value === 'studying' ? _active_card.value : _preview_card.value
@@ -30,7 +30,7 @@ export function useStudySession() {
   const active_card_review_options = computed(() => {
     const id = _active_card.value?.id
     if (!id) return undefined
-    return _active_card_review_options.value?.[id]
+    return _review_options.value?.[id]
   })
 
   function setupStudySession(cards?: Card[], config?: StudySessionConfig) {
@@ -86,7 +86,7 @@ export function useStudySession() {
       (c) => !studied_card_ids.value.has(c.id!) && !failed_card_ids.value.has(c.id!)
     )
 
-    if (nextCard && nextCard.review === undefined) {
+    if (nextCard && !nextCard.review) {
       nextCard.review = createEmptyCard(new Date())
     }
 
@@ -97,10 +97,10 @@ export function useStudySession() {
     const card = _active_card.value
     if (!card?.id || !card.review) return
 
-    if (_active_card_review_options.value[card.id]) return
+    if (_review_options.value[card.id]) return
 
-    _active_card_review_options.value = {
-      ..._active_card_review_options.value,
+    _review_options.value = {
+      ..._review_options.value,
       [card.id]: _FSRS_INSTANCE.repeat(card.review, new Date())
     }
   }

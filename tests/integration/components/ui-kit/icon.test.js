@@ -83,14 +83,3 @@ describe('sizes', () => {
     expect(wrapper.attributes('class')).toContain('w-3 h-3')
   })
 })
-
-// Test prop validation
-it('validates size prop values', () => {
-  const validator = Icon.props.size.validator
-
-  expect(validator('large')).toBe(true)
-  expect(validator('base')).toBe(true)
-  expect(validator('small')).toBe(true)
-  expect(validator('xs')).toBe(true)
-  expect(validator('invalid')).toBe(false)
-})

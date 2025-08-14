@@ -23,7 +23,7 @@ export const DeckBuilder = () => {
     traits: {
       with_cards: {
         overrides: {
-          cards: () => CardBuilder().many(faker.number.int({ min: 1, max: 10 }))
+          cards: () => CardBuilder().many(faker.number.int({ min: 3, max: 10 }))
         }
       },
       with_due_cards: {

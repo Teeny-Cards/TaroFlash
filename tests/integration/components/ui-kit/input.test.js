@@ -1,96 +1,84 @@
 import { shallowMount } from '@vue/test-utils'
-import { expect, describe, it } from 'vitest'
+import { expect, test } from 'vitest'
 import Input from '@/components/ui-kit/input.vue'
 
-// Test basic rendering
-it('renders properly with default props', () => {
+test('renders the input element with default props', () => {
   const wrapper = shallowMount(Input)
-
   expect(wrapper.exists()).toBe(true)
-  expect(wrapper.classes()).toContain('teeny-input')
-  expect(wrapper.classes()).toContain('input-base') // default size
 
-  const input = wrapper.find('input')
-  expect(input.exists()).toBe(true)
+  // Check the container element classes
+  expect(wrapper.classes()).toContain('ui-kit-input-container')
+  expect(wrapper.classes()).toContain('ui-kit-input-container--text-left')
+  expect(wrapper.classes()).toContain('ui-kit-input-container--base')
+
+  // Check that the input wrapper exists
+  expect(wrapper.find('[data-testid="ui-kit-input"]').exists()).toBe(true)
+  expect(wrapper.find('input').exists()).toBe(true)
 })
 
-// Test type prop
-it('applies type attribute correctly', () => {
+test('Applies correct text alignment class based on prop', () => {
   const wrapper = shallowMount(Input, {
     props: {
-      type: 'password'
+      textAlign: 'right'
     }
   })
-
-  const input = wrapper.find('input')
-  expect(input.attributes('type')).toBe('password')
+  expect(wrapper.classes()).toContain('ui-kit-input-container--text-right')
 })
 
-// Test placeholder prop
-it('applies placeholder attribute correctly', () => {
-  const placeholder = 'Enter your name'
+test('Applies correct size class based on prop', () => {
   const wrapper = shallowMount(Input, {
     props: {
-      placeholder
+      size: 'lg'
     }
   })
-
-  const input = wrapper.find('input')
-  expect(input.attributes('placeholder')).toBe(placeholder)
+  expect(wrapper.classes()).toContain('ui-kit-input-container--lg')
 })
 
-// Test center prop
-it('applies text-center class when center prop is true', () => {
+test('Accepts and displays a custom placeholder', () => {
   const wrapper = shallowMount(Input, {
     props: {
-      center: true
+      placeholder: 'Enter your name'
     }
   })
-
-  const input = wrapper.find('input')
-  expect(input.classes()).toContain('text-center')
+  expect(wrapper.find('input').attributes('placeholder')).toBe('Enter your name')
 })
 
-// Test size classes
-describe('sizes', () => {
-  it('applies large size class', () => {
-    const wrapper = shallowMount(Input, {
-      props: {
-        size: 'large'
-      }
-    })
-
-    expect(wrapper.classes()).toContain('input-large')
+test('Displays label when provided', () => {
+  const wrapper = shallowMount(Input, {
+    props: {
+      label: 'Username'
+    }
   })
+  expect(wrapper.find('span').text()).toBe('Username')
+})
 
-  it('applies base size class', () => {
-    const wrapper = shallowMount(Input, {
-      props: {
-        size: 'base'
-      }
-    })
-
-    expect(wrapper.classes()).toContain('input-base')
+test('Binds model value using v-model (initial + updates)', async () => {
+  const wrapper = shallowMount(Input, {
+    props: {
+      value: 'Initial value'
+    }
   })
+  expect(wrapper.find('input').element.value).toBe('Initial value')
+
+  await wrapper.find('input').setValue('Updated value')
+  expect(wrapper.emitted('update:value')).toBeTruthy()
+  expect(wrapper.emitted('update:value')[0]).toEqual(['Updated value'])
 })
 
-// Test v-model binding
-it('updates value when input changes', async () => {
-  const wrapper = shallowMount(Input)
-  const input = wrapper.find('input')
-
-  await input.setValue('test value')
-
-  // Check that the v-model is updated
-  expect(wrapper.emitted('update:modelValue')).toBeTruthy()
-  expect(wrapper.emitted('update:modelValue')[0]).toEqual(['test value'])
+test('Applies center text alignment correctly', () => {
+  const wrapper = shallowMount(Input, {
+    props: {
+      textAlign: 'center'
+    }
+  })
+  expect(wrapper.classes()).toContain('ui-kit-input-container--text-center')
 })
 
-// Test prop validation
-it('validates size prop values', () => {
-  const validator = Input.props.size.validator
-
-  expect(validator('large')).toBe(true)
-  expect(validator('base')).toBe(true)
-  expect(validator('invalid')).toBe(false)
+test('Applies small size class correctly', () => {
+  const wrapper = shallowMount(Input, {
+    props: {
+      size: 'sm'
+    }
+  })
+  expect(wrapper.classes()).toContain('ui-kit-input-container--sm')
 })

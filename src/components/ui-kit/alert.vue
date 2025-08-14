@@ -1,84 +1,120 @@
+<script lang="ts" setup>
+import { useI18n } from 'vue-i18n'
+import { computed, onMounted } from 'vue'
+import { useAudio } from '@/composables/use-audio'
+
+export type AlertType = 'warn' | 'info'
+
+const { cancelLabel, confirmLabel, close } = defineProps<{
+  cancelLabel?: string
+  confirmLabel?: string
+  message?: string
+  title?: string
+  type?: AlertType
+  close: (result?: boolean) => void
+}>()
+
+const { t } = useI18n()
+const audio = useAudio()
+
+onMounted(() => {
+  audio.play('etc_woodblock_stuck')
+})
+
+const cancelText = computed(() => {
+  return cancelLabel ?? t('common.cancel')
+})
+
+const confirmText = computed(() => {
+  return confirmLabel ?? t('common.continue')
+})
+
+function onCancel() {
+  audio.play('digi_powerdown')
+  close(false)
+}
+</script>
+
 <template>
-  <teleport to="[alert-container]">
-    <Transition
-      enter-from-class="scale-90 opacity-0"
-      enter-to-class="scale-100 opacity-100"
-      enter-active-class="transition-all transform"
-      leave-from-class="scale-100 opacity-100"
-      leave-to-class="scale-90 opacity-0"
-      leave-active-class="transition-all transform"
-    >
-      <div
-        ui-kit-alert
-        v-if="open"
-        class="pointer-events-auto fixed inset-0 flex items-center justify-center px-4 py-7"
-        @click="close"
+  <div data-testid="ui-kit-alert" class="ui-kit-alert" :class="`ui-kit-alert--${type ?? 'warn'}`">
+    <div data-testid="ui-kit-alert__body" class="ui-kit-alert__body">
+      <h1>{{ title ?? t('alert.generic-title') }}</h1>
+      <p>{{ message ?? t('alert.generic-message') }}</p>
+    </div>
+
+    <div data-testid="ui-kit-alert__actions" class="ui-kit-alert__actions">
+      <button
+        data-testid="ui-kit-alert__cancel"
+        class="ui-kit-alert__cancel group"
+        @click="onCancel"
+        @mouseenter="audio.play('click_04')"
       >
-        <div class="rounded-12 shadow-modal flex flex-col items-center gap-8 bg-white px-8 py-8">
-          <h1 class="font-primary text-grey-700 text-center text-3xl font-semibold">
-            {{ title }}
-          </h1>
-          <p class="font-primary text-grey-500 text-center text-xl">{{ message }}</p>
-          <div class="flex w-full justify-center gap-2.5">
-            <slot></slot>
-          </div>
+        {{ cancelText }}
+        <div class="hover-effect">
+          <span>{{ cancelText }}</span>
         </div>
-      </div>
-    </Transition>
-  </teleport>
+      </button>
+
+      <button
+        data-testid="ui-kit-alert__confirm"
+        class="ui-kit-alert__confirm group"
+        @click="() => close(true)"
+        @mouseenter="audio.play('click_04')"
+      >
+        {{ confirmText }}
+        <div class="hover-effect">
+          <span>{{ confirmText }}</span>
+        </div>
+      </button>
+    </div>
+  </div>
 </template>
 
-<script setup lang="ts">
-import { onUnmounted, ref, watch } from 'vue'
+<style>
+@reference '@/styles/main.css';
 
-const emit = defineEmits<{ (event: 'close'): void }>()
-
-const props = defineProps({
-  open: {
-    type: Boolean,
-    default: false
-  },
-  title: String,
-  message: String
-})
-
-onUnmounted(() => {
-  releaseScroll()
-})
-
-const scrollTop = ref(document.documentElement.scrollTop)
-
-function captureScroll(): void {
-  scrollTop.value = document.documentElement.scrollTop
-  document.body.style.position = 'fixed'
-  document.body.style.top = `${-scrollTop.value}px`
-  document.body.style.width = '100%'
+.ui-kit-alert {
+  @apply rounded-2 shadow-modal flex w-115 max-w-115 flex-col bg-white;
 }
 
-function releaseScroll(): void {
-  document.body.style.position = ''
-  document.body.style.top = ''
-  document.body.style.width = ''
-  window.scrollTo(0, scrollTop.value)
+.ui-kit-alert__body {
+  @apply flex flex-col gap-2 p-10;
 }
 
-function close(e: Event) {
-  const target = e.target as HTMLElement
-
-  if (target.hasAttribute('ui-kit-alert')) {
-    releaseScroll()
-    emit('close')
-  }
+.ui-kit-alert__body h1 {
+  @apply text-brown-700 text-4xl;
 }
 
-watch(
-  () => props.open,
-  (open) => {
-    if (open) {
-      captureScroll()
-    } else {
-      releaseScroll()
-    }
-  }
-)
-</script>
+.ui-kit-alert__body p {
+  @apply text-brown-500;
+}
+
+.ui-kit-alert__actions {
+  @apply border-brown-300 divide-brown-300 flex w-full divide-x border-t;
+}
+
+.ui-kit-alert__cancel,
+.ui-kit-alert__confirm {
+  @apply text-brown-700 relative w-full cursor-pointer p-4 text-lg;
+}
+
+.hover-effect {
+  @apply animate-bg-slide rounded-2 absolute -inset-1 flex items-center justify-center bg-size-[400%_400%] p-0.75 opacity-0 transition-[all] duration-100 ease-in-out group-hover:opacity-100 group-focus:opacity-100 focus:outline-none;
+}
+
+.ui-kit-alert__cancel .hover-effect {
+  @apply bg-grey-300 text-grey-500;
+}
+
+.ui-kit-alert--warn .ui-kit-alert__confirm .hover-effect {
+  @apply bg-linear-to-br from-red-600 from-30% via-red-300 via-50% to-red-600 to-70% text-red-500;
+}
+
+.ui-kit-alert--info .ui-kit-alert__confirm .hover-effect {
+  @apply bg-linear-to-br from-blue-500 from-40% via-blue-400 via-50% to-blue-500 to-80% text-blue-500;
+}
+
+.hover-effect span {
+  @apply rounded-1.5 flex h-full w-full items-center justify-center bg-white;
+}
+</style>

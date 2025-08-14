@@ -26,6 +26,12 @@
     100%;
 }
 
+.scallop-bottom {
+  mask:
+    linear-gradient(0, #0000 48px, #000 0),
+    radial-gradient(48px, #000 calc(100% - 1px), #0000) bottom/75px 96px;
+}
+
 .scroll-hidden {
   -ms-overflow-style: none;
   scrollbar-width: none;

@@ -7,16 +7,57 @@
   "common.delete": "Delete",
   "common.confirm": "Confirm",
   "common.edit": "Edit",
+  "common.continue": "Continue",
+  "common.leave": "Leave",
+  "common.create": "Create",
+
+  "member-application.header": "Welcome To TeenyCards!",
+  "member-application.subtitle": "Let’s get you set up with your new Member Card (You can update this at any time).",
+  "member-application.member-name": "Member Name",
+  "member-application.card-comment": "Card Comment",
+  "member-application.card-theme": "Card Theme",
+  "member-application.member-id": "Member ID",
+  "member-application.registered": "Registered",
+  "member-application.title": "Title",
+
+  "member-card.header": "Member Card",
+  "member-card.description-placeholder": "Add a short comment to your card",
+  "member-card.member": "MEMBER",
+  "member-card.title": "TITLE",
+  "member-card.registration": "Reg. {date}",
+
+  "alert.generic-title": "Continue?",
+  "alert.generic-message": "Are you sure you want to continue?",
+  "alert.delete-card": "Delete Card? | Delete {count} Cards?",
+  "alert.delete-card.message": "Are you sure you want to delete this card? | Are you sure you want to delete these cards?",
+  "alert.leave-page": "Leave Page?",
+  "alert.leave-page.message": "You have unsaved changes. Are you sure you want to leave?",
+  "alert.leave-page.stay": "Stay",
+  "alert.delete-deck": "Delete Deck?",
+  "alert.delete-deck.message": "Are you sure you want to delete this deck?",
 
   "card.placeholder-front": "Front",
   "card.placeholder-back": "Back",
+
+  "study.nope!": "Nope!",
+  "study.got-it!": "Got It!",
+  "study.show!": "Show!",
+  "study.study-in": "Study again in",
+
   "edit-card-modal.title": "Edit Card",
   "dashboard.due": "Due",
+
+  "deck.description-placeholder": "Add a short description to your deck.",
+  "deck.title-placeholder": "Deck Name",
+  "deck.settings-modal.title": "Deck Configuration",
+  "deck.settings-modal.is-public": "Public Deck",
+  "deck.settings-modal.is-spaced": "Spaced Repetition",
+  "deck.settings-modal.auto-play": "Auto-Play Audio",
+  "deck.settings-modal.only-new-cards": "Only Study New Cards",
+
   "deck-view.add-card": "Add Card",
   "deck-view.no-cards": "No Cards",
   "deck-view.tabs.card-view": "Card View",
   "deck-view.tabs.list-view": "List View",
-  "deck-view.empty-state.no-cards": "You don't have any cards in this deck.",
-  "alert.delete-card": "Delete Card?",
-  "alert.delete-card.message": "Are you sure you want to delete this card?"
+  "deck-view.empty-state.no-cards": "You don't have any cards in this deck."
 }

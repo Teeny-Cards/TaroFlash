@@ -1,23 +1,29 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { fetchMemberDecks } from '@/services/deck-service'
+import { fetchMemberDecks } from '@/api/deck-service'
 import { useToastStore } from '@/stores/toast'
 import Deck from '@/components/deck.vue'
 import { useRouter } from 'vue-router'
-import { createDeck } from '@/services/deck-service'
+import deckSettings from '@/components/modals/deck-settings/index.vue'
+import MemberApplication from '@/components/modals/member-application.vue'
+import { useModal } from '@/composables/use-modal'
+import { useMemberStore } from '@/stores/member'
 
 const toastStore = useToastStore()
 const router = useRouter()
+const memberStore = useMemberStore()
 
-const create_deck_modal_open = ref(false)
+const modal = useModal()
 const loading = ref(true)
 const decks = ref<Deck[]>([])
-const title = ref('')
-const description = ref('')
 
 onMounted(async () => {
   await refetchDecks()
   loading.value = false
+
+  if (!memberStore.has_member) {
+    modal.open(MemberApplication, { backdrop: true })
+  }
 })
 
 const due_decks = computed(() => {
@@ -36,16 +42,12 @@ function onDeckClicked(deck: Deck) {
   router.push({ name: 'deck', params: { id: deck.id } })
 }
 
-async function onCreateDeck() {
-  await createDeck({
-    title: title.value,
-    description: description.value
-  })
-  await refetchDecks()
+async function onCreateDeckClicked() {
+  const { response } = modal.open(deckSettings, { backdrop: true })
 
-  create_deck_modal_open.value = false
-  title.value = ''
-  description.value = ''
+  if (await response) {
+    await refetchDecks()
+  }
 }
 </script>
 
@@ -59,6 +61,7 @@ async function onCreateDeck() {
           :key="index"
           :deck="deck"
           @clicked="() => onDeckClicked(deck)"
+          @updated="refetchDecks"
         />
       </div>
     </div>
@@ -71,33 +74,10 @@ async function onCreateDeck() {
           :key="index"
           :deck="deck"
           @clicked="() => onDeckClicked(deck)"
+          @updated="refetchDecks"
         />
       </div>
-      <ui-kit:button icon-left="add" @click="create_deck_modal_open = true"
-        >Create Deck</ui-kit:button
-      >
+      <ui-kit:button icon-left="add" @click="onCreateDeckClicked">Create Deck</ui-kit:button>
     </div>
   </div>
-
-  <ui-kit:modal :open="create_deck_modal_open" @closed="create_deck_modal_open = false">
-    <div
-      class="bg-brown-300 rounded-11 shadow-modal flex w-full flex-col items-center justify-center
-        overflow-hidden pb-6 lg:max-w-max"
-    >
-      <div
-        data-testid="edit-card-modal__title"
-        class="wave-bottom flex w-full justify-center bg-purple-500 pt-12 pb-16 text-white"
-      >
-        <h1 class="font-primary text-5xl font-semibold">Create Deck</h1>
-      </div>
-      <div
-        data-testid="edit-card-modal__body"
-        class="flex w-full flex-col items-center gap-2 px-16"
-      >
-        <ui-kit:input type="text" placeholder="Title" v-model="title" />
-        <ui-kit:input type="text" placeholder="Description" v-model="description" />
-        <ui-kit:button icon-left="add" @click="onCreateDeck">Create</ui-kit:button>
-      </div>
-    </div>
-  </ui-kit:modal>
 </template>

@@ -11,6 +11,10 @@
   <teleport to="[toast-container]">
     <ui-kit:toast v-for="(toast, index) in toasts" :key="index" :toast="toast" />
   </teleport>
+
+  <teleport to="[modal-container]">
+    <ui-kit:modal />
+  </teleport>
 </template>
 
 <script setup lang="ts">

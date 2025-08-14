@@ -1,76 +1,45 @@
 import { shallowMount } from '@vue/test-utils'
-import { expect, it } from 'vitest'
+import { expect, test } from 'vitest'
 import Toggle from '@/components/ui-kit/toggle.vue'
 
-// Test unchecked state
-it('renders properly in unchecked state', () => {
+test('renders the component with slot content', () => {
   const wrapper = shallowMount(Toggle, {
-    props: {
-      checked: false
+    slots: {
+      default: 'Toggle me'
     }
   })
-
   expect(wrapper.exists()).toBe(true)
-
-  // Container should have white background when unchecked
-  const container = wrapper.find('div')
-  expect(container.classes()).toContain('bg-white')
-  expect(container.classes()).not.toContain('bg-green-400')
-
-  // Toggle handle should have grey-500 background and no transform when unchecked
-  const handle = container.find('div')
-  expect(handle.classes()).toContain('bg-grey')
-  expect(handle.classes()).not.toContain('bg-white')
-  expect(handle.classes()).not.toContain('transform')
-  expect(handle.classes()).not.toContain('translate-x-full')
+  expect(wrapper.text()).toBe('Toggle me')
 })
 
-// Test checked state
-it('renders properly in checked state', () => {
+test('toggles the checkbox on click and updates checked prop', async () => {
+  let checkedValue = false
   const wrapper = shallowMount(Toggle, {
     props: {
-      checked: true
+      checked: checkedValue,
+      'onUpdate:checked': (value) => {
+        checkedValue = value
+        wrapper.setProps({ checked: value })
+      }
     }
   })
 
-  expect(wrapper.exists()).toBe(true)
+  expect(wrapper.find('[data-testid="ui-kit-toggle"]').classes()).not.toContain(
+    'ui-kit-toggle--checked'
+  )
 
-  // Container should have green-400 background when checked
-  const container = wrapper.find('div')
-  expect(container.classes()).toContain('bg-green-400')
-  expect(container.classes()).not.toContain('bg-white')
+  const input = wrapper.find('input')
+  await input.setValue(true)
+  await wrapper.vm.$nextTick()
 
-  // Toggle handle should have white background and transform when checked
-  const handle = container.find('div')
-  expect(handle.classes()).toContain('bg-white')
-  expect(handle.classes()).not.toContain('bg-grey')
-  expect(handle.classes()).toContain('transform')
-  expect(handle.classes()).toContain('translate-x-full')
-})
+  expect(checkedValue).toBe(true)
+  expect(wrapper.find('[data-testid="ui-kit-toggle"]').classes()).toContain(
+    'ui-kit-toggle--checked'
+  )
 
-// Test prop reactivity
-it('updates UI when checked prop changes', async () => {
-  const wrapper = shallowMount(Toggle, {
-    props: {
-      checked: false
-    }
-  })
-
-  // Initially unchecked
-  let container = wrapper.find('div')
-  expect(container.classes()).toContain('bg-white')
-
-  // Update to checked
-  await wrapper.setProps({ checked: true })
-
-  // Should now be checked
-  container = wrapper.find('div')
-  expect(container.classes()).toContain('bg-green-400')
-
-  // Update back to unchecked
   await wrapper.setProps({ checked: false })
 
-  // Should now be unchecked again
-  container = wrapper.find('div')
-  expect(container.classes()).toContain('bg-white')
+  expect(wrapper.find('[data-testid="ui-kit-toggle"]').classes()).not.toContain(
+    'ui-kit-toggle--checked'
+  )
 })
