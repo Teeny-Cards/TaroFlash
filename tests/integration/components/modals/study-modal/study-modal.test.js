@@ -8,7 +8,7 @@ const mocks = vi.hoisted(() => {
   }
 })
 
-vi.mock('@/services/card-service', () => ({
+vi.mock('@/api/card-service', () => ({
   updateReviewByCardId: mocks.updateReviewByCardId
 }))
 
