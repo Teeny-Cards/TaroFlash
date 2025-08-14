@@ -2,7 +2,7 @@
 import OverviewPanel from '@/components/views/deck-view/overview-panel.vue'
 import { onMounted, onUnmounted, ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
-import { fetchDeck } from '@/api/deck-service'
+import { fetchDeck } from '@/api/decks'
 import StudySession from '@/components/modals/study-session/index.vue'
 import CardList from '@/components/views/deck-view/card-list/index.vue'
 import CardGrid from '@/components/views/deck-view/card-grid.vue'

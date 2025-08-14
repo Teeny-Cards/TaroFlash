@@ -13,7 +13,7 @@ const mocks = vi.hoisted(() => {
   }
 })
 
-vi.mock('@/api/member-service', () => ({
+vi.mock('@/api/members', () => ({
   upsertMember: mocks.upsertMember
 }))
 
