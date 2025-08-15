@@ -51,7 +51,7 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
 
     const cards = await cardFetch
 
-    _cards_in_deck.value = _setupCards(cards)
+    _cards_in_deck.value = cards.map(_setupCard)
     pickNextCard()
   }
 
@@ -79,23 +79,6 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     if (current_card.value?.id) {
       return updateReviewByCardId(current_card.value.id, item.card)
     }
-  }
-
-  // private methods
-  function _setupCards(cards: Card[] = []): StudyCard[] {
-    const now = DateTime.now()
-
-    // Filter out cards that are not due if we are not studying all cards
-    const filtered = config.study_all_cards
-      ? cards
-      : cards.filter(
-          (c) =>
-            !c.review?.due ||
-            DateTime.fromISO(c.review.due as string).startOf('day') <= now.startOf('day')
-        )
-
-    // Compute the review options for each card
-    return filtered.map(_setupCard)
   }
 
   function _setupCard(card: Card): StudyCard {
