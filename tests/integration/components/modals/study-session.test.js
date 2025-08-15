@@ -1,12 +1,16 @@
 import { mount } from '@vue/test-utils'
-import { expect, it, vi } from 'vitest'
+import { expect, it, vi, beforeEach } from 'vitest'
 import StudySession from '@/components/modals/study-session/index.vue'
 import { DeckBuilder } from '@tests/mocks/models/deck'
 import { CardBuilder } from '@tests/mocks/models/card'
+import { createTestingPinia } from '@pinia/testing'
+import { DateTime } from 'luxon'
 
 const mocks = vi.hoisted(() => {
   return {
-    updateReviewByCardId: vi.fn()
+    updateReviewByCardId: vi.fn(),
+    fetchDueCardsByDeckId: vi.fn(),
+    fetchAllCardsByDeckId: vi.fn()
   }
 })
 
@@ -14,13 +18,35 @@ vi.mock('@/api/reviews', () => ({
   updateReviewByCardId: mocks.updateReviewByCardId
 }))
 
+vi.mock('@/api/cards', () => ({
+  fetchDueCardsByDeckId: mocks.fetchDueCardsByDeckId,
+  fetchAllCardsByDeckId: mocks.fetchAllCardsByDeckId
+}))
+
+beforeEach(() => {
+  vi.clearAllMocks()
+})
+
 async function mountStudySession(_deck) {
   const deck = _deck ?? DeckBuilder().one({ traits: 'with_some_due_cards' })
+
+  mocks.fetchAllCardsByDeckId.mockResolvedValue(deck.cards)
+  mocks.fetchDueCardsByDeckId.mockResolvedValue(
+    deck.cards.filter((c) => {
+      if (!c.review) return true
+
+      const due_date = DateTime.fromISO(c.review.due)
+      return due_date.endOf('day') <= DateTime.now().endOf('day')
+    })
+  )
 
   const wrapper = mount(StudySession, {
     props: {
       close: vi.fn(),
       deck
+    },
+    global: {
+      plugins: [createTestingPinia({ createSpy: vi.fn })]
     }
   })
 
@@ -36,8 +62,11 @@ it('displays deck title in header', async () => {
 
 it('shows first card in hidden state when first opened', async () => {
   const wrapper = await mountStudySession()
+
   expect(
-    wrapper.find('[data-testid="study-card__back"] [data-testid="card"]').classes('card--hidden')
+    wrapper
+      .find('[data-testid="study-card__back"] [data-testid="study-card__back"]')
+      .classes('card--hidden')
   ).toBe(true)
 })
 
@@ -207,13 +236,17 @@ it('reveals card when reveal button is clicked', async () => {
   const wrapper = await mountStudySession(deck)
 
   expect(
-    wrapper.find('[data-testid="study-card__back"] [data-testid="card"]').classes('card--hidden')
+    wrapper
+      .find('[data-testid="study-card__back"] [data-testid="study-card__back"]')
+      .classes('card--hidden')
   ).toBe(true)
 
   await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
   await new Promise((resolve) => setTimeout(resolve, 1))
 
   expect(
-    wrapper.find('[data-testid="study-card__back"] [data-testid="card"]').classes('card--revealed')
+    wrapper
+      .find('[data-testid="study-card__back"] [data-testid="study-card__back"]')
+      .classes('card--revealed')
   ).toBe(true)
 })
