@@ -3,10 +3,12 @@ import HistoryTrack from './history-track.vue'
 import StudyCard from './study-card.vue'
 import RatingButtons from './rating-buttons.vue'
 import { useStudySession } from '@/composables/use-study-session'
+import { useDeckEditor } from '@/composables/use-deck-editor'
 import { type RecordLogItem } from 'ts-fsrs'
 import { computed } from 'vue'
 
 const { deck } = defineProps<{ deck: Deck; close: (response?: boolean) => void }>()
+const { image_url } = useDeckEditor(deck)
 
 const {
   mode,
@@ -69,6 +71,7 @@ function onCardRevealed() {
       <div data-testid="study-session__powerup"></div>
       <study-card
         :card="current_card"
+        :image_url="image_url"
         :revealed="current_card_state === 'revealed'"
         :previewing="mode === 'previewing'"
       />

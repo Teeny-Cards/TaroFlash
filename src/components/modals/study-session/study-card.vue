@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import CardComponent from '@/components/card.vue'
+import Card from '@/components/card.vue'
 import { watch, ref, onMounted } from 'vue'
 
 const { card, revealed, previewing } = defineProps<{
   card?: Card
+  image_url?: string
   revealed: boolean
   previewing: boolean
 }>()
@@ -47,11 +48,23 @@ watch(
 
 <template>
   <div data-testid="study-card" class="flex gap-4">
-    <card-component data-testid="study-card__front" size="large" :revealed="frontRevealed">
+    <card
+      data-testid="study-card__front"
+      size="large"
+      :revealed="frontRevealed"
+      :image_url="image_url"
+      class="!border-brown-100"
+    >
       {{ card?.front_text }}
-    </card-component>
-    <card-component data-testid="study-card__back" size="large" :revealed="backRevealed">
+    </card>
+    <card
+      data-testid="study-card__back"
+      size="large"
+      :revealed="backRevealed"
+      :image_url="image_url"
+      class="!border-brown-100"
+    >
       {{ card?.back_text }}
-    </card-component>
+    </card>
   </div>
 </template>

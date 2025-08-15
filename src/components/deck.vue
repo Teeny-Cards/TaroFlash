@@ -15,6 +15,7 @@ const { image_url } = useDeckEditor(deck)
 
 function onStudyClicked() {
   modal.open(StudyModal, {
+    backdrop: true,
     props: {
       deck
     }

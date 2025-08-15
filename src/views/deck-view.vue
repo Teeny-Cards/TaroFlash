@@ -109,6 +109,7 @@ async function onEsc(e: KeyboardEvent) {
 
 function onStudyClicked() {
   modal.open(StudySession, {
+    backdrop: true,
     props: {
       deck: deck.value!
     }

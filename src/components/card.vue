@@ -33,10 +33,22 @@ function onImageError() {
     leave-to-class="motion-safe:rotate-y-90 -translate-y-6"
     leave-active-class="motion-safe:transition-[all] ease-in-out duration-150"
   >
-    <div v-if="revealed" data-testid="card" class="card card--revealed" :class="`card--${size}`">
+    <div
+      v-if="revealed"
+      data-testid="card"
+      class="card card--revealed"
+      :class="`card--${size}`"
+      v-bind="$attrs"
+    >
       <slot></slot>
     </div>
-    <div v-else data-testid="card" class="card card--hidden" :class="`card--${size}`">
+    <div
+      v-else
+      data-testid="card"
+      class="card card--hidden"
+      :class="`card--${size}`"
+      v-bind="$attrs"
+    >
       <div v-if="image_url && show_image" class="card__image">
         <img
           :src="image_url"
