@@ -5,9 +5,9 @@ import RatingButtons from './rating-buttons.vue'
 import { useStudySession } from '@/composables/use-study-session'
 import { useDeckEditor } from '@/composables/use-deck-editor'
 import { type RecordLogItem } from 'ts-fsrs'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 
-const { deck } = defineProps<{ deck: Deck; close: (response?: boolean) => void }>()
+const { deck, close } = defineProps<{ deck: Deck; close: (response?: boolean) => void }>()
 const { image_url } = useDeckEditor(deck)
 
 const {
@@ -23,7 +23,14 @@ const {
   setup
 } = useStudySession(deck.config)
 
-setup(deck.cards)
+onMounted(async () => {
+  if (!deck.id) {
+    close()
+    return
+  }
+
+  await setup(deck.id!)
+})
 
 const isPreviewingOrRevealed = computed(() => {
   return mode.value === 'previewing' || current_card_state.value === 'revealed'

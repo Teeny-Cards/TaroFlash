@@ -4,8 +4,8 @@ declare global {
   type Review = FSRSCard
 
   type Card = {
-    front_text: string
-    back_text: string
+    front_text?: string
+    back_text?: string
     deck_id?: number
     id?: number
     created_at?: Date
