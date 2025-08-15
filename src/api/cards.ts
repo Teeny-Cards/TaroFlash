@@ -1,7 +1,41 @@
 import { supabase } from '@/supabase-client'
 import { useLogger } from '@/composables/use-logger'
+import { DateTime } from 'luxon'
 
 const logger = useLogger()
+
+export async function fetchAllCardsByDeckId(deck_id: number): Promise<Card[]> {
+  const { data, error } = await supabase
+    .from('cards')
+    .select('*, review:reviews(*)')
+    .eq('deck_id', deck_id)
+    .order('order', { ascending: false })
+
+  if (error) {
+    logger.error(error.message)
+    throw new Error(error.message)
+  }
+
+  return data
+}
+
+export async function fetchDueCardsByDeckId(deck_id: number): Promise<Card[]> {
+  const end_of_day = DateTime.now().endOf('day').toISO()
+
+  const { data, error } = await supabase
+    .from('cards')
+    .select('*, review:reviews(*)')
+    .eq('deck_id', deck_id)
+    .order('order', { ascending: false })
+    .or(`due.is.null,due.lte.${end_of_day}`, { referencedTable: 'cards.reviews' })
+
+  if (error) {
+    logger.error(error.message)
+    throw new Error(error.message)
+  }
+
+  return data
+}
 
 export async function updateCards(cards: Card[]): Promise<Card[]> {
   const sanitized = cards.map(({ review, ...rest }) => rest)
