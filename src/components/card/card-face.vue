@@ -63,4 +63,9 @@ defineProps<{
 .card-face:not(.card-face--has-text) {
   --face-padding: 0px;
 }
+
+.card-face:not(.card-face--has-text):not(.card-face--has-image) {
+  background-color: var(--color-purple-400);
+  background-image: var(--diagonal-stripes);
+}
 </style>

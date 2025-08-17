@@ -11,6 +11,7 @@ type Deck = {
   tags?: string[]
   due_cards?: Card[]
   config?: DeckConfig
+  has_image?: boolean
 }
 
 type DeckConfig = {

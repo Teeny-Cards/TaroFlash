@@ -18,6 +18,10 @@ export function getDeckImageUrl(deck_id: number): string {
   return getImageUrl('deck-images', `deck-${deck_id}`)
 }
 
+export function getCardImageUrl(card_id: number, side: 'front' | 'back'): string {
+  return getImageUrl('card-images', `card-${card_id}-${side}`)
+}
+
 export async function uploadImage(bucket: string, image_name: string, file: File): Promise<void> {
   const member_id = useMemberStore().id
   const file_path = `${member_id}/${image_name}`
