@@ -9,7 +9,6 @@ export async function fetchAllCardsByDeckId(deck_id: number): Promise<Card[]> {
     .from('cards')
     .select('*, review:reviews(*)')
     .eq('deck_id', deck_id)
-    .order('order', { ascending: false })
 
   if (error) {
     logger.error(error.message)
@@ -26,7 +25,6 @@ export async function fetchDueCardsByDeckId(deck_id: number): Promise<Card[]> {
     .from('cards')
     .select('*, review:reviews(*)')
     .eq('deck_id', deck_id)
-    .order('order', { ascending: false })
     .or(`due.is.null,due.lte.${end_of_day}`, { referencedTable: 'cards.reviews' })
 
   if (error) {
