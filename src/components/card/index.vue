@@ -4,10 +4,13 @@ import CardFace from './card-face.vue'
 const {
   size = 'base',
   front_image_url,
-  back_image_url
+  back_image_url,
+  side = 'front',
+  mode = 'view'
 } = defineProps<{
   size?: 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
-  revealed?: Boolean
+  mode?: 'view' | 'edit' | 'select'
+  side?: 'front' | 'back'
   front_image_url?: string
   front_text?: string
   back_image_url?: string
@@ -28,7 +31,7 @@ const {
       leave-active-class="motion-safe:transition-[all] ease-in-out duration-150"
     >
       <card-face
-        v-if="!revealed"
+        v-if="side === 'front'"
         data-testid="card-face__front"
         :image="front_image_url"
         :text="front_text"
