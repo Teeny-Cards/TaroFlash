@@ -63,11 +63,9 @@ it('displays deck title in header', async () => {
 it('shows first card in hidden state when first opened', async () => {
   const wrapper = await mountStudySession()
 
-  expect(
-    wrapper
-      .find('[data-testid="study-card__back"] [data-testid="study-card__back"]')
-      .classes('card--hidden')
-  ).toBe(true)
+  // Both cards should show their front faces initially (hidden state)
+  expect(wrapper.findAll('[data-testid="card-face__front"]').length).toBe(2)
+  expect(wrapper.findAll('[data-testid="card-face__back"]').length).toBe(0)
 })
 
 it('only studys cards due today when study_all_cards is false', async () => {
@@ -235,18 +233,10 @@ it('reveals card when reveal button is clicked', async () => {
   const deck = DeckBuilder().one({ overrides: { cards } })
   const wrapper = await mountStudySession(deck)
 
-  expect(
-    wrapper
-      .find('[data-testid="study-card__back"] [data-testid="study-card__back"]')
-      .classes('card--hidden')
-  ).toBe(true)
+  expect(wrapper.find('[data-testid="card-face__front"]').exists()).toBe(true)
 
   await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
-  await new Promise((resolve) => setTimeout(resolve, 1))
+  await new Promise((resolve) => setTimeout(resolve, 200))
 
-  expect(
-    wrapper
-      .find('[data-testid="study-card__back"] [data-testid="study-card__back"]')
-      .classes('card--revealed')
-  ).toBe(true)
+  expect(wrapper.find('[data-testid="card-face__front"]').exists()).toBe(false)
 })

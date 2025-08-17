@@ -6,11 +6,7 @@ defineProps<{
 </script>
 
 <template>
-  <div
-    data-testid="card-face"
-    class="card-face"
-    :class="{ 'card-face--has-image': image, 'card-face--has-text': text }"
-  >
+  <div class="card-face" :class="{ 'card-face--has-image': image, 'card-face--has-text': text }">
     <img v-if="image" :src="image" alt="Deck Image preview" class="card-face__image" />
 
     <slot name="front">
