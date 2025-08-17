@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Card from '@/components/card.vue'
+import Card from '@/components/card/index.vue'
 import { watch, ref, onMounted } from 'vue'
 
 const { card, revealed, previewing } = defineProps<{
@@ -49,22 +49,18 @@ watch(
 <template>
   <div data-testid="study-card" class="flex gap-4">
     <card
-      data-testid="study-card__front"
-      size="large"
+      size="lg"
       :revealed="frontRevealed"
-      :image_url="image_url"
+      :front_image_url="image_url"
+      :back_text="card?.front_text"
       class="!border-brown-100"
-    >
-      {{ card?.front_text }}
-    </card>
+    />
     <card
-      data-testid="study-card__back"
-      size="large"
+      size="lg"
       :revealed="backRevealed"
-      :image_url="image_url"
+      :front_image_url="image_url"
+      :back_text="card?.back_text"
       class="!border-brown-100"
-    >
-      {{ card?.back_text }}
-    </card>
+    />
   </div>
 </template>

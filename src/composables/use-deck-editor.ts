@@ -16,6 +16,8 @@ export function useDeckEditor(deck?: Deck) {
   const image_removed = ref<boolean>(false)
 
   const image_url = computed(() => {
+    if (!deck?.has_image) return undefined
+
     const url = deck?.id ? getDeckImageUrl(deck.id) : undefined
     return url ? `${url}?t=${settings?.updated_at}` : undefined
   })

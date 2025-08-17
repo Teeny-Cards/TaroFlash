@@ -7,7 +7,7 @@ import StudySession from '@/components/modals/study-session/index.vue'
 import CardList from '@/components/views/deck-view/card-list/index.vue'
 import CardGrid from '@/components/views/deck-view/card-grid.vue'
 import { useI18n } from 'vue-i18n'
-import { useCardEditor } from '@/composables/use-card-editor'
+import { useCardBulkEditor } from '@/composables/use-card-bulk-editor'
 import { useAlert } from '@/composables/use-alert'
 import { useModal } from '@/composables/use-modal'
 import { useDeckEditor } from '@/composables/use-deck-editor'
@@ -45,7 +45,7 @@ const {
   resetCards,
   saveCards,
   setMode
-} = useCardEditor(deck.value?.cards ?? [], Number(deck_id))
+} = useCardBulkEditor(deck.value?.cards ?? [], Number(deck_id))
 
 const tabs = [
   {
