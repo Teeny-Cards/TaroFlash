@@ -29,7 +29,7 @@ async function onSettingsClicked() {
     data-testid="overview-panel"
     class="flex w-max flex-col items-center gap-6 sm:flex-row sm:items-end lg:flex-col lg:items-start"
   >
-    <card size="large" class="relative" :front_image_url="imageUrl"></card>
+    <card size="lg" class="relative" :front_image_url="imageUrl"></card>
 
     <div class="flex flex-col items-center gap-2 sm:items-start">
       <h1

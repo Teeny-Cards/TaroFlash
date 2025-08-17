@@ -30,16 +30,16 @@ const numCardsDue = computed(() => {
 <template>
   <div data-testid="deck" class="relative flex w-max flex-col gap-2.5">
     <card
-      size="small"
+      size="sm"
       class="relative cursor-pointer"
       @click="$emit('clicked')"
       :front_image_url="image_url"
     >
-      <template #front>
+      <template #before>
         <div
           v-if="numCardsDue"
-          class="ring-brown-100 absolute -top-4 -right-4 flex h-7.5 w-7.5 items-center justify-center rounded-full
-            bg-red-500 ring-4"
+          class="ring-brown-100 absolute -top-2 -right-2 flex h-7.5 w-7.5 items-center justify-center rounded-full
+            bg-red-500 ring-6"
         >
           <h2 class="text-base text-white">{{ numCardsDue }}</h2>
         </div>

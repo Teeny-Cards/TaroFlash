@@ -10,6 +10,8 @@ declare global {
     id?: number
     created_at?: Date
     updated_at?: Date
+    front_image?: boolean
+    back_image?: boolean
     order?: number
     review?: Review
   }

@@ -50,7 +50,7 @@ watch(
   <div data-testid="study-card" class="flex gap-4">
     <card
       data-testid="study-card__front"
-      size="large"
+      size="lg"
       :revealed="frontRevealed"
       :front_image_url="image_url"
       :back_text="card?.front_text"
@@ -58,7 +58,7 @@ watch(
     />
     <card
       data-testid="study-card__back"
-      size="large"
+      size="lg"
       :revealed="backRevealed"
       :front_image_url="image_url"
       :back_text="card?.back_text"
