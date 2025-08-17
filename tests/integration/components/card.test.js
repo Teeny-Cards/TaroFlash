@@ -11,7 +11,7 @@ it('renders front face by default', () => {
 it('renders back face when revealed', () => {
   const wrapper = mount(Card, {
     props: {
-      revealed: true
+      side: 'back'
     }
   })
   expect(wrapper.exists()).toBe(true)
@@ -31,7 +31,7 @@ it('shows front text when provided', () => {
 it('shows back text when provided', () => {
   const wrapper = mount(Card, {
     props: {
-      revealed: true,
+      side: 'back',
       back_text: 'Test'
     }
   })
@@ -52,7 +52,7 @@ it('shows front image when provided', () => {
 it('shows back image when provided', () => {
   const wrapper = mount(Card, {
     props: {
-      revealed: true,
+      side: 'back',
       back_image_url: 'https://via.placeholder.com/150'
     }
   })
@@ -75,7 +75,7 @@ it('renders front image and text when both provided', () => {
 it('renders back image and text when both provided', () => {
   const wrapper = mount(Card, {
     props: {
-      revealed: true,
+      side: 'back',
       back_image_url: 'https://via.placeholder.com/150',
       back_text: 'Test'
     }
