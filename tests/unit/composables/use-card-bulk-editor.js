@@ -1,5 +1,5 @@
 import { expect, test, describe, vi, beforeEach } from 'vitest'
-import { useCardEditor } from '@/composables/use-card-editor'
+import { useCardBulkEditor } from '@/composables/use-card-bulk-editor'
 import { CardBuilder } from '@tests/mocks/models/card'
 
 vi.mock('@/api/cards', () => ({
@@ -14,7 +14,7 @@ beforeEach(() => {
 describe('Initialization', () => {
   test('Initializes edited_cards with copies of initialCards', () => {
     const initialCards = CardBuilder().many(3)
-    const { edited_cards } = useCardEditor(initialCards)
+    const { edited_cards } = useCardBulkEditor(initialCards)
 
     expect(edited_cards.value).toHaveLength(3)
     expect(edited_cards.value[0]).not.toBe(initialCards[0])
@@ -23,7 +23,7 @@ describe('Initialization', () => {
 
   test('is_dirty is false initially', () => {
     const initialCards = CardBuilder().many(3)
-    const { is_dirty } = useCardEditor(initialCards)
+    const { is_dirty } = useCardBulkEditor(initialCards)
     expect(is_dirty.value).toBe(false)
   })
 })
@@ -31,7 +31,7 @@ describe('Initialization', () => {
 describe('addCard', () => {
   test('Adds a new card with empty front_text/back_text at start of edited_cards', () => {
     const initialCards = CardBuilder().many(3)
-    const { edited_cards, addCard } = useCardEditor(initialCards)
+    const { edited_cards, addCard } = useCardBulkEditor(initialCards)
     const max = Math.max(...edited_cards.value.map((card) => card.order ?? 0)) + 1
 
     addCard()
@@ -46,7 +46,7 @@ describe('addCard', () => {
 
   test('New card includes deck_id if provided', () => {
     const initialCards = CardBuilder().many(3)
-    const { edited_cards, addCard } = useCardEditor(initialCards, 1)
+    const { edited_cards, addCard } = useCardBulkEditor(initialCards, 1)
 
     addCard()
 
@@ -54,7 +54,7 @@ describe('addCard', () => {
   })
 
   test('When initialCards is empty, first added card gets order = 1', () => {
-    const { edited_cards, addCard } = useCardEditor([])
+    const { edited_cards, addCard } = useCardBulkEditor([])
 
     addCard()
 
@@ -65,7 +65,7 @@ describe('addCard', () => {
 describe('updateCard', () => {
   test('Updates matching card by index with new value', () => {
     const initialCards = CardBuilder().many(3)
-    const { edited_cards, updateCard } = useCardEditor(initialCards)
+    const { edited_cards, updateCard } = useCardBulkEditor(initialCards)
 
     expect(edited_cards.value[0].front_text).not.toBe('New Front')
 
@@ -76,7 +76,7 @@ describe('updateCard', () => {
 
   test('Marks card as dirty if value changed', () => {
     const initialCards = CardBuilder().many(3)
-    const { edited_cards, updateCard, is_dirty } = useCardEditor(initialCards)
+    const { edited_cards, updateCard, is_dirty } = useCardBulkEditor(initialCards)
 
     expect(is_dirty.value).toBe(false)
 
@@ -88,7 +88,7 @@ describe('updateCard', () => {
 
   test('Does NOT mark as dirty if value is the same', () => {
     const initialCards = CardBuilder().many(3)
-    const { edited_cards, updateCard, is_dirty } = useCardEditor(initialCards)
+    const { edited_cards, updateCard, is_dirty } = useCardBulkEditor(initialCards)
 
     expect(is_dirty.value).toBe(false)
 
@@ -100,7 +100,7 @@ describe('updateCard', () => {
 
   test('Does nothing if card index not found', () => {
     const initialCards = CardBuilder().many(3)
-    const { edited_cards, updateCard, is_dirty } = useCardEditor(initialCards)
+    const { edited_cards, updateCard, is_dirty } = useCardBulkEditor(initialCards)
 
     expect(is_dirty.value).toBe(false)
 
@@ -114,7 +114,7 @@ describe('updateCard', () => {
 describe('getChangedCards', () => {
   test('Returns only cards that have been changed (dirty or new)', () => {
     const initialCards = CardBuilder().many(3)
-    const { updateCard, getChangedCards } = useCardEditor(initialCards)
+    const { updateCard, getChangedCards } = useCardBulkEditor(initialCards)
 
     updateCard(0, 'front_text', 'New Front')
     updateCard(1, 'back_text', 'New Back')
@@ -125,7 +125,7 @@ describe('getChangedCards', () => {
 
   test('Includes new cards in the changed list', () => {
     const initialCards = CardBuilder().many(3)
-    const { addCard, getChangedCards } = useCardEditor(initialCards)
+    const { addCard, getChangedCards } = useCardBulkEditor(initialCards)
 
     addCard()
 
@@ -137,7 +137,7 @@ describe('getChangedCards', () => {
 describe('resetCards', () => {
   test('Resets all fields in edited_cards to match initialCards', () => {
     const initialCards = CardBuilder().many(3)
-    const { updateCard, resetCards, edited_cards } = useCardEditor(initialCards)
+    const { updateCard, resetCards, edited_cards } = useCardBulkEditor(initialCards)
 
     updateCard(0, 'front_text', 'New Front')
     updateCard(1, 'back_text', 'New Back')
@@ -149,7 +149,7 @@ describe('resetCards', () => {
 
   test('is_dirty is false after reset', () => {
     const initialCards = CardBuilder().many(3)
-    const { is_dirty, updateCard, resetCards } = useCardEditor(initialCards)
+    const { is_dirty, updateCard, resetCards } = useCardBulkEditor(initialCards)
 
     updateCard(0, 'front_text', 'New Front')
     updateCard(1, 'back_text', 'New Back')
@@ -165,7 +165,7 @@ describe('resetCards', () => {
 describe('is_dirty (computed)', () => {
   test('Returns true if any card is dirty', () => {
     const initialCards = CardBuilder().many(3)
-    const { is_dirty, updateCard } = useCardEditor(initialCards)
+    const { is_dirty, updateCard } = useCardBulkEditor(initialCards)
 
     updateCard(0, 'front_text', 'New Front')
 
@@ -174,7 +174,7 @@ describe('is_dirty (computed)', () => {
 
   test('Returns false otherwise', () => {
     const initialCards = CardBuilder().many(3)
-    const { is_dirty } = useCardEditor(initialCards)
+    const { is_dirty } = useCardBulkEditor(initialCards)
 
     expect(is_dirty.value).toBe(false)
   })
@@ -183,7 +183,7 @@ describe('is_dirty (computed)', () => {
 describe('Card Selection', () => {
   test('selectCard adds card index to selected_card_indices', () => {
     const initialCards = CardBuilder().many(3)
-    const { selected_card_indices, selectCard } = useCardEditor(initialCards)
+    const { selected_card_indices, selectCard } = useCardBulkEditor(initialCards)
 
     expect(selected_card_indices.value).toHaveLength(0)
 
@@ -194,7 +194,7 @@ describe('Card Selection', () => {
 
   test('selectAllCards selects all card indices', () => {
     const initialCards = CardBuilder().many(3)
-    const { selected_card_indices, selectAllCards } = useCardEditor(initialCards)
+    const { selected_card_indices, selectAllCards } = useCardBulkEditor(initialCards)
 
     selectAllCards()
 
@@ -203,7 +203,8 @@ describe('Card Selection', () => {
 
   test('clearSelectedCards empties selected_card_indices', () => {
     const initialCards = CardBuilder().many(3)
-    const { selected_card_indices, selectCard, clearSelectedCards } = useCardEditor(initialCards)
+    const { selected_card_indices, selectCard, clearSelectedCards } =
+      useCardBulkEditor(initialCards)
 
     selectCard(0)
     selectCard(1)
@@ -216,7 +217,7 @@ describe('Card Selection', () => {
 
   test('deselectCard removes card index from selected_card_indices', () => {
     const initialCards = CardBuilder().many(3)
-    const { selected_card_indices, selectCard, deselectCard } = useCardEditor(initialCards)
+    const { selected_card_indices, selectCard, deselectCard } = useCardBulkEditor(initialCards)
 
     selectCard(0)
     selectCard(1)
@@ -230,7 +231,7 @@ describe('Card Selection', () => {
 
   test('deselectCard does nothing if index not found', () => {
     const initialCards = CardBuilder().many(3)
-    const { selected_card_indices, selectCard, deselectCard } = useCardEditor(initialCards)
+    const { selected_card_indices, selectCard, deselectCard } = useCardBulkEditor(initialCards)
 
     selectCard(0)
     expect(selected_card_indices.value).toEqual([0])
@@ -242,7 +243,7 @@ describe('Card Selection', () => {
 
   test('toggleSelectCard selects card if not selected', () => {
     const initialCards = CardBuilder().many(3)
-    const { selected_card_indices, toggleSelectCard } = useCardEditor(initialCards)
+    const { selected_card_indices, toggleSelectCard } = useCardBulkEditor(initialCards)
 
     toggleSelectCard(1)
 
@@ -251,7 +252,7 @@ describe('Card Selection', () => {
 
   test('toggleSelectCard deselects card if already selected', () => {
     const initialCards = CardBuilder().many(3)
-    const { selected_card_indices, selectCard, toggleSelectCard } = useCardEditor(initialCards)
+    const { selected_card_indices, selectCard, toggleSelectCard } = useCardBulkEditor(initialCards)
 
     selectCard(1)
     expect(selected_card_indices.value).toEqual([1])
@@ -263,7 +264,7 @@ describe('Card Selection', () => {
 
   test('toggleSelectAll selects all cards when none selected', () => {
     const initialCards = CardBuilder().many(3)
-    const { selected_card_indices, toggleSelectAll } = useCardEditor(initialCards)
+    const { selected_card_indices, toggleSelectAll } = useCardBulkEditor(initialCards)
 
     toggleSelectAll()
 
@@ -272,7 +273,8 @@ describe('Card Selection', () => {
 
   test('toggleSelectAll clears selection when all cards selected', () => {
     const initialCards = CardBuilder().many(3)
-    const { selected_card_indices, selectAllCards, toggleSelectAll } = useCardEditor(initialCards)
+    const { selected_card_indices, selectAllCards, toggleSelectAll } =
+      useCardBulkEditor(initialCards)
 
     selectAllCards()
     expect(selected_card_indices.value).toEqual([0, 1, 2])
@@ -286,7 +288,7 @@ describe('Card Selection', () => {
 describe('all_cards_selected computed', () => {
   test('Returns true when all cards are selected', () => {
     const initialCards = CardBuilder().many(3)
-    const { all_cards_selected, selectAllCards } = useCardEditor(initialCards)
+    const { all_cards_selected, selectAllCards } = useCardBulkEditor(initialCards)
 
     selectAllCards()
 
@@ -295,7 +297,7 @@ describe('all_cards_selected computed', () => {
 
   test('Returns false when not all cards are selected', () => {
     const initialCards = CardBuilder().many(3)
-    const { all_cards_selected, selectCard } = useCardEditor(initialCards)
+    const { all_cards_selected, selectCard } = useCardBulkEditor(initialCards)
 
     selectCard(0)
 
@@ -304,7 +306,7 @@ describe('all_cards_selected computed', () => {
 
   test('Returns false when no cards are selected', () => {
     const initialCards = CardBuilder().many(3)
-    const { all_cards_selected } = useCardEditor(initialCards)
+    const { all_cards_selected } = useCardBulkEditor(initialCards)
 
     expect(all_cards_selected.value).toBe(false)
   })
@@ -313,7 +315,7 @@ describe('all_cards_selected computed', () => {
 describe('Card Activation', () => {
   test('activateCard sets active_card_index', () => {
     const initialCards = CardBuilder().many(3)
-    const { active_card_index, activateCard } = useCardEditor(initialCards)
+    const { active_card_index, activateCard } = useCardBulkEditor(initialCards)
 
     expect(active_card_index.value).toBeUndefined()
 
@@ -324,7 +326,7 @@ describe('Card Activation', () => {
 
   test('deactivateCard clears active_card_index when matching', () => {
     const initialCards = CardBuilder().many(3)
-    const { active_card_index, activateCard, deactivateCard } = useCardEditor(initialCards)
+    const { active_card_index, activateCard, deactivateCard } = useCardBulkEditor(initialCards)
 
     activateCard(1)
     expect(active_card_index.value).toBe(1)
@@ -336,7 +338,7 @@ describe('Card Activation', () => {
 
   test('deactivateCard does nothing when index does not match', () => {
     const initialCards = CardBuilder().many(3)
-    const { active_card_index, activateCard, deactivateCard } = useCardEditor(initialCards)
+    const { active_card_index, activateCard, deactivateCard } = useCardBulkEditor(initialCards)
 
     activateCard(1)
     expect(active_card_index.value).toBe(1)
@@ -348,7 +350,7 @@ describe('Card Activation', () => {
 
   test('deactivateCard without parameter does not clear active_card_index', () => {
     const initialCards = CardBuilder().many(3)
-    const { active_card_index, activateCard, deactivateCard } = useCardEditor(initialCards)
+    const { active_card_index, activateCard, deactivateCard } = useCardBulkEditor(initialCards)
 
     activateCard(1)
     expect(active_card_index.value).toBe(1)
@@ -363,7 +365,7 @@ describe('Card Activation', () => {
 describe('Mode Management', () => {
   test('setMode changes mode', async () => {
     const initialCards = CardBuilder().many(3)
-    const { mode, setMode } = useCardEditor(initialCards)
+    const { mode, setMode } = useCardBulkEditor(initialCards)
 
     expect(mode.value).toBe('view')
 
@@ -374,7 +376,7 @@ describe('Mode Management', () => {
 
   test('setMode with reset=false does not reset edits', async () => {
     const initialCards = CardBuilder().many(3)
-    const { mode, setMode, updateCard, is_dirty } = useCardEditor(initialCards)
+    const { mode, setMode, updateCard, is_dirty } = useCardBulkEditor(initialCards)
 
     updateCard(0, 'front_text', 'Changed')
     expect(is_dirty.value).toBe(true)
@@ -398,7 +400,7 @@ describe('resetEdits', () => {
       selected_card_indices,
       active_card_index,
       is_dirty
-    } = useCardEditor(initialCards)
+    } = useCardBulkEditor(initialCards)
 
     // Make changes
     updateCard(0, 'front_text', 'Changed')
@@ -422,7 +424,7 @@ describe('saveCards', () => {
   test('Calls updateCards with changed cards', async () => {
     const { updateCards } = await import('@/api/cards')
     const initialCards = CardBuilder().many(3)
-    const { updateCard, saveCards } = useCardEditor(initialCards)
+    const { updateCard, saveCards } = useCardBulkEditor(initialCards)
 
     updateCard(0, 'front_text', 'Changed')
 
@@ -439,7 +441,7 @@ describe('saveCards', () => {
   test('Does nothing when no cards changed', async () => {
     const { updateCards } = await import('@/api/cards')
     const initialCards = CardBuilder().many(3)
-    const { saveCards } = useCardEditor(initialCards)
+    const { saveCards } = useCardBulkEditor(initialCards)
 
     await saveCards()
 
@@ -451,7 +453,7 @@ describe('saveCards', () => {
     updateCards.mockRejectedValueOnce(new Error('Save failed'))
 
     const initialCards = CardBuilder().many(3)
-    const { updateCard, saveCards } = useCardEditor(initialCards)
+    const { updateCard, saveCards } = useCardBulkEditor(initialCards)
 
     updateCard(0, 'front_text', 'Changed')
 
@@ -464,7 +466,7 @@ describe('deleteCards', () => {
   test('Calls deleteCardsById with selected card IDs', async () => {
     const { deleteCardsById } = await import('@/api/cards')
     const initialCards = CardBuilder().many(3)
-    const { selectCard, deleteCards } = useCardEditor(initialCards)
+    const { selectCard, deleteCards } = useCardBulkEditor(initialCards)
 
     selectCard(0)
     selectCard(2)
@@ -476,7 +478,7 @@ describe('deleteCards', () => {
 
   test('Clears selection after deletion', async () => {
     const initialCards = CardBuilder().many(3)
-    const { selectCard, deleteCards, selected_card_indices } = useCardEditor(initialCards)
+    const { selectCard, deleteCards, selected_card_indices } = useCardBulkEditor(initialCards)
 
     selectCard(0)
     selectCard(1)
@@ -490,7 +492,7 @@ describe('deleteCards', () => {
   test('Does nothing when no cards selected', async () => {
     const { deleteCardsById } = await import('@/api/cards')
     const initialCards = CardBuilder().many(3)
-    const { deleteCards } = useCardEditor(initialCards)
+    const { deleteCards } = useCardBulkEditor(initialCards)
 
     await deleteCards()
 
@@ -500,7 +502,8 @@ describe('deleteCards', () => {
   test('Filters out cards without IDs', async () => {
     const { deleteCardsById } = await import('@/api/cards')
     const initialCards = CardBuilder().many(2)
-    const { selectCard, addCard, deleteCards, selected_card_indices } = useCardEditor(initialCards)
+    const { selectCard, addCard, deleteCards, selected_card_indices } =
+      useCardBulkEditor(initialCards)
 
     addCard() // New card without ID
     selectCard(0) // New card (index 0)
@@ -519,7 +522,7 @@ describe('deleteCards', () => {
     deleteCardsById.mockRejectedValueOnce(new Error('Delete failed'))
 
     const initialCards = CardBuilder().many(3)
-    const { selectCard, deleteCards, selected_card_indices } = useCardEditor(initialCards)
+    const { selectCard, deleteCards, selected_card_indices } = useCardBulkEditor(initialCards)
 
     selectCard(0)
 
@@ -533,7 +536,7 @@ describe('resetCards with parameters', () => {
   test('Resets with new cards and deck_id', () => {
     const initialCards = CardBuilder().many(3)
     const newCards = CardBuilder().many(2)
-    const { edited_cards, resetCards } = useCardEditor(initialCards, 1)
+    const { edited_cards, resetCards } = useCardBulkEditor(initialCards, 1)
 
     resetCards(newCards, 2)
 
@@ -543,7 +546,7 @@ describe('resetCards with parameters', () => {
   test('Resets with new cards only', () => {
     const initialCards = CardBuilder().many(3)
     const newCards = CardBuilder().many(2)
-    const { edited_cards, resetCards } = useCardEditor(initialCards)
+    const { edited_cards, resetCards } = useCardBulkEditor(initialCards)
 
     resetCards(newCards)
 

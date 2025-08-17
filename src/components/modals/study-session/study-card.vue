@@ -49,7 +49,6 @@ watch(
 <template>
   <div data-testid="study-card" class="flex gap-4">
     <card
-      data-testid="study-card__front"
       size="lg"
       :revealed="frontRevealed"
       :front_image_url="image_url"
@@ -57,7 +56,6 @@ watch(
       class="!border-brown-100"
     />
     <card
-      data-testid="study-card__back"
       size="lg"
       :revealed="backRevealed"
       :front_image_url="image_url"

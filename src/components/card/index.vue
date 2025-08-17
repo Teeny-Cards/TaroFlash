@@ -28,11 +28,16 @@ const {
       leave-to-class="motion-safe:rotate-y-90 -translate-y-6"
       leave-active-class="motion-safe:transition-[all] ease-in-out duration-150"
     >
-      <card-face v-if="!revealed" :image="front_image_url" :text="front_text">
+      <card-face
+        v-if="!revealed"
+        data-testid="card-face__front"
+        :image="front_image_url"
+        :text="front_text"
+      >
         <slot name="front"></slot>
       </card-face>
 
-      <card-face v-else :image="back_image_url" :text="back_text">
+      <card-face v-else data-testid="card-face__back" :image="back_image_url" :text="back_text">
         <slot name="back"></slot>
       </card-face>
     </transition>
