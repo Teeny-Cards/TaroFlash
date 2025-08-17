@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAudio } from '@/composables/use-audio'
-import Card from '@/components/card.vue'
+import Card from '@/components/card/index.vue'
 import { computed } from 'vue'
 
 const { card, mode, selected } = defineProps<{

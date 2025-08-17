@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import ListItem from './list-item.vue'
 import { useI18n } from 'vue-i18n'
-import { type EditableCardValue, type EditableCardKey } from '@/composables/use-card-editor'
+import { type EditableCardValue, type EditableCardKey } from '@/composables/use-card-bulk-editor'
 import { nextTick } from 'vue'
 
 const MAX_INPUT_LENGTH = 400

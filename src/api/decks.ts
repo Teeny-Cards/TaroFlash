@@ -11,7 +11,9 @@ export async function fetchMemberDecks(): Promise<Deck[]> {
 
   const { data, error } = await supabase
     .from('decks')
-    .select('description,title, id, updated_at, due_cards:cards(*, review:reviews(due))')
+    .select(
+      'description, title, id, updated_at, has_image, due_cards:cards(*, review:reviews(due))'
+    )
     .eq('member_id', member_id)
     .or(`due.is.null,due.lte.${end_of_day}`, { referencedTable: 'cards.reviews' })
     .order('created_at')

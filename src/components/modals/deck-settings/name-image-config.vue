@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import Card from '@/components/card.vue'
+import Card from '@/components/card/index.vue'
 import imageUploader from '@/components/image-uploader.vue'
 import { type ImageUploadEvent } from '@/components/image-uploader.vue'
 import { ref } from 'vue'
@@ -31,8 +31,8 @@ function onImageRemoved() {
 
 <template>
   <div class="relative flex flex-col items-center pb-6">
-    <Card class="border-brown-100" :image_url="preview_image">
-      <template #back>
+    <card class="!border-brown-100" :front_image_url="preview_image">
+      <template #front>
         <image-uploader v-slot="{ trigger, loading, dragging }" @image-uploaded="onImageUploaded">
           <div
             v-if="dragging"
@@ -62,7 +62,7 @@ function onImageRemoved() {
           <ui-kit:loader v-if="loading" />
         </image-uploader>
       </template>
-    </Card>
+    </card>
     <ui-kit:input
       :placeholder="t('deck.title-placeholder')"
       text-align="center"

@@ -5,7 +5,7 @@ export type EditableCard = Card & { deleted?: boolean; dirty?: boolean; new?: bo
 export type EditableCardKey = keyof EditableCard
 export type EditableCardValue = EditableCard[keyof EditableCard]
 
-export function useCardEditor(initialCards: Card[], _deck_id?: number) {
+export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
   const edited_cards = ref<EditableCard[]>(initialCards.map((card) => ({ ...card })))
   let initial_cards = initialCards
 
