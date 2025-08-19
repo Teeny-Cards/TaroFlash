@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import imageUploader, { type ImageUploadEvent } from '@/components/image-uploader.vue'
 
 defineProps<{
   image?: string
@@ -7,7 +8,16 @@ defineProps<{
   mode?: 'view' | 'edit' | 'select'
 }>()
 
+const emit = defineEmits<{
+  (e: 'image-uploaded', event: ImageUploadEvent): void
+  (e: 'updated:text', text: string): void
+}>()
+
 const { t } = useI18n()
+
+function onTextUpdated(event: Event) {
+  emit('updated:text', (event.target as HTMLInputElement).value)
+}
 </script>
 
 <template>
@@ -17,13 +27,15 @@ const { t } = useI18n()
   >
     <div class="card-face__image">
       <img :src="image" alt="Deck Image preview" />
-      <div
+
+      <image-uploader
         v-if="mode === 'edit' && !image"
-        class="text-brown-500 flex h-full w-full items-center justify-center gap-2 text-base"
+        @image-uploaded="emit('image-uploaded', $event)"
+        class="text-brown-500 relative flex h-full w-full items-center justify-center gap-2 text-base"
       >
         <ui-kit:icon src="add-image" />
         {{ t('card.add-image') }}
-      </div>
+      </image-uploader>
     </div>
 
     <div :contenteditable="mode === 'edit'" class="card-face__text">
@@ -32,6 +44,7 @@ const { t } = useI18n()
         class="card-face__text-input"
         :placeholder="t('card.add-text')"
         :value="text"
+        @input="onTextUpdated"
       />
       <p v-else-if="text">{{ text }}</p>
     </div>
@@ -147,9 +160,4 @@ const { t } = useI18n()
 .card-face--edit .card-face__text:hover {
   border-color: var(--color-blue-500);
 }
-/* 
-.card-face--edit .card-face__text:focus-within,
-.card-face--edit:hover .card-face__text {
-  border-color: var(--color-purple-500);
-} */
 </style>

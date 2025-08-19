@@ -82,12 +82,15 @@ function getImagePreview(file: File): Promise<string> {
 </script>
 
 <template>
-  <input
-    type="file"
-    ref="fileInput"
-    @change="handleFileChange"
-    accept="image/*"
-    class="absolute inset-0 cursor-pointer opacity-0"
-  />
-  <slot :trigger="triggerDialog" :loading="loading" :dragging="dragging" />
+  <div>
+    <input
+      type="file"
+      ref="fileInput"
+      @change="handleFileChange"
+      accept="image/*"
+      class="absolute inset-0 cursor-pointer opacity-0"
+    />
+
+    <slot :trigger="triggerDialog" :loading="loading" :dragging="dragging" />
+  </div>
 </template>

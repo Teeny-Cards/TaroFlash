@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Card from '@/components/card/index.vue'
 import { useAudio } from '@/composables/use-audio'
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 
 const { mode } = defineProps<{
   cards: Card[]
@@ -17,6 +17,16 @@ async function onCardClick(index: number) {
 
   audio.play('slide_up')
   selected_card_index.value = index
+
+  await nextTick()
+
+  const card = document.querySelector('[data-testid="card-grid__selected-card"]') as HTMLDivElement
+  const input = card.querySelector(
+    '[data-testid="card-face__front"] .card-face__text-input'
+  ) as HTMLInputElement
+
+  console.log(input)
+  input.focus()
 }
 
 function onCardMouseEnter() {
@@ -44,6 +54,7 @@ function onCardMouseEnter() {
 
       <card
         v-if="selected_card_index === index && mode === 'edit'"
+        data-testid="card-grid__selected-card"
         class="[&>.card-face]:shadow-modal !absolute top-1/2 left-1/2 z-10 -translate-1/2 [&>.card-face]:ring-2
           [&>.card-face]:ring-blue-500"
         :front_text="card.front_text"
