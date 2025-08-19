@@ -1,23 +1,36 @@
 <script setup lang="ts">
 import CardFace from './card-face.vue'
+import type { ImageUploadEvent } from '@/components/image-uploader.vue'
 
-const {
-  size = 'base',
-  front_image_url,
-  back_image_url
-} = defineProps<{
+type CardProps = {
   size?: 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
-  revealed?: Boolean
+  mode?: 'view' | 'edit' | 'select'
+  side?: 'front' | 'back'
   front_image_url?: string
   front_text?: string
   back_image_url?: string
   back_text?: string
+}
+
+const {
+  size = 'base',
+  front_image_url,
+  back_image_url,
+  side = 'front',
+  mode = 'view'
+} = defineProps<CardProps>()
+
+const emit = defineEmits<{
+  (e: 'image-uploaded', event: ImageUploadEvent): void
+  (e: 'updated:front_text', text: string): void
+  (e: 'updated:back_text', text: string): void
 }>()
 </script>
 
 <template>
-  <div class="card-container" :class="`card-container--${size}`">
-    <slot name="before"></slot>
+  <div class="card-container" :class="`card-container--${size} card-container--${mode}`">
+    <slot></slot>
+
     <transition
       mode="out-in"
       enter-from-class="motion-safe:rotate-y-90 -translate-y-6"
@@ -28,17 +41,24 @@ const {
       leave-active-class="motion-safe:transition-[all] ease-in-out duration-150"
     >
       <card-face
-        v-if="!revealed"
+        v-if="side === 'front'"
         data-testid="card-face__front"
         :image="front_image_url"
         :text="front_text"
-      >
-        <slot name="front"></slot>
-      </card-face>
+        :mode="mode"
+        @image-uploaded="emit('image-uploaded', $event)"
+        @updated:text="emit('updated:front_text', $event)"
+      />
 
-      <card-face v-else data-testid="card-face__back" :image="back_image_url" :text="back_text">
-        <slot name="back"></slot>
-      </card-face>
+      <card-face
+        v-else
+        data-testid="card-face__back"
+        :image="back_image_url"
+        :text="back_text"
+        :mode="mode"
+        @image-uploaded="emit('image-uploaded', $event)"
+        @updated:text="emit('updated:back_text', $event)"
+      />
     </transition>
   </div>
 </template>
@@ -48,6 +68,7 @@ const {
   aspect-ratio: var(--aspect-card);
   position: relative;
   width: var(--card-width);
+  transition: width 0.05s ease-in-out;
 }
 
 .card-container--lg {
@@ -97,5 +118,24 @@ const {
   --face-padding: 1px;
   --face-text-size: var(--text-xs);
   --face-text-size--line-height: var(--text-xs--line-height);
+}
+
+.card-container--edit.card-container--lg {
+  --face-padding: 14px;
+}
+.card-container--edit.card-container--base {
+  --face-padding: 12px;
+}
+.card-container--edit.card-container--sm {
+  --face-padding: 10px;
+}
+.card-container--edit.card-container--xs {
+  --face-padding: 8px;
+}
+.card-container--edit.card-container--2xs {
+  --face-padding: 6px;
+}
+.card-container--edit.card-container--3xs {
+  --face-padding: 4px;
 }
 </style>
