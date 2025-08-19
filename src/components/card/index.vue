@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import CardFace from './card-face.vue'
+import type { ImageUploadEvent } from '@/components/image-uploader.vue'
 
-const {
-  size = 'base',
-  front_image_url,
-  back_image_url,
-  side = 'front',
-  mode = 'view'
-} = defineProps<{
+type CardProps = {
   size?: 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
   mode?: 'view' | 'edit' | 'select'
   side?: 'front' | 'back'
@@ -15,6 +10,20 @@ const {
   front_text?: string
   back_image_url?: string
   back_text?: string
+}
+
+const {
+  size = 'base',
+  front_image_url,
+  back_image_url,
+  side = 'front',
+  mode = 'view'
+} = defineProps<CardProps>()
+
+const emit = defineEmits<{
+  (e: 'image-uploaded', event: ImageUploadEvent): void
+  (e: 'updated:front_text', text: string): void
+  (e: 'updated:back_text', text: string): void
 }>()
 </script>
 
@@ -37,6 +46,8 @@ const {
         :image="front_image_url"
         :text="front_text"
         :mode="mode"
+        @image-uploaded="emit('image-uploaded', $event)"
+        @updated:text="emit('updated:front_text', $event)"
       />
 
       <card-face
@@ -45,6 +56,8 @@ const {
         :image="back_image_url"
         :text="back_text"
         :mode="mode"
+        @image-uploaded="emit('image-uploaded', $event)"
+        @updated:text="emit('updated:back_text', $event)"
       />
     </transition>
   </div>
