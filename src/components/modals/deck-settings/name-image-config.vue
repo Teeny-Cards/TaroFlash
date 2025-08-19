@@ -32,36 +32,34 @@ function onImageRemoved() {
 <template>
   <div class="relative flex flex-col items-center pb-6">
     <card class="!border-brown-100" :front_image_url="preview_image">
-      <template #front>
-        <image-uploader v-slot="{ trigger, loading, dragging }" @image-uploaded="onImageUploaded">
-          <div
-            v-if="dragging"
-            class="absolute -inset-1.5 rounded-[inherit] border-6 border-blue-400"
-          ></div>
+      <image-uploader v-slot="{ trigger, loading, dragging }" @image-uploaded="onImageUploaded">
+        <div
+          v-if="dragging"
+          class="absolute -inset-1.5 rounded-[inherit] border-6 border-blue-400"
+        ></div>
 
-          <ui-kit:button
-            v-if="!preview_image"
-            @click="trigger"
-            inverted
-            variant="muted"
-            icon-left="add-image"
-            icon-only
-            class="ring-brown-300 absolute -top-4 -left-4 ring-6"
-          />
+        <ui-kit:button
+          v-if="!preview_image"
+          @click="trigger"
+          inverted
+          variant="muted"
+          icon-left="add-image"
+          icon-only
+          class="ring-brown-300 absolute -top-4 -left-4 ring-6"
+        />
 
-          <ui-kit:button
-            v-else
-            @click="onImageRemoved"
-            inverted
-            variant="muted"
-            icon-left="remove-image"
-            icon-only
-            class="ring-brown-300 absolute -top-4 -left-4 ring-6"
-          />
+        <ui-kit:button
+          v-else
+          @click="onImageRemoved"
+          inverted
+          variant="muted"
+          icon-left="remove-image"
+          icon-only
+          class="ring-brown-300 absolute -top-4 -left-4 ring-6"
+        />
 
-          <ui-kit:loader v-if="loading" />
-        </image-uploader>
-      </template>
+        <ui-kit:loader v-if="loading" />
+      </image-uploader>
     </card>
     <ui-kit:input
       :placeholder="t('deck.title-placeholder')"

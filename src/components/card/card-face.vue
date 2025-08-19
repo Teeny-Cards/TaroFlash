@@ -1,22 +1,47 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 defineProps<{
   image?: string
   text?: string
+  mode?: 'view' | 'edit' | 'select'
 }>()
+
+const { t } = useI18n()
 </script>
 
 <template>
-  <div class="card-face" :class="{ 'card-face--has-image': image, 'card-face--has-text': text }">
-    <img v-if="image" :src="image" alt="Deck Image preview" class="card-face__image" />
+  <div
+    class="card-face"
+    :class="[`card-face--${mode}`, { 'card-face--has-image': image, 'card-face--has-text': text }]"
+  >
+    <div class="card-face__image">
+      <img :src="image" alt="Deck Image preview" />
+      <div
+        v-if="mode === 'edit' && !image"
+        class="text-brown-500 flex h-full w-full items-center justify-center gap-2 text-base"
+      >
+        <ui-kit:icon src="add-image" />
+        {{ t('card.add-image') }}
+      </div>
+    </div>
 
-    <slot name="front">
-      <div v-if="text" class="card-face__text">{{ text }}</div>
-    </slot>
+    <div :contenteditable="mode === 'edit'" class="card-face__text">
+      <input
+        v-if="mode === 'edit'"
+        class="card-face__text-input"
+        :placeholder="t('card.add-text')"
+        :value="text"
+      />
+      <p v-else-if="text">{{ text }}</p>
+    </div>
   </div>
 </template>
 
 <style>
 .card-face {
+  --inner-radius: calc(var(--face-radius) - var(--face-border-width) - var(--face-padding));
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,18 +59,48 @@ defineProps<{
   background-color: var(--color-white);
 }
 
-.card-face__image {
-  border-radius: calc(var(--face-radius) - var(--face-border-width) - var(--face-padding));
-
+.card-face__image,
+.card-face__image img {
   width: 100%;
   height: 100%;
+}
+
+.card-face__image img {
+  border-radius: var(--inner-radius);
   object-fit: cover;
 }
 
 .card-face__text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
   color: var(--color-brown-700);
   font-size: var(--face-text-size);
   line-height: var(--face-text-size--line-height);
+}
+
+.card-face__text-input {
+  color: var(--color-brown-700);
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
+  text-align: center;
+
+  width: 100%;
+  height: 100%;
+  resize: none;
+  outline: none;
+  border: none;
+  background: none;
+}
+.card-face__text-input::placeholder {
+  color: var(--color-brown-500);
+}
+
+.card-face:not(.card-face--has-image):not(.card-face--edit) .card-face__image,
+.card-face:not(.card-face--has-image) .card-face__image img {
+  display: none;
 }
 
 .card-face:not(.card-face--has-image) .card-face__text {
@@ -55,13 +110,46 @@ defineProps<{
   width: 100%;
   height: 100%;
 }
+.card-face:not(.card-face--has-text):not(.card-face--edit) .card-face__text {
+  display: none;
+}
 
-.card-face:not(.card-face--has-text) {
+.card-face:not(.card-face--has-text):not(.card-face--edit) {
   --face-padding: 0px;
 }
 
-.card-face:not(.card-face--has-text):not(.card-face--has-image) {
+.card-face:not(.card-face--has-text):not(.card-face--has-image):not(.card-face--edit) {
   background-color: var(--color-purple-400);
   background-image: var(--diagonal-stripes);
 }
+
+/* EDIT MODE */
+.card-face--edit {
+  --face-border-width: 0px;
+}
+
+.card-face--edit .card-face__image {
+  border-radius: var(--inner-radius);
+  border: 1px dashed var(--color-brown-300);
+  width: 100%;
+  height: 100px;
+  cursor: pointer;
+}
+.card-face--edit .card-face__image:hover {
+  border-color: var(--color-blue-500);
+}
+
+.card-face--edit .card-face__text {
+  border-radius: var(--inner-radius);
+  border: 1px dashed var(--color-brown-300);
+  outline: none;
+}
+.card-face--edit .card-face__text:hover {
+  border-color: var(--color-blue-500);
+}
+/* 
+.card-face--edit .card-face__text:focus-within,
+.card-face--edit:hover .card-face__text {
+  border-color: var(--color-purple-500);
+} */
 </style>
