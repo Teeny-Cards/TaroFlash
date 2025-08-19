@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
-import { expect, it, vi } from 'vitest'
+import { expect, it } from 'vitest'
 import Card from '@/components/card/index.vue'
+import { mockAndSimulateFileUpload } from '../../mocks/file-upload.js'
 
 it('renders front face by default', () => {
   const wrapper = mount(Card)
@@ -11,7 +12,7 @@ it('renders front face by default', () => {
 it('renders back face when revealed', () => {
   const wrapper = mount(Card, {
     props: {
-      revealed: true
+      side: 'back'
     }
   })
   expect(wrapper.exists()).toBe(true)
@@ -31,7 +32,7 @@ it('shows front text when provided', () => {
 it('shows back text when provided', () => {
   const wrapper = mount(Card, {
     props: {
-      revealed: true,
+      side: 'back',
       back_text: 'Test'
     }
   })
@@ -52,7 +53,7 @@ it('shows front image when provided', () => {
 it('shows back image when provided', () => {
   const wrapper = mount(Card, {
     props: {
-      revealed: true,
+      side: 'back',
       back_image_url: 'https://via.placeholder.com/150'
     }
   })
@@ -75,7 +76,7 @@ it('renders front image and text when both provided', () => {
 it('renders back image and text when both provided', () => {
   const wrapper = mount(Card, {
     props: {
-      revealed: true,
+      side: 'back',
       back_image_url: 'https://via.placeholder.com/150',
       back_text: 'Test'
     }
@@ -83,4 +84,73 @@ it('renders back image and text when both provided', () => {
   expect(wrapper.exists()).toBe(true)
   expect(wrapper.find('[data-testid="card-face__back"] img').exists()).toBe(true)
   expect(wrapper.find('[data-testid="card-face__back"]').text()).toBe('Test')
+})
+
+it('emits updated:front_text event when front text is updated', async () => {
+  const wrapper = mount(Card, {
+    props: {
+      front_text: 'Test',
+      mode: 'edit'
+    }
+  })
+  await wrapper.find('[data-testid="card-face__front"] input[type="text"]').setValue('Updated')
+  expect(wrapper.emitted('updated:front_text')).toBeTruthy()
+  expect(wrapper.emitted('updated:front_text')[0]).toEqual(['Updated'])
+})
+
+it('emits updated:back_text event when back text is updated', async () => {
+  const wrapper = mount(Card, {
+    props: {
+      side: 'back',
+      back_text: 'Test',
+      mode: 'edit'
+    }
+  })
+  await wrapper.find('[data-testid="card-face__back"] input[type="text"]').setValue('Updated')
+  expect(wrapper.emitted('updated:back_text')).toBeTruthy()
+  expect(wrapper.emitted('updated:back_text')[0]).toEqual(['Updated'])
+})
+
+it('emits image-uploaded event when image is uploaded', async () => {
+  const wrapper = mount(Card, {
+    props: {
+      mode: 'edit'
+    }
+  })
+
+  const { file } = await mockAndSimulateFileUpload(
+    wrapper,
+    '[data-testid="card-face__front"] input[type="file"]'
+  )
+
+  expect(wrapper.emitted('image-uploaded')).toBeTruthy()
+  expect(wrapper.emitted('image-uploaded')[0][0]).toEqual({
+    preview: 'data:image/jpeg;base64,mockbase64data',
+    file
+  })
+})
+
+it('emits image-uploaded event when back image is uploaded', async () => {
+  const wrapper = mount(Card, {
+    props: {
+      mode: 'edit',
+      side: 'back'
+    }
+  })
+
+  const { file } = await mockAndSimulateFileUpload(
+    wrapper,
+    '[data-testid="card-face__back"] input[type="file"]',
+    {
+      fileName: 'test-image.png',
+      fileType: 'image/png',
+      previewResult: 'data:image/png;base64,mockbase64data'
+    }
+  )
+
+  expect(wrapper.emitted('image-uploaded')).toBeTruthy()
+  expect(wrapper.emitted('image-uploaded')[0][0]).toEqual({
+    preview: 'data:image/png;base64,mockbase64data',
+    file
+  })
 })
