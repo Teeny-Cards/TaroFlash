@@ -25,7 +25,6 @@ async function onCardClick(index: number) {
     '[data-testid="card-face__front"] .card-face__text-input'
   ) as HTMLInputElement
 
-  console.log(input)
   input.focus()
 }
 

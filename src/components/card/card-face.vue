@@ -38,9 +38,10 @@ function onTextUpdated(event: Event) {
       </image-uploader>
     </div>
 
-    <div :contenteditable="mode === 'edit'" class="card-face__text">
+    <div class="card-face__text">
       <input
         v-if="mode === 'edit'"
+        type="text"
         class="card-face__text-input"
         :placeholder="t('card.add-text')"
         :value="text"

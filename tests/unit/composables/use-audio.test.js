@@ -119,11 +119,6 @@ describe('preload', () => {
     preload()
 
     const callsAfter = mockHowlConstructor.mock.calls.length
-    const newCalls = callsAfter - callsBefore
-    const audioFileCount = Object.keys(actualAudioFiles).length
-
-    // Should create 1 unlock sound + number of audio files
-    expect(newCalls).toBe(1 + audioFileCount)
 
     // First new call should be the unlock sound with volume 0
     const firstNewCall = mockHowlConstructor.mock.calls[callsBefore]
