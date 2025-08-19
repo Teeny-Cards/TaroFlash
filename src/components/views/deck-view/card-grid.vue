@@ -3,33 +3,35 @@ import Card from '@/components/card/index.vue'
 import { useAudio } from '@/composables/use-audio'
 import { nextTick, ref } from 'vue'
 
-const { mode } = defineProps<{
+const { mode, activeCardIndex } = defineProps<{
   cards: Card[]
   mode: 'edit' | 'view' | 'select'
+  activeCardIndex?: number
+}>()
+
+const emit = defineEmits<{
+  (e: 'card-activated', index: number): void
 }>()
 
 const audio = useAudio()
 
-const selected_card_index = ref()
-
 async function onCardClick(index: number) {
-  if (selected_card_index.value === index) return
+  if (activeCardIndex === index) return
 
   audio.play('slide_up')
-  selected_card_index.value = index
+  emit('card-activated', index)
 
   await nextTick()
 
-  const card = document.querySelector('[data-testid="card-grid__selected-card"]') as HTMLDivElement
-  const input = card.querySelector(
-    '[data-testid="card-face__front"] .card-face__text-input'
+  const input = document.querySelector(
+    '[data-testid="card-grid__selected-card"] .card-face__text-input'
   ) as HTMLInputElement
 
   input.focus()
 }
 
-function onCardMouseEnter() {
-  if (mode !== 'edit') return
+function onCardMouseEnter(index: number) {
+  if (mode !== 'edit' || activeCardIndex === index) return
   audio.play('click_04')
 }
 </script>
@@ -43,7 +45,7 @@ function onCardMouseEnter() {
       :front_text="card.front_text"
       :mode="mode"
       @click="onCardClick(index)"
-      @mouseenter="onCardMouseEnter"
+      @mouseenter="onCardMouseEnter(index)"
     >
       <div
         v-if="mode === 'edit'"
@@ -52,7 +54,7 @@ function onCardMouseEnter() {
       ></div>
 
       <card
-        v-if="selected_card_index === index && mode === 'edit'"
+        v-if="activeCardIndex === index && mode === 'edit'"
         data-testid="card-grid__selected-card"
         class="[&>.card-face]:shadow-modal !absolute top-1/2 left-1/2 z-10 -translate-1/2 [&>.card-face]:ring-2
           [&>.card-face]:ring-blue-500"
