@@ -19,8 +19,9 @@ const {
 </script>
 
 <template>
-  <div class="card-container" :class="`card-container--${size}`">
-    <slot name="before"></slot>
+  <div class="card-container" :class="`card-container--${size} card-container--${mode}`">
+    <slot></slot>
+
     <transition
       mode="out-in"
       enter-from-class="motion-safe:rotate-y-90 -translate-y-6"
@@ -35,13 +36,16 @@ const {
         data-testid="card-face__front"
         :image="front_image_url"
         :text="front_text"
-      >
-        <slot name="front"></slot>
-      </card-face>
+        :mode="mode"
+      />
 
-      <card-face v-else data-testid="card-face__back" :image="back_image_url" :text="back_text">
-        <slot name="back"></slot>
-      </card-face>
+      <card-face
+        v-else
+        data-testid="card-face__back"
+        :image="back_image_url"
+        :text="back_text"
+        :mode="mode"
+      />
     </transition>
   </div>
 </template>
@@ -51,6 +55,7 @@ const {
   aspect-ratio: var(--aspect-card);
   position: relative;
   width: var(--card-width);
+  transition: width 0.05s ease-in-out;
 }
 
 .card-container--lg {
@@ -100,5 +105,24 @@ const {
   --face-padding: 1px;
   --face-text-size: var(--text-xs);
   --face-text-size--line-height: var(--text-xs--line-height);
+}
+
+.card-container--edit.card-container--lg {
+  --face-padding: 14px;
+}
+.card-container--edit.card-container--base {
+  --face-padding: 12px;
+}
+.card-container--edit.card-container--sm {
+  --face-padding: 10px;
+}
+.card-container--edit.card-container--xs {
+  --face-padding: 8px;
+}
+.card-container--edit.card-container--2xs {
+  --face-padding: 6px;
+}
+.card-container--edit.card-container--3xs {
+  --face-padding: 4px;
 }
 </style>

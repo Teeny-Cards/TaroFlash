@@ -38,6 +38,8 @@
 
   "card.placeholder-front": "Front",
   "card.placeholder-back": "Back",
+  "card.add-image": "Add Image",
+  "card.add-text": "Add Text",
 
   "study.nope!": "Nope!",
   "study.got-it!": "Got It!",
