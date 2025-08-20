@@ -48,6 +48,16 @@ export async function updateCards(cards: Card[]): Promise<Card[]> {
   return data
 }
 
+export async function updateCard(card: Card): Promise<void> {
+  const { review, ...rest } = card
+  const { error } = await supabase.from('cards').upsert(rest)
+
+  if (error) {
+    logger.error(error.message)
+    throw new Error(error.message)
+  }
+}
+
 export async function createCard(card: Card): Promise<Card> {
   const { data, error } = await supabase
     .from('cards')

@@ -5,7 +5,7 @@ import { onBeforeRouteLeave } from 'vue-router'
 import { fetchDeck } from '@/api/decks'
 import StudySession from '@/components/modals/study-session/index.vue'
 import CardList from '@/components/views/deck-view/card-list/index.vue'
-import CardGrid from '@/components/views/deck-view/card-grid.vue'
+import CardGrid from '@/components/views/deck-view/card-grid/index.vue'
 import { useI18n } from 'vue-i18n'
 import { useCardBulkEditor } from '@/composables/use-card-bulk-editor'
 import { useAlert } from '@/composables/use-alert'
@@ -13,6 +13,8 @@ import { useModal } from '@/composables/use-modal'
 import { useDeckEditor } from '@/composables/use-deck-editor'
 import { useAudio } from '@/composables/use-audio'
 import ContextMenu from '@/components/views/deck-view/context-menu.vue'
+import { uploadCardImage, deleteCardImage } from '@/api/files'
+import { updateCard as upstreamUpdateCard } from '@/api/cards'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -44,8 +46,7 @@ const {
   deactivateCard,
   resetCards,
   saveCards,
-  setMode,
-  updateCardImage
+  setMode
 } = useCardBulkEditor(deck.value?.cards ?? [], Number(deck_id))
 
 const tabs = [
@@ -175,6 +176,27 @@ function onAddCard() {
   addCard()
   trySetMode('edit', false)
   activateCard(0)
+}
+
+async function updateCardImage(card_id: number, side: 'front' | 'back', file: File | undefined) {
+  const card = deck.value?.cards?.find((card) => card.id === card_id)
+  if (!card) return
+
+  if (file) {
+    try {
+      await uploadCardImage(card_id, side, file)
+      await upstreamUpdateCard({ ...card, [`has_${side}_image`]: true })
+    } catch (e: any) {
+      // TODO
+    }
+  } else {
+    try {
+      await deleteCardImage(card_id, side)
+      await upstreamUpdateCard({ ...card, [`has_${side}_image`]: false })
+    } catch (e: any) {
+      // TODO
+    }
+  }
 }
 </script>
 

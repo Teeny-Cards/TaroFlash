@@ -1,0 +1,87 @@
+<script lang="ts" setup>
+import Card from '@/components/card/index.vue'
+import { useCard } from '@/composables/use-card'
+import { useAudio } from '@/composables/use-audio'
+import { ref } from 'vue'
+import { type ImageUploadEvent } from '@/components/image-uploader.vue'
+
+const { card, activeCardIndex, side } = defineProps<{
+  card: Card
+  index: number
+  mode: 'edit' | 'view' | 'select'
+  side: 'front' | 'back'
+  activeCardIndex?: number
+}>()
+
+const emit = defineEmits<{
+  (e: 'card-image-updated', file: File | undefined): void
+  (e: 'card-activated', index: number): void
+}>()
+
+const audio = useAudio()
+const { front_image_url, back_image_url } = useCard(card)
+const card_size = ref<'base' | 'xl'>('base')
+const front_image_preview = ref<string | undefined>(front_image_url.value)
+const back_image_preview = ref<string | undefined>(back_image_url.value)
+
+async function onCardClick(index: number) {
+  if (activeCardIndex === index) return
+
+  card_size.value = 'base'
+  audio.play('slide_up')
+  emit('card-activated', index)
+
+  await new Promise((resolve) => setTimeout(resolve, 1))
+
+  card_size.value = 'xl'
+  const input = document.querySelector(
+    '[data-testid="card-grid__selected-card"] .card-face__text-input'
+  ) as HTMLInputElement
+
+  input?.focus()
+}
+
+function onImageUploaded(event: ImageUploadEvent) {
+  if (side === 'front') {
+    front_image_preview.value = event.preview
+  } else {
+    back_image_preview.value = event.preview
+  }
+
+  emit('card-image-updated', event.file)
+}
+</script>
+
+<template>
+  <card
+    class="group"
+    :key="card.id"
+    :front_text="card.front_text"
+    :back_text="card.back_text"
+    :front_image_url="front_image_preview"
+    :back_image_url="back_image_preview"
+    :mode="mode"
+    @click="onCardClick(index)"
+    @image-uploaded="onImageUploaded"
+  >
+    <div
+      v-if="mode === 'edit'"
+      class="rounded-12 absolute -inset-2 -z-1 hidden bg-purple-400 bg-(image:--diagonal-stripes)
+        group-hover:block"
+    ></div>
+
+    <card
+      v-if="activeCardIndex === index && mode === 'edit'"
+      data-testid="card-grid__selected-card"
+      class="[&>.card-face]:shadow-modal !absolute top-1/2 left-1/2 z-10 -translate-1/2 [&>.card-face]:ring-2
+        [&>.card-face]:ring-blue-500"
+      :front_text="card.front_text"
+      :back_text="card.back_text"
+      :front_image_url="front_image_preview"
+      :back_image_url="back_image_preview"
+      :mode="mode"
+      :size="card_size"
+      @image-uploaded="onImageUploaded"
+    ></card>
+  </card>
+</template>

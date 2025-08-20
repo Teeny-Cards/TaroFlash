@@ -15,40 +15,33 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const image_preview = ref<string | undefined>(image)
 
 function onTextUpdated(event: Event) {
   emit('update:text', (event.target as HTMLDivElement).innerText)
 }
-
-function onImageUploaded(event: ImageUploadEvent) {
-  image_preview.value = event.preview
-  console.log('uploaded')
-  emit('image-uploaded', event)
-}
 </script>
 
 <template>
-  <div class="card-face" :data-image="!!image_preview" :data-text="!!text" :data-mode="mode">
+  <div class="card-face" :data-image="!!image" :data-text="!!text" :data-mode="mode">
     <div
-      v-if="image_preview && mode !== 'edit'"
-      :style="`background-image: url(${image_preview})`"
+      v-if="image && mode !== 'edit'"
+      :style="`background-image: url(${image})`"
       class="h-full w-full rounded-(--inner-radius) bg-cover bg-center"
     ></div>
 
     <image-uploader
       v-else-if="mode === 'edit'"
-      @image-uploaded="onImageUploaded"
+      @image-uploaded="emit('image-uploaded', $event)"
       class="text-brown-500 group relative h-full min-h-(--min-element-height) w-full"
       :class="{
         'border-brown-300 rounded-(--inner-radius) border border-dashed hover:border-blue-500':
-          !image_preview
+          !image
       }"
     >
       <div
-        v-if="image_preview"
+        v-if="image"
         class="h-full w-full rounded-(--inner-radius) bg-cover bg-center"
-        :style="`background-image: url(${image_preview})`"
+        :style="`background-image: url(${image})`"
       ></div>
 
       <div v-else class="flex h-full w-full items-center justify-center gap-2 text-base">
