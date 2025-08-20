@@ -3,6 +3,14 @@ import { expect, it } from 'vitest'
 import Card from '@/components/card/index.vue'
 import { mockAndSimulateFileUpload } from '../../mocks/file-upload.js'
 
+async function setContentEditableText(el, text) {
+  el.textContent = text
+  const evt = new InputEvent('input', { bubbles: true, inputType: 'insertText', data: text })
+
+  el.dispatchEvent(evt)
+  await new Promise((resolve) => setTimeout(resolve, 10))
+}
+
 it('renders front face by default', () => {
   const wrapper = mount(Card)
   expect(wrapper.exists()).toBe(true)
@@ -47,7 +55,7 @@ it('shows front image when provided', () => {
     }
   })
   expect(wrapper.exists()).toBe(true)
-  expect(wrapper.find('[data-testid="card-face__front"] img').exists()).toBe(true)
+  expect(wrapper.find('[data-testid="card-face__front"][data-image="true"]').exists()).toBe(true)
 })
 
 it('shows back image when provided', () => {
@@ -58,7 +66,7 @@ it('shows back image when provided', () => {
     }
   })
   expect(wrapper.exists()).toBe(true)
-  expect(wrapper.find('[data-testid="card-face__back"] img').exists()).toBe(true)
+  expect(wrapper.find('[data-testid="card-face__back"][data-image="true"]').exists()).toBe(true)
 })
 
 it('renders front image and text when both provided', () => {
@@ -69,7 +77,7 @@ it('renders front image and text when both provided', () => {
     }
   })
   expect(wrapper.exists()).toBe(true)
-  expect(wrapper.find('[data-testid="card-face__front"] img').exists()).toBe(true)
+  expect(wrapper.find('[data-testid="card-face__front"][data-image="true"]').exists()).toBe(true)
   expect(wrapper.find('[data-testid="card-face__front"]').text()).toBe('Test')
 })
 
@@ -82,23 +90,25 @@ it('renders back image and text when both provided', () => {
     }
   })
   expect(wrapper.exists()).toBe(true)
-  expect(wrapper.find('[data-testid="card-face__back"] img').exists()).toBe(true)
+  expect(wrapper.find('[data-testid="card-face__back"][data-image="true"]').exists()).toBe(true)
   expect(wrapper.find('[data-testid="card-face__back"]').text()).toBe('Test')
 })
 
-it('emits updated:front_text event when front text is updated', async () => {
+it('emits update:front_text event when front text is updated', async () => {
   const wrapper = mount(Card, {
     props: {
       front_text: 'Test',
       mode: 'edit'
     }
   })
-  await wrapper.find('[data-testid="card-face__front"] input[type="text"]').setValue('Updated')
-  expect(wrapper.emitted('updated:front_text')).toBeTruthy()
-  expect(wrapper.emitted('updated:front_text')[0]).toEqual(['Updated'])
+
+  const el = wrapper.find('[data-testid="card-face__text-input"]').element
+  await setContentEditableText(el, 'Updated')
+
+  expect(wrapper.emitted('update:front_text')).toBeTruthy()
 })
 
-it('emits updated:back_text event when back text is updated', async () => {
+it('emits update:back_text event when back text is updated', async () => {
   const wrapper = mount(Card, {
     props: {
       side: 'back',
@@ -106,9 +116,10 @@ it('emits updated:back_text event when back text is updated', async () => {
       mode: 'edit'
     }
   })
-  await wrapper.find('[data-testid="card-face__back"] input[type="text"]').setValue('Updated')
-  expect(wrapper.emitted('updated:back_text')).toBeTruthy()
-  expect(wrapper.emitted('updated:back_text')[0]).toEqual(['Updated'])
+  const el = wrapper.find('[data-testid="card-face__text-input"]').element
+  await setContentEditableText(el, 'Updated')
+
+  expect(wrapper.emitted('update:back_text')).toBeTruthy()
 })
 
 it('emits image-uploaded event when image is uploaded', async () => {

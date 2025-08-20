@@ -3,7 +3,7 @@ import CardFace from './card-face.vue'
 import type { ImageUploadEvent } from '@/components/image-uploader.vue'
 
 type CardProps = {
-  size?: 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
+  size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
   mode?: 'view' | 'edit' | 'select'
   side?: 'front' | 'back'
   front_image_url?: string
@@ -22,8 +22,8 @@ const {
 
 const emit = defineEmits<{
   (e: 'image-uploaded', event: ImageUploadEvent): void
-  (e: 'updated:front_text', text: string): void
-  (e: 'updated:back_text', text: string): void
+  (e: 'update:front_text', text: string): void
+  (e: 'update:back_text', text: string): void
 }>()
 </script>
 
@@ -40,84 +40,93 @@ const emit = defineEmits<{
       leave-to-class="motion-safe:rotate-y-90 -translate-y-6"
       leave-active-class="motion-safe:transition-[all] ease-in-out duration-150"
     >
-      <card-face
-        v-if="side === 'front'"
-        data-testid="card-face__front"
-        :image="front_image_url"
-        :text="front_text"
-        :mode="mode"
-        @image-uploaded="emit('image-uploaded', $event)"
-        @updated:text="emit('updated:front_text', $event)"
-      />
+      <slot name="front" v-if="side === 'front'">
+        <card-face
+          data-testid="card-face__front"
+          :image="front_image_url"
+          :text="front_text"
+          :mode="mode"
+          @image-uploaded="emit('image-uploaded', $event)"
+          @update:text="emit('update:front_text', $event)"
+        />
+      </slot>
 
-      <card-face
-        v-else
-        data-testid="card-face__back"
-        :image="back_image_url"
-        :text="back_text"
-        :mode="mode"
-        @image-uploaded="emit('image-uploaded', $event)"
-        @updated:text="emit('updated:back_text', $event)"
-      />
+      <slot name="back" v-else>
+        <card-face
+          data-testid="card-face__back"
+          :image="back_image_url"
+          :text="back_text"
+          :mode="mode"
+          @image-uploaded="emit('image-uploaded', $event)"
+          @update:text="emit('update:back_text', $event)"
+        />
+      </slot>
     </transition>
   </div>
 </template>
 
 <style>
 .card-container {
+  --min-element-height: 80px;
+
   aspect-ratio: var(--aspect-card);
   position: relative;
   width: var(--card-width);
   transition: width 0.05s ease-in-out;
+
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
 }
 
+.card-container--2xl {
+  --card-width: 380px;
+  --face-border-width: 12px;
+  --face-radius: 70px;
+  --face-padding: 16px;
+}
+.card-container--xl {
+  --card-width: 314px;
+  --face-border-width: 10px;
+  --face-radius: 58px;
+  --face-padding: 14px;
+  --min-element-height: 100px;
+}
 .card-container--lg {
   --card-width: 260px;
   --face-border-width: 8px;
   --face-radius: 56px;
   --face-padding: 12px;
-  --face-text-size: var(--text-lg);
-  --face-text-size--line-height: var(--text-lg--line-height);
 }
 .card-container--base {
   --card-width: 192px;
   --face-border-width: 6px;
   --face-radius: 40px;
   --face-padding: 8px;
-  --face-text-size: var(--text-base);
-  --face-text-size--line-height: var(--text-base--line-height);
+  --min-element-height: 80px;
 }
 .card-container--sm {
   --card-width: 138px;
   --face-border-width: 6px;
   --face-radius: 32px;
   --face-padding: 6px;
-  --face-text-size: var(--text-sm);
-  --face-text-size--line-height: var(--text-sm--line-height);
 }
 .card-container--xs {
   --card-width: 102px;
   --face-border-width: 4px;
   --face-radius: 24px;
   --face-padding: 4px;
-  --face-text-size: var(--text-sm);
-  --face-text-size--line-height: var(--text-sm--line-height);
 }
 .card-container--2xs {
   --card-width: 43px;
   --face-border-width: 3px;
   --face-radius: 14px;
   --face-padding: 2px;
-  --face-text-size: var(--text-xs);
-  --face-text-size--line-height: var(--text-xs--line-height);
 }
 .card-container--3xs {
   --card-width: 28px;
   --face-border-width: 2px;
   --face-radius: 8px;
   --face-padding: 1px;
-  --face-text-size: var(--text-xs);
-  --face-text-size--line-height: var(--text-xs--line-height);
 }
 
 .card-container--edit.card-container--lg {
