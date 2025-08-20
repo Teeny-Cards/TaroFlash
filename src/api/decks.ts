@@ -43,6 +43,7 @@ export async function fetchDeck(id: number): Promise<Deck> {
 }
 
 export async function upsertDeck(deck: Deck): Promise<void> {
+  deck.updated_at = DateTime.now().toISO()
   const { error } = await supabase.from('decks').upsert(deck, { onConflict: 'id' })
 
   if (error) {

@@ -36,7 +36,10 @@ export async function fetchDueCardsByDeckId(deck_id: number): Promise<Card[]> {
 }
 
 export async function updateCards(cards: Card[]): Promise<Card[]> {
-  const sanitized = cards.map(({ review, ...rest }) => rest)
+  const sanitized = cards.map(({ review, ...rest }) => ({
+    ...rest,
+    updated_at: DateTime.now().toISO()
+  }))
 
   const { data, error } = await supabase.from('cards').upsert(sanitized).select()
 
@@ -50,6 +53,8 @@ export async function updateCards(cards: Card[]): Promise<Card[]> {
 
 export async function updateCard(card: Card): Promise<void> {
   const { review, ...rest } = card
+  rest.updated_at = DateTime.now().toISO()
+
   const { error } = await supabase.from('cards').upsert(rest)
 
   if (error) {
