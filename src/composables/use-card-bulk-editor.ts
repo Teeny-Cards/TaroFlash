@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue'
 import { updateCards, deleteCardsById } from '@/api/cards'
+import { uploadCardImage, deleteCardImage } from '@/api/files'
 
 export type EditableCard = Card & { deleted?: boolean; dirty?: boolean; new?: boolean }
 export type EditableCardKey = keyof EditableCard
@@ -118,6 +119,27 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
     deactivateCard(active_card_index.value)
   }
 
+  async function updateCardImage(card_id: number, side: 'front' | 'back', file: File | undefined) {
+    const card = edited_cards.value.find((card) => card.id === card_id)
+    if (!card) return
+
+    if (file) {
+      try {
+        await uploadCardImage(card_id, side, file)
+        updateCard(card_id, `has_${side}_image`, true)
+      } catch (e: any) {
+        // TODO
+      }
+    } else {
+      try {
+        await deleteCardImage(card_id, side)
+        updateCard(card_id, `has_${side}_image`, false)
+      } catch (e: any) {
+        // TODO
+      }
+    }
+  }
+
   async function deleteCards() {
     const cards = getSelectedCards()
       .map((card) => card.id)
@@ -168,6 +190,7 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
     setMode,
     resetCards,
     saveCards,
-    resetEdits
+    resetEdits,
+    updateCardImage
   }
 }

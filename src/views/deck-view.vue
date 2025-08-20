@@ -44,7 +44,8 @@ const {
   deactivateCard,
   resetCards,
   saveCards,
-  setMode
+  setMode,
+  updateCardImage
 } = useCardBulkEditor(deck.value?.cards ?? [], Number(deck_id))
 
 const tabs = [
@@ -220,6 +221,7 @@ function onAddCard() {
         @card-deactivated="deactivateCard"
         @card-selected="onSelectCard"
         @card-deleted="onDeleteCards"
+        @card-image-updated="updateCardImage"
       />
     </div>
   </section>
