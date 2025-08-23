@@ -1,7 +1,6 @@
 import { reactive, ref, computed } from 'vue'
 import { deleteDeck as upstreamDeleteDeck, upsertDeck } from '@/api/decks'
 import { deleteDeckImage, getDeckImageUrl, uploadDeckImage } from '@/api/files'
-import { DateTime } from 'luxon'
 
 export function useDeckEditor(deck?: Deck) {
   const settings = reactive<Deck>({
@@ -23,8 +22,6 @@ export function useDeckEditor(deck?: Deck) {
   })
 
   async function saveDeck() {
-    settings.updated_at = DateTime.now().toISO()
-
     await _maybeDeleteOldImage()
     await _maybeUploadImage()
     await upsertDeck(settings)
