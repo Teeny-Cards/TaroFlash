@@ -36,8 +36,8 @@ export function useModal() {
       responseValue: boolean = false,
       close_args?: { overrideCloseAudio?: string }
     ) => {
-      console.log(close_args?.overrideCloseAudio)
       const index = modal_stack.value.findIndex((m) => m.id === id)
+
       if (index !== -1) {
         modal_stack.value[index].resolve(responseValue)
         modal_stack.value.splice(index, 1)
