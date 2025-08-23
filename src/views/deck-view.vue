@@ -81,13 +81,12 @@ onUnmounted(() => {
 function warnIfDirty() {
   if (!is_dirty.value) return true
 
-  audio.play('etc_woodblock_stuck')
-
   const { response } = alert.warn({
     title: t('alert.leave-page'),
     message: t('alert.leave-page.message'),
     confirmLabel: t('common.leave'),
-    cancelLabel: t('alert.leave-page.stay')
+    cancelLabel: t('alert.leave-page.stay'),
+    confirmAudio: 'digi_powerdown'
   })
 
   return response
@@ -114,7 +113,9 @@ function onStudyClicked() {
     backdrop: true,
     props: {
       deck: deck.value!
-    }
+    },
+    openAudio: 'double-pop-up',
+    closeAudio: 'double-pop-down'
   })
 }
 
@@ -145,7 +146,8 @@ async function onDeleteCards(index?: number) {
   const { response } = alert.warn({
     title: t('alert.delete-card', { count }),
     message: t('alert.delete-card.message', { count }),
-    confirmLabel: t('common.delete')
+    confirmLabel: t('common.delete'),
+    confirmAudio: 'trash_crumple_short'
   })
 
   if (await response) {
@@ -153,8 +155,6 @@ async function onDeleteCards(index?: number) {
 
     await deleteCards()
     await refetchDeck()
-
-    audio.play('trash_crumple_short')
   }
 }
 
