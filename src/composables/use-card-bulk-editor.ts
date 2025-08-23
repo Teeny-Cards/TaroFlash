@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { updateCards, deleteCardsById } from '@/api/cards'
-import { uploadCardImage, deleteCardImage } from '@/api/files'
 
+export const MAX_INPUT_LENGTH = 400
 export type EditableCard = Card & { deleted?: boolean; dirty?: boolean; new?: boolean }
 export type EditableCardKey = keyof EditableCard
 export type EditableCardValue = EditableCard[keyof EditableCard]
@@ -40,8 +40,10 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
     const card = edited_cards.value[index]
     if (!card) return
 
-    if (card[key] !== value) {
-      ;(card as any)[key] = value
+    const processed_value = value
+
+    if (card[key] !== processed_value) {
+      ;(card as any)[key] = processed_value
       card.dirty = true
     }
   }

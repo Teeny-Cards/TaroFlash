@@ -10,6 +10,7 @@ type CardProps = {
   front_text?: string
   back_image_url?: string
   back_text?: string
+  max_length?: number
 }
 
 const {
@@ -24,6 +25,8 @@ const emit = defineEmits<{
   (e: 'image-uploaded', event: ImageUploadEvent): void
   (e: 'update:front_text', text: string): void
   (e: 'update:back_text', text: string): void
+  (e: 'focusin'): void
+  (e: 'focusout'): void
 }>()
 </script>
 
@@ -45,9 +48,12 @@ const emit = defineEmits<{
           data-testid="card-face__front"
           :image="front_image_url"
           :text="front_text"
+          :max_length="max_length"
           :mode="mode"
           @image-uploaded="emit('image-uploaded', $event)"
           @update:text="emit('update:front_text', $event)"
+          @focusin="emit('focusin')"
+          @focusout="emit('focusout')"
         />
       </slot>
 
@@ -56,9 +62,12 @@ const emit = defineEmits<{
           data-testid="card-face__back"
           :image="back_image_url"
           :text="back_text"
+          :max_length="max_length"
           :mode="mode"
           @image-uploaded="emit('image-uploaded', $event)"
           @update:text="emit('update:back_text', $event)"
+          @focusin="emit('focusin')"
+          @focusout="emit('focusout')"
         />
       </slot>
     </transition>

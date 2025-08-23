@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAudio } from '@/composables/use-audio'
-import { ref } from 'vue'
 import GridItem from './grid-item.vue'
+import { type EditableCardKey, type EditableCardValue } from '@/composables/use-card-bulk-editor'
 
 const {
   mode,
@@ -15,7 +15,12 @@ const {
 }>()
 
 const emit = defineEmits<{
+  (e: 'card-added'): void
   (e: 'card-activated', index: number): void
+  (e: 'card-deactivated', index: number): void
+  (e: 'card-selected', index: number): void
+  (e: 'card-deleted', index: number): void
+  (e: 'card-updated', index: number, column: EditableCardKey, value: EditableCardValue): void
   (
     e: 'card-image-updated',
     card_id: number | undefined,
@@ -38,6 +43,10 @@ function onCardImageUpdated(
 ) {
   emit('card-image-updated', card_id, side, file)
 }
+
+function onCardUpdated(index: number, side: 'front' | 'back', text: string) {
+  emit('card-updated', index, `${side}_text`, text)
+}
 </script>
 
 <template>
@@ -51,7 +60,9 @@ function onCardImageUpdated(
       :active-card-index="activeCardIndex"
       @mouseenter="onCardMouseEnter(index)"
       @card-activated="emit('card-activated', $event)"
+      @card-deactivated="emit('card-deactivated', $event)"
       @card-image-updated="onCardImageUpdated(card.id, side, $event)"
+      @card-updated="onCardUpdated(index, side, $event)"
     ></grid-item>
   </div>
 </template>
