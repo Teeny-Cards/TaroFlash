@@ -31,7 +31,11 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="card-container" :class="`card-container--${size} card-container--${mode}`">
+  <div
+    data-testid="card"
+    class="card-container"
+    :class="`card-container--${size} card-container--${mode}`"
+  >
     <slot></slot>
 
     <transition
