@@ -22,7 +22,11 @@ onMounted(async () => {
   loading.value = false
 
   if (!memberStore.has_member) {
-    modal.open(MemberApplication, { backdrop: true })
+    modal.open(MemberApplication, {
+      backdrop: true,
+      openAudio: 'double-pop-up',
+      closeAudio: 'double-pop-down'
+    })
   }
 })
 
