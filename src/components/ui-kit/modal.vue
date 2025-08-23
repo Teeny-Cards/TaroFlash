@@ -1,39 +1,21 @@
 <script setup lang="ts">
-import { onUnmounted, useTemplateRef, watchEffect, computed, provide } from 'vue'
+import { onUnmounted, useTemplateRef, watchEffect, computed } from 'vue'
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
 import { useModal } from '@/composables/use-modal'
 
-export type ModalContext = {
-  registerBackdropCloseListener: (listener: () => void) => () => void
-}
-
 const { modal_stack } = useModal()
 const modal_container = useTemplateRef<HTMLDivElement>('ui-kit-modal-container')
-const backdrop_listeners = new Set<() => void>()
 
 onUnmounted(() => {
   if (!modal_container.value) return
   enableBodyScroll(modal_container.value)
 })
 
-provide<ModalContext>('modal-context', {
-  registerBackdropCloseListener: (listener: () => void) => {
-    backdrop_listeners.add(listener)
-    return () => backdrop_listeners.delete(listener)
-  }
-})
-
 function close() {
   let modal = modal_stack.value.at(-1)
 
-  if (modal && modal.closeOnBackdropClick) {
-    modal.resolve(false)
-    modal_stack.value.pop()
-
-    for (const listener of backdrop_listeners) {
-      listener()
-      backdrop_listeners.delete(listener)
-    }
+  if (modal) {
+    modal.close(false)
   }
 }
 
@@ -84,8 +66,12 @@ const show_backdrop = computed(() => {
     leave-to-class="scale-90 opacity-0"
     leave-active-class="transition-[all] ease-in-out duration-100"
   >
-    <div data-testid="ui-kit-modal" v-for="modal in modal_stack" :key="modal.id" class="absolute">
-      <component :is="modal.component" v-bind="modal.componentProps" />
-    </div>
+    <component
+      v-for="modal in modal_stack"
+      :key="modal.id"
+      :is="modal.component"
+      v-bind="modal.componentProps"
+      class="absolute"
+    />
   </transition-group>
 </template>
