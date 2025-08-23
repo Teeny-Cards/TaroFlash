@@ -34,7 +34,7 @@ beforeEach(() => {
 
 test('renders nothing when modal stack is empty', () => {
   const wrapper = mount(Modal)
-  expect(wrapper.find('[data-testid="ui-kit-modal"]').exists()).toBe(false)
+  expect(wrapper.find('[data-testid="ui-kit-modal-container"]').element.innerHTML.trim()).toBe('')
 })
 
 test('renders modal component from modal stack', () => {
@@ -43,7 +43,7 @@ test('renders modal component from modal stack', () => {
 
   const wrapper = mount(Modal)
 
-  expect(wrapper.find('[data-testid="ui-kit-modal"]')).toBeDefined()
+  expect(wrapper.find('[data-testid="ui-kit-modal-container"]').element.children.length).toBe(1)
 })
 
 test('renders multiple modals from modal stack', () => {
@@ -53,7 +53,7 @@ test('renders multiple modals from modal stack', () => {
 
   const wrapper = mount(Modal)
 
-  expect(wrapper.findAll('[data-testid="ui-kit-modal"]').length).toBe(2)
+  expect(wrapper.find('[data-testid="ui-kit-modal-container"]').element.children.length).toBe(2)
 })
 
 test('applies backdrop class only when at least one modal requests it', () => {
