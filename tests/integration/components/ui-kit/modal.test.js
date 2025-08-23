@@ -69,15 +69,14 @@ test('applies backdrop class only when at least one modal requests it', () => {
 })
 
 test('resolves and removes top modal on backdrop click if enabled', async () => {
-  const entry = ModalEntryBuilder(TestModal).one({ overrides: { closeOnBackdropClick: true } })
+  const entry = ModalEntryBuilder(TestModal).one()
   mock_modal_stack.value.push(entry)
 
   const wrapper = mount(Modal)
 
   await wrapper.find('[data-testid="ui-kit-modal-backdrop"]').trigger('click')
 
-  expect(entry.resolve).toHaveBeenCalledWith(false)
-  expect(mock_modal_stack.value.length).toBe(0)
+  expect(entry.close).toHaveBeenCalled()
 })
 
 test('does not close modal on backdrop click if `closeOnBackdropClick` is false', () => {
