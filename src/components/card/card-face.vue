@@ -68,6 +68,7 @@ function onTextUpdated(event: Event) {
 
     <div
       v-else-if="!!text"
+      data-testid="card-face__text"
       class="text-brown-700 flex h-full w-full items-center justify-center p-3 text-center"
     >
       {{ text }}
