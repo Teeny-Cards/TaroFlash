@@ -36,10 +36,13 @@ function onCancel() {
 </script>
 
 <template>
+  <div class="absolute inset-0"></div>
+
   <div
     data-testid="ui-kit-alert"
     class="rounded-2 shadow-modal flex w-115 max-w-115 flex-col bg-white"
     :class="`ui-kit-alert--${type ?? 'warn'}`"
+    v-bind="$attrs"
   >
     <div data-testid="ui-kit-alert__body" class="flex flex-col gap-2 p-10">
       <h1 class="text-brown-700 text-4xl">{{ title ?? t('alert.generic-title') }}</h1>
