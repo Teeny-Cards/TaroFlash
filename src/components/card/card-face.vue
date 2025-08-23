@@ -1,23 +1,25 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import imageUploader, { type ImageUploadEvent } from '@/components/image-uploader.vue'
-import { ref } from 'vue'
 
 const { image } = defineProps<{
   image?: string
   text?: string
+  max_length?: number
   mode?: 'view' | 'edit' | 'select'
 }>()
 
 const emit = defineEmits<{
   (e: 'image-uploaded', event: ImageUploadEvent): void
   (e: 'update:text', text: string): void
+  (e: 'focusin'): void
+  (e: 'focusout'): void
 }>()
 
 const { t } = useI18n()
 
 function onTextUpdated(event: Event) {
-  emit('update:text', (event.target as HTMLDivElement).innerText)
+  emit('update:text', (event.target as HTMLTextAreaElement).value)
 }
 </script>
 
@@ -50,26 +52,24 @@ function onTextUpdated(event: Event) {
       </div>
     </image-uploader>
 
-    <div
+    <textarea
       v-if="mode === 'edit'"
       data-testid="card-face__text-input"
-      class="border-brown-300 placeholder:text-brown-500 text-brown-700 relative h-full
-        min-h-(--min-element-height) cursor-text rounded-(--inner-radius) border border-dashed p-3
-        text-center hover:border-blue-500"
+      class="placeholder:text-brown-500 text-brown-700 border-brown-300 h-full min-h-(--min-element-height)
+        resize-none rounded-(--inner-radius) border border-dashed p-3 text-center outline-none
+        hover:border-blue-500 focus:border-blue-500"
+      :placeholder="t('card.add-text')"
+      :value="text"
       @input="onTextUpdated"
-    >
-      <div contenteditable class="flex h-full w-full items-center justify-center outline-none">
-        {{ text }}
-      </div>
-      <div
-        v-if="!text"
-        class="text-brown-500 absolute inset-0 flex items-center justify-center select-none"
-      >
-        {{ t('card.add-text') }}
-      </div>
-    </div>
+      @focusin="emit('focusin')"
+      @focusout="emit('focusout')"
+      :maxlength="max_length"
+    />
 
-    <div v-else-if="!!text" class="flex h-full w-full items-center justify-center text-center">
+    <div
+      v-else-if="!!text"
+      class="text-brown-700 flex h-full w-full items-center justify-center p-3 text-center"
+    >
       {{ text }}
     </div>
   </div>

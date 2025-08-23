@@ -3,14 +3,6 @@ import { expect, it } from 'vitest'
 import Card from '@/components/card/index.vue'
 import { mockAndSimulateFileUpload } from '../../mocks/file-upload.js'
 
-async function setContentEditableText(el, text) {
-  el.textContent = text
-  const evt = new InputEvent('input', { bubbles: true, inputType: 'insertText', data: text })
-
-  el.dispatchEvent(evt)
-  await new Promise((resolve) => setTimeout(resolve, 10))
-}
-
 it('renders front face by default', () => {
   const wrapper = mount(Card)
   expect(wrapper.exists()).toBe(true)
@@ -102,8 +94,7 @@ it('emits update:front_text event when front text is updated', async () => {
     }
   })
 
-  const el = wrapper.find('[data-testid="card-face__text-input"]').element
-  await setContentEditableText(el, 'Updated')
+  await wrapper.find('[data-testid="card-face__text-input"]').setValue('update')
 
   expect(wrapper.emitted('update:front_text')).toBeTruthy()
 })
@@ -116,8 +107,8 @@ it('emits update:back_text event when back text is updated', async () => {
       mode: 'edit'
     }
   })
-  const el = wrapper.find('[data-testid="card-face__text-input"]').element
-  await setContentEditableText(el, 'Updated')
+
+  await wrapper.find('[data-testid="card-face__text-input"]').setValue('update')
 
   expect(wrapper.emitted('update:back_text')).toBeTruthy()
 })

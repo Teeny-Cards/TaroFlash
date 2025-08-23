@@ -2,10 +2,11 @@
 import Card from '@/components/card/index.vue'
 import { useCard } from '@/composables/use-card'
 import { useAudio } from '@/composables/use-audio'
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 import { type ImageUploadEvent } from '@/components/image-uploader.vue'
+import { MAX_INPUT_LENGTH } from '@/composables/use-card-bulk-editor'
 
-const { card, activeCardIndex, side } = defineProps<{
+const { card, activeCardIndex, side, mode } = defineProps<{
   card: Card
   index: number
   mode: 'edit' | 'view' | 'select'
@@ -16,6 +17,8 @@ const { card, activeCardIndex, side } = defineProps<{
 const emit = defineEmits<{
   (e: 'card-image-updated', file: File | undefined): void
   (e: 'card-activated', index: number): void
+  (e: 'card-deactivated', index: number): void
+  (e: 'card-updated', text: string): void
 }>()
 
 const audio = useAudio()
@@ -24,7 +27,7 @@ const card_size = ref<'base' | 'xl'>('base')
 const front_image_preview = ref<string | undefined>(front_image_url.value)
 const back_image_preview = ref<string | undefined>(back_image_url.value)
 
-async function onCardClick(index: number) {
+async function onCardFocusIn(index: number) {
   if (activeCardIndex === index) return
 
   card_size.value = 'base'
@@ -34,11 +37,23 @@ async function onCardClick(index: number) {
   await new Promise((resolve) => setTimeout(resolve, 1))
 
   card_size.value = 'xl'
-  const input = document.querySelector(
-    '[data-testid="card-grid__selected-card"] .card-face__text-input'
-  ) as HTMLInputElement
+  _focusInput()
+}
 
-  input?.focus()
+async function onCardFocusOut(index: number) {
+  if (activeCardIndex !== index) return
+
+  card_size.value = 'base'
+  emit('card-deactivated', index)
+
+  await new Promise((resolve) => setTimeout(resolve, 1))
+  if (activeCardIndex === undefined) audio.play('card_drop')
+}
+
+function onDblClick(index: number) {
+  if (mode === 'view') {
+    emit('card-activated', index)
+  }
 }
 
 function onImageUploaded(event: ImageUploadEvent) {
@@ -50,6 +65,14 @@ function onImageUploaded(event: ImageUploadEvent) {
 
   emit('card-image-updated', event.file)
 }
+
+function _focusInput() {
+  const input = document.querySelector(
+    '[data-testid="card-grid__selected-card"] [data-testid="card-face__text-input"]'
+  ) as HTMLTextAreaElement
+
+  input?.focus()
+}
 </script>
 
 <template>
@@ -60,9 +83,11 @@ function onImageUploaded(event: ImageUploadEvent) {
     :back_text="card.back_text"
     :front_image_url="front_image_preview"
     :back_image_url="back_image_preview"
+    :maxlength="MAX_INPUT_LENGTH"
     :mode="mode"
-    @click="onCardClick(index)"
+    @focusin="onCardFocusIn(index)"
     @image-uploaded="onImageUploaded"
+    @dblclick="onDblClick(index)"
   >
     <div
       v-if="mode === 'edit'"
@@ -81,6 +106,10 @@ function onImageUploaded(event: ImageUploadEvent) {
       :back_image_url="back_image_preview"
       :mode="mode"
       :size="card_size"
+      :max_length="MAX_INPUT_LENGTH"
+      @focusout="onCardFocusOut(index)"
+      @update:front_text="emit('card-updated', $event)"
+      @update:back_text="emit('card-updated', $event)"
       @image-uploaded="onImageUploaded"
     ></card>
   </card>

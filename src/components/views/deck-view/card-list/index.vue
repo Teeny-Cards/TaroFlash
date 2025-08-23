@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import ListItem from './list-item.vue'
 import { useI18n } from 'vue-i18n'
-import { type EditableCardValue, type EditableCardKey } from '@/composables/use-card-bulk-editor'
+import {
+  type EditableCardValue,
+  type EditableCardKey,
+  MAX_INPUT_LENGTH
+} from '@/composables/use-card-bulk-editor'
 import { nextTick } from 'vue'
-
-const MAX_INPUT_LENGTH = 400
 
 const { mode, activeCardIndex } = defineProps<{
   cards: Card[]
@@ -34,10 +36,6 @@ function onFocus(e: Event, index: number) {
 function onInput(e: Event, index: number) {
   const target = e.target as HTMLTextAreaElement
   const column = target.dataset['testid'] === 'front-input' ? 'front_text' : 'back_text'
-
-  if (target.value.length > MAX_INPUT_LENGTH) {
-    target.value = target.value.slice(0, MAX_INPUT_LENGTH)
-  }
 
   emit('card-updated', index, column, target.value)
 }
@@ -84,20 +82,24 @@ async function onDblClick(e: MouseEvent, index: number) {
         >
           <textarea
             data-testid="front-input"
+            class="card-list__input"
             :placeholder="t('card.placeholder-front')"
             :value="card.front_text"
             :disabled="mode !== 'edit'"
             @focusin="onFocus($event, index)"
             @input="onInput($event, index)"
+            :maxlength="MAX_INPUT_LENGTH"
           ></textarea>
 
           <textarea
             data-testid="back-input"
+            class="card-list__input"
             :placeholder="t('card.placeholder-back')"
             :value="card.back_text"
             :disabled="mode !== 'edit'"
             @focusin="onFocus($event, index)"
             @input="onInput($event, index)"
+            :maxlength="MAX_INPUT_LENGTH"
           ></textarea>
         </div>
       </list-item>
@@ -110,7 +112,7 @@ async function onDblClick(e: MouseEvent, index: number) {
 <style>
 @reference '@/styles/main.css';
 
-textarea {
+.card-list__input {
   @apply text-grey-700 focus:outline-none;
   @apply transition-all duration-100;
   @apply rounded-4 h-14.5 w-full resize-none px-3 py-2;
