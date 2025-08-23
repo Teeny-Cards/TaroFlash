@@ -25,7 +25,8 @@ async function onDeleted() {
     title: t('alert.delete-deck'),
     message: t('alert.delete-deck.message'),
     confirmLabel: t('common.delete'),
-    confirmAudio: 'trash_crumple_short'
+    confirmAudio: 'trash_crumple_short',
+    cancelAudio: 'digi_powerdown'
   })
 
   if (await response) {
