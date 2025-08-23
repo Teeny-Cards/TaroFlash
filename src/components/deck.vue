@@ -18,7 +18,9 @@ function onStudyClicked() {
     backdrop: true,
     props: {
       deck
-    }
+    },
+    openAudio: 'double-pop-up',
+    closeAudio: 'double-pop-down'
   })
 }
 

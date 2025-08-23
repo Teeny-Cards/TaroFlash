@@ -8,6 +8,9 @@ type AlertArgs = {
   cancelLabel?: string
   backdrop?: boolean
   closeOnBackdropClick?: boolean
+  openAudio?: string
+  cancelAudio?: string
+  confirmAudio?: string
 }
 
 export function useAlert() {
@@ -30,8 +33,11 @@ export function useAlert() {
         title: args?.title,
         message: args?.message,
         confirmLabel: args?.confirmLabel,
-        cancelLabel: args?.cancelLabel
-      }
+        cancelLabel: args?.cancelLabel,
+        cancelAudio: args?.cancelAudio,
+        confirmAudio: args?.confirmAudio
+      },
+      openAudio: args?.openAudio ?? 'etc_woodblock_stuck'
     })
   }
 

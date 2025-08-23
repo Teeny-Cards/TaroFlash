@@ -5,21 +5,19 @@ import { useAudio } from '@/composables/use-audio'
 
 export type AlertType = 'warn' | 'info'
 
-const { cancelLabel, confirmLabel, close } = defineProps<{
+const { cancelLabel, confirmLabel, close, cancelAudio } = defineProps<{
   cancelLabel?: string
   confirmLabel?: string
   message?: string
   title?: string
   type?: AlertType
-  close: (result?: boolean) => void
+  cancelAudio?: string
+  confirmAudio?: string
+  close: (result?: boolean, args?: { overrideCloseAudio?: string }) => void
 }>()
 
 const { t } = useI18n()
 const audio = useAudio()
-
-onMounted(() => {
-  audio.play('etc_woodblock_stuck')
-})
 
 const cancelText = computed(() => {
   return cancelLabel ?? t('common.cancel')
@@ -30,52 +28,54 @@ const confirmText = computed(() => {
 })
 
 function onCancel() {
-  audio.play('digi_powerdown')
-  close(false)
+  close(false, { overrideCloseAudio: cancelAudio })
 }
 </script>
 
 <template>
-  <div class="absolute inset-0"></div>
-
   <div
-    data-testid="ui-kit-alert"
-    class="rounded-2 shadow-modal flex w-115 max-w-115 flex-col bg-white"
-    :class="`ui-kit-alert--${type ?? 'warn'}`"
-    v-bind="$attrs"
+    data-testid="ui-kit-alert-container"
+    class="absolute inset-0 flex items-center justify-center"
   >
-    <div data-testid="ui-kit-alert__body" class="flex flex-col gap-2 p-10">
-      <h1 class="text-brown-700 text-4xl">{{ title ?? t('alert.generic-title') }}</h1>
-      <p class="text-brown-500">{{ message ?? t('alert.generic-message') }}</p>
-    </div>
-
     <div
-      data-testid="ui-kit-alert__actions"
-      class="border-brown-300 divide-brown-300 flex w-full divide-x border-t"
+      data-testid="ui-kit-alert"
+      class="rounded-2 shadow-modal flex w-115 max-w-115 flex-col bg-white"
+      :class="`ui-kit-alert--${type ?? 'warn'}`"
+      v-bind="$attrs"
     >
-      <button
-        data-testid="ui-kit-alert__cancel"
-        class="ui-kit-alert__cancel group"
-        @click="onCancel"
-        @mouseenter="audio.play('click_04')"
-      >
-        {{ cancelText }}
-        <div class="hover-effect group-hover:!opacity-100 group-focus:!opacity-100">
-          <span>{{ cancelText }}</span>
-        </div>
-      </button>
+      <div data-testid="ui-kit-alert__body" class="flex flex-col gap-2 p-10">
+        <h1 class="text-brown-700 text-4xl">{{ title ?? t('alert.generic-title') }}</h1>
+        <p class="text-brown-500">{{ message ?? t('alert.generic-message') }}</p>
+      </div>
 
-      <button
-        data-testid="ui-kit-alert__confirm"
-        class="ui-kit-alert__confirm group"
-        @click="() => close(true)"
-        @mouseenter="audio.play('click_04')"
+      <div
+        data-testid="ui-kit-alert__actions"
+        class="border-brown-300 divide-brown-300 flex w-full divide-x border-t"
       >
-        {{ confirmText }}
-        <div class="hover-effect group-hover:!opacity-100 group-focus:!opacity-100">
-          <span>{{ confirmText }}</span>
-        </div>
-      </button>
+        <button
+          data-testid="ui-kit-alert__cancel"
+          class="ui-kit-alert__cancel group"
+          @click="onCancel"
+          @mouseenter="audio.play('click_04')"
+        >
+          {{ cancelText }}
+          <div class="hover-effect group-hover:!opacity-100 group-focus:!opacity-100">
+            <span>{{ cancelText }}</span>
+          </div>
+        </button>
+
+        <button
+          data-testid="ui-kit-alert__confirm"
+          class="ui-kit-alert__confirm group"
+          @click="() => close(true, { overrideCloseAudio: confirmAudio })"
+          @mouseenter="audio.play('click_04')"
+        >
+          {{ confirmText }}
+          <div class="hover-effect group-hover:!opacity-100 group-focus:!opacity-100">
+            <span>{{ confirmText }}</span>
+          </div>
+        </button>
+      </div>
     </div>
   </div>
 </template>
