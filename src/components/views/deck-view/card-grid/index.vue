@@ -12,7 +12,7 @@ const {
   mode: 'edit' | 'view' | 'select'
   side?: 'front' | 'back'
   activeCardIndex?: number
-  selectedCardIndices: number[]
+  selectedCardIndices?: number[]
 }>()
 
 const emit = defineEmits<{
@@ -59,7 +59,7 @@ function onCardUpdated(index: number, side: 'front' | 'back', text: string) {
       :mode="mode"
       :side="side"
       :active-card-index="activeCardIndex"
-      :selected="selectedCardIndices.includes(index)"
+      :selected="selectedCardIndices?.includes(index) ?? false"
       @mouseenter="onCardMouseEnter(index)"
       @card-activated="emit('card-activated', $event)"
       @card-deactivated="emit('card-deactivated', $event)"
