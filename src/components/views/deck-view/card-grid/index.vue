@@ -12,6 +12,7 @@ const {
   mode: 'edit' | 'view' | 'select'
   side?: 'front' | 'back'
   activeCardIndex?: number
+  selectedCardIndices: number[]
 }>()
 
 const emit = defineEmits<{
@@ -58,9 +59,11 @@ function onCardUpdated(index: number, side: 'front' | 'back', text: string) {
       :mode="mode"
       :side="side"
       :active-card-index="activeCardIndex"
+      :selected="selectedCardIndices.includes(index)"
       @mouseenter="onCardMouseEnter(index)"
       @card-activated="emit('card-activated', $event)"
       @card-deactivated="emit('card-deactivated', $event)"
+      @card-selected="emit('card-selected', index)"
       @card-image-updated="onCardImageUpdated(card.id, side, $event)"
       @card-updated="onCardUpdated(index, side, $event)"
     ></grid-item>

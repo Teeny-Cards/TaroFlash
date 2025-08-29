@@ -12,6 +12,7 @@ const { card, activeCardIndex, side, mode, index } = defineProps<{
   mode: 'edit' | 'view' | 'select'
   side: 'front' | 'back'
   activeCardIndex?: number
+  selected: boolean
 }>()
 
 const emit = defineEmits<{
@@ -19,6 +20,7 @@ const emit = defineEmits<{
   (e: 'card-activated', index: number): void
   (e: 'card-deactivated', index: number): void
   (e: 'card-updated', text: string): void
+  (e: 'card-selected'): void
 }>()
 
 const audio = useAudio()
@@ -76,11 +78,25 @@ function _focusInput() {
 
   input?.focus()
 }
+
+function onMouseEnter() {
+  if (mode !== 'select') return
+  audio.play('click_04')
+}
+
+function onClick() {
+  if (mode !== 'select') return
+  emit('card-selected')
+  audio.play('etc_camera_shutter')
+}
 </script>
 
 <template>
   <card
-    class="group"
+    class="group relative"
+    :class="{
+      'cursor-pointer hover:[&>.card-face]:!border-purple-500': mode === 'select'
+    }"
     :key="card.id"
     :front_text="card.front_text"
     :back_text="card.back_text"
@@ -92,12 +108,18 @@ function _focusInput() {
     @focusin="onCardFocusIn"
     @image-uploaded="onImageUploaded"
     @dblclick="onDblClick"
+    @click="onClick"
+    @mouseenter="onMouseEnter"
   >
     <div
       v-if="mode === 'edit'"
       class="rounded-12 absolute -inset-2 -z-1 hidden bg-purple-400 bg-(image:--diagonal-stripes)
         group-hover:block"
     ></div>
+
+    <div v-if="mode === 'select'" class="absolute top-0 right-0">
+      <ui-kit:radio :checked="selected" @click.stop="emit('card-selected')" />
+    </div>
 
     <card
       v-if="activeCardIndex === index && mode === 'edit'"
