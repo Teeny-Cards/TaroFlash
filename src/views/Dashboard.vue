@@ -10,6 +10,7 @@ import { useModal } from '@/composables/use-modal'
 import { useMemberStore } from '@/stores/member'
 import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const toastStore = useToastStore()
 const router = useRouter()
 const memberStore = useMemberStore()

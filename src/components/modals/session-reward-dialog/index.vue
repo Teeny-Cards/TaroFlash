@@ -9,7 +9,8 @@ const { rewards, score, total } = defineProps<{
 }>()
 
 const reward_components = {
-  paperclips: Paperclips
+  paperclips: Paperclips,
+  powerup: {}
 }
 </script>
 
