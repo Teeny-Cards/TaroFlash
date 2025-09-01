@@ -11,6 +11,7 @@ import { useAudio } from './composables/use-audio'
 const i18n = createI18n({
   locale: 'en-us',
   legacy: false,
+  escapeParameter: false,
   messages
 })
 
