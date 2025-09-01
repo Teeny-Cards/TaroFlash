@@ -1,5 +1,5 @@
 declare type Reward = {
-  type: 'paperclips'
+  type: 'paperclips' | 'powerup'
   label: string
   amount: number
 }

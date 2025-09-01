@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { capitalize } from '@/utils/capitalize'
 
 const { score, total, num_rewards, first_reward } = defineProps<{
   score: number
