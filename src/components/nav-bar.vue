@@ -1,8 +1,8 @@
 <template>
-  <nav class="font-primary sticky top-0 z-10 flex h-17 w-full justify-center bg-blue-500">
+  <nav class="font-primary sticky top-0 z-10 flex py-2 w-full justify-center bg-blue-500">
     <div class="flex w-full max-w-375 items-center justify-between px-4 sm:px-16">
-      <RouterLink to="/dashboard" class="flex items-center text-6xl text-white">
-        <ui-kit:image src="taro-logo_3" class="max-w-12" />
+      <RouterLink to="/dashboard" class="flex items-center gap-2 text-3xl text-white">
+        <ui-kit:image src="taro-logo_3" class="max-w-6" />
         <div>TaroCards</div>
       </RouterLink>
       <!-- <div class="flex items-end gap-6">
