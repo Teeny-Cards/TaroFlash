@@ -78,18 +78,16 @@ onUnmounted(() => {
   document.removeEventListener('keydown', onEsc)
 })
 
-function warnIfDirty() {
-  if (!is_dirty.value) return true
+function warnIfDirty(): Promise<any> {
+  if (!is_dirty.value) return Promise.resolve(true)
 
-  const { response } = alert.warn({
+  return alert.warn({
     title: t('alert.leave-page'),
     message: t('alert.leave-page.message'),
     confirmLabel: t('common.leave'),
     cancelLabel: t('alert.leave-page.stay'),
     confirmAudio: 'digi_powerdown'
   })
-
-  return response
 }
 
 async function trySetMode(new_mode: 'edit' | 'view' | 'select', reset = true) {
@@ -143,14 +141,14 @@ function cancelEdits() {
 async function onDeleteCards(index?: number) {
   const count = selected_card_indices.value.length + (index !== undefined ? 1 : 0)
 
-  const { response } = alert.warn({
+  const did_confirm = await alert.warn({
     title: t('alert.delete-card', { count }),
     message: t('alert.delete-card.message', { count }),
     confirmLabel: t('common.delete'),
     confirmAudio: 'trash_crumple_short'
   })
 
-  if (await response) {
+  if (did_confirm) {
     if (index !== undefined) selectCard(index)
 
     await deleteCards()

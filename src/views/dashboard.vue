@@ -49,9 +49,9 @@ function onDeckClicked(deck: Deck) {
 }
 
 async function onCreateDeckClicked() {
-  const { response } = modal.open(deckSettings, { backdrop: true })
+  const deck_created = await modal.open(deckSettings, { backdrop: true })
 
-  if (await response) {
+  if (deck_created) {
     await refetchDecks()
   }
 }

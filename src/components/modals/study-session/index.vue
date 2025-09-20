@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import Session from './session.vue'
 import SessionRewardDialog from '../session-reward-dialog/index.vue'
 
-const { deck, close } = defineProps<{ deck: Deck; close: (response?: boolean) => void }>()
+const { deck, close } = defineProps<{ deck: Deck; close: (response?: any) => void }>()
 
 const is_studying = ref(true)
 const score = ref(0)
