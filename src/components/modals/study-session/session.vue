@@ -6,6 +6,7 @@ import { useStudySession } from '@/composables/use-study-session'
 import { useDeckEditor } from '@/composables/use-deck-editor'
 import { type RecordLogItem } from 'ts-fsrs'
 import { computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const { deck } = defineProps<{ deck: Deck }>()
 const emit = defineEmits<{
@@ -13,6 +14,7 @@ const emit = defineEmits<{
   (e: 'finished', score: number, total: number): void
 }>()
 
+const { t } = useI18n()
 const { image_url } = useDeckEditor(deck)
 
 const {
@@ -78,7 +80,7 @@ function onCardRevealed() {
           @click="emit('closed')"
         ></ui-kit:button>
       </div>
-      <h1 class="text-5xl text-white">Studying {{ deck?.title }}</h1>
+      <h1 class="text-5xl text-white">{{ t('study-session.title', { deck: deck?.title }) }}</h1>
     </div>
 
     <div
