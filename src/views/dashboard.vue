@@ -58,7 +58,7 @@ async function onCreateDeckClicked() {
 </script>
 
 <template>
-  <div class="flex h-full flex-col gap-16">
+  <div data-testid="dashboard" class="flex h-full flex-col gap-16">
     <div class="flex flex-col gap-4">
       <h1 class="text-grey-700 text-3xl">{{ t('dashboard.due') }}</h1>
       <div class="flex gap-4">
@@ -83,9 +83,9 @@ async function onCreateDeckClicked() {
           @updated="refetchDecks"
         />
       </div>
-      <ui-kit:button icon-left="add" @click="onCreateDeckClicked">{{
-        t('dashboard.create-deck')
-      }}</ui-kit:button>
+      <ui-kit:button icon-left="add" @click="onCreateDeckClicked">
+        {{ t('dashboard.create-deck') }}
+      </ui-kit:button>
     </div>
   </div>
 </template>
