@@ -8,7 +8,7 @@ import { useDeckEditor } from '@/composables/use-deck-editor'
 
 const { deck, close } = defineProps<{
   deck?: Deck
-  close: (response?: boolean) => void
+  close: (response?: any) => void
 }>()
 
 const { t } = useI18n()
@@ -21,7 +21,7 @@ async function onSave() {
 }
 
 async function onDeleted() {
-  const { response } = alert.warn({
+  const did_confirm = await alert.warn({
     title: t('alert.delete-deck'),
     message: t('alert.delete-deck.message'),
     confirmLabel: t('common.delete'),
@@ -29,7 +29,7 @@ async function onDeleted() {
     cancelAudio: 'digi_powerdown'
   })
 
-  if (await response) {
+  if (did_confirm) {
     await deleteDeck()
     close(true)
   }
