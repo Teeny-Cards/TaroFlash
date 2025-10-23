@@ -10,6 +10,7 @@
   "common.continue": "Continue",
   "common.leave": "Leave",
   "common.create": "Create",
+  "common.done": "Done",
 
   "member-application.header": "Welcome To TeenyCards!",
   "member-application.subtitle": "Let’s get you set up with your new Member Card (You can update this at any time).",
@@ -19,7 +20,6 @@
   "member-application.member-id": "Member ID",
   "member-application.registered": "Registered",
   "member-application.title": "Title",
-
   "member-card.header": "Member Card",
   "member-card.description-placeholder": "Add a short comment to your card",
   "member-card.member": "MEMBER",
@@ -38,14 +38,20 @@
 
   "card.placeholder-front": "Front",
   "card.placeholder-back": "Back",
+  "card.add-image": "Add Image",
+  "card.add-text": "Add Text",
 
   "study.nope!": "Nope!",
   "study.got-it!": "Got It!",
   "study.show!": "Show!",
   "study.study-again": "Study again {time}",
+  "study-session.title": "Studying {deck}",
 
   "edit-card-modal.title": "Edit Card",
+
   "dashboard.due": "Due",
+  "dashboard.all": "All Decks",
+  "dashboard.create-deck": "Create Deck",
 
   "deck.description-placeholder": "Add a short description to your deck.",
   "deck.title-placeholder": "Deck Name",
@@ -59,5 +65,13 @@
   "deck-view.no-cards": "No Cards",
   "deck-view.tabs.card-view": "Card View",
   "deck-view.tabs.list-view": "List View",
-  "deck-view.empty-state.no-cards": "You don't have any cards in this deck."
+  "deck-view.empty-state.no-cards": "You don't have any cards in this deck.",
+
+  "reward-stack.perfect-score": "Perfect Score!",
+  "reward-stack.great-job": "Great Job!",
+  "reward-stack.good-work": "Good Work!",
+  "reward-stack.not-bad": "Not Bad!",
+  "reward-stack.dang": "Dang :/",
+  "reward-stack.single-reward.subheader": "Yout got a {type}! | You got <span>+{count}</span> {type}!",
+  "reward-stack.multi-reward.subheader": "You got a {type}! + more... | You got <span>+{count}</span> {type}! + more..."
 }

@@ -8,20 +8,23 @@ type AlertArgs = {
   cancelLabel?: string
   backdrop?: boolean
   closeOnBackdropClick?: boolean
+  openAudio?: string
+  cancelAudio?: string
+  confirmAudio?: string
 }
 
 export function useAlert() {
   const modal = useModal()
 
-  function warn(args?: AlertArgs) {
+  function warn(args?: AlertArgs): Promise<boolean> {
     return _openAlert('warn', args)
   }
 
-  function info(args?: AlertArgs) {
+  function info(args?: AlertArgs): Promise<boolean> {
     return _openAlert('info', args)
   }
 
-  function _openAlert(type: AlertType, args?: AlertArgs) {
+  function _openAlert(type: AlertType, args?: AlertArgs): Promise<boolean> {
     return modal.open(alert, {
       backdrop: args?.backdrop ?? true,
       closeOnBackdropClick: args?.closeOnBackdropClick,
@@ -30,8 +33,11 @@ export function useAlert() {
         title: args?.title,
         message: args?.message,
         confirmLabel: args?.confirmLabel,
-        cancelLabel: args?.cancelLabel
-      }
+        cancelLabel: args?.cancelLabel,
+        cancelAudio: args?.cancelAudio,
+        confirmAudio: args?.confirmAudio
+      },
+      openAudio: args?.openAudio ?? 'etc_woodblock_stuck'
     })
   }
 

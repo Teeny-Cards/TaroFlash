@@ -18,7 +18,9 @@ function onStudyClicked() {
     backdrop: true,
     props: {
       deck
-    }
+    },
+    openAudio: 'double-pop-up',
+    closeAudio: 'double-pop-down'
   })
 }
 
@@ -35,22 +37,20 @@ const numCardsDue = computed(() => {
       @click="$emit('clicked')"
       :front_image_url="image_url"
     >
-      <template #before>
-        <div
-          v-if="numCardsDue"
-          class="ring-brown-100 absolute -top-2 -right-2 flex h-7.5 w-7.5 items-center justify-center rounded-full
-            bg-red-500 ring-6"
-        >
-          <h2 class="text-base text-white">{{ numCardsDue }}</h2>
-        </div>
+      <div
+        v-if="numCardsDue"
+        class="ring-brown-100 absolute -top-2 -right-2 flex h-7.5 w-7.5 items-center justify-center rounded-full
+          bg-red-500 ring-6"
+      >
+        <h2 class="text-base text-white">{{ numCardsDue }}</h2>
+      </div>
 
-        <deck-preview
-          :deck="deck"
-          :image-url="image_url"
-          @study="onStudyClicked"
-          @updated="$emit('updated')"
-        />
-      </template>
+      <deck-preview
+        :deck="deck"
+        :image-url="image_url"
+        @study="onStudyClicked"
+        @updated="$emit('updated')"
+      />
     </card>
 
     <div>
