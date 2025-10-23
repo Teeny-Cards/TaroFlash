@@ -5,7 +5,7 @@ import { onBeforeRouteLeave } from 'vue-router'
 import { fetchDeck } from '@/api/decks'
 import StudySession from '@/components/modals/study-session/index.vue'
 import CardList from '@/components/views/deck-view/card-list/index.vue'
-import CardGrid from '@/components/views/deck-view/card-grid.vue'
+import CardGrid from '@/components/views/deck-view/card-grid/index.vue'
 import { useI18n } from 'vue-i18n'
 import { useCardBulkEditor } from '@/composables/use-card-bulk-editor'
 import { useAlert } from '@/composables/use-alert'
@@ -13,6 +13,8 @@ import { useModal } from '@/composables/use-modal'
 import { useDeckEditor } from '@/composables/use-deck-editor'
 import { useAudio } from '@/composables/use-audio'
 import ContextMenu from '@/components/views/deck-view/context-menu.vue'
+import { uploadCardImage, deleteCardImage } from '@/api/files'
+import { updateCard as upstreamUpdateCard } from '@/api/cards'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -76,19 +78,16 @@ onUnmounted(() => {
   document.removeEventListener('keydown', onEsc)
 })
 
-function warnIfDirty() {
-  if (!is_dirty.value) return true
+function warnIfDirty(): Promise<any> {
+  if (!is_dirty.value) return Promise.resolve(true)
 
-  audio.play('etc_woodblock_stuck')
-
-  const { response } = alert.warn({
+  return alert.warn({
     title: t('alert.leave-page'),
     message: t('alert.leave-page.message'),
     confirmLabel: t('common.leave'),
-    cancelLabel: t('alert.leave-page.stay')
+    cancelLabel: t('alert.leave-page.stay'),
+    confirmAudio: 'digi_powerdown'
   })
-
-  return response
 }
 
 async function trySetMode(new_mode: 'edit' | 'view' | 'select', reset = true) {
@@ -112,7 +111,9 @@ function onStudyClicked() {
     backdrop: true,
     props: {
       deck: deck.value!
-    }
+    },
+    openAudio: 'double-pop-up',
+    closeAudio: 'double-pop-down'
   })
 }
 
@@ -140,19 +141,18 @@ function cancelEdits() {
 async function onDeleteCards(index?: number) {
   const count = selected_card_indices.value.length + (index !== undefined ? 1 : 0)
 
-  const { response } = alert.warn({
+  const did_confirm = await alert.warn({
     title: t('alert.delete-card', { count }),
     message: t('alert.delete-card.message', { count }),
-    confirmLabel: t('common.delete')
+    confirmLabel: t('common.delete'),
+    confirmAudio: 'trash_crumple_short'
   })
 
-  if (await response) {
+  if (did_confirm) {
     if (index !== undefined) selectCard(index)
 
     await deleteCards()
     await refetchDeck()
-
-    audio.play('trash_crumple_short')
   }
 }
 
@@ -175,13 +175,34 @@ function onAddCard() {
   trySetMode('edit', false)
   activateCard(0)
 }
+
+async function updateCardImage(card_id: number, side: 'front' | 'back', file: File | undefined) {
+  const card = deck.value?.cards?.find((card) => card.id === card_id)
+  if (!card) return
+
+  if (file) {
+    try {
+      await uploadCardImage(card_id, side, file)
+      await upstreamUpdateCard({ ...card, [`has_${side}_image`]: true })
+    } catch (e: any) {
+      // TODO
+    }
+  } else {
+    try {
+      await deleteCardImage(card_id, side)
+      await upstreamUpdateCard({ ...card, [`has_${side}_image`]: false })
+    } catch (e: any) {
+      // TODO
+    }
+  }
+}
 </script>
 
 <template>
   <section data-testid="deck-view" class="flex h-full items-start gap-15">
     <overview-panel
       v-if="deck"
-      class="sticky top-23"
+      class="sticky top-16"
       :deck="deck"
       :image-url="image_url"
       @study-clicked="onStudyClicked"
@@ -189,7 +210,7 @@ function onAddCard() {
     />
 
     <div class="relative flex h-full w-full flex-col">
-      <div class="sticky top-17 z-10 flex w-full justify-between py-6">
+      <div class="sticky top-16 z-10 flex w-full justify-between pb-2">
         <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
 
         <context-menu
@@ -220,6 +241,7 @@ function onAddCard() {
         @card-deactivated="deactivateCard"
         @card-selected="onSelectCard"
         @card-deleted="onDeleteCards"
+        @card-image-updated="updateCardImage"
       />
     </div>
   </section>

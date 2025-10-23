@@ -8,7 +8,9 @@ import deckSettings from '@/components/modals/deck-settings/index.vue'
 import MemberApplication from '@/components/modals/member-application.vue'
 import { useModal } from '@/composables/use-modal'
 import { useMemberStore } from '@/stores/member'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const toastStore = useToastStore()
 const router = useRouter()
 const memberStore = useMemberStore()
@@ -22,7 +24,11 @@ onMounted(async () => {
   loading.value = false
 
   if (!memberStore.has_member) {
-    modal.open(MemberApplication, { backdrop: true })
+    modal.open(MemberApplication, {
+      backdrop: true,
+      openAudio: 'double-pop-up',
+      closeAudio: 'double-pop-down'
+    })
   }
 })
 
@@ -43,18 +49,18 @@ function onDeckClicked(deck: Deck) {
 }
 
 async function onCreateDeckClicked() {
-  const { response } = modal.open(deckSettings, { backdrop: true })
+  const deck_created = await modal.open(deckSettings, { backdrop: true })
 
-  if (await response) {
+  if (deck_created) {
     await refetchDecks()
   }
 }
 </script>
 
 <template>
-  <div class="flex h-full flex-col gap-16">
+  <div data-testid="dashboard" class="flex h-full flex-col gap-16">
     <div class="flex flex-col gap-4">
-      <h1 class="text-grey-700 text-3xl">{{ $t('dashboard.due') }}</h1>
+      <h1 class="text-grey-700 text-3xl">{{ t('dashboard.due') }}</h1>
       <div class="flex gap-4">
         <Deck
           v-for="(deck, index) in due_decks"
@@ -67,7 +73,7 @@ async function onCreateDeckClicked() {
     </div>
 
     <div class="flex flex-col gap-4">
-      <h1 class="text-grey-700 text-3xl">All Decks</h1>
+      <h1 class="text-grey-700 text-3xl">{{ t('dashboard.all') }}</h1>
       <div class="flex gap-4">
         <Deck
           v-for="(deck, index) in decks"
@@ -77,7 +83,9 @@ async function onCreateDeckClicked() {
           @updated="refetchDecks"
         />
       </div>
-      <ui-kit:button icon-left="add" @click="onCreateDeckClicked">Create Deck</ui-kit:button>
+      <ui-kit:button icon-left="add" @click="onCreateDeckClicked">
+        {{ t('dashboard.create-deck') }}
+      </ui-kit:button>
     </div>
   </div>
 </template>
