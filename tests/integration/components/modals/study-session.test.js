@@ -216,12 +216,8 @@ it('rating options are shown and disabled when in preview mode', async () => {
 
   await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
 
-  expect(
-    wrapper.find('[data-testid="rating-buttons__good"]').attributes('disabled')
-  ).toBeUndefined()
-  expect(
-    wrapper.find('[data-testid="rating-buttons__again"]').attributes('disabled')
-  ).toBeUndefined()
+  expect(wrapper.find('[data-testid="rating-buttons__good"]').attributes('disabled')).toBe('')
+  expect(wrapper.find('[data-testid="rating-buttons__again"]').attributes('disabled')).toBe('')
 
   const historyCards = wrapper.findAll('[data-testid="history-track__card"]')
   await historyCards.at(1).trigger('click')

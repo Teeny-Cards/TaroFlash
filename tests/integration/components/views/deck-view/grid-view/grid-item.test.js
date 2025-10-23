@@ -21,13 +21,14 @@ beforeEach(() => {
 })
 
 test('Renders base Card with passed props', () => {
-  const card = card.one()
+  const newCard = card.one()
   const wrapper = mount(GridItem, {
     props: {
-      card,
+      card: newCard,
       index: 0,
       mode: 'view',
-      side: 'front'
+      side: 'front',
+      selected: false
     }
   })
 
@@ -36,13 +37,14 @@ test('Renders base Card with passed props', () => {
 })
 
 test('Focus-in sequence (when not already active)', async () => {
-  const card = card.one()
+  const newCard = card.one()
   const wrapper = mount(GridItem, {
     props: {
-      card,
+      card: newCard,
       index: 0,
       mode: 'edit',
-      side: 'front'
+      side: 'front',
+      selected: false
     }
   })
 
@@ -53,14 +55,15 @@ test('Focus-in sequence (when not already active)', async () => {
 })
 
 test('Focus-in no-op when already active', async () => {
-  const card = card.one()
+  const newCard = card.one()
   const wrapper = mount(GridItem, {
     props: {
-      card,
+      card: newCard,
       index: 0,
       mode: 'edit',
       side: 'front',
-      activeCardIndex: 0
+      activeCardIndex: 0,
+      selected: false
     }
   })
 
@@ -71,14 +74,15 @@ test('Focus-in no-op when already active', async () => {
 })
 
 test('Focus-out sequence (when currently active)', async () => {
-  const card = card.one()
+  const newCard = card.one()
   const wrapper = mount(GridItem, {
     props: {
-      card,
+      card: newCard,
       index: 0,
       mode: 'edit',
       side: 'front',
-      activeCardIndex: 0
+      activeCardIndex: 0,
+      selected: false
     }
   })
 
@@ -92,13 +96,14 @@ test('Focus-out sequence (when currently active)', async () => {
 })
 
 test('Focus-out is ignored when not active', async () => {
-  const card = card.one()
+  const newCard = card.one()
   const wrapper = mount(GridItem, {
     props: {
-      card,
+      card: newCard,
       index: 0,
       mode: 'edit',
-      side: 'front'
+      side: 'front',
+      selected: false
     }
   })
 
@@ -109,13 +114,14 @@ test('Focus-out is ignored when not active', async () => {
 })
 
 test('Double-click in edit mode does nothing', async () => {
-  const card = card.one()
+  const newCard = card.one()
   const wrapper = mount(GridItem, {
     props: {
-      card,
+      card: newCard,
       index: 0,
       mode: 'edit',
-      side: 'front'
+      side: 'front',
+      selected: false
     }
   })
 
@@ -125,13 +131,14 @@ test('Double-click in edit mode does nothing', async () => {
 })
 
 test('Double-click in select mode does nothing', async () => {
-  const card = card.one()
+  const newCard = card.one()
   const wrapper = mount(GridItem, {
     props: {
-      card,
+      card: newCard,
       index: 0,
       mode: 'select',
-      side: 'front'
+      side: 'front',
+      selected: false
     }
   })
 
@@ -141,13 +148,14 @@ test('Double-click in select mode does nothing', async () => {
 })
 
 test('Double-click in "view" mode emits "card-activated" with index', async () => {
-  const card = card.one()
+  const newCard = card.one()
   const wrapper = mount(GridItem, {
     props: {
-      card,
+      card: newCard,
       index: 0,
       mode: 'view',
-      side: 'front'
+      side: 'front',
+      selected: false
     }
   })
 
@@ -158,13 +166,14 @@ test('Double-click in "view" mode emits "card-activated" with index', async () =
 })
 
 test('Image upload (front) updates front_image_preview and emits "card-image-updated" with file', async () => {
-  const card = card.one()
+  const newCard = card.one()
   const wrapper = mount(GridItem, {
     props: {
-      card,
+      card: newCard,
       index: 0,
       mode: 'edit',
-      side: 'front'
+      side: 'front',
+      selected: false
     }
   })
 
@@ -178,17 +187,17 @@ test('Image upload (front) updates front_image_preview and emits "card-image-upd
 })
 
 test('Image upload (back) updates back_image_preview and emits "card-image-updated" with file', async () => {
-  const card = card.one()
+  const newCard = card.one()
   const wrapper = mount(GridItem, {
     props: {
-      card,
+      card: newCard,
       index: 0,
       mode: 'edit',
-      side: 'back'
+      side: 'back',
+      selected: false
     }
   })
 
-  console.log(wrapper.html())
   const { file } = await mockAndSimulateFileUpload(
     wrapper,
     '[data-testid="card-face__back"] input[type="file"]'
