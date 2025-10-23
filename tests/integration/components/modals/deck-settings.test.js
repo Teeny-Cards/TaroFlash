@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { expect, it, vi } from 'vitest'
 import DeckSettings from '@/components/modals/deck-settings/index.vue'
-import { DeckBuilder } from '@tests/mocks/models/deck'
+import { deck as deckBuilder } from '@tests/mocks/models/deck'
 import { createTestingPinia } from '@pinia/testing'
 
 const mocks = vi.hoisted(() => {
@@ -52,7 +52,7 @@ vi.mock('@/composables/use-audio', () => ({
 it('Renders Cancel, Delete, and Save buttons when a deck exists', async () => {
   const wrapper = mount(DeckSettings, {
     props: {
-      deck: DeckBuilder().one(),
+      deck: deckBuilder.one(),
       close: vi.fn()
     },
     global: {
@@ -136,7 +136,7 @@ it('Calls close function when Delete button is clicked', async () => {
   const close = vi.fn()
   const wrapper = mount(DeckSettings, {
     props: {
-      deck: DeckBuilder().one(),
+      deck: deckBuilder.one(),
       close
     },
     global: {
@@ -157,7 +157,7 @@ it('Calls close function when Delete button is clicked', async () => {
 it('Calls deleteDeck function when Delete button is clicked', async () => {
   const wrapper = mount(DeckSettings, {
     props: {
-      deck: DeckBuilder().one(),
+      deck: deckBuilder.one(),
       close: vi.fn()
     },
     global: {
@@ -178,7 +178,7 @@ it('Calls deleteDeck function when Delete button is clicked', async () => {
 it('Calls saveDeck function when Save button is clicked', async () => {
   const wrapper = mount(DeckSettings, {
     props: {
-      deck: DeckBuilder().one(),
+      deck: deckBuilder.one(),
       close: vi.fn()
     },
     global: {
@@ -199,7 +199,7 @@ it('Calls saveDeck function when Save button is clicked', async () => {
 it('Calls uploadImage function when image is uploaded', async () => {
   const wrapper = mount(DeckSettings, {
     props: {
-      deck: DeckBuilder().one(),
+      deck: deckBuilder.one(),
       close: vi.fn()
     },
     global: {

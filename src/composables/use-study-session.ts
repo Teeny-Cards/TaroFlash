@@ -44,6 +44,10 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     return [..._cards_in_deck.value, ..._retry_cards.value]
   })
 
+  const num_correct = computed(() => {
+    return cards.value.filter((c) => c.state === 'passed').length
+  })
+
   async function setup(deck_id: number) {
     const cardFetch = config.study_all_cards
       ? fetchAllCardsByDeckId(deck_id)
@@ -68,6 +72,10 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
   function pickNextCard() {
     current_card_state.value = 'hidden'
     active_card.value = cards.value.find((c) => c.state === 'unreviewed')
+
+    if (!active_card.value) {
+      mode.value = 'completed'
+    }
   }
 
   function reviewCard(item: RecordLogItem) {
@@ -117,6 +125,7 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     active_card,
     preview_card,
     cards,
+    num_correct,
     setup,
     pickNextCard,
     setPreviewCard,
