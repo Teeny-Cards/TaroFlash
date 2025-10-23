@@ -5,56 +5,32 @@ import AdditionalSettings from './additional-settings.vue'
 import HeaderConfig from './header-config.vue'
 import { useAlert } from '@/composables/use-alert'
 import { useDeckEditor } from '@/composables/use-deck-editor'
-import { useAudio } from '@/composables/use-audio'
-import { inject, onBeforeUnmount, onMounted } from 'vue'
-import type { ModalContext } from '@/components/ui-kit/modal.vue'
 
 const { deck, close } = defineProps<{
   deck?: Deck
-  close: (response?: boolean) => void
+  close: (response?: any) => void
 }>()
-
-let cleanupBackdropListener: () => void
-const { registerBackdropCloseListener } = inject('modal-context') as ModalContext
 
 const { t } = useI18n()
 const alert = useAlert()
-const audio = useAudio()
 const { settings, image_url, saveDeck, deleteDeck, uploadImage, removeImage } = useDeckEditor(deck)
-
-onMounted(() => {
-  audio.play('double-pop-up')
-
-  cleanupBackdropListener = registerBackdropCloseListener(() => {
-    audio.play('double-pop-down')
-  })
-})
-
-onBeforeUnmount(() => {
-  cleanupBackdropListener()
-})
 
 async function onSave() {
   await saveDeck()
-  audio.play('double-pop-down')
   close(true)
 }
 
-function onClose() {
-  audio.play('double-pop-down')
-  close(false)
-}
-
 async function onDeleted() {
-  const { response } = alert.warn({
+  const did_confirm = await alert.warn({
     title: t('alert.delete-deck'),
     message: t('alert.delete-deck.message'),
-    confirmLabel: t('common.delete')
+    confirmLabel: t('common.delete'),
+    confirmAudio: 'trash_crumple_short',
+    cancelAudio: 'digi_powerdown'
   })
 
-  if (await response) {
+  if (did_confirm) {
     await deleteDeck()
-    audio.play('trash_crumple_short')
     close(true)
   }
 }
@@ -89,7 +65,7 @@ async function onDeleted() {
       <ui-kit:button
         variant="muted"
         icon-left="close"
-        @click="onClose"
+        @click="close(false)"
         class="ring-brown-300 ring-7"
       >
         {{ t('common.cancel') }}

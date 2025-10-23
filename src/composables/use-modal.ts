@@ -1,36 +1,49 @@
-import { ref, markRaw } from 'vue'
+import { ref, markRaw, type Component } from 'vue'
+import { useAudio } from './use-audio'
 
 type ModalEntry = {
   backdrop?: boolean
   closeOnBackdropClick?: boolean
   component: any
   componentProps?: Record<string, any>
-  resolve: (result: boolean) => void
   id: symbol
+  openAudio?: string
+  closeAudio?: string
+  resolve: (result: any) => void
+  close: (responseValue?: any) => void
 }
 
 type OpenArgs = {
   props?: Record<string, any>
   backdrop?: boolean
   closeOnBackdropClick?: boolean
+  openAudio?: string
+  closeAudio?: string
 }
 
 const modal_stack = ref<ModalEntry[]>([])
 
 export function useModal() {
-  function open(component: any, args: OpenArgs) {
-    let resolveFn!: (result: boolean) => void
+  function open(component: any, args: OpenArgs): Promise<any> {
+    let resolveFn!: (result: any) => void
 
     const id = Symbol('modal')
-    const response = new Promise<boolean>((resolve) => {
+    const response = new Promise<any>((resolve) => {
       resolveFn = resolve
     })
 
-    const close = (responseValue: boolean = false) => {
+    const close = (responseValue: any, close_args?: { overrideCloseAudio?: string }) => {
       const index = modal_stack.value.findIndex((m) => m.id === id)
+
       if (index !== -1) {
         modal_stack.value[index].resolve(responseValue)
         modal_stack.value.splice(index, 1)
+
+        if (close_args?.overrideCloseAudio || args.closeAudio) {
+          useAudio().play(
+            close_args?.overrideCloseAudio ? close_args?.overrideCloseAudio : args.closeAudio!
+          )
+        }
       }
     }
 
@@ -43,16 +56,19 @@ export function useModal() {
         ...args.props,
         close
       },
-      resolve: resolveFn
+      resolve: resolveFn,
+      close,
+      openAudio: args.openAudio,
+      closeAudio: args.closeAudio
     }
 
     modal_stack.value.push(entry)
 
-    return {
-      id,
-      close,
-      response
+    if (args.openAudio) {
+      useAudio().play(args.openAudio)
     }
+
+    return response
   }
 
   function close(id?: symbol, response: boolean = false) {
@@ -63,6 +79,9 @@ export function useModal() {
       const modal = modal_stack.value[index]
       modal.resolve(response)
       modal_stack.value.splice(index, 1)
+      if (modal.closeAudio) {
+        useAudio().play(modal.closeAudio)
+      }
     }
   }
 
