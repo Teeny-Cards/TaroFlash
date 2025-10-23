@@ -1,103 +1,25 @@
 <script setup lang="ts">
-import HistoryTrack from './history-track.vue'
-import StudyCard from './study-card.vue'
-import RatingButtons from './rating-buttons.vue'
-import { useStudySession } from '@/composables/use-study-session'
-import { useDeckEditor } from '@/composables/use-deck-editor'
-import { type RecordLogItem } from 'ts-fsrs'
-import { computed, onMounted } from 'vue'
+import { ref } from 'vue'
+import Session from './session.vue'
+import RewardDialog from '../reward-dialog/index.vue'
 
-const { deck, close } = defineProps<{ deck: Deck; close: (response?: boolean) => void }>()
-const { image_url } = useDeckEditor(deck)
+const { deck, close } = defineProps<{ deck: Deck; close: (response?: any) => void }>()
 
-const {
-  mode,
-  cards,
-  current_card_state,
-  current_card,
-  active_card,
-  preview_card,
-  pickNextCard,
-  setPreviewCard,
-  reviewCard,
-  setup
-} = useStudySession(deck.config)
+const is_studying = ref(true)
+const score = ref(0)
+const total = ref(0)
+const rewards = ref<Reward[]>([])
 
-onMounted(async () => {
-  if (!deck.id) {
-    close()
-    return
-  }
+function onSessionFinished(_score: number, _total: number) {
+  is_studying.value = false
+  score.value = _score
+  total.value = _total
 
-  await setup(deck.id!)
-})
-
-const isPreviewingOrRevealed = computed(() => {
-  return mode.value === 'previewing' || current_card_state.value === 'revealed'
-})
-
-function onCardReviewed(item: RecordLogItem) {
-  if (current_card.value?.id && mode.value === 'studying') {
-    reviewCard(item)
-    pickNextCard()
-  }
-}
-
-function onCardRevealed() {
-  current_card_state.value = 'revealed'
+  rewards.value = [{ type: 'paperclips', label: 'Paperclips', amount: 20 }]
 }
 </script>
 
 <template>
-  <div
-    data-testid="study-session"
-    :data-mode="mode"
-    class="bg-brown-300 rounded-8 shadow-modal flex h-170 w-268 flex-col items-center overflow-hidden pb-6"
-  >
-    <div
-      data-testid="study-session__header"
-      class="pointy-bottom relative flex w-full justify-center bg-purple-500 bg-(image:--diagonal-stripes)
-        bg-(length:--bg-sm) px-13 py-11.5"
-    >
-      <div data-testid="study-session__actions" class="absolute top-0 left-0 p-4">
-        <ui-kit:button
-          icon-left="close"
-          variant="muted"
-          inverted
-          icon-only
-          @click="close()"
-        ></ui-kit:button>
-      </div>
-      <h1 class="text-5xl text-white">Studying {{ deck?.title }}</h1>
-    </div>
-
-    <div
-      data-testid="study-session__body"
-      class="grid h-full w-full grid-cols-[1fr_auto_1fr] content-center"
-    >
-      <div data-testid="study-session__powerup"></div>
-      <study-card
-        :card="current_card"
-        :image_url="image_url"
-        :revealed="current_card_state === 'revealed'"
-        :previewing="mode === 'previewing'"
-      />
-
-      <rating-buttons
-        :options="current_card?.preview"
-        :show-options="isPreviewingOrRevealed"
-        :disabled="mode !== 'studying'"
-        @reviewed="onCardReviewed"
-        @revealed="onCardRevealed"
-      />
-    </div>
-
-    <history-track
-      :cards="cards"
-      :mode="mode"
-      :active-card="active_card"
-      :preview-card="preview_card"
-      @card-clicked="setPreviewCard"
-    />
-  </div>
+  <session v-if="is_studying" :deck="deck" @closed="close" @finished="onSessionFinished" />
+  <reward-dialog v-else-if="rewards.length > 0" :rewards="rewards" :score="score" :total="total" />
 </template>
