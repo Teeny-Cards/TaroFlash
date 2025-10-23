@@ -78,18 +78,16 @@ onUnmounted(() => {
   document.removeEventListener('keydown', onEsc)
 })
 
-function warnIfDirty() {
-  if (!is_dirty.value) return true
+function warnIfDirty(): Promise<any> {
+  if (!is_dirty.value) return Promise.resolve(true)
 
-  const { response } = alert.warn({
+  return alert.warn({
     title: t('alert.leave-page'),
     message: t('alert.leave-page.message'),
     confirmLabel: t('common.leave'),
     cancelLabel: t('alert.leave-page.stay'),
     confirmAudio: 'digi_powerdown'
   })
-
-  return response
 }
 
 async function trySetMode(new_mode: 'edit' | 'view' | 'select', reset = true) {
@@ -143,14 +141,14 @@ function cancelEdits() {
 async function onDeleteCards(index?: number) {
   const count = selected_card_indices.value.length + (index !== undefined ? 1 : 0)
 
-  const { response } = alert.warn({
+  const did_confirm = await alert.warn({
     title: t('alert.delete-card', { count }),
     message: t('alert.delete-card.message', { count }),
     confirmLabel: t('common.delete'),
     confirmAudio: 'trash_crumple_short'
   })
 
-  if (await response) {
+  if (did_confirm) {
     if (index !== undefined) selectCard(index)
 
     await deleteCards()
@@ -204,7 +202,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
   <section data-testid="deck-view" class="flex h-full items-start gap-15">
     <overview-panel
       v-if="deck"
-      class="sticky top-23"
+      class="sticky top-16"
       :deck="deck"
       :image-url="image_url"
       @study-clicked="onStudyClicked"
@@ -212,7 +210,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
     />
 
     <div class="relative flex h-full w-full flex-col">
-      <div class="sticky top-17 z-10 flex w-full justify-between py-6">
+      <div class="sticky top-16 z-10 flex w-full justify-between pb-2">
         <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
 
         <context-menu

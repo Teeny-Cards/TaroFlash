@@ -93,15 +93,15 @@
   --shadow-popover: 4px 4px 6px 0px rgba(0, 0, 0, 0.16);
   --shadow-button: 3px 3px 4px 0px rgba(0, 0, 0, 0.1);
 
-  /* Backgrounds */
-  --stripe-blue-500-bg: url('../assets/backgrounds/stripe-blue.svg');
-  --curve-green-400-bg: url('../assets/backgrounds/curve-green.svg');
+  --drop-shadow-overlay: -2px -5px 10px rgba(0, 0, 0, 0.12);
+  --shadow-overlay: -2px -5px 10px -2px rgba(0, 0, 0, 0.12);
 
-  /* New Background Paradigms */
+  /* Background Images */
   --diagonal-stripes: url('../assets/backgrounds/diagonal-stripes.svg');
   --saw: url('../assets/backgrounds/saw.svg');
   --wave: url('../assets/backgrounds/wave.svg');
   --bank-note: url('../assets/backgrounds/bank-note.svg');
+  --aztec: url('../assets/backgrounds/aztec.svg');
 
   /* Transitions */
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);

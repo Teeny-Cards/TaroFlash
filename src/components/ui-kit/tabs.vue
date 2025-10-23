@@ -54,15 +54,15 @@ function onTabHover(active: boolean) {
     <div
       v-for="(tab, index) in tabs"
       data-testid="ui-kit-tabs__tab"
-      class="ui-kit-tabs__tab group"
+      class="ui-kit-tabs__tab"
       :class="{ 'ui-kit-tabs__tab--active': active_tab === index }"
       @click="onTabClick(index)"
       @mouseenter="onTabHover(active_tab === index)"
     >
-      <ui-kit:icon v-if="tab.icon" :src="tab.icon" class="ui-kit-tabs__tab-icon" />
+      <ui-kit:icon v-if="tab.icon" :src="tab.icon" size="small" class="ui-kit-tabs__tab-icon" />
       <span class="ui-kit-tabs__tab-label">{{ tab.label }}</span>
 
-      <span v-if="active_tab !== index" class="ui-kit-tabs__tab-tooltip">
+      <span v-if="active_tab !== index" class="ui-kit-tabs__tab-tooltip shadow-button">
         {{ tab.label }}
       </span>
     </div>
@@ -70,55 +70,83 @@ function onTabHover(active: boolean) {
 </template>
 
 <style>
-@reference '@/styles/main.css';
-
 .ui-kit-tabs {
-  @apply flex items-center gap-1.5 select-none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
 }
 
 .ui-kit-tabs__tab {
-  @apply flex items-center justify-center gap-2.5;
-  @apply transition-[width] duration-75 ease-in-out;
-  @apply rounded-4 h-9.5 w-9.5 px-3 py-1.5;
-  @apply relative cursor-pointer bg-pink-400;
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  min-height: 32px;
+  min-width: 32px;
+  padding: 6px;
+  border-radius: var(--radius-3_5);
+  background-color: var(--color-pink-400);
+
+  transition: width 75ms ease-in-out;
+  cursor: pointer;
 }
 
 .ui-kit-tabs__tab:nth-child(2) {
-  @apply bg-purple-400;
+  background-color: var(--color-purple-400);
 }
 .ui-kit-tabs__tab:nth-child(3) {
-  @apply bg-orange-400;
+  background-color: var(--color-orange-400);
 }
 .ui-kit-tabs__tab:nth-child(4) {
-  @apply bg-green-400;
+  background-color: var(--color-green-400);
 }
 .ui-kit-tabs__tab:nth-child(5) {
-  @apply bg-blue-400;
+  background-color: var(--color-blue-500);
 }
 
 .ui-kit-tabs__tab.ui-kit-tabs__tab--active {
-  @apply h-auto w-auto;
+  height: auto;
+  width: auto;
+  padding: 6px 12px;
 }
 
 .ui-kit-tabs__tab-icon {
-  @apply shrink-0 text-white;
+  flex-shrink: 0;
+  color: var(--color-white);
 }
 
 .ui-kit-tabs__tab-label {
-  @apply absolute;
-  @apply text-xl text-transparent;
+  position: absolute;
+  color: transparent;
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
 }
 
 .ui-kit-tabs__tab--active .ui-kit-tabs__tab-label {
-  @apply static;
-  @apply text-white;
+  position: static;
+  color: var(--color-white);
 }
 
 .ui-kit-tabs__tab-tooltip {
-  @apply absolute -top-6;
-  @apply rounded-full p-2;
-  @apply text-brown-700 text-sm;
-  @apply hidden group-hover:block;
-  @apply shadow-button bg-white whitespace-nowrap;
+  display: none;
+  position: absolute;
+  top: -22px;
+
+  border-radius: var(--radius-full);
+  padding: 6px 8px;
+
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  color: var(--color-brown-700);
+  white-space: nowrap;
+  background-color: var(--color-white);
+}
+
+.ui-kit-tabs__tab:hover .ui-kit-tabs__tab-tooltip {
+  display: block;
 }
 </style>

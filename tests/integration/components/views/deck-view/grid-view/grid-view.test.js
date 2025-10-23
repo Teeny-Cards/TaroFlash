@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { expect, test, vi, beforeEach } from 'vitest'
 import CardGrid from '@/components/views/deck-view/card-grid/index.vue'
-import { CardBuilder } from '@tests/mocks/models/card'
+import { card } from '@tests/mocks/models/card'
 import { mockAndSimulateFileUpload } from '@tests/mocks/file-upload.js'
 
 const mocks = vi.hoisted(() => ({
@@ -21,7 +21,7 @@ beforeEach(() => {
 })
 
 test('Renders a grid item per card', () => {
-  const cards = CardBuilder().many(3)
+  const cards = card.many(3)
   const wrapper = mount(CardGrid, {
     props: {
       cards,
@@ -35,7 +35,7 @@ test('Renders a grid item per card', () => {
 })
 
 test('Default side is "front" when omitted', () => {
-  const cards = CardBuilder().many(3)
+  const cards = card.many(3)
   const wrapper = mount(CardGrid, {
     props: {
       cards,
@@ -47,7 +47,7 @@ test('Default side is "front" when omitted', () => {
 })
 
 test('Passes "side" prop to child grid items', () => {
-  const cards = CardBuilder().many(3)
+  const cards = card.many(3)
   const wrapper = mount(CardGrid, {
     props: {
       cards,
@@ -60,7 +60,7 @@ test('Passes "side" prop to child grid items', () => {
 })
 
 test('Mouseenter SFX: calls audio.play("click_04") only when mode==="edit" AND activeCardIndex!==index', async () => {
-  const cards = CardBuilder().many(3)
+  const cards = card.many(3)
   const wrapper = mount(CardGrid, {
     props: {
       cards,
@@ -75,7 +75,7 @@ test('Mouseenter SFX: calls audio.play("click_04") only when mode==="edit" AND a
 })
 
 test('Emits card-updated event when child grid-item emits card-updated', async () => {
-  const cards = CardBuilder().many(3)
+  const cards = card.many(3)
   const wrapper = mount(CardGrid, {
     props: {
       cards,
@@ -91,7 +91,7 @@ test('Emits card-updated event when child grid-item emits card-updated', async (
 })
 
 test('Emits card-image-updated event when child grid-item emits card-image-updated', async () => {
-  const cards = CardBuilder().many(3)
+  const cards = card.many(3)
   const wrapper = mount(CardGrid, {
     props: {
       cards,
