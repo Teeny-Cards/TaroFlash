@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { expect, test, vi, beforeEach } from 'vitest'
 import GridItem from '@/components/views/deck-view/card-grid/grid-item.vue'
-import { CardBuilder } from '@tests/mocks/models/card'
+import { card } from '@tests/mocks/models/card'
 import { mockAndSimulateFileUpload } from '@tests/mocks/file-upload.js'
 
 const mocks = vi.hoisted(() => ({
@@ -21,7 +21,7 @@ beforeEach(() => {
 })
 
 test('Renders base Card with passed props', () => {
-  const card = CardBuilder().one()
+  const card = card.one()
   const wrapper = mount(GridItem, {
     props: {
       card,
@@ -36,7 +36,7 @@ test('Renders base Card with passed props', () => {
 })
 
 test('Focus-in sequence (when not already active)', async () => {
-  const card = CardBuilder().one()
+  const card = card.one()
   const wrapper = mount(GridItem, {
     props: {
       card,
@@ -53,7 +53,7 @@ test('Focus-in sequence (when not already active)', async () => {
 })
 
 test('Focus-in no-op when already active', async () => {
-  const card = CardBuilder().one()
+  const card = card.one()
   const wrapper = mount(GridItem, {
     props: {
       card,
@@ -71,7 +71,7 @@ test('Focus-in no-op when already active', async () => {
 })
 
 test('Focus-out sequence (when currently active)', async () => {
-  const card = CardBuilder().one()
+  const card = card.one()
   const wrapper = mount(GridItem, {
     props: {
       card,
@@ -92,7 +92,7 @@ test('Focus-out sequence (when currently active)', async () => {
 })
 
 test('Focus-out is ignored when not active', async () => {
-  const card = CardBuilder().one()
+  const card = card.one()
   const wrapper = mount(GridItem, {
     props: {
       card,
@@ -109,7 +109,7 @@ test('Focus-out is ignored when not active', async () => {
 })
 
 test('Double-click in edit mode does nothing', async () => {
-  const card = CardBuilder().one()
+  const card = card.one()
   const wrapper = mount(GridItem, {
     props: {
       card,
@@ -125,7 +125,7 @@ test('Double-click in edit mode does nothing', async () => {
 })
 
 test('Double-click in select mode does nothing', async () => {
-  const card = CardBuilder().one()
+  const card = card.one()
   const wrapper = mount(GridItem, {
     props: {
       card,
@@ -141,7 +141,7 @@ test('Double-click in select mode does nothing', async () => {
 })
 
 test('Double-click in "view" mode emits "card-activated" with index', async () => {
-  const card = CardBuilder().one()
+  const card = card.one()
   const wrapper = mount(GridItem, {
     props: {
       card,
@@ -158,7 +158,7 @@ test('Double-click in "view" mode emits "card-activated" with index', async () =
 })
 
 test('Image upload (front) updates front_image_preview and emits "card-image-updated" with file', async () => {
-  const card = CardBuilder().one()
+  const card = card.one()
   const wrapper = mount(GridItem, {
     props: {
       card,
@@ -178,7 +178,7 @@ test('Image upload (front) updates front_image_preview and emits "card-image-upd
 })
 
 test('Image upload (back) updates back_image_preview and emits "card-image-updated" with file', async () => {
-  const card = CardBuilder().one()
+  const card = card.one()
   const wrapper = mount(GridItem, {
     props: {
       card,

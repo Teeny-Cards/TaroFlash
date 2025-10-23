@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils'
 import { expect, describe, it, vi, beforeEach, afterEach } from 'vitest'
 import { createTestingPinia } from '@pinia/testing'
 import DeckView from '@/views/deck-view.vue'
-import { DeckBuilder } from '@tests/mocks/models/deck'
+import { deck as deckBuilder } from '@tests/mocks/models/deck'
 
 // Mock external services that would make real API calls
 const mocks = vi.hoisted(() => {
@@ -57,7 +57,7 @@ afterEach(() => {
 })
 
 const createDeckView = async (deckId = '123', deckData = null) => {
-  const deck = deckData || DeckBuilder().one({ overrides: { id: deckId }, traits: 'with_cards' })
+  const deck = deckData || DeckBuilder.one({ overrides: { id: deckId }, traits: 'with_cards' })
   mocks.fetchDeck.mockResolvedValue(deck)
 
   // Mount just the DeckView component with necessary setup
@@ -85,7 +85,7 @@ const createDeckView = async (deckId = '123', deckData = null) => {
 
 describe('Viewing a Deck', () => {
   it('user navigates to deck page and sees deck information', async () => {
-    const deck = DeckBuilder().one({
+    const deck = DeckBuilder.one({
       overrides: {
         title: 'Spanish Vocabulary',
         description: 'Learn basic Spanish words'
@@ -114,7 +114,7 @@ describe('Viewing a Deck', () => {
   })
 
   it('user sees empty state when deck has no cards', async () => {
-    const deck = DeckBuilder().one()
+    const deck = DeckBuilder.one()
 
     const wrapper = await createDeckView('123', deck)
 
@@ -171,7 +171,7 @@ describe('Switching Views', () => {
 
 describe('Creating New Cards', () => {
   it('user creates a new card by clicking new card button', async () => {
-    const deck = DeckBuilder().one()
+    const deck = DeckBuilder.one()
     const wrapper = await createDeckView(deck.id, deck)
 
     // User clicks the new card button

@@ -1,8 +1,7 @@
 import { expect, test, describe, vi, beforeEach } from 'vitest'
 import { useStudySession } from '@/composables/use-study-session'
-import { CardBuilder, ReviewBuilder } from '@tests/mocks/models/card'
+import { card, review } from '@tests/mocks/models/card'
 import { Rating } from 'ts-fsrs'
-import { DateTime } from 'luxon'
 
 const mocks = vi.hoisted(() => {
   return {
@@ -48,7 +47,7 @@ test('initializes with default state', () => {
 describe('setup', () => {
   test('Setup creates review objects for cards that are missing them', async () => {
     const { setup, cards } = useStudySession(config)
-    const deck_cards = CardBuilder().many(2)
+    const deck_cards = card.many(2)
 
     expect(deck_cards[0].review).toBeUndefined()
     expect(deck_cards[1].review).toBeUndefined()
@@ -61,7 +60,7 @@ describe('setup', () => {
   })
 
   test('When study_all_cards is true, all input cards are set', async () => {
-    const deck_cards = CardBuilder().many(3)
+    const deck_cards = card.many(3)
     const { setup, cards } = useStudySession({ study_all_cards: true })
 
     setFetchCardsMock(deck_cards)
@@ -71,7 +70,7 @@ describe('setup', () => {
 
   test('Sets active_card', async () => {
     const { setup, active_card } = useStudySession(config)
-    const cards = CardBuilder().many(3, { traits: 'with_due_review' })
+    const cards = card.many(3, { traits: 'with_due_review' })
 
     setFetchCardsMock(cards)
     await setup()
@@ -82,7 +81,7 @@ describe('setup', () => {
 describe('reviewCard', () => {
   test('Marks active card as passed when reviewed with Good', async () => {
     const { setup, reviewCard, active_card } = useStudySession(config)
-    const cards = CardBuilder().many(3)
+    const cards = card.many(3)
 
     setFetchCardsMock(cards)
     await setup()
@@ -97,7 +96,7 @@ describe('reviewCard', () => {
 
   test('Marks active card as failed when reviewed with Again', async () => {
     const { setup, reviewCard, active_card } = useStudySession(config)
-    const cards = CardBuilder().many(3)
+    const cards = card.many(3)
 
     setFetchCardsMock(cards)
     await setup()
@@ -114,14 +113,14 @@ describe('reviewCard', () => {
 
   // test('Adds to retry cards if reviewed with Again and due today and retry_failed_cards is true', () => {
   //   const { setup, reviewCard, active_card, cards } = useStudySession(config)
-  //   const deck_cards = CardBuilder().many(3, { traits: 'with_due_review' })
+  //   const deck_cards = card.many(3, { traits: 'with_due_review' })
 
   //   setup(deck_cards)
   //   const card = active_card
 
   //   expect(cards.value.length).toBe(3)
 
-  //   const review = ReviewBuilder().one({ traits: 'due_today' })
+  //   const review = review.one({ traits: 'due_today' })
   //   reviewCard({ ...card.value.preview[Rating.Again], card: review })
 
   //   expect(cards.value.length).toBe(4)
@@ -132,7 +131,7 @@ describe('reviewCard', () => {
       ...config,
       retry_failed_cards: false
     })
-    const deck_cards = CardBuilder().many(3, { traits: 'with_due_review' })
+    const deck_cards = card.many(3, { traits: 'with_due_review' })
 
     setFetchCardsMock(deck_cards)
     await setup()
@@ -140,7 +139,7 @@ describe('reviewCard', () => {
 
     expect(cards.value.length).toBe(3)
 
-    const review = ReviewBuilder().one({ traits: 'due_today' })
+    const review = review.one({ traits: 'due_today' })
     reviewCard({ ...card.value.preview[Rating.Again], card: review })
 
     expect(cards.value.length).toBe(3)
@@ -148,7 +147,7 @@ describe('reviewCard', () => {
 
   test('Sends review to backend', async () => {
     const { setup, reviewCard, active_card } = useStudySession(config)
-    const cards = CardBuilder().many(3)
+    const cards = card.many(3)
 
     setFetchCardsMock(cards)
     await setup()
@@ -163,8 +162,8 @@ describe('reviewCard', () => {
 describe('pickNextCard', () => {
   test('Picks the next unstudied/unfailed card', async () => {
     const { setup, pickNextCard, active_card, reviewCard } = useStudySession(config)
-    const failed_card = CardBuilder().one({ traits: 'failed' })
-    const unreviewed_cards = CardBuilder().many(3)
+    const failed_card = card.one({ traits: 'failed' })
+    const unreviewed_cards = card.many(3)
     const cards = [failed_card, ...unreviewed_cards]
 
     setFetchCardsMock(cards)
@@ -180,7 +179,7 @@ describe('pickNextCard', () => {
 
   test("Resets current_card_state to 'hidden'", async () => {
     const { setup, pickNextCard, current_card_state } = useStudySession(config)
-    const cards = CardBuilder().many(3)
+    const cards = card.many(3)
 
     setFetchCardsMock(cards)
     await setup()
@@ -199,7 +198,7 @@ describe('setPreviewCard', () => {
   test('Sets preview_card and mode to "previewing" if card is studied', async () => {
     const { setup, setPreviewCard, mode, preview_card } = useStudySession(config)
 
-    const cards = CardBuilder().many(3, { traits: 'passed' })
+    const cards = card.many(3, { traits: 'passed' })
     setFetchCardsMock(cards)
     await setup()
 
@@ -212,7 +211,7 @@ describe('setPreviewCard', () => {
   test('Resets preview_card and sets mode to "studying" if card is not studied', async () => {
     const { setup, setPreviewCard, mode, preview_card } = useStudySession(config)
 
-    const cards = CardBuilder().many(3)
+    const cards = card.many(3)
     setFetchCardsMock(cards)
     await setup()
 
@@ -226,7 +225,7 @@ describe('setPreviewCard', () => {
 describe('current_card', () => {
   test("Returns _preview_card when view_state is 'previewing'", async () => {
     const { setup, setPreviewCard, current_card, preview_card } = useStudySession(config)
-    const cards = CardBuilder().many(3, { traits: 'passed' })
+    const cards = card.many(3, { traits: 'passed' })
 
     setFetchCardsMock(cards)
     await setup()
@@ -238,7 +237,7 @@ describe('current_card', () => {
 
   test("Returns _active_card when view_state is 'studying'", async () => {
     const { setup, current_card, active_card } = useStudySession(config)
-    const cards = CardBuilder().many(3)
+    const cards = card.many(3)
 
     setFetchCardsMock(cards)
     await setup()
