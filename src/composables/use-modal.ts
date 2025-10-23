@@ -1,4 +1,4 @@
-import { ref, markRaw } from 'vue'
+import { ref, markRaw, type Component } from 'vue'
 import { useAudio } from './use-audio'
 
 type ModalEntry = {
@@ -32,10 +32,7 @@ export function useModal() {
       resolveFn = resolve
     })
 
-    const close = (
-      responseValue: boolean = false,
-      close_args?: { overrideCloseAudio?: string }
-    ) => {
+    const close = (responseValue: any, close_args?: { overrideCloseAudio?: string }) => {
       const index = modal_stack.value.findIndex((m) => m.id === id)
 
       if (index !== -1) {

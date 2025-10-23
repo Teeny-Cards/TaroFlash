@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Session from './session.vue'
-import SessionRewardDialog from '../session-reward-dialog/index.vue'
+import RewardDialog from '../reward-dialog/index.vue'
 
 const { deck, close } = defineProps<{ deck: Deck; close: (response?: any) => void }>()
 
@@ -20,11 +20,6 @@ function onSessionFinished(_score: number, _total: number) {
 </script>
 
 <template>
-  <Session v-if="is_studying" :deck="deck" @closed="close" @finished="onSessionFinished" />
-  <SessionRewardDialog
-    v-else-if="rewards.length > 0"
-    :rewards="rewards"
-    :score="score"
-    :total="total"
-  />
+  <session v-if="is_studying" :deck="deck" @closed="close" @finished="onSessionFinished" />
+  <reward-dialog v-else-if="rewards.length > 0" :rewards="rewards" :score="score" :total="total" />
 </template>
