@@ -85,13 +85,13 @@ describe('reviewCard', () => {
 
     setFetchCardsMock(cards)
     await setup()
-    const card = active_card
+    const newCard = active_card
 
-    expect(card.value.state).toBe('unreviewed')
+    expect(newCard.value.state).toBe('unreviewed')
 
-    reviewCard(card.value.preview[Rating.Good])
+    reviewCard(newCard.value.preview[Rating.Good])
 
-    expect(card.value.state).toBe('passed')
+    expect(newCard.value.state).toBe('passed')
   })
 
   test('Marks active card as failed when reviewed with Again', async () => {
@@ -100,13 +100,13 @@ describe('reviewCard', () => {
 
     setFetchCardsMock(cards)
     await setup()
-    const card = active_card
+    const newCard = active_card
 
-    expect(card.value.state).toBe('unreviewed')
+    expect(newCard.value.state).toBe('unreviewed')
 
-    reviewCard(card.value.preview[Rating.Again])
+    reviewCard(newCard.value.preview[Rating.Again])
 
-    expect(card.value.state).toBe('failed')
+    expect(newCard.value.state).toBe('failed')
   })
 
   // TODO: FLAKY TEST, FIX LATER
@@ -135,12 +135,12 @@ describe('reviewCard', () => {
 
     setFetchCardsMock(deck_cards)
     await setup()
-    const card = active_card
+    const newCard = active_card
 
     expect(cards.value.length).toBe(3)
 
-    const review = review.one({ traits: 'due_today' })
-    reviewCard({ ...card.value.preview[Rating.Again], card: review })
+    const newReview = review.one({ traits: 'due_today' })
+    reviewCard({ ...newCard.value.preview[Rating.Again], card: newReview })
 
     expect(cards.value.length).toBe(3)
   })
@@ -151,11 +151,11 @@ describe('reviewCard', () => {
 
     setFetchCardsMock(cards)
     await setup()
-    const card = active_card
+    const newCard = active_card
 
-    reviewCard(card.value.preview[Rating.Good])
+    reviewCard(newCard.value.preview[Rating.Good])
 
-    expect(mocks.updateReviewByCardId).toHaveBeenCalledWith(card.value.id, card.value.review)
+    expect(mocks.updateReviewByCardId).toHaveBeenCalledWith(newCard.value.id, newCard.value.review)
   })
 })
 

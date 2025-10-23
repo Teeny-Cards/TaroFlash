@@ -24,7 +24,7 @@ type OpenArgs = {
 const modal_stack = ref<ModalEntry[]>([])
 
 export function useModal() {
-  function open<T extends Component>(component: T, args: OpenArgs): Promise<T> {
+  function open(component: any, args: OpenArgs): Promise<any> {
     let resolveFn!: (result: any) => void
 
     const id = Symbol('modal')

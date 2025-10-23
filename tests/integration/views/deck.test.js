@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils'
 import { expect, describe, it, vi, beforeEach, afterEach } from 'vitest'
 import { createTestingPinia } from '@pinia/testing'
-import DeckView from '@/views/deck-view.vue'
-import { deck as deckBuilder } from '@tests/mocks/models/deck'
+import DeckView from '@/views/deck.vue'
+import { deck } from '@tests/mocks/models/deck'
 
 // Mock external services that would make real API calls
 const mocks = vi.hoisted(() => {
@@ -57,8 +57,8 @@ afterEach(() => {
 })
 
 const createDeckView = async (deckId = '123', deckData = null) => {
-  const deck = deckData || DeckBuilder.one({ overrides: { id: deckId }, traits: 'with_cards' })
-  mocks.fetchDeck.mockResolvedValue(deck)
+  const newDeck = deckData || deck.one({ overrides: { id: deckId }, traits: 'with_cards' })
+  mocks.fetchDeck.mockResolvedValue(newDeck)
 
   // Mount just the DeckView component with necessary setup
   const wrapper = mount(DeckView, {
@@ -85,7 +85,7 @@ const createDeckView = async (deckId = '123', deckData = null) => {
 
 describe('Viewing a Deck', () => {
   it('user navigates to deck page and sees deck information', async () => {
-    const deck = DeckBuilder.one({
+    const newDeck = deck.one({
       overrides: {
         title: 'Spanish Vocabulary',
         description: 'Learn basic Spanish words'
@@ -93,7 +93,7 @@ describe('Viewing a Deck', () => {
       traits: 'with_cards'
     })
 
-    const wrapper = await createDeckView('123', deck)
+    const wrapper = await createDeckView('123', newDeck)
 
     // User should see the deck title and description
     expect(wrapper.html()).toContain('Spanish Vocabulary')
@@ -114,9 +114,7 @@ describe('Viewing a Deck', () => {
   })
 
   it('user sees empty state when deck has no cards', async () => {
-    const deck = DeckBuilder.one()
-
-    const wrapper = await createDeckView('123', deck)
+    const wrapper = await createDeckView('123', deck.one())
 
     // Study button should be disabled for empty deck
     const studyButton = wrapper.find('[data-testid="overview-panel__study-button"]')
@@ -171,8 +169,8 @@ describe('Switching Views', () => {
 
 describe('Creating New Cards', () => {
   it('user creates a new card by clicking new card button', async () => {
-    const deck = DeckBuilder.one()
-    const wrapper = await createDeckView(deck.id, deck)
+    const newDeck = deck.one()
+    const wrapper = await createDeckView(newDeck.id, newDeck)
 
     // User clicks the new card button
     const newCardButton = wrapper.find('[data-testid="ui-kit-split-button__default-option"]')
