@@ -202,7 +202,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
   <section data-testid="deck-view" class="flex h-full items-start gap-15">
     <overview-panel
       v-if="deck"
-      class="sticky top-23"
+      class="sticky top-16"
       :deck="deck"
       :image-url="image_url"
       @study-clicked="onStudyClicked"
@@ -210,7 +210,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
     />
 
     <div class="relative flex h-full w-full flex-col">
-      <div class="sticky top-17 z-10 flex w-full justify-between py-6">
+      <div class="sticky top-16 z-10 flex w-full justify-between pb-2">
         <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
 
         <context-menu

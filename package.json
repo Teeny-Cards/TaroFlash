@@ -1,5 +1,5 @@
 {
-  "name": "tinycards",
+  "name": "taroflash",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -71,6 +71,5 @@
     "vitepress": "^1.6.3",
     "vitest": "^3.2.4",
     "vue-tsc": "^2.2.8"
-  },
-  "packageManager": "pnpm@8.10.0+sha1.77d568bacf41eeefd6695a7087c1282433955b5c"
+  }
 }

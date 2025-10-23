@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Paperclips from './paperclips.vue'
-import RewardDialog from './reward-dialog.vue'
+import Dialog from './dialog.vue'
 
 const { rewards, score, total } = defineProps<{
   rewards: Reward[]
@@ -20,7 +20,7 @@ const reward_components = {
       <component v-for="reward in rewards" :is="reward_components[reward.type]" :reward="reward" />
     </div>
 
-    <reward-dialog
+    <Dialog
       class="drop-shadow-overlay"
       :score="score"
       :total="total"
