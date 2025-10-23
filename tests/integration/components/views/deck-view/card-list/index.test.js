@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { expect, test, vi, beforeEach, afterEach } from 'vitest'
 import CardList from '@/components/views/deck-view/card-list/index.vue'
-import { CardBuilder } from '@tests/mocks/models/card'
+import { card } from '@tests/mocks/models/card'
 
 let originalScrollIntoView
 
@@ -28,7 +28,7 @@ test('renders empty state when there are no cards', () => {
 })
 
 test('renders card list when there are cards', () => {
-  const cards = CardBuilder().many(3)
+  const cards = card.many(3)
   const wrapper = mount(CardList, {
     props: {
       cards,
@@ -43,7 +43,7 @@ test('renders card list when there are cards', () => {
 })
 
 test('Emits card-activated event when card is focused', async () => {
-  const cards = CardBuilder().many(3)
+  const cards = card.many(3)
   const wrapper = mount(CardList, {
     props: {
       cards,
@@ -59,7 +59,7 @@ test('Emits card-activated event when card is focused', async () => {
 })
 
 test('Emits card-deactivated event when card loses focus', async () => {
-  const cards = CardBuilder().many(3)
+  const cards = card.many(3)
   const wrapper = mount(CardList, {
     props: {
       cards,
@@ -75,7 +75,7 @@ test('Emits card-deactivated event when card loses focus', async () => {
 })
 
 test('Emits card-updated event when card input changes', async () => {
-  const cards = CardBuilder().many(3)
+  const cards = card.many(3)
   const wrapper = mount(CardList, {
     props: {
       cards,
@@ -93,7 +93,7 @@ test('Emits card-updated event when card input changes', async () => {
 })
 
 test('Emits card-updated event when back input changes', async () => {
-  const cards = CardBuilder().many(3)
+  const cards = card.many(3)
   const wrapper = mount(CardList, {
     props: {
       cards,
@@ -111,7 +111,7 @@ test('Emits card-updated event when back input changes', async () => {
 })
 
 test('Emits card-deleted event when delete action is clicked', async () => {
-  const cards = CardBuilder().many(3)
+  const cards = card.many(3)
   const wrapper = mount(CardList, {
     props: {
       cards,
@@ -137,7 +137,7 @@ test('Emits card-deleted event when delete action is clicked', async () => {
 })
 
 test('Emits card-selected event when card is selected', async () => {
-  const cards = CardBuilder().many(3)
+  const cards = card.many(3)
   const wrapper = mount(CardList, {
     props: {
       cards,
