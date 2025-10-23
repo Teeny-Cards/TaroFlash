@@ -5,7 +5,7 @@ import { useAudio } from '@/composables/use-audio'
 
 export type AlertType = 'warn' | 'info'
 
-const { cancelLabel, confirmLabel, close, cancelAudio } = defineProps<{
+const { cancelLabel, confirmLabel, close, cancelAudio, confirmAudio } = defineProps<{
   cancelLabel?: string
   confirmLabel?: string
   message?: string
@@ -29,6 +29,10 @@ const confirmText = computed(() => {
 
 function onCancel() {
   close(false, { overrideCloseAudio: cancelAudio })
+}
+
+function onConfirm() {
+  close(true, { overrideCloseAudio: confirmAudio })
 }
 </script>
 
@@ -67,7 +71,7 @@ function onCancel() {
         <button
           data-testid="ui-kit-alert__confirm"
           class="ui-kit-alert__confirm group"
-          @click="() => close(true, { overrideCloseAudio: confirmAudio })"
+          @click="onConfirm"
           @mouseenter="audio.play('click_04')"
         >
           {{ confirmText }}

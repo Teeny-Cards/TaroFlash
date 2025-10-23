@@ -1,4 +1,4 @@
-import { ref, markRaw } from 'vue'
+import { ref, markRaw, type Component } from 'vue'
 import { useAudio } from './use-audio'
 
 type ModalEntry = {
@@ -24,18 +24,15 @@ type OpenArgs = {
 const modal_stack = ref<ModalEntry[]>([])
 
 export function useModal() {
-  function open(component: any, args: OpenArgs) {
-    let resolveFn!: (result: boolean) => void
+  function open(component: any, args: OpenArgs): Promise<any> {
+    let resolveFn!: (result: any) => void
 
     const id = Symbol('modal')
-    const response = new Promise<boolean>((resolve) => {
+    const response = new Promise<any>((resolve) => {
       resolveFn = resolve
     })
 
-    const close = (
-      responseValue: boolean = false,
-      close_args?: { overrideCloseAudio?: string }
-    ) => {
+    const close = (responseValue: any, close_args?: { overrideCloseAudio?: string }) => {
       const index = modal_stack.value.findIndex((m) => m.id === id)
 
       if (index !== -1) {
@@ -71,11 +68,7 @@ export function useModal() {
       useAudio().play(args.openAudio)
     }
 
-    return {
-      id,
-      close,
-      response
-    }
+    return response
   }
 
   function close(id?: symbol, response: boolean = false) {
