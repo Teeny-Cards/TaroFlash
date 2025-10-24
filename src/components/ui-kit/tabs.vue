@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useAudio } from '@/composables/use-audio'
-import { useStorage } from '@/composables/use-storage'
+import { useAudio } from '@/composables/audio'
+import { useStorage } from '@/composables/storage'
 import { onMounted } from 'vue'
 
 type Tab = {

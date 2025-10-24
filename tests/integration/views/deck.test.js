@@ -23,7 +23,7 @@ vi.mock('@/api/cards', () => ({
   deleteCardsById: mocks.deleteCardsById
 }))
 
-vi.mock('@/composables/use-alert', () => ({
+vi.mock('@/composables/alert', () => ({
   useAlert: vi.fn(() => ({
     warn: mocks.warnMock
   }))

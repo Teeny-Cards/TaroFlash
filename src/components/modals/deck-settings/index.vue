@@ -3,8 +3,8 @@ import { useI18n } from 'vue-i18n'
 import NameImageConfig from './name-image-config.vue'
 import AdditionalSettings from './additional-settings.vue'
 import HeaderConfig from './header-config.vue'
-import { useAlert } from '@/composables/use-alert'
-import { useDeckEditor } from '@/composables/use-deck-editor'
+import { useAlert } from '@/composables/alert'
+import { useDeckEditor } from '@/composables/deck-editor'
 
 const { deck, close } = defineProps<{
   deck?: Deck

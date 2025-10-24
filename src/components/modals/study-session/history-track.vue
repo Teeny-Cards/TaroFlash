@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type StudyCard, type StudyMode } from '@/composables/use-study-session'
+import { type StudyCard, type StudyMode } from '@/composables/study-session'
 import { computed } from 'vue'
 
 const { cards, activeCard, previewCard, mode } = defineProps<{

@@ -6,7 +6,7 @@ import { createPinia } from 'pinia'
 import { createI18n } from 'vue-i18n'
 import registerUIKitComponents from './components/ui-kit/_index'
 import messages from '@intlify/unplugin-vue-i18n/messages'
-import { useAudio } from './composables/use-audio'
+import { useAudio } from './composables/audio'
 
 const i18n = createI18n({
   locale: 'en-us',

@@ -18,7 +18,7 @@ vi.mock('@/assets/images/highlighter.svg', () => ({
   default: '/mocked/highlighter.svg'
 }))
 
-vi.mock('@/composables/use-logger', () => {
+vi.mock('@/composables/logger', () => {
   return {
     useLogger: vi.fn(() => ({ warn: mockedConsoleWarn }))
   }

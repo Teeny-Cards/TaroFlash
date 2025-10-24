@@ -2,7 +2,7 @@
 import Card from '@/components/card/index.vue'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useModal } from '@/composables/use-modal'
+import { useModal } from '@/composables/modal'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
 
 const { deck } = defineProps<{ deck: Deck; imageUrl?: string }>()

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAudio } from '@/composables/use-audio'
+import { useAudio } from '@/composables/audio'
 
 const audio = useAudio()
 

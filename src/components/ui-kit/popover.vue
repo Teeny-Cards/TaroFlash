@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, useTemplateRef } from 'vue'
 import { useFloating, shift, flip, autoUpdate, arrow, offset } from '@floating-ui/vue'
-import { useAudio } from '@/composables/use-audio'
+import { useAudio } from '@/composables/audio'
 
 const ARROW_SIZE = 10
 

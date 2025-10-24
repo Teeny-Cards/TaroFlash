@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
-import { useLogger } from '@/composables/use-logger'
+import { useLogger } from '@/composables/logger'
 
 export type ImageUploadEvent = {
   preview: string

@@ -8,7 +8,7 @@ const mocks = vi.hoisted(() => ({
   play: vi.fn()
 }))
 
-vi.mock('@/composables/use-audio', () => ({
+vi.mock('@/composables/audio', () => ({
   useAudio: () => {
     return {
       play: mocks.play

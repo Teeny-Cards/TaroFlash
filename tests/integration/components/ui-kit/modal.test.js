@@ -20,7 +20,7 @@ const TestModal = markRaw(
 
 const mock_modal_stack = shallowRef([])
 
-vi.mock('@/composables/use-modal', () => {
+vi.mock('@/composables/modal', () => {
   return {
     useModal: vi.fn(() => ({
       modal_stack: mock_modal_stack

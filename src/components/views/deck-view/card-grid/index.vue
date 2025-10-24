@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useAudio } from '@/composables/use-audio'
+import { useAudio } from '@/composables/audio'
 import GridItem from './grid-item.vue'
-import { type EditableCardKey, type EditableCardValue } from '@/composables/use-card-bulk-editor'
+import { type EditableCardKey, type EditableCardValue } from '@/composables/card-bulk-editor'
 
 const {
   mode,

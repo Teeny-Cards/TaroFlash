@@ -3,7 +3,7 @@ import MemberCard from '@/components/modals/member-card.vue'
 import { useI18n } from 'vue-i18n'
 import { reactive, ref } from 'vue'
 import { DateTime } from 'luxon'
-import { useAudio } from '@/composables/use-audio'
+import { useAudio } from '@/composables/audio'
 import { upsertMember } from '@/api/members'
 import { useSessionStore } from '@/stores/session'
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useAudio } from '@/composables/use-audio'
+import { useAudio } from '@/composables/audio'
 import Card from '@/components/card/index.vue'
 import { computed } from 'vue'
 

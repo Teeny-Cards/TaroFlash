@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils'
 import { expect, describe, it, vi } from 'vitest'
 import Tabs from '@/components/ui-kit/tabs.vue'
 
-vi.mock('@/composables/use-audio', () => ({
+vi.mock('@/composables/audio', () => ({
   useAudio: vi.fn(() => ({
     play: vi.fn()
   }))

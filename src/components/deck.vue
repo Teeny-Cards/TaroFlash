@@ -3,8 +3,8 @@ import Card from '@/components/card/index.vue'
 import { computed } from 'vue'
 import deckPreview from './popovers/deck-preview.vue'
 import StudyModal from './modals/study-session/index.vue'
-import { useModal } from '@/composables/use-modal'
-import { useDeckEditor } from '@/composables/use-deck-editor'
+import { useModal } from '@/composables/modal'
+import { useDeckEditor } from '@/composables/deck-editor'
 
 const modal = useModal()
 

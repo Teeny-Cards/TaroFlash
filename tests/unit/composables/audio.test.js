@@ -27,7 +27,7 @@ vi.mock('howler', () => ({
   Howler: mockHowler
 }))
 
-vi.mock('@/composables/use-logger', () => ({
+vi.mock('@/composables/logger', () => ({
   useLogger: vi.fn(() => ({
     warn: mocks.warn
   }))
@@ -75,7 +75,7 @@ beforeEach(async () => {
   // Reset glob mock to actual files
   mockGlob.mockReturnValue(actualAudioFiles)
 
-  const module = await import('@/composables/use-audio')
+  const module = await import('@/composables/audio')
   useAudio = module.useAudio
 })
 
@@ -252,7 +252,7 @@ describe('play', () => {
   test('does not play when not unlocked', async () => {
     // Create fresh instance without preloading and unlock
     vi.resetModules()
-    const { useAudio: freshUseAudio } = await import('@/composables/use-audio')
+    const { useAudio: freshUseAudio } = await import('@/composables/audio')
     const { preload, play } = freshUseAudio()
     preload()
     // Don't trigger unlock event
