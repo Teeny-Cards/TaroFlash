@@ -17,7 +17,7 @@ vi.mock('@/api/members', () => ({
   upsertMember: mocks.upsertMember
 }))
 
-vi.mock('@/composables/use-audio', () => ({
+vi.mock('@/composables/audio', () => ({
   useAudio: vi.fn(() => ({
     play: mocks.audioPlay
   }))

@@ -6,7 +6,7 @@ import Deck from '@/components/deck.vue'
 import { useRouter } from 'vue-router'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
 import MemberApplication from '@/components/modals/member-application.vue'
-import { useModal } from '@/composables/use-modal'
+import { useModal } from '@/composables/modal'
 import { useMemberStore } from '@/stores/member'
 import { useI18n } from 'vue-i18n'
 

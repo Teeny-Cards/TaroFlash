@@ -1,6 +1,6 @@
 import { useSessionStore } from '@/stores/session'
 import { useMemberStore } from '@/stores/member'
-import { useLogger } from '@/composables/use-logger'
+import { useLogger } from '@/composables/logger'
 
 export async function initUser(): Promise<boolean> {
   const session = useSessionStore()

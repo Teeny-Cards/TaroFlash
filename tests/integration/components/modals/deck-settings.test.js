@@ -16,7 +16,7 @@ const mocks = vi.hoisted(() => {
   }
 })
 
-vi.mock('@/composables/use-deck-editor', () => ({
+vi.mock('@/composables/deck-editor', () => ({
   useDeckEditor: vi.fn(() => ({
     settings: {
       title: 'Test Deck',
@@ -37,13 +37,13 @@ vi.mock('vue-router', () => ({
   }))
 }))
 
-vi.mock('@/composables/use-alert', () => ({
+vi.mock('@/composables/alert', () => ({
   useAlert: vi.fn(() => ({
     warn: mocks.warn
   }))
 }))
 
-vi.mock('@/composables/use-audio', () => ({
+vi.mock('@/composables/audio', () => ({
   useAudio: vi.fn(() => ({
     play: vi.fn()
   }))

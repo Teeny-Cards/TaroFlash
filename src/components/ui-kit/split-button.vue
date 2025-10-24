@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useAudio } from '@/composables/use-audio'
+import { useAudio } from '@/composables/audio'
 
 export type SplitButtonOption = {
   label: string

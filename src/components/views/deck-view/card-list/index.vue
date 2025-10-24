@@ -5,7 +5,7 @@ import {
   type EditableCardValue,
   type EditableCardKey,
   MAX_INPUT_LENGTH
-} from '@/composables/use-card-bulk-editor'
+} from '@/composables/card-bulk-editor'
 import { nextTick } from 'vue'
 
 const { mode, activeCardIndex } = defineProps<{

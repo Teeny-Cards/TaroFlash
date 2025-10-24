@@ -1,4 +1,4 @@
-import { useModal } from './use-modal'
+import { useModal } from './modal'
 import alert, { type AlertType } from '@/components/ui-kit/alert.vue'
 
 type AlertArgs = {

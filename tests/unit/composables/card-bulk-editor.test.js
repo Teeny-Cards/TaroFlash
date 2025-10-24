@@ -1,5 +1,5 @@
 import { expect, test, describe, vi, beforeEach } from 'vitest'
-import { useCardBulkEditor } from '@/composables/use-card-bulk-editor'
+import { useCardBulkEditor } from '@/composables/card-bulk-editor'
 import { card } from '@tests/mocks/models/card'
 
 vi.mock('@/api/cards', () => ({

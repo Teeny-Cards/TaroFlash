@@ -1,5 +1,5 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest'
-import { useAlert } from '@/composables/use-alert'
+import { useAlert } from '@/composables/alert'
 
 test('warn opens alert with warn type', () => {
   const { warn } = useAlert()

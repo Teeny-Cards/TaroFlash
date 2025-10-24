@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useLogger } from '@/composables/use-logger'
+import { useLogger } from '@/composables/logger'
 
 const { src } = defineProps<{ src: string }>()
 

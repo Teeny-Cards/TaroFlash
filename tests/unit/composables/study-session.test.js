@@ -1,5 +1,5 @@
 import { expect, test, describe, vi, beforeEach } from 'vitest'
-import { useStudySession } from '@/composables/use-study-session'
+import { useStudySession } from '@/composables/study-session'
 import { card, review } from '@tests/mocks/models/card'
 import { Rating } from 'ts-fsrs'
 

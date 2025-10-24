@@ -13,7 +13,7 @@ const mockAudio = {
   isInitialized: { value: true }
 }
 
-vi.mock('@/composables/use-audio', () => ({
+vi.mock('@/composables/audio', () => ({
   useAudio: vi.fn(() => mockAudio)
 }))
 

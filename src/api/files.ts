@@ -1,6 +1,6 @@
 import { supabase } from '@/supabase-client'
 import { useMemberStore } from '@/stores/member'
-import { useLogger } from '@/composables/use-logger'
+import { useLogger } from '@/composables/logger'
 
 type Bucket = 'deck-images' | 'card-images'
 

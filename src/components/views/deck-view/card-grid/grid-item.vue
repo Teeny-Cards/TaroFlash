@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import Card from '@/components/card/index.vue'
-import { useCard } from '@/composables/use-card'
-import { useAudio } from '@/composables/use-audio'
+import { useCard } from '@/composables/card'
+import { useAudio } from '@/composables/audio'
 import { ref } from 'vue'
 import { type ImageUploadEvent } from '@/components/image-uploader.vue'
-import { MAX_INPUT_LENGTH } from '@/composables/use-card-bulk-editor'
+import { MAX_INPUT_LENGTH } from '@/composables/card-bulk-editor'
 
 const { card, activeCardIndex, side, mode, index } = defineProps<{
   card: Card

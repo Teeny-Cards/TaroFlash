@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onUnmounted, useTemplateRef, watchEffect, computed } from 'vue'
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
-import { useModal } from '@/composables/use-modal'
+import { useModal } from '@/composables/modal'
 
 const { modal_stack } = useModal()
 const modal_container = useTemplateRef<HTMLDivElement>('ui-kit-modal-container')

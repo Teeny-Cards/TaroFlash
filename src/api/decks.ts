@@ -1,6 +1,6 @@
 import { supabase } from '@/supabase-client'
 import { useSessionStore } from '@/stores/session'
-import { useLogger } from '@/composables/use-logger'
+import { useLogger } from '@/composables/logger'
 import { DateTime } from 'luxon'
 
 const logger = useLogger()

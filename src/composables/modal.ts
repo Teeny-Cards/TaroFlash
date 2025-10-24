@@ -1,5 +1,5 @@
-import { ref, markRaw, type Component } from 'vue'
-import { useAudio } from './use-audio'
+import { ref, markRaw } from 'vue'
+import { useAudio } from './audio'
 
 type ModalEntry = {
   backdrop?: boolean

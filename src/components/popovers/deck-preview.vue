@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useModal } from '@/composables/use-modal'
+import { useModal } from '@/composables/modal'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
 
 const modal = useModal()

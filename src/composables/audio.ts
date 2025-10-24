@@ -1,7 +1,7 @@
 // useAudio.ts
 import { Howl, Howler } from 'howler'
 import { ref } from 'vue'
-import { useLogger } from '@/composables/use-logger'
+import { useLogger } from '@/composables/logger'
 
 const logger = useLogger()
 

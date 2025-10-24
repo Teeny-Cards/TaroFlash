@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n'
 import { computed, onMounted } from 'vue'
-import { useAudio } from '@/composables/use-audio'
+import { useAudio } from '@/composables/audio'
 
 export type AlertType = 'warn' | 'info'
 
