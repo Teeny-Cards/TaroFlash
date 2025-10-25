@@ -25,19 +25,13 @@ export function useAlert() {
   }
 
   function _openAlert(type: AlertType, args?: AlertArgs): Promise<boolean> {
+    const { backdrop, closeOnBackdropClick, openAudio, ...props } = args ?? {}
+
     return modal.open(alert, {
-      backdrop: args?.backdrop ?? true,
-      closeOnBackdropClick: args?.closeOnBackdropClick,
-      props: {
-        type,
-        title: args?.title,
-        message: args?.message,
-        confirmLabel: args?.confirmLabel,
-        cancelLabel: args?.cancelLabel,
-        cancelAudio: args?.cancelAudio,
-        confirmAudio: args?.confirmAudio
-      },
-      openAudio: args?.openAudio ?? 'etc_woodblock_stuck'
+      backdrop: backdrop ?? true,
+      closeOnBackdropClick: closeOnBackdropClick,
+      props: { type, ...props },
+      openAudio: openAudio ?? 'etc_woodblock_stuck'
     })
   }
 

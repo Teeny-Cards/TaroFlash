@@ -6,6 +6,10 @@ const { textAlign = 'left', size = 'base' } = defineProps<{
   size?: 'sm' | 'base' | 'lg'
 }>()
 
+const emit = defineEmits<{
+  (e: 'input', value?: string): void
+}>()
+
 const value = defineModel<string>('value')
 </script>
 
@@ -17,7 +21,7 @@ const value = defineModel<string>('value')
   >
     <span>{{ label }}</span>
     <div data-testid="ui-kit-input" class="ui-kit-input">
-      <input :placeholder="placeholder" v-model="value" />
+      <input :placeholder="placeholder" v-model="value" @input="emit('input', value)" />
     </div>
   </label>
 </template>

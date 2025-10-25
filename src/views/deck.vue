@@ -14,7 +14,7 @@ import { useDeckEditor } from '@/composables/deck-editor'
 import { useAudio } from '@/composables/audio'
 import ContextMenu from '@/components/views/deck-view/context-menu.vue'
 import { uploadCardImage, deleteCardImage } from '@/api/files'
-import { updateCard as upstreamUpdateCard } from '@/api/cards'
+import { updateCard as upstreamUpdateCard, searchCardsInDeck } from '@/api/cards'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -133,6 +133,15 @@ async function refetchDeck() {
   }
 }
 
+async function searchCards(query: string) {
+  try {
+    const cards = await searchCardsInDeck(Number(deck_id), query)
+    resetCards(cards)
+  } catch (e: any) {
+    // TODO
+  }
+}
+
 function cancelEdits() {
   trySetMode('view')
   audio.play('digi_powerdown')
@@ -212,7 +221,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
     <div class="relative flex h-full w-full flex-col">
       <div class="sticky top-16 z-10 flex w-full justify-between pb-2">
         <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
-
+        <ui-kit:input placeholder="Search" class="w-100" @input="searchCards"></ui-kit:input>
         <context-menu
           :mode="mode"
           :selectedCardIndices="selected_card_indices"
