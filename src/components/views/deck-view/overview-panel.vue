@@ -19,8 +19,8 @@ async function onSettingsClicked() {
   const did_update = await modal.open(deckSettings, {
     props: { deck },
     backdrop: true,
-    openAudio: 'double-pop-up',
-    closeAudio: 'double-pop-down'
+    openAudio: 'etc_camera_reel',
+    closeAudio: 'card_drop'
   })
 
   if (await did_update) {
