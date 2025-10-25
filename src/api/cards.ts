@@ -35,6 +35,23 @@ export async function fetchDueCardsByDeckId(deck_id: number): Promise<Card[]> {
   return data
 }
 
+export async function searchCardsInDeck(deck_id: number, query: string): Promise<Card[]> {
+  const search_query = `%${query}%`
+
+  const { data, error } = await supabase
+    .from('cards')
+    .select('*, review:reviews(*)')
+    .eq('deck_id', deck_id)
+    .or(`front_text.ilike.${search_query},back_text.ilike.${search_query}`)
+
+  if (error) {
+    logger.error(error.message)
+    throw new Error(error.message)
+  }
+
+  return data
+}
+
 export async function updateCards(cards: Card[]): Promise<Card[]> {
   const sanitized = cards.map(({ review, ...rest }) => ({
     ...rest,
@@ -56,30 +73,6 @@ export async function updateCard(card: Card): Promise<void> {
   rest.updated_at = DateTime.now().toISO()
 
   const { error } = await supabase.from('cards').upsert(rest)
-
-  if (error) {
-    logger.error(error.message)
-    throw new Error(error.message)
-  }
-}
-
-export async function createCard(card: Card): Promise<Card> {
-  const { data, error } = await supabase
-    .from('cards')
-    .insert({ ...card })
-    .select()
-    .single()
-
-  if (error) {
-    logger.error(error.message)
-    throw new Error(error.message)
-  }
-
-  return data
-}
-
-export async function deleteCardsByDeckId(deck_id: number): Promise<void> {
-  const { error } = await supabase.from('cards').delete().eq('deck_id', deck_id)
 
   if (error) {
     logger.error(error.message)
