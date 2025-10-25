@@ -4,7 +4,7 @@
       <div class="flex w-full max-w-375 items-center justify-between px-4 sm:px-16">
         <RouterLink to="/dashboard" class="flex items-center gap-2 text-3xl text-white">
           <ui-kit:image src="taro-logo_3" class="max-w-6" />
-          <div>TaroCards</div>
+          <div>TaroFlash</div>
         </RouterLink>
       </div>
     </div>

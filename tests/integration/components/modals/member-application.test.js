@@ -85,7 +85,7 @@ it('displays the correct header text', () => {
   })
 
   const text = wrapper.text()
-  expect(text).toContain('Welcome To TeenyCards!')
+  expect(text).toContain('Welcome To TaroFlash!')
   expect(text).toContain('(You can update this at any time)')
 })
 
