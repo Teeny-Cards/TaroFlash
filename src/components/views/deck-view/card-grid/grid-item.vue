@@ -7,19 +7,19 @@ import { type ImageUploadEvent } from '@/components/image-uploader.vue'
 import { MAX_INPUT_LENGTH } from '@/composables/card-bulk-editor'
 import UiRadio from '@/components/ui-kit/radio.vue'
 
-const { card, activeCardIndex, side, mode, index } = defineProps<{
+const { card, activeCardId, side, mode, id } = defineProps<{
   card: Card
-  index: number
+  id: number
   mode: 'edit' | 'view' | 'select'
   side: 'front' | 'back'
-  activeCardIndex?: number
+  activeCardId?: number
   selected: boolean
 }>()
 
 const emit = defineEmits<{
   (e: 'card-image-updated', file: File | undefined): void
-  (e: 'card-activated', index: number): void
-  (e: 'card-deactivated', index: number): void
+  (e: 'card-activated', id: number): void
+  (e: 'card-deactivated', id: number): void
   (e: 'card-updated', text: string): void
   (e: 'card-selected'): void
 }>()
@@ -31,11 +31,11 @@ const front_image_preview = ref<string | undefined>(front_image_url.value)
 const back_image_preview = ref<string | undefined>(back_image_url.value)
 
 async function onCardFocusIn() {
-  if (mode !== 'edit' || activeCardIndex === index) return
+  if (mode !== 'edit' || activeCardId === id) return
 
   card_size.value = 'base'
   audio.play('slide_up')
-  emit('card-activated', index)
+  emit('card-activated', id)
 
   await new Promise((resolve) => setTimeout(resolve, 1))
 
@@ -44,21 +44,21 @@ async function onCardFocusIn() {
 }
 
 async function onCardFocusOut() {
-  if (mode !== 'edit' || activeCardIndex !== index) return
+  if (mode !== 'edit' || activeCardId !== id) return
 
   card_size.value = 'base'
-  emit('card-deactivated', index)
+  emit('card-deactivated', id)
 
   await new Promise((resolve) => setTimeout(resolve, 1))
 
-  if (activeCardIndex === undefined) {
+  if (activeCardId === undefined) {
     audio.play('card_drop')
   }
 }
 
 function onDblClick() {
   if (mode === 'view') {
-    emit('card-activated', index)
+    emit('card-activated', id)
   }
 }
 
@@ -123,7 +123,7 @@ function onClick() {
     </div>
 
     <card
-      v-if="activeCardIndex === index && mode === 'edit'"
+      v-if="activeCardId === id && mode === 'edit'"
       data-testid="card-grid__selected-card"
       class="[&>.card-face]:shadow-modal !absolute top-1/2 left-1/2 z-10 -translate-1/2 [&>.card-face]:ring-2
         [&>.card-face]:ring-blue-500"

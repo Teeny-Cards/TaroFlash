@@ -11,8 +11,8 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
   let initial_cards = initialCards
 
   const deck_id = ref<number | undefined>(_deck_id)
-  const active_card_index = ref<number | undefined>()
-  const selected_card_indices = ref<number[]>([]) // id can be undefined for new cards so need to use index
+  const active_card_id = ref<number | undefined>()
+  const selected_card_ids = ref<number[]>([])
   const mode = ref<'edit' | 'view' | 'select'>('view')
 
   const next_order = computed(() => {
@@ -21,7 +21,7 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
   })
 
   const all_cards_selected = computed(() => {
-    return selected_card_indices.value.length === edited_cards.value.length
+    return selected_card_ids.value.length === edited_cards.value.length
   })
 
   const is_dirty = computed(() => edited_cards.value.some((card) => card.dirty))
@@ -48,14 +48,16 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
     }
   }
 
-  function selectCard(index: number) {
-    if (selected_card_indices.value.includes(index)) return
+  function selectCard(id: number) {
+    if (selected_card_ids.value.includes(id)) return
 
-    selected_card_indices.value.push(index)
+    selected_card_ids.value.push(id)
   }
 
   function selectAllCards() {
-    selected_card_indices.value = edited_cards.value.map((_card, index) => index)
+    selected_card_ids.value = edited_cards.value
+      .filter((card) => card.id !== undefined)
+      .map((card) => card.id!)
   }
 
   function toggleSelectAll() {
@@ -66,30 +68,30 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
     }
   }
 
-  function deselectCard(index: number) {
-    const i = selected_card_indices.value.indexOf(index)
-    if (i !== -1) selected_card_indices.value.splice(i, 1)
+  function deselectCard(id: number) {
+    const i = selected_card_ids.value.indexOf(id)
+    if (i !== -1) selected_card_ids.value.splice(i, 1)
   }
 
-  function toggleSelectCard(index: number) {
-    if (selected_card_indices.value.includes(index)) {
-      deselectCard(index)
+  function toggleSelectCard(id: number) {
+    if (selected_card_ids.value.includes(id)) {
+      deselectCard(id)
     } else {
-      selectCard(index)
+      selectCard(id)
     }
   }
 
   function clearSelectedCards() {
-    selected_card_indices.value = []
+    selected_card_ids.value = []
   }
 
-  function activateCard(index: number) {
-    active_card_index.value = index
+  function activateCard(id: number) {
+    active_card_id.value = id
   }
 
-  function deactivateCard(index?: number) {
-    if (index === active_card_index.value) {
-      active_card_index.value = undefined
+  function deactivateCard(id?: number) {
+    if (id === active_card_id.value) {
+      active_card_id.value = undefined
     }
   }
 
@@ -100,8 +102,8 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
   }
 
   function getSelectedCards(clean = true): Card[] {
-    const selected_cards = edited_cards.value.filter((_card, index) =>
-      selected_card_indices.value.includes(index)
+    const selected_cards = edited_cards.value.filter(
+      (card) => card.id !== undefined && selected_card_ids.value.includes(card.id)
     )
 
     if (clean) {
@@ -128,7 +130,7 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
   function resetEdits() {
     resetCards()
     clearSelectedCards()
-    deactivateCard(active_card_index.value)
+    deactivateCard(active_card_id.value)
   }
 
   async function deleteCards() {
@@ -161,8 +163,8 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
 
   return {
     edited_cards,
-    active_card_index,
-    selected_card_indices,
+    active_card_id,
+    selected_card_ids,
     all_cards_selected,
     is_dirty,
     mode,

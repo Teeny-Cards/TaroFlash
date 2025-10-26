@@ -33,8 +33,8 @@ const active_tab = ref(0)
 
 const {
   edited_cards,
-  active_card_index,
-  selected_card_indices,
+  active_card_id,
+  selected_card_ids,
   mode,
   all_cards_selected,
   is_dirty,
@@ -142,8 +142,8 @@ function cancelEdits() {
   audio.play('digi_powerdown')
 }
 
-async function onDeleteCards(index?: number) {
-  const count = selected_card_indices.value.length + (index !== undefined ? 1 : 0)
+async function onDeleteCards(id?: number) {
+  const count = selected_card_ids.value.length + (id !== undefined ? 1 : 0)
 
   const did_confirm = await alert.warn({
     title: t('alert.delete-card', { count }),
@@ -153,25 +153,25 @@ async function onDeleteCards(index?: number) {
   })
 
   if (did_confirm) {
-    if (index !== undefined) selectCard(index)
+    if (id !== undefined) selectCard(id)
 
     await deleteCards()
     await refetchDeck()
   }
 }
 
-function onSelectCard(index: number) {
-  toggleSelectCard(index)
+function onSelectCard(id: number) {
+  toggleSelectCard(id)
   trySetMode('select', false)
 }
 
-function onCardActivated(index: number) {
+function onCardActivated(id: number) {
   if (mode.value === 'view') {
     trySetMode('edit')
     audio.play('etc_camera_reel')
   }
 
-  activateCard(index)
+  activateCard(id)
 }
 
 function onAddCard() {
@@ -180,8 +180,8 @@ function onAddCard() {
   activateCard(0)
 }
 
-async function onMoveCards(index?: number) {
-  if (index !== undefined) selectCard(index)
+async function onMoveCards(id?: number) {
+  if (id !== undefined) selectCard(id)
 
   const selected_cards = getSelectedCards()
 
@@ -195,8 +195,8 @@ async function onMoveCards(index?: number) {
     closeAudio: 'double-pop-down'
   })
 
-  if (response === false && index !== undefined) {
-    deselectCard(index)
+  if (response === false && id !== undefined) {
+    deselectCard(id)
     return
   }
 
@@ -244,7 +244,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
         <ui-tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
         <context-menu
           :mode="mode"
-          :selectedCardIndices="selected_card_indices"
+          :selectedCardIds="selected_card_ids"
           :allCardsSelected="all_cards_selected"
           @new-card="onAddCard"
           @mode-changed="trySetMode"
@@ -263,8 +263,8 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
         :is="tab_components[active_tab]"
         :mode="mode"
         :cards="edited_cards"
-        :active-card-index="active_card_index"
-        :selected-card-indices="selected_card_indices"
+        :active-card-id="active_card_id"
+        :selected-card-ids="selected_card_ids"
         @card-added="addCard"
         @card-updated="updateCard"
         @card-activated="onCardActivated"
