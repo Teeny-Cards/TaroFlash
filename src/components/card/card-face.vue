@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import imageUploader, { type ImageUploadEvent } from '@/components/image-uploader.vue'
+import UiIcon from '@/components/ui-kit/icon.vue'
 
 const { image } = defineProps<{
   image?: string
@@ -47,7 +48,7 @@ function onTextUpdated(event: Event) {
       ></div>
 
       <div v-else class="flex h-full w-full items-center justify-center gap-2 text-base">
-        <ui-kit:icon src="add-image" />
+        <ui-icon src="add-image" />
         {{ t('card.add-image') }}
       </div>
     </image-uploader>

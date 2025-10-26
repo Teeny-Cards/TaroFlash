@@ -23,10 +23,6 @@ function onStudyClicked() {
     closeAudio: 'double-pop-down'
   })
 }
-
-const numCardsDue = computed(() => {
-  return deck.due_cards?.length ?? 0
-})
 </script>
 
 <template>
@@ -38,11 +34,11 @@ const numCardsDue = computed(() => {
       :front_image_url="image_url"
     >
       <div
-        v-if="numCardsDue"
+        v-if="deck.due_count"
         class="ring-brown-100 absolute -top-2 -right-2 flex h-7.5 w-7.5 items-center justify-center rounded-full
           bg-red-500 ring-6"
       >
-        <h2 class="text-base text-white">{{ numCardsDue }}</h2>
+        <h2 class="text-base text-white">{{ deck.due_count }}</h2>
       </div>
 
       <deck-preview

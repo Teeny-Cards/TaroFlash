@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAudio } from '@/composables/audio'
+import UiIcon from '@/components/ui-kit/icon.vue'
 
 const audio = useAudio()
 
@@ -26,7 +27,7 @@ function onClick() {
     @mouseenter="audio.play('click_07')"
     @click="onClick"
   >
-    <ui-kit:icon v-if="checked" src="check" />
-    <ui-kit:icon v-if="intermediate" src="minus" />
+    <ui-icon v-if="checked" src="check" />
+    <ui-icon v-if="intermediate" src="minus" />
   </div>
 </template>

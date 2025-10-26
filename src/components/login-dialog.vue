@@ -16,9 +16,9 @@
         v-model="password"
         class="w-full border-b border-gray-400 bg-transparent px-2 py-1 focus:outline-hidden"
       />
-      <ui-kit:button @click="onClick">
+      <ui-button @click="onClick">
         {{ signText }}
-      </ui-kit:button>
+      </ui-button>
       <span v-if="props.signIn"
         >Don't have an account?
         <RouterLink to="/signup" class="cursor-pointer text-cyan-400"
@@ -38,6 +38,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import UiButton from '@/components/ui-kit/button.vue'
 
 const props = defineProps({
   signIn: Boolean

@@ -4,6 +4,8 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useModal } from '@/composables/modal'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
+import UiIcon from '@/components/ui-kit/icon.vue'
+import UiButton from '@/components/ui-kit/button.vue'
 
 const { deck } = defineProps<{ deck: Deck; imageUrl?: string }>()
 const emit = defineEmits<{ (e: 'study-clicked'): void; (e: 'updated'): void }>()
@@ -19,8 +21,8 @@ async function onSettingsClicked() {
   const did_update = await modal.open(deckSettings, {
     props: { deck },
     backdrop: true,
-    openAudio: 'double-pop-up',
-    closeAudio: 'double-pop-down'
+    openAudio: 'etc_camera_reel',
+    closeAudio: 'card_drop'
   })
 
   if (await did_update) {
@@ -39,7 +41,7 @@ async function onSettingsClicked() {
     <div class="flex flex-col items-center gap-2 sm:items-start">
       <h1
         data-testid="overview-panel__title"
-        class="text-grey-700 w-64 text-center text-5xl sm:text-left"
+        class="text-brown-700 w-64 text-center text-5xl sm:text-left"
       >
         {{ deck.title }}
       </h1>
@@ -52,7 +54,7 @@ async function onSettingsClicked() {
       </h2>
 
       <div class="flex items-center gap-2 text-blue-500">
-        <ui-kit:icon src="user" />
+        <ui-icon src="user" />
         <h2 class="text-lg font-semibold">
           {{ deck.member?.display_name }}
         </h2>
@@ -60,7 +62,7 @@ async function onSettingsClicked() {
     </div>
 
     <div class="flex items-center gap-2.5">
-      <ui-kit:button
+      <ui-button
         data-testid="overview-panel__study-button"
         icon-left="play"
         fancy-hover
@@ -68,15 +70,15 @@ async function onSettingsClicked() {
         @click="$emit('study-clicked')"
       >
         {{ t('common.study') }}
-      </ui-kit:button>
+      </ui-button>
 
-      <ui-kit:button
+      <ui-button
         data-testid="overview-panel__settings-button"
         icon-left="settings"
         variant="muted"
         icon-only
         @click="onSettingsClicked()"
-      ></ui-kit:button>
+      ></ui-button>
     </div>
   </div>
 </template>

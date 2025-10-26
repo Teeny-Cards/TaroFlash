@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import UiButton from '@/components/ui-kit/button.vue'
 
 const { score, total, num_rewards, first_reward } = defineProps<{
   score: number
@@ -58,11 +59,11 @@ const percentage = computed(() => {
       <h1 class="text-brown-700 text-3xl">{{ headers[bucket] ?? DEFAULT_HEADER }}</h1>
       <p class="text-brown-700 text-sm [&>span]:text-blue-500" v-html="subheader"></p>
     </div>
-    <ui-kit:button
+    <ui-button
       icon-left="check"
       size="small"
       class="absolute -bottom-2 -right-2 outline-brown-300 outline-6"
-      >{{ t('common.done') }}</ui-kit:button
+      >{{ t('common.done') }}</ui-button
     >
   </div>
 </template>

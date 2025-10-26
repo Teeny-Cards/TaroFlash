@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { type SplitButtonOption } from '@/components/ui-kit/split-button.vue'
 import { computed } from 'vue'
+import UiSplitButton from '@/components/ui-kit/split-button.vue'
 
 const { mode, selectedCardIndices, allCardsSelected } = defineProps<{
   mode: 'edit' | 'view' | 'select'
@@ -115,7 +116,7 @@ function onOptionClicked(option: SplitButtonOption) {
 </script>
 
 <template>
-  <ui-kit:split-button
+  <ui-split-button
     :options="options[mode]"
     @option-clicked="onOptionClicked"
     :ring="mode !== 'view'"

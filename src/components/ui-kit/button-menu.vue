@@ -1,9 +1,9 @@
 <template>
   <div data-testid="ui-kit-button-menu" class="relative w-max" ref="teenyDropdown">
     <slot name="trigger" :toggleDropdown="toggleDropdown" :open="dropdownVisible">
-      <ui-kit:button :variant="variant" :inverted="inverted" @click="toggleDropdown">
+      <ui-button :variant="variant" :inverted="inverted" @click="toggleDropdown">
         {{ triggerLabel }}
-      </ui-kit:button>
+      </ui-button>
     </slot>
     <div
       v-if="dropdownVisible"
@@ -12,7 +12,7 @@
     >
       <slot name="dropdown" :closeDropdown="closeDropdown">
         <div class="flex flex-col items-end gap-1.5 lg:items-start">
-          <ui-kit:button
+          <ui-button
             v-for="action in actions"
             data-testid="button-menu__action"
             :data-action="action.label"
@@ -27,7 +27,7 @@
             @click="onOptionClick(action)"
           >
             {{ action.label }}
-          </ui-kit:button>
+          </ui-button>
         </div>
       </slot>
     </div>
@@ -38,6 +38,7 @@
 import { onUnmounted, ref } from 'vue'
 import { onMounted } from 'vue'
 import { nextTick } from 'vue'
+import UiButton from '@/components/ui-kit/button.vue'
 
 defineProps({
   triggerLabel: String,
