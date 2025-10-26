@@ -33,7 +33,7 @@ onMounted(async () => {
 })
 
 const due_decks = computed(() => {
-  return decks.value.filter((deck) => deck.due_cards?.length ?? 0 > 0)
+  return decks.value.filter((deck) => deck.due_count ?? 0 > 0)
 })
 
 async function refetchDecks() {

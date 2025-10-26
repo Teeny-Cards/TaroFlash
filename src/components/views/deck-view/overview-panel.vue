@@ -39,7 +39,7 @@ async function onSettingsClicked() {
     <div class="flex flex-col items-center gap-2 sm:items-start">
       <h1
         data-testid="overview-panel__title"
-        class="text-grey-700 w-64 text-center text-5xl sm:text-left"
+        class="text-brown-700 w-64 text-center text-5xl sm:text-left"
       >
         {{ deck.title }}
       </h1>

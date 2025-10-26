@@ -9,7 +9,7 @@ type Deck = {
   member?: { display_name: string }
   cards?: Card[]
   tags?: string[]
-  due_cards?: Card[]
+  due_count?: number
   config?: DeckConfig
   has_image?: boolean
 }

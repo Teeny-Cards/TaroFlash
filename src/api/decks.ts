@@ -6,17 +6,10 @@ import { DateTime } from 'luxon'
 const logger = useLogger()
 
 export async function fetchMemberDecks(): Promise<Deck[]> {
-  const member_id = useSessionStore().user_id
-  const end_of_day = DateTime.now().endOf('day').toISO()
-
-  const { data, error } = await supabase
-    .from('decks')
-    .select(
-      'description, title, id, updated_at, has_image, due_cards:cards(*, review:reviews(due))'
-    )
-    .eq('member_id', member_id)
-    .or(`due.is.null,due.lte.${end_of_day}`, { referencedTable: 'cards.reviews' })
-    .order('created_at')
+  const { data, error } = await supabase.rpc('get_member_decks_with_due_count', {
+    p_member_id: useSessionStore().user_id,
+    p_now: DateTime.now().toISO()
+  })
 
   if (error) {
     logger.error(error.message)
