@@ -96,6 +96,7 @@ function onClick(deck_id?: number) {
       class="absolute -bottom-3 flex w-full justify-end gap-3 px-8"
     >
       <ui-button
+        data-testid="move-cards__cancel"
         variant="muted"
         icon-left="close"
         @click="close(false)"
@@ -105,6 +106,7 @@ function onClick(deck_id?: number) {
       </ui-button>
 
       <ui-button
+        data-testid="move-cards__move"
         icon-left="check"
         @click="onMove"
         :disabled="!selected_deck_id"
