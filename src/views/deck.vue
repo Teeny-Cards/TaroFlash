@@ -16,6 +16,7 @@ import ContextMenu from '@/components/views/deck-view/context-menu.vue'
 import { uploadCardImage, deleteCardImage } from '@/api/files'
 import { updateCard as upstreamUpdateCard, moveCardsToDeck } from '@/api/cards'
 import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
+import UiTabs from '@/components/ui-kit/tabs.vue'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -240,7 +241,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
 
     <div class="relative flex h-full w-full flex-col">
       <div class="sticky top-(--nav-height) z-10 flex w-full justify-between pb-2">
-        <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
+        <ui-tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
         <context-menu
           :mode="mode"
           :selectedCardIndices="selected_card_indices"

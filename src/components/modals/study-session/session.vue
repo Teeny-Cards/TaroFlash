@@ -7,6 +7,7 @@ import { useDeckEditor } from '@/composables/deck-editor'
 import { type RecordLogItem } from 'ts-fsrs'
 import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import UiButton from '@/components/ui-kit/button.vue'
 
 const { deck } = defineProps<{ deck: Deck }>()
 const emit = defineEmits<{
@@ -72,13 +73,13 @@ function onCardRevealed() {
         bg-(length:--bg-sm) px-13 py-11.5"
     >
       <div data-testid="study-session__actions" class="absolute top-0 left-0 p-4">
-        <ui-kit:button
+        <ui-button
           icon-left="close"
           variant="muted"
           inverted
           icon-only
           @click="emit('closed')"
-        ></ui-kit:button>
+        ></ui-button>
       </div>
       <h1 class="text-5xl text-white">{{ t('study-session.title', { deck: deck?.title }) }}</h1>
     </div>

@@ -4,6 +4,9 @@ import { computed, onMounted, ref } from 'vue'
 import Card from '@/components/card/index.vue'
 import { useI18n } from 'vue-i18n'
 import { useAudio } from '@/composables/audio'
+import UiListItem from '@/components/ui-kit/list-item.vue'
+import UiRadio from '@/components/ui-kit/radio.vue'
+import UiButton from '@/components/ui-kit/button.vue'
 
 export type MoveCardsModalResponse = {
   deck_id: number
@@ -64,7 +67,7 @@ function onClick(deck_id?: number) {
       </div>
 
       <div data-testid="move-cards__deck-list" class="px-8 pt-4 pb-12 flex flex-col">
-        <ui-kit:list-item
+        <ui-list-item
           v-for="(deck, index) in decks"
           :key="index"
           :disabled="deck.id === current_deck_id"
@@ -79,12 +82,12 @@ function onClick(deck_id?: number) {
           {{ deck.title }}
 
           <template #after>
-            <ui-kit:radio
+            <ui-radio
               :checked="deck.id === selected_deck_id"
               @click.stop="selected_deck_id = deck.id"
             />
           </template>
-        </ui-kit:list-item>
+        </ui-list-item>
       </div>
     </div>
 
@@ -92,23 +95,23 @@ function onClick(deck_id?: number) {
       data-testid="move-cards__actions"
       class="absolute -bottom-3 flex w-full justify-end gap-3 px-8"
     >
-      <ui-kit:button
+      <ui-button
         variant="muted"
         icon-left="close"
         @click="close(false)"
         class="ring-brown-300 ring-7"
       >
         {{ t('common.cancel') }}
-      </ui-kit:button>
+      </ui-button>
 
-      <ui-kit:button
+      <ui-button
         icon-left="check"
         @click="onMove"
         :disabled="!selected_deck_id"
         class="ring-brown-300 ring-7"
       >
         {{ t('common.move') }}
-      </ui-kit:button>
+      </ui-button>
     </div>
   </div>
 </template>

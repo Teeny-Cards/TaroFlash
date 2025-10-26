@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAudio } from '@/composables/audio'
+import UiIcon from '@/components/ui-kit/icon.vue'
 
 const {
   variant = 'interaction',
@@ -57,11 +58,11 @@ const iconSize: { [key: string]: string } = {
     @mouseenter="audio.play('click_07')"
   >
     <div v-if="iconLeft" class="btn-icon" uikit-button__icon-left>
-      <ui-kit:icon v-if="iconLeft" :src="iconLeft" :size="iconSize[size]" />
+      <ui-icon v-if="iconLeft" :src="iconLeft" :size="iconSize[size]" />
     </div>
     <slot></slot>
     <div v-if="iconRight" class="btn-icon" uikit-button__icon-right>
-      <ui-kit:icon v-if="iconRight" :src="iconRight" :size="iconSize[size]" />
+      <ui-icon v-if="iconRight" :src="iconRight" :size="iconSize[size]" />
     </div>
   </button>
 </template>

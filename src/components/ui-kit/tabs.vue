@@ -2,6 +2,7 @@
 import { useAudio } from '@/composables/audio'
 import { useStorage } from '@/composables/storage'
 import { onMounted } from 'vue'
+import UiIcon from '@/components/ui-kit/icon.vue'
 
 type Tab = {
   label: string
@@ -59,7 +60,7 @@ function onTabHover(active: boolean) {
       @click="onTabClick(index)"
       @mouseenter="onTabHover(active_tab === index)"
     >
-      <ui-kit:icon v-if="tab.icon" :src="tab.icon" size="small" class="ui-kit-tabs__tab-icon" />
+      <ui-icon v-if="tab.icon" :src="tab.icon" size="small" class="ui-kit-tabs__tab-icon" />
       <span class="ui-kit-tabs__tab-label">{{ tab.label }}</span>
 
       <span v-if="active_tab !== index" class="ui-kit-tabs__tab-tooltip shadow-button">

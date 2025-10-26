@@ -7,6 +7,8 @@ import {
   MAX_INPUT_LENGTH
 } from '@/composables/card-bulk-editor'
 import { nextTick } from 'vue'
+import UiButton from '@/components/ui-kit/button.vue'
+import UiDivider from '@/components/ui-kit/divider.vue'
 
 const { mode, activeCardIndex } = defineProps<{
   cards: Card[]
@@ -60,7 +62,7 @@ async function onDblClick(e: MouseEvent, index: number) {
     class="text-grey-500 flex h-50 flex-col items-center justify-center gap-4"
   >
     <span>{{ t('deck-view.empty-state.no-cards') }}</span>
-    <ui-kit:button icon-left="add" @click="emit('card-added')">Add Card</ui-kit:button>
+    <ui-button icon-left="add" @click="emit('card-added')">Add Card</ui-button>
   </div>
 
   <div v-else data-testid="card-list" class="relative flex w-full flex-col">
@@ -106,7 +108,7 @@ async function onDblClick(e: MouseEvent, index: number) {
         </div>
       </list-item>
 
-      <ui-kit:divider v-if="index < cards.length - 1" dashed />
+      <ui-divider v-if="index < cards.length - 1" dashed />
     </template>
   </div>
 </template>

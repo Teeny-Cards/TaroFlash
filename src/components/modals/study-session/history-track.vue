@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { type StudyCard, type StudyMode } from '@/composables/study-session'
 import { computed } from 'vue'
+import UiTooltip from '@/components/ui-kit/tooltip.vue'
 
 const { cards, activeCard, previewCard, mode } = defineProps<{
   cards: StudyCard[]
@@ -54,7 +55,7 @@ function onClickCard(card: StudyCard) {
         :class="`history-track__card--${cardState(card)}`"
         @click="onClickCard(card)"
       >
-        <!-- <ui-kit:tooltip
+        <!-- <ui-tooltip
           :text="isStudied(card) || isActive(card) || isFailed(card) ? card.front_text : '?'"
         /> -->
       </button>

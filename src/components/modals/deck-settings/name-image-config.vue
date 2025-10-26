@@ -4,6 +4,9 @@ import Card from '@/components/card/index.vue'
 import imageUploader from '@/components/image-uploader.vue'
 import { type ImageUploadEvent } from '@/components/image-uploader.vue'
 import { ref } from 'vue'
+import UiButton from '@/components/ui-kit/button.vue'
+import UiInput from '@/components/ui-kit/input.vue'
+import UiLoader from '@/components/ui-kit/loader.vue'
 
 const { t } = useI18n()
 
@@ -38,7 +41,7 @@ function onImageRemoved() {
           class="absolute -inset-1.5 rounded-[inherit] border-6 border-blue-400"
         ></div>
 
-        <ui-kit:button
+        <ui-button
           v-if="!preview_image"
           @click="trigger"
           inverted
@@ -48,7 +51,7 @@ function onImageRemoved() {
           class="ring-brown-300 absolute -top-4 -left-4 ring-6"
         />
 
-        <ui-kit:button
+        <ui-button
           v-else
           @click="onImageRemoved"
           inverted
@@ -58,10 +61,10 @@ function onImageRemoved() {
           class="ring-brown-300 absolute -top-4 -left-4 ring-6"
         />
 
-        <ui-kit:loader v-if="loading" />
+        <ui-loader v-if="loading" />
       </image-uploader>
     </card>
-    <ui-kit:input
+    <ui-input
       :placeholder="t('deck.title-placeholder')"
       text-align="center"
       size="lg"
