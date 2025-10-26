@@ -2,6 +2,7 @@
 import { DateTime } from 'luxon'
 import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
 import { useI18n } from 'vue-i18n'
+import UiTooltip from '@/components/ui-kit/tooltip.vue'
 
 const { t } = useI18n()
 
@@ -54,7 +55,7 @@ function onRatingClicked(grade: Grade) {
         @click="onRatingClicked(Rating.Good)"
       >
         {{ t('study.got-it!') }}
-        <ui-kit:tooltip :text="getRatingTimeFormat(Rating.Good)" />
+        <ui-tooltip :text="getRatingTimeFormat(Rating.Good)" />
       </button>
       <button
         data-testid="rating-buttons__again"
@@ -64,7 +65,7 @@ function onRatingClicked(grade: Grade) {
         @click="onRatingClicked(Rating.Again)"
       >
         {{ t('study.nope!') }}
-        <ui-kit:tooltip :text="getRatingTimeFormat(Rating.Again)" placement="bottom" />
+        <ui-tooltip :text="getRatingTimeFormat(Rating.Again)" placement="bottom" />
       </button>
     </template>
     <template v-else>

@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { useModal } from '@/composables/modal'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
+import UiPopover from '@/components/ui-kit/popover.vue'
+import UiButton from '@/components/ui-kit/button.vue'
 
 const modal = useModal()
 
@@ -29,7 +31,7 @@ function onImageError() {
 </script>
 
 <template>
-  <ui-kit:popover>
+  <ui-popover>
     <div
       data-testid="deck-preview"
       class="bg-brown-300 rounded-7 flex w-62.75 cursor-auto flex-col gap-4 overflow-hidden"
@@ -47,7 +49,7 @@ function onImageError() {
           @error="onImageError"
         />
         <div v-else class="h-full w-full bg-purple-400 bg-(image:--diagonal-stripes)"></div>
-        <ui-kit:button
+        <ui-button
           icon-left="settings"
           icon-only
           class="absolute top-4 right-4"
@@ -75,5 +77,5 @@ function onImageError() {
         </button>
       </div>
     </div>
-  </ui-kit:popover>
+  </ui-popover>
 </template>

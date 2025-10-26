@@ -1,22 +1,10 @@
-import { shallowMount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import { expect, describe, it } from 'vitest'
 import Button from '@/components/ui-kit/button.vue'
 
-// Global component configuration
-const globalConfig = {
-  global: {
-    stubs: {
-      'ui-kit:icon': {
-        template: '<div class="icon-stub" :data-size="size" :data-src="src"></div>',
-        props: ['size', 'src']
-      }
-    }
-  }
-}
-
 // Test basic rendering
 it('renders properly with default props', () => {
-  const wrapper = shallowMount(Button, globalConfig)
+  const wrapper = mount(Button)
   expect(wrapper.exists()).toBe(true)
   expect(wrapper.classes()).toContain('ui-kit-btn')
   expect(wrapper.classes()).toContain('btn-interaction') // default variant
@@ -26,8 +14,7 @@ it('renders properly with default props', () => {
 // Test slot content
 it('renders slot content correctly', () => {
   const slotContent = 'Click Me'
-  const wrapper = shallowMount(Button, {
-    ...globalConfig,
+  const wrapper = mount(Button, {
     slots: {
       default: slotContent
     }
@@ -38,8 +25,7 @@ it('renders slot content correctly', () => {
 // Test variants
 describe('variants', () => {
   it('applies interaction variant class', () => {
-    const wrapper = shallowMount(Button, {
-      ...globalConfig,
+    const wrapper = mount(Button, {
       props: {
         variant: 'interaction'
       }
@@ -48,8 +34,7 @@ describe('variants', () => {
   })
 
   it('applies muted variant class', () => {
-    const wrapper = shallowMount(Button, {
-      ...globalConfig,
+    const wrapper = mount(Button, {
       props: {
         variant: 'muted'
       }
@@ -58,8 +43,7 @@ describe('variants', () => {
   })
 
   it('applies danger variant class', () => {
-    const wrapper = shallowMount(Button, {
-      ...globalConfig,
+    const wrapper = mount(Button, {
       props: {
         variant: 'danger'
       }
@@ -71,8 +55,7 @@ describe('variants', () => {
 // Test sizes
 describe('sizes', () => {
   it('applies large size class', () => {
-    const wrapper = shallowMount(Button, {
-      ...globalConfig,
+    const wrapper = mount(Button, {
       props: {
         size: 'large'
       }
@@ -81,8 +64,7 @@ describe('sizes', () => {
   })
 
   it('applies base size class', () => {
-    const wrapper = shallowMount(Button, {
-      ...globalConfig,
+    const wrapper = mount(Button, {
       props: {
         size: 'base'
       }
@@ -91,8 +73,7 @@ describe('sizes', () => {
   })
 
   it('applies small size class', () => {
-    const wrapper = shallowMount(Button, {
-      ...globalConfig,
+    const wrapper = mount(Button, {
       props: {
         size: 'small'
       }
@@ -101,8 +82,7 @@ describe('sizes', () => {
   })
 
   it('applies xs size class', () => {
-    const wrapper = shallowMount(Button, {
-      ...globalConfig,
+    const wrapper = mount(Button, {
       props: {
         size: 'xs'
       }
@@ -114,8 +94,7 @@ describe('sizes', () => {
 // Test boolean props
 describe('boolean props', () => {
   it('applies inverted class when inverted prop is true', () => {
-    const wrapper = shallowMount(Button, {
-      ...globalConfig,
+    const wrapper = mount(Button, {
       props: {
         inverted: true
       }
@@ -124,8 +103,7 @@ describe('boolean props', () => {
   })
 
   it('applies icon-only class when iconOnly prop is true', () => {
-    const wrapper = shallowMount(Button, {
-      ...globalConfig,
+    const wrapper = mount(Button, {
       props: {
         iconOnly: true
       }
@@ -134,8 +112,7 @@ describe('boolean props', () => {
   })
 
   it('applies fancy-hover class when fancyHover prop is true', () => {
-    const wrapper = shallowMount(Button, {
-      ...globalConfig,
+    const wrapper = mount(Button, {
       props: {
         fancyHover: true
       }
@@ -147,8 +124,7 @@ describe('boolean props', () => {
 // Test icons
 describe('icons', () => {
   it('renders left icon when iconLeft prop is provided', () => {
-    const wrapper = shallowMount(Button, {
-      ...globalConfig,
+    const wrapper = mount(Button, {
       props: {
         iconLeft: 'add'
       }
@@ -159,8 +135,7 @@ describe('icons', () => {
   })
 
   it('renders right icon when iconRight prop is provided', () => {
-    const wrapper = shallowMount(Button, {
-      ...globalConfig,
+    const wrapper = mount(Button, {
       props: {
         iconRight: 'add'
       }
@@ -171,7 +146,7 @@ describe('icons', () => {
   })
 
   it('does not render icon containers when no icon props are provided', () => {
-    const wrapper = shallowMount(Button, globalConfig)
+    const wrapper = mount(Button)
 
     const leftIconContainer = wrapper.find('[uikit-button__icon-left]')
     const rightIconContainer = wrapper.find('[uikit-button__icon-right]')
@@ -181,22 +156,21 @@ describe('icons', () => {
   })
 
   it('passes correct icon size based on button size', () => {
-    const wrapper = shallowMount(Button, {
-      ...globalConfig,
+    const wrapper = mount(Button, {
       props: {
         size: 'large',
         iconLeft: 'add'
       }
     })
 
-    const iconStub = wrapper.find('.icon-stub')
-    expect(iconStub.attributes('data-size')).toBe('large')
+    const icon = wrapper.find('[data-testid="ui-kit-icon"]')
+    expect(icon.classes().join(' ')).toContain('w-8 h-8')
   })
 })
 
 // Test click event
 it('emits click event when clicked', async () => {
-  const wrapper = shallowMount(Button, globalConfig)
+  const wrapper = mount(Button)
   await wrapper.find('button').trigger('click')
 
   // The component should emit a click event

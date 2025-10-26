@@ -102,6 +102,7 @@
   --wave: url('../assets/backgrounds/wave.svg');
   --bank-note: url('../assets/backgrounds/bank-note.svg');
   --aztec: url('../assets/backgrounds/aztec.svg');
+  --endless-clouds: url('../assets/backgrounds/endless-clouds.svg');
 
   /* Transitions */
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -109,7 +110,7 @@
   --duration-100: 100ms;
 
   /* Animations */
-  --animate-bg-slide: background-slide 2s linear infinite;
+  --animate-bg-slide: background-slide 400ms linear infinite;
 
   /* Breakpoints */
   --breakpoint-sm: 40rem;

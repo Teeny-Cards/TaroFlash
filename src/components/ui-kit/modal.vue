@@ -15,7 +15,7 @@ function close() {
   let modal = modal_stack.value.at(-1)
 
   if (modal) {
-    modal.close()
+    modal.close(false)
   }
 }
 

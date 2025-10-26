@@ -5,6 +5,7 @@ import { useAudio } from '@/composables/audio'
 import { ref } from 'vue'
 import { type ImageUploadEvent } from '@/components/image-uploader.vue'
 import { MAX_INPUT_LENGTH } from '@/composables/card-bulk-editor'
+import UiRadio from '@/components/ui-kit/radio.vue'
 
 const { card, activeCardIndex, side, mode, index } = defineProps<{
   card: Card
@@ -118,7 +119,7 @@ function onClick() {
     ></div>
 
     <div v-if="mode === 'select'" class="absolute top-0 right-0">
-      <ui-kit:radio :checked="selected" @click.stop="emit('card-selected')" />
+      <ui-radio :checked="selected" @click.stop="emit('card-selected')" />
     </div>
 
     <card

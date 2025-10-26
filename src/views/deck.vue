@@ -14,7 +14,9 @@ import { useDeckEditor } from '@/composables/deck-editor'
 import { useAudio } from '@/composables/audio'
 import ContextMenu from '@/components/views/deck-view/context-menu.vue'
 import { uploadCardImage, deleteCardImage } from '@/api/files'
-import { updateCard as upstreamUpdateCard, searchCardsInDeck } from '@/api/cards'
+import { updateCard as upstreamUpdateCard, moveCardsToDeck } from '@/api/cards'
+import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
+import UiTabs from '@/components/ui-kit/tabs.vue'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -41,9 +43,11 @@ const {
   updateCard,
   toggleSelectCard,
   selectCard,
+  deselectCard,
   toggleSelectAll,
   activateCard,
   deactivateCard,
+  getSelectedCards,
   resetCards,
   saveCards,
   setMode
@@ -133,15 +137,6 @@ async function refetchDeck() {
   }
 }
 
-async function searchCards(query: string) {
-  try {
-    const cards = await searchCardsInDeck(Number(deck_id), query)
-    resetCards(cards)
-  } catch (e: any) {
-    // TODO
-  }
-}
-
 function cancelEdits() {
   trySetMode('view')
   audio.play('digi_powerdown')
@@ -185,6 +180,32 @@ function onAddCard() {
   activateCard(0)
 }
 
+async function onMoveCards(index?: number) {
+  if (index !== undefined) selectCard(index)
+
+  const selected_cards = getSelectedCards()
+
+  const response = await modal.open<MoveCardsModalResponse>(MoveCardsModal, {
+    backdrop: true,
+    props: {
+      cards: selected_cards,
+      current_deck_id: Number(deck_id)
+    },
+    openAudio: 'double-pop-up',
+    closeAudio: 'double-pop-down'
+  })
+
+  if (response === false && index !== undefined) {
+    deselectCard(index)
+    return
+  }
+
+  if (typeof response === 'object') {
+    await moveCardsToDeck(selected_cards, response.deck_id)
+    await refetchDeck()
+  }
+}
+
 async function updateCardImage(card_id: number, side: 'front' | 'back', file: File | undefined) {
   const card = deck.value?.cards?.find((card) => card.id === card_id)
   if (!card) return
@@ -208,10 +229,10 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
 </script>
 
 <template>
-  <section data-testid="deck-view" class="flex h-full items-start gap-15">
+  <section data-testid="deck-view" class="flex h-full items-start gap-15 pb-24">
     <overview-panel
       v-if="deck"
-      class="sticky top-16"
+      class="sticky top-(--nav-height)"
       :deck="deck"
       :image-url="image_url"
       @study-clicked="onStudyClicked"
@@ -219,9 +240,8 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
     />
 
     <div class="relative flex h-full w-full flex-col">
-      <div class="sticky top-16 z-10 flex w-full justify-between pb-2">
-        <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
-        <ui-kit:input placeholder="Search" class="w-100" @input="searchCards"></ui-kit:input>
+      <div class="sticky top-(--nav-height) z-10 flex w-full justify-between pb-2">
+        <ui-tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
         <context-menu
           :mode="mode"
           :selectedCardIndices="selected_card_indices"
@@ -230,6 +250,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
           @mode-changed="trySetMode"
           @save="onSaveClicked"
           @delete="onDeleteCards"
+          @move="onMoveCards"
           @select-all="toggleSelectAll"
         />
 
@@ -250,6 +271,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
         @card-deactivated="deactivateCard"
         @card-selected="onSelectCard"
         @card-deleted="onDeleteCards"
+        @card-moved="onMoveCards"
         @card-image-updated="updateCardImage"
       />
     </div>

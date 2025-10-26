@@ -6,6 +6,10 @@ import { DateTime } from 'luxon'
 import { useAudio } from '@/composables/audio'
 import { upsertMember } from '@/api/members'
 import { useSessionStore } from '@/stores/session'
+import UiInput from '@/components/ui-kit/input.vue'
+import UiButton from '@/components/ui-kit/button.vue'
+import UiTag from '@/components/ui-kit/tag.vue'
+import UiIcon from '@/components/ui-kit/icon.vue'
 
 const { close } = defineProps<{
   close: (response?: boolean) => void
@@ -80,7 +84,7 @@ async function onConfirm() {
       </div>
 
       <div class="grid grid-cols-[1fr_auto] gap-x-12 gap-y-6">
-        <ui-kit:input
+        <ui-input
           :label="t('member-application.member-name')"
           v-model:value="member.display_name"
         />
@@ -89,12 +93,12 @@ async function onConfirm() {
           <span class="text-brown-500">{{ t('member-application.title') }}</span>
 
           <div class="flex gap-1">
-            <ui-kit:tag>Debut</ui-kit:tag>
-            <ui-kit:tag>Deck Builder</ui-kit:tag>
+            <ui-tag>Debut</ui-tag>
+            <ui-tag>Deck Builder</ui-tag>
           </div>
         </div>
 
-        <ui-kit:input
+        <ui-input
           :label="t('member-application.card-comment')"
           :placeholder="t('member-card.description-placeholder')"
           class="col-span-2"
@@ -114,11 +118,11 @@ async function onConfirm() {
               @click="setTheme(theme)"
               @mouseenter="audio.play('click_04')"
             >
-              <ui-kit:icon
+              <ui-icon
                 src="check"
                 v-if="theme === selected_theme"
                 class="ring-brown-100 bg-brown-100 absolute -top-1.5 -right-1.5 rounded-full ring-2"
-              ></ui-kit:icon>
+              ></ui-icon>
             </div>
           </div>
         </div>
@@ -134,11 +138,11 @@ async function onConfirm() {
         </div>
       </div>
 
-      <ui-kit:button
+      <ui-button
         icon-left="check"
         class="ring-brown-300 absolute right-8 -bottom-5 ring-7"
         @click="onConfirm"
-        >{{ t('common.confirm') }}</ui-kit:button
+        >{{ t('common.confirm') }}</ui-button
       >
     </div>
   </div>

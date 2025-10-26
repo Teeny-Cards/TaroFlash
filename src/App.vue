@@ -9,11 +9,11 @@
   </div>
 
   <teleport to="[toast-container]">
-    <ui-kit:toast v-for="(toast, index) in toasts" :key="index" :toast="toast" />
+    <ui-toast v-for="(toast, index) in toasts" :key="index" :toast="toast" />
   </teleport>
 
   <teleport to="[data-testid='ui-kit-modal-container']">
-    <ui-kit:modal />
+    <ui-modal />
   </teleport>
 </template>
 
@@ -21,7 +21,9 @@
 import { RouterView } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useToastStore } from '@/stores/toast'
-import { useSessionStore } from './stores/session'
+import { useSessionStore } from '@/stores/session'
+import UiToast from '@/components/ui-kit/toast.vue'
+import UiModal from '@/components/ui-kit/modal.vue'
 
 const sessionStore = useSessionStore()
 const toastStore = useToastStore()

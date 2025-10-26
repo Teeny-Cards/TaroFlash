@@ -5,6 +5,7 @@ import AdditionalSettings from './additional-settings.vue'
 import HeaderConfig from './header-config.vue'
 import { useAlert } from '@/composables/alert'
 import { useDeckEditor } from '@/composables/deck-editor'
+import UiButton from '@/components/ui-kit/button.vue'
 
 const { deck, close } = defineProps<{
   deck?: Deck
@@ -62,16 +63,16 @@ async function onDeleted() {
       data-testid="deck-settings__actions"
       class="absolute -bottom-2 flex w-full justify-end gap-3 px-10.5"
     >
-      <ui-kit:button
+      <ui-button
         variant="muted"
         icon-left="close"
         @click="close(false)"
         class="ring-brown-300 ring-7"
       >
         {{ t('common.cancel') }}
-      </ui-kit:button>
+      </ui-button>
 
-      <ui-kit:button
+      <ui-button
         v-if="deck"
         icon-left="check"
         @click="onDeleted"
@@ -79,11 +80,11 @@ async function onDeleted() {
         class="ring-brown-300 ring-7"
       >
         {{ t('common.delete') }}
-      </ui-kit:button>
+      </ui-button>
 
-      <ui-kit:button icon-left="check" @click="onSave" class="ring-brown-300 ring-7">
+      <ui-button icon-left="check" @click="onSave" class="ring-brown-300 ring-7">
         {{ deck ? t('common.save') : t('common.create') }}
-      </ui-kit:button>
+      </ui-button>
     </div>
   </div>
 </template>

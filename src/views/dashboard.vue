@@ -9,6 +9,7 @@ import MemberApplication from '@/components/modals/member-application.vue'
 import { useModal } from '@/composables/modal'
 import { useMemberStore } from '@/stores/member'
 import { useI18n } from 'vue-i18n'
+import UiButton from '@/components/ui-kit/button.vue'
 
 const { t } = useI18n()
 const toastStore = useToastStore()
@@ -33,7 +34,7 @@ onMounted(async () => {
 })
 
 const due_decks = computed(() => {
-  return decks.value.filter((deck) => deck.due_cards?.length ?? 0 > 0)
+  return decks.value.filter((deck) => deck.due_count ?? 0 > 0)
 })
 
 async function refetchDecks() {
@@ -83,9 +84,9 @@ async function onCreateDeckClicked() {
           @updated="refetchDecks"
         />
       </div>
-      <ui-kit:button icon-left="add" @click="onCreateDeckClicked">
+      <ui-button icon-left="add" @click="onCreateDeckClicked">
         {{ t('dashboard.create-deck') }}
-      </ui-kit:button>
+      </ui-button>
     </div>
   </div>
 </template>
