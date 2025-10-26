@@ -3,9 +3,9 @@ import { type SplitButtonOption } from '@/components/ui-kit/split-button.vue'
 import { computed } from 'vue'
 import UiSplitButton from '@/components/ui-kit/split-button.vue'
 
-const { mode, selectedCardIndices, allCardsSelected } = defineProps<{
+const { mode, selectedCardIds, allCardsSelected } = defineProps<{
   mode: 'edit' | 'view' | 'select'
-  selectedCardIndices: number[]
+  selectedCardIds: number[]
   allCardsSelected: boolean
 }>()
 
@@ -80,7 +80,7 @@ const select_options = computed<SplitButtonOption[]>(() => [
     action: () => emit('mode-changed', 'view')
   },
   {
-    label: `Delete (${selectedCardIndices.length})`,
+    label: `Delete (${selectedCardIds.length})`,
     icon: 'delete',
     default: true,
     theme: 'red',

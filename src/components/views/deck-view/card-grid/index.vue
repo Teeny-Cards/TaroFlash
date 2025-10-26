@@ -5,23 +5,23 @@ import { type EditableCardKey, type EditableCardValue } from '@/composables/card
 
 const {
   mode,
-  activeCardIndex,
+  activeCardId,
   side = 'front'
 } = defineProps<{
   cards: Card[]
   mode: 'edit' | 'view' | 'select'
   side?: 'front' | 'back'
-  activeCardIndex?: number
-  selectedCardIndices?: number[]
+  activeCardId?: number
+  selectedCardIds?: number[]
 }>()
 
 const emit = defineEmits<{
   (e: 'card-added'): void
-  (e: 'card-activated', index: number): void
-  (e: 'card-deactivated', index: number): void
-  (e: 'card-selected', index: number): void
-  (e: 'card-deleted', index: number): void
-  (e: 'card-updated', index: number, column: EditableCardKey, value: EditableCardValue): void
+  (e: 'card-activated', id: number): void
+  (e: 'card-deactivated', id: number): void
+  (e: 'card-selected', id: number): void
+  (e: 'card-deleted', id: number): void
+  (e: 'card-updated', id: number, column: EditableCardKey, value: EditableCardValue): void
   (
     e: 'card-image-updated',
     card_id: number | undefined,
@@ -32,8 +32,8 @@ const emit = defineEmits<{
 
 const audio = useAudio()
 
-function onCardMouseEnter(index: number) {
-  if (mode !== 'edit' || activeCardIndex === index) return
+function onCardMouseEnter(id: number) {
+  if (mode !== 'edit' || activeCardId === id) return
   audio.play('click_04')
 }
 
@@ -45,27 +45,27 @@ function onCardImageUpdated(
   emit('card-image-updated', card_id, side, file)
 }
 
-function onCardUpdated(index: number, side: 'front' | 'back', text: string) {
-  emit('card-updated', index, `${side}_text`, text)
+function onCardUpdated(id: number, side: 'front' | 'back', text: string) {
+  emit('card-updated', id, `${side}_text`, text)
 }
 </script>
 
 <template>
   <div data-testid="card-grid" class="grid grid-cols-[repeat(auto-fit,192px)] gap-4 py-3">
     <grid-item
-      v-for="(card, index) in cards"
+      v-for="card in cards"
       :card="card"
-      :index="index"
+      :id="card.id!"
       :mode="mode"
       :side="side"
-      :active-card-index="activeCardIndex"
-      :selected="selectedCardIndices?.includes(index) ?? false"
-      @mouseenter="onCardMouseEnter(index)"
+      :active-card-id="activeCardId"
+      :selected="selectedCardIds?.includes(card.id!) ?? false"
+      @mouseenter="onCardMouseEnter(card.id!)"
       @card-activated="emit('card-activated', $event)"
       @card-deactivated="emit('card-deactivated', $event)"
-      @card-selected="emit('card-selected', index)"
+      @card-selected="emit('card-selected', card.id!)"
       @card-image-updated="onCardImageUpdated(card.id, side, $event)"
-      @card-updated="onCardUpdated(index, side, $event)"
+      @card-updated="onCardUpdated(card.id!, side, $event)"
     ></grid-item>
   </div>
 </template>
