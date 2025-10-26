@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import { expect, describe, it, vi } from 'vitest'
 import Tabs from '@/components/ui-kit/tabs.vue'
 
@@ -8,23 +8,11 @@ vi.mock('@/composables/audio', () => ({
   }))
 }))
 
-const globalConfig = {
-  global: {
-    stubs: {
-      'ui-kit:icon': {
-        template: '<div class="icon-stub" :data-src="src"></div>',
-        props: ['src']
-      }
-    }
-  }
-}
-
 describe('Basic Rendering', () => {
   it('renders properly with tabs prop', () => {
     const tabs = [{ label: 'Tab 1' }, { label: 'Tab 2' }, { label: 'Tab 3' }]
 
-    const wrapper = shallowMount(Tabs, {
-      ...globalConfig,
+    const wrapper = mount(Tabs, {
       props: { tabs }
     })
 
@@ -38,8 +26,7 @@ describe('Basic Rendering', () => {
   it('renders tab labels correctly', () => {
     const tabs = [{ label: 'First Tab' }, { label: 'Second Tab' }, { label: 'Third Tab' }]
 
-    const wrapper = shallowMount(Tabs, {
-      ...globalConfig,
+    const wrapper = mount(Tabs, {
       props: { tabs }
     })
 
@@ -52,34 +39,32 @@ describe('Basic Rendering', () => {
 
   it('renders icons when provided', () => {
     const tabs = [
-      { label: 'Tab 1', icon: 'home' },
+      { label: 'Tab 1', icon: 'add' },
       { label: 'Tab 2', icon: 'settings' },
       { label: 'Tab 3' } // No icon
     ]
 
-    const wrapper = shallowMount(Tabs, {
-      ...globalConfig,
+    const wrapper = mount(Tabs, {
       props: { tabs }
     })
 
     const tabElements = wrapper.findAll('[data-testid="ui-kit-tabs__tab"]')
 
     // First two tabs should have icons
-    expect(tabElements[0].find('.icon-stub').exists()).toBe(true)
-    expect(tabElements[0].find('.icon-stub').attributes('data-src')).toBe('home')
+    expect(tabElements[0].find('[data-testid="ui-kit-icon"]').exists()).toBe(true)
+    expect(tabElements[0].find('[data-testid="ui-kit-icon"]').attributes('alt')).toBe('add')
 
-    expect(tabElements[1].find('.icon-stub').exists()).toBe(true)
-    expect(tabElements[1].find('.icon-stub').attributes('data-src')).toBe('settings')
+    expect(tabElements[1].find('[data-testid="ui-kit-icon"]').exists()).toBe(true)
+    expect(tabElements[1].find('[data-testid="ui-kit-icon"]').attributes('alt')).toBe('settings')
 
     // Third tab should not have an icon
-    expect(tabElements[2].find('.icon-stub').exists()).toBe(false)
+    expect(tabElements[2].find('[data-testid="ui-kit-icon"]').exists()).toBe(false)
   })
 
   it('renders tooltips for inactive tabs', () => {
     const tabs = [{ label: 'Tab 1' }, { label: 'Tab 2' }, { label: 'Tab 3' }]
 
-    const wrapper = shallowMount(Tabs, {
-      ...globalConfig,
+    const wrapper = mount(Tabs, {
       props: {
         tabs,
         activeTab: 0, // First tab is active
@@ -105,8 +90,7 @@ describe('Active Tab State', () => {
   it('applies active class to the correct tab', () => {
     const tabs = [{ label: 'Tab 1' }, { label: 'Tab 2' }, { label: 'Tab 3' }]
 
-    const wrapper = shallowMount(Tabs, {
-      ...globalConfig,
+    const wrapper = mount(Tabs, {
       props: {
         tabs,
         activeTab: 1, // Second tab is active
@@ -124,8 +108,7 @@ describe('Active Tab State', () => {
   it('updates active tab when activeTab prop changes', async () => {
     const tabs = [{ label: 'Tab 1' }, { label: 'Tab 2' }, { label: 'Tab 3' }]
 
-    const wrapper = shallowMount(Tabs, {
-      ...globalConfig,
+    const wrapper = mount(Tabs, {
       props: {
         tabs,
         activeTab: 0,
@@ -150,8 +133,7 @@ describe('Click Interactions', () => {
   it('emits update:activeTab event when clicking inactive tab', async () => {
     const tabs = [{ label: 'Tab 1' }, { label: 'Tab 2' }, { label: 'Tab 3' }]
 
-    const wrapper = shallowMount(Tabs, {
-      ...globalConfig,
+    const wrapper = mount(Tabs, {
       props: {
         tabs,
         activeTab: 0,
@@ -171,8 +153,7 @@ describe('Click Interactions', () => {
   it('does not emit update:activeTab when clicking active tab', async () => {
     const tabs = [{ label: 'Tab 1' }, { label: 'Tab 2' }]
 
-    const wrapper = shallowMount(Tabs, {
-      ...globalConfig,
+    const wrapper = mount(Tabs, {
       props: {
         tabs,
         activeTab: 0,
@@ -191,8 +172,7 @@ describe('Click Interactions', () => {
   it('handles multiple tab clicks correctly', async () => {
     const tabs = [{ label: 'Tab 1' }, { label: 'Tab 2' }, { label: 'Tab 3' }]
 
-    const wrapper = shallowMount(Tabs, {
-      ...globalConfig,
+    const wrapper = mount(Tabs, {
       props: {
         tabs,
         activeTab: 0,
@@ -218,8 +198,7 @@ describe('Hover Interactions', () => {
   it('handles mouseenter events on tabs', async () => {
     const tabs = [{ label: 'Tab 1' }, { label: 'Tab 2' }]
 
-    const wrapper = shallowMount(Tabs, {
-      ...globalConfig,
+    const wrapper = mount(Tabs, {
       props: {
         tabs,
         activeTab: 0,
@@ -239,8 +218,7 @@ describe('v-model Integration', () => {
   it('works with v-model:activeTab', async () => {
     const tabs = [{ label: 'Tab 1' }, { label: 'Tab 2' }, { label: 'Tab 3' }]
 
-    const wrapper = shallowMount(Tabs, {
-      ...globalConfig,
+    const wrapper = mount(Tabs, {
       props: {
         tabs,
         activeTab: 0,
@@ -265,8 +243,7 @@ describe('v-model Integration', () => {
 
 describe('Edge Cases', () => {
   it('handles empty tabs array', () => {
-    const wrapper = shallowMount(Tabs, {
-      ...globalConfig,
+    const wrapper = mount(Tabs, {
       props: { tabs: [] }
     })
 
@@ -277,8 +254,7 @@ describe('Edge Cases', () => {
   it('handles tabs without labels', () => {
     const tabs = [{ label: '' }, { label: 'Tab 2' }]
 
-    const wrapper = shallowMount(Tabs, {
-      ...globalConfig,
+    const wrapper = mount(Tabs, {
       props: { tabs }
     })
 
