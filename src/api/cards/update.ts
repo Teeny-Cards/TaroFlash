@@ -17,8 +17,8 @@ export async function updateCard(card: Card): Promise<void> {
 }
 
 export async function updateCards(cards: Card[]): Promise<Card[]> {
-  const sanitized = cards.map(({ review, ...rest }) => ({
-    ...rest,
+  const sanitized = cards.map(({ review, ...card }) => ({
+    ...card,
     updated_at: DateTime.now().toISO()
   }))
 
@@ -30,4 +30,18 @@ export async function updateCards(cards: Card[]): Promise<Card[]> {
   }
 
   return data
+}
+
+export async function moveCardsToDeck(cards: Card[], deck_id: number): Promise<void> {
+  const sanitized = cards.map((card) => ({
+    ...card,
+    deck_id
+  }))
+
+  const { error } = await supabase.from('cards').upsert(sanitized)
+
+  if (error) {
+    logger.error(error.message)
+    throw new Error(error.message)
+  }
 }

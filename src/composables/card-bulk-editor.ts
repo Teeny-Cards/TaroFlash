@@ -12,7 +12,7 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
 
   const deck_id = ref<number | undefined>(_deck_id)
   const active_card_index = ref<number | undefined>()
-  const selected_card_indices = ref<number[]>([])
+  const selected_card_indices = ref<number[]>([]) // id can be undefined for new cards so need to use index
   const mode = ref<'edit' | 'view' | 'select'>('view')
 
   const next_order = computed(() => {
@@ -49,6 +49,8 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
   }
 
   function selectCard(index: number) {
+    if (selected_card_indices.value.includes(index)) return
+
     selected_card_indices.value.push(index)
   }
 
@@ -97,8 +99,16 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
       .map(({ deleted, dirty, new: _new, ...rest }) => rest)
   }
 
-  function getSelectedCards(): Card[] {
-    return edited_cards.value.filter((card, index) => selected_card_indices.value.includes(index))
+  function getSelectedCards(clean = true): Card[] {
+    const selected_cards = edited_cards.value.filter((_card, index) =>
+      selected_card_indices.value.includes(index)
+    )
+
+    if (clean) {
+      return selected_cards.map(({ deleted, dirty, new: _new, review, ...rest }) => rest)
+    }
+
+    return selected_cards
   }
 
   function resetCards(cards?: Card[], _deck_id?: number) {
@@ -168,6 +178,7 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
     activateCard,
     deactivateCard,
     getChangedCards,
+    getSelectedCards,
     setMode,
     resetCards,
     saveCards,

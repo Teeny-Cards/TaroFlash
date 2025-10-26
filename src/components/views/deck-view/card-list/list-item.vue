@@ -17,7 +17,7 @@ const emit = defineEmits<{
 
 const audio = useAudio()
 const hover_mode = computed(() => {
-  return mode === 'select' || mode === 'edit'
+  return mode === 'select'
 })
 
 const actions = [
@@ -42,11 +42,6 @@ const actions = [
   }
 ]
 
-function onMouseEnter() {
-  if (!hover_mode.value) return
-  audio.play('click_04')
-}
-
 function onClick() {
   if (mode !== 'select') return
   audio.play('etc_camera_shutter')
@@ -57,10 +52,8 @@ function onClick() {
 <template>
   <ui-kit:list-item
     data-testid="card-list__item"
-    class="text-grey-700"
-    :show-background="hover_mode"
+    :hover_effect="hover_mode"
     :class="{ 'cursor-pointer': hover_mode }"
-    @mouseenter="onMouseEnter"
     @click="onClick"
   >
     <template #before>

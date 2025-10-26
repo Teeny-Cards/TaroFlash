@@ -11,6 +11,7 @@
   "common.leave": "Leave",
   "common.create": "Create",
   "common.done": "Done",
+  "common.move": "Move",
 
   "member-application.header": "Welcome To TaroFlash!",
   "member-application.subtitle": "Let’s get you set up with your new Member Card (You can update this at any time).",
@@ -73,5 +74,7 @@
   "reward-stack.not-bad": "Not Bad!",
   "reward-stack.dang": "Dang :/",
   "reward-stack.single-reward.subheader": "Yout got a {type}! | You got <span>+{count}</span> {type}!",
-  "reward-stack.multi-reward.subheader": "You got a {type}! + more... | You got <span>+{count}</span> {type}! + more..."
+  "reward-stack.multi-reward.subheader": "You got a {type}! + more... | You got <span>+{count}</span> {type}! + more...",
+
+  "move-cards-modal.title": "Move <span>{front}</span><span>{back}</span> | Move {count} Cards"
 }
