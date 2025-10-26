@@ -35,7 +35,7 @@ const sizeClass: { [key: string]: string } = {
   xs: 'btn-xs'
 }
 
-const iconSize: { [key: string]: string } = {
+const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
   large: 'large',
   base: 'base',
   small: 'small',
