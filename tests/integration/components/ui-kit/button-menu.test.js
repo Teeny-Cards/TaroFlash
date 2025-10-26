@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import { expect, it, vi, beforeEach, afterEach } from 'vitest'
 import ButtonMenu from '@/components/ui-kit/button-menu.vue'
 
@@ -15,16 +15,7 @@ afterEach(() => {
 
 // Test basic rendering
 it('renders properly with default props', () => {
-  const wrapper = shallowMount(ButtonMenu, {
-    global: {
-      stubs: {
-        'ui-kit:button': {
-          template: '<button><slot /></button>',
-          props: ['variant', 'inverted', 'iconLeft', 'iconRight', 'iconOnly', 'size']
-        }
-      }
-    }
-  })
+  const wrapper = mount(ButtonMenu)
 
   expect(wrapper.exists()).toBe(true)
   expect(wrapper.attributes('data-testid')).toBe('ui-kit-button-menu')
@@ -33,17 +24,9 @@ it('renders properly with default props', () => {
 // Test trigger label
 it('renders trigger label correctly', () => {
   const triggerLabel = 'Open Menu'
-  const wrapper = shallowMount(ButtonMenu, {
+  const wrapper = mount(ButtonMenu, {
     props: {
       triggerLabel
-    },
-    global: {
-      stubs: {
-        'ui-kit:button': {
-          template: '<button><slot /></button>',
-          props: ['variant', 'inverted', 'iconLeft', 'iconRight', 'iconOnly', 'size']
-        }
-      }
     }
   })
 
@@ -52,16 +35,7 @@ it('renders trigger label correctly', () => {
 
 // Test dropdown visibility
 it('has a toggleDropdown method', () => {
-  const wrapper = shallowMount(ButtonMenu, {
-    global: {
-      stubs: {
-        'ui-kit:button': {
-          template: '<button><slot /></button>',
-          props: ['variant', 'inverted', 'iconLeft', 'iconRight', 'iconOnly', 'size']
-        }
-      }
-    }
-  })
+  const wrapper = mount(ButtonMenu)
 
   // Check that the toggleDropdown method exists
   expect(typeof wrapper.vm.toggleDropdown).toBe('function')
@@ -82,17 +56,9 @@ it('renders actions correctly', async () => {
     }
   ]
 
-  const wrapper = shallowMount(ButtonMenu, {
+  const wrapper = mount(ButtonMenu, {
     props: {
       actions
-    },
-    global: {
-      stubs: {
-        'ui-kit:button': {
-          template: '<button><slot /></button>',
-          props: ['variant', 'inverted', 'iconLeft', 'iconRight', 'iconOnly', 'size']
-        }
-      }
     }
   })
 
@@ -118,17 +84,9 @@ it('calls action function when action is clicked', async () => {
     }
   ]
 
-  const wrapper = shallowMount(ButtonMenu, {
+  const wrapper = mount(ButtonMenu, {
     props: {
       actions
-    },
-    global: {
-      stubs: {
-        'ui-kit:button': {
-          template: '<button><slot /></button>',
-          props: ['variant', 'inverted', 'iconLeft', 'iconRight', 'iconOnly', 'size']
-        }
-      }
     }
   })
 
@@ -148,7 +106,7 @@ it('calls action function when action is clicked', async () => {
 
 // Test animation functions
 it('has animation functions', () => {
-  const wrapper = shallowMount(ButtonMenu)
+  const wrapper = mount(ButtonMenu)
 
   // Check that the animation functions exist
   expect(typeof wrapper.vm.animateActionsIn).toBe('function')
@@ -157,31 +115,13 @@ it('has animation functions', () => {
 
 // Test document event listeners
 it('adds document click listener on mount', () => {
-  shallowMount(ButtonMenu, {
-    global: {
-      stubs: {
-        'ui-kit:button': {
-          template: '<button><slot /></button>',
-          props: ['variant', 'inverted', 'iconLeft', 'iconRight', 'iconOnly', 'size']
-        }
-      }
-    }
-  })
+  mount(ButtonMenu)
 
   expect(document.addEventListener).toHaveBeenCalledWith('click', expect.any(Function))
 })
 
 it('removes document click listener on unmount', () => {
-  const wrapper = shallowMount(ButtonMenu, {
-    global: {
-      stubs: {
-        'ui-kit:button': {
-          template: '<button><slot /></button>',
-          props: ['variant', 'inverted', 'iconLeft', 'iconRight', 'iconOnly', 'size']
-        }
-      }
-    }
-  })
+  const wrapper = mount(ButtonMenu)
 
   wrapper.unmount()
 
