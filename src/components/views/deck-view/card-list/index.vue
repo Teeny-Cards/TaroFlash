@@ -21,6 +21,7 @@ const emit = defineEmits<{
   (e: 'card-deactivated', index: number): void
   (e: 'card-selected', index: number): void
   (e: 'card-deleted', index: number): void
+  (e: 'card-moved', index: number): void
   (e: 'card-updated', index: number, column: EditableCardKey, value: EditableCardValue): void
 }>()
 
@@ -73,6 +74,7 @@ async function onDblClick(e: MouseEvent, index: number) {
         @focusout="emit('card-deactivated', index)"
         @deleted="emit('card-deleted', index)"
         @selected="emit('card-selected', index)"
+        @moved="emit('card-moved', index)"
       >
         <div
           class="flex w-full gap-4"
@@ -110,20 +112,28 @@ async function onDblClick(e: MouseEvent, index: number) {
 </template>
 
 <style>
-@reference '@/styles/main.css';
-
 .card-list__input {
-  @apply text-grey-700 focus:outline-none;
-  @apply transition-all duration-100;
-  @apply rounded-4 h-14.5 w-full resize-none px-3 py-2;
-  @apply pointer-events-none overflow-hidden;
+  transition: height 100ms ease-in-out;
+
+  border-radius: var(--radius-4);
+  width: 100%;
+  height: 58px;
+  resize: none;
+
+  padding: 8px 12px;
+  pointer-events: none;
+  overflow: hidden;
 }
 
 .mode-edit textarea {
-  @apply ring-brown-300 pointer-events-auto bg-white ring-2;
+  color: var(--color-brown-700);
+  pointer-events: auto;
+  outline: 2px solid var(--color-brown-300);
+  background-color: var(--color-white);
+  height: 184px;
 }
 
 .active textarea {
-  @apply h-46 ring-blue-500 group-hover:bg-white;
+  outline: 2px solid var(--color-blue-500);
 }
 </style>

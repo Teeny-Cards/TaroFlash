@@ -5,3 +5,9 @@
     }
   }
 }
+
+@custom-variant animation-safe {
+  body:not(.animation-safe) & {
+    @slot;
+  }
+}

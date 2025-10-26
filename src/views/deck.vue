@@ -15,6 +15,7 @@ import { useAudio } from '@/composables/audio'
 import ContextMenu from '@/components/views/deck-view/context-menu.vue'
 import { uploadCardImage, deleteCardImage } from '@/api/files'
 import { updateCard as upstreamUpdateCard, searchCardsInDeck } from '@/api/cards'
+import MoveCardsModal from '@/components/modals/move-cards.vue'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -41,9 +42,11 @@ const {
   updateCard,
   toggleSelectCard,
   selectCard,
+  deselectCard,
   toggleSelectAll,
   activateCard,
   deactivateCard,
+  getSelectedCards,
   resetCards,
   saveCards,
   setMode
@@ -185,6 +188,26 @@ function onAddCard() {
   activateCard(0)
 }
 
+async function onMoveCards(index?: number) {
+  if (index !== undefined) selectCard(index)
+
+  const response = modal.open(MoveCardsModal, {
+    backdrop: true,
+    props: {
+      cards: getSelectedCards(),
+      current_deck_id: Number(deck_id)
+    },
+    openAudio: 'double-pop-up',
+    closeAudio: 'double-pop-down'
+  })
+
+  response.then((moved: boolean) => {
+    if (!moved && index !== undefined) {
+      deselectCard(index)
+    }
+  })
+}
+
 async function updateCardImage(card_id: number, side: 'front' | 'back', file: File | undefined) {
   const card = deck.value?.cards?.find((card) => card.id === card_id)
   if (!card) return
@@ -208,10 +231,10 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
 </script>
 
 <template>
-  <section data-testid="deck-view" class="flex h-full items-start gap-15">
+  <section data-testid="deck-view" class="flex h-full items-start gap-15 pb-24">
     <overview-panel
       v-if="deck"
-      class="sticky top-16"
+      class="sticky top-(--nav-height)"
       :deck="deck"
       :image-url="image_url"
       @study-clicked="onStudyClicked"
@@ -219,7 +242,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
     />
 
     <div class="relative flex h-full w-full flex-col">
-      <div class="sticky top-16 z-10 flex w-full justify-between pb-2">
+      <div class="sticky top-(--nav-height) z-10 flex w-full justify-between pb-2">
         <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
         <ui-kit:input placeholder="Search" class="w-100" @input="searchCards"></ui-kit:input>
         <context-menu
@@ -230,6 +253,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
           @mode-changed="trySetMode"
           @save="onSaveClicked"
           @delete="onDeleteCards"
+          @move="onMoveCards"
           @select-all="toggleSelectAll"
         />
 
@@ -250,6 +274,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
         @card-deactivated="deactivateCard"
         @card-selected="onSelectCard"
         @card-deleted="onDeleteCards"
+        @card-moved="onMoveCards"
         @card-image-updated="updateCardImage"
       />
     </div>
