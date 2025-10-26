@@ -14,8 +14,8 @@ import { useDeckEditor } from '@/composables/deck-editor'
 import { useAudio } from '@/composables/audio'
 import ContextMenu from '@/components/views/deck-view/context-menu.vue'
 import { uploadCardImage, deleteCardImage } from '@/api/files'
-import { updateCard as upstreamUpdateCard, searchCardsInDeck } from '@/api/cards'
-import MoveCardsModal from '@/components/modals/move-cards.vue'
+import { updateCard as upstreamUpdateCard, moveCardsToDeck } from '@/api/cards'
+import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -136,15 +136,6 @@ async function refetchDeck() {
   }
 }
 
-async function searchCards(query: string) {
-  try {
-    const cards = await searchCardsInDeck(Number(deck_id), query)
-    resetCards(cards)
-  } catch (e: any) {
-    // TODO
-  }
-}
-
 function cancelEdits() {
   trySetMode('view')
   audio.play('digi_powerdown')
@@ -191,21 +182,27 @@ function onAddCard() {
 async function onMoveCards(index?: number) {
   if (index !== undefined) selectCard(index)
 
-  const response = modal.open(MoveCardsModal, {
+  const selected_cards = getSelectedCards()
+
+  const response = await modal.open<MoveCardsModalResponse>(MoveCardsModal, {
     backdrop: true,
     props: {
-      cards: getSelectedCards(),
+      cards: selected_cards,
       current_deck_id: Number(deck_id)
     },
     openAudio: 'double-pop-up',
     closeAudio: 'double-pop-down'
   })
 
-  response.then((moved: boolean) => {
-    if (!moved && index !== undefined) {
-      deselectCard(index)
-    }
-  })
+  if (response === false && index !== undefined) {
+    deselectCard(index)
+    return
+  }
+
+  if (typeof response === 'object') {
+    await moveCardsToDeck(selected_cards, response.deck_id)
+    await refetchDeck()
+  }
 }
 
 async function updateCardImage(card_id: number, side: 'front' | 'back', file: File | undefined) {
@@ -244,7 +241,6 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
     <div class="relative flex h-full w-full flex-col">
       <div class="sticky top-(--nav-height) z-10 flex w-full justify-between pb-2">
         <ui-kit:tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
-        <ui-kit:input placeholder="Search" class="w-100" @input="searchCards"></ui-kit:input>
         <context-menu
           :mode="mode"
           :selectedCardIndices="selected_card_indices"
