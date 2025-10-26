@@ -8,7 +8,6 @@ const mocks = vi.hoisted(() => {
   return {
     upsertMember: vi.fn(),
     audioPlay: vi.fn(),
-    registerBackdropCloseListener: vi.fn(() => vi.fn()),
     close: vi.fn()
   }
 })
@@ -53,11 +52,6 @@ const defaultGlobalConfig = {
       }
     })
   ],
-  provide: {
-    'modal-context': {
-      registerBackdropCloseListener: mocks.registerBackdropCloseListener
-    }
-  },
   components: {
     'member-card': MemberCard
   }

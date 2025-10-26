@@ -24,8 +24,8 @@ const selected_deck_id = ref<number | undefined>(undefined)
 const title = computed(() => {
   return t('move-cards-modal.title', {
     count: cards.length,
-    front: cards[0].front_text ?? '...',
-    back: cards[0].back_text ?? '...'
+    front: cards[0]?.front_text ?? '...',
+    back: cards[0]?.back_text ?? '...'
   })
 })
 
@@ -63,7 +63,7 @@ function onClick(deck_id?: number) {
         <h1 class="move-cards__title" v-html="title"></h1>
       </div>
 
-      <div data-testid="move-cards__list" class="px-8 pt-4 pb-12 flex flex-col">
+      <div data-testid="move-cards__deck-list" class="px-8 pt-4 pb-12 flex flex-col">
         <ui-kit:list-item
           v-for="(deck, index) in decks"
           :key="index"
