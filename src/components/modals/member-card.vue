@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { DateTime } from 'luxon'
+import UiImage from '@/components/ui-kit/image.vue'
 
 const { t } = useI18n()
 
@@ -34,7 +35,7 @@ const created_on = computed(() => {
     >
       <div data-testid="member-card__avatar" class="flex h-full flex-col justify-center">
         <div class="bg-brown-300 rounded-19 border-brown-300 h-50 w-50 overflow-hidden border-10">
-          <ui-kit:image src="_default" class="h-full w-full" />
+          <ui-image src="_default" class="h-full w-full" />
         </div>
       </div>
 

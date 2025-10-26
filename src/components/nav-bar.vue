@@ -10,7 +10,7 @@
     >
       <div class="flex w-full max-w-375 items-center justify-between px-4 sm:px-16">
         <RouterLink to="/dashboard" class="flex items-center gap-2 text-3xl text-white">
-          <ui-kit:image src="taro-logo_3" class="max-w-6" />
+          <ui-image src="taro-logo_3" class="max-w-6" />
           <div>TaroFlash</div>
         </RouterLink>
       </div>
@@ -22,6 +22,7 @@
 import { onMounted, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useRouter, useRoute } from 'vue-router'
+import UiImage from '@/components/ui-kit/image.vue'
 
 defineProps<{
   display_name: String

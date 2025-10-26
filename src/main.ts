@@ -4,7 +4,6 @@ import router from './router'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createI18n } from 'vue-i18n'
-import registerUIKitComponents from './components/ui-kit/_index'
 import messages from '@intlify/unplugin-vue-i18n/messages'
 import { useAudio } from './composables/audio'
 
@@ -23,7 +22,5 @@ audio.preload()
 app.use(createPinia())
 app.use(i18n)
 app.use(router)
-
-registerUIKitComponents(app)
 
 app.mount('#app')

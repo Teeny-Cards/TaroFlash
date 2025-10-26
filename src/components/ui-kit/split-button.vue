@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useAudio } from '@/composables/audio'
+import UiIcon from '@/components/ui-kit/icon.vue'
 
 export type SplitButtonOption = {
   label: string
@@ -58,7 +59,7 @@ function onOptionClicked(option: SplitButtonOption) {
       @mouseenter="audio.play('click_07')"
     >
       <slot>
-        <ui-kit:icon v-if="option?.icon" :src="option.icon" size="small" />
+        <ui-icon v-if="option?.icon" :src="option.icon" size="small" />
         <span>{{ option.label }}</span>
       </slot>
     </button>
@@ -69,7 +70,7 @@ function onOptionClicked(option: SplitButtonOption) {
       @click="onToggle"
       @mouseenter="audio.play('click_07')"
     >
-      <ui-kit:icon src="arrow-drop-down" size="large" />
+      <ui-icon src="arrow-drop-down" size="large" />
     </button>
 
     <div
@@ -88,7 +89,7 @@ function onOptionClicked(option: SplitButtonOption) {
       >
         <slot name="option" :option="option">
           <span>{{ option.label }}</span>
-          <ui-kit:icon v-if="option.icon" :src="option.icon" size="small" />
+          <ui-icon v-if="option.icon" :src="option.icon" size="small" />
         </slot>
       </div>
     </div>

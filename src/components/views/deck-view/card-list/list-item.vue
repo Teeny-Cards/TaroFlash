@@ -2,6 +2,11 @@
 import { useAudio } from '@/composables/audio'
 import Card from '@/components/card/index.vue'
 import { computed } from 'vue'
+import UiButtonMenu from '@/components/ui-kit/button-menu.vue'
+import UiButton from '@/components/ui-kit/button.vue'
+import UiIcon from '@/components/ui-kit/icon.vue'
+import UiListItem from '@/components/ui-kit/list-item.vue'
+import UiRadio from '@/components/ui-kit/radio.vue'
 
 const { card, mode, selected } = defineProps<{
   card: Card
@@ -50,7 +55,7 @@ function onClick() {
 </script>
 
 <template>
-  <ui-kit:list-item
+  <ui-list-item
     data-testid="card-list__item"
     :hover_effect="hover_mode"
     :class="{ 'cursor-pointer': hover_mode }"
@@ -65,21 +70,21 @@ function onClick() {
     <slot></slot>
 
     <template #after>
-      <ui-kit:button-menu v-if="mode !== 'select'" :actions="actions">
+      <ui-button-menu v-if="mode !== 'select'" :actions="actions">
         <template #trigger="{ toggleDropdown }">
-          <ui-kit:button
+          <ui-button
             data-testid="card-list__item-more-button"
             icon-only
             variant="muted"
             size="small"
             @click="toggleDropdown"
           >
-            <ui-kit:icon src="more" />
-          </ui-kit:button>
+            <ui-icon src="more" />
+          </ui-button>
         </template>
-      </ui-kit:button-menu>
+      </ui-button-menu>
 
-      <ui-kit:radio v-if="mode === 'select'" :checked="selected" @click.stop="emit('selected')" />
+      <ui-radio v-if="mode === 'select'" :checked="selected" @click.stop="emit('selected')" />
     </template>
-  </ui-kit:list-item>
+  </ui-list-item>
 </template>

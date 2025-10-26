@@ -4,6 +4,8 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useModal } from '@/composables/modal'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
+import UiIcon from '@/components/ui-kit/icon.vue'
+import UiButton from '@/components/ui-kit/button.vue'
 
 const { deck } = defineProps<{ deck: Deck; imageUrl?: string }>()
 const emit = defineEmits<{ (e: 'study-clicked'): void; (e: 'updated'): void }>()
@@ -52,7 +54,7 @@ async function onSettingsClicked() {
       </h2>
 
       <div class="flex items-center gap-2 text-blue-500">
-        <ui-kit:icon src="user" />
+        <ui-icon src="user" />
         <h2 class="text-lg font-semibold">
           {{ deck.member?.display_name }}
         </h2>
@@ -60,7 +62,7 @@ async function onSettingsClicked() {
     </div>
 
     <div class="flex items-center gap-2.5">
-      <ui-kit:button
+      <ui-button
         data-testid="overview-panel__study-button"
         icon-left="play"
         fancy-hover
@@ -68,15 +70,15 @@ async function onSettingsClicked() {
         @click="$emit('study-clicked')"
       >
         {{ t('common.study') }}
-      </ui-kit:button>
+      </ui-button>
 
-      <ui-kit:button
+      <ui-button
         data-testid="overview-panel__settings-button"
         icon-left="settings"
         variant="muted"
         icon-only
         @click="onSettingsClicked()"
-      ></ui-kit:button>
+      ></ui-button>
     </div>
   </div>
 </template>
