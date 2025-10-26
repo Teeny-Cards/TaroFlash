@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { fetchMemberDecks } from '@/api/decks'
 import { computed, onMounted, ref } from 'vue'
-import { moveCardsToDeck } from '@/api/cards'
 import Card from '@/components/card/index.vue'
 import { useI18n } from 'vue-i18n'
 import { useAudio } from '@/composables/audio'
 
+export type MoveCardsModalResponse = {
+  deck_id: number
+}
+
 const { cards, current_deck_id, close } = defineProps<{
   cards: Card[]
   current_deck_id: number
-  close: (response?: any) => void
+  close: (response?: MoveCardsModalResponse | boolean) => void
 }>()
 
 const { t } = useI18n()
@@ -32,9 +35,7 @@ onMounted(async () => {
 
 async function onMove() {
   if (!selected_deck_id.value) return
-
-  await moveCardsToDeck(cards, selected_deck_id.value)
-  close(true)
+  close({ deck_id: selected_deck_id.value })
 }
 
 function onClick(deck_id?: number) {
