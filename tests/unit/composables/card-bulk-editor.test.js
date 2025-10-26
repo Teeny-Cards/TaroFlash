@@ -181,107 +181,109 @@ describe('is_dirty (computed)', () => {
 })
 
 describe('Card Selection', () => {
-  test('selectCard adds card index to selected_card_indices', () => {
+  test('selectCard adds card id to selected_card_ids', () => {
     const initialCards = card.many(3)
-    const { selected_card_indices, selectCard } = useCardBulkEditor(initialCards)
+    const { selected_card_ids, selectCard } = useCardBulkEditor(initialCards)
 
-    expect(selected_card_indices.value).toHaveLength(0)
+    expect(selected_card_ids.value).toHaveLength(0)
 
-    selectCard(1)
+    selectCard(initialCards[1].id)
 
-    expect(selected_card_indices.value).toEqual([1])
+    expect(selected_card_ids.value).toEqual([initialCards[1].id])
   })
 
-  test('selectAllCards selects all card indices', () => {
+  test('selectAllCards selects all card ids', () => {
     const initialCards = card.many(3)
-    const { selected_card_indices, selectAllCards } = useCardBulkEditor(initialCards)
+    const { selected_card_ids, selectAllCards } = useCardBulkEditor(initialCards)
 
     selectAllCards()
 
-    expect(selected_card_indices.value).toEqual([0, 1, 2])
+    expect(selected_card_ids.value).toEqual(initialCards.map((card) => card.id))
   })
 
-  test('clearSelectedCards empties selected_card_indices', () => {
+  test('clearSelectedCards empties selected_card_ids', () => {
     const initialCards = card.many(3)
-    const { selected_card_indices, selectCard, clearSelectedCards } =
-      useCardBulkEditor(initialCards)
+    const { selected_card_ids, selectCard, clearSelectedCards } = useCardBulkEditor(initialCards)
 
-    selectCard(0)
-    selectCard(1)
-    expect(selected_card_indices.value).toHaveLength(2)
+    selectCard(initialCards[0].id)
+    selectCard(initialCards[1].id)
+    expect(selected_card_ids.value).toHaveLength(2)
 
     clearSelectedCards()
 
-    expect(selected_card_indices.value).toHaveLength(0)
+    expect(selected_card_ids.value).toHaveLength(0)
   })
 
-  test('deselectCard removes card index from selected_card_indices', () => {
+  test('deselectCard removes card id from selected_card_ids', () => {
     const initialCards = card.many(3)
-    const { selected_card_indices, selectCard, deselectCard } = useCardBulkEditor(initialCards)
+    const { selected_card_ids, selectCard, deselectCard } = useCardBulkEditor(initialCards)
 
-    selectCard(0)
-    selectCard(1)
-    selectCard(2)
-    expect(selected_card_indices.value).toEqual([0, 1, 2])
+    selectCard(initialCards[0].id)
+    selectCard(initialCards[1].id)
+    selectCard(initialCards[2].id)
+    expect(selected_card_ids.value).toEqual([
+      initialCards[0].id,
+      initialCards[1].id,
+      initialCards[2].id
+    ])
 
-    deselectCard(1)
+    deselectCard(initialCards[1].id)
 
-    expect(selected_card_indices.value).toEqual([0, 2])
+    expect(selected_card_ids.value).toEqual([initialCards[0].id, initialCards[2].id])
   })
 
-  test('deselectCard does nothing if index not found', () => {
+  test('deselectCard does nothing if id not found', () => {
     const initialCards = card.many(3)
-    const { selected_card_indices, selectCard, deselectCard } = useCardBulkEditor(initialCards)
+    const { selected_card_ids, selectCard, deselectCard } = useCardBulkEditor(initialCards)
 
-    selectCard(0)
-    expect(selected_card_indices.value).toEqual([0])
+    selectCard(initialCards[0].id)
+    expect(selected_card_ids.value).toEqual([initialCards[0].id])
 
     deselectCard(5)
 
-    expect(selected_card_indices.value).toEqual([0])
+    expect(selected_card_ids.value).toEqual([initialCards[0].id])
   })
 
   test('toggleSelectCard selects card if not selected', () => {
     const initialCards = card.many(3)
-    const { selected_card_indices, toggleSelectCard } = useCardBulkEditor(initialCards)
+    const { selected_card_ids, toggleSelectCard } = useCardBulkEditor(initialCards)
 
-    toggleSelectCard(1)
+    toggleSelectCard(initialCards[1].id)
 
-    expect(selected_card_indices.value).toEqual([1])
+    expect(selected_card_ids.value).toEqual([initialCards[1].id])
   })
 
   test('toggleSelectCard deselects card if already selected', () => {
     const initialCards = card.many(3)
-    const { selected_card_indices, selectCard, toggleSelectCard } = useCardBulkEditor(initialCards)
+    const { selected_card_ids, selectCard, toggleSelectCard } = useCardBulkEditor(initialCards)
 
-    selectCard(1)
-    expect(selected_card_indices.value).toEqual([1])
+    selectCard(initialCards[1].id)
+    expect(selected_card_ids.value).toEqual([initialCards[1].id])
 
-    toggleSelectCard(1)
+    toggleSelectCard(initialCards[1].id)
 
-    expect(selected_card_indices.value).toEqual([])
+    expect(selected_card_ids.value).toEqual([])
   })
 
   test('toggleSelectAll selects all cards when none selected', () => {
     const initialCards = card.many(3)
-    const { selected_card_indices, toggleSelectAll } = useCardBulkEditor(initialCards)
+    const { selected_card_ids, toggleSelectAll } = useCardBulkEditor(initialCards)
 
     toggleSelectAll()
 
-    expect(selected_card_indices.value).toEqual([0, 1, 2])
+    expect(selected_card_ids.value).toEqual(initialCards.map((card) => card.id))
   })
 
   test('toggleSelectAll clears selection when all cards selected', () => {
     const initialCards = card.many(3)
-    const { selected_card_indices, selectAllCards, toggleSelectAll } =
-      useCardBulkEditor(initialCards)
+    const { selected_card_ids, selectAllCards, toggleSelectAll } = useCardBulkEditor(initialCards)
 
     selectAllCards()
-    expect(selected_card_indices.value).toEqual([0, 1, 2])
+    expect(selected_card_ids.value).toEqual(initialCards.map((card) => card.id))
 
     toggleSelectAll()
 
-    expect(selected_card_indices.value).toEqual([])
+    expect(selected_card_ids.value).toEqual([])
   })
 })
 
@@ -299,7 +301,7 @@ describe('all_cards_selected computed', () => {
     const initialCards = card.many(3)
     const { all_cards_selected, selectCard } = useCardBulkEditor(initialCards)
 
-    selectCard(0)
+    selectCard(initialCards[0].id)
 
     expect(all_cards_selected.value).toBe(false)
   })
@@ -313,52 +315,52 @@ describe('all_cards_selected computed', () => {
 })
 
 describe('Card Activation', () => {
-  test('activateCard sets active_card_index', () => {
+  test('activateCard sets active_card_id', () => {
     const initialCards = card.many(3)
-    const { active_card_index, activateCard } = useCardBulkEditor(initialCards)
+    const { active_card_id, activateCard } = useCardBulkEditor(initialCards)
 
-    expect(active_card_index.value).toBeUndefined()
+    expect(active_card_id.value).toBeUndefined()
 
     activateCard(1)
 
-    expect(active_card_index.value).toBe(1)
+    expect(active_card_id.value).toBe(1)
   })
 
-  test('deactivateCard clears active_card_index when matching', () => {
+  test('deactivateCard clears active_card_id when matching', () => {
     const initialCards = card.many(3)
-    const { active_card_index, activateCard, deactivateCard } = useCardBulkEditor(initialCards)
+    const { active_card_id, activateCard, deactivateCard } = useCardBulkEditor(initialCards)
 
     activateCard(1)
-    expect(active_card_index.value).toBe(1)
+    expect(active_card_id.value).toBe(1)
 
     deactivateCard(1)
 
-    expect(active_card_index.value).toBeUndefined()
+    expect(active_card_id.value).toBeUndefined()
   })
 
   test('deactivateCard does nothing when index does not match', () => {
     const initialCards = card.many(3)
-    const { active_card_index, activateCard, deactivateCard } = useCardBulkEditor(initialCards)
+    const { active_card_id, activateCard, deactivateCard } = useCardBulkEditor(initialCards)
 
     activateCard(1)
-    expect(active_card_index.value).toBe(1)
+    expect(active_card_id.value).toBe(1)
 
     deactivateCard(2)
 
-    expect(active_card_index.value).toBe(1)
+    expect(active_card_id.value).toBe(1)
   })
 
-  test('deactivateCard without parameter does not clear active_card_index', () => {
+  test('deactivateCard without parameter does not clear active_card_id', () => {
     const initialCards = card.many(3)
-    const { active_card_index, activateCard, deactivateCard } = useCardBulkEditor(initialCards)
+    const { active_card_id, activateCard, deactivateCard } = useCardBulkEditor(initialCards)
 
     activateCard(1)
-    expect(active_card_index.value).toBe(1)
+    expect(active_card_id.value).toBe(1)
 
     deactivateCard()
 
     // Should not clear because no index was provided to match
-    expect(active_card_index.value).toBe(1)
+    expect(active_card_id.value).toBe(1)
   })
 })
 
@@ -397,25 +399,25 @@ describe('resetEdits', () => {
       activateCard,
       resetEdits,
       edited_cards,
-      selected_card_indices,
-      active_card_index,
+      selected_card_ids,
+      active_card_id,
       is_dirty
     } = useCardBulkEditor(initialCards)
 
     // Make changes
     updateCard(0, 'front_text', 'Changed')
-    selectCard(1)
-    activateCard(2)
+    selectCard(initialCards[1].id)
+    activateCard(initialCards[2].id)
 
     expect(is_dirty.value).toBe(true)
-    expect(selected_card_indices.value).toEqual([1])
-    expect(active_card_index.value).toBe(2)
+    expect(selected_card_ids.value).toEqual([initialCards[1].id])
+    expect(active_card_id.value).toBe(initialCards[2].id)
 
     resetEdits()
 
     expect(edited_cards.value).toEqual(initialCards)
-    expect(selected_card_indices.value).toEqual([])
-    expect(active_card_index.value).toBeUndefined()
+    expect(selected_card_ids.value).toEqual([])
+    expect(active_card_id.value).toBeUndefined()
     expect(is_dirty.value).toBe(false)
   })
 })
@@ -468,8 +470,8 @@ describe('deleteCards', () => {
     const initialCards = card.many(3)
     const { selectCard, deleteCards } = useCardBulkEditor(initialCards)
 
-    selectCard(0)
-    selectCard(2)
+    selectCard(initialCards[0].id)
+    selectCard(initialCards[2].id)
 
     await deleteCards()
 
@@ -478,15 +480,15 @@ describe('deleteCards', () => {
 
   test('Clears selection after deletion', async () => {
     const initialCards = card.many(3)
-    const { selectCard, deleteCards, selected_card_indices } = useCardBulkEditor(initialCards)
+    const { selectCard, deleteCards, selected_card_ids } = useCardBulkEditor(initialCards)
 
-    selectCard(0)
-    selectCard(1)
-    expect(selected_card_indices.value).toEqual([0, 1])
+    selectCard(initialCards[0].id)
+    selectCard(initialCards[1].id)
+    expect(selected_card_ids.value).toEqual([initialCards[0].id, initialCards[1].id])
 
     await deleteCards()
 
-    expect(selected_card_indices.value).toEqual([])
+    expect(selected_card_ids.value).toEqual([])
   })
 
   test('Does nothing when no cards selected', async () => {
@@ -499,36 +501,18 @@ describe('deleteCards', () => {
     expect(deleteCardsById).not.toHaveBeenCalled()
   })
 
-  test('Filters out cards without IDs', async () => {
-    const { deleteCardsById } = await import('@/api/cards')
-    const initialCards = card.many(2)
-    const { selectCard, addCard, deleteCards, selected_card_indices } =
-      useCardBulkEditor(initialCards)
-
-    addCard() // New card without ID
-    selectCard(0) // New card (index 0)
-    selectCard(1) // Original card (index 1)
-    selectCard(2) // Original card (index 2)
-
-    await deleteCards()
-
-    // Should only delete cards with IDs
-    expect(deleteCardsById).toHaveBeenCalledWith([initialCards[0].id, initialCards[1].id])
-    expect(selected_card_indices.value).toEqual([])
-  })
-
   test('Handles errors gracefully', async () => {
     const { deleteCardsById } = await import('@/api/cards')
     deleteCardsById.mockRejectedValueOnce(new Error('Delete failed'))
 
     const initialCards = card.many(3)
-    const { selectCard, deleteCards, selected_card_indices } = useCardBulkEditor(initialCards)
+    const { selectCard, deleteCards, selected_card_ids } = useCardBulkEditor(initialCards)
 
-    selectCard(0)
+    selectCard(initialCards[0].id)
 
     // Should not throw and should still clear selection
     await expect(deleteCards()).resolves.toBeUndefined()
-    expect(selected_card_indices.value).toEqual([])
+    expect(selected_card_ids.value).toEqual([])
   })
 })
 

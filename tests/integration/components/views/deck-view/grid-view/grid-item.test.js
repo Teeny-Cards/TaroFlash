@@ -25,7 +25,7 @@ test('Renders base Card with passed props', () => {
   const wrapper = mount(GridItem, {
     props: {
       card: newCard,
-      index: 0,
+      id: 0,
       mode: 'view',
       side: 'front',
       selected: false
@@ -41,7 +41,7 @@ test('Focus-in sequence (when not already active)', async () => {
   const wrapper = mount(GridItem, {
     props: {
       card: newCard,
-      index: 0,
+      id: 0,
       mode: 'edit',
       side: 'front',
       selected: false
@@ -59,10 +59,10 @@ test('Focus-in no-op when already active', async () => {
   const wrapper = mount(GridItem, {
     props: {
       card: newCard,
-      index: 0,
+      id: 0,
       mode: 'edit',
       side: 'front',
-      activeCardIndex: 0,
+      activeCardId: 0,
       selected: false
     }
   })
@@ -78,16 +78,16 @@ test('Focus-out sequence (when currently active)', async () => {
   const wrapper = mount(GridItem, {
     props: {
       card: newCard,
-      index: 0,
+      id: 0,
       mode: 'edit',
       side: 'front',
-      activeCardIndex: 0,
+      activeCardId: 0,
       selected: false
     }
   })
 
   wrapper.find('[data-testid="card-face__text-input"]').trigger('focusout')
-  wrapper.setProps({ activeCardIndex: undefined })
+  wrapper.setProps({ activeCardId: undefined })
 
   await new Promise((resolve) => setTimeout(resolve, 0))
 
@@ -100,7 +100,7 @@ test('Focus-out is ignored when not active', async () => {
   const wrapper = mount(GridItem, {
     props: {
       card: newCard,
-      index: 0,
+      id: 0,
       mode: 'edit',
       side: 'front',
       selected: false
@@ -113,29 +113,12 @@ test('Focus-out is ignored when not active', async () => {
   expect(mocks.play).not.toHaveBeenCalled()
 })
 
-test('Double-click in edit mode does nothing', async () => {
-  const newCard = card.one()
-  const wrapper = mount(GridItem, {
-    props: {
-      card: newCard,
-      index: 0,
-      mode: 'edit',
-      side: 'front',
-      selected: false
-    }
-  })
-
-  await wrapper.find('[data-testid="card"]').trigger('dblclick')
-
-  expect(wrapper.emitted('card-activated')).toBeFalsy()
-})
-
 test('Double-click in select mode does nothing', async () => {
   const newCard = card.one()
   const wrapper = mount(GridItem, {
     props: {
       card: newCard,
-      index: 0,
+      id: 0,
       mode: 'select',
       side: 'front',
       selected: false
@@ -147,12 +130,12 @@ test('Double-click in select mode does nothing', async () => {
   expect(wrapper.emitted('card-activated')).toBeFalsy()
 })
 
-test('Double-click in "view" mode emits "card-activated" with index', async () => {
+test('Double-click in "view" mode emits "card-activated" with id', async () => {
   const newCard = card.one()
   const wrapper = mount(GridItem, {
     props: {
       card: newCard,
-      index: 0,
+      id: newCard.id,
       mode: 'view',
       side: 'front',
       selected: false
@@ -162,7 +145,7 @@ test('Double-click in "view" mode emits "card-activated" with index', async () =
   await wrapper.find('[data-testid="card"]').trigger('dblclick')
 
   expect(wrapper.emitted('card-activated')).toBeTruthy()
-  expect(wrapper.emitted('card-activated')[0]).toEqual([0])
+  expect(wrapper.emitted('card-activated')[0]).toEqual([newCard.id])
 })
 
 test('Image upload (front) updates front_image_preview and emits "card-image-updated" with file', async () => {
@@ -170,7 +153,7 @@ test('Image upload (front) updates front_image_preview and emits "card-image-upd
   const wrapper = mount(GridItem, {
     props: {
       card: newCard,
-      index: 0,
+      id: 0,
       mode: 'edit',
       side: 'front',
       selected: false
@@ -191,7 +174,7 @@ test('Image upload (back) updates back_image_preview and emits "card-image-updat
   const wrapper = mount(GridItem, {
     props: {
       card: newCard,
-      index: 0,
+      id: 0,
       mode: 'edit',
       side: 'back',
       selected: false

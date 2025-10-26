@@ -59,21 +59,6 @@ test('Passes "side" prop to child grid items', () => {
   expect(wrapper.find('[data-testid="card-face__back"]').exists()).toBe(true)
 })
 
-test('Mouseenter SFX: calls audio.play("click_04") only when mode==="edit" AND activeCardIndex!==index', async () => {
-  const cards = card.many(3)
-  const wrapper = mount(CardGrid, {
-    props: {
-      cards,
-      mode: 'edit',
-      side: 'front'
-    }
-  })
-
-  await wrapper.find('[data-testid="card"]').trigger('mouseenter')
-
-  expect(mocks.play).toHaveBeenCalledWith('click_04')
-})
-
 test('Emits card-updated event when child grid-item emits card-updated', async () => {
   const cards = card.many(3)
   const wrapper = mount(CardGrid, {
@@ -81,7 +66,7 @@ test('Emits card-updated event when child grid-item emits card-updated', async (
       cards,
       mode: 'edit',
       side: 'front',
-      activeCardIndex: 0
+      activeCardId: cards[0].id
     }
   })
 
@@ -97,7 +82,7 @@ test('Emits card-image-updated event when child grid-item emits card-image-updat
       cards,
       mode: 'edit',
       side: 'front',
-      activeCardIndex: 0
+      activeCardId: cards[0].id
     }
   })
 

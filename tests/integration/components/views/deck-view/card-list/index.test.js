@@ -18,7 +18,7 @@ test('renders empty state when there are no cards', () => {
   const wrapper = mount(CardList, {
     props: {
       cards: [],
-      selectedCardIndices: [],
+      selectedCardIds: [],
       mode: 'view'
     }
   })
@@ -32,7 +32,7 @@ test('renders card list when there are cards', () => {
   const wrapper = mount(CardList, {
     props: {
       cards,
-      selectedCardIndices: [],
+      selectedCardIds: [],
       mode: 'view'
     }
   })
@@ -47,7 +47,7 @@ test('Emits card-activated event when card is focused', async () => {
   const wrapper = mount(CardList, {
     props: {
       cards,
-      selectedCardIndices: [],
+      selectedCardIds: [],
       mode: 'edit'
     }
   })
@@ -55,7 +55,7 @@ test('Emits card-activated event when card is focused', async () => {
   await wrapper.find('[data-testid="front-input"]').trigger('focusin')
 
   expect(wrapper.emitted('card-activated')).toBeTruthy()
-  expect(wrapper.emitted('card-activated')[0]).toEqual([0])
+  expect(wrapper.emitted('card-activated')[0]).toEqual([cards[0].id])
 })
 
 test('Emits card-deactivated event when card loses focus', async () => {
@@ -63,7 +63,7 @@ test('Emits card-deactivated event when card loses focus', async () => {
   const wrapper = mount(CardList, {
     props: {
       cards,
-      selectedCardIndices: [],
+      selectedCardIds: [],
       mode: 'edit'
     }
   })
@@ -71,7 +71,7 @@ test('Emits card-deactivated event when card loses focus', async () => {
   await wrapper.find('[data-testid="front-input"]').trigger('focusout')
 
   expect(wrapper.emitted('card-deactivated')).toBeTruthy()
-  expect(wrapper.emitted('card-deactivated')[0]).toEqual([0])
+  expect(wrapper.emitted('card-deactivated')[0]).toEqual([cards[0].id])
 })
 
 test('Emits card-updated event when card input changes', async () => {
@@ -79,7 +79,7 @@ test('Emits card-updated event when card input changes', async () => {
   const wrapper = mount(CardList, {
     props: {
       cards,
-      selectedCardIndices: [],
+      selectedCardIds: [],
       mode: 'edit'
     }
   })
@@ -89,7 +89,7 @@ test('Emits card-updated event when card input changes', async () => {
   await frontInput.trigger('input')
 
   expect(wrapper.emitted('card-updated')).toBeTruthy()
-  expect(wrapper.emitted('card-updated')[0]).toEqual([0, 'front_text', 'New front text'])
+  expect(wrapper.emitted('card-updated')[0]).toEqual([cards[0].id, 'front_text', 'New front text'])
 })
 
 test('Emits card-updated event when back input changes', async () => {
@@ -97,7 +97,7 @@ test('Emits card-updated event when back input changes', async () => {
   const wrapper = mount(CardList, {
     props: {
       cards,
-      selectedCardIndices: [],
+      selectedCardIds: [],
       mode: 'edit'
     }
   })
@@ -107,7 +107,7 @@ test('Emits card-updated event when back input changes', async () => {
   await backInput.trigger('input')
 
   expect(wrapper.emitted('card-updated')).toBeTruthy()
-  expect(wrapper.emitted('card-updated')[0]).toEqual([0, 'back_text', 'New back text'])
+  expect(wrapper.emitted('card-updated')[0]).toEqual([cards[0].id, 'back_text', 'New back text'])
 })
 
 test('Emits card-deleted event when delete action is clicked', async () => {
@@ -115,7 +115,7 @@ test('Emits card-deleted event when delete action is clicked', async () => {
   const wrapper = mount(CardList, {
     props: {
       cards,
-      selectedCardIndices: [],
+      selectedCardIds: [],
       mode: 'view'
     }
   })
@@ -133,7 +133,7 @@ test('Emits card-deleted event when delete action is clicked', async () => {
   await deleteButton.trigger('click')
 
   expect(wrapper.emitted('card-deleted')).toBeTruthy()
-  expect(wrapper.emitted('card-deleted')[0]).toEqual([0])
+  expect(wrapper.emitted('card-deleted')[0]).toEqual([cards[0].id])
 })
 
 test('Emits card-selected event when card is selected', async () => {
@@ -141,7 +141,7 @@ test('Emits card-selected event when card is selected', async () => {
   const wrapper = mount(CardList, {
     props: {
       cards,
-      selectedCardIndices: [],
+      selectedCardIds: [],
       mode: 'select'
     }
   })
@@ -150,14 +150,14 @@ test('Emits card-selected event when card is selected', async () => {
   await wrapper.find('[data-testid="card-list__item"]').trigger('click')
 
   expect(wrapper.emitted('card-selected')).toBeTruthy()
-  expect(wrapper.emitted('card-selected')[0]).toEqual([0])
+  expect(wrapper.emitted('card-selected')[0]).toEqual([cards[0].id])
 })
 
 test('Emits card-added event when empty state add card button is clicked', async () => {
   const wrapper = mount(CardList, {
     props: {
       cards: [],
-      selectedCardIndices: [],
+      selectedCardIds: [],
       mode: 'edit'
     }
   })
