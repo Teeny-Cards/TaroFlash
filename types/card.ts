@@ -14,5 +14,6 @@ declare global {
     has_back_image?: boolean
     order?: number
     review?: Review
+    member_id?: string
   }
 }

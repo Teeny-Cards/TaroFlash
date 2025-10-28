@@ -93,33 +93,33 @@ const emit = defineEmits<{
 
 .card-container--2xl {
   --card-width: 380px;
-  --face-border-width: 12px;
+  --face-border-width: 6px;
   --face-radius: 70px;
   --face-padding: 16px;
 }
 .card-container--xl {
   --card-width: 314px;
-  --face-border-width: 10px;
+  --face-border-width: 6px;
   --face-radius: 58px;
   --face-padding: 14px;
   --min-element-height: 100px;
 }
 .card-container--lg {
   --card-width: 260px;
-  --face-border-width: 8px;
+  --face-border-width: 6px;
   --face-radius: 56px;
   --face-padding: 12px;
 }
 .card-container--base {
   --card-width: 192px;
-  --face-border-width: 6px;
+  --face-border-width: 4px;
   --face-radius: 40px;
   --face-padding: 8px;
   --min-element-height: 80px;
 }
 .card-container--sm {
   --card-width: 138px;
-  --face-border-width: 6px;
+  --face-border-width: 4px;
   --face-radius: 32px;
   --face-padding: 6px;
 }

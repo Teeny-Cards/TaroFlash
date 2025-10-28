@@ -2,9 +2,10 @@
 import { type SplitButtonOption } from '@/components/ui-kit/split-button.vue'
 import { computed } from 'vue'
 import UiSplitButton from '@/components/ui-kit/split-button.vue'
+import { type CardEditorMode } from '@/composables/card-bulk-editor'
 
 const { mode, selectedCardIds, allCardsSelected } = defineProps<{
-  mode: 'edit' | 'view' | 'select'
+  mode: CardEditorMode
   selectedCardIds: number[]
   allCardsSelected: boolean
 }>()
@@ -16,7 +17,7 @@ const emit = defineEmits<{
   (e: 'move'): void
   (e: 'delete'): void
   (e: 'save'): void
-  (e: 'mode-changed', mode: 'edit' | 'view' | 'select'): void
+  (e: 'mode-changed', mode: CardEditorMode): void
   (e: 'select-all'): void
 }>()
 
@@ -107,7 +108,8 @@ const select_options = computed<SplitButtonOption[]>(() => [
 const options = computed(() => ({
   view: view_options,
   edit: edit_options,
-  select: select_options.value
+  select: select_options.value,
+  'edit-one': edit_options
 }))
 
 function onOptionClicked(option: SplitButtonOption) {

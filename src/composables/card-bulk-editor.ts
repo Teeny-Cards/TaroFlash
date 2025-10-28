@@ -1,10 +1,11 @@
 import { computed, ref } from 'vue'
 import { updateCards, deleteCardsById } from '@/api/cards'
 
-export const MAX_INPUT_LENGTH = 400
+export const MAX_INPUT_LENGTH = 660
 export type EditableCard = Card & { deleted?: boolean; dirty?: boolean; new?: boolean }
 export type EditableCardKey = keyof EditableCard
 export type EditableCardValue = EditableCard[keyof EditableCard]
+export type CardEditorMode = 'edit' | 'edit-one' | 'view' | 'select'
 
 export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
   const edited_cards = ref<EditableCard[]>(initialCards.map((card) => ({ ...card })))
@@ -13,7 +14,7 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
   const deck_id = ref<number | undefined>(_deck_id)
   const active_card_id = ref<number | undefined>()
   const selected_card_ids = ref<number[]>([])
-  const mode = ref<'edit' | 'view' | 'select'>('view')
+  const mode = ref<CardEditorMode>('view')
 
   const next_order = computed(() => {
     if (edited_cards.value.length === 0) return 1
@@ -27,17 +28,22 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
   const is_dirty = computed(() => edited_cards.value.some((card) => card.dirty))
 
   function addCard() {
-    edited_cards.value.unshift({
-      front_text: '',
-      back_text: '',
+    const temp_id = Math.floor(Math.random() * 1000000)
+
+    edited_cards.value.push({
+      id: temp_id, // Temporary id for editing, is removed before save
       order: next_order.value,
       deck_id: deck_id.value,
+      back_text: '',
+      front_text: '',
       new: true
     })
+
+    activateCard(temp_id)
   }
 
-  function updateCard(index: number, key: EditableCardKey, value: EditableCardValue) {
-    const card = edited_cards.value[index]
+  function updateCard(id: number, key: EditableCardKey, value: EditableCardValue) {
+    const card = edited_cards.value.find((card) => card.id === id)
     if (!card) return
 
     const processed_value = value
@@ -89,6 +95,18 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
     active_card_id.value = id
   }
 
+  function activateNextCard() {
+    const index = edited_cards.value.findIndex((card) => card.id === active_card_id.value)
+    if (index === -1) return
+
+    const next_card = edited_cards.value[index + 1]
+    if (next_card) {
+      activateCard(next_card.id!)
+    } else {
+      addCard()
+    }
+  }
+
   function deactivateCard(id?: number) {
     if (id === active_card_id.value) {
       active_card_id.value = undefined
@@ -98,7 +116,14 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
   function getChangedCards(): Card[] {
     return edited_cards.value
       .filter((card) => card.dirty || card.new)
-      .map(({ deleted, dirty, new: _new, ...rest }) => rest)
+      .map(({ deleted, dirty, new: _new, ...clean_card }) => {
+        if (_new) {
+          const { id, ...sanitized } = clean_card
+          clean_card = sanitized
+        }
+
+        return clean_card
+      })
   }
 
   function getSelectedCards(clean = true): Card[] {
@@ -119,7 +144,7 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
     deck_id.value = _deck_id ?? deck_id.value
   }
 
-  async function setMode(new_mode: 'edit' | 'view' | 'select', reset = true) {
+  async function setMode(new_mode: CardEditorMode, reset = true) {
     mode.value = new_mode
 
     if (reset) {
@@ -178,6 +203,7 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
     toggleSelectCard,
     clearSelectedCards,
     activateCard,
+    activateNextCard,
     deactivateCard,
     getChangedCards,
     getSelectedCards,

@@ -7,10 +7,11 @@ import UiButton from '@/components/ui-kit/button.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiListItem from '@/components/ui-kit/list-item.vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
+import { type CardEditorMode } from '@/composables/card-bulk-editor'
 
 const { card, mode, selected } = defineProps<{
   card: Card
-  mode: 'edit' | 'view' | 'select'
+  mode: CardEditorMode
   selected: boolean
 }>()
 
@@ -18,6 +19,7 @@ const emit = defineEmits<{
   (e: 'selected'): void
   (e: 'deleted'): void
   (e: 'moved'): void
+  (e: 'activated'): void
 }>()
 
 const audio = useAudio()
@@ -52,6 +54,10 @@ function onClick() {
   audio.play('etc_camera_shutter')
   emit('selected')
 }
+
+function onClickEdit() {
+  emit('activated')
+}
 </script>
 
 <template>
@@ -63,7 +69,7 @@ function onClick() {
   >
     <template #before>
       <div class="flex h-full flex-col items-start">
-        <card size="2xs" />
+        <card size="2xs" @click.stop="onClickEdit" />
       </div>
     </template>
 
