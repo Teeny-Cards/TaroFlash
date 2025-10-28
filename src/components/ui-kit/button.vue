@@ -2,15 +2,7 @@
 import { useAudio } from '@/composables/audio'
 import UiIcon from '@/components/ui-kit/icon.vue'
 
-const {
-  variant = 'interaction',
-  size = 'base',
-  inverted = false,
-  iconOnly = false,
-  iconRight,
-  iconLeft,
-  fancyHover = false
-} = defineProps<{
+export type ButtonProps = {
   variant?: 'interaction' | 'muted' | 'danger'
   size?: 'large' | 'base' | 'small' | 'xs'
   inverted?: boolean
@@ -18,7 +10,19 @@ const {
   iconRight?: string
   iconLeft?: string
   fancyHover?: boolean
-}>()
+  hoverAudio?: boolean
+}
+
+const {
+  variant = 'interaction',
+  size = 'base',
+  inverted = false,
+  iconOnly = false,
+  iconRight,
+  iconLeft,
+  fancyHover = false,
+  hoverAudio = true
+} = defineProps<ButtonProps>()
 
 const audio = useAudio()
 
@@ -55,7 +59,7 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
       'btn-fancy-hover': fancyHover
     }"
     @click.stop
-    @mouseenter="audio.play('click_07')"
+    @mouseenter="hoverAudio && audio.play('click_07')"
   >
     <div v-if="iconLeft" class="btn-icon" uikit-button__icon-left>
       <ui-icon v-if="iconLeft" :src="iconLeft" :size="iconSize[size]" />

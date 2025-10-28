@@ -15,7 +15,7 @@ import {
   type EditableCardKey
 } from '@/composables/card-bulk-editor'
 
-const { card, mode, selected } = defineProps<{
+const { card, mode, selected, active } = defineProps<{
   card: Card
   mode: CardEditorMode
   selected: boolean
@@ -27,6 +27,7 @@ const emit = defineEmits<{
   (e: 'deleted'): void
   (e: 'moved'): void
   (e: 'activated'): void
+  (e: 'closed'): void
   (e: 'updated', id: number, column: EditableCardKey, value: EditableCardValue): void
 }>()
 
@@ -35,6 +36,10 @@ const { t } = useI18n()
 
 const hover_mode = computed(() => {
   return mode === 'select'
+})
+
+const disabled = computed(() => {
+  return mode === 'select' || mode === 'view' || (mode === 'edit-one' && !active)
 })
 
 const actions = [
@@ -67,6 +72,12 @@ function onClick() {
 
 function onClickEdit() {
   emit('activated')
+  audio.play('slide_up')
+}
+
+function onClickClose() {
+  emit('closed')
+  audio.play('card_drop')
 }
 
 function onInput(e: Event) {
@@ -81,6 +92,7 @@ function onInput(e: Event) {
   <ui-list-item
     data-testid="card-list__item"
     :hover_effect="hover_mode"
+    class="group"
     :class="{
       'cursor-pointer': hover_mode,
       'mode-edit': mode === 'edit' || (mode === 'edit-one' && active),
@@ -90,8 +102,38 @@ function onInput(e: Event) {
     @click="onClick"
   >
     <template #before>
-      <div class="flex h-full flex-col items-start">
-        <card size="2xs" @click.stop="onClickEdit" />
+      <div class="flex h-full flex-col items-start relative">
+        <card size="2xs" />
+
+        <div
+          v-if="!active && (mode === 'view' || mode === 'edit-one')"
+          class="absolute -top-4 -left-3 hidden group-hover:block"
+        >
+          <ui-button
+            :hover-audio="false"
+            icon-only
+            variant="muted"
+            size="xs"
+            @click.stop="onClickEdit"
+          >
+            <ui-icon src="edit" />
+          </ui-button>
+        </div>
+
+        <div
+          v-if="active && mode === 'edit-one'"
+          class="absolute -top-4 -left-3 hidden group-hover:block"
+        >
+          <ui-button
+            :hover-audio="false"
+            icon-only
+            variant="muted"
+            size="xs"
+            @click.stop="onClickClose"
+          >
+            <ui-icon src="close" />
+          </ui-button>
+        </div>
       </div>
     </template>
 
@@ -101,7 +143,7 @@ function onInput(e: Event) {
         class="card-list__input"
         :placeholder="t('card.placeholder-front')"
         :value="card.front_text"
-        :disabled="mode !== 'edit' && mode !== 'edit-one'"
+        :disabled="disabled"
         @focusin="emit('activated')"
         @input="onInput"
         :maxlength="MAX_INPUT_LENGTH"
@@ -112,7 +154,7 @@ function onInput(e: Event) {
         class="card-list__input"
         :placeholder="t('card.placeholder-back')"
         :value="card.back_text"
-        :disabled="mode !== 'edit' && mode !== 'edit-one'"
+        :disabled="disabled"
         @focusin="emit('activated')"
         @input="onInput"
         :maxlength="MAX_INPUT_LENGTH"

@@ -109,7 +109,7 @@ const options = computed(() => ({
   view: view_options,
   edit: edit_options,
   select: select_options.value,
-  'edit-one': edit_options
+  'edit-one': view_options
 }))
 
 function onOptionClicked(option: SplitButtonOption) {
@@ -121,6 +121,6 @@ function onOptionClicked(option: SplitButtonOption) {
   <ui-split-button
     :options="options[mode]"
     @option-clicked="onOptionClicked"
-    :ring="mode !== 'view'"
+    :ring="mode !== 'view' && mode !== 'edit-one'"
   />
 </template>
