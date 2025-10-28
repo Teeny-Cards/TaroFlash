@@ -109,13 +109,7 @@ function onInput(e: Event) {
           v-if="!active && (mode === 'view' || mode === 'edit-one')"
           class="absolute -top-4 -left-3 hidden group-hover:block"
         >
-          <ui-button
-            :hover-audio="false"
-            icon-only
-            variant="muted"
-            size="xs"
-            @click.stop="onClickEdit"
-          >
+          <ui-button :hover-audio="false" icon-only size="xs" @click.stop="onClickEdit">
             <ui-icon src="edit" />
           </ui-button>
         </div>
