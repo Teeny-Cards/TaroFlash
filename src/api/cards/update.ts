@@ -5,10 +5,10 @@ import { DateTime } from 'luxon'
 const logger = useLogger()
 
 export async function updateCard(card: Card): Promise<void> {
-  const { review, ...rest } = card
-  rest.updated_at = DateTime.now().toISO()
+  const { review, ...sanitized } = card
+  sanitized.updated_at = DateTime.now().toISO()
 
-  const { error } = await supabase.from('cards').upsert(rest)
+  const { error } = await supabase.from('cards').upsert(sanitized, { onConflict: 'id' })
 
   if (error) {
     logger.error(error.message)
@@ -22,7 +22,12 @@ export async function updateCards(cards: Card[]): Promise<Card[]> {
     updated_at: DateTime.now().toISO()
   }))
 
-  const { data, error } = await supabase.from('cards').upsert(sanitized).select()
+  console.log(sanitized)
+
+  const { data, error } = await supabase
+    .from('cards')
+    .upsert(sanitized, { onConflict: 'id' })
+    .select()
 
   if (error) {
     logger.error(error.message)
@@ -38,7 +43,7 @@ export async function moveCardsToDeck(cards: Card[], deck_id: number): Promise<v
     deck_id
   }))
 
-  const { error } = await supabase.from('cards').upsert(sanitized)
+  const { error } = await supabase.from('cards').update(sanitized)
 
   if (error) {
     logger.error(error.message)

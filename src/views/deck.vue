@@ -17,6 +17,7 @@ import { uploadCardImage, deleteCardImage } from '@/api/files'
 import { updateCard as upstreamUpdateCard, moveCardsToDeck } from '@/api/cards'
 import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
+import { type CardEditorMode } from '@/composables/card-bulk-editor'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -46,6 +47,7 @@ const {
   deselectCard,
   toggleSelectAll,
   activateCard,
+  activateNextCard,
   deactivateCard,
   getSelectedCards,
   resetCards,
@@ -94,7 +96,9 @@ function warnIfDirty(): Promise<any> {
   })
 }
 
-async function trySetMode(new_mode: 'edit' | 'view' | 'select', reset = true) {
+async function trySetMode(new_mode: CardEditorMode, reset = true) {
+  if (mode.value === new_mode) return
+
   const res = warnIfDirty()
 
   if (await res) {
@@ -157,6 +161,7 @@ async function onDeleteCards(id?: number) {
 
     await deleteCards()
     await refetchDeck()
+    trySetMode('view')
   }
 }
 
@@ -166,18 +171,17 @@ function onSelectCard(id: number) {
 }
 
 function onCardActivated(id: number) {
-  if (mode.value === 'view') {
-    trySetMode('edit')
+  activateCard(id)
+
+  if (mode.value !== 'edit' && mode.value !== 'edit-one') {
+    trySetMode('edit-one')
     audio.play('etc_camera_reel')
   }
-
-  activateCard(id)
 }
 
 function onAddCard() {
   addCard()
   trySetMode('edit', false)
-  activateCard(0)
 }
 
 async function onMoveCards(id?: number) {
@@ -268,6 +272,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
         @card-added="addCard"
         @card-updated="updateCard"
         @card-activated="onCardActivated"
+        @next-card-activated="activateNextCard"
         @card-deactivated="deactivateCard"
         @card-selected="onSelectCard"
         @card-deleted="onDeleteCards"
