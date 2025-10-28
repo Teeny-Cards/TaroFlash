@@ -23,7 +23,9 @@ const emit = defineEmits<{
 
 const view_options: SplitButtonOption[] = [
   {
-    label: 'Edit',
+    label: 'Edit All',
+    default: true,
+    icon: 'edit',
     action: () => emit('mode-changed', 'edit')
   },
   {
@@ -32,8 +34,6 @@ const view_options: SplitButtonOption[] = [
   },
   {
     label: 'New Card',
-    icon: 'teeny-cards',
-    default: true,
     action: () => emit('new-card')
   },
   {
