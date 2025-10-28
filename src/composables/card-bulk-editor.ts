@@ -95,18 +95,6 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
     active_card_id.value = id
   }
 
-  function activateNextCard() {
-    const index = edited_cards.value.findIndex((card) => card.id === active_card_id.value)
-    if (index === -1) return
-
-    const next_card = edited_cards.value[index + 1]
-    if (next_card) {
-      activateCard(next_card.id!)
-    } else {
-      addCard()
-    }
-  }
-
   function deactivateCard(id?: number) {
     if (id === active_card_id.value) {
       active_card_id.value = undefined
@@ -203,7 +191,6 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
     toggleSelectCard,
     clearSelectedCards,
     activateCard,
-    activateNextCard,
     deactivateCard,
     getChangedCards,
     getSelectedCards,

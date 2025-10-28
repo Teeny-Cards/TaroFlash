@@ -47,8 +47,6 @@ const {
   deselectCard,
   toggleSelectAll,
   activateCard,
-  activateNextCard,
-  deactivateCard,
   getSelectedCards,
   resetCards,
   saveCards,
@@ -174,9 +172,12 @@ function onCardActivated(id: number) {
   activateCard(id)
 
   if (mode.value !== 'edit' && mode.value !== 'edit-one') {
-    trySetMode('edit-one')
-    audio.play('etc_camera_reel')
+    trySetMode('edit-one', false)
   }
+}
+
+function onCardClosed() {
+  trySetMode('view')
 }
 
 function onAddCard() {
@@ -272,8 +273,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
         @card-added="addCard"
         @card-updated="updateCard"
         @card-activated="onCardActivated"
-        @next-card-activated="activateNextCard"
-        @card-deactivated="deactivateCard"
+        @card-closed="onCardClosed"
         @card-selected="onSelectCard"
         @card-deleted="onDeleteCards"
         @card-moved="onMoveCards"
