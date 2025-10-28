@@ -1,11 +1,7 @@
 <script lang="ts" setup>
 import ListItem from './list-item.vue'
 import { useI18n } from 'vue-i18n'
-import {
-  type EditableCardValue,
-  type EditableCardKey,
-  MAX_INPUT_LENGTH
-} from '@/composables/card-bulk-editor'
+import { type EditableCardValue, type EditableCardKey } from '@/composables/card-bulk-editor'
 import { onBeforeUnmount, onMounted, useTemplateRef, watch } from 'vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiDivider from '@/components/ui-kit/divider.vue'
@@ -48,11 +44,8 @@ async function onKeydown(e: KeyboardEvent) {
   }
 }
 
-function onInput(e: Event, id: number) {
-  const target = e.target as HTMLTextAreaElement
-  const column = target.dataset['testid'] === 'front-input' ? 'front_text' : 'back_text'
-
-  emit('card-updated', id, column, target.value)
+function onCardUpdated(id: number, column: EditableCardKey, value: EditableCardValue) {
+  emit('card-updated', id, column, value)
 }
 
 watch(
@@ -82,49 +75,17 @@ watch(
     <template v-for="(card, index) in cards" :key="card.id">
       <list-item
         :id="`card-${card.id}`"
-        :class="{
-          'mode-edit': mode === 'edit' || (mode === 'edit-one' && activeCardId === card.id),
-          'mode-select': mode === 'select',
-          'mode-view': mode === 'view'
-        }"
         :card="card"
         :mode="mode"
         :selected="selectedCardIds.includes(card.id!)"
+        :active="activeCardId === card.id"
         @focusout="emit('card-deactivated', card.id!)"
         @deleted="emit('card-deleted', card.id!)"
         @selected="emit('card-selected', card.id!)"
         @moved="emit('card-moved', card.id!)"
         @activated="emit('card-activated', card.id!)"
-      >
-        <div
-          class="flex w-full gap-4"
-          :class="{
-            active: activeCardId === card.id
-          }"
-        >
-          <textarea
-            data-testid="front-input"
-            class="card-list__input"
-            :placeholder="t('card.placeholder-front')"
-            :value="card.front_text"
-            :disabled="mode !== 'edit' && mode !== 'edit-one'"
-            @focusin="emit('card-activated', card.id!)"
-            @input="onInput($event, card.id!)"
-            :maxlength="MAX_INPUT_LENGTH"
-          ></textarea>
-
-          <textarea
-            data-testid="back-input"
-            class="card-list__input"
-            :placeholder="t('card.placeholder-back')"
-            :value="card.back_text"
-            :disabled="mode !== 'edit' && mode !== 'edit-one'"
-            @focusin="emit('card-activated', card.id!)"
-            @input="onInput($event, card.id!)"
-            :maxlength="MAX_INPUT_LENGTH"
-          ></textarea>
-        </div>
-      </list-item>
+        @updated="onCardUpdated"
+      />
 
       <ui-divider v-if="index < cards.length - 1" dashed />
     </template>
@@ -136,32 +97,3 @@ watch(
     </div>
   </div>
 </template>
-
-<style>
-.card-list__input {
-  transition: height 100ms ease-in-out;
-
-  border-radius: var(--radius-4);
-  width: 100%;
-  height: 58px;
-  resize: none;
-
-  padding: 8px 12px;
-  overflow: hidden;
-}
-
-.mode-edit textarea {
-  color: var(--color-brown-700);
-  outline: 2px solid var(--color-brown-300);
-  background-color: var(--color-white);
-  height: 260px;
-}
-
-.mode-select .card-list__input {
-  pointer-events: none;
-}
-
-.active textarea {
-  outline: 2px solid var(--color-blue-500);
-}
-</style>
