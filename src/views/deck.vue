@@ -33,12 +33,11 @@ const deck = ref<Deck>()
 const active_tab = ref(0)
 
 const {
-  edited_cards,
+  all_cards,
   active_card_id,
   selected_card_ids,
   mode,
   all_cards_selected,
-  is_dirty,
   addCard,
   deleteCards,
   updateCard,
@@ -47,6 +46,7 @@ const {
   deselectCard,
   toggleSelectAll,
   activateCard,
+  deactivateCard,
   getSelectedCards,
   resetCards,
   saveCards,
@@ -74,42 +74,15 @@ onMounted(async () => {
   document.addEventListener('keydown', onEsc)
 })
 
-onBeforeRouteLeave(async () => {
-  return await warnIfDirty()
-})
-
 onUnmounted(() => {
   document.removeEventListener('keydown', onEsc)
 })
 
-function warnIfDirty(): Promise<any> {
-  if (!is_dirty.value) return Promise.resolve(true)
-
-  return alert.warn({
-    title: t('alert.leave-page'),
-    message: t('alert.leave-page.message'),
-    confirmLabel: t('common.leave'),
-    cancelLabel: t('alert.leave-page.stay'),
-    confirmAudio: 'digi_powerdown'
-  })
-}
-
-async function trySetMode(new_mode: CardEditorMode, reset = true) {
-  if (mode.value === new_mode) return
-
-  const res = warnIfDirty()
-
-  if (await res) {
-    setMode(new_mode, reset)
-  }
-}
-
 async function onEsc(e: KeyboardEvent) {
   if (e.key !== 'Escape') return
-
-  if (mode.value !== 'view' && (await warnIfDirty())) {
-    cancelEdits()
-  }
+  setMode('view')
+  deactivateCard()
+  audio.play('card_drop')
 }
 
 function onStudyClicked() {
@@ -126,22 +99,20 @@ function onStudyClicked() {
 async function onSaveClicked() {
   await saveCards()
   await refetchDeck()
-  trySetMode('view')
+  setMode('view')
 }
 
 async function refetchDeck() {
   try {
     deck.value = await fetchDeck(Number(deck_id))
     image_url.value = useDeckEditor(deck.value).image_url.value
-    resetCards(deck.value.cards)
+
+    if (deck.value.cards) {
+      resetCards(deck.value.cards)
+    }
   } catch (e: any) {
     // TODO
   }
-}
-
-function cancelEdits() {
-  trySetMode('view')
-  audio.play('digi_powerdown')
 }
 
 async function onDeleteCards(id?: number) {
@@ -159,30 +130,31 @@ async function onDeleteCards(id?: number) {
 
     await deleteCards()
     await refetchDeck()
-    trySetMode('view')
+    setMode('view')
   }
 }
 
 function onSelectCard(id: number) {
   toggleSelectCard(id)
-  trySetMode('select', false)
+  setMode('select')
 }
 
 function onCardActivated(id: number) {
   activateCard(id)
 
   if (mode.value !== 'edit' && mode.value !== 'edit-one') {
-    trySetMode('edit-one', false)
+    setMode('edit-one')
   }
 }
 
 function onCardClosed() {
-  trySetMode('view')
+  setMode('view')
+  deactivateCard()
 }
 
 function onAddCard() {
   addCard()
-  trySetMode('edit', false)
+  setMode('edit')
 }
 
 async function onMoveCards(id?: number) {
@@ -252,7 +224,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
           :selectedCardIds="selected_card_ids"
           :allCardsSelected="all_cards_selected"
           @new-card="onAddCard"
-          @mode-changed="trySetMode"
+          @mode-changed="setMode"
           @save="onSaveClicked"
           @delete="onDeleteCards"
           @move="onMoveCards"
@@ -267,7 +239,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
       <component
         :is="tab_components[active_tab]"
         :mode="mode"
-        :cards="edited_cards"
+        :cards="all_cards"
         :active-card-id="active_card_id"
         :selected-card-ids="selected_card_ids"
         @card-added="onAddCard"
