@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useAudio } from '@/composables/audio'
 import Card from '@/components/card/index.vue'
-import { computed } from 'vue'
+import { computed, onMounted, useTemplateRef } from 'vue'
 import UiButtonMenu from '@/components/ui-kit/button-menu.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
@@ -14,6 +14,7 @@ import {
   type EditableCardValue,
   type EditableCardKey
 } from '@/composables/card-bulk-editor'
+import { useInputResizer } from '@/composables/input-resizer'
 
 const { card, mode, selected, active } = defineProps<{
   card: Card
@@ -33,10 +34,10 @@ const emit = defineEmits<{
 
 const audio = useAudio()
 const { t } = useI18n()
+const { setupInput } = useInputResizer()
 
-const hover_mode = computed(() => {
-  return mode === 'select'
-})
+const front_input = useTemplateRef<HTMLTextAreaElement>('front-input')
+const back_input = useTemplateRef<HTMLTextAreaElement>('back-input')
 
 const disabled = computed(() => {
   return mode === 'select' || mode === 'view' || (mode === 'edit-one' && !active)
@@ -63,6 +64,11 @@ const actions = [
     iconRight: 'delete'
   }
 ]
+
+onMounted(() => {
+  setupInput(front_input.value!)
+  setupInput(back_input.value!)
+})
 
 function onClick() {
   if (mode !== 'select') return
@@ -91,12 +97,11 @@ function onInput(e: Event) {
 <template>
   <ui-list-item
     data-testid="card-list__item"
-    :hover_effect="hover_mode"
+    :hover_effect="mode === 'select'"
     class="group"
     :class="{
-      'cursor-pointer': hover_mode,
       'mode-edit': mode === 'edit' || (mode === 'edit-one' && active),
-      'mode-select': mode === 'select',
+      'mode-select cursor-pointer': mode === 'select',
       'mode-view': mode === 'view'
     }"
     @click="onClick"
@@ -134,6 +139,7 @@ function onInput(e: Event) {
     <div class="flex w-full gap-4" :class="{ active }">
       <textarea
         data-testid="front-input"
+        ref="front-input"
         class="card-list__input"
         :placeholder="t('card.placeholder-front')"
         :value="card.front_text"
@@ -145,6 +151,7 @@ function onInput(e: Event) {
 
       <textarea
         data-testid="back-input"
+        ref="back-input"
         class="card-list__input"
         :placeholder="t('card.placeholder-back')"
         :value="card.back_text"
@@ -177,11 +184,8 @@ function onInput(e: Event) {
 
 <style>
 .card-list__input {
-  transition: height 100ms ease-in-out;
-
   border-radius: var(--radius-4);
   width: 100%;
-  height: 58px;
   resize: none;
 
   padding: 8px 12px;
@@ -192,7 +196,6 @@ function onInput(e: Event) {
   color: var(--color-brown-700);
   outline: 2px solid var(--color-brown-300);
   background-color: var(--color-white);
-  height: 260px;
 }
 
 .mode-select .card-list__input {
