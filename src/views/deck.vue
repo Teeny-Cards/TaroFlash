@@ -14,7 +14,7 @@ import { useDeckEditor } from '@/composables/deck-editor'
 import { useAudio } from '@/composables/audio'
 import ContextMenu from '@/components/views/deck-view/context-menu.vue'
 import { uploadCardImage, deleteCardImage } from '@/api/files'
-import { updateCard as upstreamUpdateCard, moveCardsToDeck } from '@/api/cards'
+import { upsertCard, moveCardsToDeck } from '@/api/cards'
 import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
@@ -218,14 +218,14 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
   if (file) {
     try {
       await uploadCardImage(card_id, side, file)
-      await upstreamUpdateCard({ ...card, [`has_${side}_image`]: true })
+      await upsertCard({ ...card, [`has_${side}_image`]: true })
     } catch (e: any) {
       // TODO
     }
   } else {
     try {
       await deleteCardImage(card_id, side)
-      await upstreamUpdateCard({ ...card, [`has_${side}_image`]: false })
+      await upsertCard({ ...card, [`has_${side}_image`]: false })
     } catch (e: any) {
       // TODO
     }
@@ -270,7 +270,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
         :cards="edited_cards"
         :active-card-id="active_card_id"
         :selected-card-ids="selected_card_ids"
-        @card-added="addCard"
+        @card-added="onAddCard"
         @card-updated="updateCard"
         @card-activated="onCardActivated"
         @card-closed="onCardClosed"

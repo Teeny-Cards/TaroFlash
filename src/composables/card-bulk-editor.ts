@@ -1,5 +1,5 @@
 import { computed, ref } from 'vue'
-import { updateCards, deleteCardsById } from '@/api/cards'
+import { upsertCards, upsertCard, deleteCardsById } from '@/api/cards'
 
 export const MAX_INPUT_LENGTH = 660
 export type EditableCard = Card & { deleted?: boolean; dirty?: boolean; new?: boolean }
@@ -167,7 +167,7 @@ export function useCardBulkEditor(initialCards: Card[], _deck_id?: number) {
 
     if (changed.length > 0) {
       try {
-        await updateCards(changed)
+        await upsertCards(changed)
       } catch (e: any) {
         // TODO
       }

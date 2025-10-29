@@ -63,7 +63,7 @@ function onCardUpdated(id: number, column: EditableCardKey, value: EditableCardV
     </template>
 
     <div class="w-full flex justify-center p-4">
-      <ui-button v-if="mode === 'edit'" icon-left="add" class="mt-4" @click="emit('card-added')">
+      <ui-button v-if="mode !== 'select'" icon-left="add" class="mt-4" @click="emit('card-added')">
         {{ t('deck-view.add-card') }}
       </ui-button>
     </div>
