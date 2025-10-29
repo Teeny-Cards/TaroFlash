@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { fetchMemberDecks } from '@/api/decks'
 import { fetchMemberCardCount } from '@/api/cards'
-import { useToastStore } from '@/stores/toast'
+import { useToast } from '@/composables/toast'
 import Deck from '@/components/deck.vue'
 import { useRouter } from 'vue-router'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
@@ -13,7 +13,7 @@ import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
 
 const { t } = useI18n()
-const toastStore = useToastStore()
+const toast = useToast()
 const router = useRouter()
 const memberStore = useMemberStore()
 
@@ -44,7 +44,7 @@ async function refetchDecks() {
   try {
     decks.value = await fetchMemberDecks()
   } catch (e: any) {
-    toastStore.error(e.message)
+    toast.error(e.message)
   }
 }
 
