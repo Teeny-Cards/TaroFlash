@@ -12,13 +12,14 @@ export async function upsertCard(card: Card): Promise<Card> {
     .from('cards')
     .upsert(sanitized, { onConflict: 'id' })
     .select()
+    .single()
 
   if (error) {
     logger.error(error.message)
     throw new Error(error.message)
   }
 
-  return data as Card
+  return data
 }
 
 export async function upsertCards(cards: Card[]): Promise<Card[]> {

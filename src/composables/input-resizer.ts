@@ -5,7 +5,7 @@ type InputResizerOptions = {
   min_height?: number
 }
 
-export function useInputResizer({ max_lines = 5, min_height = 58 }: InputResizerOptions = {}) {
+export function useInputResizer({ max_lines = 10, min_height = 58 }: InputResizerOptions = {}) {
   const inputs: Set<HTMLTextAreaElement> = new Set()
 
   onUnmounted(() => {
