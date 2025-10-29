@@ -47,7 +47,7 @@ export async function moveCardsToDeck(cards: Card[], deck_id: number): Promise<v
     deck_id
   }))
 
-  const { error } = await supabase.from('cards').update(sanitized)
+  const { error } = await supabase.from('cards').upsert(sanitized)
 
   if (error) {
     logger.error(error.message)

@@ -1,13 +1,14 @@
 import { computed, ref } from 'vue'
 import { upsertCards, upsertCard, deleteCardsById } from '@/api/cards'
+import { useToast } from '@/composables/toast'
+import { useI18n } from 'vue-i18n'
+import { debounce } from '@/utils/debounce'
 
 export const MAX_INPUT_LENGTH = 660
 export type EditableCard = Card & { dirty?: boolean }
 export type EditableCardKey = keyof EditableCard
 export type EditableCardValue = EditableCard[keyof EditableCard]
 export type CardEditorMode = 'edit' | 'edit-one' | 'view' | 'select'
-
-const SAVE_DELAY = 300
 
 export function useCardBulkEditor(initial_cards: Card[], _deck_id?: number) {
   const all_cards = ref<EditableCard[]>(initial_cards)
@@ -16,7 +17,8 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id?: number) {
   const selected_card_ids = ref<number[]>([])
   const mode = ref<CardEditorMode>('view')
 
-  let save_timeout: number | undefined
+  const toast = useToast()
+  const { t } = useI18n()
 
   const next_order = computed(() => {
     if (all_cards.value.length === 0) return 1
@@ -33,9 +35,7 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id?: number) {
     const optimistic: Card = {
       id: temp_id,
       order: next_order.value,
-      deck_id: deck_id.value,
-      front_text: '',
-      back_text: ''
+      deck_id: deck_id.value
     }
 
     all_cards.value.push(optimistic)
@@ -77,7 +77,7 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id?: number) {
       card.dirty = true
     }
 
-    saveCards()
+    debounce(saveCards)
   }
 
   function selectCard(id: number) {
@@ -183,22 +183,15 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id?: number) {
   }
 
   async function saveCards() {
-    if (save_timeout) {
-      clearTimeout(save_timeout)
-      save_timeout = undefined
-    }
+    const dirty_cards = extractDirtyCards()
 
-    save_timeout = setTimeout(async () => {
-      const dirty_cards = extractDirtyCards()
-
-      if (dirty_cards.length > 0) {
-        try {
-          await upsertCards(dirty_cards)
-        } catch (e: any) {
-          // TODO
-        }
+    if (dirty_cards.length > 0) {
+      try {
+        await upsertCards(dirty_cards)
+      } catch (e: any) {
+        toast.error(t('card.save-error'))
       }
-    }, SAVE_DELAY)
+    }
   }
 
   return {
@@ -211,9 +204,9 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id?: number) {
     deleteCards,
     updateCard,
     selectCard,
+    deselectCard,
     selectAllCards,
     toggleSelectAll,
-    deselectCard,
     toggleSelectCard,
     clearSelectedCards,
     activateCard,

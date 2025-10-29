@@ -13,10 +13,11 @@ import { useDeckEditor } from '@/composables/deck-editor'
 import { useAudio } from '@/composables/audio'
 import ContextMenu from '@/components/views/deck-view/context-menu.vue'
 import { uploadCardImage, deleteCardImage } from '@/api/files'
-import { upsertCard, moveCardsToDeck } from '@/api/cards'
+import { upsertCard, moveCardsToDeck, searchCardsInDeck } from '@/api/cards'
 import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
 import { useToast } from '@/composables/toast'
+import UiInput from '@/components/ui-kit/input.vue'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -152,7 +153,7 @@ function onCardClosed() {
 
 function onAddCard() {
   addCard()
-  setMode('edit')
+  setMode('edit-one')
 }
 
 async function onMoveCards(id?: number) {
@@ -201,6 +202,21 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
     }
   }
 }
+
+async function search(query?: string) {
+  if (!deck.value?.id || query === undefined) return
+
+  try {
+    if (query.length > 0) {
+      const cards = await searchCardsInDeck(deck.value.id, query)
+      resetCards(cards)
+    } else {
+      await refetchDeck()
+    }
+  } catch (e: any) {
+    // TODO
+  }
+}
 </script>
 
 <template>
@@ -217,6 +233,7 @@ async function updateCardImage(card_id: number, side: 'front' | 'back', file: Fi
     <div class="relative flex h-full w-full flex-col">
       <div class="sticky top-(--nav-height) z-10 flex w-full justify-between pb-2">
         <ui-tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
+        <ui-input @input="search"></ui-input>
         <context-menu
           :mode="mode"
           :selectedCardIds="selected_card_ids"

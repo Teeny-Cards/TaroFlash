@@ -30,11 +30,9 @@ const view_options: SplitButtonOption[] = [
   },
   {
     label: 'Select',
+    default: true,
+    icon: 'check',
     action: () => emit('mode-changed', 'select')
-  },
-  {
-    label: 'New Card',
-    action: () => emit('new-card')
   },
   {
     label: 'Import',
