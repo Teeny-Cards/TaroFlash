@@ -4,25 +4,28 @@ import { DateTime } from 'luxon'
 
 const logger = useLogger()
 
-export async function updateCard(card: Card): Promise<void> {
+export async function upsertCard(card: Card): Promise<Card> {
   const { review, ...sanitized } = card
   sanitized.updated_at = DateTime.now().toISO()
 
-  const { error } = await supabase.from('cards').upsert(sanitized, { onConflict: 'id' })
+  const { data, error } = await supabase
+    .from('cards')
+    .upsert(sanitized, { onConflict: 'id' })
+    .select()
 
   if (error) {
     logger.error(error.message)
     throw new Error(error.message)
   }
+
+  return data as Card
 }
 
-export async function updateCards(cards: Card[]): Promise<Card[]> {
+export async function upsertCards(cards: Card[]): Promise<Card[]> {
   const sanitized = cards.map(({ review, ...card }) => ({
     ...card,
     updated_at: DateTime.now().toISO()
   }))
-
-  console.log(sanitized)
 
   const { data, error } = await supabase
     .from('cards')
