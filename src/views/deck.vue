@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import OverviewPanel from '@/components/views/deck-view/overview-panel.vue'
 import { onMounted, onUnmounted, ref } from 'vue'
-import { onBeforeRouteLeave } from 'vue-router'
 import { fetchDeck } from '@/api/decks'
 import StudySession from '@/components/modals/study-session/index.vue'
 import CardList from '@/components/views/deck-view/card-list/index.vue'
@@ -17,7 +16,6 @@ import { uploadCardImage, deleteCardImage } from '@/api/files'
 import { upsertCard, moveCardsToDeck } from '@/api/cards'
 import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
-import { type CardEditorMode } from '@/composables/card-bulk-editor'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -49,7 +47,6 @@ const {
   deactivateCard,
   getSelectedCards,
   resetCards,
-  saveCards,
   setMode
 } = useCardBulkEditor(deck.value?.cards ?? [], Number(deck_id))
 
@@ -97,7 +94,6 @@ function onStudyClicked() {
 }
 
 async function onSaveClicked() {
-  await saveCards()
   await refetchDeck()
   setMode('view')
 }

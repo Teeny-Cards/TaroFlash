@@ -1,6 +1,5 @@
 import { computed, ref } from 'vue'
 import { upsertCards, upsertCard, deleteCardsById } from '@/api/cards'
-import { debounce } from '@/utils/debounce'
 
 export const MAX_INPUT_LENGTH = 660
 export type EditableCard = Card & { dirty?: boolean }
@@ -8,12 +7,16 @@ export type EditableCardKey = keyof EditableCard
 export type EditableCardValue = EditableCard[keyof EditableCard]
 export type CardEditorMode = 'edit' | 'edit-one' | 'view' | 'select'
 
+const SAVE_DELAY = 300
+
 export function useCardBulkEditor(initial_cards: Card[], _deck_id?: number) {
   const all_cards = ref<EditableCard[]>(initial_cards)
   const deck_id = ref<number | undefined>(_deck_id)
   const active_card_id = ref<number | undefined>()
   const selected_card_ids = ref<number[]>([])
   const mode = ref<CardEditorMode>('view')
+
+  let save_timeout: number | undefined
 
   const next_order = computed(() => {
     if (all_cards.value.length === 0) return 1
@@ -74,7 +77,7 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id?: number) {
       card.dirty = true
     }
 
-    debounce(saveCards, 300)
+    saveCards()
   }
 
   function selectCard(id: number) {
@@ -180,15 +183,22 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id?: number) {
   }
 
   async function saveCards() {
-    const dirty_cards = extractDirtyCards()
-
-    if (dirty_cards.length > 0) {
-      try {
-        await upsertCards(dirty_cards)
-      } catch (e: any) {
-        // TODO
-      }
+    if (save_timeout) {
+      clearTimeout(save_timeout)
+      save_timeout = undefined
     }
+
+    save_timeout = setTimeout(async () => {
+      const dirty_cards = extractDirtyCards()
+
+      if (dirty_cards.length > 0) {
+        try {
+          await upsertCards(dirty_cards)
+        } catch (e: any) {
+          // TODO
+        }
+      }
+    }, SAVE_DELAY)
   }
 
   return {
@@ -211,7 +221,6 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id?: number) {
     getSelectedCards,
     setMode,
     resetCards,
-    saveCards,
     resetEdits
   }
 }
