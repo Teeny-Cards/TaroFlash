@@ -12,6 +12,7 @@ type Deck = {
   due_count?: number
   config?: DeckConfig
   has_image?: boolean
+  card_count?: number
 }
 
 type DeckConfig = {

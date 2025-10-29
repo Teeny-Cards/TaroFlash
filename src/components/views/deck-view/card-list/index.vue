@@ -29,6 +29,16 @@ const { t } = useI18n()
 function onCardUpdated(id: number, column: EditableCardKey, value: EditableCardValue) {
   emit('card-updated', id, column, value)
 }
+
+function isDuplicate(card: Card) {
+  const non_empty_cards = cards.filter((c) => c.front_text !== '' || c.back_text !== '')
+
+  return (
+    non_empty_cards.filter(
+      (c) => c.front_text === card.front_text || c.back_text === card.back_text
+    ).length > 1
+  )
+}
 </script>
 
 <template>
@@ -51,6 +61,7 @@ function onCardUpdated(id: number, column: EditableCardKey, value: EditableCardV
         :mode="mode"
         :selected="selectedCardIds.includes(card.id!)"
         :active="activeCardId === card.id"
+        :is_duplicate="isDuplicate(card)"
         @deleted="emit('card-deleted', card.id!)"
         @selected="emit('card-selected', card.id!)"
         @moved="emit('card-moved', card.id!)"

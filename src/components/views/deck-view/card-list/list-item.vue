@@ -21,6 +21,7 @@ const { card, mode, selected, active } = defineProps<{
   mode: CardEditorMode
   selected: boolean
   active: boolean
+  is_duplicate?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -102,7 +103,8 @@ function onInput(e: Event) {
     :class="{
       'mode-edit': mode === 'edit' || (mode === 'edit-one' && active),
       'mode-select cursor-pointer': mode === 'select',
-      'mode-view': mode === 'view'
+      'mode-view': mode === 'view',
+      duplicate: is_duplicate
     }"
     @click="onClick"
   >
@@ -198,5 +200,9 @@ function onInput(e: Event) {
 
 .active textarea {
   outline: 2px solid var(--color-blue-500);
+}
+
+.duplicate textarea {
+  color: var(--color-red-500);
 }
 </style>

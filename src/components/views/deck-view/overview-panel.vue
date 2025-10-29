@@ -59,6 +59,11 @@ async function onSettingsClicked() {
           {{ deck.member?.display_name }}
         </h2>
       </div>
+
+      <div class="flex items-center gap-2 text-blue-500">
+        <ui-icon src="teeny-cards" />
+        <h2 class="text-lg font-semibold">{{ deck.card_count ?? 0 }} cards in deck</h2>
+      </div>
     </div>
 
     <div class="flex items-center gap-2.5">

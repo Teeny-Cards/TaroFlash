@@ -41,6 +41,7 @@
   "card.placeholder-back": "Back",
   "card.add-image": "Add Image",
   "card.add-text": "Add Text",
+  "card.save-error": "Failed to save cards",
 
   "study.nope!": "Nope!",
   "study.got-it!": "Got It!",
