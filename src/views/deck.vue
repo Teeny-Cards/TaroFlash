@@ -16,6 +16,7 @@ import { uploadCardImage, deleteCardImage } from '@/api/files'
 import { upsertCard, moveCardsToDeck } from '@/api/cards'
 import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
+import { useToast } from '@/composables/toast'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -25,6 +26,7 @@ const { t } = useI18n()
 const modal = useModal()
 const alert = useAlert()
 const audio = useAudio()
+const toast = useToast()
 
 const image_url = ref<string | undefined>()
 const deck = ref<Deck>()
