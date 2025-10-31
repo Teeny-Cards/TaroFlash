@@ -7,12 +7,12 @@ declare global {
     front_text?: string
     back_text?: string
     deck_id?: number
-    id?: number
+    id: number
     created_at?: string
     updated_at?: string
     has_front_image?: boolean
     has_back_image?: boolean
-    order?: number
+    rank?: number
     review?: Review
     member_id?: string
   }

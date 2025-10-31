@@ -37,6 +37,8 @@
   "alert.delete-deck": "Delete Deck?",
   "alert.delete-deck.message": "Are you sure you want to delete this deck?",
 
+  "toast.error.add-card": "Failed to add a new card",
+
   "card.placeholder-front": "Front",
   "card.placeholder-back": "Back",
   "card.add-image": "Add Image",

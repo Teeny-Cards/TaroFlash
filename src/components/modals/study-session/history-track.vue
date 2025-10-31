@@ -63,7 +63,7 @@ function onClickCard(card: StudyCard) {
 
     <div data-testid="history-track__count">
       <p class="text-brown-700 text-lg">
-        {{ current_card?.order ?? 0 }}<span class="text-sm">/{{ cards.length }}</span>
+        {{ current_card?.rank ?? 0 }}<span class="text-sm">/{{ cards.length }}</span>
       </p>
     </div>
   </div>
