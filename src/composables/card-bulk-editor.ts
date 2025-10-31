@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue'
-import { upsertCards, upsertCard, deleteCardsById } from '@/api/cards'
+import { upsertCards, deleteCardsById, reserveCard } from '@/api/cards'
 import { useToast } from '@/composables/toast'
+import { useLogger } from '@/composables/logger'
 import { useI18n } from 'vue-i18n'
 import { debounce } from '@/utils/debounce'
 
@@ -10,7 +11,7 @@ export type EditableCardKey = keyof EditableCard
 export type EditableCardValue = EditableCard[keyof EditableCard]
 export type CardEditorMode = 'edit' | 'edit-one' | 'view' | 'select'
 
-export function useCardBulkEditor(initial_cards: Card[], _deck_id?: number) {
+export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
   const all_cards = ref<EditableCard[]>(initial_cards)
   const deck_id = ref<number | undefined>(_deck_id)
   const active_card_id = ref<number | undefined>()
@@ -18,55 +19,12 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id?: number) {
   const mode = ref<CardEditorMode>('view')
 
   const toast = useToast()
+  const logger = useLogger()
   const { t } = useI18n()
-
-  const next_order = computed(() => {
-    if (all_cards.value.length === 0) return 1
-    return Math.max(...all_cards.value.map((card) => card.order ?? 0)) + 1
-  })
 
   const all_cards_selected = computed(() => {
     return selected_card_ids.value.length === all_cards.value.length
   })
-
-  async function addCard() {
-    const temp_id = Math.floor(Math.random() * 1000000)
-
-    const optimistic: Card = {
-      id: temp_id,
-      order: next_order.value,
-      deck_id: deck_id.value
-    }
-
-    all_cards.value.push(optimistic)
-    activateCard(temp_id)
-
-    try {
-      const { id, ...new_card } = optimistic
-      const response = await upsertCard(new_card)
-      const idx = all_cards.value.findIndex((c) => c.id === temp_id)
-
-      if (idx === -1) return
-
-      const saved: Card = {
-        ...optimistic,
-        id: response.id
-      }
-
-      all_cards.value.splice(idx, 1, saved)
-      all_cards.value = [...all_cards.value]
-
-      if (active_card_id.value === temp_id) activateCard(saved.id!)
-    } catch (err) {
-      const idx = all_cards.value.findIndex((c) => c.id === temp_id)
-
-      if (idx !== -1) {
-        all_cards.value.splice(idx, 1)
-      }
-
-      throw err
-    }
-  }
 
   function updateCard(id: number, key: EditableCardKey, value: EditableCardValue) {
     const card = all_cards.value.find((card) => card.id === id)
@@ -166,6 +124,17 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id?: number) {
     deactivateCard()
   }
 
+  async function addCard() {
+    try {
+      const { out_rank: rank, out_id: id } = await reserveCard(deck_id.value!)
+      all_cards.value.push({ id, rank })
+      activateCard(id)
+    } catch (e: any) {
+      toast.error(t('toast.error.add-card'))
+      logger.error('failed to add a new card', e)
+    }
+  }
+
   async function deleteCards() {
     const cards = getSelectedCards()
       .map((card) => card.id)
@@ -190,6 +159,7 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id?: number) {
         await upsertCards(dirty_cards)
       } catch (e: any) {
         toast.error(t('card.save-error'))
+        logger.error('failed to save cards', e)
       }
     }
   }
