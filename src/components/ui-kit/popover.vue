@@ -7,8 +7,10 @@ import {
   autoUpdate,
   arrow,
   offset,
+  hide,
   type Placement,
-  type Strategy
+  type Strategy,
+  type Padding
 } from '@floating-ui/vue'
 
 type PopoverProps = {
@@ -17,6 +19,9 @@ type PopoverProps = {
   position?: Placement
   gap?: number
   strategy?: Strategy
+  transition_duration?: number
+  clip_margin?: Padding
+  padding?: Padding
 }
 
 const {
@@ -24,7 +29,10 @@ const {
   open = false,
   position = 'top',
   gap = 14,
-  strategy = 'fixed'
+  strategy = 'fixed',
+  transition_duration = 100,
+  clip_margin = 90,
+  padding = 24
 } = defineProps<PopoverProps>()
 
 const emit = defineEmits<{
@@ -37,17 +45,20 @@ const triggerRef = useTemplateRef('triggerRef')
 const popoverRef = useTemplateRef('popoverRef')
 const arrowRef = useTemplateRef('arrowRef')
 
-const { placement, middlewareData, floatingStyles, update } = useFloating(triggerRef, popoverRef, {
+const { placement, middlewareData, floatingStyles } = useFloating(triggerRef, popoverRef, {
   placement: position,
   strategy: strategy,
   whileElementsMounted: autoUpdate,
   middleware: [
     offset(() => ARROW_SIZE + gap),
-    shift({ padding: 24 }),
+    shift({ padding }),
     flip({
       fallbackPlacements: ['right-end', 'left-end']
     }),
-    arrow({ element: arrowRef })
+    arrow({ element: arrowRef }),
+    hide({
+      padding: clip_margin
+    })
   ]
 })
 
@@ -103,6 +114,7 @@ function onPageClick(e: Event): void {
     <slot name="trigger"></slot>
 
     <Transition
+      :duration="transition_duration"
       enter-from-class="opacity-0"
       enter-to-class="opacity-100"
       enter-active-class="transition-opacity duration-100 ease-in-out"
@@ -112,6 +124,7 @@ function onPageClick(e: Event): void {
     >
       <div
         v-if="open || mode === 'hover'"
+        v-show="!middlewareData.hide?.referenceHidden"
         ref="popoverRef"
         data-testid="ui-kit-popover"
         class="ui-kit-popover"

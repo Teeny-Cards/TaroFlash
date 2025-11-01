@@ -193,6 +193,7 @@ function onAddCard() {
   try {
     addCard()
     setMode('edit')
+    audio.play('slide_up')
   } catch (e: any) {
     toast.error(t('toast.error.add-card'))
   }
@@ -282,7 +283,7 @@ async function search(query?: string) {
       <div class="sticky top-(--nav-height) z-10 flex w-full justify-between pb-2">
         <ui-tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
 
-        <div class="flex gap-2">
+        <div class="flex items-center gap-4 text-brown-700">
           <p v-if="is_saving">Saving...</p>
           <p v-else>Saved</p>
 
