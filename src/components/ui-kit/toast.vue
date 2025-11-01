@@ -1,34 +1,19 @@
-<template>
-  <transition
-    enter-from-class="translate-x-full"
-    enter-to-class="translate-x-0"
-    enter-active-class="transition-transform transform"
-    leave-from-class="translate-x-0"
-    leave-to-class="translate-x-full"
-    leave-active-class="transition-transform transform"
-  >
-    <div ui-kit-toast v-if="open" class="rounded-8 w-72 p-4 text-white shadow-lg" :class="color">
-      {{ toast.message }}
-    </div>
-  </transition>
-</template>
-
 <script setup lang="ts">
-import { ref, type PropType, onMounted, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { type Toast } from '@/composables/toast'
 
-const props = defineProps({
-  toast: {
-    type: Object as PropType<any>,
-    required: true
-  }
-})
+type ToastProps = {
+  toast: Toast
+}
+
+const props = defineProps<ToastProps>()
 
 const emit = defineEmits<{
-  (e: 'close', toast: TeenyToast): void
+  (e: 'close', toast: Toast): void
 }>()
 
 const open = ref(false)
-const timeout = ref<NodeJS.Timeout>()
+const timeout = ref<number>()
 
 const color = computed(() => {
   switch (props.toast.state) {
@@ -51,7 +36,7 @@ function openToast(): void {
   open.value = true
   if (props.toast.persist) return
 
-  timeout.value = setTimeout(() => {
+  timeout.value = window.setTimeout(() => {
     closeToast()
   }, props.toast.delay)
 }
@@ -64,3 +49,18 @@ function closeToast(): void {
   }, 1000) // Animation time
 }
 </script>
+
+<template>
+  <transition
+    enter-from-class="translate-x-full"
+    enter-to-class="translate-x-0"
+    enter-active-class="transition-transform transform"
+    leave-from-class="translate-x-0"
+    leave-to-class="translate-x-full"
+    leave-active-class="transition-transform transform"
+  >
+    <div ui-kit-toast v-if="open" class="rounded-8 w-72 p-4 text-white shadow-modal" :class="color">
+      {{ toast.message }}
+    </div>
+  </transition>
+</template>

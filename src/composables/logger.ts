@@ -13,6 +13,7 @@ type Log = {
   log_type: string
   timestamp: string
   trace: string
+  payload?: any
 }
 
 declare global {
@@ -32,23 +33,23 @@ export function useLogger() {
     log_level.value = level
   }
 
-  function info(message: string): void {
-    _log(message, 'info')
+  function info(message: string, payload?: any): void {
+    _log('info', message, payload)
   }
 
-  function warn(message: string): void {
-    _log(message, 'warn')
+  function warn(message: string, payload?: any): void {
+    _log('warn', message, payload)
   }
 
-  function error(message: string): void {
-    _log(message, 'error')
+  function error(message: string, payload?: any): void {
+    _log('error', message, payload)
   }
 
-  function debug(message: string): void {
-    _log(message, 'debug')
+  function debug(message: string, payload?: any): void {
+    _log('debug', message, payload)
   }
 
-  function _log(message: string, log_type: string): void {
+  function _log(log_type: string, message: string, payload?: any): void {
     if (!window.logs) {
       window.logs = []
     }
@@ -60,7 +61,8 @@ export function useLogger() {
       message: message,
       log_type,
       timestamp: new Date().toISOString(),
-      trace: callerTrace
+      trace: callerTrace,
+      payload
     })
 
     if (LEVELS[log_type] <= log_level.value) {

@@ -1,20 +1,16 @@
 <script lang="ts" setup>
 import ListItem from './list-item.vue'
 import { useI18n } from 'vue-i18n'
-import {
-  type EditableCardValue,
-  type EditableCardKey,
-  MAX_INPUT_LENGTH
-} from '@/composables/card-bulk-editor'
-import { nextTick } from 'vue'
+import { type EditableCardValue, type EditableCardKey } from '@/composables/card-bulk-editor'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiDivider from '@/components/ui-kit/divider.vue'
+import { type CardEditorMode } from '@/composables/card-bulk-editor'
 
-const { mode, activeCardId } = defineProps<{
+const { mode, activeCardId, cards } = defineProps<{
   cards: Card[]
   activeCardId?: number
   selectedCardIds: number[]
-  mode: 'edit' | 'view' | 'select'
+  mode: CardEditorMode
 }>()
 
 const emit = defineEmits<{
@@ -25,33 +21,23 @@ const emit = defineEmits<{
   (e: 'card-deleted', id: number): void
   (e: 'card-moved', id: number): void
   (e: 'card-updated', id: number, column: EditableCardKey, value: EditableCardValue): void
+  (e: 'card-closed'): void
 }>()
 
 const { t } = useI18n()
 
-function onFocus(e: Event, id: number) {
-  const target = e.target as HTMLTextAreaElement
-
-  target.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  emit('card-activated', id)
+function onCardUpdated(id: number, column: EditableCardKey, value: EditableCardValue) {
+  emit('card-updated', id, column, value)
 }
 
-function onInput(e: Event, id: number) {
-  const target = e.target as HTMLTextAreaElement
-  const column = target.dataset['testid'] === 'front-input' ? 'front_text' : 'back_text'
+function isDuplicate(card: Card) {
+  const non_empty_cards = cards.filter((c) => c.front_text !== '' || c.back_text !== '')
 
-  emit('card-updated', id, column, target.value)
-}
-
-async function onDblClick(e: MouseEvent, id: number) {
-  if (mode !== 'view') return
-
-  const target = e.target as HTMLDivElement
-  const textarea = target.querySelector('[data-testid="front-input"]') as HTMLTextAreaElement
-
-  emit('card-activated', id)
-  await nextTick()
-  textarea?.focus()
+  return (
+    non_empty_cards.filter(
+      (c) => c.front_text === card.front_text || c.back_text === card.back_text
+    ).length > 1
+  )
 }
 </script>
 
@@ -62,80 +48,37 @@ async function onDblClick(e: MouseEvent, id: number) {
     class="text-grey-500 flex h-50 flex-col items-center justify-center gap-4"
   >
     <span>{{ t('deck-view.empty-state.no-cards') }}</span>
-    <ui-button icon-left="add" @click="emit('card-added')">Add Card</ui-button>
+    <ui-button icon-left="add" @click="emit('card-added')">
+      {{ t('deck-view.add-card') }}
+    </ui-button>
   </div>
 
-  <div v-else data-testid="card-list" class="relative flex w-full flex-col">
+  <div v-else data-testid="card-list" class="relative flex w-full flex-col items-center">
     <template v-for="(card, index) in cards" :key="card.id">
       <list-item
-        :class="`mode-${mode}`"
+        :id="`card-${card.id}`"
         :card="card"
         :mode="mode"
         :selected="selectedCardIds.includes(card.id!)"
-        @dblclick="onDblClick($event, card.id!)"
-        @focusout="emit('card-deactivated', card.id!)"
+        :active="activeCardId === card.id"
+        :is_duplicate="isDuplicate(card)"
         @deleted="emit('card-deleted', card.id!)"
         @selected="emit('card-selected', card.id!)"
         @moved="emit('card-moved', card.id!)"
-      >
-        <div
-          class="flex w-full gap-4"
-          :class="{
-            active: activeCardId === card.id
-          }"
-        >
-          <textarea
-            data-testid="front-input"
-            class="card-list__input"
-            :placeholder="t('card.placeholder-front')"
-            :value="card.front_text"
-            :disabled="mode !== 'edit'"
-            @focusin="onFocus($event, card.id!)"
-            @input="onInput($event, card.id!)"
-            :maxlength="MAX_INPUT_LENGTH"
-          ></textarea>
-
-          <textarea
-            data-testid="back-input"
-            class="card-list__input"
-            :placeholder="t('card.placeholder-back')"
-            :value="card.back_text"
-            :disabled="mode !== 'edit'"
-            @focusin="onFocus($event, card.id!)"
-            @input="onInput($event, card.id!)"
-            :maxlength="MAX_INPUT_LENGTH"
-          ></textarea>
-        </div>
-      </list-item>
+        @activated="emit('card-activated', card.id!)"
+        @closed="emit('card-closed')"
+        @updated="onCardUpdated"
+      />
 
       <ui-divider v-if="index < cards.length - 1" dashed />
     </template>
+
+    <div class="w-full flex justify-center p-4">
+      <ui-button v-if="mode !== 'select'" icon-left="add" class="mt-4" @click="emit('card-added')">
+        {{ t('deck-view.add-card') }}
+      </ui-button>
+    </div>
+
+    <slot></slot>
   </div>
 </template>
-
-<style>
-.card-list__input {
-  transition: height 100ms ease-in-out;
-
-  border-radius: var(--radius-4);
-  width: 100%;
-  height: 58px;
-  resize: none;
-
-  padding: 8px 12px;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.mode-edit textarea {
-  color: var(--color-brown-700);
-  pointer-events: auto;
-  outline: 2px solid var(--color-brown-300);
-  background-color: var(--color-white);
-  height: 184px;
-}
-
-.active textarea {
-  outline: 2px solid var(--color-blue-500);
-}
-</style>
