@@ -10,7 +10,7 @@ export type ButtonProps = {
   iconRight?: string
   iconLeft?: string
   fancyHover?: boolean
-  hoverAudio?: boolean
+  hoverAudio?: string
 }
 
 const {
@@ -21,7 +21,7 @@ const {
   iconRight,
   iconLeft,
   fancyHover = false,
-  hoverAudio = true
+  hoverAudio
 } = defineProps<ButtonProps>()
 
 const audio = useAudio()
@@ -45,6 +45,12 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
   small: 'small',
   xs: 'xs'
 }
+
+function onHover() {
+  if (hoverAudio) {
+    audio.play(hoverAudio)
+  }
+}
 </script>
 
 <template>
@@ -59,7 +65,7 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
       'btn-fancy-hover': fancyHover
     }"
     @click.stop
-    @mouseenter="hoverAudio && audio.play('click_07')"
+    @mouseenter="onHover"
   >
     <div v-if="iconLeft" class="btn-icon" uikit-button__icon-left>
       <ui-icon v-if="iconLeft" :src="iconLeft" :size="iconSize[size]" />
@@ -124,7 +130,7 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
   --btn-secondary-color: var(--color-white);
 }
 .ui-kit-btn.btn-muted {
-  --btn-main-color: var(--color-grey-500);
+  --btn-main-color: var(--color-grey-400);
   --btn-secondary-color: var(--color-white);
 }
 .ui-kit-btn.btn-danger {
@@ -139,7 +145,7 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
 }
 .ui-kit-btn.btn-inverted.btn-muted {
   --btn-main-color: var(--color-white);
-  --btn-secondary-color: var(--color-grey-500);
+  --btn-secondary-color: var(--color-grey-400);
 }
 .ui-kit-btn.btn-inverted.btn-danger {
   --btn-main-color: var(--color-white);
@@ -192,7 +198,7 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
   --btn-secondary-color: var(--color-blue-500);
 }
 .ui-kit-btn.btn-icon-only.btn-inverted.btn-muted {
-  --btn-secondary-color: var(--color-grey-500);
+  --btn-secondary-color: var(--color-grey-400);
 }
 .ui-kit-btn.btn-icon-only.btn-inverted.btn-danger {
   --btn-secondary-color: var(--color-red-500);

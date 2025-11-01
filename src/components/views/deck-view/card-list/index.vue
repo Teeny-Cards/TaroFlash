@@ -53,7 +53,7 @@ function isDuplicate(card: Card) {
     </ui-button>
   </div>
 
-  <div v-else data-testid="card-list" class="relative flex w-full flex-col">
+  <div v-else data-testid="card-list" class="relative flex w-full flex-col items-center">
     <template v-for="(card, index) in cards" :key="card.id">
       <list-item
         :id="`card-${card.id}`"
@@ -78,5 +78,7 @@ function isDuplicate(card: Card) {
         {{ t('deck-view.add-card') }}
       </ui-button>
     </div>
+
+    <slot></slot>
   </div>
 </template>
