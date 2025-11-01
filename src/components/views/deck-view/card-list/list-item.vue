@@ -51,12 +51,14 @@ function onClick() {
 
 function activate(e?: Event) {
   const target = e?.target as HTMLTextAreaElement
-  const side = target?.dataset['testid'] === 'front-input' ? 'front' : 'back'
+  const side = target?.dataset['testid'] === 'back-input' ? 'back' : 'front'
 
-  if (side === 'front') {
-    emit('side-changed', 'front')
-  } else if (side === 'back') {
-    emit('side-changed', 'back')
+  if (active_side !== side) {
+    if (side === 'front') {
+      emit('side-changed', 'front')
+    } else if (side === 'back') {
+      emit('side-changed', 'back')
+    }
   }
 
   if (!active) {
@@ -83,6 +85,14 @@ function togglePopover() {
   }
 }
 
+function focusSide() {
+  if (active_side === 'back') {
+    back_input.value?.focus()
+  } else {
+    front_input.value?.focus()
+  }
+}
+
 function onPageClick(e: Event) {
   const target = e.target as HTMLElement
 
@@ -95,6 +105,7 @@ watch(
   () => active,
   (new_value) => {
     if (new_value) {
+      focusSide()
       document.addEventListener('click', onPageClick)
     } else {
       document.removeEventListener('click', onPageClick)
