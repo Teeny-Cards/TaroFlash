@@ -5,6 +5,7 @@ import { type EditableCardValue, type EditableCardKey } from '@/composables/card
 import UiButton from '@/components/ui-kit/button.vue'
 import UiDivider from '@/components/ui-kit/divider.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
+import { nextTick, onMounted, onUnmounted, ref } from 'vue'
 
 const { mode, activeCardId, cards } = defineProps<{
   cards: Card[]
@@ -26,8 +27,56 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
+const active_side = ref<'front' | 'back'>('front')
+
+onMounted(() => {
+  document.addEventListener('keydown', onTab)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', onTab)
+})
+
+async function onTab(e: KeyboardEvent) {
+  if (e.key !== 'Tab') return
+
+  const is_going_back = e.shiftKey
+  if (active_side.value === 'front' && !is_going_back) return
+  if (active_side.value === 'back' && is_going_back) return
+
+  e.preventDefault()
+
+  const active_card_index = cards.findIndex((card) => card.id === activeCardId)
+  const next_card_index = is_going_back ? active_card_index - 1 : active_card_index + 1
+
+  if (next_card_index < 0 || next_card_index >= cards.length) {
+    emit('card-added')
+    await nextTick()
+  }
+
+  const next_card = cards[next_card_index]
+  if (!next_card.id) return
+
+  emit('card-activated', next_card.id)
+
+  await nextTick()
+
+  active_side.value = is_going_back ? 'back' : 'front'
+  const next_card_element = document.getElementById(`card-${next_card.id}`)
+  const next_card_input = next_card_element?.querySelector(
+    `[data-testid="${active_side.value}-input"]`
+  ) as HTMLTextAreaElement
+
+  next_card_input?.focus()
+  next_card_input?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+}
+
 function onCardUpdated(id: number, column: EditableCardKey, value: EditableCardValue) {
   emit('card-updated', id, column, value)
+}
+
+function onSideChanged(side: 'front' | 'back') {
+  active_side.value = side
 }
 
 function isDuplicate(card: Card) {
@@ -62,12 +111,14 @@ function isDuplicate(card: Card) {
         :selected="selectedCardIds.includes(card.id!)"
         :active="activeCardId === card.id"
         :is_duplicate="isDuplicate(card)"
+        :active_side="active_side"
         @deleted="emit('card-deleted', card.id!)"
         @selected="emit('card-selected', card.id!)"
         @moved="emit('card-moved', card.id!)"
         @activated="emit('card-activated', card.id!)"
         @closed="emit('card-closed')"
         @updated="onCardUpdated"
+        @side-changed="onSideChanged"
       />
 
       <ui-divider v-if="index < cards.length - 1" dashed />

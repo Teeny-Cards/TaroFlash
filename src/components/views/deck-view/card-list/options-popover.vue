@@ -24,18 +24,37 @@ const emit = defineEmits<{
       <slot></slot>
     </template>
     <div class="bg-brown-300 rounded-10 p-6 grid grid-cols-1 gap-2">
-      <ui-button @click="emit('upload-image')" icon-only icon-left="add-image">{{
-        t('deck-view.card-popover.upload-image')
-      }}</ui-button>
-      <ui-button @click="emit('select')" icon-only icon-left="check">{{
-        t('deck-view.card-popover.select')
-      }}</ui-button>
-      <ui-button @click="emit('move')" icon-only icon-left="arrow-forward">{{
-        t('deck-view.card-popover.move')
-      }}</ui-button>
-      <ui-button @click="emit('delete')" icon-only icon-left="delete" variant="danger">{{
-        t('deck-view.card-popover.delete')
-      }}</ui-button>
+      <ui-button
+        hover-audio="pop_drip_mid"
+        @click="emit('upload-image')"
+        icon-only
+        icon-left="add-image"
+      >
+        {{ t('deck-view.card-popover.upload-image') }}
+      </ui-button>
+
+      <ui-button hover-audio="pop_drip_mid" @click="emit('select')" icon-only icon-left="check">
+        {{ t('deck-view.card-popover.select') }}
+      </ui-button>
+
+      <ui-button
+        hover-audio="pop_drip_mid"
+        @click="emit('move')"
+        icon-only
+        icon-left="arrow-forward"
+      >
+        {{ t('deck-view.card-popover.move') }}
+      </ui-button>
+
+      <ui-button
+        hover-audio="pop_drip_mid"
+        @click="emit('delete')"
+        icon-only
+        icon-left="delete"
+        variant="danger"
+      >
+        {{ t('deck-view.card-popover.delete') }}
+      </ui-button>
     </div>
   </ui-popover>
 </template>

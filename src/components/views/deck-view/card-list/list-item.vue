@@ -14,12 +14,13 @@ import {
 import { useInputResizer } from '@/composables/input-resizer'
 import UiButton from '@/components/ui-kit/button.vue'
 
-const { card, mode, selected, active } = defineProps<{
+const { card, mode, selected, active, active_side } = defineProps<{
   card: Card
   mode: CardEditorMode
   selected: boolean
   active: boolean
   is_duplicate?: boolean
+  active_side: 'front' | 'back'
 }>()
 
 const emit = defineEmits<{
@@ -29,6 +30,7 @@ const emit = defineEmits<{
   (e: 'activated'): void
   (e: 'closed'): void
   (e: 'updated', id: number, column: EditableCardKey, value: EditableCardValue): void
+  (e: 'side-changed', side: 'front' | 'back'): void
 }>()
 
 const { t } = useI18n()
@@ -47,9 +49,19 @@ function onClick() {
   emit('selected')
 }
 
-function activate() {
-  if (active) return
-  emit('activated')
+function activate(e?: Event) {
+  const target = e?.target as HTMLTextAreaElement
+  const side = target?.dataset['testid'] === 'front-input' ? 'front' : 'back'
+
+  if (side === 'front') {
+    emit('side-changed', 'front')
+  } else if (side === 'back') {
+    emit('side-changed', 'back')
+  }
+
+  if (!active) {
+    emit('activated')
+  }
 }
 
 function deactivate() {
@@ -116,6 +128,7 @@ watch(
         data-testid="front-input"
         ref="front-input"
         class="card-list__input"
+        :class="{ 'has-focus': active_side === 'front' }"
         :placeholder="t('card.placeholder-front')"
         :value="card.front_text"
         @focusin="activate"
@@ -127,6 +140,7 @@ watch(
         data-testid="back-input"
         ref="back-input"
         class="card-list__input"
+        :class="{ 'has-focus': active_side === 'back' }"
         :placeholder="t('card.placeholder-back')"
         :value="card.back_text"
         @focusin="activate"
@@ -144,6 +158,8 @@ watch(
       >
         <options-popover
           :open="active"
+          :padding="{ top: 24, bottom: 0, left: 24, right: 24 }"
+          :clip_margin="{ top: 160, bottom: 55 }"
           @delete="emit('deleted')"
           @move="emit('moved')"
           @select="emit('selected')"
@@ -172,6 +188,7 @@ watch(
 
   padding: 8px 12px;
   overflow: hidden;
+  outline: none;
 }
 
 .mode-edit textarea {
@@ -180,12 +197,12 @@ watch(
   background-color: var(--color-white);
 }
 
-.mode-select .card-list__input {
-  pointer-events: none;
+.mode-edit textarea.has-focus {
+  outline: 2px solid var(--color-blue-500);
 }
 
-.active textarea {
-  outline: 2px solid var(--color-blue-500);
+.mode-select .card-list__input {
+  pointer-events: none;
 }
 
 .duplicate textarea {
