@@ -83,7 +83,9 @@ async function onSettingsClicked() {
         variant="muted"
         icon-only
         @click="onSettingsClicked()"
-      ></ui-button>
+      >
+        {{ t('common.settings') }}
+      </ui-button>
     </div>
   </div>
 </template>

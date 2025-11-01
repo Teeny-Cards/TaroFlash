@@ -31,7 +31,11 @@ function onImageError() {
 </script>
 
 <template>
-  <ui-popover>
+  <ui-popover mode="hover">
+    <template #trigger>
+      <slot></slot>
+    </template>
+
     <div
       data-testid="deck-preview"
       class="bg-brown-300 rounded-7 flex w-62.75 cursor-auto flex-col gap-4 overflow-hidden"
