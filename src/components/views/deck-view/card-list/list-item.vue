@@ -1,20 +1,19 @@
 <script lang="ts" setup>
 import { useAudio } from '@/composables/audio'
 import Card from '@/components/card/index.vue'
-import { computed, onMounted, useTemplateRef } from 'vue'
-import UiButtonMenu from '@/components/ui-kit/button-menu.vue'
-import UiButton from '@/components/ui-kit/button.vue'
-import UiIcon from '@/components/ui-kit/icon.vue'
+import { computed, onMounted, ref, useTemplateRef } from 'vue'
 import UiListItem from '@/components/ui-kit/list-item.vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { useI18n } from 'vue-i18n'
+import OptionsPopover from './options-popover.vue'
 import {
   MAX_INPUT_LENGTH,
   type EditableCardValue,
   type EditableCardKey
 } from '@/composables/card-bulk-editor'
 import { useInputResizer } from '@/composables/input-resizer'
+import UiButton from '@/components/ui-kit/button.vue'
 
 const { card, mode, selected, active } = defineProps<{
   card: Card
@@ -44,28 +43,6 @@ const disabled = computed(() => {
   return mode === 'select' || mode === 'view' || (mode === 'edit-one' && !active)
 })
 
-const actions = [
-  {
-    label: 'Select',
-    action: () => emit('selected'),
-    inverted: true,
-    iconRight: 'check'
-  },
-  {
-    label: 'Move',
-    action: () => emit('moved'),
-    inverted: true,
-    iconRight: 'arrow-forward'
-  },
-  {
-    label: 'Delete',
-    action: () => emit('deleted'),
-    variant: 'danger',
-    inverted: true,
-    iconRight: 'delete'
-  }
-]
-
 onMounted(() => {
   setupInput(front_input.value!)
   setupInput(back_input.value!)
@@ -77,12 +54,12 @@ function onClick() {
   emit('selected')
 }
 
-function onClickEdit() {
+function activate() {
   emit('activated')
   audio.play('slide_up')
 }
 
-function onClickClose() {
+function deactivate() {
   emit('closed')
   audio.play('card_drop')
 }
@@ -92,6 +69,14 @@ function onInput(e: Event) {
   const column = target.dataset['testid'] === 'front-input' ? 'front_text' : 'back_text'
 
   emit('updated', card.id!, column, target.value)
+}
+
+function togglePopover() {
+  if (active) {
+    deactivate()
+  } else {
+    activate()
+  }
 }
 </script>
 
@@ -111,24 +96,6 @@ function onInput(e: Event) {
     <template #before>
       <div class="flex h-full flex-col items-start relative">
         <card size="2xs" />
-
-        <div
-          v-if="!active && (mode === 'view' || mode === 'edit-one')"
-          class="absolute -top-4 -left-3 hidden group-hover:block"
-        >
-          <ui-button :hover-audio="false" icon-only size="xs" @click.stop="onClickEdit">
-            <ui-icon src="edit" />
-          </ui-button>
-        </div>
-
-        <div
-          v-if="active && mode === 'edit-one'"
-          class="absolute -top-4 -left-3 hidden group-hover:block"
-        >
-          <ui-button :hover-audio="false" icon-only size="xs" @click.stop="onClickClose">
-            <ui-icon src="check" />
-          </ui-button>
-        </div>
       </div>
     </template>
 
@@ -159,19 +126,29 @@ function onInput(e: Event) {
     </div>
 
     <template #after>
-      <ui-button-menu v-if="mode !== 'select'" :actions="actions">
-        <template #trigger="{ toggleDropdown }">
+      <div
+        v-if="mode !== 'select'"
+        class="opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto
+          transition-opacity duration-50"
+        :class="{ 'opacity-100 pointer-events-auto': active }"
+      >
+        <options-popover
+          :open="active"
+          @delete="emit('deleted')"
+          @move="emit('moved')"
+          @select="emit('selected')"
+        >
           <ui-button
             data-testid="card-list__item-more-button"
             icon-only
-            variant="muted"
-            size="small"
-            @click="toggleDropdown"
-          >
-            <ui-icon src="more" />
-          </ui-button>
-        </template>
-      </ui-button-menu>
+            size="xs"
+            :variant="active ? 'interaction' : 'muted'"
+            :hover-audio="false"
+            :icon-right="active ? 'check' : 'edit'"
+            @click.stop="togglePopover"
+          />
+        </options-popover>
+      </div>
 
       <ui-radio v-if="mode === 'select'" :checked="selected" @click.stop="emit('selected')" />
     </template>

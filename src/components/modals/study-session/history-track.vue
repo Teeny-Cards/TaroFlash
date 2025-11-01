@@ -20,6 +20,10 @@ const current_card = computed(() => {
   return undefined
 })
 
+const current_card_index = computed(() => {
+  return cards.findIndex((c) => c.id === current_card.value?.id)
+})
+
 function isActive(card: StudyCard) {
   return card.id === activeCard?.id
 }
@@ -63,7 +67,7 @@ function onClickCard(card: StudyCard) {
 
     <div data-testid="history-track__count">
       <p class="text-brown-700 text-lg">
-        {{ current_card?.rank ?? 0 }}<span class="text-sm">/{{ cards.length }}</span>
+        {{ current_card_index + 1 }}<span class="text-sm">/{{ cards.length }}</span>
       </p>
     </div>
   </div>

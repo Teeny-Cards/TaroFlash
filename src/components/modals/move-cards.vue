@@ -107,7 +107,7 @@ function onClick(deck_id?: number) {
 
       <ui-button
         data-testid="move-cards__move"
-        icon-left="check"
+        icon-left="arrow-forward"
         @click="onMove"
         :disabled="!selected_deck_id"
         class="ring-brown-300 ring-7"

@@ -64,9 +64,15 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
     <div v-if="iconLeft" class="btn-icon" uikit-button__icon-left>
       <ui-icon v-if="iconLeft" :src="iconLeft" :size="iconSize[size]" />
     </div>
-    <slot></slot>
+    <div v-if="!iconOnly" class="btn-label">
+      <slot></slot>
+    </div>
     <div v-if="iconRight" class="btn-icon" uikit-button__icon-right>
       <ui-icon v-if="iconRight" :src="iconRight" :size="iconSize[size]" />
+    </div>
+
+    <div v-if="iconOnly && $slots.default" class="ui-kit-btn__tooltip">
+      <slot></slot>
     </div>
   </button>
 </template>
@@ -190,5 +196,26 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
 }
 .ui-kit-btn.btn-icon-only.btn-inverted.btn-danger {
   --btn-secondary-color: var(--color-red-500);
+}
+
+.ui-kit-btn__tooltip {
+  display: none;
+  position: absolute;
+  top: -22px;
+
+  border-radius: var(--radius-full);
+  padding: 6px 8px;
+
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  color: var(--color-brown-700);
+  white-space: nowrap;
+  background-color: var(--color-white);
+
+  pointer-events: none;
+}
+
+.ui-kit-btn:hover .ui-kit-btn__tooltip {
+  display: block;
 }
 </style>

@@ -27,27 +27,28 @@ function onStudyClicked() {
 
 <template>
   <div data-testid="deck" class="relative flex w-max flex-col gap-2.5">
-    <card
-      size="sm"
-      class="relative cursor-pointer"
-      @click="$emit('clicked')"
-      :front_image_url="image_url"
+    <deck-preview
+      :deck="deck"
+      :image-url="image_url"
+      @study="onStudyClicked"
+      @updated="$emit('updated')"
     >
-      <div
-        v-if="deck.due_count"
-        class="ring-brown-100 absolute -top-2 -right-2 flex h-7.5 w-7.5 items-center justify-center rounded-full
-          bg-red-500 ring-6"
+      <card
+        #trigger
+        size="sm"
+        class="relative cursor-pointer"
+        @click="$emit('clicked')"
+        :front_image_url="image_url"
       >
-        <h2 class="text-base text-white">{{ deck.due_count }}</h2>
-      </div>
-
-      <deck-preview
-        :deck="deck"
-        :image-url="image_url"
-        @study="onStudyClicked"
-        @updated="$emit('updated')"
-      />
-    </card>
+        <div
+          v-if="deck.due_count"
+          class="ring-brown-100 absolute -top-2 -right-2 flex h-7.5 w-7.5 items-center justify-center rounded-full
+            bg-red-500 ring-6"
+        >
+          <h2 class="text-base text-white">{{ deck.due_count }}</h2>
+        </div>
+      </card>
+    </deck-preview>
 
     <div>
       <h2 class="text-md text-brown-700">{{ deck.title }}</h2>
