@@ -37,10 +37,6 @@ const { setupInput } = useInputResizer()
 const front_input = useTemplateRef<HTMLTextAreaElement>('front-input')
 const back_input = useTemplateRef<HTMLTextAreaElement>('back-input')
 
-const disabled = computed(() => {
-  return mode === 'select' || mode === 'view'
-})
-
 onMounted(() => {
   setupInput(front_input.value!)
   setupInput(back_input.value!)
@@ -157,7 +153,6 @@ watch(
             icon-only
             size="xs"
             :variant="active ? 'interaction' : 'muted'"
-            :hover-audio="false"
             :icon-right="active ? 'check' : 'edit'"
             @click.stop="togglePopover"
           />

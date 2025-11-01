@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import OverviewPanel from '@/components/views/deck-view/overview-panel.vue'
-import { nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { fetchDeck } from '@/api/decks'
 import StudySession from '@/components/modals/study-session/index.vue'
 import CardList from '@/components/views/deck-view/card-list/index.vue'
@@ -22,7 +22,7 @@ import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals
 import UiTabs from '@/components/ui-kit/tabs.vue'
 import { useToast } from '@/composables/toast'
 import UiButton from '@/components/ui-kit/button.vue'
-import UiInput from '@/components/ui-kit/input.vue'
+import SelectMenu from '@/components/views/deck-view/select-menu.vue'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -93,7 +93,7 @@ async function onEsc(e: KeyboardEvent) {
   }
 }
 
-function onStudyClicked() {
+function onStudy() {
   modal.open(StudySession, {
     backdrop: true,
     props: {
@@ -115,7 +115,7 @@ async function onUpdateCard(id: number, column: EditableCardKey, value: Editable
   }
 }
 
-async function onCancelClicked() {
+async function onCancel() {
   audio.play('card_drop')
 
   setMode('view')
@@ -164,6 +164,11 @@ function onSelectCard(id: number) {
   audio.play('etc_camera_shutter')
 }
 
+function onToggleSelectAll() {
+  toggleSelectAll()
+  audio.play('etc_camera_shutter')
+}
+
 function onCardActivated(id: number) {
   activateCard(id)
   audio.play('slide_up')
@@ -193,7 +198,7 @@ function onAddCard() {
   }
 }
 
-function onSelectClicked() {
+function onSelect() {
   setMode('select')
   audio.play('etc_camera_shutter')
   deactivateCard()
@@ -269,7 +274,7 @@ async function search(query?: string) {
       class="sticky top-(--nav-height)"
       :deck="deck"
       :image-url="image_url"
-      @study-clicked="onStudyClicked"
+      @study-clicked="onStudy"
       @updated="refetchDeck()"
     />
 
@@ -283,18 +288,13 @@ async function search(query?: string) {
 
           <ui-split-button theme="purple" v-if="mode === 'view' || mode === 'edit'">
             <template #defaults="{ option }">
-              <component :is="option" icon="check" @click="onSelectClicked">
+              <component :is="option" icon="check" @click="onSelect">
                 {{ t('deck-view.toggle-options.select') }}
               </component>
             </template>
           </ui-split-button>
 
-          <ui-button
-            v-if="mode === 'select'"
-            @click="onCancelClicked"
-            icon-left="close"
-            variant="muted"
-          >
+          <ui-button v-if="mode === 'select'" @click="onCancel" icon-left="close" variant="muted">
             {{ t('common.cancel') }}
           </ui-button>
         </div>
@@ -318,7 +318,17 @@ async function search(query?: string) {
         @card-deleted="onDeleteCards"
         @card-moved="onMoveCards"
         @card-image-updated="updateCardImage"
-      />
+      >
+        <select-menu
+          :open="mode === 'select'"
+          :all-cards-selected="selected_card_ids.length === all_cards.length"
+          :selected-card-count="selected_card_ids.length"
+          @cancel="onCancel"
+          @toggle-all="onToggleSelectAll"
+          @move="onMoveCards"
+          @delete="onDeleteCards"
+        />
+      </component>
     </div>
   </section>
 </template>
