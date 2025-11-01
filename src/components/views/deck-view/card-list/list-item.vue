@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { useAudio } from '@/composables/audio'
 import Card from '@/components/card/index.vue'
-import { computed, onMounted, ref, useTemplateRef } from 'vue'
+import { computed, onMounted, useTemplateRef, watch } from 'vue'
 import UiListItem from '@/components/ui-kit/list-item.vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
@@ -32,7 +31,6 @@ const emit = defineEmits<{
   (e: 'updated', id: number, column: EditableCardKey, value: EditableCardValue): void
 }>()
 
-const audio = useAudio()
 const { t } = useI18n()
 const { setupInput } = useInputResizer()
 
@@ -40,7 +38,7 @@ const front_input = useTemplateRef<HTMLTextAreaElement>('front-input')
 const back_input = useTemplateRef<HTMLTextAreaElement>('back-input')
 
 const disabled = computed(() => {
-  return mode === 'select' || mode === 'view' || (mode === 'edit-one' && !active)
+  return mode === 'select' || mode === 'view'
 })
 
 onMounted(() => {
@@ -50,18 +48,16 @@ onMounted(() => {
 
 function onClick() {
   if (mode !== 'select') return
-  audio.play('etc_camera_shutter')
   emit('selected')
 }
 
 function activate() {
+  if (active) return
   emit('activated')
-  audio.play('slide_up')
 }
 
 function deactivate() {
   emit('closed')
-  audio.play('card_drop')
 }
 
 function onInput(e: Event) {
@@ -78,15 +74,35 @@ function togglePopover() {
     activate()
   }
 }
+
+function onPageClick(e: Event) {
+  const target = e.target as HTMLElement
+
+  if (!target.closest(`[data-id="${card.id}"]`) && !target.closest('.options-popover')) {
+    deactivate()
+  }
+}
+
+watch(
+  () => active,
+  (new_value) => {
+    if (new_value) {
+      document.addEventListener('click', onPageClick)
+    } else {
+      document.removeEventListener('click', onPageClick)
+    }
+  }
+)
 </script>
 
 <template>
   <ui-list-item
     data-testid="card-list__item"
+    :data-id="card.id"
     :hover_effect="mode === 'select'"
     class="group"
     :class="{
-      'mode-edit': mode === 'edit' || (mode === 'edit-one' && active),
+      'mode-edit': mode === 'edit' && active,
       'mode-select cursor-pointer': mode === 'select',
       'mode-view': mode === 'view',
       duplicate: is_duplicate
@@ -106,8 +122,7 @@ function togglePopover() {
         class="card-list__input"
         :placeholder="t('card.placeholder-front')"
         :value="card.front_text"
-        :disabled="disabled"
-        @focusin="emit('activated')"
+        @focusin="activate"
         @input="onInput"
         :maxlength="MAX_INPUT_LENGTH"
       ></textarea>
@@ -118,8 +133,7 @@ function togglePopover() {
         class="card-list__input"
         :placeholder="t('card.placeholder-back')"
         :value="card.back_text"
-        :disabled="disabled"
-        @focusin="emit('activated')"
+        @focusin="activate"
         @input="onInput"
         :maxlength="MAX_INPUT_LENGTH"
       ></textarea>

@@ -76,6 +76,8 @@
   "deck-view.card-popover.select": "Select",
   "deck-view.card-popover.move": "Move To",
   "deck-view.card-popover.delete": "Delete",
+  "deck-view.toggle-options.select": "Select",
+  "deck-view.toggle-options.edit": "Edit All",
 
   "reward-stack.perfect-score": "Perfect Score!",
   "reward-stack.great-job": "Great Job!",

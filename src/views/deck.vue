@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import OverviewPanel from '@/components/views/deck-view/overview-panel.vue'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { fetchDeck } from '@/api/decks'
 import StudySession from '@/components/modals/study-session/index.vue'
 import CardList from '@/components/views/deck-view/card-list/index.vue'
 import CardGrid from '@/components/views/deck-view/card-grid/index.vue'
 import { useI18n } from 'vue-i18n'
-import { useCardBulkEditor } from '@/composables/card-bulk-editor'
+import {
+  useCardBulkEditor,
+  type EditableCardKey,
+  type EditableCardValue
+} from '@/composables/card-bulk-editor'
 import { useAlert } from '@/composables/alert'
 import { useModal } from '@/composables/modal'
 import { useDeckEditor } from '@/composables/deck-editor'
@@ -17,6 +21,7 @@ import { upsertCard, moveCardsToDeck, searchCardsInDeck } from '@/api/cards'
 import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
 import { useToast } from '@/composables/toast'
+import UiButton from '@/components/ui-kit/button.vue'
 import UiInput from '@/components/ui-kit/input.vue'
 
 const { id: deck_id } = defineProps<{
@@ -32,6 +37,7 @@ const toast = useToast()
 const image_url = ref<string | undefined>()
 const deck = ref<Deck>()
 const active_tab = ref(0)
+const is_saving = ref(false)
 
 const {
   all_cards,
@@ -50,7 +56,8 @@ const {
   deactivateCard,
   getSelectedCards,
   resetCards,
-  setMode
+  setMode,
+  clearSelectedCards
 } = useCardBulkEditor(deck.value?.cards ?? [], Number(deck_id))
 
 const tabs = [
@@ -79,10 +86,11 @@ onUnmounted(() => {
 })
 
 async function onEsc(e: KeyboardEvent) {
-  if (e.key !== 'Escape') return
-  setMode('view')
-  deactivateCard()
-  audio.play('card_drop')
+  if (e.key === 'Escape' && mode.value === 'edit') {
+    setMode('view')
+    deactivateCard()
+    audio.play('card_drop')
+  }
 }
 
 function onStudyClicked() {
@@ -96,9 +104,25 @@ function onStudyClicked() {
   })
 }
 
-async function onDoneClicked() {
-  await refetchDeck()
+async function onUpdateCard(id: number, column: EditableCardKey, value: EditableCardValue) {
+  is_saving.value = true
+
+  try {
+    await updateCard(id, column, value)
+    is_saving.value = false
+  } catch {
+    toast.error(t('card.save-error'))
+  }
+}
+
+async function onCancelClicked() {
+  audio.play('card_drop')
+
   setMode('view')
+  deactivateCard()
+  clearSelectedCards()
+
+  await refetchDeck()
 }
 
 async function refetchDeck() {
@@ -135,25 +159,44 @@ async function onDeleteCards(id?: number) {
 
 function onSelectCard(id: number) {
   toggleSelectCard(id)
+  deactivateCard()
   setMode('select')
+  audio.play('etc_camera_shutter')
 }
 
 function onCardActivated(id: number) {
   activateCard(id)
+  audio.play('slide_up')
 
-  if (mode.value !== 'edit' && mode.value !== 'edit-one') {
-    setMode('edit-one')
+  if (mode.value !== 'edit') {
+    setMode('edit')
   }
 }
 
-function onCardClosed() {
+async function onCardClosed() {
   setMode('view')
   deactivateCard()
+
+  await new Promise((resolve) => setTimeout(resolve, 10))
+
+  if (mode.value !== 'edit') {
+    audio.play('card_drop')
+  }
 }
 
 function onAddCard() {
-  addCard()
-  setMode('edit-one')
+  try {
+    addCard()
+    setMode('edit')
+  } catch (e: any) {
+    toast.error(t('toast.error.add-card'))
+  }
+}
+
+function onSelectClicked() {
+  setMode('select')
+  audio.play('etc_camera_shutter')
+  deactivateCard()
 }
 
 async function onMoveCards(id?: number) {
@@ -233,13 +276,28 @@ async function search(query?: string) {
     <div class="relative flex h-full w-full flex-col">
       <div class="sticky top-(--nav-height) z-10 flex w-full justify-between pb-2">
         <ui-tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
-        <ui-input @input="search"></ui-input>
-        <ui-split-button theme="purple">
-          <template #defaults="{ option }">
-            <component :is="option" icon="edit">Edit Cards</component>
-            <component :is="option" icon="check">Select</component>
-          </template>
-        </ui-split-button>
+
+        <div class="flex gap-2">
+          <p v-if="is_saving">Saving...</p>
+          <p v-else>Saved</p>
+
+          <ui-split-button theme="purple" v-if="mode === 'view' || mode === 'edit'">
+            <template #defaults="{ option }">
+              <component :is="option" icon="check" @click="onSelectClicked">
+                {{ t('deck-view.toggle-options.select') }}
+              </component>
+            </template>
+          </ui-split-button>
+
+          <ui-button
+            v-if="mode === 'select'"
+            @click="onCancelClicked"
+            icon-left="close"
+            variant="muted"
+          >
+            {{ t('common.cancel') }}
+          </ui-button>
+        </div>
 
         <div
           class="bg-brown-100 border-b-brown-500 absolute top-0 -right-3 bottom-0 -left-3 -z-10 border-b"
@@ -253,7 +311,7 @@ async function search(query?: string) {
         :active-card-id="active_card_id"
         :selected-card-ids="selected_card_ids"
         @card-added="onAddCard"
-        @card-updated="updateCard"
+        @card-updated="onUpdateCard"
         @card-activated="onCardActivated"
         @card-closed="onCardClosed"
         @card-selected="onSelectCard"
