@@ -1,15 +1,12 @@
 import { computed, ref } from 'vue'
 import { upsertCards, deleteCardsById, reserveCard } from '@/api/cards'
-import { useToast } from '@/composables/toast'
-import { useLogger } from '@/composables/logger'
-import { useI18n } from 'vue-i18n'
 import { debounce } from '@/utils/debounce'
 
 export const MAX_INPUT_LENGTH = 660
 export type EditableCard = Card & { dirty?: boolean }
 export type EditableCardKey = keyof EditableCard
 export type EditableCardValue = EditableCard[keyof EditableCard]
-export type CardEditorMode = 'edit' | 'edit-one' | 'view' | 'select'
+export type CardEditorMode = 'edit' | 'view' | 'select'
 
 export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
   const all_cards = ref<EditableCard[]>(initial_cards)
@@ -18,24 +15,20 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
   const selected_card_ids = ref<number[]>([])
   const mode = ref<CardEditorMode>('view')
 
-  const toast = useToast()
-  const logger = useLogger()
-  const { t } = useI18n()
-
   const all_cards_selected = computed(() => {
     return selected_card_ids.value.length === all_cards.value.length
   })
 
   function updateCard(id: number, key: EditableCardKey, value: EditableCardValue) {
     const card = all_cards.value.find((card) => card.id === id)
-    if (!card) return
+    if (!card) return Promise.resolve()
 
     if (card[key] !== value) {
       ;(card as any)[key] = value
       card.dirty = true
     }
 
-    debounce(saveCards)
+    return debounce(saveCards)
   }
 
   function selectCard(id: number) {
@@ -125,14 +118,9 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
   }
 
   async function addCard() {
-    try {
-      const { out_rank: rank, out_id: id } = await reserveCard(deck_id.value!)
-      all_cards.value.push({ id, rank })
-      activateCard(id)
-    } catch (e: any) {
-      toast.error(t('toast.error.add-card'))
-      logger.error('failed to add a new card', e)
-    }
+    const { out_rank: rank, out_id: id } = await reserveCard(deck_id.value!)
+    all_cards.value.push({ id, rank })
+    activateCard(id)
   }
 
   async function deleteCards() {
@@ -155,12 +143,7 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
     const dirty_cards = extractDirtyCards()
 
     if (dirty_cards.length > 0) {
-      try {
-        await upsertCards(dirty_cards)
-      } catch (e: any) {
-        toast.error(t('card.save-error'))
-        logger.error('failed to save cards', e)
-      }
+      await upsertCards(dirty_cards)
     }
   }
 
