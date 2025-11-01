@@ -11,7 +11,7 @@ import { useAlert } from '@/composables/alert'
 import { useModal } from '@/composables/modal'
 import { useDeckEditor } from '@/composables/deck-editor'
 import { useAudio } from '@/composables/audio'
-import ContextMenu from '@/components/views/deck-view/context-menu.vue'
+import UiSplitButton from '@/components/ui-kit/split-button/index.vue'
 import { uploadCardImage, deleteCardImage } from '@/api/files'
 import { upsertCard, moveCardsToDeck, searchCardsInDeck } from '@/api/cards'
 import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
@@ -96,7 +96,7 @@ function onStudyClicked() {
   })
 }
 
-async function onSaveClicked() {
+async function onDoneClicked() {
   await refetchDeck()
   setMode('view')
 }
@@ -234,17 +234,12 @@ async function search(query?: string) {
       <div class="sticky top-(--nav-height) z-10 flex w-full justify-between pb-2">
         <ui-tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
         <ui-input @input="search"></ui-input>
-        <context-menu
-          :mode="mode"
-          :selectedCardIds="selected_card_ids"
-          :allCardsSelected="all_cards_selected"
-          @new-card="onAddCard"
-          @mode-changed="setMode"
-          @save="onSaveClicked"
-          @delete="onDeleteCards"
-          @move="onMoveCards"
-          @select-all="toggleSelectAll"
-        />
+        <ui-split-button theme="purple">
+          <template #defaults="{ option }">
+            <component :is="option" icon="edit">Edit Cards</component>
+            <component :is="option" icon="check">Select</component>
+          </template>
+        </ui-split-button>
 
         <div
           class="bg-brown-100 border-b-brown-500 absolute top-0 -right-3 bottom-0 -left-3 -z-10 border-b"
