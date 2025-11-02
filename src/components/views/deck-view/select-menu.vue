@@ -20,7 +20,7 @@ const emit = defineEmits<{
     data-testid="card-list__select-menu"
     class="fixed bottom-6 bg-white rounded-6 shadow-popover p-3 pr-6 flex justify-center items-center gap-4
       transition-transform duration-100 ease-in-out"
-    :class="{ 'transform translate-y-20': !open }"
+    :class="{ 'transform translate-y-22': !open }"
   >
     <ui-button icon-left="close" variant="muted" @click="emit('cancel')">Cancel</ui-button>
     <ui-button inverted icon-left="check" @click="emit('toggle-all')">

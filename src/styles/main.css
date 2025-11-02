@@ -4,6 +4,7 @@
 @import '@/styles/custom-styles.css';
 @import '@/styles/custom-variants.css';
 @import '@/styles/animations.css';
+@import '@/styles/markdown.css';
 
 @source inline("bg-green-400");
 @source inline("bg-blue-500");
