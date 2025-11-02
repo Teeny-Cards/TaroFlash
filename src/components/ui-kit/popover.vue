@@ -22,6 +22,7 @@ type PopoverProps = {
   transition_duration?: number
   clip_margin?: Padding
   padding?: Padding
+  fallback_placements?: Placement[]
 }
 
 const {
@@ -32,7 +33,8 @@ const {
   strategy = 'fixed',
   transition_duration = 100,
   clip_margin = 90,
-  padding = 24
+  padding = 24,
+  fallback_placements = ['right', 'left', 'top', 'bottom']
 } = defineProps<PopoverProps>()
 
 const emit = defineEmits<{
@@ -53,7 +55,7 @@ const { placement, middlewareData, floatingStyles } = useFloating(triggerRef, po
     offset(() => ARROW_SIZE + gap),
     shift({ padding }),
     flip({
-      fallbackPlacements: ['right-end', 'left-end']
+      fallbackPlacements: fallback_placements
     }),
     arrow({ element: arrowRef }),
     hide({

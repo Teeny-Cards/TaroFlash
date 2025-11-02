@@ -31,7 +31,7 @@ function onImageError() {
 </script>
 
 <template>
-  <ui-popover mode="hover">
+  <ui-popover mode="hover" :fallback_placements="['right-end', 'left-end']">
     <template #trigger>
       <slot></slot>
     </template>

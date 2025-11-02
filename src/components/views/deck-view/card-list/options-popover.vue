@@ -19,7 +19,13 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <ui-popover position="right" :gap="10" :open="open" @close="emit('closed')">
+  <ui-popover
+    position="right"
+    :gap="10"
+    :fallback_placements="['top', 'bottom', 'left', 'right']"
+    :open="open"
+    @close="emit('closed')"
+  >
     <template #trigger>
       <slot></slot>
     </template>

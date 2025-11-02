@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Card from '@/components/card/index.vue'
-import { computed, onMounted, useTemplateRef, watch } from 'vue'
+import { onMounted, useTemplateRef, watch } from 'vue'
 import UiListItem from '@/components/ui-kit/list-item.vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
@@ -11,8 +11,8 @@ import {
   type EditableCardValue,
   type EditableCardKey
 } from '@/composables/card-bulk-editor'
-import { useInputResizer } from '@/composables/input-resizer'
 import UiButton from '@/components/ui-kit/button.vue'
+import TextEditor from '@/components/text-editor.vue'
 
 const { card, mode, selected, active, active_side } = defineProps<{
   card: Card
@@ -34,14 +34,13 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const { setupInput } = useInputResizer()
 
 const front_input = useTemplateRef<HTMLTextAreaElement>('front-input')
 const back_input = useTemplateRef<HTMLTextAreaElement>('back-input')
 
 onMounted(() => {
-  setupInput(front_input.value!)
-  setupInput(back_input.value!)
+  // setupInput(front_input.value!)
+  // setupInput(back_input.value!)
 })
 
 function onClick() {
@@ -70,13 +69,6 @@ function deactivate() {
   emit('closed')
 }
 
-function onInput(e: Event) {
-  const target = e.target as HTMLTextAreaElement
-  const column = target.dataset['testid'] === 'front-input' ? 'front_text' : 'back_text'
-
-  emit('updated', card.id!, column, target.value)
-}
-
 function togglePopover() {
   if (active) {
     deactivate()
@@ -96,7 +88,10 @@ function focusSide() {
 function onPageClick(e: Event) {
   const target = e.target as HTMLElement
 
-  if (!target.closest(`[data-id="${card.id}"]`) && !target.closest('.options-popover')) {
+  const is_toolbar = target.closest('[data-testid="md-toolbar"]')
+  const is_card = target.closest(`[data-id="${card.id}"]`)
+
+  if (!is_toolbar && !is_card && !target.closest('.options-popover')) {
     deactivate()
   }
 }
@@ -105,7 +100,7 @@ watch(
   () => active,
   (new_value) => {
     if (new_value) {
-      focusSide()
+      // focusSide()
       document.addEventListener('click', onPageClick)
     } else {
       document.removeEventListener('click', onPageClick)
@@ -135,29 +130,32 @@ watch(
     </template>
 
     <div class="flex w-full gap-4" :class="{ active }">
-      <textarea
+      <TextEditor
         data-testid="front-input"
         ref="front-input"
         class="card-list__input"
+        :id="`card-${card.id}`"
+        :value="card.front_text ?? ''"
+        :active="active && active_side === 'front'"
+        @update="emit('updated', card.id!, 'front_text', $event)"
         :class="{ 'has-focus': active_side === 'front' }"
         :placeholder="t('card.placeholder-front')"
-        :value="card.front_text"
         @focusin="activate"
-        @input="onInput"
-        :maxlength="MAX_INPUT_LENGTH"
-      ></textarea>
+      />
 
-      <textarea
+      <TextEditor
         data-testid="back-input"
         ref="back-input"
         class="card-list__input"
+        :id="`card-${card.id}`"
+        :value="card.back_text ?? ''"
+        :active="active && active_side === 'back'"
+        @update="emit('updated', card.id!, 'back_text', $event)"
         :class="{ 'has-focus': active_side === 'back' }"
         :placeholder="t('card.placeholder-back')"
-        :value="card.back_text"
         @focusin="activate"
-        @input="onInput"
         :maxlength="MAX_INPUT_LENGTH"
-      ></textarea>
+      />
     </div>
 
     <template #after>
@@ -195,20 +193,20 @@ watch(
 .card-list__input {
   border-radius: var(--radius-4);
   width: 100%;
-  resize: none;
+  min-height: 58px;
 
   padding: 8px 12px;
   overflow: hidden;
   outline: none;
 }
 
-.mode-edit textarea {
+.mode-edit .card-list__input {
   color: var(--color-brown-700);
   outline: 2px solid var(--color-brown-300);
   background-color: var(--color-white);
 }
 
-.mode-edit textarea.has-focus {
+.mode-edit .card-list__input.has-focus {
   outline: 2px solid var(--color-blue-500);
 }
 
@@ -216,7 +214,7 @@ watch(
   pointer-events: none;
 }
 
-.duplicate textarea {
+.duplicate .card-list__input {
   color: var(--color-red-500);
 }
 </style>

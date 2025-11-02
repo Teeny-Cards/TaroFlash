@@ -23,6 +23,7 @@ import UiTabs from '@/components/ui-kit/tabs.vue'
 import { useToast } from '@/composables/toast'
 import UiButton from '@/components/ui-kit/button.vue'
 import SelectMenu from '@/components/views/deck-view/select-menu.vue'
+import MdToolbar from '@/components/md-toolbar.vue'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -329,6 +330,8 @@ async function search(query?: string) {
           @move="onMoveCards"
           @delete="onDeleteCards"
         />
+
+        <md-toolbar />
       </component>
     </div>
   </section>
