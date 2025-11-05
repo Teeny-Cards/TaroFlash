@@ -6,11 +6,7 @@ import StudySession from '@/components/modals/study-session/index.vue'
 import CardList from '@/components/views/deck-view/card-list/index.vue'
 import CardGrid from '@/components/views/deck-view/card-grid/index.vue'
 import { useI18n } from 'vue-i18n'
-import {
-  useCardBulkEditor,
-  type EditableCardKey,
-  type EditableCardValue
-} from '@/composables/card-bulk-editor'
+import { useCardBulkEditor } from '@/composables/card-bulk-editor'
 import { useAlert } from '@/composables/alert'
 import { useModal } from '@/composables/modal'
 import { useDeckEditor } from '@/composables/deck-editor'
@@ -23,7 +19,7 @@ import UiTabs from '@/components/ui-kit/tabs.vue'
 import { useToast } from '@/composables/toast'
 import UiButton from '@/components/ui-kit/button.vue'
 import SelectMenu from '@/components/views/deck-view/select-menu.vue'
-import MdToolbar from '@/components/md-toolbar.vue'
+import TextEditorToolbar from '@/components/views/deck-view/text-editor-toolbar/index.vue'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -45,7 +41,6 @@ const {
   active_card_id,
   selected_card_ids,
   mode,
-  all_cards_selected,
   addCard,
   deleteCards,
   updateCard,
@@ -105,14 +100,18 @@ function onStudy() {
   })
 }
 
-async function onUpdateCard(id: number, column: EditableCardKey, value: EditableCardValue) {
+async function onUpdateCard(
+  id: number,
+  side: 'front' | 'back',
+  { delta, text }: { delta: any; text?: string }
+) {
   is_saving.value = true
 
   try {
-    await updateCard(id, column, value)
+    await updateCard(id, { [`${side}_delta`]: delta, [`${side}_text`]: text })
     is_saving.value = false
-  } catch {
-    toast.error(t('card.save-error'))
+  } catch (e: any) {
+    toast.error(`${t('card.save-error')}: ${e.message}`)
   }
 }
 
@@ -331,7 +330,11 @@ async function search(query?: string) {
           @delete="onDeleteCards"
         />
 
-        <md-toolbar />
+        <text-editor-toolbar
+          class="fixed bottom-6 bg-white rounded-6 shadow-popover p-3 pr-6 flex justify-center items-center gap-4
+            transition-transform duration-100 ease-in-out"
+          inactive_classes="transform translate-y-20"
+        />
       </component>
     </div>
   </section>
