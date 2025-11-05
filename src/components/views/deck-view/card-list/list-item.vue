@@ -1,16 +1,11 @@
 <script lang="ts" setup>
 import Card from '@/components/card/index.vue'
-import { onMounted, useTemplateRef, watch } from 'vue'
+import { watch } from 'vue'
 import UiListItem from '@/components/ui-kit/list-item.vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { useI18n } from 'vue-i18n'
 import OptionsPopover from './options-popover.vue'
-import {
-  MAX_INPUT_LENGTH,
-  type EditableCardValue,
-  type EditableCardKey
-} from '@/composables/card-bulk-editor'
 import UiButton from '@/components/ui-kit/button.vue'
 import TextEditor from '@/components/text-editor.vue'
 
@@ -29,23 +24,28 @@ const emit = defineEmits<{
   (e: 'moved'): void
   (e: 'activated'): void
   (e: 'closed'): void
-  (e: 'updated', id: number, column: EditableCardKey, value: EditableCardValue): void
+  (
+    e: 'updated',
+    id: number,
+    side: 'front' | 'back',
+    { delta, text }: { delta: any; text?: string }
+  ): void
   (e: 'side-changed', side: 'front' | 'back'): void
 }>()
 
 const { t } = useI18n()
 
-const front_input = useTemplateRef<HTMLTextAreaElement>('front-input')
-const back_input = useTemplateRef<HTMLTextAreaElement>('back-input')
-
-onMounted(() => {
-  // setupInput(front_input.value!)
-  // setupInput(back_input.value!)
-})
-
 function onClick() {
   if (mode !== 'select') return
   emit('selected')
+}
+
+function onUpdate(
+  id: number,
+  side: 'front' | 'back',
+  { delta, text }: { delta: any; text?: string }
+) {
+  emit('updated', id, side, { delta, text })
 }
 
 function activate(e?: Event) {
@@ -79,9 +79,17 @@ function togglePopover() {
 
 function focusSide() {
   if (active_side === 'back') {
-    back_input.value?.focus()
+    const back = document.querySelector(
+      `[data-testid="back-input"] [data-id="${card.id}"]`
+    ) as HTMLElement
+
+    back?.focus()
   } else {
-    front_input.value?.focus()
+    const front = document.querySelector(
+      `[data-testid="front-input"] [data-id="${card.id}"]`
+    ) as HTMLElement
+
+    front?.focus()
   }
 }
 
@@ -100,7 +108,7 @@ watch(
   () => active,
   (new_value) => {
     if (new_value) {
-      // focusSide()
+      focusSide()
       document.addEventListener('click', onPageClick)
     } else {
       document.removeEventListener('click', onPageClick)
@@ -135,9 +143,9 @@ watch(
         ref="front-input"
         class="card-list__input"
         :id="`card-${card.id}`"
-        :value="card.front_text ?? ''"
+        :delta="card.front_delta"
         :active="active && active_side === 'front'"
-        @update="emit('updated', card.id!, 'front_text', $event)"
+        @update="onUpdate(card.id!, 'front', $event)"
         :class="{ 'has-focus': active_side === 'front' }"
         :placeholder="t('card.placeholder-front')"
         @focusin="activate"
@@ -148,13 +156,12 @@ watch(
         ref="back-input"
         class="card-list__input"
         :id="`card-${card.id}`"
-        :value="card.back_text ?? ''"
+        :delta="card.back_delta"
         :active="active && active_side === 'back'"
-        @update="emit('updated', card.id!, 'back_text', $event)"
+        @update="onUpdate(card.id!, 'back', $event)"
         :class="{ 'has-focus': active_side === 'back' }"
         :placeholder="t('card.placeholder-back')"
         @focusin="activate"
-        :maxlength="MAX_INPUT_LENGTH"
       />
     </div>
 

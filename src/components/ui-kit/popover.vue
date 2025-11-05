@@ -23,6 +23,7 @@ type PopoverProps = {
   clip_margin?: Padding
   padding?: Padding
   fallback_placements?: Placement[]
+  shadow?: boolean
 }
 
 const {
@@ -34,7 +35,8 @@ const {
   transition_duration = 100,
   clip_margin = 90,
   padding = 24,
-  fallback_placements = ['right', 'left', 'top', 'bottom']
+  fallback_placements = ['right', 'left', 'top', 'bottom'],
+  shadow = false
 } = defineProps<PopoverProps>()
 
 const emit = defineEmits<{
@@ -130,7 +132,7 @@ function onPageClick(e: Event): void {
         ref="popoverRef"
         data-testid="ui-kit-popover"
         class="ui-kit-popover"
-        :class="`ui-kit-popover--${side}`"
+        :class="`ui-kit-popover--${side} ${shadow ? 'ui-kit-popover--shadow' : ''}`"
         :style="floatingStyles"
       >
         <span data-testid="ui-kit-popover__bridge" class="ui-kit-popover__bridge"></span>
@@ -163,6 +165,10 @@ function onPageClick(e: Event): void {
 .ui-kit-popover-container--hover:hover .ui-kit-popover,
 .ui-kit-popover-container--hover .ui-kit-popover:hover {
   display: block;
+}
+
+.ui-kit-popover--shadow {
+  filter: drop-shadow(var(--drop-shadow-popover));
 }
 
 .ui-kit-popover__arrow {
