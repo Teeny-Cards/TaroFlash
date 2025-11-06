@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import ListItem from './list-item.vue'
 import { useI18n } from 'vue-i18n'
-import { type EditableCardValue, type EditableCardKey } from '@/composables/card-bulk-editor'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiDivider from '@/components/ui-kit/divider.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
@@ -21,7 +20,12 @@ const emit = defineEmits<{
   (e: 'card-selected', id: number): void
   (e: 'card-deleted', id: number): void
   (e: 'card-moved', id: number): void
-  (e: 'card-updated', id: number, column: EditableCardKey, value: EditableCardValue): void
+  (
+    e: 'card-updated',
+    id: number,
+    side: 'front' | 'back',
+    { delta, text }: { delta: any; text?: string }
+  ): void
   (e: 'card-closed'): void
 }>()
 
@@ -71,8 +75,12 @@ async function onTab(e: KeyboardEvent) {
   next_card_input?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
-function onCardUpdated(id: number, column: EditableCardKey, value: EditableCardValue) {
-  emit('card-updated', id, column, value)
+function onCardUpdated(
+  id: number,
+  side: 'front' | 'back',
+  { delta, text }: { delta: any; text?: string }
+) {
+  emit('card-updated', id, side, { delta, text })
 }
 
 function onSideChanged(side: 'front' | 'back') {

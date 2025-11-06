@@ -269,10 +269,13 @@ async function search(query?: string) {
 </script>
 
 <template>
-  <section data-testid="deck-view" class="flex h-full items-start gap-15 pb-24">
+  <section
+    data-testid="deck-view"
+    class="flex h-full flex-col lg:flex-row items-center md:items-start gap-15 pb-24"
+  >
     <overview-panel
       v-if="deck"
-      class="sticky top-(--nav-height)"
+      class="lg:sticky top-(--nav-height)"
       :deck="deck"
       :image-url="image_url"
       @study-clicked="onStudy"
