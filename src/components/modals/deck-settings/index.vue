@@ -63,12 +63,7 @@ async function onDeleted() {
       data-testid="deck-settings__actions"
       class="absolute -bottom-2 flex w-full justify-end gap-3 px-10.5"
     >
-      <ui-button
-        variant="muted"
-        icon-left="close"
-        @click="close(false)"
-        class="ring-brown-300 ring-7"
-      >
+      <ui-button theme="grey" icon-left="close" @click="close(false)" class="ring-brown-300 ring-7">
         {{ t('common.cancel') }}
       </ui-button>
 
@@ -76,7 +71,7 @@ async function onDeleted() {
         v-if="deck"
         icon-left="check"
         @click="onDeleted"
-        variant="danger"
+        theme="red"
         class="ring-brown-300 ring-7"
       >
         {{ t('common.delete') }}

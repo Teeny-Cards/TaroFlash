@@ -22,12 +22,12 @@ const emit = defineEmits<{
       transition-transform duration-100 ease-in-out"
     :class="{ 'transform translate-y-22': !open }"
   >
-    <ui-button icon-left="close" variant="muted" @click="emit('cancel')">Cancel</ui-button>
-    <ui-button inverted icon-left="check" @click="emit('toggle-all')">
+    <ui-button icon-left="close" theme="grey" @click="emit('cancel')">Cancel</ui-button>
+    <ui-button theme="brown" icon-left="check" @click="emit('toggle-all')">
       {{ allCardsSelected ? 'Deselect All' : 'Select All' }}
     </ui-button>
-    <ui-button inverted icon-left="arrow-forward" @click="emit('move')">Move</ui-button>
-    <ui-button variant="danger" inverted icon-left="delete" @click="emit('delete')"
+    <ui-button theme="brown" icon-left="arrow-forward" @click="emit('move')">Move</ui-button>
+    <ui-button theme="red" icon-left="delete" @click="emit('delete')"
       >Delete ({{ selectedCardCount ?? 0 }})</ui-button
     >
   </div>

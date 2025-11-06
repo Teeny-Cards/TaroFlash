@@ -298,7 +298,7 @@ async function search(query?: string) {
             </template>
           </ui-split-button>
 
-          <ui-button v-if="mode === 'select'" @click="onCancel" icon-left="close" variant="muted">
+          <ui-button v-if="mode === 'select'" @click="onCancel" icon-left="close" theme="grey">
             {{ t('common.cancel') }}
           </ui-button>
         </div>

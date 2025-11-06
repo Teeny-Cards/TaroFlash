@@ -79,7 +79,7 @@ async function onSettingsClicked() {
         <ui-button
           data-testid="overview-panel__settings-button"
           icon-left="settings"
-          variant="muted"
+          theme="grey"
           icon-only
           @click="onSettingsClicked()"
         >

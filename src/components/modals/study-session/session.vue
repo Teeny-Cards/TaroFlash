@@ -70,16 +70,10 @@ function onCardRevealed() {
     <div
       data-testid="study-session__header"
       class="pointy-bottom relative flex w-full justify-center bg-purple-500 bg-(image:--diagonal-stripes)
-        bg-(length:--bg-sm) px-13 py-11.5"
+        bg-size-(--bg-sm) px-13 py-11.5"
     >
       <div data-testid="study-session__actions" class="absolute top-0 left-0 p-4">
-        <ui-button
-          icon-left="close"
-          variant="muted"
-          inverted
-          icon-only
-          @click="emit('closed')"
-        ></ui-button>
+        <ui-button icon-left="close" theme="brown" icon-only @click="emit('closed')"></ui-button>
       </div>
       <h1 class="text-5xl text-white">{{ t('study-session.title', { deck: deck?.title }) }}</h1>
     </div>
