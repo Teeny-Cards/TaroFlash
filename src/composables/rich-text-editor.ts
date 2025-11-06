@@ -34,7 +34,8 @@ export function useRichTextEditor() {
       })
 
       active_quill.value.on('editor-change', onEditorChanged)
-      setFormat(null)
+      active_quill.value.on('text-change', onTextChange)
+      onEditorChanged(null)
     } else {
       active_quill.value = null
       logger.warn('Failed to set active editor. Toolbar not set.')
@@ -79,21 +80,20 @@ export function useRichTextEditor() {
     q.format('link', u)
   }
 
-  function onEditorChanged(range: Range | null) {
-    setFormat(range)
+  function onEditorChanged(r: Range | null) {
+    let range = r ?? active_quill.value?.getSelection()
+    if (!range) return
 
+    selection_format.value = active_quill.value?.getFormat(range)
+  }
+
+  function onTextChange(delta: any, oldDelta: any, source: any) {
+    if (source === 'api') return
     if (active_callback.value) {
       const delta = active_quill.value?.getContents()
       const text = active_quill.value?.getText()
       active_callback.value(delta, text)
     }
-  }
-
-  function setFormat(r: Range | null) {
-    let range = r ?? active_quill.value?.getSelection()
-    if (!range) return
-
-    selection_format.value = active_quill.value?.getFormat(range)
   }
 
   function subscribe(callback: (delta: any, text?: string) => void) {

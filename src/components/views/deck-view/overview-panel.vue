@@ -34,21 +34,21 @@ async function onSettingsClicked() {
 <template>
   <div
     data-testid="overview-panel"
-    class="flex w-max flex-col items-center gap-6 sm:flex-row sm:items-end lg:flex-col lg:items-start"
+    class="flex w-max flex-col items-center gap-6 md:flex-row md:items-end lg:flex-col lg:items-start"
   >
     <card size="lg" class="relative" :front_image_url="imageUrl"></card>
 
-    <div class="flex flex-col items-center gap-2 sm:items-start">
+    <div class="flex flex-col items-center gap-2 md:items-start">
       <h1
         data-testid="overview-panel__title"
-        class="text-brown-700 w-64 text-center text-5xl sm:text-left"
+        class="text-brown-700 w-64 text-center text-5xl md:text-left"
       >
         {{ deck.title }}
       </h1>
 
       <h2
         data-testid="overview-panel__description"
-        class="text-grey-500 w-64 text-center sm:text-left"
+        class="text-grey-500 w-64 text-center md:text-left"
       >
         {{ deck.description }}
       </h2>
@@ -64,28 +64,28 @@ async function onSettingsClicked() {
         <ui-icon src="teeny-cards" />
         <h2 class="text-lg font-semibold">{{ deck.card_count ?? 0 }} cards in deck</h2>
       </div>
-    </div>
 
-    <div class="flex items-center gap-2.5">
-      <ui-button
-        data-testid="overview-panel__study-button"
-        icon-left="play"
-        fancy-hover
-        :disabled="study_disabled"
-        @click="$emit('study-clicked')"
-      >
-        {{ t('common.study') }}
-      </ui-button>
+      <div class="flex items-center gap-2.5">
+        <ui-button
+          data-testid="overview-panel__study-button"
+          icon-left="play"
+          fancy-hover
+          :disabled="study_disabled"
+          @click="$emit('study-clicked')"
+        >
+          {{ t('common.study') }}
+        </ui-button>
 
-      <ui-button
-        data-testid="overview-panel__settings-button"
-        icon-left="settings"
-        variant="muted"
-        icon-only
-        @click="onSettingsClicked()"
-      >
-        {{ t('common.settings') }}
-      </ui-button>
+        <ui-button
+          data-testid="overview-panel__settings-button"
+          icon-left="settings"
+          variant="muted"
+          icon-only
+          @click="onSettingsClicked()"
+        >
+          {{ t('common.settings') }}
+        </ui-button>
+      </div>
     </div>
   </div>
 </template>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Card from '@/components/card/index.vue'
-import { computed } from 'vue'
 import deckPreview from './popovers/deck-preview.vue'
 import StudyModal from './modals/study-session/index.vue'
 import { useModal } from '@/composables/modal'
