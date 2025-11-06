@@ -53,6 +53,7 @@
   --radius-1: --spacing(1); /* 4px */
   --radius-1_5: --spacing(1.5); /* 6px */
   --radius-2: --spacing(2); /* 8px */
+  --radius-2_5: --spacing(2.5); /* 10px */
   --radius-3: --spacing(3); /* 12px */
   --radius-3_5: --spacing(3.5); /* 14px */
   --radius-4: --spacing(4); /* 16px */
