@@ -57,7 +57,7 @@ const emit = defineEmits<{
         @click="emit('delete')"
         icon-only
         icon-left="delete"
-        variant="danger"
+        theme="red"
       >
         {{ t('deck-view.card-popover.delete') }}
       </ui-button>

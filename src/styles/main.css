@@ -6,7 +6,7 @@
 @import '@/styles/animations.css';
 @import '@/styles/markdown.css';
 
-@source inline("bg-green-400");
+/* @source inline("bg-green-400");
 @source inline("bg-blue-500");
 @source inline("bg-purple-500");
 @source inline("bg-pink-500");
@@ -18,7 +18,7 @@
 @source inline("text-purple-500");
 @source inline("text-pink-500");
 @source inline("text-red-500");
-@source inline("text-orange-500");
+@source inline("text-orange-500"); */
 
 @theme {
   --*: initial;

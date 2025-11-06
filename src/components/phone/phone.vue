@@ -5,7 +5,7 @@ import { onMounted, ref } from 'vue'
 
 const nav = useNavigationStack()
 
-const open = ref(false)
+const open = ref(true)
 
 onMounted(() => {
   nav.resetTo(Home) // first show animates with defaultPreset
@@ -16,7 +16,7 @@ onMounted(() => {
   <div v-if="open" data-testid="phone-container" class="fixed bottom-8 right-8 z-1000">
     <div
       data-testid="phone"
-      class="w-60 h-89.5 bg-brown-300 shadow-popover rounded-16 overflow-hidden p-2"
+      class="w-60 h-89.5 bg-brown-300 shadow-popover rounded-16 overflow-hidden"
     >
       <Transition :name="nav.transitionName.value" mode="out-in">
         <component

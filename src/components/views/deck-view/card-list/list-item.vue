@@ -184,7 +184,7 @@ watch(
             data-testid="card-list__item-more-button"
             icon-only
             size="xs"
-            :variant="active ? 'interaction' : 'muted'"
+            :theme="active ? 'blue' : 'grey'"
             :icon-right="active ? 'check' : 'edit'"
             @click.stop="togglePopover"
           />
