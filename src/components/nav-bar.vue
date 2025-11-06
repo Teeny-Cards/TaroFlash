@@ -9,7 +9,7 @@
       class="font-primary flex pt-4 pb-8 w-full justify-center bg-blue-500 wave-bottom-sm"
     >
       <div class="flex w-full max-w-375 items-center justify-between px-4 sm:px-16">
-        <RouterLink to="/dashboard" class="flex items-center gap-2 text-3xl text-white">
+        <RouterLink to="/dashboard" class="flex items-center gap-2 text-4xl text-white">
           <ui-image src="taro-logo_3" class="max-w-6" />
           <div>TaroFlash</div>
         </RouterLink>

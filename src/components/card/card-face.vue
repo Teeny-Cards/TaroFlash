@@ -2,8 +2,9 @@
 import { useI18n } from 'vue-i18n'
 import imageUploader, { type ImageUploadEvent } from '@/components/image-uploader.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
+import { computed } from 'vue'
 
-const { image } = defineProps<{
+const { image, text } = defineProps<{
   image?: string
   text?: string
   max_length?: number
@@ -18,6 +19,18 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+
+const font_size = computed(() => {
+  const text_length = text?.length ?? 0
+
+  if (text_length <= 170) return 'text-3xl'
+  if (text_length <= 235) return 'text-2xl'
+  if (text_length <= 325) return 'text-xl'
+  if (text_length <= 370) return 'text-lg'
+  if (text_length <= 475) return 'text-base'
+
+  return 'text-sm'
+})
 
 function onTextUpdated(event: Event) {
   emit('update:text', (event.target as HTMLTextAreaElement).value)
@@ -59,6 +72,7 @@ function onTextUpdated(event: Event) {
       class="placeholder:text-brown-500 text-brown-700 border-brown-300 h-full min-h-(--min-element-height)
         resize-none rounded-(--inner-radius) border border-dashed p-3 text-center outline-none
         hover:border-blue-500 focus:border-blue-500"
+      :class="font_size"
       :placeholder="t('card.add-text')"
       :value="text"
       @input="onTextUpdated"
@@ -71,6 +85,7 @@ function onTextUpdated(event: Event) {
       v-else-if="!!text"
       data-testid="card-face__text"
       class="text-brown-700 flex h-full w-full items-center justify-center p-3 text-center"
+      :class="font_size"
     >
       {{ text }}
     </div>

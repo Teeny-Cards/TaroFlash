@@ -24,7 +24,7 @@ export async function fetchDeck(id: number): Promise<Deck> {
     .from('decks')
     .select('*, cards(*, review:reviews(*)), member:members(display_name)')
     .eq('id', id)
-    .order('order', { ascending: true, referencedTable: 'cards' })
+    .order('rank', { ascending: true, referencedTable: 'cards' })
     .single()
 
   if (error) {

@@ -19,13 +19,11 @@
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { storeToRefs } from 'pinia'
-import { useToastStore } from '@/stores/toast'
+import { useToast } from '@/composables/toast'
 import { useSessionStore } from '@/stores/session'
 import UiToast from '@/components/ui-kit/toast.vue'
 import UiModal from '@/components/ui-kit/modal.vue'
 
 const sessionStore = useSessionStore()
-const toastStore = useToastStore()
-const { toasts } = storeToRefs(toastStore)
+const { toasts } = useToast()
 </script>
