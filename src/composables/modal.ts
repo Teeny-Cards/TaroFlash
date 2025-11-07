@@ -24,7 +24,7 @@ type OpenArgs = {
 const modal_stack = ref<ModalEntry[]>([])
 
 export function useModal() {
-  function open<T = any>(component: any, args: OpenArgs): Promise<T | boolean> {
+  function open<T = any>(component: any, args?: OpenArgs): Promise<T | boolean> {
     let resolveFn!: (result: any) => void
 
     const id = Symbol('modal')
@@ -39,33 +39,33 @@ export function useModal() {
         modal_stack.value[index].resolve(responseValue)
         modal_stack.value.splice(index, 1)
 
-        if (close_args?.overrideCloseAudio || args.closeAudio) {
+        if (close_args?.overrideCloseAudio || args?.closeAudio) {
           useAudio().play(
-            close_args?.overrideCloseAudio ? close_args?.overrideCloseAudio : args.closeAudio!
+            close_args?.overrideCloseAudio ? close_args?.overrideCloseAudio : args?.closeAudio!
           )
         }
       }
     }
 
     const entry: ModalEntry = {
-      backdrop: args.backdrop ?? false,
-      closeOnBackdropClick: args.closeOnBackdropClick ?? true,
+      backdrop: args?.backdrop ?? false,
+      closeOnBackdropClick: args?.closeOnBackdropClick ?? true,
       id,
       component: markRaw(component),
       componentProps: {
-        ...args.props,
+        ...args?.props,
         close
       },
       resolve: resolveFn,
       close,
-      openAudio: args.openAudio,
-      closeAudio: args.closeAudio
+      openAudio: args?.openAudio,
+      closeAudio: args?.closeAudio
     }
 
     modal_stack.value.push(entry)
 
-    if (args.openAudio) {
-      useAudio().play(args.openAudio)
+    if (args?.openAudio) {
+      useAudio().play(args?.openAudio)
     }
 
     return response

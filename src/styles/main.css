@@ -3,22 +3,9 @@
 @import 'tailwindcss';
 @import '@/styles/custom-styles.css';
 @import '@/styles/custom-variants.css';
+@import '@/styles/utilities.css';
 @import '@/styles/animations.css';
 @import '@/styles/markdown.css';
-
-/* @source inline("bg-green-400");
-@source inline("bg-blue-500");
-@source inline("bg-purple-500");
-@source inline("bg-pink-500");
-@source inline("bg-red-500");
-@source inline("bg-orange-500");
-
-@source inline("text-green-400");
-@source inline("text-blue-500");
-@source inline("text-purple-500");
-@source inline("text-pink-500");
-@source inline("text-red-500");
-@source inline("text-orange-500"); */
 
 @theme {
   --*: initial;
@@ -127,6 +114,8 @@
   --bg-sm: --spacing(20);
   --blur-4: 4px;
   --aspect-card: 7 / 9;
+  --page-width: 1500px;
+  --blur-md: 24px;
 
   /* Typography */
   --font-primary: 'Tilt Neon', sans-serif;

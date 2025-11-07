@@ -56,7 +56,7 @@ function onImageError() {
         <ui-button
           icon-left="settings"
           icon-only
-          class="absolute top-4 right-4"
+          class="absolute! top-4 right-4"
           theme="brown"
           size="sm"
           @click.stop="onSettingsClicked"
