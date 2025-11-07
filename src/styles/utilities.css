@@ -1,0 +1,28 @@
+@utility wave-bottom-* {
+  --wave-size: --value([length]); /* main control */
+  --wave-radius: var(--wave-size);
+  --wave-width: calc(var(--wave-size) * 1.788);
+  --crest-offset: calc(var(--wave-size) * 1.341);
+  --trough-offset: calc(var(--wave-size) * 0.895);
+  --baseline-offset: calc(var(--wave-size) * 0.447);
+  --crest-horizontal-shift: calc(50% - (var(--wave-width) / 2));
+
+  --wave-mask:
+      /* crest arc (upward bulge) */
+    radial-gradient(
+        var(--wave-radius) at 50% calc(100% - var(--crest-offset)),
+        #000 99%,
+        #0000 101%
+      )
+      var(--crest-horizontal-shift) 0 / var(--wave-width) 100%,
+    /* trough arc (downward dip) */
+      radial-gradient(
+        var(--wave-radius) at 50% calc(100% + var(--trough-offset)),
+        #0000 99%,
+        #000 101%
+      )
+      50% calc(100% - var(--baseline-offset)) / var(--wave-width) 100% repeat-x;
+
+  -webkit-mask: var(--wave-mask);
+  mask: var(--wave-mask);
+}

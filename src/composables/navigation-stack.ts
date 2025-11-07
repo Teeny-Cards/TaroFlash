@@ -11,6 +11,8 @@ export type NavigationEntry = {
   forwardPreset: TransitionPreset
 }
 
+export type NavigationStack = ReturnType<typeof useNavigationStack>
+
 export type NavigationStackOptions = {
   defaultPreset?: TransitionPreset
 }

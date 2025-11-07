@@ -6,7 +6,7 @@ import UiImage from '@/components/ui-kit/image.vue'
 
 const { t } = useI18n()
 
-const { createdAt = DateTime.now().toISO() } = defineProps<{
+const { createdAt = DateTime.now().toISO(), theme = 'green-400' } = defineProps<{
   createdAt: string
   displayName?: string
   cardComment?: string
@@ -22,14 +22,14 @@ const created_on = computed(() => {
 <template>
   <div
     data-testid="member-card"
-    class="bg-brown-300 rounded-8 border-brown-300 flex w-89 flex-col overflow-hidden border-8"
+    class="bg-brown-300 rounded-8 border-brown-300 flex w-89 flex-col overflow-hidden border-8 shadow-modal"
   >
     <div data-testid="member-card__header" class="flex items-center justify-center px-9 pt-6 pb-2">
       <h1 class="text-brown-700 text-5xl">{{ t('member-card.header') }}</h1>
     </div>
     <div
       data-testid="member-card__body"
-      class="wave-top flex h-full flex-col items-center gap-4.5 bg-(image:--bank-note) bg-(length:--bg-sm) px-8
+      class="wave-top flex h-full flex-col items-center gap-4.5 bg-(image:--bank-note) bg-size-(--bg-sm) px-8
         pt-9 pb-3"
       :class="`bg-${theme}`"
     >

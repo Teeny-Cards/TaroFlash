@@ -72,25 +72,27 @@ function onHover() {
 <style>
 /* Base button styles */
 .ui-kit-btn {
-  --btn-main-color: var(--color-blue-500);
-  --btn-secondary-color: var(--color-white);
-
-  height: max-content;
-  width: max-content;
+  position: relative;
 
   background-color: var(--btn-main-color);
   color: var(--btn-secondary-color);
   font-family: var(--font-primary);
   font-size: var(--btn-font-size);
+
   border-radius: var(--btn-border-radius);
-  gap: var(--btn-gap);
   padding: var(--btn-padding);
+  height: max-content;
+  width: max-content;
 
   display: flex;
+  gap: var(--btn-gap);
   align-items: center;
   justify-content: center;
   user-select: none;
   cursor: pointer;
+}
+.ui-kit-btn:hover {
+  outline: 2px solid var(--btn-hover-color);
 }
 
 .ui-kit-btn .btn-icon {
@@ -140,11 +142,11 @@ function onHover() {
   background-color: transparent;
   color: var(--btn-secondary-color);
 }
-
 .ui-kit-btn.btn-icon-only.btn-sm {
   --btn-padding: 4px;
 }
 
+/* Button tooltips */
 .ui-kit-btn__tooltip {
   display: none;
   position: absolute;
@@ -161,41 +163,49 @@ function onHover() {
 
   pointer-events: none;
 }
-
 .ui-kit-btn:hover .ui-kit-btn__tooltip {
   display: block;
 }
 
+/* Button themes */
 .ui-kit-btn.btn-blue {
   --btn-main-color: var(--color-blue-500);
   --btn-secondary-color: var(--color-white);
+  --btn-hover-color: var(--color-blue-400);
 }
 .ui-kit-btn.btn-green {
   --btn-main-color: var(--color-green-400);
   --btn-secondary-color: var(--color-white);
+  --btn-hover-color: var(--color-green-300);
 }
 .ui-kit-btn.btn-purple {
   --btn-main-color: var(--color-purple-400);
   --btn-secondary-color: var(--color-white);
+  --btn-hover-color: var(--color-purple-500);
 }
 .ui-kit-btn.btn-pink {
   --btn-main-color: var(--color-pink-500);
   --btn-secondary-color: var(--color-white);
+  --btn-hover-color: var(--color-pink-400);
 }
 .ui-kit-btn.btn-red {
   --btn-main-color: var(--color-red-500);
   --btn-secondary-color: var(--color-white);
+  --btn-hover-color: var(--color-red-400);
 }
 .ui-kit-btn.btn-orange {
   --btn-main-color: var(--color-orange-500);
   --btn-secondary-color: var(--color-white);
+  --btn-hover-color: var(--color-orange-400);
 }
 .ui-kit-btn.btn-brown {
-  --btn-main-color: var(--color-brown-700);
-  --btn-secondary-color: var(--color-white);
+  --btn-main-color: var(--color-brown-100);
+  --btn-secondary-color: var(--color-brown-700);
+  --btn-hover-color: var(--color-brown-500);
 }
 .ui-kit-btn.btn-grey {
   --btn-main-color: var(--color-grey-400);
   --btn-secondary-color: var(--color-white);
+  --btn-hover-color: var(--color-grey-500);
 }
 </style>
