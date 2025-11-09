@@ -1,5 +1,9 @@
 <template>
-  <router-view />
+  <nav-bar />
+
+  <main class="h-full w-full max-w-(--page-width) px-4 sm:px-16">
+    <router-view />
+  </main>
 
   <div
     data-testid="phone-container"
@@ -20,13 +24,14 @@
 
   <div
     v-if="sessionStore.isLoading"
-    class="absolute inset-0 z-10 flex items-center justify-center bg-green-400"
+    class="absolute inset-0 z-100 flex items-center justify-center bg-green-400"
   >
     Loading
   </div>
 </template>
 
 <script setup lang="ts">
+import NavBar from '@/components/nav-bar.vue'
 import { RouterView } from 'vue-router'
 import { useToast } from '@/composables/toast'
 import { useSessionStore } from '@/stores/session'

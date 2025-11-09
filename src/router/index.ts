@@ -3,7 +3,6 @@ import Dashboard from '@/views/dashboard.vue'
 import ShopView from '@/views/shop.vue'
 import LoginPage from '@/views/LoginPage.vue'
 import SignupPage from '@/views/SignupPage.vue'
-import AppView from '@/views/app.vue'
 import DeckView from '@/views/deck.vue'
 import { initUser } from '@/stores/initUser'
 
@@ -23,7 +22,6 @@ const router = createRouter({
     {
       path: '/',
       name: 'authenticated',
-      component: AppView,
       redirect: '/dashboard',
       beforeEnter: async () => {
         const authenticated = await initUser()

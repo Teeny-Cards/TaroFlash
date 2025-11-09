@@ -22,7 +22,7 @@ const emit = defineEmits<{
   <ui-popover
     position="right"
     :gap="10"
-    :fallback_placements="['top', 'bottom', 'left', 'right']"
+    :fallback_placements="['bottom', 'top', 'left', 'right']"
     :open="open"
     @close="emit('closed')"
   >

@@ -28,6 +28,7 @@
   --color-red-300: #ffa399;
   --color-orange-500: #fbc56f;
   --color-orange-400: #f7d279;
+  --color-brown-900: #4a3b30;
   --color-brown-700: #744e2a;
   --color-brown-500: #b8b1a9;
   --color-brown-300: #e7e0d5;
@@ -155,5 +156,16 @@
   html {
     font-family: var(--font-primary);
     font-size: var(--text-base);
+  }
+
+  .app-container {
+    width: 100%;
+    max-width: var(--page-width);
+    padding: 0 4rem;
+  }
+  @media (width >= 40rem) {
+    .app-container {
+      padding: 0 16rem;
+    }
   }
 }
