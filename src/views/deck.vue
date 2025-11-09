@@ -20,6 +20,7 @@ import { useToast } from '@/composables/toast'
 import UiButton from '@/components/ui-kit/button.vue'
 import SelectMenu from '@/components/views/deck-view/select-menu.vue'
 import TextEditorToolbar from '@/components/views/deck-view/text-editor-toolbar/index.vue'
+import { useShortcuts } from '@/composables/use-shortcuts'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -36,6 +37,7 @@ const deck = ref<Deck>()
 const active_tab = ref(0)
 const is_saving = ref(false)
 
+const { registerShortcut } = useShortcuts('deck-view')
 const {
   all_cards,
   active_card_id,
@@ -74,18 +76,23 @@ const tab_components: { [key: number]: any } = {
 
 onMounted(async () => {
   await refetchDeck()
-  document.addEventListener('keydown', onEsc)
+
+  registerShortcut({
+    id: 'cancel-edit',
+    combo: 'esc',
+    description: 'Cancel Edit',
+    handler: onEsc,
+    when: () => mode.value === 'edit'
+  })
 })
 
-onUnmounted(() => {
-  document.removeEventListener('keydown', onEsc)
-})
+async function onEsc() {
+  setMode('view')
+  deactivateCard()
+  audio.play('card_drop')
 
-async function onEsc(e: KeyboardEvent) {
-  if (e.key === 'Escape' && mode.value === 'edit') {
-    setMode('view')
-    deactivateCard()
-    audio.play('card_drop')
+  if (document.activeElement && document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur()
   }
 }
 

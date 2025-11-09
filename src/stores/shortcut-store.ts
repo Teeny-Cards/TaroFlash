@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, onBeforeUnmount, onMounted, reactive } from 'vue'
 
-export type KeyCombo = string // Canonical combo format: "ctrl+shift+k", "esc", "tab", "shift+tab"
 export type ScopeId = string
 export type ShortcutId = string
 
@@ -24,7 +23,7 @@ export type Shortcut = {
   advertise?: boolean // show in the menu even when inactive
   group?: string // group label for menu (e.g., "Card Editor")
   when?: () => boolean // trigger guard — callers provide their own conditions
-  handler: (ev: KeyboardEvent) => boolean | void // the handler. Return `true` if handled (prevents lower scopes)
+  handler: (ev: KeyboardEvent) => boolean | void | Promise<boolean | void> // the handler. Return `true` if handled (prevents lower scopes)
 }
 
 type Scope = {
@@ -45,20 +44,7 @@ function normalizeComboFromEvent(ev: KeyboardEvent): KeyCombo {
   // Map common names
   const key = k === 'escape' ? 'esc' : k === ' ' ? 'space' : k
   const parts = [...mods.sort(), key]
-  return parts.join('+')
-}
-
-function normalizeComboText(text: string): KeyCombo {
-  // "Shift + Tab" -> "shift+tab"
-  return text
-    .split('+')
-    .map((s) => s.trim().toLowerCase())
-    .sort((a, b) => {
-      // enforce mod order: alt,ctrl,meta,shift, then key
-      const order = { alt: 1, ctrl: 2, meta: 3, shift: 4 }
-      return (order[a as keyof typeof order] ?? 9) - (order[b as keyof typeof order] ?? 9)
-    })
-    .join('+')
+  return parts.join('+') as KeyCombo
 }
 
 let priorityCounter = 0
@@ -101,11 +87,14 @@ export const useShortcutStore = defineStore('shortcutStore', () => {
     document.removeEventListener('keydown', _handleKeyEvent)
   })
 
-  function pushScope(id: ScopeId): void {
-    if (scopes.find((s) => s.id === id)) return
+  function pushScope(id: ScopeId): ScopeId {
+    const existing = scopes.find((s) => s.id === id)
+    if (existing) return existing.id
 
     scopes.push({ id, priority: ++priorityCounter, shortcuts: new Map() })
     sortByPriority()
+
+    return id
   }
 
   function popScope(id?: ScopeId) {
@@ -130,8 +119,7 @@ export const useShortcutStore = defineStore('shortcutStore', () => {
     const scope = scopes.find((s) => s.id === scopeId)
     if (!scope) return
 
-    const normalized = { ...shortcut, combo: normalizeComboText(shortcut.combo) }
-    scope.shortcuts.set(normalized.id, normalized)
+    scope.shortcuts.set(shortcut.id, shortcut)
   }
 
   function unregisterShortcut(scopeId: ScopeId, shortcutId: ShortcutId) {
