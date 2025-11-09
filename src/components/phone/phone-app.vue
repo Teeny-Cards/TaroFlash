@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import UiIcon from '@/components/ui-kit/icon.vue'
+import { useAudio } from '@/composables/audio'
+import UiTooltip from '@/components/ui-kit/tooltip.vue'
 
 export type App = {
   name: string
   icon: string
+  hover_icon?: string
   theme: AppTheme
   shape?: AppShape
   col_span?: number
@@ -17,22 +20,33 @@ export type AppShape = 'circle' | 'square' | 'wavy'
 defineProps<{
   name: string
   icon: string
+  hover_icon?: string
   theme: AppTheme
   shape?: AppShape
   col_span?: number
   row_span?: number
+  click_action?: () => void
 }>()
+
+const audio = useAudio()
 </script>
 
 <template>
-  <button
+  <ui-tooltip
+    :text="name"
+    position="bottom"
+    :gap="-5"
+    element="button"
     data-testid="phone-app"
-    class="w-16 h-16 cursor-pointer hover:scale-110 relative transition-transform duration-50 flex items-center
-      justify-center text-white group"
+    class="w-15 h-15 cursor-pointer hover:scale-110 transition-transform duration-50 flex items-center
+      justify-center text-white group animation-safe:animate-bg-slide"
     :class="`theme-${theme} shape-${shape ?? 'square'} col-span-${col_span ?? 1} row-span-${row_span ?? 1}`"
+    @mouseenter="audio.play('pop_drip_mid')"
+    @click="click_action?.()"
   >
-    <ui-icon :src="icon" size="large" />
-  </button>
+    <ui-icon :src="icon" size="4xl" :class="{ 'group-hover:hidden': hover_icon }" />
+    <ui-icon v-if="hover_icon" :src="hover_icon" size="4xl" class="hidden group-hover:block" />
+  </ui-tooltip>
 </template>
 
 <style>
@@ -88,30 +102,27 @@ defineProps<{
 
 .theme-blue {
   background-color: var(--color-blue-500);
-  outline-color: var(--color-blue-500);
 }
 .theme-purple {
-  background-color: var(--color-purple-400);
-  outline-color: var(--color-purple-400);
+  background-color: var(--color-purple-500);
 }
 .theme-orange {
   background-color: var(--color-orange-500);
-  outline-color: var(--color-orange-500);
 }
 .theme-green {
   background-color: var(--color-green-400);
-  outline-color: var(--color-green-400);
 }
 .theme-pink {
   background-color: var(--color-pink-400);
-  outline-color: var(--color-pink-400);
 }
 .theme-red {
   background-color: var(--color-red-400);
-  outline-color: var(--color-red-400);
 }
 .theme-brown {
   background-color: var(--color-brown-500);
-  outline-color: var(--color-brown-500);
+}
+
+.theme-purple:hover {
+  background-image: var(--diagonal-stripes);
 }
 </style>
