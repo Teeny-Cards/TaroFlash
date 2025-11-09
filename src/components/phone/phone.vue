@@ -3,14 +3,34 @@ import Home from '@/components/phone/screens/home.vue'
 import { useNavigationStack } from '@/composables/navigation-stack'
 import { onMounted, ref, provide } from 'vue'
 import { useAudio } from '@/composables/audio'
+import { useShortcuts } from '@/composables/use-shortcuts'
 
 const nav = useNavigationStack()
+const { registerShortcut } = useShortcuts('phone')
+
 const open = ref(false)
 
 provide('phone-nav', nav)
 
 onMounted(() => {
   nav.resetTo(Home) // first show animates with defaultPreset
+
+  registerShortcut([
+    {
+      id: 'open-phone',
+      combo: 'esc',
+      description: 'Open Phone',
+      handler: openPhone,
+      when: () => !open.value
+    },
+    {
+      id: 'close-phone',
+      combo: 'esc',
+      description: 'Close Phone',
+      handler: closePhone,
+      when: () => open.value
+    }
+  ])
 })
 
 function openPhone() {

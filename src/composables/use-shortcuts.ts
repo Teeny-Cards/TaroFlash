@@ -1,42 +1,39 @@
-import { onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount } from 'vue'
 import { useShortcutStore, type Shortcut, type ScopeId } from '@/stores/shortcut-store'
 
-export function useShortcuts(scopeId: ScopeId) {
+export function useShortcuts(id: ScopeId) {
   const store = useShortcutStore()
+  const scope_id = store.pushScope(id)
 
-  onMounted(() => {
-    store.pushScope(scopeId)
-  })
-
-  function register(shortcuts: Shortcut[] | Shortcut) {
+  function registerShortcut(shortcuts: Shortcut[] | Shortcut) {
     const _shortcuts = Array.isArray(shortcuts) ? shortcuts : [shortcuts]
 
     for (const shortcut of _shortcuts) {
-      store.registerShortcut(scopeId, shortcut)
+      store.registerShortcut(scope_id, shortcut)
     }
 
     // Return a function to unregister the shortcuts
     return () => {
-      for (const sc of _shortcuts) store.unregisterShortcut(scopeId, sc.id)
+      for (const sc of _shortcuts) store.unregisterShortcut(scope_id, sc.id)
     }
   }
 
-  function clear() {
-    store.clearScope(scopeId)
+  function clearScope() {
+    store.clearScope(scope_id)
   }
 
-  function pop() {
-    store.popScope(scopeId)
+  function popScope() {
+    store.popScope(scope_id)
   }
 
   onBeforeUnmount(() => {
-    pop()
+    popScope()
   })
 
   return {
-    scopeId,
-    register,
-    clear,
-    pop
+    scope_id,
+    registerShortcut,
+    clearScope,
+    popScope
   }
 }

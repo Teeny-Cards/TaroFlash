@@ -5,6 +5,7 @@ import UiButton from '@/components/ui-kit/button.vue'
 import UiDivider from '@/components/ui-kit/divider.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { useShortcuts } from '@/composables/use-shortcuts'
 
 const { mode, activeCardId, cards } = defineProps<{
   cards: Card[]
@@ -30,25 +31,32 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { registerShortcut } = useShortcuts('card-list')
 
 const active_side = ref<'front' | 'back'>('front')
 
 onMounted(() => {
-  document.addEventListener('keydown', onTab)
+  registerShortcut([
+    {
+      id: 'tab-card',
+      combo: 'tab',
+      description: 'Tab to Next Card',
+      handler: () => onTab(false),
+      when: () => activeCardId !== undefined
+    },
+    {
+      id: 'tab-card',
+      combo: 'shift+tab',
+      description: 'Tab to Next Card',
+      handler: () => onTab(true),
+      when: () => activeCardId !== undefined
+    }
+  ])
 })
 
-onUnmounted(() => {
-  document.removeEventListener('keydown', onTab)
-})
-
-async function onTab(e: KeyboardEvent) {
-  if (e.key !== 'Tab') return
-
-  const is_going_back = e.shiftKey
+async function onTab(is_going_back: boolean) {
   if (active_side.value === 'front' && !is_going_back) return
   if (active_side.value === 'back' && is_going_back) return
-
-  e.preventDefault()
 
   const active_card_index = cards.findIndex((card) => card.id === activeCardId)
   const next_card_index = is_going_back ? active_card_index - 1 : active_card_index + 1
