@@ -1,41 +1,64 @@
-// Allowed modifier names (lowercase)
-declare type Modifier = 'ctrl' | 'meta' | 'alt' | 'shift'
+// ---- Key typing helpers ----
+type Modifier = 'ctrl' | 'alt' | 'shift' | 'meta'
+type Digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+type Letter =
+  | 'a'
+  | 'b'
+  | 'c'
+  | 'd'
+  | 'e'
+  | 'f'
+  | 'g'
+  | 'h'
+  | 'i'
+  | 'j'
+  | 'k'
+  | 'l'
+  | 'm'
+  | 'n'
+  | 'o'
+  | 'p'
+  | 'q'
+  | 'r'
+  | 's'
+  | 't'
+  | 'u'
+  | 'v'
+  | 'w'
+  | 'x'
+  | 'y'
+  | 'z'
 
-// Single modifier format: "ctrl+"
-type ModString<M extends Modifier> = `${M}+`
+type FunctionKey =
+  | 'f1'
+  | 'f2'
+  | 'f3'
+  | 'f4'
+  | 'f5'
+  | 'f6'
+  | 'f7'
+  | 'f8'
+  | 'f9'
+  | 'f10'
+  | 'f11'
+  | 'f12'
 
-// One or more modifiers in canonical order:
-declare type ModPrefix =
-  | ''
-  | `${ModString<'ctrl'>}`
-  | `${ModString<'ctrl'>}${ModString<'meta'>}`
-  | `${ModString<'ctrl'>}${ModString<'meta'>}${ModString<'alt'>}`
-  | `${ModString<'ctrl'>}${ModString<'meta'>}${ModString<'alt'>}${ModString<'shift'>}`
-  | `${ModString<'ctrl'>}${ModString<'alt'>}`
-  | `${ModString<'ctrl'>}${ModString<'alt'>}${ModString<'shift'>}`
-  | `${ModString<'ctrl'>}${ModString<'shift'>}`
-  | `${ModString<'meta'>}`
-  | `${ModString<'meta'>}${ModString<'alt'>}`
-  | `${ModString<'meta'>}${ModString<'alt'>}${ModString<'shift'>}`
-  | `${ModString<'meta'>}${ModString<'shift'>}`
-  | `${ModString<'alt'>}`
-  | `${ModString<'alt'>}${ModString<'shift'>}`
-  | `${ModString<'shift'>}`
-// (This is still manageable and keeps perfect autocomplete.)
-
-// Allowed final keys:
-// You can expand or customize this to match your app behavior.
-declare type KeyBase =
-  | 'esc'
-  | 'tab'
-  | 'space'
-  | 'enter'
-  | 'backspace'
-  | 'delete'
+type NavigationKey =
   | 'arrowup'
   | 'arrowdown'
   | 'arrowleft'
   | 'arrowright'
+  | 'home'
+  | 'end'
+  | 'pageup'
+  | 'pagedown'
 
-// Final strongly typed KeyCombo:
-declare type KeyCombo = `${ModPrefix}${KeyBase}`
+type EditingKey = 'tab' | 'enter' | 'space' | 'backspace' | 'delete' | 'insert' | 'escape' | 'esc'
+
+type PunctuationKey = '-' | '=' | '[' | ']' | ';' | "'" | ',' | '.' | '/'
+
+declare type BaseKey = Letter | Digit | FunctionKey | NavigationKey | EditingKey | PunctuationKey
+
+// Canonical normalized format: lowercase, '+'-joined, modifiers first (alpha-sorted).
+// Examples: "esc", "tab", "shift+tab", "meta+enter"
+declare type KeyCombo = BaseKey | `${Modifier}+${BaseKey}`

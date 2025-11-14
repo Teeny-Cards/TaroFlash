@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, onBeforeUnmount, onMounted, reactive } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 
 export type ScopeId = string
 export type ShortcutId = string
@@ -50,13 +50,14 @@ function normalizeComboFromEvent(ev: KeyboardEvent): KeyCombo {
 let priorityCounter = 0
 
 export const useShortcutStore = defineStore('shortcutStore', () => {
-  const scopes = reactive<Scope[]>([])
+  const stack = reactive<Scope[]>([])
+  const active_namespace = ref<ScopeId | undefined>()
 
   const registry = computed(() => {
     const items: ShortcutRegistry[] = []
-    const topScopeId = scopes.at(-1)?.id
+    const topScopeId = stack.at(-1)?.id
 
-    for (const scope of scopes) {
+    for (const scope of stack) {
       for (const shortcut of scope.shortcuts.values()) {
         const active = shortcut.when ? !!shortcut.when() : true
         const advertised = !!shortcut.advertise
@@ -79,6 +80,15 @@ export const useShortcutStore = defineStore('shortcutStore', () => {
     return items
   })
 
+  const filtered_stack = computed(() => {
+    if (!active_namespace.value) return stack
+
+    return stack.filter((scope) => {
+      const namespace = scope.id.split('/')[0]
+      return namespace === active_namespace.value
+    })
+  })
+
   onMounted(() => {
     document.addEventListener('keydown', _handleKeyEvent)
   })
@@ -88,49 +98,49 @@ export const useShortcutStore = defineStore('shortcutStore', () => {
   })
 
   function pushScope(id: ScopeId): ScopeId {
-    const existing = scopes.find((s) => s.id === id)
+    const existing = stack.find((s) => s.id === id)
     if (existing) return existing.id
 
-    scopes.push({ id, priority: ++priorityCounter, shortcuts: new Map() })
+    stack.push({ id, priority: ++priorityCounter, shortcuts: new Map() })
     sortByPriority()
 
     return id
   }
 
   function popScope(id?: ScopeId) {
-    if (!scopes.length) return
+    if (!stack.length) return
 
     if (!id) {
-      scopes.pop()
+      stack.pop()
       return
     }
 
-    const idx = scopes.findIndex((s) => s.id === id)
+    const idx = stack.findIndex((s) => s.id === id)
     if (idx >= 0) {
-      scopes.splice(idx, 1)
+      stack.splice(idx, 1)
     }
   }
 
   function sortByPriority() {
-    scopes.sort((a, b) => a.priority - b.priority)
+    stack.sort((a, b) => a.priority - b.priority)
   }
 
   function registerShortcut(scopeId: ScopeId, shortcut: Shortcut) {
-    const scope = scopes.find((s) => s.id === scopeId)
+    const scope = stack.find((s) => s.id === scopeId)
     if (!scope) return
 
     scope.shortcuts.set(shortcut.id, shortcut)
   }
 
   function unregisterShortcut(scopeId: ScopeId, shortcutId: ShortcutId) {
-    const scope = scopes.find((s) => s.id === scopeId)
+    const scope = stack.find((s) => s.id === scopeId)
     if (!scope) return
 
     scope.shortcuts.delete(shortcutId)
   }
 
   function clearScope(scopeId: ScopeId) {
-    const scope = scopes.find((s) => s.id === scopeId)
+    const scope = stack.find((s) => s.id === scopeId)
     if (!scope) return
 
     scope.shortcuts.clear()
@@ -139,9 +149,9 @@ export const useShortcutStore = defineStore('shortcutStore', () => {
   function _handleKeyEvent(ev: KeyboardEvent) {
     const combo = normalizeComboFromEvent(ev)
 
-    // Walk scopes from top to bottom
-    for (let i = scopes.length - 1; i >= 0; i--) {
-      const scope = scopes[i]
+    // Walk stack from top to bottom
+    for (let i = filtered_stack.value.length - 1; i >= 0; i--) {
+      const scope = filtered_stack.value[i]
 
       // find first matching, active shortcut within this scope
       for (const sc of scope.shortcuts.values()) {
@@ -165,13 +175,18 @@ export const useShortcutStore = defineStore('shortcutStore', () => {
     }
   }
 
+  function setActiveNamespace(namespace: ScopeId | undefined) {
+    active_namespace.value = namespace?.split('/')[0]
+  }
+
   return {
-    scopes,
+    stack,
     registry,
     pushScope,
     popScope,
     clearScope,
     registerShortcut,
-    unregisterShortcut
+    unregisterShortcut,
+    setActiveNamespace
   }
 })

@@ -6,7 +6,7 @@ import { useAudio } from '@/composables/audio'
 import { useShortcuts } from '@/composables/use-shortcuts'
 
 const nav = useNavigationStack()
-const { registerShortcut } = useShortcuts('phone')
+const { registerShortcut, trapFocus, releaseFocus } = useShortcuts('phone')
 
 const open = ref(false)
 
@@ -34,13 +34,21 @@ onMounted(() => {
 })
 
 function openPhone() {
+  trapFocus()
   open.value = true
   useAudio().play('pop_window')
 }
 
 function closePhone() {
+  if (nav.can_go_back.value) {
+    nav.pop()
+    return
+  }
+
   open.value = false
+  releaseFocus()
   useAudio().play('pop_window')
+  nav.resetTo(Home)
 }
 </script>
 
@@ -52,11 +60,8 @@ function closePhone() {
     leave-active-class="transition-[all] ease-in-out duration-100"
   >
     <div v-if="open" data-testid="phone" class="pointer-events-auto h-min absolute top-4 right-0">
-      <div
-        class="w-60 h-89.5 bg-brown-300 shadow-popover rounded-16 overflow-hidden"
-        @click="closePhone"
-      >
-        <transition :name="nav.transitionName.value" mode="out-in">
+      <div class="w-60 h-89.5 bg-brown-300 shadow-popover rounded-16 overflow-hidden relative">
+        <transition :name="nav.transitionName.value">
           <component
             v-if="nav.top.value"
             :is="nav.top.value.component"
@@ -90,3 +95,45 @@ function closePhone() {
     </div>
   </transition>
 </template>
+
+<style>
+.slide-left-enter-active,
+.slide-right-enter-active,
+.pop-up-enter-active,
+.pop-down-enter-active,
+.slide-left-leave-active,
+.slide-right-leave-active,
+.pop-up-leave-active,
+.pop-down-leave-active {
+  transition-property: transform, opacity;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.1s;
+}
+
+.slide-left-leave-active,
+.slide-right-leave-active,
+.pop-up-leave-active,
+.pop-down-leave-active {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
+
+.slide-left-enter-from,
+.slide-right-leave-to {
+  transform: translateX(100%);
+}
+
+.slide-left-leave-to,
+.slide-right-enter-from {
+  transform: translateX(-100%);
+}
+
+.pop-down-enter-from,
+.pop-down-leave-to,
+.pop-up-enter-from,
+.pop-up-leave-to {
+  transform: scale(50%);
+  opacity: 0;
+}
+</style>

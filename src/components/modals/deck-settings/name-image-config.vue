@@ -58,8 +58,6 @@ function onImageRemoved() {
           icon-only
           class="ring-brown-300 absolute! -top-4 -left-4 ring-6"
         />
-
-        <ui-loader v-if="loading" />
       </image-uploader>
     </card>
     <ui-input

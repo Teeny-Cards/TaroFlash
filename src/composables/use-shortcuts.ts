@@ -18,6 +18,14 @@ export function useShortcuts(id: ScopeId) {
     }
   }
 
+  function trapFocus() {
+    store.setActiveNamespace(id)
+  }
+
+  function releaseFocus() {
+    store.setActiveNamespace(undefined)
+  }
+
   function clearScope() {
     store.clearScope(scope_id)
   }
@@ -27,12 +35,15 @@ export function useShortcuts(id: ScopeId) {
   }
 
   onBeforeUnmount(() => {
+    releaseFocus()
     popScope()
   })
 
   return {
     scope_id,
     registerShortcut,
+    trapFocus,
+    releaseFocus,
     clearScope,
     popScope
   }
