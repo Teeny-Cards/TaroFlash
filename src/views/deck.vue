@@ -82,7 +82,7 @@ onMounted(async () => {
     combo: 'esc',
     description: 'Cancel Edit',
     handler: onEsc,
-    when: () => mode.value === 'edit'
+    when: () => mode.value === 'edit' || mode.value === 'select'
   })
 })
 

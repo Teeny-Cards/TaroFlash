@@ -14,7 +14,7 @@ export type NavigationEntry = {
 export type NavigationStack = ReturnType<typeof useNavigationStack>
 
 export type NavigationStackOptions = {
-  defaultPreset?: TransitionPreset
+  default_preset?: TransitionPreset
 }
 
 type NavigationOptions = {
@@ -31,33 +31,33 @@ const reverse_preset: { [key in TransitionPreset]: TransitionPreset } = {
 }
 
 export function useNavigationStack(opts: NavigationStackOptions = {}) {
-  const defaultPreset = opts.defaultPreset ?? 'none'
+  const default_preset = opts.default_preset ?? 'slide-left'
 
   const stack = ref<NavigationEntry[]>([])
-  const transitionName = ref<TransitionPreset>(defaultPreset)
+  const transitionName = ref<TransitionPreset>(default_preset)
   const lastAction = ref<NavAction>('push')
   const _key = ref(0)
 
   const top = computed(() => stack.value[stack.value.length - 1] ?? null)
-  const canGoBack = computed(() => stack.value.length > 1)
+  const can_go_back = computed(() => stack.value.length > 1)
 
   function _makeEntry(component: Component, opts: NavigationOptions = {}): NavigationEntry {
     return {
       key: ++_key.value,
       component,
       props: opts.props,
-      forwardPreset: opts.transition_preset ?? 'none'
+      forwardPreset: opts.transition_preset ?? default_preset
     }
   }
 
   function resetTo(component: Component, opts?: NavigationOptions) {
-    transitionName.value = opts?.transition_preset ?? 'pop-down'
+    transitionName.value = opts?.transition_preset ?? default_preset
     lastAction.value = 'push'
     stack.value.splice(0, stack.value.length, _makeEntry(component, opts))
   }
 
   function push(component: Component, opts?: NavigationOptions) {
-    transitionName.value = opts?.transition_preset ?? 'pop-up'
+    transitionName.value = opts?.transition_preset ?? default_preset
     lastAction.value = 'push'
     stack.value.push(_makeEntry(component, opts))
   }
@@ -78,5 +78,5 @@ export function useNavigationStack(opts: NavigationStackOptions = {}) {
     stack.value.pop()
   }
 
-  return { stack, transitionName, lastAction, top, canGoBack, resetTo, push, replace, pop }
+  return { stack, transitionName, lastAction, top, can_go_back, resetTo, push, replace, pop }
 }

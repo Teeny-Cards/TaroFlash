@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import UiIcon from '@/components/ui-kit/icon.vue'
+import UiImage from '@/components/ui-kit/image.vue'
 import { useAudio } from '@/composables/audio'
 import UiTooltip from '@/components/ui-kit/tooltip.vue'
 
@@ -38,14 +38,18 @@ const audio = useAudio()
     :gap="-5"
     element="button"
     data-testid="phone-app"
-    class="w-15 h-15 cursor-pointer hover:scale-110 transition-transform duration-50 flex items-center
-      justify-center text-white group animation-safe:animate-bg-slide"
+    class="phone-app w-15 h-15 cursor-pointer hover:scale-110 focus:scale-110 transition-transform duration-50
+      flex items-center justify-center text-white group animation-safe:animate-bg-slide outline-none"
     :class="`theme-${theme} shape-${shape ?? 'square'} col-span-${col_span ?? 1} row-span-${row_span ?? 1}`"
     @mouseenter="audio.play('pop_drip_mid')"
     @click="click_action?.()"
   >
-    <ui-icon :src="icon" size="4xl" :class="{ 'group-hover:hidden': hover_icon }" />
-    <ui-icon v-if="hover_icon" :src="hover_icon" size="4xl" class="hidden group-hover:block" />
+    <ui-image :src="icon" :class="{ 'group-hover:hidden group-focus:hidden': hover_icon }" />
+    <ui-image
+      v-if="hover_icon"
+      :src="hover_icon"
+      class="hidden group-hover:block group-focus:block"
+    />
   </ui-tooltip>
 </template>
 
@@ -119,10 +123,11 @@ const audio = useAudio()
   background-color: var(--color-red-400);
 }
 .theme-brown {
-  background-color: var(--color-brown-500);
+  background-color: var(--color-brown-100);
 }
 
-.theme-purple:hover {
+.phone-app:hover,
+.phone-app:focus {
   background-image: var(--diagonal-stripes);
 }
 </style>

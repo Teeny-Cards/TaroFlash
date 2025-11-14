@@ -58,7 +58,8 @@ const { floatingStyles } = useFloating(triggerRef, popoverRef, {
   z-index: 10;
 }
 
-.ui-tooltip-trigger:hover + .ui-tooltip {
+.ui-tooltip-trigger:hover + .ui-tooltip,
+.ui-tooltip-trigger:focus + .ui-tooltip {
   display: block;
 }
 </style>

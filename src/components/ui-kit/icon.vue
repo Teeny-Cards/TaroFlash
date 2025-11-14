@@ -1,7 +1,3 @@
-<template>
-  <component data-testid="ui-kit-icon" :is="iconComponent" :class="iconSize[size]" :alt="src" />
-</template>
-
 <script setup lang="ts">
 import { type Component, computed } from 'vue'
 
@@ -19,6 +15,7 @@ const icons: Record<string, Component> = import.meta.glob('../../assets/icons/*.
 const iconComponent = computed(() => {
   const icon = icons[`../../assets/icons/${src}.svg`]
   if (!icon) console.warn(`Missing icon: ${src}`)
+
   return icon
 })
 
@@ -33,3 +30,7 @@ const iconSize: { [key: string]: string } = {
   xs: 'w-3 h-3'
 }
 </script>
+
+<template>
+  <component data-testid="ui-kit-icon" :is="iconComponent" :class="iconSize[size]" :alt="src" />
+</template>
