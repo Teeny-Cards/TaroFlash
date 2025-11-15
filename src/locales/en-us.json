@@ -28,6 +28,13 @@
   "member-card.title": "TITLE",
   "member-card.registration": "Reg. {date}",
 
+  "settings.app-settings.title": "App Settings",
+  "settings.app-settings.audio.label": "Audio",
+  "settings.app-settings.audio.interface": "Interface Volume",
+  "settings.app-settings.audio.alerts": "Alert Volume",
+  "settings.app-settings.audio.rewards": "Reward Volume",
+  "settings.app-settings.accessibility.label": "Accessibility",
+
   "alert.generic-title": "Continue?",
   "alert.generic-message": "Are you sure you want to continue?",
   "alert.delete-card": "Delete Card? | Delete {count} Cards?",

@@ -67,6 +67,7 @@ function closePhone() {
             :is="nav.top.value.component"
             v-bind="nav.top.value.props"
             :key="nav.top.value.key"
+            @close="closePhone"
           />
         </transition>
       </div>

@@ -14,6 +14,7 @@ const {
   gap?: number
   fallback_placements?: Placement[]
   element?: 'div' | 'span' | 'button'
+  visible?: boolean
 }>()
 
 const triggerRef = useTemplateRef<HTMLElement>('ui-tooltip-trigger')
@@ -33,11 +34,16 @@ const { floatingStyles } = useFloating(triggerRef, popoverRef, {
 </script>
 
 <template>
-  <component :is="element" ref="ui-tooltip-trigger" class="ui-tooltip-trigger" v-bind="$attrs"
-    ><slot
-  /></component>
+  <component :is="element" ref="ui-tooltip-trigger" class="ui-tooltip-trigger" v-bind="$attrs">
+    <slot></slot>
+  </component>
 
-  <div ref="ui-tooltip" :style="floatingStyles" class="ui-tooltip">
+  <div
+    ref="ui-tooltip"
+    :style="floatingStyles"
+    class="ui-tooltip"
+    :class="{ 'ui-tooltip--visible': visible }"
+  >
     {{ text }}
   </div>
 </template>
@@ -56,6 +62,10 @@ const { floatingStyles } = useFloating(triggerRef, popoverRef, {
 
   pointer-events: none;
   z-index: 10;
+  user-select: none;
+}
+.ui-tooltip--visible {
+  display: block;
 }
 
 .ui-tooltip-trigger:hover + .ui-tooltip,

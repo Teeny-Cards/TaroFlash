@@ -148,14 +148,14 @@ async function refetchDeck() {
 async function onDeleteCards(id?: number) {
   const count = selected_card_ids.value.length + (id !== undefined ? 1 : 0)
 
-  const did_confirm = await alert.warn({
+  const { response: did_confirm } = alert.warn({
     title: t('alert.delete-card', { count }),
     message: t('alert.delete-card.message', { count }),
     confirmLabel: t('common.delete'),
     confirmAudio: 'trash_crumple_short'
   })
 
-  if (did_confirm) {
+  if (await did_confirm) {
     if (id !== undefined) selectCard(id)
 
     await deleteCards()
@@ -217,7 +217,7 @@ async function onMoveCards(id?: number) {
 
   const selected_cards = getSelectedCards()
 
-  const response = await modal.open<MoveCardsModalResponse>(MoveCardsModal, {
+  const { response } = modal.open<MoveCardsModalResponse>(MoveCardsModal, {
     backdrop: true,
     props: {
       cards: selected_cards,
@@ -227,13 +227,15 @@ async function onMoveCards(id?: number) {
     closeAudio: 'double-pop-down'
   })
 
-  if (response === false && id !== undefined) {
+  const res = await response
+
+  if (res === false && id !== undefined) {
     deselectCard(id)
     return
   }
 
-  if (typeof response === 'object') {
-    await moveCardsToDeck(selected_cards, response.deck_id)
+  if (typeof res === 'object') {
+    await moveCardsToDeck(selected_cards, res.deck_id)
     await refetchDeck()
   }
 }

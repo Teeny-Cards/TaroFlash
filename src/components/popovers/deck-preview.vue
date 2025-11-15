@@ -13,14 +13,14 @@ const emit = defineEmits<{ (e: 'study'): void; (e: 'updated'): void }>()
 const show_image = ref(true)
 
 async function onSettingsClicked() {
-  const did_update = await modal.open(deckSettings, {
+  const { response } = modal.open(deckSettings, {
     props: { deck },
     backdrop: true,
     openAudio: 'double-pop-up',
     closeAudio: 'double-pop-down'
   })
 
-  if (did_update) {
+  if (await response) {
     emit('updated')
   }
 }

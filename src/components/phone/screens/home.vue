@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import { inject, onBeforeMount, onMounted, ref } from 'vue'
+import { inject, onMounted, ref } from 'vue'
 import phoneApp, { type App } from '../phone-app.vue'
 import { useRouter } from 'vue-router'
 import { type NavigationStack } from '@/composables/navigation-stack'
 import { useModal } from '@/composables/modal'
 import Inventory from '@/components/modals/inventory.vue'
-import memberCard from '@/components/modals/member-card.vue'
+import settings from '@/components/modals/settings/index.vue'
 import Shortcuts from './shortcuts.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { useAudio } from '@/composables/audio'
+
+const emit = defineEmits<{
+  (e: 'close'): void
+}>()
 
 const router = useRouter()
 const modal = useModal()
@@ -73,7 +77,13 @@ function focusApp(index: number) {
 }
 
 function openApp() {
-  apps[active_app.value].click_action?.()
+  apps[active_app.value].handler?.()
+}
+
+function openModal(component: any, args?: any) {
+  modal.close()
+  modal.open(component, args)
+  emit('close')
 }
 
 const apps: App[] = [
@@ -81,21 +91,22 @@ const apps: App[] = [
     name: 'Settings',
     icon: 'settings',
     hover_icon: 'settings-hover',
-    theme: 'pink'
+    theme: 'pink',
+    handler: () => openModal(settings, { backdrop: true })
   },
   {
     name: 'Inventory',
     icon: 'inventory',
     hover_icon: 'inventory-hover',
     theme: 'purple',
-    click_action: () => modal.open(Inventory, { backdrop: true })
+    handler: () => openModal(Inventory, { backdrop: true })
   },
   {
     name: 'Shortcuts',
     icon: 'shortcuts',
     hover_icon: 'shortcuts-hover',
     theme: 'orange',
-    click_action: () => phone_nav?.push(Shortcuts, { transition_preset: 'pop-up' })
+    handler: () => phone_nav?.push(Shortcuts, { transition_preset: 'pop-up' })
   }
 ]
 </script>

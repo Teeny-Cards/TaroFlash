@@ -8,8 +8,8 @@
       data-testid="nav-bar"
       class="flex w-full max-w-(--page-width) items-center justify-between sm:px-16 relative"
     >
-      <RouterLink to="/dashboard" class="flex items-center gap-2 text-4xl text-white">
-        <ui-image src="taro-logo_3" class="max-w-6" />
+      <RouterLink to="/dashboard" class="flex items-center text-4xl text-white">
+        <ui-icon src="logo" size="xl" />
         <div>TaroFlash</div>
       </RouterLink>
     </div>
@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import { onMounted, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
-import UiImage from '@/components/ui-kit/image.vue'
+import UiIcon from '@/components/ui-kit/icon.vue'
 
 const nav_bar = useTemplateRef('nav-bar')
 
