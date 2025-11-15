@@ -16,15 +16,15 @@ type AlertArgs = {
 export function useAlert() {
   const modal = useModal()
 
-  function warn(args?: AlertArgs): Promise<boolean> {
+  function warn(args?: AlertArgs): { response: Promise<any>; close: any } {
     return _openAlert('warn', args)
   }
 
-  function info(args?: AlertArgs): Promise<boolean> {
+  function info(args?: AlertArgs): { response: Promise<any>; close: any } {
     return _openAlert('info', args)
   }
 
-  function _openAlert(type: AlertType, args?: AlertArgs): Promise<boolean> {
+  function _openAlert(type: AlertType, args?: AlertArgs): { response: Promise<any>; close: any } {
     const { backdrop, global_close, openAudio, ...props } = args ?? {}
 
     return modal.open(alert, {

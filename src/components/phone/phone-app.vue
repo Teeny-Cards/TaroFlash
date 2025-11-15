@@ -11,7 +11,7 @@ export type App = {
   shape?: AppShape
   col_span?: number
   row_span?: number
-  click_action?: () => void
+  handler?: () => void
 }
 
 export type AppTheme = 'blue' | 'purple' | 'orange' | 'green' | 'pink' | 'red' | 'brown'
@@ -25,7 +25,7 @@ defineProps<{
   shape?: AppShape
   col_span?: number
   row_span?: number
-  click_action?: () => void
+  handler?: () => void
 }>()
 
 const audio = useAudio()
@@ -42,7 +42,7 @@ const audio = useAudio()
       flex items-center justify-center text-white group animation-safe:animate-bg-slide outline-none"
     :class="`theme-${theme} shape-${shape ?? 'square'} col-span-${col_span ?? 1} row-span-${row_span ?? 1}`"
     @mouseenter="audio.play('pop_drip_mid')"
-    @click="click_action?.()"
+    @click="handler?.()"
   >
     <ui-image :src="icon" :class="{ 'group-hover:hidden group-focus:hidden': hover_icon }" />
     <ui-image

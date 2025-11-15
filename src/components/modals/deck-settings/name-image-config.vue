@@ -6,7 +6,6 @@ import { type ImageUploadEvent } from '@/components/image-uploader.vue'
 import { ref } from 'vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiInput from '@/components/ui-kit/input.vue'
-import UiLoader from '@/components/ui-kit/loader.vue'
 
 const { t } = useI18n()
 

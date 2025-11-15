@@ -18,14 +18,14 @@ const study_disabled = computed(() => {
 })
 
 async function onSettingsClicked() {
-  const did_update = await modal.open(deckSettings, {
+  const { response } = modal.open(deckSettings, {
     props: { deck },
     backdrop: true,
     openAudio: 'etc_camera_reel',
     closeAudio: 'card_drop'
   })
 
-  if (await did_update) {
+  if (await response) {
     emit('updated')
   }
 }

@@ -22,7 +22,7 @@ async function onSave() {
 }
 
 async function onDeleted() {
-  const did_confirm = await alert.warn({
+  const { response: did_confirm } = alert.warn({
     title: t('alert.delete-deck'),
     message: t('alert.delete-deck.message'),
     confirmLabel: t('common.delete'),
@@ -30,7 +30,7 @@ async function onDeleted() {
     cancelAudio: 'digi_powerdown'
   })
 
-  if (did_confirm) {
+  if (await did_confirm) {
     await deleteDeck()
     close(true)
   }

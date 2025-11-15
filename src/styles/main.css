@@ -13,6 +13,7 @@
 
   --color-white: #ffffff;
   --color-black: #000000;
+  --color-blue-900: #2d455e;
   --color-blue-500: #11b7d4;
   --color-blue-400: #68d1df;
   --color-green-400: #a4c6ae;
@@ -51,6 +52,7 @@
   --radius-6: --spacing(6); /* 24px */
   --radius-6_5: --spacing(6.5); /* 26px */
   --radius-7: --spacing(7); /* 28px */
+  --radius-7_5: --spacing(7.5); /* 30px */
   --radius-8: --spacing(8); /* 32px */
   --radius-9: --spacing(9); /* 36px */
   --radius-10: --spacing(10); /* 40px */

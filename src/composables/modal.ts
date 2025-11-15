@@ -26,7 +26,10 @@ type OpenArgs = {
 const modal_stack = ref<ModalEntry[]>([])
 
 export function useModal() {
-  function open<T = any>(component: any, args?: OpenArgs): Promise<T | boolean> {
+  function open<T = any>(
+    component: any,
+    args?: OpenArgs
+  ): { response: Promise<T | boolean>; close: any } {
     let resolveFn!: (result: any) => void
 
     const id = uid()
@@ -78,7 +81,7 @@ export function useModal() {
       useAudio().play(args?.openAudio)
     }
 
-    return response
+    return { response, close }
   }
 
   function close(id?: string, response: boolean = false) {
