@@ -1,66 +1,47 @@
-<template>
-  <div class="rounded-12 border border-gray-400 p-4">
-    <div class="flex w-96 flex-col items-center gap-8 p-8">
-      <h1 class="text-3xl font-bold">{{ signText }}</h1>
-      <input
-        type="email"
-        placeholder="Email"
-        autocomplete="email"
-        v-model="email"
-        class="w-full border-b border-gray-400 bg-transparent px-2 py-1 focus:outline-hidden"
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        :autocomplete="props.signIn ? 'current-password' : 'new-password'"
-        v-model="password"
-        class="w-full border-b border-gray-400 bg-transparent px-2 py-1 focus:outline-hidden"
-      />
-      <ui-button @click="onClick">
-        {{ signText }}
-      </ui-button>
-      <span v-if="props.signIn"
-        >Don't have an account?
-        <RouterLink to="/signup" class="cursor-pointer text-cyan-400"
-          >Sign up here</RouterLink
-        ></span
-      >
-      <span v-else
-        >Already have an account?
-        <RouterLink to="/signin" class="cursor-pointer text-cyan-400"
-          >Sign in here</RouterLink
-        ></span
-      >
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { RouterLink } from 'vue-router'
-import UiButton from '@/components/ui-kit/button.vue'
-
-const props = defineProps({
-  signIn: Boolean
-})
+import { ref } from 'vue'
+import UiInput from '@/components/ui-kit/input.vue'
+import { useI18n } from 'vue-i18n'
 
 const emit = defineEmits<{
-  (e: 'signedIn', email: string, password: string): void
-  (e: 'signedUp', email: string, password: string): void
+  (e: 'submit', email: string, password: string): void
 }>()
 
-const signText = computed(() => {
-  return props.signIn ? 'Sign In' : 'Sign Up'
-})
+const { t } = useI18n()
+
 const email = ref('')
 const password = ref('')
 
-function onClick(): void {
-  if (props.signIn) {
-    emit('signedIn', email.value, password.value)
-    return
-  }
-
-  emit('signedUp', email.value, password.value)
+function onSubmit(): void {
+  emit('submit', email.value, password.value)
 }
 </script>
+
+<template>
+  <form class="flex flex-col items-center gap-10" @submit.prevent="onSubmit">
+    <div class="flex flex-col gap-4 w-full">
+      <ui-input
+        type="email"
+        name="email"
+        autocomplete="username"
+        v-model="email"
+        :label="t('login-dialog.email')"
+      />
+
+      <ui-input
+        type="password"
+        name="password"
+        autocomplete="current-password"
+        v-model="password"
+        :label="t('login-dialog.password')"
+      />
+    </div>
+
+    <button
+      type="submit"
+      class="w-full px-4 py-2.5 rounded-2.5 bg-purple-500 text-lg text-brown-100 cursor-pointer"
+    >
+      {{ t('login-dialog.lets-go') }}
+    </button>
+  </form>
+</template>

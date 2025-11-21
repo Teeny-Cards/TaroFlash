@@ -1,49 +1,57 @@
 import { defineStore } from 'pinia'
 import type { User } from '@supabase/supabase-js'
-import { getSession, login } from '@/api/session'
+import { getSession, login as supaLogin, logout as supaLogout } from '@/api/session'
+import { useRouter } from 'vue-router'
+import { computed, ref } from 'vue'
 
-interface State {
-  user: User | undefined
-  loadingCount: number
-}
+export const useSessionStore = defineStore('sessionStore', () => {
+  const router = useRouter()
 
-export const useSessionStore = defineStore('session', {
-  state: (): State => ({
-    user: undefined,
-    loadingCount: 0
-  }),
+  const user = ref<User | undefined>(undefined)
+  const loadingCount = ref(0)
 
-  actions: {
-    async login(email: string, password: string): Promise<void> {
-      const session = await login(email, password)
-      this.user = session?.user
-    },
+  const authenticated = computed(() => {
+    return Boolean(user.value?.aud === 'authenticated')
+  })
 
-    async restoreSession(): Promise<void> {
-      const session = await getSession()
-      this.user = session?.user
-    },
+  const isLoading = computed(() => loadingCount.value > 0)
+  const user_id = computed(() => user.value?.id)
+  const user_email = computed(() => user.value?.email)
 
-    startLoading(): void {
-      this.loadingCount++
-    },
+  async function login(email: string, password: string): Promise<void> {
+    const session = await supaLogin(email, password)
+    user.value = session?.user
+  }
 
-    stopLoading(): void {
-      this.loadingCount--
-    }
-  },
+  async function restoreSession(): Promise<void> {
+    const session = await getSession()
+    user.value = session?.user
+  }
 
-  getters: {
-    authenticated({ user }): boolean {
-      return Boolean(user?.aud === 'authenticated')
-    },
+  async function logout(): Promise<void> {
+    await supaLogout()
+    user.value = undefined
+    router.push({ name: 'welcome' })
+  }
 
-    isLoading({ loadingCount }): boolean {
-      return loadingCount > 0
-    },
+  function startLoading(): void {
+    loadingCount.value++
+  }
 
-    user_id({ user }): string | undefined {
-      return user?.id
-    }
+  function stopLoading(): void {
+    loadingCount.value--
+  }
+
+  return {
+    user,
+    authenticated,
+    isLoading,
+    user_id,
+    user_email,
+    login,
+    restoreSession,
+    logout,
+    startLoading,
+    stopLoading
   }
 })

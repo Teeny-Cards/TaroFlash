@@ -6,7 +6,7 @@ export const ModalEntryBuilder = (component) => {
     fields: {
       id: sequence(),
       backdrop: true,
-      closeOnBackdropClick: true,
+      global_close: true,
       component,
       componentProps: () => ({}),
       resolve: () => vi.fn(),

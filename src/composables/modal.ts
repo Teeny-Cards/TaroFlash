@@ -1,12 +1,14 @@
 import { ref, markRaw } from 'vue'
 import { useAudio } from './audio'
+import { useShortcuts } from './use-shortcuts'
+import uid from '@/utils/uid'
 
 type ModalEntry = {
   backdrop?: boolean
-  closeOnBackdropClick?: boolean
+  global_close?: boolean
   component: any
   componentProps?: Record<string, any>
-  id: symbol
+  id: string
   openAudio?: string
   closeAudio?: string
   resolve: (result: any) => void
@@ -16,7 +18,7 @@ type ModalEntry = {
 type OpenArgs = {
   props?: Record<string, any>
   backdrop?: boolean
-  closeOnBackdropClick?: boolean
+  global_close?: boolean
   openAudio?: string
   closeAudio?: string
 }
@@ -24,10 +26,13 @@ type OpenArgs = {
 const modal_stack = ref<ModalEntry[]>([])
 
 export function useModal() {
-  function open<T = any>(component: any, args: OpenArgs): Promise<T | boolean> {
+  function open<T = any>(
+    component: any,
+    args?: OpenArgs
+  ): { response: Promise<T | boolean>; close: any } {
     let resolveFn!: (result: any) => void
 
-    const id = Symbol('modal')
+    const id = uid()
     const response = new Promise<any>((resolve) => {
       resolveFn = resolve
     })
@@ -38,47 +43,57 @@ export function useModal() {
       if (index !== -1) {
         modal_stack.value[index].resolve(responseValue)
         modal_stack.value.splice(index, 1)
+        useShortcuts(`modal/${id}`).clearScope()
 
-        if (close_args?.overrideCloseAudio || args.closeAudio) {
+        if (close_args?.overrideCloseAudio || args?.closeAudio) {
           useAudio().play(
-            close_args?.overrideCloseAudio ? close_args?.overrideCloseAudio : args.closeAudio!
+            close_args?.overrideCloseAudio ? close_args?.overrideCloseAudio : args?.closeAudio!
           )
         }
       }
     }
 
     const entry: ModalEntry = {
-      backdrop: args.backdrop ?? false,
-      closeOnBackdropClick: args.closeOnBackdropClick ?? true,
+      backdrop: args?.backdrop ?? false,
+      global_close: args?.global_close ?? true,
       id,
       component: markRaw(component),
       componentProps: {
-        ...args.props,
+        ...args?.props,
         close
       },
       resolve: resolveFn,
       close,
-      openAudio: args.openAudio,
-      closeAudio: args.closeAudio
+      openAudio: args?.openAudio,
+      closeAudio: args?.closeAudio
     }
+
+    useShortcuts(`modal/${id}`).registerShortcut({
+      id: 'close-modal',
+      combo: 'esc',
+      description: 'Close Modal',
+      handler: () => close(false)
+    })
 
     modal_stack.value.push(entry)
 
-    if (args.openAudio) {
-      useAudio().play(args.openAudio)
+    if (args?.openAudio) {
+      useAudio().play(args?.openAudio)
     }
 
-    return response
+    return { response, close }
   }
 
-  function close(id?: symbol, response: boolean = false) {
+  function close(id?: string, response: boolean = false) {
     let index = modal_stack.value.findIndex((m) => m.id === id)
     index = index === -1 ? modal_stack.value.length - 1 : index
 
-    if (index !== -1 && modal_stack.value[index].closeOnBackdropClick) {
+    if (index !== -1 && modal_stack.value[index].global_close) {
       const modal = modal_stack.value[index]
       modal.resolve(response)
       modal_stack.value.splice(index, 1)
+      useShortcuts(`modal/${modal.id}`).clearScope()
+
       if (modal.closeAudio) {
         useAudio().play(modal.closeAudio)
       }

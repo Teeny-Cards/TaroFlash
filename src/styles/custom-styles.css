@@ -6,26 +6,6 @@
   mask: var(--mask);
 }
 
-.wave-bottom {
-  --mask:
-    radial-gradient(51.28px at 50% calc(100% - 70.2px), #000 99%, #0000 101%) calc(50% - 52px)
-      0/104px 100%,
-    radial-gradient(51.28px at 50% calc(100% + 44.2px), #0000 99%, #000 101%) 50%
-      calc(100% - 26px) / 104px 100% repeat-x;
-  -webkit-mask: var(--mask);
-  mask: var(--mask);
-}
-
-.wave-bottom-sm {
-  --mask:
-    radial-gradient(31.3px at 50% calc(100% - 42px), #000 99%, #0000 101%) calc(50% - 28px) 0/56px
-      100%,
-    radial-gradient(31.3px at 50% calc(100% + 28px), #0000 99%, #000 101%) 50% calc(100% - 14px) /
-      56px 100% repeat-x;
-  -webkit-mask: var(--mask);
-  mask: var(--mask);
-}
-
 .pointy-bottom {
   mask: conic-gradient(from -70deg at bottom, #0000, #000 1deg 139deg, #0000 140deg) 50%/87.92px
     100%;

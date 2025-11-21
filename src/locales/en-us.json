@@ -12,6 +12,18 @@
   "common.create": "Create",
   "common.done": "Done",
   "common.move": "Move",
+  "common.settings": "Settings",
+  "common.beta": "Beta",
+
+  "app.title": "TaroFlash",
+  "app.description": "A Spaced Repetition Flashcard App",
+
+  "welcome-view.login": "Log In",
+  "welcome-view.sign-up": "Make An Account",
+
+  "login-dialog.email": "Email",
+  "login-dialog.password": "Password",
+  "login-dialog.lets-go": "Let's Go!",
 
   "member-application.header": "Welcome To TaroFlash!",
   "member-application.subtitle": "Let’s get you set up with your new Member Card (You can update this at any time).",
@@ -27,6 +39,15 @@
   "member-card.title": "TITLE",
   "member-card.registration": "Reg. {date}",
 
+  "settings.app-settings.title": "App Settings",
+  "settings.app-settings.audio.label": "Audio",
+  "settings.app-settings.audio.interface": "Interface Volume",
+  "settings.app-settings.audio.alerts": "Alert Volume",
+  "settings.app-settings.audio.rewards": "Reward Volume",
+  "settings.app-settings.accessibility.label": "Accessibility",
+  "settings.member-settings.title": "Member Settings",
+  "settings.member-settings.subscription.label": "Subscription",
+
   "alert.generic-title": "Continue?",
   "alert.generic-message": "Are you sure you want to continue?",
   "alert.delete-card": "Delete Card? | Delete {count} Cards?",
@@ -37,10 +58,13 @@
   "alert.delete-deck": "Delete Deck?",
   "alert.delete-deck.message": "Are you sure you want to delete this deck?",
 
+  "toast.error.add-card": "Failed to add a new card",
+
   "card.placeholder-front": "Front",
   "card.placeholder-back": "Back",
   "card.add-image": "Add Image",
   "card.add-text": "Add Text",
+  "card.save-error": "Failed to save cards",
 
   "study.nope!": "Nope!",
   "study.got-it!": "Got It!",
@@ -66,7 +90,14 @@
   "deck-view.no-cards": "No Cards",
   "deck-view.tabs.card-view": "Card View",
   "deck-view.tabs.list-view": "List View",
+  "deck-view.tabs.card-list-view": "Card List View",
   "deck-view.empty-state.no-cards": "You don't have any cards in this deck.",
+  "deck-view.card-popover.upload-image": "Upload Image",
+  "deck-view.card-popover.select": "Select",
+  "deck-view.card-popover.move": "Move To",
+  "deck-view.card-popover.delete": "Delete",
+  "deck-view.toggle-options.select": "Select",
+  "deck-view.toggle-options.edit": "Edit All",
 
   "reward-stack.perfect-score": "Perfect Score!",
   "reward-stack.great-job": "Great Job!",

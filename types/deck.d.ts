@@ -1,5 +1,5 @@
 type Deck = {
-  id?: number
+  id: number
   created_at?: string
   updated_at?: string
   description?: string
@@ -12,6 +12,7 @@ type Deck = {
   due_count?: number
   config?: DeckConfig
   has_image?: boolean
+  card_count?: number
 }
 
 type DeckConfig = {

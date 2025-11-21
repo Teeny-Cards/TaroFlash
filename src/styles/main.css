@@ -3,21 +3,9 @@
 @import 'tailwindcss';
 @import '@/styles/custom-styles.css';
 @import '@/styles/custom-variants.css';
+@import '@/styles/utilities.css';
 @import '@/styles/animations.css';
-
-@source inline("bg-green-400");
-@source inline("bg-blue-500");
-@source inline("bg-purple-500");
-@source inline("bg-pink-500");
-@source inline("bg-red-500");
-@source inline("bg-orange-500");
-
-@source inline("text-green-400");
-@source inline("text-blue-500");
-@source inline("text-purple-500");
-@source inline("text-pink-500");
-@source inline("text-red-500");
-@source inline("text-orange-500");
+@import '@/styles/markdown.css';
 
 @theme {
   --*: initial;
@@ -25,6 +13,7 @@
 
   --color-white: #ffffff;
   --color-black: #000000;
+  --color-blue-900: #2d455e;
   --color-blue-500: #11b7d4;
   --color-blue-400: #68d1df;
   --color-green-400: #a4c6ae;
@@ -40,6 +29,7 @@
   --color-red-300: #ffa399;
   --color-orange-500: #fbc56f;
   --color-orange-400: #f7d279;
+  --color-brown-900: #4a3b30;
   --color-brown-700: #744e2a;
   --color-brown-500: #b8b1a9;
   --color-brown-300: #e7e0d5;
@@ -49,9 +39,11 @@
   --color-grey-400: #b2b2b2;
   --color-grey-300: #d2d2d2;
 
+  --radius-0_5: --spacing(0.5); /* 2px */
   --radius-1: --spacing(1); /* 4px */
   --radius-1_5: --spacing(1.5); /* 6px */
   --radius-2: --spacing(2); /* 8px */
+  --radius-2_5: --spacing(2.5); /* 10px */
   --radius-3: --spacing(3); /* 12px */
   --radius-3_5: --spacing(3.5); /* 14px */
   --radius-4: --spacing(4); /* 16px */
@@ -61,6 +53,7 @@
   --radius-6: --spacing(6); /* 24px */
   --radius-6_5: --spacing(6.5); /* 26px */
   --radius-7: --spacing(7); /* 28px */
+  --radius-7_5: --spacing(7.5); /* 30px */
   --radius-8: --spacing(8); /* 32px */
   --radius-9: --spacing(9); /* 36px */
   --radius-10: --spacing(10); /* 40px */
@@ -89,12 +82,17 @@
 
   --shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.15);
   --shadow-modal: 8px 8px 42.9px 0px rgba(0, 0, 0, 0.25);
-  --drop-shadow-modal: 8px 8px 42.9px rgba(0, 0, 0, 0.25);
   --shadow-popover: 4px 4px 6px 0px rgba(0, 0, 0, 0.16);
   --shadow-button: 3px 3px 4px 0px rgba(0, 0, 0, 0.1);
 
+  --drop-shadow-modal: 8px 8px 42.9px rgba(0, 0, 0, 0.25);
+  --drop-shadow-popover: 4px 4px 6px rgba(0, 0, 0, 0.16);
+
   --drop-shadow-overlay: -2px -5px 10px rgba(0, 0, 0, 0.12);
   --shadow-overlay: -2px -5px 10px -2px rgba(0, 0, 0, 0.12);
+
+  --drop-shadow-cutout: 3px 6px 0px rgba(0, 0, 0, 0.15);
+  --shadow-cutout: 3px 6px 0px 0px rgba(0, 0, 0, 0.15);
 
   /* Background Images */
   --diagonal-stripes: url('../assets/backgrounds/diagonal-stripes.svg');
@@ -103,6 +101,8 @@
   --bank-note: url('../assets/backgrounds/bank-note.svg');
   --aztec: url('../assets/backgrounds/aztec.svg');
   --endless-clouds: url('../assets/backgrounds/endless-clouds.svg');
+  --stars: url('../assets/backgrounds/stars.svg');
+  --taro-flash: url('../assets/backgrounds/taro-flash.svg');
 
   /* Transitions */
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -123,6 +123,8 @@
   --bg-sm: --spacing(20);
   --blur-4: 4px;
   --aspect-card: 7 / 9;
+  --page-width: 1500px;
+  --blur-md: 24px;
 
   /* Typography */
   --font-primary: 'Tilt Neon', sans-serif;
@@ -156,11 +158,25 @@
 
   --text-7xl: 48px;
   --text-7xl--line-height: 100%;
+
+  --text-8xl: 60px;
+  --text-8xl--line-height: 100%;
 }
 
 @layer base {
   html {
     font-family: var(--font-primary);
     font-size: var(--text-base);
+  }
+
+  .app-container {
+    width: 100%;
+    max-width: var(--page-width);
+    padding: 0 4rem;
+  }
+  @media (width >= 40rem) {
+    .app-container {
+      padding: 0 16rem;
+    }
   }
 }

@@ -6,7 +6,6 @@ import { type ImageUploadEvent } from '@/components/image-uploader.vue'
 import { ref } from 'vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiInput from '@/components/ui-kit/input.vue'
-import UiLoader from '@/components/ui-kit/loader.vue'
 
 const { t } = useI18n()
 
@@ -34,7 +33,7 @@ function onImageRemoved() {
 
 <template>
   <div class="relative flex flex-col items-center pb-6">
-    <card class="!border-brown-100" :front_image_url="preview_image">
+    <card class="border-brown-100!" :front_image_url="preview_image">
       <image-uploader v-slot="{ trigger, loading, dragging }" @image-uploaded="onImageUploaded">
         <div
           v-if="dragging"
@@ -44,24 +43,20 @@ function onImageRemoved() {
         <ui-button
           v-if="!preview_image"
           @click="trigger"
-          inverted
-          variant="muted"
+          theme="brown"
           icon-left="add-image"
           icon-only
-          class="ring-brown-300 absolute -top-4 -left-4 ring-6"
+          class="ring-brown-300 absolute! -top-4 -left-4 ring-6"
         />
 
         <ui-button
           v-else
           @click="onImageRemoved"
-          inverted
-          variant="muted"
+          theme="brown"
           icon-left="remove-image"
           icon-only
-          class="ring-brown-300 absolute -top-4 -left-4 ring-6"
+          class="ring-brown-300 absolute! -top-4 -left-4 ring-6"
         />
-
-        <ui-loader v-if="loading" />
       </image-uploader>
     </card>
     <ui-input
