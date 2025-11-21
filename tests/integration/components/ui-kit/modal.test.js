@@ -79,8 +79,8 @@ test('resolves and removes top modal on backdrop click if enabled', async () => 
   expect(entry.close).toHaveBeenCalled()
 })
 
-test('does not close modal on backdrop click if `closeOnBackdropClick` is false', () => {
-  const entry = ModalEntryBuilder(TestModal).one({ overrides: { closeOnBackdropClick: false } })
+test('does not close modal on backdrop click if `global_close` is false', () => {
+  const entry = ModalEntryBuilder(TestModal).one({ overrides: { global_close: false } })
   mock_modal_stack.value.push(entry)
 
   const wrapper = mount(Modal)

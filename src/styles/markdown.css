@@ -1,0 +1,61 @@
+[data-md='true'] h1 {
+  @apply text-2xl;
+}
+[data-md='true'] h2 {
+  @apply text-xl;
+}
+[data-md='true'] h3 {
+  @apply text-lg;
+}
+
+[data-md='true'] a {
+  @apply underline;
+}
+
+[data-md='true'] [data-align='center'] {
+  text-align: center;
+}
+[data-md='true'] [data-align='right'] {
+  text-align: right;
+}
+[data-md='true'] [data-align='justify'] {
+  text-align: justify;
+}
+
+[data-md='true'] [data-c='blue'] {
+  color: var(--color-blue-500);
+}
+[data-md='true'] [data-c='green'] {
+  color: var(--color-green-400);
+}
+[data-md='true'] [data-c='purple'] {
+  color: var(--color-purple-500);
+}
+[data-md='true'] [data-c='pink'] {
+  color: var(--color-pink-500);
+}
+[data-md='true'] [data-c='red'] {
+  color: var(--color-red-500);
+}
+[data-md='true'] [data-c='orange'] {
+  color: var(--color-orange-500);
+}
+
+[data-md='true'] [data-bg='blue'] {
+  background-color: var(--color-blue-500);
+}
+[data-md='true'] [data-bg='green'] {
+  background-color: var(--color-green-400);
+}
+[data-md='true'] [data-bg='purple'] {
+  background-color: var(--color-purple-500);
+}
+[data-md='true'] [data-bg='pink'] {
+  background-color: var(--color-pink-500);
+}
+[data-md='true'] [data-bg='red'] {
+  background-color: var(--color-red-500);
+}
+[data-md='true'] [data-bg='orange'] {
+  background-color: var(--color-orange-500);
+}

@@ -61,7 +61,7 @@ const percentage = computed(() => {
     </div>
     <ui-button
       icon-left="check"
-      size="small"
+      size="sm"
       class="absolute -bottom-2 -right-2 outline-brown-300 outline-6"
       >{{ t('common.done') }}</ui-button
     >

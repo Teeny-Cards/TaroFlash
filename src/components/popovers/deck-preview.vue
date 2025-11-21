@@ -13,14 +13,14 @@ const emit = defineEmits<{ (e: 'study'): void; (e: 'updated'): void }>()
 const show_image = ref(true)
 
 async function onSettingsClicked() {
-  const did_update = await modal.open(deckSettings, {
+  const { response } = modal.open(deckSettings, {
     props: { deck },
     backdrop: true,
     openAudio: 'double-pop-up',
     closeAudio: 'double-pop-down'
   })
 
-  if (did_update) {
+  if (await response) {
     emit('updated')
   }
 }
@@ -31,7 +31,11 @@ function onImageError() {
 </script>
 
 <template>
-  <ui-popover>
+  <ui-popover mode="hover" :clip_margin="90" :fallback_placements="['right-end', 'left-end']">
+    <template #trigger>
+      <slot></slot>
+    </template>
+
     <div
       data-testid="deck-preview"
       class="bg-brown-300 rounded-7 flex w-62.75 cursor-auto flex-col gap-4 overflow-hidden"
@@ -52,10 +56,9 @@ function onImageError() {
         <ui-button
           icon-left="settings"
           icon-only
-          class="absolute top-4 right-4"
-          inverted
-          variant="muted"
-          size="small"
+          class="absolute! top-4 right-4"
+          theme="brown"
+          size="sm"
           @click.stop="onSettingsClicked"
         />
       </div>

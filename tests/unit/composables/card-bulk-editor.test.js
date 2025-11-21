@@ -32,7 +32,7 @@ describe('addCard', () => {
   test('Adds a new card with empty front_text/back_text at start of edited_cards', () => {
     const initialCards = card.many(3)
     const { edited_cards, addCard } = useCardBulkEditor(initialCards)
-    const max = Math.max(...edited_cards.value.map((card) => card.order ?? 0)) + 1
+    const max = Math.max(...edited_cards.value.map((card) => card.rank ?? 0)) + 1
 
     addCard()
 
@@ -58,7 +58,7 @@ describe('addCard', () => {
 
     addCard()
 
-    expect(edited_cards.value[0].order).toBe(1)
+    expect(edited_cards.value[0].rank).toBe(1)
   })
 })
 

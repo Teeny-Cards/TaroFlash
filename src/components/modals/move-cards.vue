@@ -61,7 +61,8 @@ function onClick(deck_id?: number) {
     >
       <div
         data-testid="move-cards__header"
-        class="px-8 py-10 bg-purple-500 wave-bottom-sm bg-(image:--endless-clouds) flex items-center justify-center"
+        class="px-8 py-10 bg-purple-500 wave-bottom-[30px] bg-(image:--endless-clouds) flex items-center
+          justify-center"
       >
         <h1 class="move-cards__title" v-html="title"></h1>
       </div>
@@ -97,7 +98,7 @@ function onClick(deck_id?: number) {
     >
       <ui-button
         data-testid="move-cards__cancel"
-        variant="muted"
+        theme="grey"
         icon-left="close"
         @click="close(false)"
         class="ring-brown-300 ring-7"
@@ -107,7 +108,7 @@ function onClick(deck_id?: number) {
 
       <ui-button
         data-testid="move-cards__move"
-        icon-left="check"
+        icon-left="arrow-forward"
         @click="onMove"
         :disabled="!selected_deck_id"
         class="ring-brown-300 ring-7"

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { fetchMemberDecks } from '@/api/decks'
-import { useToastStore } from '@/stores/toast'
+import { fetchMemberCardCount } from '@/api/cards'
+import { useToast } from '@/composables/toast'
 import Deck from '@/components/deck.vue'
 import { useRouter } from 'vue-router'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
@@ -12,16 +13,18 @@ import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
 
 const { t } = useI18n()
-const toastStore = useToastStore()
+const toast = useToast()
 const router = useRouter()
 const memberStore = useMemberStore()
 
 const modal = useModal()
 const loading = ref(true)
 const decks = ref<Deck[]>([])
+const due_card_count = ref(0)
 
 onMounted(async () => {
   await refetchDecks()
+  due_card_count.value = await fetchMemberCardCount({ only_due_cards: true })
   loading.value = false
 
   if (!memberStore.has_member) {
@@ -41,7 +44,7 @@ async function refetchDecks() {
   try {
     decks.value = await fetchMemberDecks()
   } catch (e: any) {
-    toastStore.error(e.message)
+    toast.error(e.message)
   }
 }
 
@@ -61,7 +64,7 @@ async function onCreateDeckClicked() {
 <template>
   <div data-testid="dashboard" class="flex h-full flex-col gap-16">
     <div class="flex flex-col gap-4">
-      <h1 class="text-grey-700 text-3xl">{{ t('dashboard.due') }}</h1>
+      <h1 class="text-brown-700 text-3xl">{{ t('dashboard.due') }} ({{ due_card_count }})</h1>
       <div class="flex gap-4">
         <Deck
           v-for="(deck, index) in due_decks"
@@ -74,7 +77,7 @@ async function onCreateDeckClicked() {
     </div>
 
     <div class="flex flex-col gap-4">
-      <h1 class="text-grey-700 text-3xl">{{ t('dashboard.all') }}</h1>
+      <h1 class="text-brown-700 text-3xl">{{ t('dashboard.all') }}</h1>
       <div class="flex gap-4">
         <Deck
           v-for="(deck, index) in decks"
