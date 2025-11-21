@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useTemplateRef, onMounted, onUnmounted } from 'vue'
+import { computed, useTemplateRef, onUnmounted, watch } from 'vue'
 import {
   useFloating,
   shift,
@@ -24,6 +24,7 @@ type PopoverProps = {
   padding?: Padding
   fallback_placements?: Placement[]
   shadow?: boolean
+  use_arrow?: boolean
 }
 
 const {
@@ -33,10 +34,11 @@ const {
   gap = 14,
   strategy = 'fixed',
   transition_duration = 100,
-  clip_margin = 90,
+  clip_margin = 0,
   padding = 24,
   fallback_placements = ['right', 'left', 'top', 'bottom'],
-  shadow = false
+  shadow = false,
+  use_arrow = true
 } = defineProps<PopoverProps>()
 
 const emit = defineEmits<{
@@ -54,22 +56,16 @@ const { placement, middlewareData, floatingStyles } = useFloating(triggerRef, po
   strategy: strategy,
   whileElementsMounted: autoUpdate,
   middleware: [
-    offset(() => ARROW_SIZE + gap),
+    offset(() => (use_arrow ? ARROW_SIZE + gap : gap)),
     shift({ padding }),
     flip({
       fallbackPlacements: fallback_placements
     }),
-    arrow({ element: arrowRef }),
+    ...(use_arrow ? [arrow({ element: arrowRef })] : []),
     hide({
       padding: clip_margin
     })
   ]
-})
-
-onMounted(() => {
-  if (mode === 'click') {
-    document.addEventListener('click', onPageClick)
-  }
 })
 
 onUnmounted(() => {
@@ -101,11 +97,22 @@ const side = computed(() => placement.value.split('-')[0])
 function onPageClick(e: Event): void {
   const target = e.target as HTMLElement
 
-  if (!target.hasAttribute('data-testid="ui-kit-popover"')) {
+  if (!target.closest('[data-testid="ui-kit-popover-container"]')) {
     emit('close')
     document.removeEventListener('click', onPageClick)
   }
 }
+
+watch(
+  () => open,
+  (new_open, prev_open) => {
+    if (new_open && !prev_open) {
+      document.addEventListener('click', onPageClick)
+    } else if (!new_open && prev_open) {
+      document.removeEventListener('click', onPageClick)
+    }
+  }
+)
 </script>
 
 <template>
@@ -138,6 +145,7 @@ function onPageClick(e: Event): void {
         <span data-testid="ui-kit-popover__bridge" class="ui-kit-popover__bridge"></span>
         <slot></slot>
         <div
+          v-if="use_arrow"
           ref="arrowRef"
           data-testid="ui-kit-popover__arrow"
           class="ui-kit-popover__arrow"
@@ -188,21 +196,21 @@ function onPageClick(e: Event): void {
 
 .ui-kit-popover--top .ui-kit-popover__bridge {
   top: 100%;
-  bottom: -24px;
+  bottom: calc(var(--popover-gap) * -1);
 }
 
 .ui-kit-popover--bottom .ui-kit-popover__bridge {
-  top: -24px;
+  top: calc(var(--popover-gap) * -1);
   bottom: 100%;
 }
 
 .ui-kit-popover--left .ui-kit-popover__bridge {
-  right: -24px;
+  right: calc(var(--popover-gap) * -1);
   left: 100%;
 }
 
 .ui-kit-popover--right .ui-kit-popover__bridge {
   right: 100%;
-  left: -24px;
+  left: calc(var(--popover-gap) * -1);
 }
 </style>

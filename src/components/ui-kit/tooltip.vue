@@ -15,6 +15,7 @@ const {
   fallback_placements?: Placement[]
   element?: 'div' | 'span' | 'button'
   visible?: boolean
+  disabled?: boolean
 }>()
 
 const triggerRef = useTemplateRef<HTMLElement>('ui-tooltip-trigger')
@@ -39,6 +40,7 @@ const { floatingStyles } = useFloating(triggerRef, popoverRef, {
   </component>
 
   <div
+    v-if="!disabled"
     ref="ui-tooltip"
     :style="floatingStyles"
     class="ui-tooltip"
@@ -64,12 +66,10 @@ const { floatingStyles } = useFloating(triggerRef, popoverRef, {
   z-index: 10;
   user-select: none;
 }
-.ui-tooltip--visible {
-  display: block;
-}
 
 .ui-tooltip-trigger:hover + .ui-tooltip,
-.ui-tooltip-trigger:focus + .ui-tooltip {
+.ui-tooltip-trigger:focus + .ui-tooltip,
+.ui-tooltip--visible {
   display: block;
 }
 </style>

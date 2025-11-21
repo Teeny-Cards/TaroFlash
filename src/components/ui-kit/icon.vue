@@ -3,7 +3,7 @@ import { type Component, computed } from 'vue'
 
 const { src, size = 'base' } = defineProps<{
   src: string
-  size?: '4xl' | '3xl' | '2xl' | 'xl' | 'large' | 'base' | 'small' | 'xs'
+  size?: '4xl' | '3xl' | '2xl' | 'xl' | 'large' | 'base' | 'small' | 'xs' | 'unset'
 }>()
 
 // Import all icons
@@ -27,7 +27,8 @@ const iconSize: { [key: string]: string } = {
   large: 'w-8  h-8',
   base: 'w-5 h-5',
   small: 'w-4 h-4',
-  xs: 'w-3 h-3'
+  xs: 'w-3 h-3',
+  unset: ''
 }
 </script>
 

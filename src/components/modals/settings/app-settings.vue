@@ -2,12 +2,13 @@
 import { useI18n } from 'vue-i18n'
 import UiSlider from '@/components/ui-kit/slider.vue'
 import { ref } from 'vue'
+import SectionHeader from './section-header.vue'
 
 const { t } = useI18n()
 
-const interface_volume = ref(40)
-const alerts_volume = ref(100)
-const rewards_volume = ref(30)
+const interface_volume = ref(50)
+const alerts_volume = ref(50)
+const rewards_volume = ref(50)
 </script>
 
 <template>
@@ -15,15 +16,10 @@ const rewards_volume = ref(30)
     <h1 class="text-6xl text-brown-700">{{ t('settings.app-settings.title') }}</h1>
 
     <div data-testid="app-settings__body" class="w-full h-full flex flex-col gap-20">
-      <div data-testid="app-settings__audio" class="flex flex-col gap-6">
-        <div
-          data-testid="app-settings__audio__header"
-          class="w-full px-2 py-1 bg-blue-900 rounded-1.5"
-        >
-          <h2 class="text-3xl text-brown-100">{{ t('settings.app-settings.audio.label') }}</h2>
-        </div>
+      <div data-testid="app-settings__audio" class="flex flex-col gap-8">
+        <section-header>{{ t('settings.app-settings.audio.label') }}</section-header>
 
-        <div class="grid grid-cols-[auto_1fr] gap-y-6 gap-x-20 text-brown-700 select-none">
+        <div class="grid grid-cols-[auto_1fr] gap-y-8 gap-x-20 text-brown-700 select-none">
           <h3>{{ t('settings.app-settings.audio.interface') }}</h3>
           <ui-slider
             :label="t('settings.app-settings.audio.interface')"
@@ -36,10 +32,8 @@ const rewards_volume = ref(30)
         </div>
       </div>
 
-      <div class="w-full px-2 py-1 bg-blue-900 rounded-1.5">
-        <h2 class="text-3xl text-brown-100">
-          {{ t('settings.app-settings.accessibility.label') }}
-        </h2>
+      <div class="flex flex-col gap-8">
+        <section-header>{{ t('settings.app-settings.accessibility.label') }}</section-header>
       </div>
     </div>
   </div>

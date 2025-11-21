@@ -10,6 +10,7 @@ import Shortcuts from './shortcuts.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { useAudio } from '@/composables/audio'
+import { useSessionStore } from '@/stores/session'
 
 const emit = defineEmits<{
   (e: 'close'): void
@@ -19,6 +20,7 @@ const router = useRouter()
 const modal = useModal()
 const { registerShortcut } = useShortcuts('phone/home')
 const audio = useAudio()
+const sessionStore = useSessionStore()
 
 const phone_nav = inject<NavigationStack>('phone-nav')
 const active_app = ref(-1)
@@ -57,6 +59,11 @@ onMounted(() => {
     }
   ])
 })
+
+function run(fn: () => void) {
+  fn()
+  emit('close')
+}
 
 function focusApp(index: number) {
   if (index < 0) {
@@ -107,6 +114,13 @@ const apps: App[] = [
     hover_icon: 'shortcuts-hover',
     theme: 'orange',
     handler: () => phone_nav?.push(Shortcuts, { transition_preset: 'pop-up' })
+  },
+  {
+    name: 'Logout',
+    icon: 'logout',
+    hover_icon: 'logout-hover',
+    theme: 'red',
+    handler: () => run(sessionStore.logout)
   }
 ]
 </script>

@@ -2,9 +2,9 @@
 import { ref, onMounted } from 'vue'
 import { useLogger } from '@/composables/logger'
 
-const { src, size = 'full' } = defineProps<{
+const { src, size = 'unset' } = defineProps<{
   src: string
-  size?: 'full' | 'xl' | 'lg' | 'base' | 'sm' | 'xs'
+  size?: 'full' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | 'unset'
 }>()
 
 const imageUrl = ref<string | null>(null)

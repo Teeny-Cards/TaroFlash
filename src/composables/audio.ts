@@ -7,8 +7,9 @@ const logger = useLogger()
 
 const loadedSounds = new Map<string, Howl>()
 const isInitialized = ref(false)
-const isUnlocked = ref(false)
 const playingSounds = ref<Howl[]>([])
+const unlocked = ref(false)
+const queued_sound = ref<{ key: string; options: PlayOptions } | undefined>()
 
 type PlayOptions = {
   volume?: number
@@ -33,7 +34,13 @@ export function useAudio() {
     })
 
     sound.once('unlock', () => {
-      isUnlocked.value = true
+      unlocked.value = true
+
+      if (queued_sound.value) {
+        const { key, options } = queued_sound.value
+        play(key, options)
+        queued_sound.value = undefined
+      }
     })
 
     sources.forEach((src) => {
@@ -48,8 +55,11 @@ export function useAudio() {
     isInitialized.value = true
   }
 
-  const play = (key: string, options: PlayOptions = {}): Howl | undefined => {
-    if (!isUnlocked.value) return
+  const play = async (key: string, options: PlayOptions = {}): Promise<Howl | undefined> => {
+    if (!unlocked.value) {
+      queued_sound.value = { key, options }
+      return
+    }
 
     const sound = loadedSounds.get(key)
 
