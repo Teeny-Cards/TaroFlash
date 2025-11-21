@@ -28,3 +28,6 @@ docs/.vitepress/dist
 *.sw?
 
 *.tsbuildinfo
+.env
+*.env.*
+

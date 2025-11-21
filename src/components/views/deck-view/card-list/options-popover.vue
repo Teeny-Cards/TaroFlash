@@ -23,6 +23,7 @@ const emit = defineEmits<{
     position="right"
     :gap="10"
     :fallback_placements="['bottom', 'top', 'left', 'right']"
+    :clip_margin="90"
     :open="open"
     @close="emit('closed')"
   >

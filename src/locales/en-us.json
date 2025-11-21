@@ -13,6 +13,17 @@
   "common.done": "Done",
   "common.move": "Move",
   "common.settings": "Settings",
+  "common.beta": "Beta",
+
+  "app.title": "TaroFlash",
+  "app.description": "A Spaced Repetition Flashcard App",
+
+  "welcome-view.login": "Log In",
+  "welcome-view.sign-up": "Make An Account",
+
+  "login-dialog.email": "Email",
+  "login-dialog.password": "Password",
+  "login-dialog.lets-go": "Let's Go!",
 
   "member-application.header": "Welcome To TaroFlash!",
   "member-application.subtitle": "Let’s get you set up with your new Member Card (You can update this at any time).",
@@ -34,6 +45,8 @@
   "settings.app-settings.audio.alerts": "Alert Volume",
   "settings.app-settings.audio.rewards": "Reward Volume",
   "settings.app-settings.accessibility.label": "Accessibility",
+  "settings.member-settings.title": "Member Settings",
+  "settings.member-settings.subscription.label": "Subscription",
 
   "alert.generic-title": "Continue?",
   "alert.generic-message": "Are you sure you want to continue?",

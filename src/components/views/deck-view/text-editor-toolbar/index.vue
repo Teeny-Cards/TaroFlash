@@ -58,7 +58,7 @@ function onChangeBgColor(e: Event) {
 
     <button :class="{ active: selection_format?.link }" @click="link()">Link</button>
 
-    <ui-popover mode="click" :open="text_color_selector_open" :clip_margin="0" shadow :gap="24">
+    <ui-popover mode="click" :open="text_color_selector_open" shadow :gap="24">
       <template #trigger="">
         <ui-button @click="text_color_selector_open = !text_color_selector_open">Color</ui-button>
       </template>

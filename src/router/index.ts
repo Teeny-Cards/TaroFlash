@@ -1,31 +1,28 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { initUser } from '@/stores/initUser'
 import Dashboard from '@/views/dashboard.vue'
 import ShopView from '@/views/shop.vue'
-import LoginPage from '@/views/LoginPage.vue'
-import SignupPage from '@/views/SignupPage.vue'
+import WelcomeView from '@/views/welcome.vue'
 import DeckView from '@/views/deck.vue'
-import { initUser } from '@/stores/initUser'
+import AuthenticatedView from '@/views/authenticated.vue'
+import CheckoutView from '@/views/checkout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/signin',
-      name: 'signin',
-      component: LoginPage
-    },
-    {
-      path: '/signup',
-      name: 'signup',
-      component: SignupPage
+      path: '/welcome',
+      name: 'welcome',
+      component: WelcomeView
     },
     {
       path: '/',
       name: 'authenticated',
+      component: AuthenticatedView,
       redirect: '/dashboard',
       beforeEnter: async () => {
         const authenticated = await initUser()
-        if (!authenticated) return { name: 'signin' }
+        if (!authenticated) return { name: 'welcome' }
       },
       children: [
         {
@@ -43,6 +40,11 @@ const router = createRouter({
           name: 'deck',
           component: DeckView,
           props: true
+        },
+        {
+          path: '/checkout',
+          name: 'checkout',
+          component: CheckoutView
         }
       ]
     }

@@ -45,6 +45,13 @@ function onTextUpdated(event: Event) {
       class="h-full w-full rounded-(--inner-radius) bg-cover bg-center"
     ></div>
 
+    <div
+      v-else-if="!image && mode === 'view' && !text"
+      class="bg-purple-400 p-4 rounded-full flex items-center justify-center"
+    >
+      <ui-icon src="logo" class="text-brown-100 opacity-20" size="large"></ui-icon>
+    </div>
+
     <image-uploader
       v-else-if="mode === 'edit'"
       @image-uploaded="emit('image-uploaded', $event)"
@@ -130,6 +137,10 @@ function onTextUpdated(event: Event) {
 }
 
 .card-face[data-mode='view'][data-image='false'][data-text='false'] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   background-color: var(--color-purple-400);
   background-image: var(--diagonal-stripes);
 }

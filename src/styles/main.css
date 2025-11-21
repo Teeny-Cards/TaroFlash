@@ -39,6 +39,7 @@
   --color-grey-400: #b2b2b2;
   --color-grey-300: #d2d2d2;
 
+  --radius-0_5: --spacing(0.5); /* 2px */
   --radius-1: --spacing(1); /* 4px */
   --radius-1_5: --spacing(1.5); /* 6px */
   --radius-2: --spacing(2); /* 8px */
@@ -90,6 +91,9 @@
   --drop-shadow-overlay: -2px -5px 10px rgba(0, 0, 0, 0.12);
   --shadow-overlay: -2px -5px 10px -2px rgba(0, 0, 0, 0.12);
 
+  --drop-shadow-cutout: 3px 6px 0px rgba(0, 0, 0, 0.15);
+  --shadow-cutout: 3px 6px 0px 0px rgba(0, 0, 0, 0.15);
+
   /* Background Images */
   --diagonal-stripes: url('../assets/backgrounds/diagonal-stripes.svg');
   --saw: url('../assets/backgrounds/saw.svg');
@@ -97,6 +101,8 @@
   --bank-note: url('../assets/backgrounds/bank-note.svg');
   --aztec: url('../assets/backgrounds/aztec.svg');
   --endless-clouds: url('../assets/backgrounds/endless-clouds.svg');
+  --stars: url('../assets/backgrounds/stars.svg');
+  --taro-flash: url('../assets/backgrounds/taro-flash.svg');
 
   /* Transitions */
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -152,6 +158,9 @@
 
   --text-7xl: 48px;
   --text-7xl--line-height: 100%;
+
+  --text-8xl: 60px;
+  --text-8xl--line-height: 100%;
 }
 
 @layer base {

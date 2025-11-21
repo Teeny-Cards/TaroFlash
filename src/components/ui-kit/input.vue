@@ -21,51 +21,83 @@ const value = defineModel<string>('value')
   >
     <span>{{ label }}</span>
     <div data-testid="ui-kit-input" class="ui-kit-input">
-      <input :placeholder="placeholder" v-model="value" @input="emit('input', value)" />
+      <input
+        v-bind="$attrs"
+        :placeholder="placeholder"
+        v-model="value"
+        @input="emit('input', value)"
+      />
     </div>
   </label>
 </template>
 
 <style>
-@reference '@/styles/main.css';
-
 .ui-kit-input-container {
-  @apply flex flex-col gap-1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
 }
 
 .ui-kit-input-container--sm {
-  @apply rounded-3.5 px-3 py-2 text-sm;
+  border-radius: var(--radius-3_5);
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  padding: 8px 12px;
 }
 
 .ui-kit-input-container--lg {
-  @apply rounded-5.5;
+  border-radius: var(--radius-5_5);
 }
 
 .ui-kit-input-container span {
-  @apply text-brown-500;
+  color: var(--color-brown-700);
 }
 
 .ui-kit-input {
-  @apply bg-brown-100 rounded-5 w-full px-6 py-3;
+  background-color: var(--color-brown-100);
+  border-radius: var(--radius-4);
+  width: 100%;
+  padding: 12px 16px;
+
+  width: 100%;
 }
 
 .ui-kit-input input {
-  @apply border-brown-700 text-brown-700 placeholder:text-brown-500 w-full min-w-0 border-b border-dashed bg-transparent outline-none;
+  border-bottom: 1px dashed var(--color-brown-500);
+  outline: none;
+  background: transparent;
+  color: var(--color-brown-700);
+
+  width: 100%;
+  min-width: 0;
+}
+.ui-kit-input input::placeholder {
+  color: var(--color-brown-500);
+}
+.ui-kit-input input:autofill,
+.ui-kit-input input:autofill:hover,
+.ui-kit-input input:autofill:focus,
+.ui-kit-input input::-webkit-autofill,
+.ui-kit-input input::-webkit-autofill:hover,
+.ui-kit-input input::-webkit-autofill:focus {
+  box-shadow: 0 0 0px 1000px var(--color-brown-100) inset;
 }
 
 .ui-kit-input-container--text-left input {
-  @apply text-left;
+  text-align: left;
 }
 
 .ui-kit-input-container--text-right input {
-  @apply text-right;
+  text-align: right;
 }
 
 .ui-kit-input-container--text-center input {
-  @apply text-center;
+  text-align: center;
 }
 
 .ui-kit-input-container--lg input {
-  @apply text-lg;
+  font-size: var(--text-lg);
+  line-height: var(--text-lg--line-height);
 }
 </style>
