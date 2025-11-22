@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { useRichTextEditor } from '@/composables/rich-text-editor'
 import ColorSelector from './color-selector.vue'
+import FontSizeSelector from './font-size-selector.vue'
 import UiPopover from '@/components/ui-kit/popover.vue'
 import UiButton from '@/components/ui-kit/button.vue'
-import { computed, onMounted, ref, useTemplateRef } from 'vue'
+import UiIcon from '@/components/ui-kit/icon.vue'
+import UiImage from '@/components/ui-kit/image.vue'
+import { onMounted, ref, useTemplateRef } from 'vue'
 
 defineProps<{
   inactive_classes: string
@@ -54,43 +57,51 @@ function onChangeBgColor(e: Event) {
   <div
     data-testid="text-editor-toolbar"
     ref="text-editor-toolbar"
+    class="fixed bottom-6 bg-white rounded-6 shadow-cutout pl-3 pr-6.5 flex justify-center items-end gap-6
+      transition-transform duration-100 ease-in-out border-t border-l border-r border-brown-100 h-15"
     :class="{ [inactive_classes]: !active }"
   >
-    <button :class="{ active: selection_format?.bold }" @click="bold"><b>B</b></button>
-    <button :class="{ active: selection_format?.italic }" @click="italic"><i>I</i></button>
+    <div class="flex gap-1.5 items-center h-full py-3">
+      <font-size-selector :selected_font_size="selection_format?.size" />
 
-    <select :value="selection_format?.header" @change="onChangeHeading">
-      <option value="">Paragraph</option>
-      <option value="1">H1</option>
-      <option value="2">H2</option>
-      <option value="3">H3</option>
-    </select>
+      <div class="toolbar-option">
+        <ui-icon src="underline" />
+      </div>
 
-    <button :class="{ active: selection_format?.link }" @click="link()">Link</button>
+      <div class="toolbar-option">
+        <ui-icon src="bullets" />
+      </div>
 
-    <ui-popover mode="click" :open="text_color_selector_open" shadow :gap="24">
-      <template #trigger="">
-        <ui-button @click="text_color_selector_open = !text_color_selector_open">Color</ui-button>
-      </template>
+      <div class="toolbar-option">
+        <ui-icon src="link" />
+      </div>
 
-      <color-selector :color="selection_format?.color" @select="color" />
-    </ui-popover>
+      <div class="toolbar-option">
+        <ui-icon src="align-left" />
+      </div>
 
-    <select :value="selection_format?.background" @change="onChangeBgColor">
-      <option value="">BG</option>
-      <option value="surface">Surface</option>
-      <option value="brand">Brand</option>
-    </select>
+      <div class="toolbar-option">
+        <ui-icon src="align-center" />
+      </div>
 
-    <select
-      :value="selection_format?.align"
-      @change="align(($event.target as HTMLSelectElement).value as any)"
-    >
-      <option value="">Align</option>
-      <option value="left">Left</option>
-      <option value="center">Center</option>
-      <option value="right">Right</option>
-      <option value="justify">Justify</option>
-    </select>
+      <div class="toolbar-option">
+        <ui-icon src="align-right" />
+      </div>
+    </div>
+
+    <div class="h-full flex items-center">
+      <div class="h-8 border-r border-brown-900"></div>
+    </div>
+
+    <ui-image src="paint-roller" size="unset" />
+    <ui-image src="pencil" size="unset" />
+    <ui-image src="highlighter" size="unset" />
+    <!-- <color-selector :color="selection_format?.color" @select="color" /> -->
   </div>
 </template>
+
+<style>
+.toolbar-option {
+  padding: 8px;
+}
+</style>

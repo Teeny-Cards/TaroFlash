@@ -33,6 +33,7 @@
   --color-brown-700: #744e2a;
   --color-brown-500: #b8b1a9;
   --color-brown-300: #e7e0d5;
+  --color-brown-200: #ede9df;
   --color-brown-100: #f3f1ea;
   --color-grey-700: #4f4f4f;
   --color-grey-500: #959595;
@@ -122,7 +123,7 @@
   /* Other Utilities */
   --bg-sm: --spacing(20);
   --blur-4: 4px;
-  --aspect-card: 7 / 9;
+  --aspect-card: 7 / 8;
   --page-width: 1500px;
   --blur-md: 24px;
 

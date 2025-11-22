@@ -1,10 +1,13 @@
 <script lang="ts" setup>
 import Card from '@/components/card/index.vue'
-import { watch } from 'vue'
+import ItemOptions from './item-options.vue'
+import UiIcon from '@/components/ui-kit/icon.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { type TextEditorUpdatePayload } from '@/components/text-editor.vue'
+import { nextTick, watch } from 'vue'
 
 const { card, mode, active, active_side } = defineProps<{
+  index: number
   card: Card
   mode: CardEditorMode
   active: boolean
@@ -23,8 +26,11 @@ const emit = defineEmits<{
 }>()
 
 function onClick() {
-  if (mode !== 'select') return
-  emit('selected')
+  if (mode === 'select') {
+    emit('selected')
+  } else if (mode === 'view' || (mode === 'edit' && !active)) {
+    emit('activated')
+  }
 }
 
 function onUpdate(id: number, side: 'front' | 'back', payload: TextEditorUpdatePayload) {
@@ -56,7 +62,7 @@ function deactivate(e?: Event) {
 
   const target = e.target as HTMLElement
 
-  const is_toolbar = target.closest('[data-testid="md-toolbar"]')
+  const is_toolbar = target.closest('[data-testid="text-editor-toolbar"]')
   const is_card = target.closest(`[data-id="${card.id}"]`)
 
   if (!is_toolbar && !is_card && !target.closest('.options-popover')) {
@@ -64,10 +70,25 @@ function deactivate(e?: Event) {
   }
 }
 
+async function focusSide(side: 'front' | 'back') {
+  const el = document.querySelector(`[data-id="${card.id}"]`)
+
+  await nextTick()
+
+  if (side === 'front') {
+    const input = el?.querySelector('[data-testid="card-face__text-editor__front"]') as HTMLElement
+    input?.focus()
+  } else if (side === 'back') {
+    const input = el?.querySelector('[data-testid="card-face__text-editor__back"]') as HTMLElement
+    input?.focus()
+  }
+}
+
 watch(
   () => active,
   (new_value) => {
     if (new_value) {
+      focusSide(active_side)
       document.addEventListener('click', deactivate)
     } else {
       document.removeEventListener('click', deactivate)
@@ -78,10 +99,10 @@ watch(
 
 <template>
   <div
-    data-testid="card-list__item"
+    data-testid="card-list-item"
     :data-id="card.id"
     :hover_effect="mode === 'select'"
-    class="group"
+    class="card-list-item"
     :class="{
       'mode-edit': mode === 'edit' && active,
       'mode-select cursor-pointer': mode === 'select',
@@ -90,14 +111,26 @@ watch(
     }"
     @click="onClick"
   >
-    <div class="flex w-full gap-4 justify-center" :class="{ active }">
+    <div
+      class="flex items-center justify-center w-12 h-12 rounded-full text-lg text-brown-900 group cursor-grab"
+      :class="{ 'bg-brown-300': !active, 'bg-brown-100': active }"
+    >
+      <ui-icon
+        src="reorder"
+        class="group-hover:block"
+        :class="{ block: active, hidden: !active }"
+      />
+      <span class="group-hover:hidden" :class="{ hidden: active }">{{ index + 1 }}</span>
+    </div>
+
+    <div class="flex w-full gap-6 justify-center" :class="{ active }">
       <card
         data-testid="front-input"
+        ref="front-input"
         :data-id="card.id"
         side="front"
         size="xl"
         mode="edit"
-        class="shadow-cutout"
         :front_delta="card.front_delta"
         :active="active && active_side === 'front'"
         @focusin="activate"
@@ -106,11 +139,11 @@ watch(
       ></card>
       <card
         data-testid="back-input"
+        ref="back-input"
         :data-id="card.id"
         side="back"
         size="xl"
         mode="edit"
-        class="shadow-cutout"
         :back_delta="card.back_delta"
         :active="active && active_side === 'back'"
         @focusin="activate"
@@ -118,25 +151,33 @@ watch(
         @update:back="onUpdate(card.id!, 'back', $event)"
       ></card>
     </div>
+
+    <item-options
+      v-if="active"
+      @select="emit('selected')"
+      @move="emit('moved')"
+      @delete="emit('deleted')"
+    />
   </div>
 </template>
 
 <style>
-.card-list__input {
-  border-radius: var(--radius-4);
+.card-list-item {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  justify-items: center;
+
   width: 100%;
-  min-height: 58px;
+  padding: 24px;
+  border-radius: 24px;
 
-  padding: 8px 12px;
-  overflow: hidden;
-  outline: none;
+  transition: background-color 0.1s ease-in-out;
 }
-
-.mode-select .card-list__input {
-  pointer-events: none;
+.card-list-item.mode-edit {
+  background-color: var(--color-brown-300);
 }
-
-.duplicate .card-list__input {
-  color: var(--color-red-500);
+.card-list-item:not(.mode-edit):hover {
+  background-color: var(--color-brown-200);
 }
 </style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import OverviewPanel from '@/views/deck/overview-panel.vue'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { fetchDeck } from '@/api/decks'
 import StudySession from '@/components/modals/study-session/index.vue'
 import CardList from './card-list/index.vue'
@@ -341,11 +341,7 @@ async function search(query?: string) {
           @delete="onDeleteCards"
         />
 
-        <text-editor-toolbar
-          class="fixed bottom-6 bg-white rounded-6 shadow-cutout p-3 pr-6 flex justify-center items-center gap-4
-            transition-transform duration-100 ease-in-out outline outline-brown-900"
-          inactive_classes="transform translate-y-20"
-        />
+        <text-editor-toolbar inactive_classes="transform translate-y-25" />
       </component>
     </div>
   </section>

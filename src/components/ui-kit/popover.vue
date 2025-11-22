@@ -12,6 +12,7 @@ import {
   type Strategy,
   type Padding
 } from '@floating-ui/vue'
+import uid from '@/utils/uid'
 
 type PopoverProps = {
   mode?: 'click' | 'hover'
@@ -50,6 +51,7 @@ const ARROW_SIZE = 10
 const triggerRef = useTemplateRef('triggerRef')
 const popoverRef = useTemplateRef('popoverRef')
 const arrowRef = useTemplateRef('arrowRef')
+const id = uid()
 
 const { placement, middlewareData, floatingStyles } = useFloating(triggerRef, popoverRef, {
   placement: position,
@@ -97,7 +99,7 @@ const side = computed(() => placement.value.split('-')[0])
 function onPageClick(e: Event): void {
   const target = e.target as HTMLElement
 
-  if (!target.closest('[data-testid="ui-kit-popover-container"]')) {
+  if (!target.closest(`[data-id="${id}"]`)) {
     emit('close')
     document.removeEventListener('click', onPageClick)
   }
@@ -118,6 +120,7 @@ watch(
 <template>
   <div
     data-testid="ui-kit-popover-container"
+    :data-id="id"
     ref="triggerRef"
     class="ui-kit-popover-container group"
     :class="[`ui-kit-popover-container--${mode}`, { 'ui-kit-popover-container--open': open }]"

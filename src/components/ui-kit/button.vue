@@ -50,7 +50,6 @@ function onHover() {
         'btn-fancy-hover': fancyHover
       }
     ]"
-    @click.stop
     @mouseenter="onHover"
   >
     <div v-if="iconLeft" class="btn-icon" uikit-button__icon-left>

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { useAudio } from '@/composables/audio'
 import UiIcon from '@/components/ui-kit/icon.vue'
+import UiPopover from '@/components/ui-kit/popover.vue'
+import UiButton from '@/components/ui-kit/button.vue'
+import { ref } from 'vue'
 
 defineProps<{
   color: string
@@ -11,6 +14,7 @@ const emit = defineEmits<{
 }>()
 
 const audio = useAudio()
+const open = ref(false)
 
 const theme_map: { [key: string]: MemberTheme } = {
   green: 'green-400',
@@ -23,24 +27,30 @@ const theme_map: { [key: string]: MemberTheme } = {
 </script>
 
 <template>
-  <div
-    data-testid="md-toolbar__color-selector"
-    class="grid grid-cols-3 gap-3 bg-brown-300 rounded-6 p-4"
-  >
+  <ui-popover mode="click" :open="open" shadow :gap="24" @close="open = false">
+    <template #trigger>
+      <ui-button @click="open = !open">Color</ui-button>
+    </template>
+
     <div
-      v-for="(theme, color) in theme_map"
-      :key="theme"
-      class="ring-brown-100 relative h-8.5 w-8.5 cursor-pointer rounded-full ring-4 transition-all duration-75
-        hover:scale-110"
-      :class="`bg-${theme} text-${theme}`"
-      @mouseenter="audio.play('click_04')"
-      @click="emit('select', color as string)"
+      data-testid="toolbar__color-selector"
+      class="grid grid-cols-3 gap-3 bg-brown-300 rounded-6 p-4"
     >
-      <ui-icon
-        src="check"
-        v-if="theme === color"
-        class="ring-brown-100 bg-brown-100 absolute -top-1.5 -right-1.5 rounded-full ring-2"
-      ></ui-icon>
+      <div
+        v-for="(theme, color) in theme_map"
+        :key="theme"
+        class="ring-brown-100 relative h-8.5 w-8.5 cursor-pointer rounded-full ring-4 transition-all duration-75
+          hover:scale-110"
+        :class="`bg-${theme} text-${theme}`"
+        @mouseenter="audio.play('click_04')"
+        @click="emit('select', color as string)"
+      >
+        <ui-icon
+          src="check"
+          v-if="theme === color"
+          class="ring-brown-100 bg-brown-100 absolute -top-1.5 -right-1.5 rounded-full ring-2"
+        ></ui-icon>
+      </div>
     </div>
-  </div>
+  </ui-popover>
 </template>

@@ -121,7 +121,7 @@ defineOptions({
   --card-width: 260px;
   --face-border-width: 6px;
   --face-radius: 56px;
-  --face-padding: 12px;
+  --face-padding: 24px;
 }
 .card-container--base {
   --card-width: 192px;
@@ -153,24 +153,5 @@ defineOptions({
   --face-border-width: 2px;
   --face-radius: 8px;
   --face-padding: 1px;
-}
-
-.card-container--edit.card-container--lg {
-  --face-padding: 14px;
-}
-.card-container--edit.card-container--base {
-  --face-padding: 12px;
-}
-.card-container--edit.card-container--sm {
-  --face-padding: 10px;
-}
-.card-container--edit.card-container--xs {
-  --face-padding: 8px;
-}
-.card-container--edit.card-container--2xs {
-  --face-padding: 6px;
-}
-.card-container--edit.card-container--3xs {
-  --face-padding: 4px;
 }
 </style>
