@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import ShopItem from '@/components/views/shop-view/shop-item.vue'
+import ShopItem from './shop-item.vue'
 import { fetchShopItems, upsertPurchase } from '@/api/shop'
 import { useMemberStore } from '@/stores/member'
 
