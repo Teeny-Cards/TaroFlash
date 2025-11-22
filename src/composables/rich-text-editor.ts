@@ -15,6 +15,10 @@ const active_quill = ref<Quill | null>(null)
 const selection_format = ref<{ [key: string]: any }>()
 const active_callback = ref<((delta: any, text?: string) => void) | null>(null)
 
+// TODO: Clean these up when component is unmounted
+const active_handlers = new Set<() => void>()
+const deactivate_handlers = new Set<() => void>()
+
 export function useRichTextEditor() {
   const logger = useLogger()
 
@@ -42,14 +46,19 @@ export function useRichTextEditor() {
     }
 
     active_el.value = editor ?? null
+
+    active_handlers.forEach((h) => h())
   }
 
-  function deferDeactivate(expectedEl: HTMLElement | null, delay = TOOLBAR_HIDE_DELAY) {
+  function deactivate(expectedEl: HTMLElement | null, delay = TOOLBAR_HIDE_DELAY) {
     if (hide_timeout) clearTimeout(hide_timeout)
 
     hide_timeout = window.setTimeout(() => {
       // Only clear if nobody else claimed active in the meantime
-      if (active_el.value === expectedEl) active_el.value = null
+      if (active_el.value === expectedEl) {
+        active_el.value = null
+        deactivate_handlers.forEach((h) => h())
+      }
       hide_timeout = null
     }, delay)
   }
@@ -120,15 +129,25 @@ export function useRichTextEditor() {
     ;(q as any) = null
   }
 
+  function onActivate(handler: () => void) {
+    active_handlers.add(handler)
+  }
+
+  function onDeactivate(handler: () => void) {
+    deactivate_handlers.add(handler)
+  }
+
   return {
     active_el,
     selection_format,
     setToolbar,
     activate,
-    deferDeactivate,
+    deactivate,
     render,
     subscribe,
     unsubscribe,
+    onActivate,
+    onDeactivate,
     // toolbar actions
     bold: () => formatInline('bold', true),
     italic: () => formatInline('italic', true),

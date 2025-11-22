@@ -2,14 +2,20 @@
 import { onMounted, useTemplateRef, watch } from 'vue'
 import { useRichTextEditor } from '@/composables/rich-text-editor'
 
-const { delta, active, placeholder } = defineProps<{
+export type TextEditorUpdatePayload = {
+  delta: Object
+  text?: string
+}
+
+const { delta, active, placeholder, disabled } = defineProps<{
   delta?: Object
   active: boolean
   placeholder?: string
+  disabled?: boolean
 }>()
 
 const emit = defineEmits<{
-  (e: 'update', { delta, text }: { delta: Object; text?: string }): void
+  (e: 'update', payload: TextEditorUpdatePayload): void
 }>()
 
 const editor = useRichTextEditor()
@@ -22,6 +28,7 @@ onMounted(() => {
 })
 
 async function onUpdate(delta: any, text?: string) {
+  if (disabled) return
   emit('update', { delta, text })
 }
 
@@ -34,7 +41,7 @@ watch(
       editor.activate(text_editor.value)
       editor.subscribe(onUpdate)
     } else if (!new_active && prev_active) {
-      editor.deferDeactivate(text_editor.value)
+      editor.deactivate(text_editor.value)
       editor.unsubscribe(onUpdate)
     }
   },
@@ -45,8 +52,7 @@ watch(
 <template>
   <div
     data-testid="text-editor"
-    data-md="true"
-    contenteditable
+    :contenteditable="!disabled"
     tabindex="0"
     ref="text-editor"
     @input.stop

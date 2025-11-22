@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiDivider from '@/components/ui-kit/divider.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
-import { nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { nextTick, onMounted, ref } from 'vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
 
 const { mode, activeCardId, cards } = defineProps<{
@@ -27,7 +27,7 @@ const emit = defineEmits<{
     side: 'front' | 'back',
     { delta, text }: { delta: any; text?: string }
   ): void
-  (e: 'card-closed'): void
+  (e: 'card-deactivated'): void
 }>()
 
 const { t } = useI18n()
@@ -47,7 +47,7 @@ onMounted(() => {
     {
       id: 'tab-card',
       combo: 'shift+tab',
-      description: 'Tab to Next Card',
+      description: 'Tab to Previous Card',
       handler: () => onTab(true),
       when: () => activeCardId !== undefined
     }
@@ -118,27 +118,25 @@ function isDuplicate(card: Card) {
     </ui-button>
   </div>
 
-  <div v-else data-testid="card-list" class="relative flex w-full flex-col items-center">
-    <template v-for="(card, index) in cards" :key="card.id">
-      <list-item
-        :id="`card-${card.id}`"
-        :card="card"
-        :mode="mode"
-        :selected="selectedCardIds.includes(card.id!)"
-        :active="activeCardId === card.id"
-        :is_duplicate="isDuplicate(card)"
-        :active_side="active_side"
-        @deleted="emit('card-deleted', card.id!)"
-        @selected="emit('card-selected', card.id!)"
-        @moved="emit('card-moved', card.id!)"
-        @activated="emit('card-activated', card.id!)"
-        @closed="emit('card-closed')"
-        @updated="onCardUpdated"
-        @side-changed="onSideChanged"
-      />
-
-      <ui-divider v-if="index < cards.length - 1" dashed />
-    </template>
+  <div v-else data-testid="card-list" class="relative flex gap-4 py-4 w-full flex-col items-center">
+    <list-item
+      v-for="(card, index) in cards"
+      :key="card.id"
+      :id="`card-${card.id}`"
+      :card="card"
+      :mode="mode"
+      :selected="selectedCardIds.includes(card.id!)"
+      :active="activeCardId === card.id"
+      :is_duplicate="isDuplicate(card)"
+      :active_side="active_side"
+      @deleted="emit('card-deleted', card.id!)"
+      @selected="emit('card-selected', card.id!)"
+      @moved="emit('card-moved', card.id!)"
+      @activated="emit('card-activated', card.id!)"
+      @deactivated="emit('card-deactivated')"
+      @updated="onCardUpdated"
+      @side-changed="onSideChanged"
+    />
 
     <div class="w-full flex justify-center p-4">
       <ui-button v-if="mode !== 'select'" icon-left="add" class="mt-4" @click="emit('card-added')">
