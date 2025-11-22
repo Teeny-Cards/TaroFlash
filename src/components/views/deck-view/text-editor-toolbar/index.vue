@@ -10,8 +10,9 @@ defineProps<{
 }>()
 
 const {
-  active_el,
   selection_format,
+  onActivate,
+  onDeactivate,
   setToolbar,
   bold,
   italic,
@@ -24,9 +25,18 @@ const {
 
 const toolbar = useTemplateRef('text-editor-toolbar')
 const text_color_selector_open = ref(false)
+const active = ref(false)
 
 onMounted(() => {
   setToolbar(toolbar.value)
+})
+
+onActivate(() => {
+  active.value = true
+})
+
+onDeactivate(() => {
+  active.value = false
 })
 
 function onChangeHeading(e: Event) {
@@ -44,7 +54,7 @@ function onChangeBgColor(e: Event) {
   <div
     data-testid="text-editor-toolbar"
     ref="text-editor-toolbar"
-    :class="{ [inactive_classes]: !active_el }"
+    :class="{ [inactive_classes]: !active }"
   >
     <button :class="{ active: selection_format?.bold }" @click="bold"><b>B</b></button>
     <button :class="{ active: selection_format?.italic }" @click="italic"><i>I</i></button>

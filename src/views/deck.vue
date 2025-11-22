@@ -21,6 +21,7 @@ import UiButton from '@/components/ui-kit/button.vue'
 import SelectMenu from '@/components/views/deck-view/select-menu.vue'
 import TextEditorToolbar from '@/components/views/deck-view/text-editor-toolbar/index.vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
+import { type TextEditorUpdatePayload } from '@/components/text-editor.vue'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -60,18 +61,18 @@ const {
 
 const tabs = [
   {
-    label: t('deck-view.tabs.list-view'),
-    icon: 'list'
-  },
-  {
     label: t('deck-view.tabs.card-view'),
     icon: 'teeny-cards'
+  },
+  {
+    label: t('deck-view.tabs.edit-cards'),
+    icon: 'edit'
   }
 ]
 
 const tab_components: { [key: number]: any } = {
-  0: CardList,
-  1: CardGrid
+  0: CardGrid,
+  1: CardList
 }
 
 onMounted(async () => {
@@ -107,15 +108,13 @@ function onStudy() {
   })
 }
 
-async function onUpdateCard(
-  id: number,
-  side: 'front' | 'back',
-  { delta, text }: { delta: any; text?: string }
-) {
+async function onUpdateCard(id: number, side: 'front' | 'back', payload: TextEditorUpdatePayload) {
   is_saving.value = true
 
   try {
+    const { text, delta } = payload
     await updateCard(id, { [`${side}_delta`]: delta, [`${side}_text`]: text })
+
     is_saving.value = false
   } catch (e: any) {
     toast.error(`${t('card.save-error')}: ${e.message}`)
@@ -185,7 +184,7 @@ function onCardActivated(id: number) {
   }
 }
 
-async function onCardClosed() {
+async function onCardDeactivated() {
   setMode('view')
   deactivateCard()
 
@@ -326,7 +325,7 @@ async function search(query?: string) {
         @card-added="onAddCard"
         @card-updated="onUpdateCard"
         @card-activated="onCardActivated"
-        @card-closed="onCardClosed"
+        @card-deactivated="onCardDeactivated"
         @card-selected="onSelectCard"
         @card-deleted="onDeleteCards"
         @card-moved="onMoveCards"
@@ -343,8 +342,8 @@ async function search(query?: string) {
         />
 
         <text-editor-toolbar
-          class="fixed bottom-6 bg-white rounded-6 shadow-popover p-3 pr-6 flex justify-center items-center gap-4
-            transition-transform duration-100 ease-in-out"
+          class="fixed bottom-6 bg-white rounded-6 shadow-cutout p-3 pr-6 flex justify-center items-center gap-4
+            transition-transform duration-100 ease-in-out outline outline-brown-900"
           inactive_classes="transform translate-y-20"
         />
       </component>

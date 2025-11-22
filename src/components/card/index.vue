@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CardFace from './card-face.vue'
 import type { ImageUploadEvent } from '@/components/image-uploader.vue'
+import type { TextEditorUpdatePayload } from '@/components/text-editor.vue'
 
 type CardProps = {
   size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
@@ -8,9 +9,11 @@ type CardProps = {
   side?: 'front' | 'back'
   front_image_url?: string
   front_text?: string
+  front_delta?: any
   back_image_url?: string
   back_text?: string
-  max_length?: number
+  back_delta?: any
+  active?: boolean
 }
 
 const {
@@ -23,11 +26,15 @@ const {
 
 const emit = defineEmits<{
   (e: 'image-uploaded', event: ImageUploadEvent): void
-  (e: 'update:front_text', text: string): void
-  (e: 'update:back_text', text: string): void
-  (e: 'focusin'): void
-  (e: 'focusout'): void
+  (e: 'update:front', payload: TextEditorUpdatePayload): void
+  (e: 'update:back', payload: TextEditorUpdatePayload): void
+  (e: 'focusin', event: FocusEvent): void
+  (e: 'focusout', event: FocusEvent): void
 }>()
+
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <template>
@@ -49,29 +56,35 @@ const emit = defineEmits<{
     >
       <slot name="front" v-if="side === 'front'">
         <card-face
+          v-bind="$attrs"
           data-testid="card-face__front"
           :image="front_image_url"
           :text="front_text"
-          :max_length="max_length"
+          :editor_delta="front_delta"
           :mode="mode"
+          :active="active"
+          :side="side"
           @image-uploaded="emit('image-uploaded', $event)"
-          @update:text="emit('update:front_text', $event)"
-          @focusin="emit('focusin')"
-          @focusout="emit('focusout')"
+          @update="emit('update:front', $event)"
+          @focusin="emit('focusin', $event)"
+          @focusout="emit('focusout', $event)"
         />
       </slot>
 
       <slot name="back" v-else>
         <card-face
+          v-bind="$attrs"
           data-testid="card-face__back"
           :image="back_image_url"
           :text="back_text"
-          :max_length="max_length"
+          :editor_delta="back_delta"
           :mode="mode"
+          :active="active"
+          :side="side"
           @image-uploaded="emit('image-uploaded', $event)"
-          @update:text="emit('update:back_text', $event)"
-          @focusin="emit('focusin')"
-          @focusout="emit('focusout')"
+          @update="emit('update:back', $event)"
+          @focusin="emit('focusin', $event)"
+          @focusout="emit('focusout', $event)"
         />
       </slot>
     </transition>
@@ -101,8 +114,8 @@ const emit = defineEmits<{
   --card-width: 314px;
   --face-border-width: 6px;
   --face-radius: 58px;
-  --face-padding: 14px;
-  --min-element-height: 100px;
+  --face-padding: 30px;
+  --min-element-height: 80px;
 }
 .card-container--lg {
   --card-width: 260px;
@@ -114,7 +127,7 @@ const emit = defineEmits<{
   --card-width: 192px;
   --face-border-width: 4px;
   --face-radius: 40px;
-  --face-padding: 8px;
+  --face-padding: 20px;
   --min-element-height: 80px;
 }
 .card-container--sm {
