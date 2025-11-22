@@ -5,7 +5,7 @@ import { useSessionStore } from '@/stores/session'
 import { useToast } from '@/composables/toast'
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import Splash from '@/components/views/welcome/splash.vue'
+import Splash from './splash.vue'
 
 const { t } = useI18n()
 const session = useSessionStore()

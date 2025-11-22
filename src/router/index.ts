@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { initUser } from '@/stores/initUser'
 import Dashboard from '@/views/dashboard.vue'
-import ShopView from '@/views/shop.vue'
-import WelcomeView from '@/views/welcome.vue'
-import DeckView from '@/views/deck.vue'
+import ShopView from '@/views/shop/shop-view.vue'
+import WelcomeView from '@/views/welcome/welcome-view.vue'
+import DeckView from '@/views/deck/deck-view.vue'
 import AuthenticatedView from '@/views/authenticated.vue'
 import CheckoutView from '@/views/checkout.vue'
 
