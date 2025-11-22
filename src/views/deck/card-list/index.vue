@@ -2,10 +2,10 @@
 import ListItem from './list-item.vue'
 import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
-import UiDivider from '@/components/ui-kit/divider.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { nextTick, onMounted, ref } from 'vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
+import { type TextEditorUpdatePayload } from '@/components/text-editor.vue'
 
 const { mode, activeCardId, cards } = defineProps<{
   cards: Card[]
@@ -21,12 +21,7 @@ const emit = defineEmits<{
   (e: 'card-selected', id: number): void
   (e: 'card-deleted', id: number): void
   (e: 'card-moved', id: number): void
-  (
-    e: 'card-updated',
-    id: number,
-    side: 'front' | 'back',
-    { delta, text }: { delta: any; text?: string }
-  ): void
+  (e: 'card-updated', id: number, side: 'front' | 'back', payload: TextEditorUpdatePayload): void
   (e: 'card-deactivated'): void
 }>()
 
@@ -118,11 +113,12 @@ function isDuplicate(card: Card) {
     </ui-button>
   </div>
 
-  <div v-else data-testid="card-list" class="relative flex gap-4 py-4 w-full flex-col items-center">
+  <div v-else data-testid="card-list" class="relative flex pt-4 w-full flex-col items-center">
     <list-item
       v-for="(card, index) in cards"
       :key="card.id"
       :id="`card-${card.id}`"
+      :index="index"
       :card="card"
       :mode="mode"
       :selected="selectedCardIds.includes(card.id!)"

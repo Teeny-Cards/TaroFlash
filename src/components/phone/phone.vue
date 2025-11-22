@@ -60,7 +60,7 @@ function closePhone() {
     leave-active-class="transition-[all] ease-in-out duration-100"
   >
     <div v-if="open" data-testid="phone" class="pointer-events-auto h-min absolute top-4 right-0">
-      <div class="w-60 h-89.5 bg-brown-300 shadow-popover rounded-16 overflow-hidden relative">
+      <div class="w-60 h-89.5 bg-brown-300 shadow-cutout rounded-16 overflow-hidden relative">
         <transition :name="nav.transitionName.value">
           <component
             v-if="nav.top.value"
