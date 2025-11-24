@@ -12,7 +12,7 @@ import { useModal } from '@/composables/modal'
 import { useDeckEditor } from '@/composables/deck-editor'
 import { useAudio } from '@/composables/audio'
 import UiSplitButton from '@/components/ui-kit/split-button/index.vue'
-import { uploadCardImage, deleteCardImage } from '@/api/files'
+import { uploadImage, deleteImage } from '@/api/files'
 import { upsertCard, moveCardsToDeck, searchCardsInDeck } from '@/api/cards'
 import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
@@ -21,7 +21,7 @@ import UiButton from '@/components/ui-kit/button.vue'
 import SelectMenu from '@/views/deck/select-menu.vue'
 import TextEditorToolbar from './text-editor-toolbar/index.vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
-import { type TextEditorUpdatePayload } from '@/components/text-editor.vue'
+import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -112,12 +112,25 @@ async function onUpdateCard(id: number, side: 'front' | 'back', payload: TextEdi
   is_saving.value = true
 
   try {
-    const { text, delta } = payload
-    await updateCard(id, { [`${side}_delta`]: delta, [`${side}_text`]: text })
+    const { text, delta, attributes, removedImages } = payload
+    if (removedImages?.length) {
+      await Promise.all(removedImages.map((id) => deleteImage(id)))
+    }
+
+    await updateCard(
+      id,
+      {
+        [`${side}_delta`]: delta,
+        [`${side}_text`]: text,
+        attributes,
+        image_ids: payload.newImages
+      },
+      removedImages
+    )
 
     is_saving.value = false
   } catch (e: any) {
-    toast.error(`${t('card.save-error')}: ${e.message}`)
+    toast.error(t('card.save-error'))
   }
 }
 
@@ -134,7 +147,7 @@ async function onCancel() {
 async function refetchDeck() {
   try {
     deck.value = await fetchDeck(Number(deck_id))
-    image_url.value = useDeckEditor(deck.value).image_url.value
+    // image_url.value = useDeckEditor(deck.value).image_url.value
 
     if (deck.value.cards) {
       resetCards(deck.value.cards)
@@ -239,27 +252,6 @@ async function onMoveCards(id?: number) {
   }
 }
 
-async function updateCardImage(card_id: number, side: 'front' | 'back', file: File | undefined) {
-  const card = deck.value?.cards?.find((card) => card.id === card_id)
-  if (!card) return
-
-  if (file) {
-    try {
-      await uploadCardImage(card_id, side, file)
-      await upsertCard({ ...card, [`has_${side}_image`]: true })
-    } catch (e: any) {
-      // TODO
-    }
-  } else {
-    try {
-      await deleteCardImage(card_id, side)
-      await upsertCard({ ...card, [`has_${side}_image`]: false })
-    } catch (e: any) {
-      // TODO
-    }
-  }
-}
-
 async function search(query?: string) {
   if (!deck.value?.id || query === undefined) return
 
@@ -329,7 +321,6 @@ async function search(query?: string) {
         @card-selected="onSelectCard"
         @card-deleted="onDeleteCards"
         @card-moved="onMoveCards"
-        @card-image-updated="updateCardImage"
       >
         <select-menu
           :open="mode === 'select'"

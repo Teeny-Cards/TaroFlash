@@ -22,13 +22,10 @@ const back_image_preview = ref<string | undefined>(back_image_url.value)
 
 <template>
   <card
+    v-bind="card"
     :class="{
       'cursor-pointer hover:[&>.card-face]:border-purple-500!': mode === 'select'
     }"
-    :back_delta="card.back_delta"
-    :front_delta="card.front_delta"
-    :front_text="card.front_text"
-    :back_text="card.back_text"
     :side="side"
     :front_image_url="front_image_preview"
     :back_image_url="back_image_preview"

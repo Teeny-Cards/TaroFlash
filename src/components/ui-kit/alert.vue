@@ -63,7 +63,7 @@ function onConfirm() {
           @mouseenter="audio.play('click_04')"
         >
           {{ cancelText }}
-          <div class="hover-effect group-hover:!opacity-100 group-focus:!opacity-100">
+          <div class="hover-effect group-hover:opacity-100! group-focus:opacity-100!">
             <span>{{ cancelText }}</span>
           </div>
         </button>
@@ -75,7 +75,7 @@ function onConfirm() {
           @mouseenter="audio.play('click_04')"
         >
           {{ confirmText }}
-          <div class="hover-effect group-hover:!opacity-100 group-focus:!opacity-100">
+          <div class="hover-effect group-hover:opacity-100! group-focus:opacity-100!">
             <span>{{ confirmText }}</span>
           </div>
         </button>

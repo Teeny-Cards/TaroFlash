@@ -1,8 +1,7 @@
 import { computed, ref } from 'vue'
-import { upsertCard, deleteCardsById, reserveCard } from '@/api/cards'
+import { upsertCard, deleteCards as upstreamDeleteCards, reserveCard } from '@/api/cards'
 import { debounce } from '@/utils/debounce'
 
-export const MAX_INPUT_LENGTH = 660
 export type CardEditorMode = 'edit' | 'view' | 'select'
 
 export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
@@ -16,11 +15,32 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
     return selected_card_ids.value.length === all_cards.value.length
   })
 
-  function updateCard(id: number, values: Partial<Card>) {
-    let card = all_cards.value.find((card) => card.id === id)
-    if (!card) return Promise.resolve()
+  function updateCard(id: number, values: Partial<Card>, removed_image_ids: string[] = []) {
+    const idx = all_cards.value.findIndex((card) => card.id === id)
+    if (idx === -1) return
 
-    return debounce(async () => await upsertCard({ ...card, ...values }))
+    const prev = all_cards.value[idx]
+
+    const mergedAttributes = {
+      ...prev.attributes,
+      ...(values.attributes ?? {})
+    }
+
+    const merged_image_ids = [...(prev.image_ids ?? []), ...(values.image_ids ?? [])]
+    const unique_image_ids = [...new Set(merged_image_ids)].filter(
+      (id) => !removed_image_ids?.includes(id)
+    )
+
+    const updated: Card = {
+      ...prev,
+      ...values,
+      attributes: mergedAttributes,
+      image_ids: unique_image_ids
+    }
+
+    all_cards.value[idx] = updated
+
+    return debounce(async () => await upsertCard(updated))
   }
 
   function selectCard(id: number) {
@@ -97,14 +117,12 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
   }
 
   async function deleteCards() {
-    const cards = getSelectedCards()
-      .map((card) => card.id)
-      .filter((id) => id !== undefined)
+    const cards = getSelectedCards().filter((card) => card.id !== undefined)
 
     if (cards.length <= 0) return
 
     try {
-      await deleteCardsById(cards)
+      await upstreamDeleteCards(cards)
     } catch (e: any) {
       // TODO
     } finally {

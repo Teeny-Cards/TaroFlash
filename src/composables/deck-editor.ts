@@ -1,6 +1,6 @@
 import { reactive, ref, computed } from 'vue'
 import { deleteDeck as upstreamDeleteDeck, upsertDeck } from '@/api/decks'
-import { deleteDeckImage, getDeckImageUrl, uploadDeckImage } from '@/api/files'
+import { uploadImage, deleteImage, getImageUrl } from '@/api/files'
 
 export function useDeckEditor(deck?: Deck) {
   const settings = reactive<Deck>({
@@ -14,16 +14,16 @@ export function useDeckEditor(deck?: Deck) {
   const uploaded_image = ref<File | undefined>()
   const image_removed = ref<boolean>(false)
 
-  const image_url = computed(() => {
-    if (!deck?.has_image) return undefined
+  // const image_url = computed(() => {
+  //   if (!deck?.has_image) return undefined
 
-    const url = deck?.id ? getDeckImageUrl(deck.id) : undefined
-    return url ? `${url}?t=${settings?.updated_at}` : undefined
-  })
+  //   const url = deck?.id ? getDeckImageUrl(deck.id) : undefined
+  //   return url ? `${url}?t=${settings?.updated_at}` : undefined
+  // })
 
   async function saveDeck() {
-    await _maybeDeleteOldImage()
-    await _maybeUploadImage()
+    // await _maybeDeleteOldImage()
+    // await _maybeUploadImage()
     await upsertDeck(settings)
   }
 
@@ -45,29 +45,28 @@ export function useDeckEditor(deck?: Deck) {
     image_removed.value = true
   }
 
-  async function _maybeDeleteOldImage() {
-    if (image_removed.value && !uploaded_image.value && deck?.id) {
-      try {
-        await deleteDeckImage(deck.id)
-      } catch (e: any) {
-        console.error(e)
-      }
-    }
-  }
+  // async function _maybeDeleteOldImage() {
+  //   if (image_removed.value && !uploaded_image.value && deck?.id) {
+  //     try {
+  //       await deleteImage(deck.id)
+  //     } catch (e: any) {
+  //       console.error(e)
+  //     }
+  //   }
+  // }
 
-  async function _maybeUploadImage() {
-    if (uploaded_image.value && deck?.id) {
-      try {
-        await uploadDeckImage(deck.id, uploaded_image.value)
-      } catch (e: any) {
-        console.error(e)
-      }
-    }
-  }
+  // async function _maybeUploadImage() {
+  //   if (uploaded_image.value && deck?.id) {
+  //     try {
+  //       await uploadImage(uploaded_image.value)
+  //     } catch (e: any) {
+  //       console.error(e)
+  //     }
+  //   }
+  // }
 
   return {
     settings,
-    image_url,
     saveDeck,
     deleteDeck,
     uploadImage,

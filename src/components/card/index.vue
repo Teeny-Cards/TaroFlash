@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import CardFace from './card-face.vue'
-import type { ImageUploadEvent } from '@/components/image-uploader.vue'
-import type { TextEditorUpdatePayload } from '@/components/text-editor.vue'
+import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
+import { type CardAttributes } from '@/composables/rich-text-editor'
 
 type CardProps = {
   size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
   mode?: 'view' | 'edit' | 'select'
   side?: 'front' | 'back'
+  attributes?: CardAttributes
   front_image_url?: string
   front_text?: string
   front_delta?: any
@@ -14,6 +15,8 @@ type CardProps = {
   back_text?: string
   back_delta?: any
   active?: boolean
+  placeholder?: string
+  uploadImage?: (file: File) => Promise<string | undefined>
 }
 
 const {
@@ -25,11 +28,9 @@ const {
 } = defineProps<CardProps>()
 
 const emit = defineEmits<{
-  (e: 'image-uploaded', event: ImageUploadEvent): void
   (e: 'update:front', payload: TextEditorUpdatePayload): void
   (e: 'update:back', payload: TextEditorUpdatePayload): void
-  (e: 'focusin', event: FocusEvent): void
-  (e: 'focusout', event: FocusEvent): void
+  (e: 'focus'): void
 }>()
 
 defineOptions({
@@ -41,7 +42,7 @@ defineOptions({
   <div
     data-testid="card"
     class="card-container"
-    :class="`card-container--${size} card-container--${mode}`"
+    :class="`card-container--${size} card-container--${mode} card-container--${attributes?.bg_color || 'white'}`"
   >
     <slot></slot>
 
@@ -64,10 +65,10 @@ defineOptions({
           :mode="mode"
           :active="active"
           :side="side"
-          @image-uploaded="emit('image-uploaded', $event)"
+          :placeholder="placeholder"
+          :upload-image="uploadImage"
           @update="emit('update:front', $event)"
-          @focusin="emit('focusin', $event)"
-          @focusout="emit('focusout', $event)"
+          @focus="emit('focus')"
         />
       </slot>
 
@@ -81,10 +82,10 @@ defineOptions({
           :mode="mode"
           :active="active"
           :side="side"
-          @image-uploaded="emit('image-uploaded', $event)"
+          :placeholder="placeholder"
+          :upload-image="uploadImage"
           @update="emit('update:back', $event)"
-          @focusin="emit('focusin', $event)"
-          @focusout="emit('focusout', $event)"
+          @focus="emit('focus')"
         />
       </slot>
     </transition>
@@ -94,6 +95,7 @@ defineOptions({
 <style>
 .card-container {
   --min-element-height: 80px;
+  --card-bg-color: var(--color-white);
 
   aspect-ratio: var(--aspect-card);
   position: relative;
@@ -153,5 +155,27 @@ defineOptions({
   --face-border-width: 2px;
   --face-radius: 8px;
   --face-padding: 1px;
+}
+
+.card-container--green {
+  --card-bg-color: var(--color-green-400);
+}
+.card-container--blue {
+  --card-bg-color: var(--color-blue-400);
+}
+.card-container--purple {
+  --card-bg-color: var(--color-purple-400);
+}
+.card-container--pink {
+  --card-bg-color: var(--color-pink-400);
+}
+.card-container--red {
+  --card-bg-color: var(--color-red-400);
+}
+.card-container--orange {
+  --card-bg-color: var(--color-orange-400);
+}
+.card-container--brown {
+  --card-bg-color: var(--color-brown-300);
 }
 </style>

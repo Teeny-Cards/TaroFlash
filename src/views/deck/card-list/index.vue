@@ -5,7 +5,7 @@ import UiButton from '@/components/ui-kit/button.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { nextTick, onMounted, ref } from 'vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
-import { type TextEditorUpdatePayload } from '@/components/text-editor.vue'
+import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 
 const { mode, activeCardId, cards } = defineProps<{
   cards: Card[]
@@ -78,12 +78,8 @@ async function onTab(is_going_back: boolean) {
   next_card_input?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
-function onCardUpdated(
-  id: number,
-  side: 'front' | 'back',
-  { delta, text }: { delta: any; text?: string }
-) {
-  emit('card-updated', id, side, { delta, text })
+function onCardUpdated(id: number, side: 'front' | 'back', payload: TextEditorUpdatePayload) {
+  emit('card-updated', id, side, payload)
 }
 
 function onSideChanged(side: 'front' | 'back') {
