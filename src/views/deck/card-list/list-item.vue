@@ -2,12 +2,11 @@
 import Card from '@/components/card/index.vue'
 import ItemOptions from './item-options.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
+import UiButton from '@/components/ui-kit/button.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 import { watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { uploadImage } from '@/api/files'
-import { useToast } from '@/composables/toast'
 
 const { card, mode, active, active_side } = defineProps<{
   index: number
@@ -29,7 +28,6 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const toast = useToast()
 
 function onClick() {
   if (mode === 'select') {
@@ -65,16 +63,6 @@ function deactivate(e: Event) {
 
   if (!is_toolbar && !is_card && !target.closest('.options-popover')) {
     emit('deactivated')
-  }
-}
-
-async function onUploadImage(file: File) {
-  try {
-    const src = await uploadImage(file.name, file)
-    return src
-  } catch (e: any) {
-    console.error(e)
-    toast.error(t('card.image-upload-error'))
   }
 }
 
@@ -127,7 +115,6 @@ watch(
         v-bind="card"
         :active="active && active_side === 'front'"
         :placeholder="t('card.placeholder-front')"
-        :upload-image="onUploadImage"
         @focus="activate('front')"
         @update:front="onUpdate(card.id!, 'front', $event)"
       ></card>
@@ -141,7 +128,6 @@ watch(
         v-bind="card"
         :active="active && active_side === 'back'"
         :placeholder="t('card.placeholder-back')"
-        :upload-image="onUploadImage"
         @focus="activate('back')"
         @update:back="onUpdate(card.id!, 'back', $event)"
       ></card>
@@ -153,11 +139,30 @@ watch(
       @move="emit('moved')"
       @delete="emit('deleted')"
     />
+
+    <ui-button
+      v-if="active"
+      icon-left="add"
+      icon-only
+      theme="brown"
+      size="xs"
+      class="absolute! -top-4 z-1 [&>.btn-icon]:text-brown-500!"
+    />
+    <ui-button
+      v-if="active"
+      icon-left="add"
+      icon-only
+      theme="brown"
+      size="xs"
+      class="absolute! -bottom-4 z-1 [&>.btn-icon]:text-brown-500!"
+    />
   </div>
 </template>
 
 <style>
 .card-list-item {
+  position: relative;
+
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;

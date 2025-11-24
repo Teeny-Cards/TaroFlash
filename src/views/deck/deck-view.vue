@@ -112,21 +112,19 @@ async function onUpdateCard(id: number, side: 'front' | 'back', payload: TextEdi
   is_saving.value = true
 
   try {
-    const { text, delta, attributes, removedImages } = payload
-    if (removedImages?.length) {
-      await Promise.all(removedImages.map((id) => deleteImage(id)))
+    const { text, delta, attributes, removed_images } = payload
+    if (removed_images?.length) {
+      await Promise.all(removed_images.map((id) => deleteImage(id)))
     }
 
-    await updateCard(
-      id,
-      {
-        [`${side}_delta`]: delta,
-        [`${side}_text`]: text,
-        attributes,
-        image_ids: payload.newImages
-      },
-      removedImages
-    )
+    const update: Partial<Card> = {
+      [`${side}_delta`]: delta,
+      [`${side}_text`]: text,
+      attributes,
+      image_ids: payload.new_images
+    }
+
+    await updateCard(id, update, removed_images)
 
     is_saving.value = false
   } catch (e: any) {

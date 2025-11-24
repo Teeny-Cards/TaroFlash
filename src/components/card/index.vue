@@ -16,7 +16,6 @@ type CardProps = {
   back_delta?: any
   active?: boolean
   placeholder?: string
-  uploadImage?: (file: File) => Promise<string | undefined>
 }
 
 const {
@@ -66,7 +65,6 @@ defineOptions({
           :active="active"
           :side="side"
           :placeholder="placeholder"
-          :upload-image="uploadImage"
           @update="emit('update:front', $event)"
           @focus="emit('focus')"
         />
@@ -83,7 +81,6 @@ defineOptions({
           :active="active"
           :side="side"
           :placeholder="placeholder"
-          :upload-image="uploadImage"
           @update="emit('update:back', $event)"
           @focus="emit('focus')"
         />

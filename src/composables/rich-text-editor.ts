@@ -9,8 +9,8 @@ export type TextEditorUpdatePayload = {
   delta?: Object
   text?: string
   attributes?: CardAttributes
-  removedImages?: string[]
-  newImages?: string[]
+  removed_images?: string[]
+  new_images?: string[]
 }
 
 export type CardAttributes = {
@@ -32,7 +32,6 @@ const TOOLBAR_HIDE_DELAY = 10
 
 let hide_timeout: number | null = null
 let active_quill: Quill | null = null
-let active_toolbar: HTMLElement | null = null
 let active_input: HTMLElement | null = null
 let active_input_onUpdate: null | ((payload: TextEditorUpdatePayload) => void) = null
 const activate_handlers = new Set<() => void>()
@@ -46,9 +45,6 @@ export function useRichTextEditor() {
   const logger = useLogger()
 
   // PUBLIC API
-  function setToolbar(el: HTMLElement | null) {
-    active_toolbar = el
-  }
 
   function activate(editor: HTMLElement | null) {
     if (hide_timeout) {
@@ -56,7 +52,7 @@ export function useRichTextEditor() {
       hide_timeout = null
     }
 
-    if (editor && active_toolbar) {
+    if (editor) {
       const found = Quill.find(editor)
 
       if (found instanceof Quill) {
@@ -147,6 +143,7 @@ export function useRichTextEditor() {
     const q = active_quill
     if (!q) return
 
+    console.log('format', key, val)
     q.format(key, val, 'user')
   }
 
@@ -171,7 +168,7 @@ export function useRichTextEditor() {
     const range = active_quill.getSelection(true)
     active_quill.insertText(range.index, '\n', Quill.sources.USER)
     active_quill.insertEmbed(range.index + 1, 'divider', true, Quill.sources.USER)
-    active_quill.insertText(range.index + 2, '\n', Quill.sources.USER)
+    // active_quill.insertText(range.index + 2, '\n', Quill.sources.USER)
   }
 
   function list(type: 'bullet' | 'ordered' | false) {
@@ -201,7 +198,7 @@ export function useRichTextEditor() {
     const index = range ? range.index : q.getLength()
 
     q.insertEmbed(index, 'image', value, Quill.sources.USER)
-    q.setSelection(index + 1, 0, Quill.sources.SILENT)
+    q.setSelection(index, 0, Quill.sources.SILENT)
   }
 
   // PRIVATE HELPERS
@@ -221,10 +218,10 @@ export function useRichTextEditor() {
     if (active_quill && active_input_onUpdate) {
       const delta = active_quill?.getContents()
       const text = active_quill?.getText()
-      const removedImages = Array.from(removed_images_per_quill.get(active_quill) ?? [])
-      const newImages = Array.from(image_ids_per_quill.get(active_quill) ?? [])
+      const removed_images = Array.from(removed_images_per_quill.get(active_quill) ?? [])
+      const new_images = Array.from(image_ids_per_quill.get(active_quill) ?? [])
 
-      active_input_onUpdate({ delta, text, attributes, removedImages, newImages })
+      active_input_onUpdate({ delta, text, attributes, removed_images, new_images })
       removed_images_per_quill.delete(active_quill)
       image_ids_per_quill.delete(active_quill)
     }
@@ -233,7 +230,6 @@ export function useRichTextEditor() {
   return {
     active_input,
     selection_format,
-    setToolbar,
     activate,
     deactivate,
     render,

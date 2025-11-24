@@ -10,7 +10,6 @@ const { image, text } = defineProps<{
   active?: boolean
   side?: 'front' | 'back'
   placeholder?: string
-  uploadImage?: (file: File) => Promise<string | undefined>
 }>()
 
 const emit = defineEmits<{
@@ -28,7 +27,6 @@ const emit = defineEmits<{
       :placeholder="placeholder"
       :delta="editor_delta"
       :disabled="mode !== 'edit'"
-      :upload-image="uploadImage"
       @request-active="emit('focus')"
       @update="emit('update', $event)"
     />
@@ -48,6 +46,7 @@ const emit = defineEmits<{
   background-color: var(--card-bg-color);
 
   aspect-ratio: var(--aspect-card);
+  overflow: hidden;
 }
 .card-face[data-mode='edit']:focus-within {
   outline: 2px solid var(--color-blue-500);
@@ -70,7 +69,8 @@ const emit = defineEmits<{
   --face-padding: 0px;
 }
 
-.card-face[data-mode='view'][data-text='false'][data-image='false'] {
+.card-face[data-mode='view'][data-text='false'][data-image='false'],
+.card-face[data-mode='view'][data-image='false']:has(.ql-blank) {
   background-image: var(--diagonal-stripes);
   background-color: var(--color-purple-400);
 }

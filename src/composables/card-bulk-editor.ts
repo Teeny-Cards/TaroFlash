@@ -26,8 +26,7 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
       ...(values.attributes ?? {})
     }
 
-    const merged_image_ids = [...(prev.image_ids ?? []), ...(values.image_ids ?? [])]
-    const unique_image_ids = [...new Set(merged_image_ids)].filter(
+    const unique_image_ids = [...(prev.image_ids ?? []), ...(values.image_ids ?? [])].filter(
       (id) => !removed_image_ids?.includes(id)
     )
 
@@ -38,7 +37,9 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
       image_ids: unique_image_ids
     }
 
-    all_cards.value[idx] = updated
+    // don't actually update the card, just the attributes
+    // quill handles the card updates locally
+    all_cards.value[idx] = { ...prev, attributes: mergedAttributes }
 
     return debounce(async () => await upsertCard(updated))
   }
