@@ -52,15 +52,15 @@ watch(
       size="lg"
       :side="frontRevealed ? 'back' : 'front'"
       :front_image_url="image_url"
-      :back_text="card?.front_text"
-      class="!border-brown-100"
+      v-bind="card"
+      class="border-brown-100!"
     />
     <card
       size="lg"
       :side="backRevealed ? 'back' : 'front'"
       :front_image_url="image_url"
-      :back_text="card?.back_text"
-      class="!border-brown-100"
+      v-bind="card"
+      class="border-brown-100!"
     />
   </div>
 </template>

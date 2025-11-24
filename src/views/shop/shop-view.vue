@@ -84,7 +84,7 @@ async function submitPurchase(item: ShopItem) {
           @click="selected_item = item"
         />
       </div>
-      <div class="bg-brown-500 h-0.25 w-full"></div>
+      <div class="bg-brown-500 h-px w-full"></div>
       <div class="flex w-full justify-center gap-13">
         <ShopItem
           v-for="item in shop_items.stationary"

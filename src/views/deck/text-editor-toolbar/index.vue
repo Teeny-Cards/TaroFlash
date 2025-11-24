@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { useRichTextEditor } from '@/composables/rich-text-editor'
-import ColorSelector from './color-selector.vue'
+import BgColorSelector from './bg-color-selector.vue'
 import FontSizeSelector from './font-size-selector.vue'
-import UiPopover from '@/components/ui-kit/popover.vue'
-import UiButton from '@/components/ui-kit/button.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiImage from '@/components/ui-kit/image.vue'
 import { onMounted, ref, useTemplateRef } from 'vue'
@@ -17,17 +15,15 @@ const {
   onActivate,
   onDeactivate,
   setToolbar,
-  bold,
-  italic,
-  header,
-  link,
-  background,
-  color,
-  align
+  textSize,
+  underline,
+  align,
+  divider,
+  list,
+  cardBgColor
 } = useRichTextEditor()
 
 const toolbar = useTemplateRef('text-editor-toolbar')
-const text_color_selector_open = ref(false)
 const active = ref(false)
 
 onMounted(() => {
@@ -41,16 +37,6 @@ onActivate(() => {
 onDeactivate(() => {
   active.value = false
 })
-
-function onChangeHeading(e: Event) {
-  const v = (e.target as HTMLSelectElement).value as '' | '1' | '2' | '3'
-  header(parseInt(v) as any)
-}
-
-function onChangeBgColor(e: Event) {
-  const v = (e.target as HTMLSelectElement).value
-  background(v)
-}
 </script>
 
 <template>
@@ -62,29 +48,33 @@ function onChangeBgColor(e: Event) {
     :class="{ [inactive_classes]: !active }"
   >
     <div class="flex gap-1.5 items-center h-full py-3">
-      <font-size-selector :selected_font_size="selection_format?.size" />
+      <font-size-selector :selected_font_size="selection_format?.size" @select="textSize" />
 
-      <div class="toolbar-option">
+      <div class="toolbar-option" @click="underline">
         <ui-icon src="underline" />
       </div>
 
-      <div class="toolbar-option">
+      <div class="toolbar-option" @click="list('bullet')">
         <ui-icon src="bullets" />
+      </div>
+
+      <div class="toolbar-option" @click="divider">
+        <ui-icon src="horizontal-rule" />
       </div>
 
       <div class="toolbar-option">
         <ui-icon src="link" />
       </div>
 
-      <div class="toolbar-option">
+      <div class="toolbar-option" @click="align(false)">
         <ui-icon src="align-left" />
       </div>
 
-      <div class="toolbar-option">
+      <div class="toolbar-option" @click="align('center')">
         <ui-icon src="align-center" />
       </div>
 
-      <div class="toolbar-option">
+      <div class="toolbar-option" @click="align('right')">
         <ui-icon src="align-right" />
       </div>
     </div>
@@ -93,15 +83,15 @@ function onChangeBgColor(e: Event) {
       <div class="h-8 border-r border-brown-900"></div>
     </div>
 
-    <ui-image src="paint-roller" size="unset" />
+    <bg-color-selector :color="selection_format?.color" @select="cardBgColor" />
     <ui-image src="pencil" size="unset" />
     <ui-image src="highlighter" size="unset" />
-    <!-- <color-selector :color="selection_format?.color" @select="color" /> -->
   </div>
 </template>
 
 <style>
 .toolbar-option {
+  cursor: pointer;
   padding: 8px;
 }
 </style>

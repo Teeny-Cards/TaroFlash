@@ -3,8 +3,11 @@ import Card from '@/components/card/index.vue'
 import ItemOptions from './item-options.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
-import { type TextEditorUpdatePayload } from '@/components/text-editor.vue'
-import { nextTick, watch } from 'vue'
+import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
+import { watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { uploadImage } from '@/api/files'
+import { useToast } from '@/composables/toast'
 
 const { card, mode, active, active_side } = defineProps<{
   index: number
@@ -25,6 +28,9 @@ const emit = defineEmits<{
   (e: 'side-changed', side: 'front' | 'back'): void
 }>()
 
+const { t } = useI18n()
+const toast = useToast()
+
 function onClick() {
   if (mode === 'select') {
     emit('selected')
@@ -37,10 +43,7 @@ function onUpdate(id: number, side: 'front' | 'back', payload: TextEditorUpdateP
   emit('updated', id, side, payload)
 }
 
-function activate(e?: Event) {
-  const target = e?.target as HTMLTextAreaElement
-  const side = target?.dataset['testid'] === 'card-face__text-editor__back' ? 'back' : 'front'
-
+function activate(side: 'front' | 'back') {
   if (active_side !== side) {
     if (side === 'front') {
       emit('side-changed', 'front')
@@ -54,12 +57,7 @@ function activate(e?: Event) {
   }
 }
 
-function deactivate(e?: Event) {
-  if (!e) {
-    emit('deactivated')
-    return
-  }
-
+function deactivate(e: Event) {
   const target = e.target as HTMLElement
 
   const is_toolbar = target.closest('[data-testid="text-editor-toolbar"]')
@@ -70,17 +68,13 @@ function deactivate(e?: Event) {
   }
 }
 
-async function focusSide(side: 'front' | 'back') {
-  const el = document.querySelector(`[data-id="${card.id}"]`)
-
-  await nextTick()
-
-  if (side === 'front') {
-    const input = el?.querySelector('[data-testid="card-face__text-editor__front"]') as HTMLElement
-    input?.focus()
-  } else if (side === 'back') {
-    const input = el?.querySelector('[data-testid="card-face__text-editor__back"]') as HTMLElement
-    input?.focus()
+async function onUploadImage(file: File) {
+  try {
+    const src = await uploadImage(file.name, file)
+    return src
+  } catch (e: any) {
+    console.error(e)
+    toast.error(t('card.image-upload-error'))
   }
 }
 
@@ -88,7 +82,6 @@ watch(
   () => active,
   (new_value) => {
     if (new_value) {
-      focusSide(active_side)
       document.addEventListener('click', deactivate)
     } else {
       document.removeEventListener('click', deactivate)
@@ -131,10 +124,11 @@ watch(
         side="front"
         size="xl"
         mode="edit"
-        :front_delta="card.front_delta"
+        v-bind="card"
         :active="active && active_side === 'front'"
-        @focusin="activate"
-        @focusout="deactivate"
+        :placeholder="t('card.placeholder-front')"
+        :upload-image="onUploadImage"
+        @focus="activate('front')"
         @update:front="onUpdate(card.id!, 'front', $event)"
       ></card>
       <card
@@ -144,10 +138,11 @@ watch(
         side="back"
         size="xl"
         mode="edit"
-        :back_delta="card.back_delta"
+        v-bind="card"
         :active="active && active_side === 'back'"
-        @focusin="activate"
-        @focusout="deactivate"
+        :placeholder="t('card.placeholder-back')"
+        :upload-image="onUploadImage"
+        @focus="activate('back')"
         @update:back="onUpdate(card.id!, 'back', $event)"
       ></card>
     </div>

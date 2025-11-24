@@ -3,12 +3,12 @@ import { ref } from 'vue'
 import UiPopover from '@/components/ui-kit/popover.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 
-const { selected_font_size = 12 } = defineProps<{
-  selected_font_size: number
+const { selected_font_size = '14px' } = defineProps<{
+  selected_font_size: string
 }>()
 
 const emit = defineEmits<{
-  (e: 'select', color: string): void
+  (e: 'select', size: number): void
 }>()
 
 const open = ref(false)
@@ -38,7 +38,7 @@ const font_size_map: { [key: string]: number } = {
           duration-75"
         :class="{ 'rounded-t-1 bg-purple-500 text-brown-100': open, 'text-brown-900': !open }"
       >
-        {{ selected_font_size }}px
+        {{ selected_font_size }}
         <ui-icon src="carat-down" />
       </button>
     </template>
@@ -51,6 +51,7 @@ const font_size_map: { [key: string]: number } = {
         v-for="(size, name) in font_size_map"
         :key="name"
         class="cursor-pointer rounded-full text-brown-100 flex flex-col items-center"
+        @click="emit('select', size)"
       >
         {{ name }}
       </div>

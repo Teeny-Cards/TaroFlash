@@ -64,7 +64,8 @@
   "card.placeholder-back": "Back",
   "card.add-image": "Add Image",
   "card.add-text": "Add Text",
-  "card.save-error": "Failed to save cards",
+  "card.save-error": "Something went wrong while trying to save your card",
+  "card.image-upload-error": "Failed to upload image",
 
   "study.nope!": "Nope!",
   "study.got-it!": "Got It!",

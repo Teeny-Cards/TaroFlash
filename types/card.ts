@@ -1,4 +1,5 @@
 import { type CardInput as FSRSCard } from 'ts-fsrs'
+import { type CardAttributes } from '@/composables/rich-text-editor'
 
 declare global {
   type Review = FSRSCard
@@ -10,12 +11,12 @@ declare global {
     back_text?: string
     front_delta?: Object
     back_delta?: Object
+    attributes?: CardAttributes
     created_at?: string
     updated_at?: string
-    has_front_image?: boolean
-    has_back_image?: boolean
     rank?: number
     review?: Review
     member_id?: string
+    image_ids?: string[]
   }
 }
