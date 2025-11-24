@@ -3,12 +3,11 @@ import { nextTick, onMounted, useTemplateRef, watch } from 'vue'
 import { useRichTextEditor } from '@/composables/rich-text-editor'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 
-const { delta, active, placeholder, disabled, uploadImage } = defineProps<{
+const { delta, active, placeholder, disabled } = defineProps<{
   delta?: Object
   active: boolean
   placeholder?: string
   disabled?: boolean
-  uploadImage?: (file: File) => Promise<string | undefined>
 }>()
 
 const emit = defineEmits<{
@@ -37,24 +36,6 @@ async function onMouseDown(e: MouseEvent) {
   await nextTick()
 }
 
-async function onDrop(e: DragEvent) {
-  if (disabled || !uploadImage) return
-  e.preventDefault()
-
-  const dt = e.dataTransfer
-  if (!dt) return
-
-  const files = Array.from(dt.files)
-  const imageFile = files.find((f) => f.type.startsWith('image/'))
-  if (!imageFile) return
-
-  const src = await uploadImage(imageFile)
-
-  if (src) {
-    editor.image({ url: src, id: imageFile.name })
-  }
-}
-
 watch(
   () => active,
   (new_active, prev_active) => {
@@ -79,7 +60,6 @@ watch(
     ref="text-editor"
     @mousedown="onMouseDown"
     @dragover.prevent
-    @drop="onDrop"
   ></div>
 </template>
 
@@ -109,10 +89,13 @@ watch(
 }
 
 .ql-image {
+  display: block;
   max-height: 100%;
   max-width: 100%;
 
   position: relative;
+  border-radius: 30px;
+  overflow: hidden;
 }
 .ql-image img {
   max-height: 100%;
@@ -137,12 +120,12 @@ watch(
   user-select: none;
 }
 
-.text-editor--active .ql-image:hover img {
-  padding: 4px;
-
-  border-radius: 30px;
+.text-editor--active .ql-image:hover {
   background-color: var(--color-brown-300);
   cursor: default;
+}
+.text-editor--active .ql-image:hover img {
+  opacity: 0.5;
 }
 
 .text-editor--active .ql-image:hover button {

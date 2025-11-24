@@ -14,7 +14,6 @@ const {
   selection_format,
   onActivate,
   onDeactivate,
-  setToolbar,
   textSize,
   underline,
   align,
@@ -25,10 +24,6 @@ const {
 
 const toolbar = useTemplateRef('text-editor-toolbar')
 const active = ref(false)
-
-onMounted(() => {
-  setToolbar(toolbar.value)
-})
 
 onActivate(() => {
   active.value = true
@@ -44,7 +39,7 @@ onDeactivate(() => {
     data-testid="text-editor-toolbar"
     ref="text-editor-toolbar"
     class="fixed bottom-6 bg-white rounded-6 shadow-cutout pl-3 pr-6.5 flex justify-center items-end gap-6
-      transition-transform duration-100 ease-in-out border-t border-l border-r border-brown-100 h-15"
+      transition-transform duration-100 ease-in-out border-t border-l border-r border-brown-100 h-15 z-10"
     :class="{ [inactive_classes]: !active }"
   >
     <div class="flex gap-1.5 items-center h-full py-3">
