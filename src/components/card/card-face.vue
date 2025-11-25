@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import textEditor from '../text-editor.vue'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
+import { type CardEditorMode } from '@/composables/card-bulk-editor'
 
 const { image, text } = defineProps<{
   image?: string
   text?: string
   editor_delta?: any
-  mode?: 'view' | 'edit' | 'select'
+  mode?: CardEditorMode
   active?: boolean
   side?: 'front' | 'back'
   placeholder?: string

@@ -2,7 +2,7 @@ import { computed, ref } from 'vue'
 import { upsertCard, deleteCards as upstreamDeleteCards, reserveCard } from '@/api/cards'
 import { debounce } from '@/utils/debounce'
 
-export type CardEditorMode = 'view' | 'select'
+export type CardEditorMode = 'view' | 'select' | 'edit'
 
 export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
   const all_cards = ref<Card[]>(initial_cards)
@@ -37,9 +37,7 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
       image_ids: unique_image_ids
     }
 
-    // don't actually update the card, just the attributes
-    // quill handles the card updates locally
-    all_cards.value[idx] = { ...prev, attributes: mergedAttributes }
+    all_cards.value[idx] = updated
 
     return debounce(async () => await upsertCard(updated))
   }

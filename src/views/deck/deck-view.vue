@@ -81,13 +81,13 @@ onMounted(async () => {
     id: 'cancel-edit',
     combo: 'esc',
     description: 'Cancel Edit',
-    handler: onEsc,
-    when: () => mode.value === 'select'
+    handler: onEsc
   })
 })
 
 async function onEsc() {
   deactivateCard()
+  setMode('view')
   audio.play('card_drop')
 
   if (document.activeElement && document.activeElement instanceof HTMLElement) {
@@ -189,11 +189,15 @@ function onCardActivated(id: number) {
   audio.play('slide_up')
 }
 
-async function onCardDeactivated() {
-  setMode('view')
+function onCardDeactivated() {
   deactivateCard()
 
-  await new Promise((resolve) => setTimeout(resolve, 10))
+  setTimeout(() => {
+    // gotta wait a second to make sure another card hasn't been activated
+    if (active_card_id.value === undefined) {
+      audio.play('card_drop')
+    }
+  }, 0)
 }
 
 async function onAddCard(left_card_id?: number, right_card_id?: number) {
@@ -236,21 +240,6 @@ async function onMoveCards(id?: number) {
   if (typeof res === 'object') {
     await moveCardsToDeck(selected_cards, res.deck_id)
     await refetchDeck()
-  }
-}
-
-async function search(query?: string) {
-  if (!deck.value?.id || query === undefined) return
-
-  try {
-    if (query.length > 0) {
-      const cards = await searchCardsInDeck(deck.value.id, query)
-      resetCards(cards)
-    } else {
-      await refetchDeck()
-    }
-  } catch (e: any) {
-    // TODO
   }
 }
 </script>

@@ -3,6 +3,7 @@ import Card from '@/components/card/index.vue'
 import ItemOptions from './item-options.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
+import UiRadio from '@/components/ui-kit/radio.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 import { watch } from 'vue'
@@ -13,6 +14,7 @@ const { card, mode, active, active_side } = defineProps<{
   card: Card
   mode: CardEditorMode
   active: boolean
+  selected: boolean
   is_duplicate?: boolean
   active_side: 'front' | 'back'
 }>()
@@ -33,7 +35,7 @@ const { t } = useI18n()
 function onClick() {
   if (mode === 'select') {
     emit('selected')
-  } else if (mode === 'view' || (mode === 'edit' && !active)) {
+  } else if (!active) {
     emit('activated')
   }
 }
@@ -58,11 +60,10 @@ function activate(side: 'front' | 'back') {
 
 function deactivate(e: Event) {
   const target = e.target as HTMLElement
-
   const is_toolbar = target.closest('[data-testid="text-editor-toolbar"]')
   const is_card = target.closest(`[data-id="${card.id}"]`)
 
-  if (!is_toolbar && !is_card && !target.closest('.options-popover')) {
+  if (!is_toolbar && !is_card) {
     emit('deactivated')
   }
 }
@@ -100,10 +101,19 @@ watch(
     >
       <ui-icon
         src="reorder"
-        class="group-hover:block"
-        :class="{ block: active, hidden: !active }"
+        :class="{
+          'group-hover:block': !active && mode !== 'select',
+          block: active && mode !== 'select',
+          hidden: !active || mode === 'select'
+        }"
       />
-      <span class="group-hover:hidden" :class="{ hidden: active }">{{ index + 1 }}</span>
+      <span
+        :class="{
+          hidden: active && mode !== 'select',
+          'group-hover:hidden': !active && mode !== 'select'
+        }"
+        >{{ index + 1 }}</span
+      >
     </button>
 
     <div class="flex w-full gap-6 justify-center">
@@ -115,6 +125,7 @@ watch(
         size="xl"
         mode="edit"
         v-bind="card"
+        :class="{ 'pointer-events-none': mode === 'select' }"
         :active="active && active_side === 'front'"
         :placeholder="t('card.placeholder-front')"
         @focus="activate('front')"
@@ -128,6 +139,7 @@ watch(
         size="xl"
         mode="edit"
         v-bind="card"
+        :class="{ 'pointer-events-none': mode === 'select' }"
         :active="active && active_side === 'back'"
         :placeholder="t('card.placeholder-back')"
         @focus="activate('back')"
@@ -136,11 +148,13 @@ watch(
     </div>
 
     <item-options
+      v-if="mode !== 'select'"
       class="card-list-item__options"
       @select="emit('selected')"
       @move="emit('moved')"
       @delete="emit('deleted')"
     />
+    <ui-radio :checked="selected" v-else></ui-radio>
 
     <ui-button
       icon-left="add"
