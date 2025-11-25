@@ -3,21 +3,13 @@ import { onUnmounted, useTemplateRef, watchEffect, computed } from 'vue'
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
 import { useModal } from '@/composables/modal'
 
-const { modal_stack } = useModal()
+const { modal_stack, pop } = useModal()
 const modal_container = useTemplateRef<HTMLDivElement>('ui-kit-modal-container')
 
 onUnmounted(() => {
   if (!modal_container.value) return
   enableBodyScroll(modal_container.value)
 })
-
-function close() {
-  let modal = modal_stack.value.at(-1)
-
-  if (modal) {
-    modal.close(false)
-  }
-}
 
 watchEffect(() => {
   if (!modal_container.value) return
@@ -49,7 +41,7 @@ const show_backdrop = computed(() => {
       ref="ui-kit-modal"
       class="pointer-events-auto fixed inset-0 flex items-center justify-center px-4 py-7"
       :class="{ 'backdrop-blur-4 bg-black/10': show_backdrop }"
-      @click="close"
+      @click="pop"
     >
       <slot></slot>
     </div>
@@ -58,7 +50,7 @@ const show_backdrop = computed(() => {
   <transition-group
     data-testid="ui-kit-modal-container"
     tag="div"
-    class="pointer-events-none fixed inset-0 z-20 flex items-center justify-center *:pointer-events-auto"
+    class="pointer-events-none fixed inset-0 z-90 flex items-center justify-center *:pointer-events-auto"
     enter-from-class="scale-90 opacity-0"
     enter-to-class="scale-100 opacity-100"
     enter-active-class="transition-[all] ease-in-out duration-100"

@@ -28,10 +28,12 @@ const confirmText = computed(() => {
 })
 
 function onCancel() {
+  console.log('cancel')
   close(false, { overrideCloseAudio: cancelAudio })
 }
 
 function onConfirm() {
+  console.log('confirm')
   close(true, { overrideCloseAudio: confirmAudio })
 }
 </script>

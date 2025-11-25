@@ -12,7 +12,7 @@ import { useModal } from '@/composables/modal'
 import { useAudio } from '@/composables/audio'
 import UiSplitButton from '@/components/ui-kit/split-button/index.vue'
 import { deleteImage } from '@/api/files'
-import { moveCardsToDeck, searchCardsInDeck } from '@/api/cards'
+import { moveCardsToDeck } from '@/api/cards'
 import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
 import { useToast } from '@/composables/toast'
@@ -216,8 +216,11 @@ function onSelect() {
 }
 
 async function onMoveCards(id?: number) {
-  if (id !== undefined) selectCard(id)
+  if (id === undefined) {
+    return
+  }
 
+  selectCard(id)
   const selected_cards = getSelectedCards()
 
   const { response } = modal.open<MoveCardsModalResponse>(MoveCardsModal, {
@@ -232,14 +235,11 @@ async function onMoveCards(id?: number) {
 
   const res = await response
 
-  if (res === false && id !== undefined) {
-    deselectCard(id)
-    return
-  }
-
-  if (typeof res === 'object') {
+  if (res) {
     await moveCardsToDeck(selected_cards, res.deck_id)
     await refetchDeck()
+  } else {
+    deselectCard(id)
   }
 }
 </script>
@@ -280,7 +280,7 @@ async function onMoveCards(id?: number) {
         </div>
 
         <div
-          class="bg-brown-100 border-b-brown-500 absolute top-0 -right-3 bottom-0 -left-3 -z-10 border-b"
+          class="bg-brown-100 border-b-brown-500 absolute -top-10 -right-3 bottom-0 -left-3 -z-10 border-b"
         ></div>
       </div>
 
