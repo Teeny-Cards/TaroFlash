@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import GridItem from './grid-item.vue'
+import { type CardEditorMode } from '@/composables/card-bulk-editor'
 
 const { mode, side = 'front' } = defineProps<{
   cards: Card[]
-  mode: 'edit' | 'view' | 'select'
+  mode: CardEditorMode
   side?: 'front' | 'back'
   selectedCardIds?: number[]
 }>()

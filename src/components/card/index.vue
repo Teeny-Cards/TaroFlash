@@ -2,10 +2,11 @@
 import CardFace from './card-face.vue'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 import { type CardAttributes } from '@/composables/rich-text-editor'
+import { type CardEditorMode } from '@/composables/card-bulk-editor'
 
 type CardProps = {
   size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
-  mode?: 'view' | 'edit' | 'select'
+  mode?: CardEditorMode
   side?: 'front' | 'back'
   attributes?: CardAttributes
   front_image_url?: string

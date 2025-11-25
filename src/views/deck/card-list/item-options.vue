@@ -17,7 +17,7 @@ const { t } = useI18n()
       hover-audio="pop_drip_mid"
       @click.stop="emit('select')"
       icon-only
-      icon-left="check"
+      icon-left="data-check"
       theme="brown"
     >
       {{ t('deck-view.card-popover.select') }}
@@ -27,7 +27,7 @@ const { t } = useI18n()
       hover-audio="pop_drip_mid"
       @click.stop="emit('move')"
       icon-only
-      icon-left="arrow-forward"
+      icon-left="move-item"
       theme="brown"
     >
       {{ t('deck-view.card-popover.move') }}

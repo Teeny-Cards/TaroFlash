@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useAudio } from '@/composables/audio'
 import { useStorage } from '@/composables/storage'
 import { onMounted } from 'vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
@@ -18,7 +17,6 @@ const emit = defineEmits<{
 }>()
 
 const active_tab = defineModel<number>('activeTab')
-const audio = useAudio()
 const storage = useStorage()
 
 onMounted(() => {
@@ -32,21 +30,14 @@ onMounted(() => {
 
 function onTabClick(index: number) {
   if (active_tab.value === index) {
-    audio.play('digi_powerdown')
     return
   }
-
-  audio.play('etc_camera_shutter')
 
   if (storageKey) {
     storage.set(storageKey, index.toString())
   }
 
   emit('update:activeTab', index)
-}
-
-function onTabHover(active: boolean) {
-  if (!active) audio.play('click_07')
 }
 </script>
 
@@ -58,7 +49,6 @@ function onTabHover(active: boolean) {
       class="ui-kit-tabs__tab"
       :class="{ 'ui-kit-tabs__tab--active': active_tab === index }"
       @click="onTabClick(index)"
-      @mouseenter="onTabHover(active_tab === index)"
     >
       <ui-icon v-if="tab.icon" :src="tab.icon" size="small" class="ui-kit-tabs__tab-icon" />
       <span class="ui-kit-tabs__tab-label">{{ tab.label }}</span>

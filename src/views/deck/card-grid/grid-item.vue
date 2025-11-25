@@ -3,10 +3,11 @@ import Card from '@/components/card/index.vue'
 import { useCard } from '@/composables/card'
 import { ref } from 'vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
+import { type CardEditorMode } from '@/composables/card-bulk-editor'
 
 const { card, side, mode } = defineProps<{
   card: Card
-  mode: 'edit' | 'view' | 'select'
+  mode: CardEditorMode
   side: 'front' | 'back'
   selected: boolean
 }>()

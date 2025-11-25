@@ -108,5 +108,5 @@
   "reward-stack.single-reward.subheader": "Yout got a {type}! | You got <span>+{count}</span> {type}!",
   "reward-stack.multi-reward.subheader": "You got a {type}! + more... | You got <span>+{count}</span> {type}! + more...",
 
-  "move-cards-modal.title": "Move <span>{front}</span><span>{back}</span> | Move {count} Cards"
+  "move-cards-modal.title": "Move Card | Move <span>{front}</span><span>{back}</span> | Move {count} Cards"
 }

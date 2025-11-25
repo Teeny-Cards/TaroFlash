@@ -25,10 +25,13 @@ const decks = ref<Deck[]>([])
 const selected_deck_id = ref<number | undefined>(undefined)
 
 const title = computed(() => {
+  const card = cards[0]
+  const count = !card.back_text && !card.front_text ? 0 : cards.length
+
   return t('move-cards-modal.title', {
-    count: cards.length,
-    front: cards[0]?.front_text ?? '...',
-    back: cards[0]?.back_text ?? '...'
+    count,
+    front: card.front_text || '-',
+    back: card.back_text || '-'
   })
 })
 
