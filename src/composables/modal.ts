@@ -11,8 +11,9 @@ type ModalEntry = {
   id: string
   openAudio?: string
   closeAudio?: string
-  resolve: (result: any) => void
-  close: (responseValue?: any) => void
+  resolve: (result?: any) => void
+  shortcutDispose: () => void
+  shortcutClearScope: () => void
 }
 
 type OpenArgs = {
@@ -26,31 +27,18 @@ type OpenArgs = {
 const modal_stack = ref<ModalEntry[]>([])
 
 export function useModal() {
-  function open<T = any>(
-    component: any,
-    args?: OpenArgs
-  ): { response: Promise<T | boolean>; close: any } {
+  function open<T = any>(component: any, args?: OpenArgs): { response: Promise<T>; close: any } {
     let resolveFn!: (result: any) => void
 
     const id = uid()
+    const shortcuts = useShortcuts(`modal/${id}`)
     const response = new Promise<any>((resolve) => {
       resolveFn = resolve
     })
 
-    const close = (responseValue: any, close_args?: { overrideCloseAudio?: string }) => {
-      const index = modal_stack.value.findIndex((m) => m.id === id)
-
-      if (index !== -1) {
-        modal_stack.value[index].resolve(responseValue)
-        modal_stack.value.splice(index, 1)
-        useShortcuts(`modal/${id}`).clearScope()
-
-        if (close_args?.overrideCloseAudio || args?.closeAudio) {
-          useAudio().play(
-            close_args?.overrideCloseAudio ? close_args?.overrideCloseAudio : args?.closeAudio!
-          )
-        }
-      }
+    const closeFunc = (responseValue?: any) => {
+      resolveFn(responseValue)
+      close(id)
     }
 
     const entry: ModalEntry = {
@@ -60,19 +48,20 @@ export function useModal() {
       component: markRaw(component),
       componentProps: {
         ...args?.props,
-        close
+        close: closeFunc
       },
       resolve: resolveFn,
-      close,
       openAudio: args?.openAudio,
-      closeAudio: args?.closeAudio
+      closeAudio: args?.closeAudio,
+      shortcutDispose: shortcuts.dispose,
+      shortcutClearScope: shortcuts.clearScope
     }
 
-    useShortcuts(`modal/${id}`).registerShortcut({
+    shortcuts.registerShortcut({
       id: 'close-modal',
       combo: 'esc',
       description: 'Close Modal',
-      handler: () => close(false)
+      handler: closeFunc
     })
 
     modal_stack.value.push(entry)
@@ -81,18 +70,22 @@ export function useModal() {
       useAudio().play(args?.openAudio)
     }
 
-    return { response, close }
+    return {
+      response,
+      close: closeFunc
+    }
   }
 
-  function close(id?: string, response: boolean = false) {
+  function close(id?: string) {
     let index = modal_stack.value.findIndex((m) => m.id === id)
-    index = index === -1 ? modal_stack.value.length - 1 : index
 
     if (index !== -1 && modal_stack.value[index].global_close) {
       const modal = modal_stack.value[index]
-      modal.resolve(response)
+      modal.resolve()
+      modal.shortcutDispose?.()
+      modal.shortcutClearScope?.()
+
       modal_stack.value.splice(index, 1)
-      useShortcuts(`modal/${modal.id}`).clearScope()
 
       if (modal.closeAudio) {
         useAudio().play(modal.closeAudio)
@@ -100,5 +93,24 @@ export function useModal() {
     }
   }
 
-  return { open, close, modal_stack }
+  function pop() {
+    const modal = modal_stack.value.pop()
+    if (modal) {
+      modal.resolve()
+      modal.shortcutDispose?.()
+      modal.shortcutClearScope?.()
+    }
+  }
+
+  function clearStack() {
+    modal_stack.value.forEach((m) => {
+      m.resolve()
+      m.shortcutDispose?.()
+      m.shortcutClearScope?.()
+    })
+
+    modal_stack.value = []
+  }
+
+  return { open, close, pop, clearStack, modal_stack }
 }

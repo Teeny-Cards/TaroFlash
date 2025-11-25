@@ -14,7 +14,7 @@ const { deck, close } = defineProps<{
 
 const { t } = useI18n()
 const alert = useAlert()
-const { settings, image_url, saveDeck, deleteDeck, uploadImage, removeImage } = useDeckEditor(deck)
+const { settings, saveDeck, deleteDeck, uploadImage, removeImage } = useDeckEditor(deck)
 
 async function onSave() {
   await saveDeck()
@@ -48,7 +48,6 @@ async function onDeleted() {
       <section data-testid="deck-settings__body" class="flex gap-9 p-12 pt-8">
         <name-image-config
           v-model:title="settings.title"
-          :image-url="image_url"
           @image-uploaded="uploadImage"
           @image-removed="removeImage"
         />

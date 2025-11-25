@@ -88,7 +88,7 @@ function openApp() {
 }
 
 function openModal(component: any, args?: any) {
-  modal.close()
+  modal.clearStack()
   modal.open(component, args)
   emit('close')
 }

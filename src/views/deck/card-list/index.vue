@@ -119,7 +119,7 @@ function onAddCard(card: Card, side: 'left' | 'right') {
     </ui-button>
   </div>
 
-  <div v-else data-testid="card-list" class="relative flex pt-4 w-full flex-col items-center">
+  <div v-else data-testid="card-list" class="relative flex pt-5 w-full flex-col items-center">
     <list-item
       v-for="(card, index) in cards"
       :key="card.id"

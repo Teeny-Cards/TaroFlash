@@ -24,10 +24,13 @@ export function useAlert() {
     return _openAlert('info', args)
   }
 
-  function _openAlert(type: AlertType, args?: AlertArgs): { response: Promise<any>; close: any } {
+  function _openAlert(
+    type: AlertType,
+    args?: AlertArgs
+  ): { response: Promise<boolean>; close: any } {
     const { backdrop, global_close, openAudio, ...props } = args ?? {}
 
-    return modal.open(alert, {
+    return modal.open<boolean>(alert, {
       backdrop: backdrop ?? true,
       global_close,
       props: { type, ...props },

@@ -1,4 +1,4 @@
-import { ref, computed, type Component } from 'vue'
+import { ref, computed, type Component, markRaw } from 'vue'
 
 export type TransitionPreset = 'slide-left' | 'slide-right' | 'pop-up' | 'pop-down' | 'none'
 
@@ -42,9 +42,11 @@ export function useNavigationStack(opts: NavigationStackOptions = {}) {
   const can_go_back = computed(() => stack.value.length > 1)
 
   function _makeEntry(component: Component, opts: NavigationOptions = {}): NavigationEntry {
+    const raw = markRaw(component)
+
     return {
       key: ++_key.value,
-      component,
+      component: raw,
       props: opts.props,
       forwardPreset: opts.transition_preset ?? default_preset
     }

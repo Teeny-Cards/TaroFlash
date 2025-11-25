@@ -167,7 +167,7 @@ watch(
 .ui-kit-popover {
   display: none;
   position: relative;
-  z-index: 10;
+  z-index: 60;
   border-radius: var(--radius-7);
   pointer-events: auto;
 }

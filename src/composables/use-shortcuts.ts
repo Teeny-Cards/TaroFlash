@@ -1,4 +1,4 @@
-import { onBeforeUnmount } from 'vue'
+import { onBeforeUnmount, getCurrentInstance } from 'vue'
 import { useShortcutStore, type Shortcut, type ScopeId } from '@/stores/shortcut-store'
 
 export function useShortcuts(id: ScopeId) {
@@ -34,10 +34,14 @@ export function useShortcuts(id: ScopeId) {
     store.popScope(scope_id)
   }
 
-  onBeforeUnmount(() => {
+  function dispose() {
     releaseFocus()
     popScope()
-  })
+  }
+
+  if (getCurrentInstance()) {
+    onBeforeUnmount(dispose)
+  }
 
   return {
     scope_id,
@@ -45,6 +49,7 @@ export function useShortcuts(id: ScopeId) {
     trapFocus,
     releaseFocus,
     clearScope,
-    popScope
+    popScope,
+    dispose
   }
 }
