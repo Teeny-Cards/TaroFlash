@@ -2,7 +2,7 @@ import { computed, ref } from 'vue'
 import { upsertCard, deleteCards as upstreamDeleteCards, reserveCard } from '@/api/cards'
 import { debounce } from '@/utils/debounce'
 
-export type CardEditorMode = 'edit' | 'view' | 'select'
+export type CardEditorMode = 'view' | 'select'
 
 export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
   const all_cards = ref<Card[]>(initial_cards)
@@ -110,11 +110,24 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
     mode.value = new_mode
   }
 
-  async function addCard() {
-    const last_card = all_cards.value?.at(-1)
-    const { out_rank: rank, out_id: id } = await reserveCard(deck_id.value!, last_card?.id)
-    all_cards.value.push({ id, rank })
-    activateCard(id)
+  async function addCard(left_card_id?: number, right_card_id?: number) {
+    if (!left_card_id && !right_card_id) {
+      const last_card = all_cards.value?.at(-1)
+      left_card_id = last_card?.id
+    }
+
+    const { out_rank: rank, out_id: id } = await reserveCard(
+      deck_id.value!,
+      left_card_id,
+      right_card_id
+    )
+
+    let index = all_cards.value.findIndex((card) => card.rank! > rank)
+    if (index === -1) {
+      index = all_cards.value.length // append at end
+    }
+
+    all_cards.value.splice(index, 0, { id, rank })
   }
 
   async function deleteCards() {

@@ -9,11 +9,10 @@ import { useI18n } from 'vue-i18n'
 import { useCardBulkEditor } from '@/composables/card-bulk-editor'
 import { useAlert } from '@/composables/alert'
 import { useModal } from '@/composables/modal'
-import { useDeckEditor } from '@/composables/deck-editor'
 import { useAudio } from '@/composables/audio'
 import UiSplitButton from '@/components/ui-kit/split-button/index.vue'
-import { uploadImage, deleteImage } from '@/api/files'
-import { upsertCard, moveCardsToDeck, searchCardsInDeck } from '@/api/cards'
+import { deleteImage } from '@/api/files'
+import { moveCardsToDeck, searchCardsInDeck } from '@/api/cards'
 import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
 import { useToast } from '@/composables/toast'
@@ -83,12 +82,11 @@ onMounted(async () => {
     combo: 'esc',
     description: 'Cancel Edit',
     handler: onEsc,
-    when: () => mode.value === 'edit' || mode.value === 'select'
+    when: () => mode.value === 'select'
   })
 })
 
 async function onEsc() {
-  setMode('view')
   deactivateCard()
   audio.play('card_drop')
 
@@ -189,10 +187,6 @@ function onToggleSelectAll() {
 function onCardActivated(id: number) {
   activateCard(id)
   audio.play('slide_up')
-
-  if (mode.value !== 'edit') {
-    setMode('edit')
-  }
 }
 
 async function onCardDeactivated() {
@@ -200,17 +194,12 @@ async function onCardDeactivated() {
   deactivateCard()
 
   await new Promise((resolve) => setTimeout(resolve, 10))
-
-  if (mode.value !== 'edit') {
-    audio.play('card_drop')
-  }
 }
 
-function onAddCard() {
+async function onAddCard(left_card_id?: number, right_card_id?: number) {
   try {
-    addCard()
-    setMode('edit')
     audio.play('slide_up')
+    await addCard(left_card_id, right_card_id)
   } catch (e: any) {
     toast.error(t('toast.error.add-card'))
   }
@@ -288,7 +277,7 @@ async function search(query?: string) {
           <p v-if="is_saving">Saving...</p>
           <p v-else>Saved</p>
 
-          <ui-split-button theme="purple" v-if="mode === 'view' || mode === 'edit'">
+          <ui-split-button theme="purple" v-if="mode === 'view'">
             <template #defaults="{ option }">
               <component :is="option" icon="check" @click="onSelect">
                 {{ t('deck-view.toggle-options.select') }}
