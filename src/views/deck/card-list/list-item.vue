@@ -25,6 +25,7 @@ const emit = defineEmits<{
   (e: 'deactivated'): void
   (e: 'updated', id: number, side: 'front' | 'back', payload: TextEditorUpdatePayload): void
   (e: 'side-changed', side: 'front' | 'back'): void
+  (e: 'add-card', side: 'left' | 'right'): void
 }>()
 
 const { t } = useI18n()
@@ -83,18 +84,19 @@ watch(
     data-testid="card-list-item"
     :data-id="card.id"
     :hover_effect="mode === 'select'"
-    class="card-list-item"
+    class="card-list-item group"
     :class="{
-      'mode-edit': mode === 'edit' && active,
       'mode-select cursor-pointer': mode === 'select',
       'mode-view': mode === 'view',
+      active: active,
       duplicate: is_duplicate
     }"
     @click="onClick"
   >
-    <div
-      class="flex items-center justify-center w-12 h-12 rounded-full text-lg text-brown-900 group cursor-grab"
+    <button
+      class="flex items-center justify-center w-12 h-12 rounded-full text-lg text-brown-900 cursor-grab"
       :class="{ 'bg-brown-300': !active, 'bg-brown-100': active }"
+      @click.stop
     >
       <ui-icon
         src="reorder"
@@ -102,9 +104,9 @@ watch(
         :class="{ block: active, hidden: !active }"
       />
       <span class="group-hover:hidden" :class="{ hidden: active }">{{ index + 1 }}</span>
-    </div>
+    </button>
 
-    <div class="flex w-full gap-6 justify-center" :class="{ active }">
+    <div class="flex w-full gap-6 justify-center">
       <card
         data-testid="front-input"
         ref="front-input"
@@ -134,27 +136,27 @@ watch(
     </div>
 
     <item-options
-      v-if="active"
+      class="card-list-item__options"
       @select="emit('selected')"
       @move="emit('moved')"
       @delete="emit('deleted')"
     />
 
     <ui-button
-      v-if="active"
       icon-left="add"
       icon-only
       theme="brown"
       size="xs"
-      class="absolute! -top-4 z-1 [&>.btn-icon]:text-brown-500!"
+      class="card-list__button card-list__button--top"
+      @click.stop="emit('add-card', 'left')"
     />
     <ui-button
-      v-if="active"
       icon-left="add"
       icon-only
       theme="brown"
       size="xs"
-      class="absolute! -bottom-4 z-1 [&>.btn-icon]:text-brown-500!"
+      class="card-list__button card-list__button--bottom"
+      @click.stop="emit('add-card', 'right')"
     />
   </div>
 </template>
@@ -174,10 +176,51 @@ watch(
 
   transition: background-color 0.1s ease-in-out;
 }
-.card-list-item.mode-edit {
+.card-list-item.active {
   background-color: var(--color-brown-300);
 }
-.card-list-item:not(.mode-edit):hover {
+.card-list-item:not(.active):hover {
   background-color: var(--color-brown-200);
+}
+
+.card-list-item__options {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s ease-in-out;
+}
+.card-list-item.active .card-list-item__options,
+.card-list-item:hover .card-list-item__options {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.card-list__button {
+  opacity: 0;
+  pointer-events: none;
+
+  position: absolute;
+  z-index: 1;
+  transition: opacity 0.1s ease-in-out;
+}
+.card-list-item:hover .card-list__button,
+.card-list-item.active .card-list__button {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+.card-list__button--top {
+  top: 0;
+  transform: translate(0, -50%);
+}
+.card-list__button--bottom {
+  bottom: 0;
+  transform: translate(0, 50%);
+}
+
+.card-list__button .btn-icon {
+  color: var(--color-brown-500) !important;
+}
+.card-list__button:hover {
+  outline-color: var(--color-brown-300) !important;
 }
 </style>

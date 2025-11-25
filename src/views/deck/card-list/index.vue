@@ -15,7 +15,7 @@ const { mode, activeCardId, cards } = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'card-added'): void
+  (e: 'card-added', left_card_id?: number, right_card_id?: number): void
   (e: 'card-activated', id: number): void
   (e: 'card-deactivated', id: number): void
   (e: 'card-selected', id: number): void
@@ -95,6 +95,16 @@ function isDuplicate(card: Card) {
     ).length > 1
   )
 }
+
+function onAddCard(card: Card, side: 'left' | 'right') {
+  if (side === 'left') {
+    const other_card = cards[cards.indexOf(card) - 1]
+    emit('card-added', other_card?.id, card.id)
+  } else {
+    const other_card = cards[cards.indexOf(card) + 1]
+    emit('card-added', card.id, other_card?.id)
+  }
+}
 </script>
 
 <template>
@@ -128,6 +138,7 @@ function isDuplicate(card: Card) {
       @deactivated="emit('card-deactivated')"
       @updated="onCardUpdated"
       @side-changed="onSideChanged"
+      @add-card="onAddCard(card, $event)"
     />
 
     <div class="w-full flex justify-center p-4">
