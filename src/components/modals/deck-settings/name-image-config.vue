@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import Card from '@/components/card/index.vue'
 import imageUploader from '@/components/image-uploader.vue'
-import { type ImageUploadEvent } from '@/components/image-uploader.vue'
+import { type ImageUploadPayload } from '@/components/image-uploader.vue'
 import { ref } from 'vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiInput from '@/components/ui-kit/input.vue'
@@ -20,7 +20,7 @@ const title = defineModel<string>('title')
 
 const preview_image = ref<string | undefined>(imageUrl)
 
-function onImageUploaded(event: ImageUploadEvent) {
+function onImageUploaded(event: ImageUploadPayload) {
   preview_image.value = event.preview
   emit('image-uploaded', event.file)
 }

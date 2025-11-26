@@ -1,31 +1,19 @@
 <script setup lang="ts">
 import CardFace from './card-face.vue'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
-import { type CardAttributes } from '@/composables/rich-text-editor'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
+import { type CardBase } from '@type/card'
 
-type CardProps = {
+type CardProps = Partial<CardBase> & {
   size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
   mode?: CardEditorMode
   side?: 'front' | 'back'
-  attributes?: CardAttributes
-  front_image_url?: string
-  front_text?: string
-  front_delta?: any
-  back_image_url?: string
-  back_text?: string
-  back_delta?: any
   active?: boolean
   placeholder?: string
+  container_classes?: string
 }
 
-const {
-  size = 'base',
-  front_image_url,
-  back_image_url,
-  side = 'front',
-  mode = 'view'
-} = defineProps<CardProps>()
+const { size = 'base', side = 'front', mode = 'view' } = defineProps<CardProps>()
 
 const emit = defineEmits<{
   (e: 'update:front', payload: TextEditorUpdatePayload): void
@@ -42,7 +30,10 @@ defineOptions({
   <div
     data-testid="card"
     class="card-container"
-    :class="`card-container--${size} card-container--${mode} card-container--${attributes?.bg_color || 'white'}`"
+    :class="[
+      `card-container--${size} card-container--${mode} card-container--${attributes?.bg_color || 'white'}`,
+      container_classes
+    ]"
   >
     <slot></slot>
 
@@ -59,7 +50,7 @@ defineOptions({
         <card-face
           v-bind="$attrs"
           data-testid="card-face__front"
-          :image="front_image_url"
+          :image="attributes?.front_image"
           :text="front_text"
           :editor_delta="front_delta"
           :mode="mode"
@@ -75,7 +66,7 @@ defineOptions({
         <card-face
           v-bind="$attrs"
           data-testid="card-face__back"
-          :image="back_image_url"
+          :image="attributes?.back_image"
           :text="back_text"
           :editor_delta="back_delta"
           :mode="mode"

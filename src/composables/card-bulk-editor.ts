@@ -15,7 +15,7 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
     return selected_card_ids.value.length === all_cards.value.length
   })
 
-  function updateCard(id: number, values: Partial<Card>, removed_image_ids: string[] = []) {
+  function updateCard(id: number, values: Partial<Card>) {
     const idx = all_cards.value.findIndex((card) => card.id === id)
     if (idx === -1) return
 
@@ -26,15 +26,10 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
       ...(values.attributes ?? {})
     }
 
-    const unique_image_ids = [...(prev.image_ids ?? []), ...(values.image_ids ?? [])].filter(
-      (id) => !removed_image_ids?.includes(id)
-    )
-
     const updated: Card = {
       ...prev,
       ...values,
-      attributes: mergedAttributes,
-      image_ids: unique_image_ids
+      attributes: mergedAttributes
     }
 
     all_cards.value[idx] = updated

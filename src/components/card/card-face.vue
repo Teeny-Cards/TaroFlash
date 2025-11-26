@@ -21,7 +21,10 @@ const emit = defineEmits<{
 
 <template>
   <div class="card-face" :data-image="!!image" :data-text="!!text" :data-mode="mode">
+    <img v-if="image" :src="image" class="h-full w-full object-cover" />
+
     <text-editor
+      v-else
       :active="!!active"
       :data-testid="`card-face__text-editor__${side}`"
       class="placeholder:text-brown-500 text-brown-700 h-full outline-none overflow-y-auto scroll-hidden"
@@ -74,5 +77,9 @@ const emit = defineEmits<{
 .card-face[data-mode='view'][data-image='false']:has(.ql-blank) {
   background-image: var(--diagonal-stripes);
   background-color: var(--color-purple-400);
+}
+
+.card-face[data-image='true'] {
+  padding: 0;
 }
 </style>

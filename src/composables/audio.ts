@@ -2,8 +2,10 @@
 import { Howl, Howler } from 'howler'
 import { ref } from 'vue'
 import { useLogger } from '@/composables/logger'
+import { debounce } from '@/utils/debounce'
 
 const logger = useLogger()
+const DEBOUNCE_DELAY = 100
 
 const loadedSounds = new Map<string, Howl>()
 const isInitialized = ref(false)
@@ -11,8 +13,11 @@ const playingSounds = ref<Howl[]>([])
 const unlocked = ref(false)
 const queued_sound = ref<{ key: string; options: PlayOptions } | undefined>()
 
+let debounce_timeout: number | null = null
+
 type PlayOptions = {
   volume?: number
+  debounce?: number
 }
 
 export function useAudio() {
@@ -55,7 +60,33 @@ export function useAudio() {
     isInitialized.value = true
   }
 
-  const play = async (key: string, options: PlayOptions = {}): Promise<Howl | undefined> => {
+  const play = async (
+    key: string,
+    options: PlayOptions = {},
+    debounce_ms: number = DEBOUNCE_DELAY
+  ): Promise<Howl | undefined> => {
+    if (!unlocked.value) {
+      queued_sound.value = { key, options }
+      return
+    }
+
+    if (debounce_ms > 0) {
+      if (debounce_timeout) {
+        clearTimeout(debounce_timeout)
+      }
+
+      return new Promise((resolve) => {
+        const timer = window.setTimeout(async () => {
+          debounce_timeout = null
+          resolve(await _play(key, options))
+        }, debounce_ms)
+
+        debounce_timeout = timer
+      })
+    }
+  }
+
+  const _play = async (key: string, options: PlayOptions = {}): Promise<Howl | undefined> => {
     if (!unlocked.value) {
       queued_sound.value = { key, options }
       return
@@ -81,33 +112,10 @@ export function useAudio() {
     }
   }
 
-  const playRandom = (keys: string[], options: PlayOptions = {}) => {
-    if (!keys || keys.length === 0) return
-    const key = keys[Math.floor(Math.random() * keys.length)]
-    play(key, options)
-  }
-
-  const isPlaying = (key: string) => {
-    const sound = loadedSounds.get(key)
-    return sound ? sound.playing() : false
-  }
-
-  const stop = (key: string) => {
-    const sound = loadedSounds.get(key)
-    if (sound) sound.stop()
-  }
-
-  const muteAll = (muted: boolean) => {
-    Howler.mute(muted)
-  }
-
   return {
     preload,
     play,
-    playRandom,
     stop,
-    muteAll,
-    isPlaying,
     isInitialized: isInitialized as Readonly<typeof isInitialized>
   }
 }

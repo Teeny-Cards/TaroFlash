@@ -8,6 +8,7 @@ import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 import { watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import ImageButton from '../image-button.vue'
 
 const { card, mode, active, active_side } = defineProps<{
   index: number
@@ -68,6 +69,22 @@ function deactivate(e: Event) {
   }
 }
 
+async function onImageUpload(side: 'front' | 'back', url: string) {
+  onUpdate(card.id!, side, {
+    attributes: {
+      [`${side}_image`]: url
+    }
+  })
+}
+
+async function onImageDelete(side: 'front' | 'back') {
+  onUpdate(card.id!, side, {
+    attributes: {
+      [`${side}_image`]: undefined
+    }
+  })
+}
+
 watch(
   () => active,
   (new_value) => {
@@ -85,7 +102,7 @@ watch(
     data-testid="card-list-item"
     :data-id="card.id"
     :hover_effect="mode === 'select'"
-    class="card-list-item group"
+    class="card-list-item group/listitem"
     :class="{
       'mode-select cursor-pointer': mode === 'select',
       'mode-view': mode === 'view',
@@ -102,7 +119,7 @@ watch(
       <ui-icon
         src="reorder"
         :class="{
-          'group-hover:block': !active && mode !== 'select',
+          'group-hover/listitem:block': !active && mode !== 'select',
           block: active && mode !== 'select',
           hidden: !active || mode === 'select'
         }"
@@ -110,7 +127,7 @@ watch(
       <span
         :class="{
           hidden: active && mode !== 'select',
-          'group-hover:hidden': !active && mode !== 'select'
+          'group-hover/listitem:hidden': !active && mode !== 'select'
         }"
         >{{ index + 1 }}</span
       >
@@ -125,12 +142,21 @@ watch(
         size="xl"
         mode="edit"
         v-bind="card"
+        container_classes="group/card"
         :class="{ 'pointer-events-none': mode === 'select' }"
         :active="active && active_side === 'front'"
         :placeholder="t('card.placeholder-front')"
         @focus="activate('front')"
         @update:front="onUpdate(card.id!, 'front', $event)"
-      ></card>
+      >
+        <image-button
+          class="absolute! -top-2 -left-2 opacity-0 group-hover/card:opacity-100"
+          :image="card.attributes?.front_image"
+          @image-uploaded="onImageUpload('front', $event)"
+          @image-deleted="onImageDelete('front')"
+          @click.stop
+        />
+      </card>
       <card
         data-testid="back-input"
         ref="back-input"
@@ -139,12 +165,21 @@ watch(
         size="xl"
         mode="edit"
         v-bind="card"
+        container_classes="group/card"
         :class="{ 'pointer-events-none': mode === 'select' }"
         :active="active && active_side === 'back'"
         :placeholder="t('card.placeholder-back')"
         @focus="activate('back')"
         @update:back="onUpdate(card.id!, 'back', $event)"
-      ></card>
+      >
+        <image-button
+          class="absolute! -top-2 -right-2 opacity-0 group-hover/card:opacity-100"
+          :image="card.attributes?.back_image"
+          @image-uploaded="onImageUpload('back', $event)"
+          @image-deleted="onImageDelete('back')"
+          @click.stop
+        />
+      </card>
     </div>
 
     <item-options
