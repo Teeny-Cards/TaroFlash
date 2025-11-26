@@ -9,12 +9,12 @@ export type TextEditorUpdatePayload = {
   delta?: Object
   text?: string
   attributes?: CardAttributes
-  removed_images?: string[]
-  new_images?: string[]
 }
 
 export type CardAttributes = {
   bg_color?: MemberTheme
+  front_image?: string
+  back_image?: string
 }
 
 export type RenderOptions = {
@@ -218,10 +218,8 @@ export function useRichTextEditor() {
     if (active_quill && active_input_onUpdate) {
       const delta = active_quill?.getContents()
       const text = active_quill?.getText()
-      const removed_images = Array.from(removed_images_per_quill.get(active_quill) ?? [])
-      const new_images = Array.from(image_ids_per_quill.get(active_quill) ?? [])
 
-      active_input_onUpdate({ delta, text, attributes, removed_images, new_images })
+      active_input_onUpdate({ delta, text, attributes })
       removed_images_per_quill.delete(active_quill)
       image_ids_per_quill.delete(active_quill)
     }

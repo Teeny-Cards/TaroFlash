@@ -20,7 +20,7 @@ const { t } = useI18n()
       icon-left="data-check"
       theme="brown"
     >
-      {{ t('deck-view.card-popover.select') }}
+      {{ t('deck-view.item-options.select') }}
     </ui-button>
 
     <ui-button
@@ -30,7 +30,7 @@ const { t } = useI18n()
       icon-left="move-item"
       theme="brown"
     >
-      {{ t('deck-view.card-popover.move') }}
+      {{ t('deck-view.item-options.move') }}
     </ui-button>
 
     <ui-button
@@ -40,7 +40,7 @@ const { t } = useI18n()
       icon-left="delete"
       theme="red"
     >
-      {{ t('deck-view.card-popover.delete') }}
+      {{ t('deck-view.item-options.delete') }}
     </ui-button>
   </div>
 </template>

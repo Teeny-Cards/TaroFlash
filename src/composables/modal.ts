@@ -78,9 +78,9 @@ export function useModal() {
 
   function close(id?: string) {
     let index = modal_stack.value.findIndex((m) => m.id === id)
+    const modal = modal_stack.value[index]
 
-    if (index !== -1 && modal_stack.value[index].global_close) {
-      const modal = modal_stack.value[index]
+    if (modal?.global_close) {
       modal.resolve()
       modal.shortcutDispose?.()
       modal.shortcutClearScope?.()

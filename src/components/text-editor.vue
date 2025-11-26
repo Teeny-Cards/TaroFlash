@@ -33,7 +33,6 @@ async function onMouseDown(e: MouseEvent) {
   if (!text_editor.value || disabled || active) return
 
   emit('request-active')
-  await nextTick()
 }
 
 watch(

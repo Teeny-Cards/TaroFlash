@@ -2,13 +2,17 @@
 import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
 import { useLogger } from '@/composables/logger'
 
-export type ImageUploadEvent = {
+export type ImageUploadPayload = {
   preview: string
   file: File
 }
 
+const { allow_drop = true } = defineProps<{
+  allow_drop?: boolean
+}>()
+
 const emit = defineEmits<{
-  (e: 'image-uploaded', event: ImageUploadEvent): void
+  (e: 'image-uploaded', event: ImageUploadPayload): void
 }>()
 
 const selectedFile = ref<File>()
@@ -19,12 +23,16 @@ const fileInput = useTemplateRef<HTMLInputElement>('fileInput')
 const logger = useLogger()
 
 onMounted(() => {
+  if (!allow_drop) return
+
   document.addEventListener('dragover', startDrag)
   document.addEventListener('drop', endDrag)
   document.addEventListener('dragleave', endDrag)
 })
 
 onBeforeUnmount(() => {
+  if (!allow_drop) return
+
   document.removeEventListener('dragover', startDrag)
   document.removeEventListener('drop', endDrag)
   document.removeEventListener('dragleave', endDrag)
@@ -91,6 +99,7 @@ function getImagePreview(file: File): Promise<string> {
       @change="handleFileChange"
       accept="image/*"
       class="absolute inset-0 cursor-pointer opacity-0"
+      :class="{ 'pointer-events-none': !allow_drop }"
     />
   </div>
 </template>
