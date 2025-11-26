@@ -16,7 +16,10 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div data-testid="card-grid" class="grid grid-cols-[repeat(auto-fit,192px)] gap-4 py-3">
+  <div
+    data-testid="card-grid"
+    class="grid grid-cols-[repeat(auto-fit,minmax(192px,1fr))] gap-4 py-3"
+  >
     <grid-item
       v-for="card in cards"
       :card="card"

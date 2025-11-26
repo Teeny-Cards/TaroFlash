@@ -22,17 +22,42 @@ const back_image_preview = ref<string | undefined>(back_image_url.value)
 </script>
 
 <template>
-  <card
-    v-bind="card"
-    :class="{
-      'cursor-pointer hover:[&>.card-face]:border-purple-500!': mode === 'select'
-    }"
-    :side="side"
-    :front_image_url="front_image_preview"
-    :back_image_url="back_image_preview"
-  >
-    <div v-if="mode === 'select'" class="absolute top-0 right-0">
-      <ui-radio :checked="selected" @click.stop="emit('card-selected')" />
-    </div>
-  </card>
+  <div class="grid-item">
+    <card
+      v-bind="card"
+      :class="{
+        'cursor-pointer hover:[&>.card-face]:border-purple-500!': mode === 'select'
+      }"
+      size="xl"
+      :side="side"
+      :front_image_url="front_image_preview"
+      :back_image_url="back_image_preview"
+    >
+      <div v-if="mode === 'select'" class="absolute top-0 right-0">
+        <ui-radio :checked="selected" @click.stop="emit('card-selected')" />
+      </div>
+    </card>
+  </div>
 </template>
+
+<style>
+.grid-item {
+  position: relative;
+  aspect-ratio: var(--aspect-card);
+  overflow: hidden;
+}
+
+.grid-item [data-testid='card'] {
+  --scale: 0.75;
+
+  position: absolute;
+  inset: 0;
+
+  /* Make it larger so that after scaling it fits the slot */
+  width: calc(100% / var(--scale));
+  height: calc(100% / var(--scale));
+
+  transform-origin: top left;
+  transform: scale(var(--scale));
+}
+</style>

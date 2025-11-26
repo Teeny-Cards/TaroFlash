@@ -99,7 +99,7 @@ defineOptions({
   --card-width: 380px;
   --face-border-width: 6px;
   --face-radius: 70px;
-  --face-padding: 16px;
+  --face-padding: 42px;
 }
 .card-container--xl {
   --card-width: 314px;
