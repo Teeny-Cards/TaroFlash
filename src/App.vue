@@ -15,8 +15,6 @@
   >
     Loading
   </div>
-
-  <dev-panel />
 </template>
 
 <script setup lang="ts">
@@ -25,7 +23,6 @@ import { useToast } from '@/composables/toast'
 import { useSessionStore } from '@/stores/session'
 import UiToast from '@/components/ui-kit/toast.vue'
 import UiModal from '@/components/ui-kit/modal.vue'
-import DevPanel from '@/components/dev-panel.vue'
 
 const sessionStore = useSessionStore()
 const { toasts } = useToast()
