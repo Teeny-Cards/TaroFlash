@@ -12,15 +12,23 @@ export type CardBase = {
   created_at?: string
   updated_at?: string
   rank?: number
-  review?: Review
   member_id?: string
 }
 
 export type Review = FSRSCard
 
+export type ImageCard = {
+  front_image_path?: string
+  back_image_path?: string
+}
+
+export type ReviewCard = {
+  review?: Review
+}
+
 declare global {
   type Review = FSRSCard
-  type Card = CardBase
+  type Card = Prettify<CardBase & ImageCard & ReviewCard>
 }
 
 export {}

@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 
 export type ScopeId = string
 export type ShortcutId = string
+export type Priority = keyof typeof PRIORITY
 
 export type ShortcutRegistry = {
   scopeId: ScopeId
@@ -28,8 +29,16 @@ export type Shortcut = {
 
 type Scope = {
   id: ScopeId
-  priority: number // stack order; higher = top (monotonic increasing)
+  priority: number
   shortcuts: Map<ShortcutId, Shortcut>
+}
+
+const PRIORITY = {
+  background: 0,
+  low: 1,
+  normal: 2,
+  high: 3,
+  critical: 4
 }
 
 function normalizeComboFromEvent(ev: KeyboardEvent): KeyCombo {
@@ -46,8 +55,6 @@ function normalizeComboFromEvent(ev: KeyboardEvent): KeyCombo {
   const parts = [...mods.sort(), key]
   return parts.join('+') as KeyCombo
 }
-
-let priorityCounter = 0
 
 export const useShortcutStore = defineStore('shortcutStore', () => {
   const stack = reactive<Scope[]>([])
@@ -97,11 +104,11 @@ export const useShortcutStore = defineStore('shortcutStore', () => {
     document.removeEventListener('keydown', _handleKeyEvent)
   })
 
-  function pushScope(id: ScopeId): ScopeId {
+  function pushScope(id: ScopeId, priority: Priority = 'normal'): ScopeId {
     const existing = stack.find((s) => s.id === id)
     if (existing) return existing.id
 
-    stack.push({ id, priority: ++priorityCounter, shortcuts: new Map() })
+    stack.push({ id, priority: PRIORITY[priority], shortcuts: new Map() })
     sortByPriority()
 
     return id
@@ -121,18 +128,14 @@ export const useShortcutStore = defineStore('shortcutStore', () => {
     }
   }
 
-  function sortByPriority() {
-    stack.sort((a, b) => a.priority - b.priority)
-  }
-
-  function registerShortcut(scopeId: ScopeId, shortcut: Shortcut) {
+  function register(scopeId: ScopeId, shortcut: Shortcut) {
     const scope = stack.find((s) => s.id === scopeId)
     if (!scope) return
 
     scope.shortcuts.set(shortcut.id, shortcut)
   }
 
-  function unregisterShortcut(scopeId: ScopeId, shortcutId: ShortcutId) {
+  function unregister(scopeId: ScopeId, shortcutId: ShortcutId) {
     const scope = stack.find((s) => s.id === scopeId)
     if (!scope) return
 
@@ -146,7 +149,11 @@ export const useShortcutStore = defineStore('shortcutStore', () => {
     scope.shortcuts.clear()
   }
 
-  function _handleKeyEvent(ev: KeyboardEvent) {
+  function sortByPriority() {
+    stack.sort((a, b) => a.priority - b.priority)
+  }
+
+  async function _handleKeyEvent(ev: KeyboardEvent) {
     const combo = normalizeComboFromEvent(ev)
 
     // Walk stack from top to bottom
@@ -160,7 +167,7 @@ export const useShortcutStore = defineStore('shortcutStore', () => {
         const active = sc.when ? !!sc.when() : true
         if (!active) continue
 
-        const handled = sc.handler(ev) ?? true
+        const handled = (await sc.handler(ev)) ?? true
         if (handled) {
           ev.preventDefault()
           ev.stopPropagation()
@@ -175,8 +182,13 @@ export const useShortcutStore = defineStore('shortcutStore', () => {
     }
   }
 
-  function setActiveNamespace(namespace: ScopeId | undefined) {
+  function setActiveNamespace(namespace?: ScopeId) {
     active_namespace.value = namespace?.split('/')[0]
+  }
+
+  function clearNamespace(namespace?: ScopeId) {
+    if (namespace !== active_namespace.value) return
+    active_namespace.value = undefined
   }
 
   return {
@@ -185,8 +197,9 @@ export const useShortcutStore = defineStore('shortcutStore', () => {
     pushScope,
     popScope,
     clearScope,
-    registerShortcut,
-    unregisterShortcut,
-    setActiveNamespace
+    register,
+    unregister,
+    setActiveNamespace,
+    clearNamespace
   }
 })

@@ -1,20 +1,25 @@
 import { onBeforeUnmount, getCurrentInstance } from 'vue'
-import { useShortcutStore, type Shortcut, type ScopeId } from '@/stores/shortcut-store'
+import {
+  useShortcutStore,
+  type Shortcut,
+  type ScopeId,
+  type Priority
+} from '@/stores/shortcut-store'
 
-export function useShortcuts(id: ScopeId) {
+export function useShortcuts(id: ScopeId, { priority }: { priority?: Priority } = {}) {
   const store = useShortcutStore()
-  const scope_id = store.pushScope(id)
+  const scope_id = store.pushScope(id, priority)
 
-  function registerShortcut(shortcuts: Shortcut[] | Shortcut) {
+  function register(shortcuts: Shortcut[] | Shortcut) {
     const _shortcuts = Array.isArray(shortcuts) ? shortcuts : [shortcuts]
 
     for (const shortcut of _shortcuts) {
-      store.registerShortcut(scope_id, shortcut)
+      store.register(scope_id, shortcut)
     }
 
     // Return a function to unregister the shortcuts
     return () => {
-      for (const sc of _shortcuts) store.unregisterShortcut(scope_id, sc.id)
+      for (const sc of _shortcuts) store.unregister(scope_id, sc.id)
     }
   }
 
@@ -23,7 +28,7 @@ export function useShortcuts(id: ScopeId) {
   }
 
   function releaseFocus() {
-    store.setActiveNamespace(undefined)
+    store.clearNamespace(id)
   }
 
   function clearScope() {
@@ -45,7 +50,7 @@ export function useShortcuts(id: ScopeId) {
 
   return {
     scope_id,
-    registerShortcut,
+    register,
     trapFocus,
     releaseFocus,
     clearScope,

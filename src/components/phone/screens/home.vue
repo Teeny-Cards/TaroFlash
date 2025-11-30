@@ -18,7 +18,7 @@ const emit = defineEmits<{
 
 const router = useRouter()
 const modal = useModal()
-const { registerShortcut } = useShortcuts('phone/home')
+const shortcuts = useShortcuts('phone/home')
 const audio = useAudio()
 const sessionStore = useSessionStore()
 
@@ -26,7 +26,7 @@ const phone_nav = inject<NavigationStack>('phone-nav')
 const active_app = ref(-1)
 
 onMounted(() => {
-  registerShortcut([
+  shortcuts.register([
     {
       id: 'left',
       combo: 'arrowleft',

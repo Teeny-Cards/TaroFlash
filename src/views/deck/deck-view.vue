@@ -11,7 +11,7 @@ import { useAlert } from '@/composables/alert'
 import { useModal } from '@/composables/modal'
 import { useAudio } from '@/composables/audio'
 import UiSplitButton from '@/components/ui-kit/split-button/index.vue'
-import { deleteImage } from '@/api/files'
+import { deleteImage } from '@/api/media'
 import { moveCardsToDeck } from '@/api/cards'
 import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
@@ -37,7 +37,7 @@ const deck = ref<Deck>()
 const active_tab = ref(0)
 const is_saving = ref(false)
 
-const { registerShortcut } = useShortcuts('deck-view')
+const shortcuts = useShortcuts('deck-view')
 const {
   all_cards,
   active_card_id,
@@ -77,11 +77,12 @@ const tab_components: { [key: number]: any } = {
 onMounted(async () => {
   await refetchDeck()
 
-  registerShortcut({
+  shortcuts.register({
     id: 'cancel-edit',
     combo: 'esc',
     description: 'Cancel Edit',
-    handler: onEsc
+    handler: onEsc,
+    when: () => mode.value === 'select' || active_card_id.value !== undefined
   })
 })
 

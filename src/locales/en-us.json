@@ -66,6 +66,7 @@
   "card.add-text": "Add Text",
   "card.save-error": "Something went wrong while trying to save your card",
   "card.image-upload-error": "Failed to upload image",
+  "card.image-delete-error": "Failed to delete image",
 
   "study.nope!": "Nope!",
   "study.got-it!": "Got It!",

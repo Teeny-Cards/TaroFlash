@@ -1,19 +1,28 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import CardFace from './card-face.vue'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
-import { type CardBase } from '@type/card'
+import { type CardBase, type ImageCard } from '@type/card'
+import { getImageUrl } from '@/api/media'
 
-type CardProps = Partial<CardBase> & {
-  size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
-  mode?: CardEditorMode
-  side?: 'front' | 'back'
-  active?: boolean
-  placeholder?: string
-  container_classes?: string
-}
+type CardProps = Partial<CardBase> &
+  ImageCard & {
+    size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
+    mode?: CardEditorMode
+    side?: 'front' | 'back'
+    active?: boolean
+    placeholder?: string
+    container_classes?: string
+  }
 
-const { size = 'base', side = 'front', mode = 'view' } = defineProps<CardProps>()
+const {
+  size = 'base',
+  side = 'front',
+  mode = 'view',
+  front_image_path,
+  back_image_path
+} = defineProps<CardProps>()
 
 const emit = defineEmits<{
   (e: 'update:front', payload: TextEditorUpdatePayload): void
@@ -23,6 +32,16 @@ const emit = defineEmits<{
 
 defineOptions({
   inheritAttrs: false
+})
+
+const front_image_url = computed(() => {
+  if (!front_image_path) return undefined
+  return getImageUrl('cards', front_image_path)
+})
+
+const back_image_url = computed(() => {
+  if (!back_image_path) return undefined
+  return getImageUrl('cards', back_image_path)
 })
 </script>
 
@@ -50,7 +69,7 @@ defineOptions({
         <card-face
           v-bind="$attrs"
           data-testid="card-face__front"
-          :image="attributes?.front_image"
+          :image="front_image_url"
           :text="front_text"
           :editor_delta="front_delta"
           :mode="mode"
@@ -66,7 +85,7 @@ defineOptions({
         <card-face
           v-bind="$attrs"
           data-testid="card-face__back"
-          :image="attributes?.back_image"
+          :image="back_image_url"
           :text="back_text"
           :editor_delta="back_delta"
           :mode="mode"

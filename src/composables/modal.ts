@@ -57,7 +57,7 @@ export function useModal() {
       shortcutClearScope: shortcuts.clearScope
     }
 
-    shortcuts.registerShortcut({
+    shortcuts.register({
       id: 'close-modal',
       combo: 'esc',
       description: 'Close Modal',
