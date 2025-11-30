@@ -22,7 +22,7 @@ export async function fetchMemberDecks(): Promise<Deck[]> {
 export async function fetchDeck(id: number): Promise<Deck> {
   const { data, error } = await supabase
     .from('decks')
-    .select('*, cards(*, review:reviews(*)), member:members(display_name)')
+    .select('*, cards:card_with_images(*, review:reviews(*)), member:members(display_name)')
     .eq('id', id)
     .order('rank', { ascending: true, referencedTable: 'cards' })
     .single()

@@ -30,6 +30,7 @@ const back_image_preview = ref<string | undefined>(back_image_url.value)
       }"
       size="xl"
       :side="side"
+      container_classes="grid-item__card"
       :front_image_url="front_image_preview"
       :back_image_url="back_image_preview"
     >
@@ -47,7 +48,7 @@ const back_image_preview = ref<string | undefined>(back_image_url.value)
   overflow: hidden;
 }
 
-.grid-item [data-testid='card'] {
+.grid-item .grid-item__card {
   --scale: 0.75;
 
   position: absolute;

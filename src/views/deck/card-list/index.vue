@@ -26,12 +26,12 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const { registerShortcut } = useShortcuts('card-list')
+const shortcuts = useShortcuts('card-list')
 
 const active_side = ref<'front' | 'back'>('front')
 
 onMounted(() => {
-  registerShortcut([
+  shortcuts.register([
     {
       id: 'tab-card',
       combo: 'tab',

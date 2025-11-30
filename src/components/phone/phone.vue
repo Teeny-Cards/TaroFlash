@@ -6,35 +6,35 @@ import { useAudio } from '@/composables/audio'
 import { useShortcuts } from '@/composables/use-shortcuts'
 
 const nav = useNavigationStack()
-const { registerShortcut, trapFocus, releaseFocus } = useShortcuts('phone')
+const shortcuts = useShortcuts('phone', { priority: 'background' })
 
 const open = ref(false)
 
 provide('phone-nav', nav)
 
 onMounted(() => {
-  nav.resetTo(Home) // first show animates with defaultPreset
+  nav.resetTo(Home)
 
-  registerShortcut([
+  shortcuts.register([
     {
-      id: 'open-phone',
+      id: 'toggle-phone',
       combo: 'esc',
-      description: 'Open Phone',
-      handler: openPhone,
-      when: () => !open.value
-    },
-    {
-      id: 'close-phone',
-      combo: 'esc',
-      description: 'Close Phone',
-      handler: closePhone,
-      when: () => open.value
+      description: 'Toggle Phone',
+      handler: togglePhone
     }
   ])
 })
 
+function togglePhone() {
+  if (open.value) {
+    closePhone()
+  } else {
+    openPhone()
+  }
+}
+
 function openPhone() {
-  trapFocus()
+  shortcuts.trapFocus()
   open.value = true
   useAudio().play('pop_window')
 }
@@ -46,7 +46,7 @@ function closePhone() {
   }
 
   open.value = false
-  releaseFocus()
+  shortcuts.releaseFocus()
   useAudio().play('pop_window')
   nav.resetTo(Home)
 }

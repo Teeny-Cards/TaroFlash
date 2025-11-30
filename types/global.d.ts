@@ -25,3 +25,7 @@ declare module 'howler' {
     static autoUnlock: boolean
   }
 }
+
+declare type Prettify<T> = {
+  [K in keyof T]: T[K]
+} & {}

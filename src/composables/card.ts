@@ -1,4 +1,4 @@
-import { getImageUrl } from '@/api/files'
+import { getImageUrl } from '@/api/media'
 import { computed } from 'vue'
 
 export function useCard(card?: Card) {

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import ImageUploader, { type ImageUploadPayload } from '@/components/image-uploader.vue'
 import UiButton from '@/components/ui-kit/button.vue'
-import { uploadImage, deleteImage } from '@/api/files'
 import { useI18n } from 'vue-i18n'
 
 const { image } = defineProps<{
@@ -9,21 +8,17 @@ const { image } = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'image-uploaded', url: string): void
+  (e: 'image-uploaded', file: File): void
   (e: 'image-deleted'): void
 }>()
 
 const { t } = useI18n()
 
 async function onImageUpload({ file }: ImageUploadPayload) {
-  const url = await uploadImage(file.name, file)
-  emit('image-uploaded', url)
+  emit('image-uploaded', file)
 }
 
 async function onImageDelete() {
-  if (!image) return
-
-  await deleteImage(image)
   emit('image-deleted')
 }
 </script>

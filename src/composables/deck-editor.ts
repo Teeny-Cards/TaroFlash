@@ -1,6 +1,6 @@
 import { reactive, ref, computed } from 'vue'
 import { deleteDeck as upstreamDeleteDeck, upsertDeck } from '@/api/decks'
-import { uploadImage, deleteImage, getImageUrl } from '@/api/files'
+import { uploadImage, deleteImage, getImageUrl } from '@/api/media'
 
 export function useDeckEditor(deck?: Deck) {
   const settings = reactive<Deck>({

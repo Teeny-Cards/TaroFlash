@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue'
 import { upsertCard, deleteCards as upstreamDeleteCards, reserveCard } from '@/api/cards'
 import { debounce } from '@/utils/debounce'
+import { mergeCards } from '@/utils/card-utils'
 
 export type CardEditorMode = 'view' | 'select' | 'edit'
 
@@ -20,21 +21,12 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
     if (idx === -1) return
 
     const prev = all_cards.value[idx]
+    const { merged, diff } = mergeCards(prev, values, { sanitize: true })
 
-    const mergedAttributes = {
-      ...prev.attributes,
-      ...(values.attributes ?? {})
+    if (diff) {
+      all_cards.value[idx] = merged
+      return debounce(async () => await upsertCard(merged))
     }
-
-    const updated: Card = {
-      ...prev,
-      ...values,
-      attributes: mergedAttributes
-    }
-
-    all_cards.value[idx] = updated
-
-    return debounce(async () => await upsertCard(updated))
   }
 
   function selectCard(id: number) {

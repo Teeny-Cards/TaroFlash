@@ -1,12 +1,17 @@
 import { supabase } from '@/supabase-client'
 import { useLogger } from '@/composables/logger'
 import { DateTime } from 'luxon'
+import { uploadImage, insertMedia, deleteImage } from '@/api/media'
+import uid from '@/utils/uid'
+import { type CardBase } from '@type/card'
 
 const logger = useLogger()
 
-export async function upsertCard(card: Card): Promise<Card> {
-  const { review, ...sanitized } = card
-  sanitized.updated_at = DateTime.now().toISO()
+export async function upsertCard(card: CardBase): Promise<Card> {
+  const sanitized = {
+    ...card,
+    updated_at: DateTime.now().toISO()
+  }
 
   const { data, error } = await supabase
     .from('cards')
@@ -22,8 +27,8 @@ export async function upsertCard(card: Card): Promise<Card> {
   return data
 }
 
-export async function upsertCards(cards: Card[]): Promise<Card[]> {
-  const sanitized = cards.map(({ review, ...card }) => ({
+export async function upsertCards(cards: CardBase[]): Promise<Card[]> {
+  const sanitized = cards.map((card) => ({
     ...card,
     updated_at: DateTime.now().toISO()
   }))
@@ -58,7 +63,7 @@ export async function reorderCard(
   }
 }
 
-export async function moveCardsToDeck(cards: Card[], deck_id: number): Promise<void> {
+export async function moveCardsToDeck(cards: CardBase[], deck_id: number): Promise<void> {
   const sanitized = cards.map((card) => ({
     ...card,
     deck_id
@@ -69,5 +74,18 @@ export async function moveCardsToDeck(cards: Card[], deck_id: number): Promise<v
   if (error) {
     logger.error(error.message)
     throw new Error(error.message)
+  }
+}
+
+export async function setCardImage(card_id: number, file: File, side: 'front' | 'back') {
+  const bucket = 'cards'
+  const path = `${card_id}/${side}/${uid()}.${file.type.split('/')[1]}`
+
+  try {
+    await uploadImage(bucket, path, file)
+    await insertMedia({ bucket, path, card_id, slot: `card_${side}` })
+  } catch (e) {
+    await deleteImage(bucket, path)
+    throw e
   }
 }

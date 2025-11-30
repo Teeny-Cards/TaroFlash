@@ -4,11 +4,13 @@ import ItemOptions from './item-options.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
+import { useToast } from '@/composables/toast'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 import { watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ImageButton from '../image-button.vue'
+import { setCardImage, deleteCardImage } from '@/api/cards'
 
 const { card, mode, active, active_side } = defineProps<{
   index: number
@@ -32,6 +34,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const toast = useToast()
 
 function onClick() {
   if (mode === 'select') {
@@ -69,20 +72,27 @@ function deactivate(e: Event) {
   }
 }
 
-async function onImageUpload(side: 'front' | 'back', url: string) {
-  onUpdate(card.id!, side, {
-    attributes: {
-      [`${side}_image`]: url
-    }
-  })
+async function onImageUpload(side: 'front' | 'back', file: File) {
+  if (!card.id) return
+
+  try {
+    await setCardImage(card.id, file, side)
+  } catch (e: any) {
+    toast.error(t('card.image-upload-error'))
+  }
 }
 
 async function onImageDelete(side: 'front' | 'back') {
-  onUpdate(card.id!, side, {
-    attributes: {
+  if (!card.id) return
+
+  try {
+    await deleteCardImage(card.id, side)
+    emit('updated', card.id, side, {
       [`${side}_image`]: undefined
-    }
-  })
+    })
+  } catch (e: any) {
+    toast.error(t('card.image-delete-error'))
+  }
 }
 
 watch(
@@ -151,7 +161,7 @@ watch(
       >
         <image-button
           class="absolute! -top-2 -left-2 opacity-0 group-hover/card:opacity-100"
-          :image="card.attributes?.front_image"
+          :image="card.front_image_path"
           @image-uploaded="onImageUpload('front', $event)"
           @image-deleted="onImageDelete('front')"
           @click.stop
@@ -174,7 +184,7 @@ watch(
       >
         <image-button
           class="absolute! -top-2 -right-2 opacity-0 group-hover/card:opacity-100"
-          :image="card.attributes?.back_image"
+          :image="card.back_image_path"
           @image-uploaded="onImageUpload('back', $event)"
           @image-deleted="onImageDelete('back')"
           @click.stop
