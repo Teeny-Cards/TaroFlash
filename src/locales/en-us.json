@@ -68,9 +68,9 @@
   "card.image-upload-error": "Failed to upload image",
   "card.image-delete-error": "Failed to delete image",
 
-  "study.nope!": "Nope!",
-  "study.got-it!": "Got It!",
-  "study.show!": "Show!",
+  "study.nope": "Nope!",
+  "study.got-it": "Got It!",
+  "study.flip": "Flip",
   "study.study-again": "Study again {time}",
   "study-session.title": "Studying {deck}",
 

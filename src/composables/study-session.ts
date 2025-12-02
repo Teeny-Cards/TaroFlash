@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref, computed, shallowRef } from 'vue'
 import {
   createEmptyCard,
   FSRS,
@@ -11,8 +11,7 @@ import { DateTime } from 'luxon'
 import { fetchDueCardsByDeckId, fetchAllCardsByDeckId } from '@/api/cards'
 import { updateReviewByCardId } from '@/api/reviews'
 
-export type StudyMode = 'studying' | 'previewing' | 'completed'
-export type CardDisplayState = 'hidden' | 'revealed'
+export type StudyMode = 'studying' | 'completed'
 export type StudyCard = Card & { preview?: IPreview; state: ReviewState }
 
 type ReviewState = 'failed' | 'passed' | 'unreviewed'
@@ -25,18 +24,12 @@ const defaultConfig: DeckConfig = {
 export function useStudySession(config: DeckConfig = defaultConfig) {
   const _PARAMS = generatorParameters({ enable_fuzz: true })
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
-  const _cards_in_deck = ref<StudyCard[]>([])
+  const _cards_in_deck = shallowRef<StudyCard[]>([])
   const _retry_cards = ref<StudyCard[]>([])
 
   const mode = ref<StudyMode>('studying')
-  const current_card_state = ref<CardDisplayState>('hidden')
-
-  const active_card = ref<StudyCard | undefined>(undefined)
-  const preview_card = ref<StudyCard | undefined>(undefined)
-
-  const current_card = computed(() =>
-    mode.value === 'studying' ? active_card.value : preview_card.value
-  )
+  const current_card_side = ref<'front' | 'back'>('front')
+  const active_card = shallowRef<StudyCard | undefined>(undefined)
 
   const cards = computed(() => {
     if (!config.retry_failed_cards) return _cards_in_deck.value
@@ -59,18 +52,8 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     pickNextCard()
   }
 
-  function setPreviewCard(card: StudyCard) {
-    if (card.state !== 'unreviewed') {
-      preview_card.value = card
-      mode.value = 'previewing'
-    } else {
-      preview_card.value = undefined
-      mode.value = 'studying'
-    }
-  }
-
   function pickNextCard() {
-    current_card_state.value = 'hidden'
+    current_card_side.value = 'front'
     active_card.value = cards.value.find((c) => c.state === 'unreviewed')
 
     if (!active_card.value) {
@@ -79,13 +62,13 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
   }
 
   function reviewCard(item: RecordLogItem) {
-    if (!current_card.value) return
+    if (!active_card.value) return
 
-    current_card.value.review = item.card
+    active_card.value.review = item.card
     _markCurrentCardStudied(item.log.rating)
 
-    if (current_card.value?.id) {
-      return updateReviewByCardId(current_card.value.id, item.card)
+    if (active_card.value?.id) {
+      return updateReviewByCardId(active_card.value.id, item.card)
     }
   }
 
@@ -97,7 +80,7 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
   }
 
   function _markCurrentCardStudied(rating?: Rating) {
-    const card = current_card.value
+    const card = active_card.value
     if (!card || card !== active_card.value || !card.id) return
 
     if (rating === Rating.Again) {
@@ -120,15 +103,12 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
 
   return {
     mode,
-    current_card_state,
-    current_card,
+    current_card_side,
     active_card,
-    preview_card,
     cards,
     num_correct,
     setup,
     pickNextCard,
-    setPreviewCard,
     reviewCard
   }
 }

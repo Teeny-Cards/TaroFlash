@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import textEditor from '../text-editor.vue'
-import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
+import { type CardAttributes, type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 
 const { image, text } = defineProps<{
@@ -10,6 +10,7 @@ const { image, text } = defineProps<{
   mode?: CardEditorMode
   active?: boolean
   side?: 'front' | 'back'
+  attributes?: CardAttributes
   placeholder?: string
 }>()
 
@@ -20,7 +21,13 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="card-face" :data-image="!!image" :data-text="!!text" :data-mode="mode">
+  <div
+    class="card-face"
+    :data-image="!!image"
+    :data-text="!!text"
+    :data-mode="mode"
+    :data-align="attributes?.vertical_align || 'top'"
+  >
     <img v-if="image" :src="image" class="h-full w-full object-cover" />
 
     <text-editor
@@ -46,11 +53,9 @@ const emit = defineEmits<{
   padding: var(--face-padding);
 
   border-radius: var(--face-radius);
-  background-color: var(--color-white);
   background-color: var(--card-bg-color);
 
   aspect-ratio: var(--aspect-card);
-  overflow: hidden;
 }
 .card-face[data-mode='edit']:focus-within {
   outline: 2px solid var(--color-blue-500);
@@ -81,5 +86,18 @@ const emit = defineEmits<{
 
 .card-face[data-image='true'] {
   padding: 0;
+}
+
+.card-face[data-align='top'] .ql-editor {
+  display: flex;
+  align-items: flex-start;
+}
+.card-face[data-align='center'] .ql-editor {
+  display: flex;
+  align-items: center;
+}
+.card-face[data-align='bottom'] .ql-editor {
+  display: flex;
+  align-items: flex-end;
 }
 </style>

@@ -105,6 +105,7 @@
   --endless-clouds: url('../assets/backgrounds/endless-clouds.svg');
   --stars: url('../assets/backgrounds/stars.svg');
   --taro-flash: url('../assets/backgrounds/taro-flash.svg');
+  --taro-flash-dark: url('../assets/backgrounds/taro-flash-dark.svg');
 
   /* Transitions */
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
