@@ -42,40 +42,45 @@ function onRatingClicked(grade: Grade) {
 </script>
 
 <template>
-  <div
-    data-testid="rating-buttons"
-    class="flex flex-col justify-center gap-2 justify-self-center text-2xl"
-  >
+  <div data-testid="rating-buttons" class="flex justify-center gap-2 text-2xl">
     <template v-if="showOptions">
-      <button
-        data-testid="rating-buttons__good"
-        class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white"
-        :class="{ 'opacity-50': disabled }"
-        :disabled="disabled"
-        @click="onRatingClicked(Rating.Good)"
-      >
-        {{ t('study.got-it!') }}
-        <ui-tooltip :text="getRatingTimeFormat(Rating.Good)" />
-      </button>
-      <button
+      <ui-tooltip
+        :text="getRatingTimeFormat(Rating.Again)"
+        element="button"
+        :gap="-12"
         data-testid="rating-buttons__again"
-        class="text-brown-700 cursor-pointer rounded-full bg-white px-13 py-4"
+        class="text-brown-700 cursor-pointer rounded-full bg-white px-13 py-4 hover:-translate-0.5
+          hover:shadow-cutout transition-all duration-50"
         :class="{ 'opacity-50': disabled }"
         :disabled="disabled"
         @click="onRatingClicked(Rating.Again)"
       >
-        {{ t('study.nope!') }}
-        <ui-tooltip :text="getRatingTimeFormat(Rating.Again)" placement="bottom" />
-      </button>
-    </template>
-    <template v-else>
-      <button
-        data-testid="rating-buttons__show"
-        class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white"
-        @click="$emit('revealed')"
+        {{ t('study.nope') }}
+      </ui-tooltip>
+
+      <ui-tooltip
+        :text="getRatingTimeFormat(Rating.Good)"
+        element="button"
+        :gap="-12"
+        data-testid="rating-buttons__good"
+        class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white hover:-translate-0.5
+          hover:shadow-cutout transition-all duration-50"
+        :class="{ 'opacity-50': disabled }"
+        :disabled="disabled"
+        @click="onRatingClicked(Rating.Good)"
       >
-        {{ t('study.show!') }}
-      </button>
+        {{ t('study.got-it') }}
+      </ui-tooltip>
     </template>
+
+    <button
+      v-else
+      data-testid="rating-buttons__show"
+      class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white hover:-translate-0.5
+        hover:shadow-cutout transition-all duration-50"
+      @click="$emit('revealed')"
+    >
+      {{ t('study.flip') }}
+    </button>
   </div>
 </template>

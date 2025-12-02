@@ -33,7 +33,7 @@ function onImageRemoved() {
 
 <template>
   <div class="relative flex flex-col items-center pb-6">
-    <card class="border-brown-100!" :front_image_url="preview_image">
+    <card face_classes="border-brown-100!" :front_image_url="preview_image">
       <image-uploader v-slot="{ trigger, loading, dragging }" @image-uploaded="onImageUploaded">
         <div
           v-if="dragging"

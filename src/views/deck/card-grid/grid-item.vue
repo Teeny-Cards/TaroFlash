@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import Card from '@/components/card/index.vue'
-import { useCard } from '@/composables/card'
-import { ref } from 'vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 
@@ -15,10 +13,6 @@ const { card, side, mode } = defineProps<{
 const emit = defineEmits<{
   (e: 'card-selected'): void
 }>()
-
-const { front_image_url, back_image_url } = useCard(card)
-const front_image_preview = ref<string | undefined>(front_image_url.value)
-const back_image_preview = ref<string | undefined>(back_image_url.value)
 </script>
 
 <template>
@@ -28,11 +22,9 @@ const back_image_preview = ref<string | undefined>(back_image_url.value)
       :class="{
         'cursor-pointer hover:[&>.card-face]:border-purple-500!': mode === 'select'
       }"
+      class="grid-item__card"
       size="xl"
       :side="side"
-      container_classes="grid-item__card"
-      :front_image_url="front_image_preview"
-      :back_image_url="back_image_preview"
     >
       <div v-if="mode === 'select'" class="absolute top-0 right-0">
         <ui-radio :checked="selected" @click.stop="emit('card-selected')" />

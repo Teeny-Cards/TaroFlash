@@ -13,8 +13,7 @@ export type TextEditorUpdatePayload = {
 
 export type CardAttributes = {
   bg_color?: MemberTheme
-  front_image?: string
-  back_image?: string
+  vertical_align?: 'top' | 'center' | 'bottom'
 }
 
 export type RenderOptions = {

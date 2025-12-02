@@ -29,6 +29,7 @@ export async function fetchAllCardsByDeckId(deck_id: number): Promise<Card[]> {
     .from('card_with_images')
     .select('*, review:reviews(*)')
     .eq('deck_id', deck_id)
+    .order('rank', { ascending: true })
 
   if (error) {
     logger.error(error.message)
@@ -46,6 +47,7 @@ export async function fetchDueCardsByDeckId(deck_id: number): Promise<Card[]> {
     .select('*, review:reviews(*)')
     .eq('deck_id', deck_id)
     .or(`due.is.null,due.lte.${end_of_day}`, { referencedTable: 'cards.reviews' })
+    .order('rank', { ascending: true })
 
   if (error) {
     logger.error(error.message)

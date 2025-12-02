@@ -1,66 +1,99 @@
 <script setup lang="ts">
 import Card from '@/components/card/index.vue'
-import { watch, ref, onMounted } from 'vue'
+import { computed, ref } from 'vue'
+import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
 
-const { card, revealed, previewing } = defineProps<{
+const { card, side, options } = defineProps<{
   card?: Card
-  image_url?: string
-  revealed: boolean
-  previewing: boolean
+  side: 'front' | 'back'
+  options?: RecordLog
 }>()
 
-onMounted(() => {
-  animateFront(200)
-  animateBack(200)
+const emit = defineEmits<{
+  (e: 'side-changed', side: 'front' | 'back'): void
+  (e: 'reviewed', item: RecordLogItem): void
+}>()
+
+const REVIEW_THRESHOLD = 100
+const FLIP_THRESHOLD = 0
+
+const start_pos = ref<{ x: number; y: number } | undefined>()
+const study_card = ref<HTMLDivElement | null>()
+const card_offset = ref<number>(0)
+
+const is_dragging = computed(() => {
+  return Math.abs(card_offset.value) > FLIP_THRESHOLD
 })
 
-const frontRevealed = ref(false)
-const backRevealed = ref(revealed || previewing)
+function toggleSide() {
+  if (is_dragging.value) return
 
-function animateFront(timeout = 150) {
-  frontRevealed.value = false
-
-  setTimeout(() => {
-    frontRevealed.value = true
-  }, timeout)
+  emit('side-changed', side === 'front' ? 'back' : 'front')
 }
 
-function animateBack(timeout = 150) {
-  backRevealed.value = false
+function onDragStart(e: MouseEvent) {
+  if (side === 'front') return
+  e.preventDefault()
 
-  setTimeout(() => {
-    backRevealed.value = revealed || previewing
-  }, timeout)
+  start_pos.value = { x: e.clientX, y: e.clientY }
+  study_card.value = document.querySelector('[data-testid="study-card"]') as HTMLDivElement
+  study_card.value.style.transition = 'none'
+
+  document.addEventListener('mousemove', onDrag)
+  document.addEventListener('mouseup', onDragEnd)
 }
 
-watch(
-  () => [card, revealed, previewing],
-  ([newCard, newRevealed], [oldCard, oldRevealed]) => {
-    if (newCard !== oldCard) {
-      animateFront(350)
-    }
+function onDragEnd() {
+  start_pos.value = undefined
 
-    const instantReveal = !oldRevealed && newRevealed && !previewing
-    animateBack(instantReveal ? 0 : 350)
+  document.removeEventListener('mousemove', onDrag)
+  document.removeEventListener('mouseup', onDragEnd)
+
+  // if (Math.abs(card_offset.value) > REVIEW_THRESHOLD) {
+  //   const rating = card_offset.value > 0 ? Rating.Good : Rating.Again
+  //   reviewCard(rating)
+  // }
+
+  if (!study_card.value) return
+  study_card.value.style.transition = 'transform 0.1s linear'
+  study_card.value.style.transform = ''
+  card_offset.value = 0
+}
+
+function onDrag(e: MouseEvent) {
+  if (!start_pos.value || !study_card.value) return
+
+  const { x } = start_pos.value
+  const { clientX } = e
+
+  card_offset.value = clientX - x
+  const rotation = card_offset.value / 10
+
+  study_card.value.style.transform = `translateX(${card_offset.value}px) rotate(${rotation}deg)`
+}
+
+function reviewCard(grade: Grade) {
+  const item = options?.[grade]
+
+  if (item) {
+    emit('reviewed', item)
   }
-)
+}
 </script>
 
 <template>
-  <div data-testid="study-card" class="flex gap-4">
+  <div class="relative">
+    <!-- <card class="z-10" size="xl" face_classes="outline-brown-100 outline-10 opacity-0" /> -->
     <card
-      size="lg"
-      :side="frontRevealed ? 'back' : 'front'"
-      :front_image_url="image_url"
+      data-testid="study-card"
+      class="z-10"
+      :class="is_dragging ? 'cursor-grabbing' : 'cursor-grab'"
+      face_classes="outline-brown-100 outline-10"
+      size="xl"
       v-bind="card"
-      class="border-brown-100!"
-    />
-    <card
-      size="lg"
-      :side="backRevealed ? 'back' : 'front'"
-      :front_image_url="image_url"
-      v-bind="card"
-      class="border-brown-100!"
+      :side="side"
+      @mouseup="toggleSide"
+      @mousedown="onDragStart"
     />
   </div>
 </template>

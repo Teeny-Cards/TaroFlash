@@ -13,7 +13,7 @@ type CardProps = Partial<CardBase> &
     side?: 'front' | 'back'
     active?: boolean
     placeholder?: string
-    container_classes?: string
+    face_classes?: string
   }
 
 const {
@@ -30,10 +30,6 @@ const emit = defineEmits<{
   (e: 'focus'): void
 }>()
 
-defineOptions({
-  inheritAttrs: false
-})
-
 const front_image_url = computed(() => {
   if (!front_image_path) return undefined
   return getImageUrl('cards', front_image_path)
@@ -49,10 +45,7 @@ const back_image_url = computed(() => {
   <div
     data-testid="card"
     class="card-container"
-    :class="[
-      `card-container--${size} card-container--${mode} card-container--${attributes?.bg_color || 'white'}`,
-      container_classes
-    ]"
+    :class="`card-container--${size} card-container--${mode} card-container--${attributes?.bg_color || 'white'}`"
   >
     <slot></slot>
 
@@ -67,14 +60,15 @@ const back_image_url = computed(() => {
     >
       <slot name="front" v-if="side === 'front'">
         <card-face
-          v-bind="$attrs"
           data-testid="card-face__front"
+          :class="face_classes"
           :image="front_image_url"
           :text="front_text"
           :editor_delta="front_delta"
           :mode="mode"
           :active="active"
           :side="side"
+          :attributes="attributes"
           :placeholder="placeholder"
           @update="emit('update:front', $event)"
           @focus="emit('focus')"
@@ -83,14 +77,15 @@ const back_image_url = computed(() => {
 
       <slot name="back" v-else>
         <card-face
-          v-bind="$attrs"
           data-testid="card-face__back"
+          :class="face_classes"
           :image="back_image_url"
           :text="back_text"
           :editor_delta="back_delta"
           :mode="mode"
           :active="active"
           :side="side"
+          :attributes="attributes"
           :placeholder="placeholder"
           @update="emit('update:back', $event)"
           @focus="emit('focus')"
