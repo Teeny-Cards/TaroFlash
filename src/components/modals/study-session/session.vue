@@ -55,13 +55,13 @@ function onSideChanged(side: 'front' | 'back') {
   <div
     data-testid="study-session"
     :data-mode="mode"
-    class="rounded-8 shadow-modal flex w-160 flex-col gap-6 items-center overflow-hidden pb-10 relative
-      bg-brown-300"
+    class="sm:rounded-8 shadow-modal flex flex-col gap-6 items-center justify-between overflow-hidden pb-10
+      relative bg-brown-300 h-full w-full sm:h-auto sm:w-160"
   >
     <div
       data-testid="study-session__header"
       class="relative flex w-full justify-center bg-purple-500 wave-bottom-[50px] bg-(image:--diagonal-stripes)
-        bg-size-(--bg-sm) px-13 py-11.5 pb-14 z-10"
+        bg-size-(--bg-sm) bg-center px-13 py-11.5 pb-14 z-10"
     >
       <div data-testid="study-session__actions" class="absolute top-0 left-0 p-4">
         <ui-button icon-left="close" theme="brown" icon-only @click="emit('closed')"></ui-button>
@@ -69,28 +69,27 @@ function onSideChanged(side: 'front' | 'back') {
       <h1 class="text-5xl text-white">{{ deck?.title }}</h1>
     </div>
 
-    <div class="flex flex-col items-center gap-10" v-if="!loading">
-      <study-card
-        :card="active_card"
-        :side="current_card_side"
-        :options="active_card?.preview"
-        @side-changed="onSideChanged"
-        @reviewed="onCardReviewed"
-      />
+    <study-card
+      :card="active_card"
+      :side="current_card_side"
+      :options="active_card?.preview"
+      @side-changed="onSideChanged"
+      @reviewed="onCardReviewed"
+    />
 
-      <rating-buttons
-        class="z-10"
-        :options="active_card?.preview"
-        :show-options="current_card_side === 'back'"
-        :disabled="mode !== 'studying'"
-        @reviewed="onCardReviewed"
-        @revealed="current_card_side = 'back'"
-      />
-    </div>
+    <rating-buttons
+      class="z-10 mt-4"
+      :options="active_card?.preview"
+      :show-options="current_card_side === 'back'"
+      :disabled="mode !== 'studying'"
+      @reviewed="onCardReviewed"
+      @revealed="current_card_side = 'back'"
+    />
 
     <div
       data-testid="study-session__pattern"
-      class="absolute inset-0 bg-(image:--taro-flash) bg-size-[60px] text-brown-500 bg-brown-300 opacity-5"
+      class="absolute inset-0 bg-(image:--taro-flash) bg-size-[60px] text-brown-500 bg-brown-300 opacity-5
+        bg-center"
     ></div>
   </div>
 </template>
