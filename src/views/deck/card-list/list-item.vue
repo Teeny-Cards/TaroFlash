@@ -112,7 +112,7 @@ watch(
     data-testid="card-list-item"
     :data-id="card.id"
     :hover_effect="mode === 'select'"
-    class="card-list-item group/listitem"
+    class="card-list-item group/listitem p-0 sm:p-6"
     :class="{
       'mode-select cursor-pointer': mode === 'select',
       'mode-view': mode === 'view',
@@ -122,7 +122,7 @@ watch(
     @click="onClick"
   >
     <button
-      class="flex items-center justify-center w-12 h-12 rounded-full text-lg text-brown-900 cursor-grab"
+      class="sm:flex items-center justify-center w-12 h-12 rounded-full text-lg text-brown-900 cursor-grab hidden"
       :class="{ 'bg-brown-300': !active, 'bg-brown-100': active }"
       @click.stop
     >
@@ -143,7 +143,7 @@ watch(
       >
     </button>
 
-    <div class="flex w-full gap-6 justify-center">
+    <div class="flex flex-col md:flex-row w-full gap-6 justify-center">
       <card
         data-testid="front-input"
         ref="front-input"
@@ -194,7 +194,7 @@ watch(
 
     <item-options
       v-if="mode !== 'select'"
-      class="card-list-item__options"
+      class="card-list-item__options hidden sm:grid"
       @select="emit('selected')"
       @move="emit('moved')"
       @delete="emit('deleted')"
@@ -224,13 +224,11 @@ watch(
 .card-list-item {
   position: relative;
 
-  display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   justify-items: center;
 
   width: 100%;
-  padding: 24px;
   border-radius: 24px;
 
   transition: background-color 0.1s ease-in-out;

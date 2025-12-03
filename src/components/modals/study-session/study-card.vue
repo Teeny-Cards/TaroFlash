@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import Card from '@/components/card/index.vue'
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
+import { useI18n } from 'vue-i18n'
+import { DateTime } from 'luxon'
 
 const { card, side, options } = defineProps<{
   card?: Card
@@ -14,99 +16,148 @@ const emit = defineEmits<{
   (e: 'reviewed', item: RecordLogItem): void
 }>()
 
-// Distance & velocity thresholds
-const REVIEW_DISTANCE_THRESHOLD = 150 // px
-const REVIEW_VELOCITY_THRESHOLD = 2 // px/ms-ish
-const FLIP_THRESHOLD = 0 // you already had this
+// Independent thresholds
+const SWIPE_DISTANCE_THRESHOLD = 150
+const SWIPE_VELOCITY_THRESHOLD = 0.8
+const FLIP_THRESHOLD = 0
+const MAX_LABEL_DISTANCE = 160
+const VELOCITY_WINDOW_MS = 80 // ms to consider for velocity calculation
 
+const { t } = useI18n()
+
+// Stores recent movement points for velocity calculation
+const velocity_samples = ref<{ x: number; time: number }[]>([])
 const start_pos = ref<{ x: number; y: number } | undefined>()
-const study_card = ref<HTMLDivElement | null>()
+const study_card = ref<HTMLElement | null>(null)
 const card_offset = ref<number>(0)
 
-// For kinetic behavior
-const lastX = ref<number | null>(null)
-const lastTime = ref<number | null>(null)
+// Velocity state
 const velocityX = ref<number>(0)
+const pointerId = ref<number | null>(null)
 
-const is_dragging = computed(() => {
-  return Math.abs(card_offset.value) > FLIP_THRESHOLD
+const is_dragging = computed(() => Math.abs(card_offset.value) > FLIP_THRESHOLD)
+
+const passOpacity = computed(() => {
+  if (card_offset.value <= 0) return 0
+  return Math.min(Math.abs(card_offset.value) / MAX_LABEL_DISTANCE, 1)
 })
+
+const failOpacity = computed(() => {
+  if (card_offset.value >= 0) return 0
+  return Math.min(Math.abs(card_offset.value) / MAX_LABEL_DISTANCE, 1)
+})
+
+function getRatingTimeFormat(grade: Grade) {
+  const date = options?.[grade].card.due
+
+  if (!date) return ''
+
+  const time = DateTime.fromJSDate(date)
+  const timeString = time.toRelativeCalendar()
+
+  return t('study.study-again', { time: timeString })
+}
 
 function toggleSide() {
   if (is_dragging.value) return
   emit('side-changed', side === 'front' ? 'back' : 'front')
 }
 
-function onDragStart(e: MouseEvent) {
+function onPointerDown(e: PointerEvent) {
   if (side === 'front') return
+  if (e.pointerType === 'mouse' && e.button !== 0) return // only left click
   e.preventDefault()
 
+  pointerId.value = e.pointerId
   start_pos.value = { x: e.clientX, y: e.clientY }
-  study_card.value = document.querySelector('[data-testid="study-card"]') as HTMLDivElement | null
+
+  // Root DOM element of the card component
+  study_card.value = e.currentTarget as HTMLElement
   if (!study_card.value) return
 
   study_card.value.style.transition = 'none'
 
   // Init velocity tracking
-  lastX.value = e.clientX
-  lastTime.value = performance.now()
   velocityX.value = 0
+  velocity_samples.value = [{ x: e.clientX, time: performance.now() }]
 
-  document.addEventListener('mousemove', onDrag)
-  document.addEventListener('mouseup', onDragEnd)
+  document.addEventListener('pointermove', onPointerMove)
+  document.addEventListener('pointerup', onPointerUp)
+  document.addEventListener('pointercancel', onPointerUp)
 }
 
-function onDrag(e: MouseEvent) {
+function onPointerMove(e: PointerEvent) {
+  if (pointerId.value === null || e.pointerId !== pointerId.value) return
   if (!start_pos.value || !study_card.value) return
 
+  const now = performance.now()
   const { x } = start_pos.value
-  const { clientX } = e
+  const clientX = e.clientX
 
+  // Move card visually
   card_offset.value = clientX - x
   const rotation = card_offset.value / 10
   study_card.value.style.transform = `translateX(${card_offset.value}px) rotate(${rotation}deg)`
 
-  // Velocity tracking
-  const now = performance.now()
-  if (lastX.value !== null && lastTime.value !== null) {
-    const dx = clientX - lastX.value
-    const dt = now - lastTime.value || 1
+  // Add new sample
+  velocity_samples.value.push({ x: clientX, time: now })
+
+  // Remove old samples beyond the window
+  const cutoff = now - VELOCITY_WINDOW_MS
+  velocity_samples.value = velocity_samples.value.filter((s) => s.time >= cutoff)
+
+  // Compute velocity from earliest sample in window
+  if (velocity_samples.value.length > 1) {
+    const first = velocity_samples.value[0]
+    const last = velocity_samples.value[velocity_samples.value.length - 1]
+    const dx = last.x - first.x
+    const dt = last.time - first.time || 1
     velocityX.value = dx / dt // px per ms
   }
-  lastX.value = clientX
-  lastTime.value = now
 }
 
-function onDragEnd() {
-  start_pos.value = undefined
+function onPointerUp(e?: PointerEvent) {
+  if (pointerId.value !== null && e && e.pointerId !== pointerId.value) return
 
-  document.removeEventListener('mousemove', onDrag)
-  document.removeEventListener('mouseup', onDragEnd)
+  const cardEl = study_card.value
+  cleanupListeners()
 
-  if (!study_card.value) return
+  if (!cardEl) {
+    resetDragState()
+    return
+  }
 
   const absOffset = Math.abs(card_offset.value)
   const absVelocity = Math.abs(velocityX.value)
 
-  const shouldReview =
-    absOffset > REVIEW_DISTANCE_THRESHOLD || absVelocity > REVIEW_VELOCITY_THRESHOLD
+  const distancePassed = absOffset > SWIPE_DISTANCE_THRESHOLD
+  const fastEnough = absVelocity > SWIPE_VELOCITY_THRESHOLD
 
-  if (shouldReview) {
+  if (distancePassed || fastEnough) {
+    // Decide direction from offset first, else velocity
     const direction =
-      card_offset.value !== 0 ? Math.sign(card_offset.value) : Math.sign(velocityX.value) || 1
+      card_offset.value !== 0
+        ? Math.sign(card_offset.value)
+        : velocityX.value !== 0
+          ? Math.sign(velocityX.value)
+          : 1
+
     flingCard(direction)
   } else {
-    // Snap back
-    study_card.value.style.transition = 'transform 0.15s ease-out'
-    study_card.value.style.transform = ''
-    card_offset.value = 0
+    // Snap back to center
+    cardEl.style.transition = 'transform 0.15s ease-out'
+    cardEl.style.transform = ''
+    resetDragState()
   }
 }
 
 function flingCard(direction: number) {
-  if (!study_card.value) return
-
   const cardEl = study_card.value
+  if (!cardEl) {
+    resetDragState()
+    return
+  }
+
   const width = window.innerWidth || 1000
   const targetX = direction * (width + 200)
   const rotation = direction * 45
@@ -119,10 +170,9 @@ function flingCard(direction: number) {
   const handleTransitionEnd = () => {
     cardEl.removeEventListener('transitionend', handleTransitionEnd)
 
-    // Emit review event
     reviewCard(rating)
 
-    // Reset visual state so the next card starts centered.
+    // Reset visual state for next card
     card_offset.value = 0
     velocityX.value = 0
     cardEl.style.transition = 'none'
@@ -131,6 +181,23 @@ function flingCard(direction: number) {
 
   cardEl.addEventListener('transitionend', handleTransitionEnd)
 }
+
+function resetDragState() {
+  start_pos.value = undefined
+  velocityX.value = 0
+  pointerId.value = null
+  card_offset.value = 0
+}
+
+function cleanupListeners() {
+  document.removeEventListener('pointermove', onPointerMove)
+  document.removeEventListener('pointerup', onPointerUp)
+  document.removeEventListener('pointercancel', onPointerUp)
+}
+
+onBeforeUnmount(() => {
+  cleanupListeners()
+})
 
 function reviewCard(grade: Grade) {
   const item = options?.[grade]
@@ -152,7 +219,24 @@ function reviewCard(grade: Grade) {
       v-bind="card"
       :side="side"
       @mouseup="toggleSide"
-      @mousedown="onDragStart"
-    />
+      @pointerdown="onPointerDown"
+    >
+      <div
+        class="absolute inset-0 bg-pink-400 rounded-(--face-radius) flex flex-col items-center justify-center
+          text-white text-3xl"
+        :style="{ opacity: failOpacity }"
+      >
+        {{ t('study.nope') }}
+        <p class="text-sm">{{ getRatingTimeFormat(Rating.Again) }}</p>
+      </div>
+      <div
+        class="absolute inset-0 bg-green-400 rounded-(--face-radius) flex flex-col items-center justify-center
+          text-white text-3xl"
+        :style="{ opacity: passOpacity }"
+      >
+        {{ t('study.got-it') }}
+        <p class="text-sm">{{ getRatingTimeFormat(Rating.Good) }}</p>
+      </div>
+    </card>
   </div>
 </template>

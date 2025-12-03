@@ -86,9 +86,9 @@ const onLogin = (email: string, password: string) => {
       <ui-image src="splash-logo" class="h-84" />
     </div>
 
-    <diiv data-testid="stationary" class="absolute inset-0 pointer-events-none drop-shadow-cutout">
+    <div data-testid="stationary" class="absolute inset-0 pointer-events-none drop-shadow-cutout">
       <ui-image src="splash-top-left" class="absolute top-0 left-0" />
       <ui-image src="splash-bottom-right" class="absolute bottom-0 right-0" />
-    </diiv>
+    </div>
   </section>
 </template>
