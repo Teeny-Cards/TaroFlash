@@ -141,7 +141,7 @@ function flingCard(direction: number) {
   }
 
   cardEl.addEventListener('transitionend', handleTransitionEnd)
-  audio.play('slide_up')
+  audio.play('ui.slide_up')
 }
 
 function reviewCard(grade: Grade) {
@@ -156,7 +156,7 @@ function _updateSwipeZone(offset: number) {
     offset > SWIPE_DISTANCE_THRESHOLD ? 1 : offset < -SWIPE_DISTANCE_THRESHOLD ? -1 : 0
 
   if (zone !== swipe_zone.value) {
-    audio.play('pop_drip_mid')
+    audio.play('ui.pop_drip_mid')
   }
 
   swipe_zone.value = zone

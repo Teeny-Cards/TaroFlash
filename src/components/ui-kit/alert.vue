@@ -2,6 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import { computed, onMounted } from 'vue'
 import { useAudio } from '@/composables/audio'
+import { type NamespacedAudioKey } from '@/composables/audio'
 
 export type AlertType = 'warn' | 'info'
 
@@ -11,8 +12,8 @@ const { cancelLabel, confirmLabel, close, cancelAudio, confirmAudio } = definePr
   message?: string
   title?: string
   type?: AlertType
-  cancelAudio?: string
-  confirmAudio?: string
+  cancelAudio?: NamespacedAudioKey
+  confirmAudio?: NamespacedAudioKey
   close: (result?: boolean, args?: { overrideCloseAudio?: string }) => void
 }>()
 
@@ -28,12 +29,10 @@ const confirmText = computed(() => {
 })
 
 function onCancel() {
-  console.log('cancel')
   close(false, { overrideCloseAudio: cancelAudio })
 }
 
 function onConfirm() {
-  console.log('confirm')
   close(true, { overrideCloseAudio: confirmAudio })
 }
 </script>
@@ -62,7 +61,7 @@ function onConfirm() {
           data-testid="ui-kit-alert__cancel"
           class="ui-kit-alert__cancel group"
           @click="onCancel"
-          @mouseenter="audio.play('click_04')"
+          @mouseenter="audio.play('ui.click_04')"
         >
           {{ cancelText }}
           <div class="hover-effect group-hover:opacity-100! group-focus:opacity-100!">
@@ -74,7 +73,7 @@ function onConfirm() {
           data-testid="ui-kit-alert__confirm"
           class="ui-kit-alert__confirm group"
           @click="onConfirm"
-          @mouseenter="audio.play('click_04')"
+          @mouseenter="audio.play('ui.click_04')"
         >
           {{ confirmText }}
           <div class="hover-effect group-hover:opacity-100! group-focus:opacity-100!">

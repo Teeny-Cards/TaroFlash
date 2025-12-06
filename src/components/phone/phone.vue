@@ -36,7 +36,7 @@ function togglePhone() {
 function openPhone() {
   shortcuts.trapFocus()
   open.value = true
-  useAudio().play('pop_window')
+  useAudio().play('ui.pop_window')
 }
 
 function closePhone() {
@@ -47,7 +47,7 @@ function closePhone() {
 
   open.value = false
   shortcuts.releaseFocus()
-  useAudio().play('pop_window')
+  useAudio().play('ui.pop_window')
   nav.resetTo(Home)
 }
 </script>

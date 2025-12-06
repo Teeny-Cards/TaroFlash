@@ -41,7 +41,7 @@ const audio = useAudio()
     class="phone-app w-15 h-15 cursor-pointer hover:scale-110 focus:scale-110 transition-transform duration-50
       flex items-center justify-center text-white group animation-safe:animate-bg-slide outline-none"
     :class="`theme-${theme} shape-${shape ?? 'square'} col-span-${col_span ?? 1} row-span-${row_span ?? 1}`"
-    @mouseenter="audio.play('pop_drip_mid')"
+    @mouseenter="audio.play('ui.pop_drip_mid')"
     @click="handler?.()"
   >
     <ui-image :src="icon" :class="{ 'group-hover:hidden group-focus:hidden': hover_icon }" />

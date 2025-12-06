@@ -14,7 +14,7 @@ const { t } = useI18n()
 <template>
   <div class="grid grid-cols-1 gap-2">
     <ui-button
-      hover-audio="pop_drip_mid"
+      hover-audio="ui.pop_drip_mid"
       @click.stop="emit('select')"
       icon-only
       icon-left="data-check"
@@ -24,7 +24,7 @@ const { t } = useI18n()
     </ui-button>
 
     <ui-button
-      hover-audio="pop_drip_mid"
+      hover-audio="ui.pop_drip_mid"
       @click.stop="emit('move')"
       icon-only
       icon-left="move-item"
@@ -34,7 +34,7 @@ const { t } = useI18n()
     </ui-button>
 
     <ui-button
-      hover-audio="pop_drip_mid"
+      hover-audio="ui.pop_drip_mid"
       @click.stop="emit('delete')"
       icon-only
       icon-left="delete"

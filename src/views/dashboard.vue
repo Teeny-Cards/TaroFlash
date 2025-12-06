@@ -5,7 +5,9 @@ import { fetchMemberCardCount } from '@/api/cards'
 import { useToast } from '@/composables/toast'
 import Deck from '@/components/deck.vue'
 import { useRouter } from 'vue-router'
-import deckSettings from '@/components/modals/deck-settings/index.vue'
+import deckSettings, {
+  type DeckSettingsResponse
+} from '@/components/modals/deck-settings/index.vue'
 import MemberApplication from '@/components/modals/member-application.vue'
 import { useModal } from '@/composables/modal'
 import { useMemberStore } from '@/stores/member'
@@ -30,8 +32,8 @@ onMounted(async () => {
   if (!memberStore.has_member) {
     modal.open(MemberApplication, {
       backdrop: true,
-      openAudio: 'double-pop-up',
-      closeAudio: 'double-pop-down'
+      openAudio: 'ui.double_pop_up',
+      closeAudio: 'ui.double_pop_down'
     })
   }
 })
@@ -53,9 +55,11 @@ function onDeckClicked(deck: Deck) {
 }
 
 async function onCreateDeckClicked() {
-  const deck_created = await modal.open(deckSettings, { backdrop: true })
+  const { response: deck_created } = modal.open<DeckSettingsResponse>(deckSettings, {
+    backdrop: true
+  })
 
-  if (deck_created) {
+  if (await deck_created) {
     await refetchDecks()
   }
 }

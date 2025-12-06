@@ -41,11 +41,11 @@ const themes: MemberTheme[] = [
 
 function setTheme(theme: MemberTheme) {
   if (theme === selected_theme.value) {
-    audio.play('digi_powerdown')
+    audio.play('ui.digi_powerdown')
     return
   }
 
-  audio.play('etc_camera_shutter')
+  audio.play('ui.etc_camera_shutter')
   selected_theme.value = theme
 }
 
@@ -116,7 +116,7 @@ async function onConfirm() {
                 hover:scale-110"
               :class="`bg-${theme} text-${theme}`"
               @click="setTheme(theme)"
-              @mouseenter="audio.play('click_04')"
+              @mouseenter="audio.play('ui.click_04')"
             >
               <ui-icon
                 src="check"

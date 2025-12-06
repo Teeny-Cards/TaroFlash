@@ -10,35 +10,22 @@ const modal = useModal()
 const { deck } = defineProps<{ deck: Deck }>()
 defineEmits<{ (e: 'clicked'): void; (e: 'updated'): void }>()
 
-const { image_url } = useDeckEditor(deck)
-
 function onStudyClicked() {
   modal.open(StudyModal, {
     backdrop: true,
     props: {
       deck
     },
-    openAudio: 'double-pop-up',
-    closeAudio: 'double-pop-down'
+    openAudio: 'ui.double_pop_up',
+    closeAudio: 'ui.double_pop_down'
   })
 }
 </script>
 
 <template>
   <div data-testid="deck" class="relative flex w-max flex-col gap-2.5">
-    <deck-preview
-      :deck="deck"
-      :image-url="image_url"
-      @study="onStudyClicked"
-      @updated="$emit('updated')"
-    >
-      <card
-        #trigger
-        size="sm"
-        class="relative cursor-pointer"
-        @click="$emit('clicked')"
-        :front_image_url="image_url"
-      >
+    <deck-preview :deck="deck" @study="onStudyClicked" @updated="$emit('updated')">
+      <card #trigger size="sm" class="relative cursor-pointer" @click="$emit('clicked')">
         <div
           v-if="deck.due_count"
           class="ring-brown-100 absolute -top-2 -right-2 flex h-7.5 w-7.5 items-center justify-center rounded-full

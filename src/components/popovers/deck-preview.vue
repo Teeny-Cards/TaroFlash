@@ -16,8 +16,8 @@ async function onSettingsClicked() {
   const { response } = modal.open(deckSettings, {
     props: { deck },
     backdrop: true,
-    openAudio: 'double-pop-up',
-    closeAudio: 'double-pop-down'
+    openAudio: 'ui.double_pop_up',
+    closeAudio: 'ui.double_pop_down'
   })
 
   if (await response) {

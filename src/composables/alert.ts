@@ -1,5 +1,6 @@
 import { useModal } from './modal'
 import alert, { type AlertType } from '@/components/ui-kit/alert.vue'
+import { type NamespacedAudioKey } from '@/composables/audio'
 
 type AlertArgs = {
   title?: string
@@ -8,9 +9,9 @@ type AlertArgs = {
   cancelLabel?: string
   backdrop?: boolean
   global_close?: boolean
-  openAudio?: string
-  cancelAudio?: string
-  confirmAudio?: string
+  openAudio?: NamespacedAudioKey
+  cancelAudio?: NamespacedAudioKey
+  confirmAudio?: NamespacedAudioKey
 }
 
 export function useAlert() {
@@ -34,7 +35,7 @@ export function useAlert() {
       backdrop: backdrop ?? true,
       global_close,
       props: { type, ...props },
-      openAudio: openAudio ?? 'etc_woodblock_stuck'
+      openAudio: openAudio ?? 'ui.etc_woodblock_stuck'
     })
   }
 

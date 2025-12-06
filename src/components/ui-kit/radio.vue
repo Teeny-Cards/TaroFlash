@@ -20,7 +20,7 @@ const { checked } = defineProps<{
       'border-2 border-blue-500 bg-white hover:border-4 hover:border-white hover:bg-blue-500':
         !checked
     }"
-    @mouseenter="audio.play('click_07')"
+    @mouseenter="audio.play('ui.click_07')"
   >
     <ui-icon v-if="checked" src="check" />
     <ui-icon v-if="intermediate" src="minus" />

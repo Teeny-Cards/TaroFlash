@@ -21,7 +21,7 @@ const checked = defineModel<boolean>('checked')
         type="checkbox"
         v-model="checked"
         class="hidden"
-        @change="audio.play('etc_camera_shutter')"
+        @change="audio.play('ui.etc_camera_shutter')"
       />
       <span data-testid="ui-kit-toggle__switch-handle" class="ui-kit-toggle__switch-handle"></span>
     </span>

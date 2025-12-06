@@ -2,6 +2,7 @@ import { ref, markRaw } from 'vue'
 import { useAudio } from './audio'
 import { useShortcuts } from './use-shortcuts'
 import uid from '@/utils/uid'
+import { type NamespacedAudioKey } from '@/composables/audio'
 
 type ModalEntry = {
   backdrop?: boolean
@@ -9,8 +10,8 @@ type ModalEntry = {
   component: any
   componentProps?: Record<string, any>
   id: string
-  openAudio?: string
-  closeAudio?: string
+  openAudio?: NamespacedAudioKey
+  closeAudio?: NamespacedAudioKey
   resolve: (result?: any) => void
   shortcutDispose: () => void
   shortcutClearScope: () => void
@@ -20,8 +21,8 @@ type OpenArgs = {
   props?: Record<string, any>
   backdrop?: boolean
   global_close?: boolean
-  openAudio?: string
-  closeAudio?: string
+  openAudio?: NamespacedAudioKey
+  closeAudio?: NamespacedAudioKey
 }
 
 const modal_stack = ref<ModalEntry[]>([])
