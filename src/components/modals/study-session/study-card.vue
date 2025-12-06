@@ -59,14 +59,16 @@ function getRatingTimeFormat(grade: Grade) {
 }
 
 function toggleSide() {
+  console.log('is_dragging', is_dragging.value)
   if (is_dragging.value) return
+
+  console.log('toggleSide')
   emit('side-changed', side === 'front' ? 'back' : 'front')
 }
 
 function onPointerDown(e: PointerEvent) {
   if (side === 'front') return
   if (e.pointerType === 'mouse' && e.button !== 0) return // only left click
-  e.preventDefault()
 
   pointerId.value = e.pointerId
   start_pos.value = { x: e.clientX, y: e.clientY }
@@ -89,6 +91,8 @@ function onPointerDown(e: PointerEvent) {
 function onPointerMove(e: PointerEvent) {
   if (pointerId.value === null || e.pointerId !== pointerId.value) return
   if (!start_pos.value || !study_card.value) return
+
+  e.preventDefault()
 
   const now = performance.now()
   const { x } = start_pos.value
