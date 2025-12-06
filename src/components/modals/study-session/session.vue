@@ -70,6 +70,7 @@ function onSideChanged(side: 'front' | 'back') {
     </div>
 
     <study-card
+      v-if="!loading"
       :card="active_card"
       :side="current_card_side"
       :options="active_card?.preview"
