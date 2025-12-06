@@ -45,7 +45,7 @@ async function onMove() {
 }
 
 function onClick(deck_id?: number) {
-  audio.play('etc_camera_shutter')
+  audio.play('ui.etc_camera_shutter')
 
   if (deck_id === selected_deck_id.value) {
     selected_deck_id.value = undefined

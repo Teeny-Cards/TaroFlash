@@ -12,7 +12,7 @@ const audio = useAudio()
 const open = ref(false)
 
 function onToggle() {
-  audio.play('etc_camera_reel')
+  audio.play('ui.etc_camera_reel')
   open.value = !open.value
 }
 </script>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAudio } from '@/composables/audio'
+import { type NamespacedAudioKey } from '@/composables/audio'
 import UiIcon from '@/components/ui-kit/icon.vue'
 
 export type ButtonProps = {
@@ -9,7 +10,7 @@ export type ButtonProps = {
   iconRight?: string
   iconLeft?: string
   fancyHover?: boolean
-  hoverAudio?: string
+  hoverAudio?: NamespacedAudioKey
 }
 
 const {

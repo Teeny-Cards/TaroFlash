@@ -21,8 +21,8 @@ async function onSettingsClicked() {
   const { response } = modal.open(deckSettings, {
     props: { deck },
     backdrop: true,
-    openAudio: 'etc_camera_reel',
-    closeAudio: 'card_drop'
+    openAudio: 'ui.etc_camera_reel',
+    closeAudio: 'ui.card_drop'
   })
 
   if (await response) {

@@ -17,12 +17,12 @@ const login_dropdown_open = ref(false)
 
 function openLoginDropdown() {
   login_dropdown_open.value = true
-  audio.play('slide_up')
+  audio.play('ui.slide_up')
 }
 
 function closeLoginDropdown() {
   login_dropdown_open.value = false
-  audio.play('card_drop')
+  audio.play('ui.card_drop')
 }
 
 function triggerLoginDropdown() {

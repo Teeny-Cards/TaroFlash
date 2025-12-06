@@ -35,7 +35,7 @@ const themes: MemberTheme[] = ['green', 'blue', 'purple', 'pink', 'red', 'orange
         class="ring-brown-100 relative h-8.5 w-8.5 cursor-pointer rounded-full ring-4 transition-all duration-75
           hover:scale-110"
         :class="`selector--${theme}`"
-        @mouseenter="audio.play('click_04')"
+        @mouseenter="audio.play('ui.click_04')"
         @click="emit('select', theme)"
       >
         <ui-icon

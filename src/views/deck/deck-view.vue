@@ -89,7 +89,7 @@ onMounted(async () => {
 async function onEsc() {
   deactivateCard()
   setMode('view')
-  audio.play('card_drop')
+  audio.play('ui.card_drop')
 
   if (document.activeElement && document.activeElement instanceof HTMLElement) {
     document.activeElement.blur()
@@ -102,8 +102,8 @@ function onStudy() {
     props: {
       deck: deck.value!
     },
-    openAudio: 'double-pop-up',
-    closeAudio: 'double-pop-down'
+    openAudio: 'ui.double_pop_up',
+    closeAudio: 'ui.double_pop_down'
   })
 }
 
@@ -127,7 +127,7 @@ async function onUpdateCard(id: number, side: 'front' | 'back', payload: TextEdi
 }
 
 async function onCancel() {
-  audio.play('card_drop')
+  audio.play('ui.card_drop')
 
   setMode('view')
   deactivateCard()
@@ -156,7 +156,7 @@ async function onDeleteCards(id?: number) {
     title: t('alert.delete-card', { count }),
     message: t('alert.delete-card.message', { count }),
     confirmLabel: t('common.delete'),
-    confirmAudio: 'trash_crumple_short'
+    confirmAudio: 'ui.trash_crumple_short'
   })
 
   if (await did_confirm) {
@@ -172,17 +172,17 @@ function onSelectCard(id: number) {
   toggleSelectCard(id)
   deactivateCard()
   setMode('select')
-  audio.play('etc_camera_shutter')
+  audio.play('ui.etc_camera_shutter')
 }
 
 function onToggleSelectAll() {
   toggleSelectAll()
-  audio.play('etc_camera_shutter')
+  audio.play('ui.etc_camera_shutter')
 }
 
 function onCardActivated(id: number) {
   activateCard(id)
-  audio.play('slide_up')
+  audio.play('ui.slide_up')
 }
 
 function onCardDeactivated() {
@@ -191,14 +191,14 @@ function onCardDeactivated() {
   setTimeout(() => {
     // gotta wait a second to make sure another card hasn't been activated
     if (active_card_id.value === undefined) {
-      audio.play('card_drop')
+      audio.play('ui.card_drop')
     }
   }, 0)
 }
 
 async function onAddCard(left_card_id?: number, right_card_id?: number) {
   try {
-    audio.play('slide_up')
+    audio.play('ui.slide_up')
     await addCard(left_card_id, right_card_id)
   } catch (e: any) {
     toast.error(t('toast.error.add-card'))
@@ -207,7 +207,7 @@ async function onAddCard(left_card_id?: number, right_card_id?: number) {
 
 function onSelect() {
   setMode('select')
-  audio.play('etc_camera_shutter')
+  audio.play('ui.etc_camera_shutter')
   deactivateCard()
 }
 
@@ -225,8 +225,8 @@ async function onMoveCards(id?: number) {
       cards: selected_cards,
       current_deck_id: Number(deck_id)
     },
-    openAudio: 'double-pop-up',
-    closeAudio: 'double-pop-down'
+    openAudio: 'ui.double_pop_up',
+    closeAudio: 'ui.double_pop_down'
   })
 
   const res = await response

@@ -80,7 +80,7 @@ function focusApp(index: number) {
     active_app.value
   ] as HTMLElement
   app?.focus()
-  audio.play('pop_drip_mid')
+  audio.play('ui.pop_drip_mid')
 }
 
 function openApp() {

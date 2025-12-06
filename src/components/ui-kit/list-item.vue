@@ -14,7 +14,7 @@ const audio = useAudio()
 
 function onMouseEnter() {
   if (!hover_effect) return
-  audio.play('click_04')
+  audio.play('ui.click_04')
 }
 </script>
 

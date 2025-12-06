@@ -7,9 +7,11 @@ import { useAlert } from '@/composables/alert'
 import { useDeckEditor } from '@/composables/deck-editor'
 import UiButton from '@/components/ui-kit/button.vue'
 
+export type DeckSettingsResponse = boolean
+
 const { deck, close } = defineProps<{
   deck?: Deck
-  close: (response?: any) => void
+  close: (response?: DeckSettingsResponse) => void
 }>()
 
 const { t } = useI18n()
@@ -26,8 +28,8 @@ async function onDeleted() {
     title: t('alert.delete-deck'),
     message: t('alert.delete-deck.message'),
     confirmLabel: t('common.delete'),
-    confirmAudio: 'trash_crumple_short',
-    cancelAudio: 'digi_powerdown'
+    confirmAudio: 'ui.trash_crumple_short',
+    cancelAudio: 'ui.digi_powerdown'
   })
 
   if (await did_confirm) {

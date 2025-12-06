@@ -3,17 +3,19 @@ import { Howl, Howler } from 'howler'
 import { ref } from 'vue'
 import { useLogger } from '@/composables/logger'
 import { debounce } from '@/utils/debounce'
+import { AUDIO_CONFIG } from '@/config/audio'
 
 const logger = useLogger()
-const DEBOUNCE_DELAY = 100
+const DEFAULT_VOLUME = 1
+const DEFAULT_CATEGORY_VOLUME = 0.5
+const DEBOUNCE_DELAY = 50
+const QUEUE_TIMEOUT = 10
 
 const loadedSounds = new Map<string, Howl>()
 const isInitialized = ref(false)
 const playingSounds = ref<Howl[]>([])
 const unlocked = ref(false)
-const queued_sound = ref<{ key: string; options: PlayOptions } | undefined>()
-
-let debounce_timeout: number | null = null
+const queued_sound = ref<{ key: NamespacedAudioKey; options: PlayOptions } | undefined>()
 
 type PlayOptions = {
   volume?: number
@@ -21,17 +23,8 @@ type PlayOptions = {
 }
 
 export function useAudio() {
-  Howler.volume(0.5)
-
   const preload = () => {
     if (isInitialized.value) return
-
-    const audioFiles = import.meta.glob('/src/assets/audio/*.wav', { eager: true, as: 'url' })
-
-    const sources = Object.entries(audioFiles).map(([path, url]) => {
-      const filename = path.split('/').pop()!.split('.')[0]
-      return { key: filename, url }
-    })
 
     const sound = new Howl({
       src: ['/src/assets/audio/double-pop-up.wav'],
@@ -48,47 +41,44 @@ export function useAudio() {
       }
     })
 
-    sources.forEach((src) => {
-      const sound = new Howl({
-        src: [src.url],
-        preload: true
-      })
-
-      loadedSounds.set(src.key, sound)
+    Object.entries(AUDIO_CONFIG).forEach(([category_name, category]) => {
+      setupAudioCategory(category_name as AudioCategoryKey, category)
     })
 
     isInitialized.value = true
   }
 
   const play = async (
-    key: string,
-    options: PlayOptions = {},
-    debounce_ms: number = DEBOUNCE_DELAY
+    key: NamespacedAudioKey,
+    options: PlayOptions = {}
   ): Promise<Howl | undefined> => {
-    if (!unlocked.value) {
-      queued_sound.value = { key, options }
-      return
-    }
-
-    if (debounce_ms > 0) {
-      if (debounce_timeout) {
-        clearTimeout(debounce_timeout)
-      }
-
-      return new Promise((resolve) => {
-        const timer = window.setTimeout(async () => {
-          debounce_timeout = null
-          resolve(await _play(key, options))
-        }, debounce_ms)
-
-        debounce_timeout = timer
-      })
-    }
+    return debounce(() => _play(key, options), {
+      delay: options.debounce ?? DEBOUNCE_DELAY,
+      key
+    })
   }
 
-  const _play = async (key: string, options: PlayOptions = {}): Promise<Howl | undefined> => {
+  /**
+   * Queues a sound to be played when the audio system is unlocked.
+   * Clears the queue after a short timeout to prevent unexpected
+   * sounds from playing when the system is unlocked.
+   */
+  const queueSound = (key: NamespacedAudioKey, options: PlayOptions = {}) => {
+    queued_sound.value = { key, options }
+
+    setTimeout(() => {
+      if (queued_sound.value?.key === key) {
+        queued_sound.value = undefined
+      }
+    }, QUEUE_TIMEOUT)
+  }
+
+  const _play = async (
+    key: NamespacedAudioKey,
+    options: PlayOptions = {}
+  ): Promise<Howl | undefined> => {
     if (!unlocked.value) {
-      queued_sound.value = { key, options }
+      queueSound(key, options)
       return
     }
 
@@ -112,6 +102,31 @@ export function useAudio() {
     }
   }
 
+  const setupAudioCategory = (category_name: AudioCategoryKey, category: AudioCategory) => {
+    return Object.entries(category).forEach(([name, cfg]) => {
+      const url = cfg.path ?? `/src/assets/audio/${name}.${cfg.ext ?? 'wav'}`
+
+      if (!url) {
+        logger.warn(
+          `Audio config references "${cfg.path}" for "${category}.${name}" but file not found at ${url}`
+        )
+        return
+      }
+
+      const key: NamespacedAudioKey = `${category_name}.${name as AudioKey}`
+      const categoryVolume = DEFAULT_CATEGORY_VOLUME
+      const volume = (cfg.default_volume ?? DEFAULT_VOLUME) * categoryVolume
+
+      const sound = new Howl({
+        src: [url],
+        preload: cfg.preload ?? true,
+        volume
+      })
+
+      loadedSounds.set(key, sound)
+    })
+  }
+
   return {
     preload,
     play,
@@ -119,3 +134,27 @@ export function useAudio() {
     isInitialized: isInitialized as Readonly<typeof isInitialized>
   }
 }
+
+export function createAudioConfig<const T extends Record<string, Record<string, AudioProperties>>>(
+  config: T
+) {
+  return config as {
+    [C in keyof T]: {
+      [K in keyof T[C]]: AudioProperties
+    }
+  }
+}
+
+export type AudioProperties = {
+  path?: string
+  ext?: string
+  default_volume?: number
+  preload?: boolean
+}
+export type AudioConfig = typeof AUDIO_CONFIG
+export type AudioCategoryKey = keyof AudioConfig
+export type AudioCategory = AudioConfig[AudioCategoryKey]
+export type AudioKey = keyof AudioCategory
+export type NamespacedAudioKey = {
+  [C in AudioCategoryKey]: `${C}.${keyof AudioConfig[C] & string}`
+}[AudioCategoryKey]
