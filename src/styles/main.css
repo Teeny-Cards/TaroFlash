@@ -83,11 +83,11 @@
   --radius-full: 9999px;
 
   --shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.15);
-  --shadow-modal: 8px 8px 42.9px 0px rgba(0, 0, 0, 0.25);
+  --shadow-modal: 6px 6px 0px 0px rgba(0, 0, 0, 0.25);
   --shadow-popover: 4px 4px 6px 0px rgba(0, 0, 0, 0.16);
   --shadow-button: 3px 3px 4px 0px rgba(0, 0, 0, 0.1);
 
-  --drop-shadow-modal: 8px 8px 42.9px rgba(0, 0, 0, 0.25);
+  --drop-shadow-modal: 10px 10px 0px rgba(0, 0, 0, 0.25);
   --drop-shadow-popover: 4px 4px 6px rgba(0, 0, 0, 0.16);
 
   --drop-shadow-overlay: -2px -5px 10px rgba(0, 0, 0, 0.12);

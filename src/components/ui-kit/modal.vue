@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { onUnmounted, useTemplateRef, watchEffect, computed } from 'vue'
+import { onUnmounted, watchEffect, computed, onMounted, ref } from 'vue'
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
 import { useModal } from '@/composables/modal'
 
 const { modal_stack, pop } = useModal()
-const modal_container = useTemplateRef<HTMLDivElement>('ui-kit-modal-container')
+const modal_container = ref<HTMLElement | null>(null)
+
+onMounted(() => {
+  modal_container.value = document.querySelector('[data-testid="ui-kit-modal-container"]')
+})
 
 onUnmounted(() => {
   if (!modal_container.value) return
@@ -40,7 +44,7 @@ const show_backdrop = computed(() => {
       data-testid="ui-kit-modal-backdrop"
       ref="ui-kit-modal"
       class="pointer-events-auto fixed inset-0 flex items-center justify-center px-4 py-7"
-      :class="{ 'backdrop-blur-4 bg-black/10': show_backdrop }"
+      :class="{ 'sm:backdrop-blur-4 sm:bg-black/10': show_backdrop }"
       @click="pop"
     >
       <slot></slot>
