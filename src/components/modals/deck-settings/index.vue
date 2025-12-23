@@ -43,7 +43,7 @@ async function onDeleted() {
   <div data-testid="deck-settings-container" class="relative">
     <div
       data-testid="deck-settings"
-      class="rounded-10 bg-brown-300 shadow-modal flex flex-col overflow-hidden"
+      class="rounded-10 bg-brown-300 shadow-lg flex flex-col overflow-hidden"
     >
       <header-config />
 

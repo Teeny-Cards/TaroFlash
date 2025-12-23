@@ -11,7 +11,7 @@ import { useAlert } from '@/composables/alert'
 import { useModal } from '@/composables/modal'
 import { useAudio } from '@/composables/audio'
 import UiSplitButton from '@/components/ui-kit/split-button/index.vue'
-import { deleteImage } from '@/api/media'
+import UiScrollBar from '@/components/ui-kit/scroll-bar.vue'
 import { moveCardsToDeck } from '@/api/cards'
 import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
@@ -276,7 +276,8 @@ async function onMoveCards(id?: number) {
         </div>
 
         <div
-          class="bg-brown-100 border-b-brown-500 absolute -top-10 -right-3 bottom-0 -left-3 -z-10 border-b"
+          class="bg-brown-100 border-b-brown-500 absolute -top-10 -right-3 bottom-0 -left-3 -z-10
+            border-b"
         ></div>
       </div>
 
@@ -307,5 +308,7 @@ async function onMoveCards(id?: number) {
         <text-editor-toolbar inactive_classes="transform translate-y-25" />
       </component>
     </div>
+
+    <ui-scroll-bar target="html" />
   </section>
 </template>

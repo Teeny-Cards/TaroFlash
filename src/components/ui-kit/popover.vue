@@ -179,7 +179,7 @@ watch(
 }
 
 .ui-kit-popover--shadow {
-  filter: drop-shadow(var(--drop-shadow-popover));
+  filter: drop-shadow(var(--drop-shadow-sm));
 }
 
 .ui-kit-popover__arrow {

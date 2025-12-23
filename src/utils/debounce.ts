@@ -1,8 +1,8 @@
-type DebounceCallback = (...args: any[]) => any
+type DebounceCallback = (...args: any[]) => any | Promise<any>
 
 const debounceMap = new Map<
   DebounceCallback | string,
-  { timer: number; promise: Promise<any>; resolve: (v: any) => void; reject: (e: any) => void }
+  { timer: number; resolve: (v: any) => void }
 >()
 
 type DebounceOptions = {
@@ -13,30 +13,26 @@ type DebounceOptions = {
 export function debounce<T extends DebounceCallback>(
   fn: T,
   { delay = 300, key }: DebounceOptions = {}
-): Promise<Awaited<ReturnType<T>>> {
-  const existing = debounceMap.get(key ?? fn)
-  if (existing) {
-    clearTimeout(existing.timer)
-  }
+): Promise<Awaited<ReturnType<T>> | undefined> {
+  return new Promise((resolve, reject) => {
+    const existing = debounceMap.get(key ?? fn)
 
-  let resolve!: (v: Awaited<ReturnType<T>>) => void
-  let reject!: (e: any) => void
-
-  const promise = new Promise<Awaited<ReturnType<T>>>((res, rej) => {
-    resolve = res
-    reject = rej
-  })
-
-  const timer = window.setTimeout(async () => {
-    debounceMap.delete(key ?? fn)
-    try {
-      const result = await fn()
-      resolve(result)
-    } catch (err) {
-      reject(err)
+    if (existing) {
+      clearTimeout(existing.timer)
+      existing.resolve(undefined)
     }
-  }, delay)
 
-  debounceMap.set(key ?? fn, { timer, promise, resolve, reject })
-  return promise
+    const timer = window.setTimeout(async () => {
+      debounceMap.delete(key ?? fn)
+
+      try {
+        const result = await fn()
+        resolve(result)
+      } catch (err) {
+        reject(err)
+      }
+    }, delay)
+
+    debounceMap.set(key ?? fn, { timer, resolve })
+  })
 }

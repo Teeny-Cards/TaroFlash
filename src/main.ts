@@ -17,7 +17,7 @@ const i18n = createI18n({
 const app = createApp(App)
 
 const audio = useAudio()
-audio.preload()
+audio.setup()
 
 app.use(createPinia())
 app.use(i18n)

@@ -53,7 +53,7 @@ function onTabClick(index: number) {
       <ui-icon v-if="tab.icon" :src="tab.icon" size="small" class="ui-kit-tabs__tab-icon" />
       <span class="ui-kit-tabs__tab-label">{{ tab.label }}</span>
 
-      <span v-if="active_tab !== index" class="ui-kit-tabs__tab-tooltip shadow-button">
+      <span v-if="active_tab !== index" class="ui-kit-tabs__tab-tooltip shadow-xs">
         {{ tab.label }}
       </span>
     </div>

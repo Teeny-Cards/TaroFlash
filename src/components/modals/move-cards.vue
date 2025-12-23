@@ -57,15 +57,12 @@ function onClick(deck_id?: number) {
 </script>
 
 <template>
-  <div data-testid="move-cards-container">
-    <div
-      data-testid="move-cards"
-      class="bg-brown-300 rounded-8 overflow-hidden min-w-100 drop-shadow-modal"
-    >
+  <div data-testid="move-cards-container" class="drop-shadow-md">
+    <div data-testid="move-cards" class="bg-brown-300 rounded-8 overflow-hidden min-w-100">
       <div
         data-testid="move-cards__header"
-        class="px-8 py-10 bg-purple-500 wave-bottom-[30px] bg-(image:--endless-clouds) flex items-center
-          justify-center"
+        class="px-8 py-10 bg-purple-500 wave-bottom-[30px] bg-(image:--endless-clouds) flex
+          items-center justify-center"
       >
         <h1 class="move-cards__title" v-html="title"></h1>
       </div>

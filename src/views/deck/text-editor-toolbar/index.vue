@@ -38,8 +38,9 @@ onDeactivate(() => {
   <div
     data-testid="text-editor-toolbar"
     ref="text-editor-toolbar"
-    class="fixed bottom-6 bg-white rounded-6 shadow-cutout pl-3 pr-6.5 flex justify-center items-end gap-6
-      transition-transform duration-100 ease-in-out border-t border-l border-r border-brown-100 h-15 z-10"
+    class="fixed bottom-6 bg-white rounded-6 shadow-sm pl-3 pr-6.5 flex justify-center items-end
+      gap-6 transition-transform duration-100 ease-in-out border-t border-l border-r
+      border-brown-100 h-15 z-10"
     :class="{ [inactive_classes]: !active }"
   >
     <div class="flex gap-1.5 items-center h-full py-3">

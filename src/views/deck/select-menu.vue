@@ -18,8 +18,8 @@ const emit = defineEmits<{
 <template>
   <div
     data-testid="card-list__select-menu"
-    class="fixed bottom-6 bg-white rounded-6 shadow-popover p-3 pr-6 flex justify-center items-center gap-4
-      transition-transform duration-100 ease-in-out z-10"
+    class="fixed bottom-6 bg-white rounded-6 shadow-sm p-3 pr-6 flex justify-center items-center
+      gap-4 transition-transform duration-100 ease-in-out z-10"
     :class="{ 'transform translate-y-22': !open }"
   >
     <ui-button icon-left="close" theme="grey" @click="emit('cancel')">Cancel</ui-button>

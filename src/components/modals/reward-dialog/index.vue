@@ -16,12 +16,12 @@ const reward_components = {
 
 <template>
   <div class="flex flex-col">
-    <div class="drop-shadow-modal">
+    <div class="drop-shadow-lg">
       <component v-for="reward in rewards" :is="reward_components[reward.type]" :reward="reward" />
     </div>
 
     <Dialog
-      class="drop-shadow-overlay"
+      class="drop-shadow-sm"
       :score="score"
       :total="total"
       :num_rewards="rewards.length"

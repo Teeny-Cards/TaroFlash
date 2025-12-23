@@ -60,7 +60,7 @@ function closePhone() {
     leave-active-class="transition-[all] ease-in-out duration-100"
   >
     <div v-if="open" data-testid="phone" class="pointer-events-auto h-min absolute top-4 right-0">
-      <div class="w-60 h-89.5 bg-brown-300 shadow-cutout rounded-16 overflow-hidden relative">
+      <div class="w-60 h-89.5 bg-brown-300 shadow-sm rounded-16 overflow-hidden relative">
         <transition :name="nav.transitionName.value">
           <component
             v-if="nav.top.value"
@@ -84,8 +84,8 @@ function closePhone() {
       v-if="!open"
       @click="openPhone"
       data-testid="phone-minimized"
-      class="w-16.25 h-22 bg-brown-300 rounded-4.5 shadow-button rotate-6 cursor-pointer p-2 pb-1 flex flex-col
-        gap-1 items-center scale-75 pointer-events-auto"
+      class="w-16.25 h-22 bg-brown-300 rounded-4.5 shadow-xs rotate-6 cursor-pointer p-2 pb-1 flex
+        flex-col gap-1 items-center scale-75 pointer-events-auto"
     >
       <div
         data-testid="notification-badge"

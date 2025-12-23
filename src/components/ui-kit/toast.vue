@@ -59,7 +59,7 @@ function closeToast(): void {
     leave-to-class="translate-x-full"
     leave-active-class="transition-transform transform"
   >
-    <div ui-kit-toast v-if="open" class="rounded-8 w-72 p-4 text-white shadow-modal" :class="color">
+    <div ui-kit-toast v-if="open" class="rounded-8 w-72 p-4 text-white shadow-lg" :class="color">
       {{ toast.message }}
     </div>
   </transition>

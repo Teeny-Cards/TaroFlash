@@ -44,7 +44,7 @@ function onConfirm() {
   >
     <div
       data-testid="ui-kit-alert"
-      class="rounded-2 shadow-modal flex w-115 max-w-115 flex-col bg-white"
+      class="rounded-2 shadow-lg flex w-115 max-w-115 flex-col bg-white"
       :class="`ui-kit-alert--${type ?? 'warn'}`"
       v-bind="$attrs"
     >
