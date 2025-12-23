@@ -13,7 +13,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="bg-brown-300 rounded-10 flex h-163 w-254 flex-col shadow-modal">
+  <div class="bg-brown-300 rounded-10 flex h-163 w-254 flex-col shadow-lg">
     <div class="flex w-full items-center justify-center py-5">
       <h2 class="text-brown-700 text-6xl">Inventory</h2>
     </div>
@@ -23,13 +23,13 @@ onMounted(async () => {
         <div
           v-for="purchase in purchases"
           :key="purchase.id"
-          class="bg-brown-300 rounded-4 relative h-34 w-34 cursor-pointer p-2.5 transition-all hover:ring-4
-            hover:ring-blue-500"
+          class="bg-brown-300 rounded-4 relative h-34 w-34 cursor-pointer p-2.5 transition-all
+            hover:ring-4 hover:ring-blue-500"
         >
           <ui-image :src="purchase.shop_item.item_key" class="h-full w-full" />
           <div
-            class="outline-brown-100-dark absolute right-2 bottom-2 flex h-6.75 w-6.75 items-center justify-center
-              rounded-full bg-blue-500 text-white outline-4"
+            class="outline-brown-100-dark absolute right-2 bottom-2 flex h-6.75 w-6.75 items-center
+              justify-center rounded-full bg-blue-500 text-white outline-4"
           >
             {{ purchase.quantity }}
           </div>

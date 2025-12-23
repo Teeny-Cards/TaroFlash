@@ -202,7 +202,7 @@ describe('play', () => {
   test('plays sound with default volume when no options provided', () => {
     const { play } = useAudio()
 
-    play('double-pop-up')
+    play('ui.double-pop-up')
 
     expect(mockHowl.volume).toHaveBeenCalledWith(1)
     expect(mockHowl.play).toHaveBeenCalled()
@@ -211,7 +211,7 @@ describe('play', () => {
   test('plays sound with custom volume when provided', () => {
     const { play } = useAudio()
 
-    play('double-pop-up', { volume: 0.5 })
+    play('ui.double-pop-up', { volume: 0.5 })
 
     expect(mockHowl.volume).toHaveBeenCalledWith(0.5)
     expect(mockHowl.play).toHaveBeenCalled()
@@ -222,12 +222,12 @@ describe('play', () => {
 
     // Test with actual loaded sounds
     vi.clearAllMocks()
-    play('double-pop-up')
+    play('ui.double-pop-up')
     expect(mockHowl.volume).toHaveBeenCalledWith(1)
     expect(mockHowl.play).toHaveBeenCalled()
 
     vi.clearAllMocks()
-    play('click_04')
+    play('ui.click_04')
     expect(mockHowl.volume).toHaveBeenCalledWith(1)
     expect(mockHowl.play).toHaveBeenCalled()
   })
@@ -257,7 +257,7 @@ describe('play', () => {
     preload()
     // Don't trigger unlock event
 
-    const result = play('double-pop-up')
+    const result = play('ui.double-pop-up')
 
     expect(result).toBeUndefined()
     expect(mockHowl.play).not.toHaveBeenCalled()
@@ -267,7 +267,7 @@ describe('play', () => {
     const { play } = useAudio()
 
     // Play a sound
-    const result = play('double-pop-up')
+    const result = play('ui.double-pop-up')
     expect(result).toBeDefined()
 
     // Find the 'end' callback that was registered - it should be the second call to once
@@ -291,7 +291,7 @@ describe('play', () => {
     const { play } = useAudio()
 
     // Play a sound
-    const result = play('double-pop-up')
+    const result = play('ui.double-pop-up')
     expect(result).toBeDefined()
 
     // Get the end callback
@@ -305,174 +305,6 @@ describe('play', () => {
     }
 
     expect(mockHowl.once).toHaveBeenCalledWith('end', expect.any(Function))
-  })
-})
-
-describe('playRandom', () => {
-  beforeEach(() => {
-    const { preload } = useAudio()
-    preload()
-    // Simulate unlock event to enable playing
-    const unlockCallback = mockHowl.once.mock.calls.find((call) => call[0] === 'unlock')?.[1]
-    if (unlockCallback) unlockCallback()
-
-    vi.spyOn(Math, 'random')
-  })
-
-  afterEach(() => {
-    vi.restoreAllMocks()
-  })
-
-  test('plays first sound when Math.random returns 0', () => {
-    Math.random.mockReturnValue(0)
-    const { playRandom } = useAudio()
-
-    playRandom(['double-pop-up', 'click_04'])
-
-    expect(mockHowl.volume).toHaveBeenCalledWith(1)
-    expect(mockHowl.play).toHaveBeenCalled()
-  })
-
-  test('plays second sound when Math.random returns 0.5', () => {
-    Math.random.mockReturnValue(0.5)
-    const { playRandom } = useAudio()
-
-    playRandom(['double-pop-up', 'click_04'])
-
-    expect(mockHowl.volume).toHaveBeenCalledWith(1)
-    expect(mockHowl.play).toHaveBeenCalled()
-  })
-
-  test('plays last sound when Math.random returns close to 1', () => {
-    Math.random.mockReturnValue(0.99)
-    const { playRandom } = useAudio()
-
-    playRandom(['double-pop-up', 'click_04', 'digi_powerdown'])
-
-    expect(mockHowl.volume).toHaveBeenCalledWith(1)
-    expect(mockHowl.play).toHaveBeenCalled()
-  })
-
-  test('applies volume options correctly', () => {
-    Math.random.mockReturnValue(0)
-    const { playRandom } = useAudio()
-
-    playRandom(['double-pop-up'], { volume: 0.3 })
-
-    expect(mockHowl.volume).toHaveBeenCalledWith(0.3)
-  })
-
-  test('handles single sound array', () => {
-    Math.random.mockReturnValue(0.5) // Should still select the only sound
-    const { playRandom } = useAudio()
-
-    playRandom(['double-pop-up'])
-
-    expect(mockHowl.volume).toHaveBeenCalledWith(1)
-    expect(mockHowl.play).toHaveBeenCalled()
-  })
-
-  test('handles empty array gracefully', () => {
-    const { playRandom } = useAudio()
-
-    expect(() => playRandom([])).not.toThrow()
-    // Should not attempt to play anything
-    expect(mockHowl.play).not.toHaveBeenCalled()
-  })
-
-  test('handles array with non-existent sound keys', () => {
-    Math.random.mockReturnValue(0)
-    const { playRandom } = useAudio()
-
-    playRandom(['non-existent-sound'])
-
-    expect(mocks.warn).toHaveBeenCalledWith('Sound "non-existent-sound" not loaded.')
-    expect(mockHowl.play).not.toHaveBeenCalled()
-  })
-
-  test('handles mixed valid and invalid sound keys', () => {
-    Math.random.mockReturnValue(0.5) // Should select second item (valid)
-    const { playRandom } = useAudio()
-
-    playRandom(['non-existent-sound', 'double-pop-up'])
-
-    expect(mockHowl.volume).toHaveBeenCalledWith(1)
-    expect(mockHowl.play).toHaveBeenCalled()
-    expect(mocks.warn).not.toHaveBeenCalled()
-  })
-
-  test('handles undefined array gracefully', () => {
-    const { playRandom } = useAudio()
-
-    expect(() => playRandom(undefined)).not.toThrow()
-    expect(mockHowl.play).not.toHaveBeenCalled()
-  })
-
-  test('handles null array gracefully', () => {
-    const { playRandom } = useAudio()
-
-    expect(() => playRandom(null)).not.toThrow()
-    expect(mockHowl.play).not.toHaveBeenCalled()
-  })
-})
-
-describe('isPlaying', () => {
-  beforeEach(() => {
-    const { preload } = useAudio()
-    preload()
-    // Simulate unlock event to enable playing
-    const unlockCallback = mockHowl.once.mock.calls.find((call) => call[0] === 'unlock')?.[1]
-    if (unlockCallback) unlockCallback()
-  })
-
-  test('returns true when sound is playing', () => {
-    mockHowl.playing.mockReturnValue(true)
-    const { isPlaying } = useAudio()
-
-    const result = isPlaying('double-pop-up')
-
-    expect(result).toBe(true)
-    expect(mockHowl.playing).toHaveBeenCalled()
-  })
-
-  test('returns false when sound is not playing', () => {
-    mockHowl.playing.mockReturnValue(false)
-    const { isPlaying } = useAudio()
-
-    const result = isPlaying('double-pop-up')
-
-    expect(result).toBe(false)
-    expect(mockHowl.playing).toHaveBeenCalled()
-  })
-
-  test('returns false when sound does not exist', () => {
-    const { isPlaying } = useAudio()
-
-    const result = isPlaying('non-existent-sound')
-
-    expect(result).toBe(false)
-    expect(mockHowl.playing).not.toHaveBeenCalled()
-  })
-
-  test('works with all valid sound keys', () => {
-    const { isPlaying } = useAudio()
-
-    // Test with known loaded sounds
-    mockHowl.playing.mockReturnValue(true)
-
-    let result = isPlaying('double-pop-up')
-    expect(result).toBe(true)
-
-    result = isPlaying('click_04')
-    expect(result).toBe(true)
-  })
-
-  test('does not log warnings for non-existent sounds', () => {
-    const { isPlaying } = useAudio()
-
-    isPlaying('non-existent-sound')
-
-    expect(mocks.warn).not.toHaveBeenCalled()
   })
 })
 
@@ -520,44 +352,5 @@ describe('stop', () => {
     stop('non-existent-sound')
 
     expect(mocks.warn).not.toHaveBeenCalled()
-  })
-})
-
-describe('muteAll', () => {
-  test('calls Howler.mute with true when muting', () => {
-    const { muteAll } = useAudio()
-
-    muteAll(true)
-
-    expect(mockHowler.mute).toHaveBeenCalledWith(true)
-  })
-
-  test('calls Howler.mute with false when unmuting', () => {
-    const { muteAll } = useAudio()
-
-    muteAll(false)
-
-    expect(mockHowler.mute).toHaveBeenCalledWith(false)
-  })
-
-  test('works without preloading', () => {
-    const { muteAll } = useAudio()
-
-    muteAll(true)
-
-    expect(mockHowler.mute).toHaveBeenCalledWith(true)
-  })
-
-  test('can be called multiple times', () => {
-    const { muteAll } = useAudio()
-
-    muteAll(true)
-    muteAll(false)
-    muteAll(true)
-
-    expect(mockHowler.mute).toHaveBeenCalledTimes(3)
-    expect(mockHowler.mute).toHaveBeenNthCalledWith(1, true)
-    expect(mockHowler.mute).toHaveBeenNthCalledWith(2, false)
-    expect(mockHowler.mute).toHaveBeenNthCalledWith(3, true)
   })
 })

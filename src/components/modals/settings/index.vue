@@ -16,7 +16,7 @@ const tabs: { [key in SettingsPage]: any } = {
 </script>
 
 <template>
-  <div data-testid="settings-container" class="flex items-center drop-shadow-modal">
+  <div data-testid="settings-container" class="flex items-center drop-shadow-lg">
     <div
       data-testid="settings"
       class="w-224 h-153 bg-brown-300 rounded-6 px-18 py-8 relative grid grid-cols-1 grid-rows-1"
@@ -25,8 +25,8 @@ const tabs: { [key in SettingsPage]: any } = {
 
       <div
         datat-testid="settings__side-bar"
-        class="absolute -left-9 top-36.5 bg-blue-900 rounded-7.5 outline-brown-300 outline-12 flex flex-col
-          items-center justify-center gap-3.5 px-3 py-6"
+        class="absolute -left-9 top-36.5 bg-blue-900 rounded-7.5 outline-brown-300 outline-12 flex
+          flex-col items-center justify-center gap-3.5 px-3 py-6"
       >
         <div class="settings__side-bar__item" :class="{ selected: tab === 'member-settings' }">
           <ui-tooltip
@@ -55,8 +55,8 @@ const tabs: { [key in SettingsPage]: any } = {
 
       <ui-icon
         src="logo"
-        class="h-107.5! w-107.5! text-brown-500 opacity-15 absolute left-1/2 top-1/2 -translate-x-1/2
-          -translate-y-1/2"
+        class="h-107.5! w-107.5! text-brown-500 opacity-15 absolute left-1/2 top-1/2
+          -translate-x-1/2 -translate-y-1/2"
       />
     </div>
   </div>

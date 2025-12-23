@@ -82,19 +82,18 @@
   --radius-31: --spacing(31); /* 124px */
   --radius-full: 9999px;
 
-  --shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.15);
-  --shadow-modal: 6px 6px 0px 0px rgba(0, 0, 0, 0.25);
-  --shadow-popover: 4px 4px 6px 0px rgba(0, 0, 0, 0.16);
-  --shadow-button: 3px 3px 4px 0px rgba(0, 0, 0, 0.1);
+  /* Shadows */
+  --shadow-xs: 3px 3px 0px 0px rgba(0, 0, 0, 0.25);
+  --drop-shadow-xs: 3px 3px 0px rgba(0, 0, 0, 0.25);
 
-  --drop-shadow-modal: 10px 10px 0px rgba(0, 0, 0, 0.25);
-  --drop-shadow-popover: 4px 4px 6px rgba(0, 0, 0, 0.16);
+  --shadow-sm: 4px 4px 0px 0px rgba(0, 0, 0, 0.25);
+  --drop-shadow-sm: 4px 4px 0px rgba(0, 0, 0, 0.25);
 
-  --drop-shadow-overlay: -2px -5px 10px rgba(0, 0, 0, 0.12);
-  --shadow-overlay: -2px -5px 10px -2px rgba(0, 0, 0, 0.12);
+  --shadow-md: 5px 5px 0px 0px rgba(0, 0, 0, 0.25);
+  --drop-shadow-md: 5px 5px 0px rgba(0, 0, 0, 0.25);
 
-  --drop-shadow-cutout: 3px 6px 0px rgba(0, 0, 0, 0.15);
-  --shadow-cutout: 3px 6px 0px 0px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 6px 6px 0px 0px rgba(0, 0, 0, 0.25);
+  --drop-shadow-lg: 10px 10px 0px rgba(0, 0, 0, 0.25);
 
   /* Background Images */
   --diagonal-stripes: url('../assets/backgrounds/diagonal-stripes.svg');
@@ -170,6 +169,7 @@
   html {
     font-family: var(--font-primary);
     font-size: var(--text-base);
+    scrollbar-width: none;
   }
 
   .app-container {

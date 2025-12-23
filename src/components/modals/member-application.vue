@@ -56,7 +56,7 @@ async function onConfirm() {
 </script>
 
 <template>
-  <div data-testid="member-application" class="drop-shadow-modal grid grid-cols-[auto_auto]">
+  <div data-testid="member-application" class="drop-shadow-lg grid grid-cols-[auto_auto]">
     <member-card
       :created-at="created_at"
       :display-name="member.display_name"
@@ -67,7 +67,8 @@ async function onConfirm() {
 
     <div
       data-testid="member-application__form"
-      class="bg-brown-300 rounded-8 border-brown-300 relative flex h-full flex-col gap-6 border-8 px-11 pt-6 pb-9"
+      class="bg-brown-300 rounded-8 border-brown-300 relative flex h-full flex-col gap-6 border-8
+        px-11 pt-6 pb-9"
     >
       <span
         data-testid="member-application__form__divider"
@@ -112,8 +113,8 @@ async function onConfirm() {
             <div
               v-for="theme in themes"
               :key="theme"
-              class="ring-brown-100 relative h-8.5 w-8.5 cursor-pointer rounded-full ring-4 transition-all duration-75
-                hover:scale-110"
+              class="ring-brown-100 relative h-8.5 w-8.5 cursor-pointer rounded-full ring-4
+                transition-all duration-75 hover:scale-110"
               :class="`bg-${theme} text-${theme}`"
               @click="setTheme(theme)"
               @mouseenter="audio.play('ui.click_04')"

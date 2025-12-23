@@ -1,5 +1,5 @@
 // useAudio.ts
-import { Howl, Howler } from 'howler'
+import { Howl } from 'howler'
 import { ref } from 'vue'
 import { useLogger } from '@/composables/logger'
 import { debounce } from '@/utils/debounce'
@@ -11,9 +11,9 @@ const DEFAULT_CATEGORY_VOLUME = 0.5
 const DEBOUNCE_DELAY = 50
 const QUEUE_TIMEOUT = 10
 
-const loadedSounds = new Map<string, Howl>()
-const isInitialized = ref(false)
-const playingSounds = ref<Howl[]>([])
+const loaded_sounds = new Map<string, Howl>()
+const initialized = ref(false)
+const unlock_registered = ref(false)
 const unlocked = ref(false)
 const queued_sound = ref<{ key: NamespacedAudioKey; options: PlayOptions } | undefined>()
 
@@ -23,29 +23,14 @@ type PlayOptions = {
 }
 
 export function useAudio() {
-  const preload = () => {
-    if (isInitialized.value) return
-
-    const sound = new Howl({
-      src: ['/src/assets/audio/double-pop-up.wav'],
-      volume: 0
-    })
-
-    sound.once('unlock', () => {
-      unlocked.value = true
-
-      if (queued_sound.value) {
-        const { key, options } = queued_sound.value
-        play(key, options)
-        queued_sound.value = undefined
-      }
-    })
+  const setup = () => {
+    if (initialized.value) return
 
     Object.entries(AUDIO_CONFIG).forEach(([category_name, category]) => {
-      setupAudioCategory(category_name as AudioCategoryKey, category)
+      _setupAudioCategory(category_name as AudioCategoryKey, category)
     })
 
-    isInitialized.value = true
+    initialized.value = true
   }
 
   const play = async (
@@ -63,7 +48,7 @@ export function useAudio() {
    * Clears the queue after a short timeout to prevent unexpected
    * sounds from playing when the system is unlocked.
    */
-  const queueSound = (key: NamespacedAudioKey, options: PlayOptions = {}) => {
+  const enqueue = (key: NamespacedAudioKey, options: PlayOptions = {}) => {
     queued_sound.value = { key, options }
 
     setTimeout(() => {
@@ -78,38 +63,30 @@ export function useAudio() {
     options: PlayOptions = {}
   ): Promise<Howl | undefined> => {
     if (!unlocked.value) {
-      queueSound(key, options)
+      enqueue(key, options)
       return
     }
 
-    const sound = loadedSounds.get(key)
+    return new Promise((resolve) => {
+      const sound = loaded_sounds.get(key)
 
-    if (sound) {
-      sound.volume(options.volume ?? 1)
+      if (!sound) {
+        logger.warn(`Sound "${key}" not loaded.`)
+        return
+      }
+
+      sound.volume(options.volume ?? sound.volume())
+      sound.once('end', () => resolve(sound))
       sound.play()
-
-      sound.once('end', () => {
-        const index = playingSounds.value.indexOf(sound)
-        if (index !== -1) {
-          playingSounds.value.splice(index, 1)
-        }
-      })
-
-      playingSounds.value.push(sound)
-      return sound
-    } else {
-      logger.warn(`Sound "${key}" not loaded.`)
-    }
+    })
   }
 
-  const setupAudioCategory = (category_name: AudioCategoryKey, category: AudioCategory) => {
+  const _setupAudioCategory = (category_name: AudioCategoryKey, category: AudioCategory) => {
     return Object.entries(category).forEach(([name, cfg]) => {
       const url = cfg.path ?? `/src/assets/audio/${name}.${cfg.ext ?? 'wav'}`
 
       if (!url) {
-        logger.warn(
-          `Audio config references "${cfg.path}" for "${category}.${name}" but file not found at ${url}`
-        )
+        logger.warn(`Audio file for "${category}.${name}" not found at ${url}`)
         return
       }
 
@@ -123,21 +100,45 @@ export function useAudio() {
         volume
       })
 
-      loadedSounds.set(key, sound)
+      _registerUnlock(sound)
+      loaded_sounds.set(key, sound)
     })
   }
 
+  /**
+   * Callback for when the audio system is unlocked.
+   * Plays any queued sound.
+   */
+  const _onUnlock = () => {
+    unlocked.value = true
+
+    if (queued_sound.value) {
+      const { key, options } = queued_sound.value
+      play(key, options)
+      queued_sound.value = undefined
+    }
+  }
+
+  /**
+   * Registers the unlock callback for the audio system.
+   * Only registers once.
+   */
+  const _registerUnlock = (sound: Howl) => {
+    if (!unlock_registered.value) {
+      unlock_registered.value = true
+      sound.once('unlock', _onUnlock)
+    }
+  }
+
   return {
-    preload,
+    setup,
     play,
     stop,
-    isInitialized: isInitialized as Readonly<typeof isInitialized>
+    initialized: initialized as Readonly<typeof initialized>
   }
 }
 
-export function createAudioConfig<const T extends Record<string, Record<string, AudioProperties>>>(
-  config: T
-) {
+export function createAudioConfig<T extends CreateAudioConfigArguments>(config: T) {
   return config as {
     [C in keyof T]: {
       [K in keyof T[C]]: AudioProperties
@@ -145,16 +146,19 @@ export function createAudioConfig<const T extends Record<string, Record<string, 
   }
 }
 
-export type AudioProperties = {
+type CreateAudioConfigArguments = { [category: string]: { [name: string]: AudioProperties } }
+type AudioProperties = {
   path?: string
   ext?: string
   default_volume?: number
   preload?: boolean
 }
-export type AudioConfig = typeof AUDIO_CONFIG
-export type AudioCategoryKey = keyof AudioConfig
-export type AudioCategory = AudioConfig[AudioCategoryKey]
-export type AudioKey = keyof AudioCategory
+
+type AudioConfig = typeof AUDIO_CONFIG
+type AudioCategoryKey = keyof AudioConfig
+type AudioCategory = AudioConfig[AudioCategoryKey]
+type AudioKey = keyof AudioCategory
+
 export type NamespacedAudioKey = {
   [C in AudioCategoryKey]: `${C}.${keyof AudioConfig[C] & string}`
 }[AudioCategoryKey]
