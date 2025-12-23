@@ -3,7 +3,14 @@ import { Howl } from 'howler'
 import { ref } from 'vue'
 import { useLogger } from '@/composables/logger'
 import { debounce } from '@/utils/debounce'
-import { AUDIO_CONFIG } from '@/config/audio'
+import {
+  AUDIO_CONFIG,
+  type AudioCategoryKey,
+  type AudioCategory,
+  type AudioKey,
+  type NamespacedAudioKey,
+  type AudioProperties
+} from '@/sfx/audio-config'
 
 const logger = useLogger()
 const DEFAULT_VOLUME = 1
@@ -147,18 +154,3 @@ export function createAudioConfig<T extends CreateAudioConfigArguments>(config: 
 }
 
 type CreateAudioConfigArguments = { [category: string]: { [name: string]: AudioProperties } }
-type AudioProperties = {
-  path?: string
-  ext?: string
-  default_volume?: number
-  preload?: boolean
-}
-
-type AudioConfig = typeof AUDIO_CONFIG
-type AudioCategoryKey = keyof AudioConfig
-type AudioCategory = AudioConfig[AudioCategoryKey]
-type AudioKey = keyof AudioCategory
-
-export type NamespacedAudioKey = {
-  [C in AudioCategoryKey]: `${C}.${keyof AudioConfig[C] & string}`
-}[AudioCategoryKey]

@@ -9,7 +9,7 @@ import { useI18n } from 'vue-i18n'
 import { useCardBulkEditor } from '@/composables/card-bulk-editor'
 import { useAlert } from '@/composables/alert'
 import { useModal } from '@/composables/modal'
-import { useAudio } from '@/composables/audio'
+import { emitSfx } from '@/sfx/bus'
 import UiSplitButton from '@/components/ui-kit/split-button/index.vue'
 import UiScrollBar from '@/components/ui-kit/scroll-bar.vue'
 import { moveCardsToDeck } from '@/api/cards'
@@ -29,7 +29,6 @@ const { id: deck_id } = defineProps<{
 const { t } = useI18n()
 const modal = useModal()
 const alert = useAlert()
-const audio = useAudio()
 const toast = useToast()
 
 const image_url = ref<string | undefined>()
@@ -89,7 +88,7 @@ onMounted(async () => {
 async function onEsc() {
   deactivateCard()
   setMode('view')
-  audio.play('ui.card_drop')
+  emitSfx('ui.card_drop')
 
   if (document.activeElement && document.activeElement instanceof HTMLElement) {
     document.activeElement.blur()
@@ -127,7 +126,7 @@ async function onUpdateCard(id: number, side: 'front' | 'back', payload: TextEdi
 }
 
 async function onCancel() {
-  audio.play('ui.card_drop')
+  emitSfx('ui.card_drop')
 
   setMode('view')
   deactivateCard()
@@ -172,17 +171,17 @@ function onSelectCard(id: number) {
   toggleSelectCard(id)
   deactivateCard()
   setMode('select')
-  audio.play('ui.etc_camera_shutter')
+  emitSfx('ui.etc_camera_shutter')
 }
 
 function onToggleSelectAll() {
   toggleSelectAll()
-  audio.play('ui.etc_camera_shutter')
+  emitSfx('ui.etc_camera_shutter')
 }
 
 function onCardActivated(id: number) {
   activateCard(id)
-  audio.play('ui.slide_up')
+  emitSfx('ui.slide_up')
 }
 
 function onCardDeactivated() {
@@ -191,14 +190,14 @@ function onCardDeactivated() {
   setTimeout(() => {
     // gotta wait a second to make sure another card hasn't been activated
     if (active_card_id.value === undefined) {
-      audio.play('ui.card_drop')
+      emitSfx('ui.card_drop')
     }
   }, 0)
 }
 
 async function onAddCard(left_card_id?: number, right_card_id?: number) {
   try {
-    audio.play('ui.slide_up')
+    emitSfx('ui.slide_up')
     await addCard(left_card_id, right_card_id)
   } catch (e: any) {
     toast.error(t('toast.error.add-card'))
@@ -207,7 +206,7 @@ async function onAddCard(left_card_id?: number, right_card_id?: number) {
 
 function onSelect() {
   setMode('select')
-  audio.play('ui.etc_camera_shutter')
+  emitSfx('ui.etc_camera_shutter')
   deactivateCard()
 }
 

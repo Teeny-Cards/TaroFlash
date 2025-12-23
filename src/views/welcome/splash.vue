@@ -1,28 +1,27 @@
 <script setup lang="ts">
 import LoginDialogue from '@/components/login-dialog.vue'
 import { useI18n } from 'vue-i18n'
-import { useAudio } from '@/composables/audio'
 import UiImage from '@/components/ui-kit/image.vue'
 import UiPopover from '@/components/ui-kit/popover.vue'
 import { ref } from 'vue'
+import { emitSfx } from '@/sfx/bus'
 
 const emit = defineEmits<{
   (e: 'login', email: string, password: string): void
 }>()
 
 const { t } = useI18n()
-const audio = useAudio()
 
 const login_dropdown_open = ref(false)
 
 function openLoginDropdown() {
   login_dropdown_open.value = true
-  audio.play('ui.slide_up')
+  emitSfx('ui.slide_up')
 }
 
 function closeLoginDropdown() {
   login_dropdown_open.value = false
-  audio.play('ui.card_drop')
+  emitSfx('ui.card_drop')
 }
 
 function triggerLoginDropdown() {

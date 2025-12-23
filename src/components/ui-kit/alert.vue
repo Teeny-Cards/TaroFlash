@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n'
-import { computed, onMounted } from 'vue'
-import { useAudio } from '@/composables/audio'
-import { type NamespacedAudioKey } from '@/composables/audio'
+import { computed } from 'vue'
+import { type NamespacedAudioKey } from '@/sfx/audio-config'
 
 export type AlertType = 'warn' | 'info'
 
@@ -18,7 +17,6 @@ const { cancelLabel, confirmLabel, close, cancelAudio, confirmAudio } = definePr
 }>()
 
 const { t } = useI18n()
-const audio = useAudio()
 
 const cancelText = computed(() => {
   return cancelLabel ?? t('common.cancel')
@@ -61,7 +59,7 @@ function onConfirm() {
           data-testid="ui-kit-alert__cancel"
           class="ui-kit-alert__cancel group"
           @click="onCancel"
-          @mouseenter="audio.play('ui.click_04')"
+          v-sfx.hover="'ui.click_04'"
         >
           {{ cancelText }}
           <div class="hover-effect group-hover:opacity-100! group-focus:opacity-100!">
@@ -73,7 +71,7 @@ function onConfirm() {
           data-testid="ui-kit-alert__confirm"
           class="ui-kit-alert__confirm group"
           @click="onConfirm"
-          @mouseenter="audio.play('ui.click_04')"
+          v-sfx.hover="'ui.click_04'"
         >
           {{ confirmText }}
           <div class="hover-effect group-hover:opacity-100! group-focus:opacity-100!">

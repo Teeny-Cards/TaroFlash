@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { useAudio } from '@/composables/audio'
-
-const audio = useAudio()
-
+import { emitSfx } from '@/sfx/bus'
 const checked = defineModel<boolean>('checked')
 </script>
 
@@ -21,7 +18,7 @@ const checked = defineModel<boolean>('checked')
         type="checkbox"
         v-model="checked"
         class="hidden"
-        @change="audio.play('ui.etc_camera_shutter')"
+        @change="emitSfx('ui.etc_camera_shutter')"
       />
       <span data-testid="ui-kit-toggle__switch-handle" class="ui-kit-toggle__switch-handle"></span>
     </span>

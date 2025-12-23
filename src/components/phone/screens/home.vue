@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from 'vue'
 import phoneApp, { type App } from '../phone-app.vue'
-import { useRouter } from 'vue-router'
 import { type NavigationStack } from '@/composables/navigation-stack'
 import { useModal } from '@/composables/modal'
 import Inventory from '@/components/modals/inventory.vue'
@@ -9,17 +8,15 @@ import settings from '@/components/modals/settings/index.vue'
 import Shortcuts from './shortcuts.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
-import { useAudio } from '@/composables/audio'
+import { emitHoverSfx } from '@/sfx/bus'
 import { useSessionStore } from '@/stores/session'
 
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-const router = useRouter()
 const modal = useModal()
 const shortcuts = useShortcuts('phone/home')
-const audio = useAudio()
 const sessionStore = useSessionStore()
 
 const phone_nav = inject<NavigationStack>('phone-nav')
@@ -80,7 +77,7 @@ function focusApp(index: number) {
     active_app.value
   ] as HTMLElement
   app?.focus()
-  audio.play('ui.pop_drip_mid')
+  emitHoverSfx('ui.pop_drip_mid')
 }
 
 function openApp() {
@@ -130,15 +127,16 @@ const apps: App[] = [
     <div class="grid grid-cols-[18px_1fr_18px] px-6 justify-center items-center">
       <h2 class="text-brown-500 select-none col-start-2 justify-self-center">TaroPhone</h2>
       <button
-        class="text-brown-500 border-[1.5px] border-brown-500 rounded-full p-0.5 w-min cursor-pointer"
+        class="text-brown-500 border-[1.5px] border-brown-500 rounded-full p-0.5 w-min
+          cursor-pointer"
       >
         <ui-icon src="edit" size="xs" />
       </button>
     </div>
 
     <div
-      class="w-full grid grid-cols-[auto_auto_auto] grid-rows-[auto_auto_auto] gap-2 gap-y-6 sm:gap-y-2
-        justify-center content-center"
+      class="w-full grid grid-cols-[auto_auto_auto] grid-rows-[auto_auto_auto] gap-2 gap-y-6
+        sm:gap-y-2 justify-center content-center"
     >
       <phone-app v-for="app in apps" :key="app.name" v-bind="app" />
     </div>
