@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useAudio } from '@/composables/audio'
+import { emitSfx } from '@/sfx/bus'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import Option from './option.vue'
 
@@ -8,11 +8,10 @@ const { theme = 'blue' } = defineProps<{
   theme?: 'blue' | 'purple' | 'orange' | 'green' | 'pink' | 'red' | 'grey'
 }>()
 
-const audio = useAudio()
 const open = ref(false)
 
 function onToggle() {
-  audio.play('ui.etc_camera_reel')
+  emitSfx('ui.etc_camera_reel')
   open.value = !open.value
 }
 </script>

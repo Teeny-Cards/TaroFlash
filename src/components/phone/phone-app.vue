@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import UiImage from '@/components/ui-kit/image.vue'
-import { useAudio } from '@/composables/audio'
 import UiTooltip from '@/components/ui-kit/tooltip.vue'
+import { emitHoverSfx } from '@/sfx/bus'
 
 export type App = {
   name: string
@@ -27,8 +27,6 @@ defineProps<{
   row_span?: number
   handler?: () => void
 }>()
-
-const audio = useAudio()
 </script>
 
 <template>
@@ -38,10 +36,12 @@ const audio = useAudio()
     :gap="-5"
     element="button"
     data-testid="phone-app"
-    class="phone-app w-15 h-15 cursor-pointer hover:scale-110 focus:scale-110 transition-transform duration-50
-      flex items-center justify-center text-white group animation-safe:animate-bg-slide outline-none"
-    :class="`theme-${theme} shape-${shape ?? 'square'} col-span-${col_span ?? 1} row-span-${row_span ?? 1}`"
-    @mouseenter="audio.play('ui.pop_drip_mid')"
+    class="phone-app w-15 h-15 cursor-pointer hover:scale-110 focus:scale-110 transition-transform
+      duration-50 flex items-center justify-center text-white group animation-safe:animate-bg-slide
+      outline-none"
+    :class="`theme-${theme} shape-${shape ?? 'square'} col-span-${col_span ?? 1}
+      row-span-${row_span ?? 1}`"
+    @mouseenter="emitHoverSfx('ui.pop_drip_mid')"
     @click="handler?.()"
   >
     <ui-image :src="icon" :class="{ 'group-hover:hidden group-focus:hidden': hover_icon }" />

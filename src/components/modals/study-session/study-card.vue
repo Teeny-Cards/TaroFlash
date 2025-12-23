@@ -3,7 +3,7 @@ import Card from '@/components/card/index.vue'
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
 import { useI18n } from 'vue-i18n'
-import { useAudio } from '@/composables/audio'
+import { emitSfx } from '@/sfx/bus'
 import { DateTime } from 'luxon'
 
 const { card, side, options } = defineProps<{
@@ -18,7 +18,6 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const audio = useAudio()
 
 const FLIP_THRESHOLD = 0
 const SWIPE_DISTANCE_THRESHOLD = 50
@@ -141,7 +140,7 @@ function flingCard(direction: number) {
   }
 
   cardEl.addEventListener('transitionend', handleTransitionEnd)
-  audio.play('ui.slide_up')
+  emitSfx('ui.slide_up')
 }
 
 function reviewCard(grade: Grade) {
@@ -156,7 +155,7 @@ function _updateSwipeZone(offset: number) {
     offset > SWIPE_DISTANCE_THRESHOLD ? 1 : offset < -SWIPE_DISTANCE_THRESHOLD ? -1 : 0
 
   if (zone !== swipe_zone.value) {
-    audio.play('ui.pop_drip_mid')
+    emitSfx('ui.pop_drip_mid')
   }
 
   swipe_zone.value = zone

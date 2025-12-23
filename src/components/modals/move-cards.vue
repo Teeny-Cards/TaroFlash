@@ -3,7 +3,7 @@ import { fetchMemberDecks } from '@/api/decks'
 import { computed, onMounted, ref } from 'vue'
 import Card from '@/components/card/index.vue'
 import { useI18n } from 'vue-i18n'
-import { useAudio } from '@/composables/audio'
+import { emitSfx } from '@/sfx/bus'
 import UiListItem from '@/components/ui-kit/list-item.vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
 import UiButton from '@/components/ui-kit/button.vue'
@@ -19,7 +19,6 @@ const { cards, current_deck_id, close } = defineProps<{
 }>()
 
 const { t } = useI18n()
-const audio = useAudio()
 
 const decks = ref<Deck[]>([])
 const selected_deck_id = ref<number | undefined>(undefined)
@@ -45,7 +44,7 @@ async function onMove() {
 }
 
 function onClick(deck_id?: number) {
-  audio.play('ui.etc_camera_shutter')
+  emitSfx('ui.etc_camera_shutter')
 
   if (deck_id === selected_deck_id.value) {
     selected_deck_id.value = undefined

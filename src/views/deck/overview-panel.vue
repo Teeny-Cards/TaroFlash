@@ -34,7 +34,8 @@ async function onSettingsClicked() {
 <template>
   <div
     data-testid="overview-panel"
-    class="flex w-max flex-col items-center gap-6 md:flex-row md:items-end lg:flex-col lg:items-start"
+    class="flex w-max flex-col items-center gap-6 md:flex-row md:items-end lg:flex-col
+      lg:items-start"
   >
     <card size="lg" class="relative" :front_image_url="imageUrl"></card>
 
@@ -72,6 +73,7 @@ async function onSettingsClicked() {
           fancy-hover
           :disabled="study_disabled"
           @click="$emit('study-clicked')"
+          v-sfx.hover="'ui.click_04'"
         >
           {{ t('common.study') }}
         </ui-button>
@@ -82,6 +84,7 @@ async function onSettingsClicked() {
           theme="grey"
           icon-only
           @click="onSettingsClicked()"
+          v-sfx.hover="'ui.click_04'"
         >
           {{ t('common.settings') }}
         </ui-button>

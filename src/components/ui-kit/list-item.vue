@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAudio } from '@/composables/audio'
+import { emitHoverSfx } from '@/sfx/bus'
 
 type ListItemProps = {
   disabled?: boolean
@@ -10,11 +10,9 @@ type ListItemProps = {
 
 const { hover_effect = true, appearance = 'ghost', theme = 'purple' } = defineProps<ListItemProps>()
 
-const audio = useAudio()
-
 function onMouseEnter() {
   if (!hover_effect) return
-  audio.play('ui.click_04')
+  emitHoverSfx('ui.click_04')
 }
 </script>
 

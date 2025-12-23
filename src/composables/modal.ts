@@ -1,8 +1,8 @@
 import { ref, markRaw } from 'vue'
-import { useAudio } from './audio'
+import { emitSfx } from '@/sfx/bus'
 import { useShortcuts } from './use-shortcuts'
 import uid from '@/utils/uid'
-import { type NamespacedAudioKey } from '@/composables/audio'
+import { type NamespacedAudioKey } from '@/sfx/audio-config'
 
 type ModalEntry = {
   backdrop?: boolean
@@ -68,7 +68,7 @@ export function useModal() {
     modal_stack.value.push(entry)
 
     if (args?.openAudio) {
-      useAudio().play(args?.openAudio)
+      emitSfx(args?.openAudio)
     }
 
     return {
@@ -89,7 +89,7 @@ export function useModal() {
       modal_stack.value.splice(index, 1)
 
       if (modal.closeAudio) {
-        useAudio().play(modal.closeAudio)
+        emitSfx(modal.closeAudio)
       }
     }
   }

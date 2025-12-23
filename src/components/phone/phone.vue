@@ -2,7 +2,7 @@
 import Home from '@/components/phone/screens/home.vue'
 import { useNavigationStack } from '@/composables/navigation-stack'
 import { onMounted, ref, provide } from 'vue'
-import { useAudio } from '@/composables/audio'
+import { emitSfx } from '@/sfx/bus'
 import { useShortcuts } from '@/composables/use-shortcuts'
 
 const nav = useNavigationStack()
@@ -36,7 +36,7 @@ function togglePhone() {
 function openPhone() {
   shortcuts.trapFocus()
   open.value = true
-  useAudio().play('ui.pop_window')
+  emitSfx('ui.pop_window')
 }
 
 function closePhone() {
@@ -47,7 +47,7 @@ function closePhone() {
 
   open.value = false
   shortcuts.releaseFocus()
-  useAudio().play('ui.pop_window')
+  emitSfx('ui.pop_window')
   nav.resetTo(Home)
 }
 </script>

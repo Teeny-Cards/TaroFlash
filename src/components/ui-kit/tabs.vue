@@ -2,6 +2,7 @@
 import { useStorage } from '@/composables/storage'
 import { onMounted } from 'vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
+import { emitHoverSfx } from '@/sfx/bus'
 
 type Tab = {
   label: string
@@ -39,6 +40,11 @@ function onTabClick(index: number) {
 
   emit('update:activeTab', index)
 }
+
+function onHover(index: number) {
+  if (active_tab.value === index) return
+  emitHoverSfx('ui.click_04')
+}
 </script>
 
 <template>
@@ -49,6 +55,7 @@ function onTabClick(index: number) {
       class="ui-kit-tabs__tab"
       :class="{ 'ui-kit-tabs__tab--active': active_tab === index }"
       @click="onTabClick(index)"
+      @mouseenter="onHover(index)"
     >
       <ui-icon v-if="tab.icon" :src="tab.icon" size="small" class="ui-kit-tabs__tab-icon" />
       <span class="ui-kit-tabs__tab-label">{{ tab.label }}</span>

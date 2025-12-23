@@ -3,20 +3,19 @@ import MemberCard from '@/components/modals/member-card.vue'
 import { useI18n } from 'vue-i18n'
 import { reactive, ref } from 'vue'
 import { DateTime } from 'luxon'
-import { useAudio } from '@/composables/audio'
 import { upsertMember } from '@/api/members'
 import { useSessionStore } from '@/stores/session'
 import UiInput from '@/components/ui-kit/input.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiTag from '@/components/ui-kit/tag.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
+import { emitSfx } from '@/sfx/bus'
 
 const { close } = defineProps<{
   close: (response?: boolean) => void
 }>()
 
 const { t } = useI18n()
-const audio = useAudio()
 const sessionStore = useSessionStore()
 
 const created_at = DateTime.now().toISO()
@@ -41,11 +40,11 @@ const themes: MemberTheme[] = [
 
 function setTheme(theme: MemberTheme) {
   if (theme === selected_theme.value) {
-    audio.play('ui.digi_powerdown')
+    emitSfx('ui.digi_powerdown')
     return
   }
 
-  audio.play('ui.etc_camera_shutter')
+  emitSfx('ui.etc_camera_shutter')
   selected_theme.value = theme
 }
 

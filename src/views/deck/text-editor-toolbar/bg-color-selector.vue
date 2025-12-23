@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useAudio } from '@/composables/audio'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiPopover from '@/components/ui-kit/popover.vue'
 import UiImage from '@/components/ui-kit/image.vue'
@@ -13,7 +12,6 @@ const emit = defineEmits<{
   (e: 'select', color: MemberTheme): void
 }>()
 
-const audio = useAudio()
 const open = ref(false)
 
 const themes: MemberTheme[] = ['green', 'blue', 'purple', 'pink', 'red', 'orange', 'white']
@@ -32,10 +30,10 @@ const themes: MemberTheme[] = ['green', 'blue', 'purple', 'pink', 'red', 'orange
       <div
         v-for="theme in themes"
         :key="theme"
-        class="ring-brown-100 relative h-8.5 w-8.5 cursor-pointer rounded-full ring-4 transition-all duration-75
-          hover:scale-110"
+        class="ring-brown-100 relative h-8.5 w-8.5 cursor-pointer rounded-full ring-4 transition-all
+          duration-75 hover:scale-110"
         :class="`selector--${theme}`"
-        @mouseenter="audio.play('ui.click_04')"
+        v-sfx.hover="'ui.click_04'"
         @click="emit('select', theme)"
       >
         <ui-icon

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useAudio } from '@/composables/audio'
-import { type NamespacedAudioKey } from '@/composables/audio'
 import UiIcon from '@/components/ui-kit/icon.vue'
 
 export type ButtonProps = {
@@ -10,7 +8,6 @@ export type ButtonProps = {
   iconRight?: string
   iconLeft?: string
   fancyHover?: boolean
-  hoverAudio?: NamespacedAudioKey
 }
 
 const {
@@ -19,23 +16,14 @@ const {
   iconOnly = false,
   iconRight,
   iconLeft,
-  fancyHover = false,
-  hoverAudio
+  fancyHover = false
 } = defineProps<ButtonProps>()
-
-const audio = useAudio()
 
 const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
   lg: 'large',
   base: 'base',
   sm: 'small',
   xs: 'xs'
-}
-
-function onHover() {
-  if (hoverAudio) {
-    audio.play(hoverAudio)
-  }
 }
 </script>
 
@@ -51,7 +39,6 @@ function onHover() {
         'btn-fancy-hover': fancyHover
       }
     ]"
-    @mouseenter="onHover"
   >
     <div v-if="iconLeft" class="btn-icon" uikit-button__icon-left>
       <ui-icon v-if="iconLeft" :src="iconLeft" :size="iconSize[size]" />

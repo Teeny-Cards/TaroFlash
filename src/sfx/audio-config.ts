@@ -18,3 +18,19 @@ export const AUDIO_CONFIG = createAudioConfig({
     trash_crumple_short: {}
   }
 })
+
+export type AudioProperties = {
+  path?: string
+  ext?: string
+  default_volume?: number
+  preload?: boolean
+}
+
+export type AudioConfig = typeof AUDIO_CONFIG
+export type AudioCategoryKey = keyof AudioConfig
+export type AudioCategory = AudioConfig[AudioCategoryKey]
+export type AudioKey = keyof AudioCategory
+
+export type NamespacedAudioKey = {
+  [C in AudioCategoryKey]: `${C}.${keyof AudioConfig[C] & string}`
+}[AudioCategoryKey]
