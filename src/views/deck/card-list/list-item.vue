@@ -112,6 +112,7 @@ watch(
     data-testid="card-list-item"
     :data-id="card.id"
     :hover_effect="mode === 'select'"
+    v-sfx.hover="'ui.click_07'"
     class="card-list-item group/listitem p-0 sm:p-6"
     :class="{
       'mode-select cursor-pointer': mode === 'select',
