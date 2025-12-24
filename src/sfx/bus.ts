@@ -1,7 +1,5 @@
-// sfx/bus.ts
-import { shallowRef } from 'vue'
 import { type AudioCategoryKey, type NamespacedAudioKey } from './config'
-import { useAudio, type PlayOptions } from '@/composables/audio'
+import player, { type PlayOptions } from './player'
 
 type PolicyState = {
   enabled: boolean
@@ -32,8 +30,7 @@ export function emitSfx(audio_key: NamespacedAudioKey, opts: PlayOptions = {}) {
   const category = _getCategoryFromKey(audio_key)
   if (!policy.categories[category]) return
 
-  const { play } = useAudio()
-  return play(audio_key, opts)
+  return player.play(audio_key, opts)
 }
 
 /**

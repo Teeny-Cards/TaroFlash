@@ -1,6 +1,6 @@
 import { useModal } from './modal'
 import alert, { type AlertType } from '@/components/ui-kit/alert.vue'
-import { type NamespacedAudioKey } from '@/composables/audio'
+import { type NamespacedAudioKey } from '@/sfx/config'
 
 type AlertArgs = {
   title?: string

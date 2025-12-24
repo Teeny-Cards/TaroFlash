@@ -1,4 +1,4 @@
-import { createAudioConfig } from '@/composables/audio'
+import { createAudioConfig } from './player'
 
 export const AUDIO_CONFIG = createAudioConfig({
   ui: {
