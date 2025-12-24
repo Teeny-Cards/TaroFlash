@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import UiIcon from '@/components/ui-kit/icon.vue'
+import type { SfxOptions } from '@/sfx/directive'
 
 export type ButtonProps = {
   theme?: 'green' | 'blue' | 'purple' | 'pink' | 'red' | 'orange' | 'brown' | 'grey'
@@ -8,6 +9,7 @@ export type ButtonProps = {
   iconRight?: string
   iconLeft?: string
   fancyHover?: boolean
+  sfx?: SfxOptions
 }
 
 const {
@@ -16,7 +18,8 @@ const {
   iconOnly = false,
   iconRight,
   iconLeft,
-  fancyHover = false
+  fancyHover = false,
+  sfx = { hover: 'ui.click_07' }
 } = defineProps<ButtonProps>()
 
 const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
@@ -31,6 +34,7 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
   <button
     data-testid="ui-kit-button"
     class="ui-kit-btn"
+    v-sfx="sfx"
     :class="[
       `btn-${theme}`,
       `btn-${size}`,

@@ -2,7 +2,7 @@
 import { useStorage } from '@/composables/storage'
 import { onMounted } from 'vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
-import { emitHoverSfx } from '@/sfx/bus'
+import { emitHoverSfx, emitSfx } from '@/sfx/bus'
 
 type Tab = {
   label: string
@@ -38,6 +38,7 @@ function onTabClick(index: number) {
     storage.set(storageKey, index.toString())
   }
 
+  emitSfx('ui.etc_camera_shutter')
   emit('update:activeTab', index)
 }
 
