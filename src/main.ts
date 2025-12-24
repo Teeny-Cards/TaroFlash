@@ -5,7 +5,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createI18n } from 'vue-i18n'
 import messages from '@intlify/unplugin-vue-i18n/messages'
-import { useAudio } from './composables/audio'
+import audio_player from '@/sfx/player'
 import { vSfx } from '@/sfx/directive'
 
 const i18n = createI18n({
@@ -17,8 +17,7 @@ const i18n = createI18n({
 
 const app = createApp(App)
 
-const audio = useAudio()
-audio.setup()
+audio_player.setup()
 
 app.use(createPinia())
 app.use(i18n)

@@ -5,6 +5,7 @@ import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { type CardBase, type ImageCard } from '@type/card'
 import { getImageUrl } from '@/api/media'
+import { type SfxOptions } from '@/sfx/directive'
 
 type CardProps = Partial<CardBase> &
   ImageCard & {
@@ -14,6 +15,7 @@ type CardProps = Partial<CardBase> &
     active?: boolean
     placeholder?: string
     face_classes?: string
+    sfx?: SfxOptions
   }
 
 const {
@@ -45,7 +47,9 @@ const back_image_url = computed(() => {
   <div
     data-testid="card"
     class="card-container"
-    :class="`card-container--${size} card-container--${mode} card-container--${attributes?.bg_color || 'white'}`"
+    :class="`card-container--${size} card-container--${mode}
+      card-container--${attributes?.bg_color || 'white'}`"
+    v-sfx="sfx"
   >
     <slot></slot>
 
