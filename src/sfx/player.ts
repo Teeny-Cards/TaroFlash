@@ -14,8 +14,8 @@ export type PlayOptions = {
   debounce?: number
 }
 
-const DEFAULT_VOLUME = 0.25
-const DEFAULT_CATEGORY_VOLUME = 0.25
+const DEFAULT_VOLUME = 0.1
+const DEFAULT_CATEGORY_VOLUME = 0.5
 const DEBOUNCE_DELAY = 50
 const QUEUE_TIMEOUT = 10
 
@@ -26,7 +26,7 @@ class AudioPlayer {
   unlocked = false
   queued_sound: { key: NamespacedAudioKey; options: PlayOptions } | undefined
 
-  setup() {
+  setup = () => {
     if (this.initialized) return
     this.initialized = true
 

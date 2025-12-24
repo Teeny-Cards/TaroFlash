@@ -34,7 +34,7 @@ export async function emitSfx(audio_key: NamespacedAudioKey, opts: PlayOptions =
   try {
     await player.play(audio_key, opts)
   } catch (e) {
-    useLogger().error((e as Error).message)
+    useLogger().error((e as Error).message, e)
   }
 }
 
