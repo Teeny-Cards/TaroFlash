@@ -7,6 +7,7 @@ import { createI18n } from 'vue-i18n'
 import messages from '@intlify/unplugin-vue-i18n/messages'
 import audio_player from '@/sfx/player'
 import { vSfx } from '@/sfx/directive'
+import { useSessionStore } from './stores/session'
 
 const i18n = createI18n({
   locale: 'en-us',
@@ -17,12 +18,16 @@ const i18n = createI18n({
 
 const app = createApp(App)
 
-audio_player.setup()
-
 app.use(createPinia())
 app.use(i18n)
 app.use(router)
 
 app.directive('sfx', vSfx)
+
+const session = useSessionStore()
+
+session.startLoading()
+await audio_player.setup()
+session.stopLoading()
 
 app.mount('#app')

@@ -28,12 +28,15 @@ class AudioPlayer {
 
   setup() {
     if (this.initialized) return
-
-    Object.entries(AUDIO_CONFIG).forEach(([category_name, category]) => {
-      this._setupAudioCategory(category_name as AudioCategoryKey, category)
-    })
-
     this.initialized = true
+
+    const categories = Object.entries(AUDIO_CONFIG)
+
+    return Promise.all(
+      categories.map(([name, category]) =>
+        this._setupAudioCategory(name as AudioCategoryKey, category)
+      )
+    )
   }
 
   play = async (key: NamespacedAudioKey, options: PlayOptions = {}): Promise<void> => {
@@ -72,26 +75,43 @@ class AudioPlayer {
     })
   }
 
-  private _setupAudioCategory = (category_name: AudioCategoryKey, category: AudioCategory) => {
-    return Object.entries(category).forEach(([name, cfg]) => {
-      const url = cfg.path ?? `/src/assets/audio/${name}.${cfg.ext ?? 'wav'}`
+  private async _setupAudioCategory(
+    category_name: AudioCategoryKey,
+    category: AudioCategory
+  ): Promise<void> {
+    const entries = Object.entries(category)
 
-      if (!url) {
-        throw new Error(`Audio file for "${category}.${name}" not found at ${url}`)
-      }
-
+    const loads = entries.map(([name, cfg]) => {
       const key: NamespacedAudioKey = `${category_name}.${name as AudioKey}`
       const categoryVolume = DEFAULT_CATEGORY_VOLUME
       const volume = (cfg.default_volume ?? DEFAULT_VOLUME) * categoryVolume
 
+      return this._createPreloadedHowl(key, cfg, volume).then((sound) => {
+        this.loaded_sounds.set(key, sound)
+      })
+    })
+
+    await Promise.all(loads)
+  }
+
+  private _createPreloadedHowl(
+    key: NamespacedAudioKey,
+    cfg: AudioProperties,
+    volume: number
+  ): Promise<Howl> {
+    const audio_name = key.split('.')[1]
+    const url = cfg.path ?? `/src/assets/audio/${audio_name}.${cfg.ext ?? 'wav'}`
+
+    return new Promise((resolve, reject) => {
       const sound = new Howl({
         src: [url],
         preload: cfg.preload ?? true,
-        volume
+        volume,
+        onload: () => resolve(sound),
+        onloaderror: (_, err) => reject(new Error(`Failed to load audio "${key}": ${err}`))
       })
 
       this._registerUnlock(sound)
-      this.loaded_sounds.set(key, sound)
     })
   }
 

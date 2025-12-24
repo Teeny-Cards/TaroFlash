@@ -1,3 +1,4 @@
+import { useLogger } from '@/composables/logger'
 import { type AudioCategoryKey, type NamespacedAudioKey } from './config'
 import player, { type PlayOptions } from './player'
 
@@ -24,13 +25,17 @@ export function setSfxPolicy(partial: Partial<PolicyState>) {
  * @param opts Options for playing the sound.
  * @returns A promise that resolves when the sound has finished playing.
  */
-export function emitSfx(audio_key: NamespacedAudioKey, opts: PlayOptions = {}) {
+export async function emitSfx(audio_key: NamespacedAudioKey, opts: PlayOptions = {}) {
   if (!policy.enabled) return
 
   const category = _getCategoryFromKey(audio_key)
   if (!policy.categories[category]) return
 
-  return player.play(audio_key, opts)
+  try {
+    await player.play(audio_key, opts)
+  } catch (e) {
+    useLogger().error((e as Error).message)
+  }
 }
 
 /**
