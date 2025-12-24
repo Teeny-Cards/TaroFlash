@@ -73,7 +73,6 @@ async function onSettingsClicked() {
           fancy-hover
           :disabled="study_disabled"
           @click="$emit('study-clicked')"
-          v-sfx.hover="'ui.click_04'"
         >
           {{ t('common.study') }}
         </ui-button>
@@ -84,7 +83,6 @@ async function onSettingsClicked() {
           theme="grey"
           icon-only
           @click="onSettingsClicked()"
-          v-sfx.hover="'ui.click_04'"
         >
           {{ t('common.settings') }}
         </ui-button>

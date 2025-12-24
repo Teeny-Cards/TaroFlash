@@ -1,25 +1,19 @@
 // sfx/directive.ts
 import type { Directive } from 'vue'
 import { emitSfx, emitHoverSfx } from './bus'
-import { type NamespacedAudioKey } from './audio-config'
+import { type NamespacedAudioKey } from './config'
 
 export type SfxOptions = {
   click?: NamespacedAudioKey
   hover?: NamespacedAudioKey
   focus?: NamespacedAudioKey
   blur?: NamespacedAudioKey
-  key?: string
-  throttle_ms?: number
+  debounce?: number
 }
 
 type SfxBindingValue = NamespacedAudioKey | SfxOptions
 
 type Cleanup = () => void
-
-function add(el: HTMLElement, event: string, handler: EventListener) {
-  el.addEventListener(event, handler, { passive: true })
-  return () => el.removeEventListener(event, handler)
-}
 
 export const vSfx: Directive<HTMLElement, SfxBindingValue> = {
   mounted(el, binding) {
@@ -27,56 +21,35 @@ export const vSfx: Directive<HTMLElement, SfxBindingValue> = {
 
     const cleanups: Cleanup[] = []
     const mods = binding.modifiers
+    const cfg = _parseBinding(binding.value, mods)
 
-    const parse = () => {
-      const v = binding.value
-
-      if (typeof v === 'string') {
-        let c: SfxBindingValue = {}
-
-        if (mods.click) c = { ...c, click: v }
-        if (mods.hover) c = { ...c, hover: v }
-        if (mods.focus) c = { ...c, focus: v }
-        if (mods.blur) c = { ...c, blur: v }
-
-        return c
-      }
-
-      return v
-    }
-
-    const cfg = parse()
-    const base_key = cfg.key
-
-    if (mods.click && cfg.click) {
+    if (cfg.click) {
       cleanups.push(
-        add(el, 'click', (e) => {
+        _add(el, 'click', (e) => {
           if (mods.prevent) e.preventDefault()
           if (mods.stop) e.stopPropagation()
 
-          emitSfx(cfg.click!, { key: base_key ?? cfg.click })
+          emitSfx(cfg.click!, { debounce: cfg.debounce })
         })
       )
     }
 
-    if (mods.hover && cfg.hover) {
+    if (cfg.hover) {
       cleanups.push(
-        add(el, 'mouseenter', () => {
-          console.log('hover')
+        _add(el, 'mouseenter', () => {
           emitHoverSfx(cfg.hover!, {
-            key: base_key ?? cfg.hover,
-            throttle_ms: cfg.throttle_ms
+            debounce: cfg.debounce
           })
         })
       )
     }
 
-    if (mods.focus && cfg.focus) {
-      cleanups.push(add(el, 'focus', () => emitSfx(cfg.focus!, { key: base_key ?? cfg.focus })))
+    if (cfg.focus) {
+      cleanups.push(_add(el, 'focus', () => emitSfx(cfg.focus!, { debounce: cfg.debounce })))
     }
 
-    if (mods.blur && cfg.blur) {
-      cleanups.push(add(el, 'blur', () => emitSfx(cfg.blur!, { key: base_key ?? cfg.blur })))
+    if (cfg.blur) {
+      cleanups.push(_add(el, 'blur', () => emitSfx(cfg.blur!, { debounce: cfg.debounce })))
     }
 
     ;(el as any).__vSfxCleanup = () => cleanups.forEach((c) => c())
@@ -85,4 +58,29 @@ export const vSfx: Directive<HTMLElement, SfxBindingValue> = {
   beforeUnmount(el) {
     ;(el as any).__vSfxCleanup?.()
   }
+}
+
+function _add(el: HTMLElement, event: string, handler: EventListener) {
+  el.addEventListener(event, handler, { passive: true })
+  return () => el.removeEventListener(event, handler)
+}
+
+function _parseBinding(
+  binding: SfxBindingValue,
+  mods: Partial<Record<string, boolean>>
+): SfxOptions {
+  if (typeof binding === 'string') {
+    // binding is an audio key
+    let c: SfxOptions = {}
+
+    // add audio key to all options specified in modifiers
+    if (mods.click) c.click = binding
+    if (mods.hover) c.hover = binding
+    if (mods.focus) c.focus = binding
+    if (mods.blur) c.blur = binding
+
+    return c // return new SfxOptions object
+  }
+
+  return binding // binding is an SfxOptions object
 }

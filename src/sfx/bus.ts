@@ -1,44 +1,58 @@
 // sfx/bus.ts
 import { shallowRef } from 'vue'
-import { type AudioCategoryKey, type NamespacedAudioKey } from './audio-config'
-import { useAudio } from '@/composables/audio'
-
-export type SfxEmitOptions = {
-  key?: string
-  throttle_ms?: number
-  oncer_per_frame?: boolean
-}
+import { type AudioCategoryKey, type NamespacedAudioKey } from './config'
+import { useAudio, type PlayOptions } from '@/composables/audio'
 
 type PolicyState = {
   enabled: boolean
-  categories: Record<AudioCategoryKey, boolean>
+  categories: { [key in AudioCategoryKey]: boolean }
   disable_hover_on_touch: boolean
 }
 
-const policy = shallowRef<PolicyState>({
+let policy: PolicyState = {
   enabled: true,
   categories: { ui: true },
   disable_hover_on_touch: true
-})
+}
 
 export function setSfxPolicy(partial: Partial<PolicyState>) {
-  policy.value = { ...policy.value, ...partial }
+  policy = { ...policy, ...partial }
 }
 
-export function emitSfx(audio_key: NamespacedAudioKey, opts: SfxEmitOptions = {}) {
-  const p = policy.value
-  if (!p.enabled) return
+/**
+ * Plays a sound effect.
+ *
+ * @param audio_key The key of the sound to play.
+ * @param opts Options for playing the sound.
+ * @returns A promise that resolves when the sound has finished playing.
+ */
+export function emitSfx(audio_key: NamespacedAudioKey, opts: PlayOptions = {}) {
+  if (!policy.enabled) return
+
+  const category = _getCategoryFromKey(audio_key)
+  if (!policy.categories[category]) return
 
   const { play } = useAudio()
-  play(audio_key, { debounce: opts.throttle_ms })
+  return play(audio_key, opts)
 }
 
-// Helper specifically for hover policy
-export function emitHoverSfx(event: NamespacedAudioKey, opts: SfxEmitOptions = {}) {
-  if (policy.value.disable_hover_on_touch && _isTouchPrimary()) return
-  emitSfx(event, opts)
+/**
+ * Plays a sound effect. If touch is the primary input method, does nothing.
+ *
+ * @param event The key of the sound to play.
+ * @param opts Options for playing the sound.
+ * @returns A promise that resolves when the sound has finished playing.
+ */
+export function emitHoverSfx(event: NamespacedAudioKey, opts: PlayOptions = {}) {
+  if (policy.disable_hover_on_touch && _isTouchPrimary()) return
+
+  return emitSfx(event, opts)
 }
 
 function _isTouchPrimary(): boolean {
   return typeof window !== 'undefined' && 'ontouchstart' in window
+}
+
+function _getCategoryFromKey(audio_key: NamespacedAudioKey): AudioCategoryKey {
+  return audio_key.split('.')[0] as AudioCategoryKey
 }

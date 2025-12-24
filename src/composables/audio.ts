@@ -10,11 +10,11 @@ import {
   type AudioKey,
   type NamespacedAudioKey,
   type AudioProperties
-} from '@/sfx/audio-config'
+} from '@/sfx/config'
 
 const logger = useLogger()
-const DEFAULT_VOLUME = 1
-const DEFAULT_CATEGORY_VOLUME = 0.5
+const DEFAULT_VOLUME = 0.25
+const DEFAULT_CATEGORY_VOLUME = 0.25
 const DEBOUNCE_DELAY = 50
 const QUEUE_TIMEOUT = 10
 
@@ -24,7 +24,7 @@ const unlock_registered = ref(false)
 const unlocked = ref(false)
 const queued_sound = ref<{ key: NamespacedAudioKey; options: PlayOptions } | undefined>()
 
-type PlayOptions = {
+export type PlayOptions = {
   volume?: number
   debounce?: number
 }

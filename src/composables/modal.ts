@@ -2,7 +2,7 @@ import { ref, markRaw } from 'vue'
 import { emitSfx } from '@/sfx/bus'
 import { useShortcuts } from './use-shortcuts'
 import uid from '@/utils/uid'
-import { type NamespacedAudioKey } from '@/sfx/audio-config'
+import { type NamespacedAudioKey } from '@/sfx/config'
 
 type ModalEntry = {
   backdrop?: boolean
