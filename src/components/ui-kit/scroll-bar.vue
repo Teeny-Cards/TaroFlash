@@ -183,7 +183,7 @@ function isPageTarget(el: HTMLElement) {
   <div
     v-show="visible"
     ref="scrollBarRef"
-    class="ui-kit-scroll-bar"
+    class="ui-kit-scroll-bar hidden sm:block"
     @pointerdown.prevent="onTrackPointerDown"
   >
     <div
@@ -205,7 +205,7 @@ function isPageTarget(el: HTMLElement) {
   --transition: background-color 0.05s ease-in-out, outline 0.05s ease-in-out;
 
   position: fixed;
-  top: 160px;
+  top: 100px;
   bottom: 32px;
   right: 24px;
   width: 4px;

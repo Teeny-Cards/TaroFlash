@@ -142,7 +142,6 @@ export function useRichTextEditor() {
     const q = active_quill
     if (!q) return
 
-    console.log('format', key, val)
     q.format(key, val, 'user')
   }
 

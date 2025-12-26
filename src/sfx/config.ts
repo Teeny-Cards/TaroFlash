@@ -2,7 +2,9 @@ import { createAudioConfig } from './player'
 
 export const AUDIO_CONFIG = createAudioConfig({
   ui: {
-    card_drop: {},
+    card_drop: {
+      default_volume: 0.3
+    },
     chime_short_chord_up: {},
     click_04: {},
     click_07: {},
@@ -13,8 +15,12 @@ export const AUDIO_CONFIG = createAudioConfig({
     etc_camera_shutter: {},
     etc_woodblock_stuck: {},
     pop_drip_mid: {},
-    pop_window: {},
-    slide_up: {},
+    pop_window: {
+      default_volume: 0.3
+    },
+    slide_up: {
+      default_volume: 0.3
+    },
     trash_crumple_short: {}
   }
 })

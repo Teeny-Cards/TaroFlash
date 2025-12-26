@@ -11,14 +11,14 @@ export type NavigationEntry = {
   forwardPreset: TransitionPreset
 }
 
-export type NavigationStack = ReturnType<typeof useNavigationStack>
+export type PhoneNavigator = ReturnType<typeof usePhoneNavigator>
 
-export type NavigationStackOptions = {
+export type PhoneNavigatorOptions = {
   default_preset?: TransitionPreset
 }
 
 type NavigationOptions = {
-  transition_preset?: TransitionPreset
+  transition?: TransitionPreset
   props?: { [key: string]: any }
 }
 
@@ -30,7 +30,7 @@ const reverse_preset: { [key in TransitionPreset]: TransitionPreset } = {
   none: 'none'
 }
 
-export function useNavigationStack(opts: NavigationStackOptions = {}) {
+export function usePhoneNavigator(opts: PhoneNavigatorOptions = {}) {
   const default_preset = opts.default_preset ?? 'slide-left'
 
   const stack = ref<NavigationEntry[]>([])
@@ -39,7 +39,7 @@ export function useNavigationStack(opts: NavigationStackOptions = {}) {
   const _key = ref(0)
 
   const top = computed(() => stack.value[stack.value.length - 1] ?? null)
-  const can_go_back = computed(() => stack.value.length > 1)
+  const can_go_back = computed(() => stack.value.length > 0)
 
   function _makeEntry(component: Component, opts: NavigationOptions = {}): NavigationEntry {
     const raw = markRaw(component)
@@ -48,24 +48,24 @@ export function useNavigationStack(opts: NavigationStackOptions = {}) {
       key: ++_key.value,
       component: raw,
       props: opts.props,
-      forwardPreset: opts.transition_preset ?? default_preset
+      forwardPreset: opts.transition ?? default_preset
     }
   }
 
   function resetTo(component: Component, opts?: NavigationOptions) {
-    transitionName.value = opts?.transition_preset ?? default_preset
+    transitionName.value = opts?.transition ?? default_preset
     lastAction.value = 'push'
     stack.value.splice(0, stack.value.length, _makeEntry(component, opts))
   }
 
   function push(component: Component, opts?: NavigationOptions) {
-    transitionName.value = opts?.transition_preset ?? default_preset
+    transitionName.value = opts?.transition ?? default_preset
     lastAction.value = 'push'
     stack.value.push(_makeEntry(component, opts))
   }
 
   function replace(component: Component, opts?: NavigationOptions) {
-    transitionName.value = opts?.transition_preset ?? reverse_preset[top.value?.forwardPreset]
+    transitionName.value = opts?.transition ?? reverse_preset[top.value?.forwardPreset]
     lastAction.value = 'replace'
 
     if (stack.value.length) stack.value.pop()
@@ -73,7 +73,7 @@ export function useNavigationStack(opts: NavigationStackOptions = {}) {
   }
 
   function pop(transition_preset?: TransitionPreset) {
-    if (stack.value.length <= 1) return
+    if (stack.value.length <= 0) return
 
     lastAction.value = 'pop'
     transitionName.value = transition_preset ?? reverse_preset[top.value?.forwardPreset]

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import NavBar from '@/components/nav-bar.vue'
-import Phone from '@/components/phone/phone.vue'
+import Phone from '@/phone/phone.vue'
 </script>
 
 <template>
