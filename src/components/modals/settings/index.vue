@@ -16,7 +16,7 @@ const tabs: { [key in SettingsPage]: any } = {
 </script>
 
 <template>
-  <div data-testid="settings-container" class="flex items-center drop-shadow-lg">
+  <div data-testid="settings-container" class="flex items-center drop-shadow-md">
     <div
       data-testid="settings"
       class="w-224 h-153 bg-brown-300 rounded-6 px-18 py-8 relative grid grid-cols-1 grid-rows-1"

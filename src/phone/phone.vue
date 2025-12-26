@@ -1,19 +1,28 @@
 <script setup lang="ts">
-import Home from '@/components/phone/screens/home.vue'
-import { useNavigationStack } from '@/composables/navigation-stack'
+import AppLauncher from '@/phone/app-launcher.vue'
+import { type PhoneNavigator, usePhoneNavigator } from '@/phone/system/phone-navigator'
 import { onMounted, ref, provide } from 'vue'
 import { emitSfx } from '@/sfx/bus'
 import { useShortcuts } from '@/composables/use-shortcuts'
+import { installApps } from '@/phone/system/install-apps'
+import { type PhoneApp, type PhoneActionContext } from '@/phone/system/types'
+import { getServices } from '@/phone/system/services'
 
-const nav = useNavigationStack()
+const nav: PhoneNavigator = usePhoneNavigator()
 const shortcuts = useShortcuts('phone', { priority: 'background' })
 
 const open = ref(false)
+const apps = ref<PhoneApp[]>([])
+
+const ctx: PhoneActionContext = {
+  nav,
+  services: getServices()
+}
 
 provide('phone-nav', nav)
 
-onMounted(() => {
-  nav.resetTo(Home)
+onMounted(async () => {
+  apps.value = await installApps()
 
   shortcuts.register([
     {
@@ -48,7 +57,6 @@ function closePhone() {
   open.value = false
   shortcuts.releaseFocus()
   emitSfx('ui.pop_window')
-  nav.resetTo(Home)
 }
 </script>
 
@@ -61,6 +69,13 @@ function closePhone() {
   >
     <div v-if="open" data-testid="phone" class="pointer-events-auto h-min absolute top-4 right-0">
       <div class="w-60 h-89.5 bg-brown-300 shadow-sm rounded-16 overflow-hidden relative">
+        <app-launcher
+          v-if="!nav.top.value"
+          :apps="apps"
+          :action_context="ctx"
+          @close="closePhone"
+        />
+
         <transition :name="nav.transitionName.value">
           <component
             v-if="nav.top.value"

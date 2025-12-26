@@ -1,25 +1,24 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from 'vue'
-import phoneApp, { type App } from '../phone-app.vue'
-import { type NavigationStack } from '@/composables/navigation-stack'
-import { useModal } from '@/composables/modal'
-import Inventory from '@/components/modals/inventory.vue'
-import settings from '@/components/modals/settings/index.vue'
-import Shortcuts from './shortcuts.vue'
+import App from '@/phone/app.vue'
+import { type PhoneApp, type PhoneActionContext } from '@/phone/system/types'
+import { type PhoneNavigator } from '@/phone/system/phone-navigator'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { emitHoverSfx } from '@/sfx/bus'
-import { useSessionStore } from '@/stores/session'
+
+const { apps, action_context } = defineProps<{
+  apps: PhoneApp[]
+  action_context: PhoneActionContext
+}>()
 
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-const modal = useModal()
 const shortcuts = useShortcuts('phone/home')
-const sessionStore = useSessionStore()
 
-const phone_nav = inject<NavigationStack>('phone-nav')
+const phone_nav = inject<PhoneNavigator>('phone-nav')
 const active_app = ref(-1)
 
 onMounted(() => {
@@ -57,11 +56,6 @@ onMounted(() => {
   ])
 })
 
-function run(fn: () => void) {
-  fn()
-  emit('close')
-}
-
 function focusApp(index: number) {
   if (index < 0) {
     active_app.value = apps.length - 1 // start from end
@@ -80,46 +74,16 @@ function focusApp(index: number) {
   emitHoverSfx('ui.pop_drip_mid')
 }
 
-function openApp() {
-  apps[active_app.value].handler?.()
-}
+function openApp(app?: PhoneApp) {
+  const found = app ?? apps[active_app.value]
+  if (!found) return
 
-function openModal(component: any, args?: any) {
-  modal.clearStack()
-  modal.open(component, args)
-  emit('close')
-}
-
-const apps: App[] = [
-  {
-    name: 'Settings',
-    icon: 'settings',
-    hover_icon: 'settings-hover',
-    theme: 'pink',
-    handler: () => openModal(settings, { backdrop: true })
-  },
-  {
-    name: 'Inventory',
-    icon: 'inventory',
-    hover_icon: 'inventory-hover',
-    theme: 'purple',
-    handler: () => openModal(Inventory, { backdrop: true })
-  },
-  {
-    name: 'Shortcuts',
-    icon: 'shortcuts',
-    hover_icon: 'shortcuts-hover',
-    theme: 'orange',
-    handler: () => phone_nav?.push(Shortcuts, { transition_preset: 'pop-up' })
-  },
-  {
-    name: 'Logout',
-    icon: 'logout',
-    hover_icon: 'logout-hover',
-    theme: 'red',
-    handler: () => run(sessionStore.logout)
+  if (found.kind === 'action') {
+    found.action(action_context)
+  } else {
+    phone_nav?.push(found.component, { transition: 'pop-up' })
   }
-]
+}
 </script>
 
 <template>
@@ -138,7 +102,7 @@ const apps: App[] = [
       class="w-full grid grid-cols-[auto_auto_auto] grid-rows-[auto_auto_auto] gap-2 gap-y-6
         sm:gap-y-2 justify-center content-center"
     >
-      <phone-app v-for="app in apps" :key="app.name" v-bind="app" />
+      <app v-for="app in apps" :key="app.id" :app="app" @click="openApp(app)" />
     </div>
   </div>
 </template>
