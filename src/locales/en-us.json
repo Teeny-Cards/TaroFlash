@@ -14,9 +14,13 @@
   "common.move": "Move",
   "common.settings": "Settings",
   "common.beta": "Beta",
+  "common.logout": "Logout",
 
   "app.title": "TaroFlash",
   "app.description": "A Spaced Repetition Flashcard App",
+
+  "phone.apps.logout.title": "Logout",
+  "phone.apps.logout.description": "Are you sure you want to logout?",
 
   "welcome-view.login": "Log In",
   "welcome-view.sign-up": "Make An Account",

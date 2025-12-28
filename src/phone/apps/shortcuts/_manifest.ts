@@ -1,5 +1,5 @@
 import { defineApp } from '@/phone/system/install-apps'
-import shortcuts from './shortcuts.vue'
+import component from './component.vue'
 
 export default defineApp({
   id: 'shortcuts',
@@ -7,7 +7,7 @@ export default defineApp({
   kind: 'view',
   mount_policy: 'on-open',
   display: 'panel',
-  component: shortcuts,
+  component,
   launcher: {
     icon_src: 'shortcuts',
     hover_icon_src: 'shortcuts-hover',

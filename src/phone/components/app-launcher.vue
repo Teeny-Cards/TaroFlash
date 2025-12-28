@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { inject, onMounted, onActivated, ref, computed } from 'vue'
+import { inject, onMounted, computed } from 'vue'
 import App from '@/phone/components/app.vue'
-import { type PhoneApp, type PhoneContext } from '@/phone/system/types'
+import { type PhoneApp, type PhoneContext, type PhoneRuntime } from '@/phone/system/types'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { emitHoverSfx, emitSfx } from '@/sfx/bus'
 
-const { apps } = defineProps<{
+const { apps, runtime } = defineProps<{
   apps: PhoneApp[]
+  runtime?: PhoneRuntime
 }>()
 
 const emit = defineEmits<{
@@ -87,13 +88,12 @@ function openApp(app?: PhoneApp) {
 
   meta.active_app_index = apps.indexOf(found)
 
-  if (found.kind === 'action') {
-    found.action(phone_context)
+  if (found.kind === 'widget') {
+    runtime?.getController(found.id)?.run?.()
   } else {
     phone_context.nav?.push(found, { transition: 'pop-up' })
+    emitSfx('ui.toggle_on')
   }
-
-  emitSfx('ui.toggle_on')
 }
 
 // If the hovered app is not the active app,

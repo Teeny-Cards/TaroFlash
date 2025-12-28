@@ -1,5 +1,5 @@
 import { defineApp } from '@/phone/system/install-apps'
-import settings from './component/index.vue'
+import component from './component/index.vue'
 
 export default defineApp({
   id: 'settings',
@@ -7,7 +7,7 @@ export default defineApp({
   kind: 'view',
   mount_policy: 'on-open',
   display: 'full',
-  component: settings,
+  component,
   launcher: {
     icon_src: 'settings',
     hover_icon_src: 'settings-hover',

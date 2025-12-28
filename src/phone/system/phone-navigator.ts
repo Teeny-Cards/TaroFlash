@@ -10,6 +10,7 @@ export type NavigationEntry = {
   display?: PhoneAppDisplay
   component?: any
   forwardPreset: TransitionPreset
+  id: string
 }
 
 export type PhoneNavigator = ReturnType<typeof usePhoneNavigator>
@@ -53,7 +54,8 @@ export function usePhoneNavigator(opts: PhoneNavigatorOptions = {}) {
       key: ++_key.value,
       component,
       display,
-      forwardPreset: opts.transition ?? default_preset
+      forwardPreset: opts.transition ?? default_preset,
+      id: app.id
     }
   }
 

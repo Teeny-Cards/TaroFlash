@@ -1,15 +1,16 @@
 import type { Component } from 'vue'
 import type { PhoneNavigator } from './phone-navigator'
-import { getServices } from './services'
+import { createPhoneRuntime } from './runtime'
+import { useI18n } from 'vue-i18n'
 
 export type PhoneAppId = string
 export type PhoneAppDisplay = 'full' | 'panel'
 export type AppMountPolicy = 'startup' | 'on-open'
-export type PhoneAppKind = 'view' | 'action'
+export type PhoneAppKind = 'view' | 'widget'
 
 export type PhoneContext = {
   nav: PhoneNavigator
-  services: ReturnType<typeof getServices>
+  t: ReturnType<typeof useI18n>['t']
 }
 
 type LauncherConfig = {
@@ -18,13 +19,13 @@ type LauncherConfig = {
   theme: MemberTheme
 }
 
-type BaseApp = {
+type BaseApp<TController extends AppController = AppController> = {
   id: PhoneAppId
   title: string
   launcher: LauncherConfig
   mount_policy: AppMountPolicy
   order?: number
-  badge?: () => number | null
+  controller?: (ctx: PhoneContext) => TController
 }
 
 export type ViewApp = BaseApp & {
@@ -35,9 +36,15 @@ export type ViewApp = BaseApp & {
   onClose?: () => void
 }
 
-export type ActionApp = BaseApp & {
-  kind: 'action'
-  action: (ctx: PhoneContext) => void | Promise<void>
+export type WidgetApp = BaseApp & {
+  kind: 'widget'
 }
 
-export type PhoneApp = ViewApp | ActionApp
+export type AppController = {
+  run?: () => void | Promise<void>
+  stop?: () => void | Promise<void>
+}
+
+export type PhoneApp = ViewApp | WidgetApp
+
+export type PhoneRuntime = ReturnType<typeof createPhoneRuntime>
