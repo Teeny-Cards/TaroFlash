@@ -21,7 +21,20 @@ export const AUDIO_CONFIG = createAudioConfig({
     slide_up: {
       default_volume: 0.3
     },
-    trash_crumple_short: {}
+    trash_crumple_short: {},
+    negative_pop: {
+      ext: 'mp3',
+      default_volume: 0.3
+    },
+    select: {
+      default_volume: 0.3
+    },
+    toggle_off: {
+      default_volume: 0.3
+    },
+    toggle_on: {
+      default_volume: 0.3
+    }
   }
 })
 

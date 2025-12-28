@@ -9,12 +9,5 @@ import Phone from '@/phone/phone.vue'
     <router-view />
   </main>
 
-  <div
-    data-testid="phone-container"
-    class="fixed inset-0 z-100 flex justify-center pointer-events-none"
-  >
-    <div class="w-full max-w-(--page-width) flex justify-end mx-4 sm:mx-10 mt-3 relative">
-      <phone />
-    </div>
-  </div>
+  <phone />
 </template>

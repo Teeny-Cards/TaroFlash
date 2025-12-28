@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import AppLauncher from '@/phone/app-launcher.vue'
 import { type PhoneNavigator, usePhoneNavigator } from '@/phone/system/phone-navigator'
-import { onMounted, ref, provide } from 'vue'
+import { onMounted, ref, provide, computed } from 'vue'
 import { emitSfx } from '@/sfx/bus'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { installApps } from '@/phone/system/install-apps'
-import { type PhoneApp, type PhoneActionContext } from '@/phone/system/types'
+import { type PhoneApp, type PhoneContext } from '@/phone/system/types'
 import { getServices } from '@/phone/system/services'
+import phoneSm from '@/phone/components/phone-sm.vue'
+import phoneBase from '@/phone/components/phone-base.vue'
+import phoneLg from './components/phone-lg.vue'
 
 const nav: PhoneNavigator = usePhoneNavigator()
 const shortcuts = useShortcuts('phone', { priority: 'background' })
@@ -14,12 +16,12 @@ const shortcuts = useShortcuts('phone', { priority: 'background' })
 const open = ref(false)
 const apps = ref<PhoneApp[]>([])
 
-const ctx: PhoneActionContext = {
+const ctx: PhoneContext = {
   nav,
   services: getServices()
 }
 
-provide('phone-nav', nav)
+provide('phone-context', ctx)
 
 onMounted(async () => {
   apps.value = await installApps()
@@ -32,6 +34,10 @@ onMounted(async () => {
       handler: togglePhone
     }
   ])
+})
+
+const fullscreen = computed(() => {
+  return nav.top.value?.display === 'full'
 })
 
 function togglePhone() {
@@ -51,68 +57,75 @@ function openPhone() {
 function closePhone() {
   if (nav.can_go_back.value) {
     nav.pop()
+    emitSfx('ui.toggle_off')
     return
   }
 
   open.value = false
   shortcuts.releaseFocus()
+  nav.reset()
   emitSfx('ui.pop_window')
 }
 </script>
 
 <template>
-  <transition
-    enter-from-class="opacity-0 blur-md -translate-y-10"
-    enter-active-class="transition-[all] ease-in-out duration-100"
-    leave-to-class="opacity-0 blur-md -translate-y-10"
-    leave-active-class="transition-[all] ease-in-out duration-100"
-  >
-    <div v-if="open" data-testid="phone" class="pointer-events-auto h-min absolute top-4 right-0">
-      <div class="w-60 h-89.5 bg-brown-300 shadow-sm rounded-16 overflow-hidden relative">
-        <app-launcher
-          v-if="!nav.top.value"
-          :apps="apps"
-          :action_context="ctx"
-          @close="closePhone"
-        />
-
-        <transition :name="nav.transitionName.value">
-          <component
-            v-if="nav.top.value"
-            :is="nav.top.value.component"
-            v-bind="nav.top.value.props"
-            :key="nav.top.value.key"
-            @close="closePhone"
-          />
-        </transition>
-      </div>
-    </div>
-  </transition>
-
-  <transition
-    enter-from-class="opacity-0 translate-y-10"
-    enter-active-class="transition-[all] ease-in-out duration-100"
-    leave-to-class="opacity-0 translate-y-10"
-    leave-active-class="transition-[all] ease-in-out duration-100"
+  <div
+    data-testid="phone-stage"
+    class="fixed inset-0 z-100 flex justify-center pointer-events-none"
   >
     <div
-      v-if="!open"
-      @click="openPhone"
-      data-testid="phone-minimized"
-      class="w-16.25 h-22 bg-brown-300 rounded-4.5 shadow-xs rotate-6 cursor-pointer p-2 pb-1 flex
-        flex-col gap-1 items-center scale-75 pointer-events-auto"
+      data-testid="phone-dock"
+      class="w-full max-w-(--page-width) flex items-center justify-center mx-4 sm:mx-10 relative"
     >
-      <div
-        data-testid="notification-badge"
-        class="absolute top-0 left-0 w-4 h-4 bg-red-500 outline-4 outline-brown-300 rounded-full"
-      ></div>
-      <div class="w-full h-full bg-[#B8B1A9] rounded-2.5"></div>
-      <div class="w-2.75 h-2.75 rounded-full outline-1 outline-[#B8B1A9] shrink-0"></div>
+      <transition name="phone-open">
+        <phone-base v-if="open && !fullscreen" :apps="apps" @close="closePhone"></phone-base>
+      </transition>
+
+      <transition name="phone-close">
+        <phone-lg v-if="open && fullscreen" @close="closePhone"></phone-lg>
+        <phone-sm v-else-if="!open" @open="openPhone"></phone-sm>
+      </transition>
     </div>
-  </transition>
+  </div>
 </template>
 
 <style>
+[data-testid='phone-stage'] {
+  --duration: 100ms;
+}
+
+/* ANIMATIONS */
+/* Base phone (pop + blur) */
+.phone-open-enter-from,
+.phone-open-leave-to {
+  opacity: 0;
+  filter: blur(var(--blur-md));
+  transform: translateY(-40px);
+}
+
+.phone-open-enter-active,
+.phone-open-leave-active {
+  transition-property: transform, opacity, filter;
+  transition-timing-function: ease-in-out;
+  transition-duration: var(--duration);
+}
+
+/* Mini phone (slide) */
+.phone-close-enter-from,
+.phone-close-leave-to {
+  opacity: 0;
+  filter: blur(var(--blur-md));
+  transform: translateY(40px);
+}
+
+.phone-close-enter-active,
+.phone-close-leave-active {
+  transition-property: transform, opacity, filter;
+  transition-timing-function: ease-in-out;
+  transition-duration: var(--duration);
+}
+
+/* App transitions */
 .slide-left-enter-active,
 .slide-right-enter-active,
 .pop-up-enter-active,
@@ -123,7 +136,7 @@ function closePhone() {
 .pop-down-leave-active {
   transition-property: transform, opacity;
   transition-timing-function: ease-in-out;
-  transition-duration: 0.1s;
+  transition-duration: var(--duration);
 }
 
 .slide-left-leave-active,

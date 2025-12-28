@@ -14,9 +14,9 @@ defineProps<{ app: PhoneApp }>()
     :gap="-5"
     element="button"
     data-testid="phone-app"
-    class="rounded-5.5 w-15 h-15 cursor-pointer hover:scale-110 focus:scale-110 transition-transform
-      duration-50 flex items-center justify-center text-white group animation-safe:animate-bg-slide
-      outline-none"
+    class="phone-app rounded-5.5 w-15 h-15 cursor-pointer hover:scale-110 focus:scale-110
+      transition-transform duration-50 flex items-center justify-center text-white group
+      animation-safe:animate-bg-slide outline-none"
     :class="`theme-${app.launcher.theme}`"
     @mouseenter="emitHoverSfx('ui.pop_drip_mid')"
   >
