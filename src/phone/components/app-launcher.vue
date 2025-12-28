@@ -1,27 +1,30 @@
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue'
-import App from '@/phone/app.vue'
-import { type PhoneApp, type PhoneActionContext } from '@/phone/system/types'
-import { type PhoneNavigator } from '@/phone/system/phone-navigator'
+import { inject, onMounted, onActivated, ref, computed } from 'vue'
+import App from '@/phone/components/app.vue'
+import { type PhoneApp, type PhoneContext } from '@/phone/system/types'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
-import { emitHoverSfx } from '@/sfx/bus'
+import { emitHoverSfx, emitSfx } from '@/sfx/bus'
 
-const { apps, action_context } = defineProps<{
+const { apps } = defineProps<{
   apps: PhoneApp[]
-  action_context: PhoneActionContext
 }>()
 
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-const shortcuts = useShortcuts('phone/home')
+const shortcuts = useShortcuts('phone/app-launcher')
 
-const phone_nav = inject<PhoneNavigator>('phone-nav')
-const active_app = ref(-1)
+const phone_context = inject<PhoneContext>('phone-context')!
+const meta = phone_context.nav.meta
+const active_app = computed(() => phone_context.nav.meta.active_app_index)
 
 onMounted(() => {
+  if (active_app.value !== -1) {
+    focusApp(active_app.value, false)
+  }
+
   shortcuts.register([
     {
       id: 'left',
@@ -56,38 +59,60 @@ onMounted(() => {
   ])
 })
 
-function focusApp(index: number) {
+function focusApp(index: number, emit_hover_sfx = true) {
   if (index < 0) {
-    active_app.value = apps.length - 1 // start from end
+    meta.active_app_index = apps.length - 1 // start from end
   } else if (active_app.value === -1) {
-    active_app.value = 0 // start from beginning
+    meta.active_app_index = 0 // start from beginning
   } else if (index >= apps.length) {
-    active_app.value = 0 // wrap to beginning
+    meta.active_app_index = 0 // wrap to beginning
   } else {
-    active_app.value = index
+    meta.active_app_index = index
   }
 
   const app = document.querySelectorAll('[data-testid="phone-app"]')[
     active_app.value
   ] as HTMLElement
+
   app?.focus()
-  emitHoverSfx('ui.pop_drip_mid')
+
+  if (emit_hover_sfx) {
+    emitHoverSfx('ui.pop_drip_mid')
+  }
 }
 
 function openApp(app?: PhoneApp) {
   const found = app ?? apps[active_app.value]
-  if (!found) return
+  if (!found || !phone_context) return
+
+  meta.active_app_index = apps.indexOf(found)
 
   if (found.kind === 'action') {
-    found.action(action_context)
+    found.action(phone_context)
   } else {
-    phone_nav?.push(found.component, { transition: 'pop-up' })
+    phone_context.nav?.push(found, { transition: 'pop-up' })
   }
+
+  emitSfx('ui.toggle_on')
+}
+
+// If the hovered app is not the active app,
+// blur the active app and reset the active app index
+function onHoverApp(app: PhoneApp) {
+  const index = apps.indexOf(app)
+  if (index === active_app.value) return
+
+  const found = document.querySelectorAll('[data-testid="phone-app"]')[
+    active_app.value
+  ] as HTMLElement
+
+  meta.active_app_index = -1
+  found?.blur()
 }
 </script>
 
 <template>
-  <div data-testid="home" class="h-full flex flex-col gap-8 px-5 py-7 pt-4">
+  <div data-testid="app-launcher" class="h-full flex flex-col gap-8 px-5 py-7 pt-4">
     <div class="grid grid-cols-[18px_1fr_18px] px-6 justify-center items-center">
       <h2 class="text-brown-500 select-none col-start-2 justify-self-center">TaroPhone</h2>
       <button
@@ -102,7 +127,13 @@ function openApp(app?: PhoneApp) {
       class="w-full grid grid-cols-[auto_auto_auto] grid-rows-[auto_auto_auto] gap-2 gap-y-6
         sm:gap-y-2 justify-center content-center"
     >
-      <app v-for="app in apps" :key="app.id" :app="app" @click="openApp(app)" />
+      <app
+        v-for="app in apps"
+        :key="app.id"
+        :app="app"
+        @click="openApp(app)"
+        @mouseenter="onHoverApp(app)"
+      />
     </div>
   </div>
 </template>

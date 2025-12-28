@@ -1,14 +1,13 @@
 import { defineApp } from '@/phone/system/install-apps'
+import settings from './component/index.vue'
 
 export default defineApp({
   id: 'settings',
   title: 'Settings',
-  kind: 'action',
-  mount_policy: 'startup',
+  kind: 'view',
+  mount_policy: 'on-open',
   display: 'full',
-  action: () => {
-    console.log('action')
-  },
+  component: settings,
   launcher: {
     icon_src: 'settings',
     hover_icon_src: 'settings-hover',

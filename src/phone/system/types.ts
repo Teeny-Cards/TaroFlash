@@ -7,7 +7,7 @@ export type PhoneAppDisplay = 'full' | 'panel'
 export type AppMountPolicy = 'startup' | 'on-open'
 export type PhoneAppKind = 'view' | 'action'
 
-export type PhoneActionContext = {
+export type PhoneContext = {
   nav: PhoneNavigator
   services: ReturnType<typeof getServices>
 }
@@ -37,7 +37,7 @@ export type ViewApp = BaseApp & {
 
 export type ActionApp = BaseApp & {
   kind: 'action'
-  action: (ctx: PhoneActionContext) => void | Promise<void>
+  action: (ctx: PhoneContext) => void | Promise<void>
 }
 
 export type PhoneApp = ViewApp | ActionApp

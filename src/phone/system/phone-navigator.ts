@@ -1,4 +1,5 @@
-import { ref, computed, type Component, markRaw } from 'vue'
+import { ref, computed, type Component, reactive } from 'vue'
+import { type PhoneAppDisplay, type PhoneApp } from './types'
 
 export type TransitionPreset = 'slide-left' | 'slide-right' | 'pop-up' | 'pop-down' | 'none'
 
@@ -6,8 +7,8 @@ type NavAction = 'push' | 'pop' | 'replace'
 
 export type NavigationEntry = {
   key: number
-  component: any
-  props?: Record<string, unknown>
+  display?: PhoneAppDisplay
+  component?: any
   forwardPreset: TransitionPreset
 }
 
@@ -19,7 +20,6 @@ export type PhoneNavigatorOptions = {
 
 type NavigationOptions = {
   transition?: TransitionPreset
-  props?: { [key: string]: any }
 }
 
 const reverse_preset: { [key in TransitionPreset]: TransitionPreset } = {
@@ -38,38 +38,43 @@ export function usePhoneNavigator(opts: PhoneNavigatorOptions = {}) {
   const lastAction = ref<NavAction>('push')
   const _key = ref(0)
 
+  const meta = reactive({
+    active_app_index: -1
+  })
+
   const top = computed(() => stack.value[stack.value.length - 1] ?? null)
   const can_go_back = computed(() => stack.value.length > 0)
 
-  function _makeEntry(component: Component, opts: NavigationOptions = {}): NavigationEntry {
-    const raw = markRaw(component)
+  function _makeEntry(app: PhoneApp, opts: NavigationOptions = {}): NavigationEntry {
+    const component = app.kind === 'view' ? app.component : undefined
+    const display = app.kind === 'view' ? app.display : undefined
 
     return {
       key: ++_key.value,
-      component: raw,
-      props: opts.props,
+      component,
+      display,
       forwardPreset: opts.transition ?? default_preset
     }
   }
 
-  function resetTo(component: Component, opts?: NavigationOptions) {
+  function resetTo(app: PhoneApp, opts?: NavigationOptions) {
     transitionName.value = opts?.transition ?? default_preset
     lastAction.value = 'push'
-    stack.value.splice(0, stack.value.length, _makeEntry(component, opts))
+    stack.value.splice(0, stack.value.length, _makeEntry(app, opts))
   }
 
-  function push(component: Component, opts?: NavigationOptions) {
+  function push(app: PhoneApp, opts?: NavigationOptions) {
     transitionName.value = opts?.transition ?? default_preset
     lastAction.value = 'push'
-    stack.value.push(_makeEntry(component, opts))
+    stack.value.push(_makeEntry(app, opts))
   }
 
-  function replace(component: Component, opts?: NavigationOptions) {
+  function replace(app: PhoneApp, opts?: NavigationOptions) {
     transitionName.value = opts?.transition ?? reverse_preset[top.value?.forwardPreset]
     lastAction.value = 'replace'
 
     if (stack.value.length) stack.value.pop()
-    stack.value.push(_makeEntry(component, opts))
+    stack.value.push(_makeEntry(app, opts))
   }
 
   function pop(transition_preset?: TransitionPreset) {
@@ -80,5 +85,25 @@ export function usePhoneNavigator(opts: PhoneNavigatorOptions = {}) {
     stack.value.pop()
   }
 
-  return { stack, transitionName, lastAction, top, can_go_back, resetTo, push, replace, pop }
+  function reset() {
+    meta.active_app_index = -1
+    _key.value = 0
+    stack.value = []
+    transitionName.value = default_preset
+    lastAction.value = 'push'
+  }
+
+  return {
+    stack,
+    transitionName,
+    lastAction,
+    top,
+    can_go_back,
+    meta,
+    resetTo,
+    push,
+    replace,
+    pop,
+    reset
+  }
 }
