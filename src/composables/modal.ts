@@ -25,10 +25,19 @@ type OpenArgs = {
   closeAudio?: NamespacedAudioKey
 }
 
+type closeOpts = {
+  override_close_audio?: NamespacedAudioKey
+}
+
+export type ModalCloseFn = (responseValue?: any, opts?: closeOpts) => void
+
 const modal_stack = ref<ModalEntry[]>([])
 
 export function useModal() {
-  function open<T = any>(component: any, args?: OpenArgs): { response: Promise<T>; close: any } {
+  function open<T = any>(
+    component: any,
+    args?: OpenArgs
+  ): { response: Promise<T>; close: ModalCloseFn } {
     let resolveFn!: (result: any) => void
 
     const id = uid()
@@ -37,9 +46,9 @@ export function useModal() {
       resolveFn = resolve
     })
 
-    const closeFunc = (responseValue?: any) => {
+    const closeFunc = (responseValue?: any, opts?: closeOpts) => {
       resolveFn(responseValue)
-      close(id)
+      close(id, opts)
     }
 
     const entry: ModalEntry = {
@@ -62,7 +71,7 @@ export function useModal() {
       id: 'close-modal',
       combo: 'esc',
       description: 'Close Modal',
-      handler: closeFunc
+      handler: (_ev) => closeFunc()
     })
 
     modal_stack.value.push(entry)
@@ -77,7 +86,7 @@ export function useModal() {
     }
   }
 
-  function close(id?: string) {
+  function close(id?: string, opts?: closeOpts) {
     let index = modal_stack.value.findIndex((m) => m.id === id)
     const modal = modal_stack.value[index]
 
@@ -88,8 +97,9 @@ export function useModal() {
 
       modal_stack.value.splice(index, 1)
 
-      if (modal.closeAudio) {
-        emitSfx(modal.closeAudio)
+      const close_audio = opts?.override_close_audio ?? modal.closeAudio
+      if (close_audio) {
+        emitSfx(close_audio)
       }
     }
   }

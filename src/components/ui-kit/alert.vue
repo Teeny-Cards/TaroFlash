@@ -2,6 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
 import { type NamespacedAudioKey } from '@/sfx/config'
+import { type ModalCloseFn } from '@/composables/modal'
 
 export type AlertType = 'warn' | 'info'
 
@@ -13,7 +14,7 @@ const { cancelLabel, confirmLabel, close, cancelAudio, confirmAudio } = definePr
   type?: AlertType
   cancelAudio?: NamespacedAudioKey
   confirmAudio?: NamespacedAudioKey
-  close: (result?: boolean, args?: { overrideCloseAudio?: string }) => void
+  close: ModalCloseFn
 }>()
 
 const { t } = useI18n()
@@ -27,11 +28,11 @@ const confirmText = computed(() => {
 })
 
 function onCancel() {
-  close(false, { overrideCloseAudio: cancelAudio })
+  close(false, { override_close_audio: cancelAudio })
 }
 
 function onConfirm() {
-  close(true, { overrideCloseAudio: confirmAudio })
+  close(true, { override_close_audio: confirmAudio })
 }
 </script>
 

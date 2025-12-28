@@ -1,27 +1,24 @@
-// runtime.ts
-import { ref, computed } from 'vue'
-import type { PhoneApp } from './types'
+import type { AppController, PhoneApp, PhoneContext } from './types'
 
-export function createPhoneRuntime(apps: PhoneApp[]) {
-  const mountedById = ref<Record<string, boolean>>({})
+export function createPhoneRuntime(apps: PhoneApp[], ctx: PhoneContext) {
+  const controllers: Record<string, any> = {}
 
   for (const app of apps) {
-    if (app.kind === 'view' && (app.mount_policy ?? 'never') === 'startup') {
-      mountedById.value[app.id] = true
+    if (app.controller) {
+      const controller = app.controller(ctx)
+      controllers[app.id] = controller
+
+      if (app.mount_policy === 'startup') {
+        controller.run?.()
+      }
     }
   }
 
-  const mountedApps = computed(() =>
-    apps.filter((a) => a.kind === 'view' && mountedById.value[a.id])
-  )
-
-  function mount(id: string) {
-    mountedById.value[id] = true
+  function getController<T extends AppController = AppController>(appId: string): T {
+    return controllers[appId]
   }
 
-  function unmount(id: string) {
-    delete mountedById.value[id]
+  return {
+    getController
   }
-
-  return { apps, mount, unmount, mountedApps }
 }

@@ -4,27 +4,26 @@ import { onMounted, ref, provide, computed } from 'vue'
 import { emitSfx } from '@/sfx/bus'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { installApps } from '@/phone/system/install-apps'
-import { type PhoneApp, type PhoneContext } from '@/phone/system/types'
-import { getServices } from '@/phone/system/services'
+import { type PhoneApp, type PhoneContext, type PhoneRuntime } from '@/phone/system/types'
+import { createPhoneRuntime } from '@/phone/system/runtime'
 import phoneSm from '@/phone/components/phone-sm.vue'
 import phoneBase from '@/phone/components/phone-base.vue'
 import phoneLg from './components/phone-lg.vue'
+import { useI18n } from 'vue-i18n'
 
 const nav: PhoneNavigator = usePhoneNavigator()
 const shortcuts = useShortcuts('phone', { priority: 'background' })
 
 const open = ref(false)
 const apps = ref<PhoneApp[]>([])
+const runtime = ref<PhoneRuntime | undefined>(undefined)
 
-const ctx: PhoneContext = {
-  nav,
-  services: getServices()
-}
-
+const ctx: PhoneContext = { nav, t: useI18n().t }
 provide('phone-context', ctx)
 
 onMounted(async () => {
   apps.value = await installApps()
+  runtime.value = createPhoneRuntime(apps.value, ctx)
 
   shortcuts.register([
     {
@@ -49,7 +48,6 @@ function togglePhone() {
 }
 
 function openPhone() {
-  shortcuts.trapFocus()
   open.value = true
   emitSfx('ui.pop_window')
 }
@@ -62,7 +60,6 @@ function closePhone() {
   }
 
   open.value = false
-  shortcuts.releaseFocus()
   nav.reset()
   emitSfx('ui.pop_window')
 }
@@ -78,7 +75,12 @@ function closePhone() {
       class="w-full max-w-(--page-width) flex items-center justify-center mx-4 sm:mx-10 relative"
     >
       <transition name="phone-open">
-        <phone-base v-if="open && !fullscreen" :apps="apps" @close="closePhone"></phone-base>
+        <phone-base
+          v-if="open && !fullscreen"
+          :apps="apps"
+          :runtime="runtime"
+          @close="closePhone"
+        ></phone-base>
       </transition>
 
       <transition name="phone-close">
