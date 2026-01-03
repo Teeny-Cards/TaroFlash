@@ -1,26 +1,33 @@
-import { onBeforeUnmount, getCurrentInstance } from 'vue'
+import { onScopeDispose } from 'vue'
 import {
   useShortcutStore,
   type Shortcut,
   type ScopeId,
-  type Priority
+  type Priority,
+  type ShortcutId
 } from '@/stores/shortcut-store'
+
+export type ShortcutRegistration = Omit<Shortcut, 'id'>
 
 export function useShortcuts(id: ScopeId, { priority }: { priority?: Priority } = {}) {
   const store = useShortcutStore()
   const scope_id = store.pushScope(id, priority)
 
-  function register(shortcuts: Shortcut[] | Shortcut) {
+  function register(shortcuts: ShortcutRegistration[] | ShortcutRegistration) {
     const _shortcuts = Array.isArray(shortcuts) ? shortcuts : [shortcuts]
+    const shortcut_ids: ShortcutId[] = []
 
     for (const shortcut of _shortcuts) {
-      store.register(scope_id, shortcut)
+      const id = store.register(scope_id, shortcut)
+      if (id) shortcut_ids.push(id)
     }
 
-    // Return a function to unregister the shortcuts
-    return () => {
-      for (const sc of _shortcuts) store.unregister(scope_id, sc.id)
+    const unregister = () => {
+      for (const shortcut_id of shortcut_ids) store.unregister(scope_id, shortcut_id)
     }
+
+    // unregister when the component is destroyed
+    onScopeDispose(unregister)
   }
 
   function trapFocus() {
@@ -42,10 +49,6 @@ export function useShortcuts(id: ScopeId, { priority }: { priority?: Priority } 
   function dispose() {
     releaseFocus()
     popScope()
-  }
-
-  if (getCurrentInstance()) {
-    onBeforeUnmount(dispose)
   }
 
   return {

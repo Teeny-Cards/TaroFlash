@@ -68,9 +68,7 @@ export function useModal() {
     }
 
     shortcuts.register({
-      id: 'close-modal',
       combo: 'esc',
-      description: 'Close Modal',
       handler: (_ev) => closeFunc()
     })
 

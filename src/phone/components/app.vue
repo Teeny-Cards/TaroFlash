@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import UiImage from '@/components/ui-kit/image.vue'
 import UiTooltip from '@/components/ui-kit/tooltip.vue'
-import { emitHoverSfx } from '@/sfx/bus'
 import { type PhoneApp } from '@/phone/system/types'
 
 defineProps<{ app: PhoneApp }>()
@@ -18,7 +17,6 @@ defineProps<{ app: PhoneApp }>()
       transition-transform duration-50 flex items-center justify-center text-white group
       animation-safe:animate-bg-slide outline-none"
     :class="`theme-${app.launcher.theme}`"
-    @mouseenter="emitHoverSfx('ui.pop_drip_mid')"
   >
     <ui-image
       :src="app.launcher.icon_src"

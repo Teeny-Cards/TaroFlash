@@ -21,18 +21,14 @@ const runtime = ref<PhoneRuntime | undefined>(undefined)
 const ctx: PhoneContext = { nav, t: useI18n().t }
 provide('phone-context', ctx)
 
+shortcuts.register({
+  combo: 'esc',
+  handler: togglePhone
+})
+
 onMounted(async () => {
   apps.value = await installApps()
   runtime.value = createPhoneRuntime(apps.value, ctx)
-
-  shortcuts.register([
-    {
-      id: 'toggle-phone',
-      combo: 'esc',
-      description: 'Toggle Phone',
-      handler: togglePhone
-    }
-  ])
 })
 
 const fullscreen = computed(() => {
@@ -83,9 +79,22 @@ function closePhone() {
         ></phone-base>
       </transition>
 
-      <transition name="phone-close">
-        <phone-lg v-if="open && fullscreen" @close="closePhone"></phone-lg>
+      <transition
+        name="phone-close"
+        @before-enter="nav.transitioning.value = true"
+        @after-leave="nav.transitioning.value = false"
+      >
+        <phone-lg v-if="open && fullscreen" @close="closePhone" class="z-10"></phone-lg>
         <phone-sm v-else-if="!open" @open="openPhone"></phone-sm>
+      </transition>
+
+      <transition name="phone-backdrop">
+        <div
+          v-if="open && fullscreen"
+          data-testid="phone-backdrop"
+          class="pointer-events-auto fixed inset-0 flex items-center justify-center px-4 py-7
+            sm:backdrop-blur-4 sm:bg-black/10"
+        ></div>
       </transition>
     </div>
   </div>
@@ -123,6 +132,18 @@ function closePhone() {
 .phone-close-enter-active,
 .phone-close-leave-active {
   transition-property: transform, opacity, filter;
+  transition-timing-function: ease-in-out;
+  transition-duration: var(--duration);
+}
+
+/* Backdrop */
+.phone-backdrop-enter-from,
+.phone-backdrop-leave-to {
+  opacity: 0;
+}
+.phone-backdrop-enter-active,
+.phone-backdrop-leave-active {
+  transition-property: opacity;
   transition-timing-function: ease-in-out;
   transition-duration: var(--duration);
 }

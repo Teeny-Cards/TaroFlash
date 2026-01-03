@@ -3,7 +3,7 @@ import ListItem from './list-item.vue'
 import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
-import { nextTick, onMounted, ref } from 'vue'
+import { nextTick, ref } from 'vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 
@@ -30,24 +30,18 @@ const shortcuts = useShortcuts('card-list')
 
 const active_side = ref<'front' | 'back'>('front')
 
-onMounted(() => {
-  shortcuts.register([
-    {
-      id: 'tab-card',
-      combo: 'tab',
-      description: 'Tab to Next Card',
-      handler: () => onTab(false),
-      when: () => activeCardId !== undefined
-    },
-    {
-      id: 'tab-card',
-      combo: 'shift+tab',
-      description: 'Tab to Previous Card',
-      handler: () => onTab(true),
-      when: () => activeCardId !== undefined
-    }
-  ])
-})
+shortcuts.register([
+  {
+    combo: 'tab',
+    handler: () => onTab(false),
+    when: () => activeCardId !== undefined
+  },
+  {
+    combo: 'shift+tab',
+    handler: () => onTab(true),
+    when: () => activeCardId !== undefined
+  }
+])
 
 async function onTab(is_going_back: boolean) {
   if (active_side.value === 'front' && !is_going_back) return

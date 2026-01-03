@@ -1,3 +1,4 @@
+import uid from '@/utils/uid'
 import { defineStore } from 'pinia'
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 
@@ -9,7 +10,7 @@ export type ShortcutRegistry = {
   scopeId: ScopeId
   id: ShortcutId
   combo: KeyCombo
-  description: string
+  description?: string
   group?: string
   active: boolean
   advertised: boolean
@@ -19,7 +20,7 @@ export type ShortcutRegistry = {
 export type Shortcut = {
   id: ShortcutId
   combo: KeyCombo
-  description: string
+  description?: string
   once?: boolean // auto-unregister after it fires once
   advertise?: boolean // show in the menu even when inactive
   group?: string // group label for menu (e.g., "Card Editor")
@@ -128,11 +129,14 @@ export const useShortcutStore = defineStore('shortcutStore', () => {
     }
   }
 
-  function register(scopeId: ScopeId, shortcut: Shortcut) {
+  function register(scopeId: ScopeId, shortcut: Omit<Shortcut, 'id'>) {
     const scope = stack.find((s) => s.id === scopeId)
     if (!scope) return
 
-    scope.shortcuts.set(shortcut.id, shortcut)
+    const shortcut_id = uid()
+    scope.shortcuts.set(shortcut_id, { ...shortcut, id: shortcut_id })
+
+    return shortcut_id
   }
 
   function unregister(scopeId: ScopeId, shortcutId: ShortcutId) {

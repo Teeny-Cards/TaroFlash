@@ -2,10 +2,8 @@ import { defineApp } from '@/phone/system/install-apps'
 import component from './component/index.vue'
 
 export default defineApp({
-  id: 'settings',
   title: 'Settings',
-  kind: 'view',
-  mount_policy: 'on-open',
+  type: 'view',
   display: 'full',
   component,
   launcher: {

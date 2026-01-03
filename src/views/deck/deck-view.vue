@@ -73,16 +73,14 @@ const tab_components: { [key: number]: any } = {
   1: CardList
 }
 
+shortcuts.register({
+  combo: 'esc',
+  handler: onEsc,
+  when: () => mode.value === 'select' || active_card_id.value !== undefined
+})
+
 onMounted(async () => {
   await refetchDeck()
-
-  shortcuts.register({
-    id: 'cancel-edit',
-    combo: 'esc',
-    description: 'Cancel Edit',
-    handler: onEsc,
-    when: () => mode.value === 'select' || active_card_id.value !== undefined
-  })
 })
 
 async function onEsc() {
