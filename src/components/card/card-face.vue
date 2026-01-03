@@ -34,7 +34,8 @@ const emit = defineEmits<{
       v-else
       :active="!!active"
       :data-testid="`card-face__text-editor__${side}`"
-      class="placeholder:text-brown-500 text-brown-700 h-full outline-none overflow-y-auto scroll-hidden"
+      class="placeholder:text-brown-500 text-brown-700 h-full outline-none overflow-y-auto
+        scroll-hidden"
       :placeholder="placeholder"
       :delta="editor_delta"
       :disabled="mode !== 'edit'"

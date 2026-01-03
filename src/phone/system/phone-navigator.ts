@@ -1,4 +1,4 @@
-import { ref, computed, type Component, reactive } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { type PhoneAppDisplay, type PhoneApp } from './types'
 
 export type TransitionPreset = 'slide-left' | 'slide-right' | 'pop-up' | 'pop-down' | 'none'
@@ -6,7 +6,6 @@ export type TransitionPreset = 'slide-left' | 'slide-right' | 'pop-up' | 'pop-do
 type NavAction = 'push' | 'pop' | 'replace'
 
 export type NavigationEntry = {
-  key: number
   display?: PhoneAppDisplay
   component?: any
   forwardPreset: TransitionPreset
@@ -37,7 +36,7 @@ export function usePhoneNavigator(opts: PhoneNavigatorOptions = {}) {
   const stack = ref<NavigationEntry[]>([])
   const transitionName = ref<TransitionPreset>(default_preset)
   const lastAction = ref<NavAction>('push')
-  const _key = ref(0)
+  const transitioning = ref(false)
 
   const meta = reactive({
     active_app_index: -1
@@ -47,11 +46,10 @@ export function usePhoneNavigator(opts: PhoneNavigatorOptions = {}) {
   const can_go_back = computed(() => stack.value.length > 0)
 
   function _makeEntry(app: PhoneApp, opts: NavigationOptions = {}): NavigationEntry {
-    const component = app.kind === 'view' ? app.component : undefined
-    const display = app.kind === 'view' ? app.display : undefined
+    const component = app.type === 'view' ? app.component : undefined
+    const display = app.type === 'view' ? app.display : undefined
 
     return {
-      key: ++_key.value,
       component,
       display,
       forwardPreset: opts.transition ?? default_preset,
@@ -89,7 +87,6 @@ export function usePhoneNavigator(opts: PhoneNavigatorOptions = {}) {
 
   function reset() {
     meta.active_app_index = -1
-    _key.value = 0
     stack.value = []
     transitionName.value = default_preset
     lastAction.value = 'push'
@@ -99,6 +96,7 @@ export function usePhoneNavigator(opts: PhoneNavigatorOptions = {}) {
     stack,
     transitionName,
     lastAction,
+    transitioning,
     top,
     can_go_back,
     meta,

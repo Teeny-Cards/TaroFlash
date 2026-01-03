@@ -7,10 +7,7 @@ export function createPhoneRuntime(apps: PhoneApp[], ctx: PhoneContext) {
     if (app.controller) {
       const controller = app.controller(ctx)
       controllers[app.id] = controller
-
-      if (app.mount_policy === 'startup') {
-        controller.run?.()
-      }
+      controller.setup?.()
     }
   }
 

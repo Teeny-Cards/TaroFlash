@@ -2,10 +2,8 @@ import { defineApp } from '@/phone/system/install-apps'
 import { createLogoutController } from './controller'
 
 export default defineApp({
-  id: 'logout',
   title: 'Logout',
-  kind: 'widget',
-  mount_policy: 'on-open',
+  type: 'widget',
   controller: createLogoutController,
   launcher: {
     icon_src: 'logout',

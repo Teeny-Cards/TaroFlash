@@ -17,11 +17,6 @@ const current_app = computed(() => nav?.top.value)
     data-testid="phone-lg"
     class="pointer-events-auto w-223.75 h-150 bg-brown-300 rounded-16 shadow-sm"
   >
-    <component
-      v-if="current_app"
-      :is="current_app.component"
-      :key="current_app.key"
-      @close="emit('close')"
-    />
+    <component v-if="current_app" :is="current_app.component" @close="emit('close')" />
   </div>
 </template>

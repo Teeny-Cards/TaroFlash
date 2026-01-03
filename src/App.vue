@@ -5,7 +5,7 @@
     <ui-toast v-for="(toast, index) in toasts" :key="index" :toast="toast" />
   </teleport>
 
-  <teleport to="[data-testid='ui-kit-modal-container']">
+  <teleport to="[data-testid='app-modal-container']">
     <ui-modal />
   </teleport>
 

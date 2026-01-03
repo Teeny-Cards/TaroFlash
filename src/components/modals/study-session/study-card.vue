@@ -194,7 +194,6 @@ function _cleanupListeners() {
 
 <template>
   <div class="relative">
-    <!-- <card class="z-10" size="xl" face_classes="outline-brown-100 outline-10 opacity-0" /> -->
     <card
       data-testid="study-card"
       class="z-10"
@@ -221,8 +220,10 @@ function _cleanupListeners() {
 
 <style>
 .review-label {
+  --duration: 0.05s;
+
   position: absolute;
-  inset: 0;
+  inset: -100px;
 
   display: flex;
   flex-direction: column;
@@ -233,17 +234,18 @@ function _cleanupListeners() {
   font-size: var(--text-3xl);
   line-height: var(--text-3xl--line-height);
 
+  border-radius: inherit;
   pointer-events: none;
   opacity: 0;
 
-  transform: translateY(100%);
+  transform: scale(50%);
   transition:
-    transform 0.1s linear,
-    opacity 0.1s linear;
+    transform var(--duration) linear,
+    opacity var(--duration) linear;
 }
 
 .review-label--visible {
-  transform: translateY(0);
+  transform: scale(100%);
   opacity: 1;
 }
 </style>

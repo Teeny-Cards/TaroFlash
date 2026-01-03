@@ -90,7 +90,7 @@ function onSideChanged(side: 'front' | 'back') {
     <div
       data-testid="study-session__pattern"
       class="absolute inset-0 bg-(image:--taro-flash-dark) bg-size-[60px] text-brown-500
-        bg-brown-300 opacity-5 bg-center"
+        bg-brown-300 opacity-4 bg-center"
     ></div>
   </div>
 </template>

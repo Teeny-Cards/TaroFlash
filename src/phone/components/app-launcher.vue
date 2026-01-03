@@ -21,43 +21,33 @@ const phone_context = inject<PhoneContext>('phone-context')!
 const meta = phone_context.nav.meta
 const active_app = computed(() => phone_context.nav.meta.active_app_index)
 
+shortcuts.register([
+  {
+    combo: 'arrowleft',
+    handler: () => focusApp(active_app.value - 1)
+  },
+  {
+    combo: 'arrowright',
+    handler: () => focusApp(active_app.value + 1)
+  },
+  {
+    combo: 'arrowup',
+    handler: () => focusApp(active_app.value - 3)
+  },
+  {
+    combo: 'arrowdown',
+    handler: () => focusApp(active_app.value + 3)
+  },
+  {
+    combo: 'enter',
+    handler: () => openApp()
+  }
+])
+
 onMounted(() => {
   if (active_app.value !== -1) {
     focusApp(active_app.value, false)
   }
-
-  shortcuts.register([
-    {
-      id: 'left',
-      combo: 'arrowleft',
-      description: 'Select app to the left',
-      handler: () => focusApp(active_app.value - 1)
-    },
-    {
-      id: 'right',
-      combo: 'arrowright',
-      description: 'Select app to the right',
-      handler: () => focusApp(active_app.value + 1)
-    },
-    {
-      id: 'up',
-      combo: 'arrowup',
-      description: 'Select app above',
-      handler: () => focusApp(active_app.value - 3)
-    },
-    {
-      id: 'down',
-      combo: 'arrowdown',
-      description: 'Select app below',
-      handler: () => focusApp(active_app.value + 3)
-    },
-    {
-      id: 'open-app',
-      combo: 'enter',
-      description: 'Open selected app',
-      handler: () => openApp()
-    }
-  ])
 })
 
 function focusApp(index: number, emit_hover_sfx = true) {
@@ -71,15 +61,10 @@ function focusApp(index: number, emit_hover_sfx = true) {
     meta.active_app_index = index
   }
 
-  const app = document.querySelectorAll('[data-testid="phone-app"]')[
-    active_app.value
-  ] as HTMLElement
-
+  const app = _getActiveApp()
   app?.focus()
 
-  if (emit_hover_sfx) {
-    emitHoverSfx('ui.pop_drip_mid')
-  }
+  if (emit_hover_sfx) _playHoverSfx()
 }
 
 function openApp(app?: PhoneApp) {
@@ -88,7 +73,7 @@ function openApp(app?: PhoneApp) {
 
   meta.active_app_index = apps.indexOf(found)
 
-  if (found.kind === 'widget') {
+  if (found.type === 'widget') {
     runtime?.getController(found.id)?.run?.()
   } else {
     phone_context.nav?.push(found, { transition: 'pop-up' })
@@ -102,12 +87,21 @@ function onHoverApp(app: PhoneApp) {
   const index = apps.indexOf(app)
   if (index === active_app.value) return
 
-  const found = document.querySelectorAll('[data-testid="phone-app"]')[
-    active_app.value
-  ] as HTMLElement
-
+  const found = _getActiveApp()
   meta.active_app_index = -1
   found?.blur()
+
+  _playHoverSfx()
+}
+
+function _playHoverSfx() {
+  if (!phone_context.nav.transitioning.value) {
+    emitHoverSfx('ui.pop_drip_mid')
+  }
+}
+
+function _getActiveApp() {
+  return document.querySelectorAll('[data-testid="phone-app"]')[active_app.value] as HTMLElement
 }
 </script>
 

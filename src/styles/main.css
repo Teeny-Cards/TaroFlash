@@ -7,6 +7,45 @@
 @import '@/styles/animations.css';
 @import '@/styles/markdown.css';
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* --color-white: #ad89d8; */
+
+    --color-blue-500: #0a7588;
+
+    --color-brown-700: #ede9df;
+    --color-brown-300: #756956;
+    --color-brown-100: #1c1c1c;
+
+    /*
+      --color-black: #000000;
+      --color-blue-900: #2d455e;
+      --color-blue-400: #68d1df;
+      --color-green-400: #a4c6ae;
+      --color-green-300: #e4edd9;
+      --color-green-200: #e8f6e7;
+      --color-purple-500: #ad89d8;
+      --color-purple-400: #bea0df;
+      --color-pink-500: #f388a5;
+      --color-pink-400: #f599b3;
+      --color-red-600: #d44c4c;
+      --color-red-500: #e66061;
+      --color-red-400: #f97b7b;
+      --color-red-300: #ffa399;
+      --color-orange-500: #fbc56f;
+      --color-orange-400: #f7d279;
+      --color-brown-900: #4a3b30;
+      --color-brown-500: #b8b1a9;
+      --color-brown-200: #ede9df;
+      --color-brown-50: #f9f8f5;
+      --color-grey-700: #4f4f4f;
+      --color-grey-500: #959595;
+      --color-grey-400: #b2b2b2;
+      --color-grey-300: #d2d2d2; 
+      */
+  }
+}
+
 @theme {
   --*: initial;
   --spacing: 4px;

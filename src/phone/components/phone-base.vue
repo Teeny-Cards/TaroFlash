@@ -35,7 +35,6 @@ const current_controller = computed(() => {
       <component
         v-if="current_app"
         :is="current_app.component"
-        :key="current_app.key"
         @controller="current_controller"
         @close="emit('close')"
       />
