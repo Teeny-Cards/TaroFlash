@@ -83,22 +83,23 @@ function setFillWidth(new_percent: number) {
     <div
       ref="fill"
       data-testid="ui-kit-slider__fill"
-      class="h-2.5 bg-brown-900 rounded-full relative flex items-center"
+      class="h-2.5 bg-brown-900 dark:bg-brown-300 rounded-full relative flex items-center"
     >
       <ui-tooltip
         data-testid="ui-kit-slider__thumb"
         :text="`${percent}%`"
         :visible="is_dragging"
         element="div"
-        class="absolute -right-6.5 w-5.5 h-5.5 bg-brown-900 rounded-full shrink-0 cursor-pointer hover:ring-8
-          hover:ring-brown-900 transition-all duration-75 z-10"
+        class="absolute -right-6.5 w-5.5 h-5.5 bg-brown-900 dark:bg-brown-300 rounded-full shrink-0
+          cursor-pointer hover:ring-8 hover:ring-brown-900 dark:hover:ring-brown-300 transition-all
+          duration-75 z-10"
         @mousedown="onDragStart"
       ></ui-tooltip>
     </div>
 
     <div
       data-testid="ui-kit-slider__track"
-      class="h-2.5 w-full bg-brown-100 rounded-full shrink"
+      class="h-2.5 w-full bg-brown-100 dark:bg-grey-900 rounded-full shrink"
     ></div>
 
     <!-- <div data-testid="ui-kit-slider__spinbox">

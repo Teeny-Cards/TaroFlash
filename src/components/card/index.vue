@@ -103,6 +103,8 @@ const back_image_url = computed(() => {
 .card-container {
   --min-element-height: 80px;
   --card-bg-color: var(--color-white);
+  --card-text-color: var(--color-brown-700);
+  --card-text-color--placeholder: var(--color-brown-500);
 
   aspect-ratio: var(--aspect-card);
   position: relative;
@@ -184,5 +186,35 @@ const back_image_url = computed(() => {
 }
 .card-container--brown {
   --card-bg-color: var(--color-brown-300);
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-container {
+    --card-bg-color: var(--color-black);
+    --card-text-color: var(--color-white);
+    --card-text-color--placeholder: var(--color-grey-900);
+  }
+
+  .card-container--green {
+    --card-bg-color: var(--color-green-400);
+  }
+  .card-container--blue {
+    --card-bg-color: var(--color-blue-400);
+  }
+  .card-container--purple {
+    --card-bg-color: var(--color-purple-400);
+  }
+  .card-container--pink {
+    --card-bg-color: var(--color-pink-400);
+  }
+  .card-container--red {
+    --card-bg-color: var(--color-red-400);
+  }
+  .card-container--orange {
+    --card-bg-color: var(--color-orange-400);
+  }
+  .card-container--brown {
+    --card-bg-color: var(--color-brown-300);
+  }
 }
 </style>

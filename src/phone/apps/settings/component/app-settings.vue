@@ -13,13 +13,18 @@ const rewards_volume = ref(50)
 
 <template>
   <div data-testid="app-settings" class="w-full h-full flex flex-col items-center gap-8">
-    <h1 class="text-6xl text-brown-700">{{ t('settings.app-settings.title') }}</h1>
+    <h1 class="text-6xl text-brown-700 dark:text-brown-300">
+      {{ t('settings.app-settings.title') }}
+    </h1>
 
     <div data-testid="app-settings__body" class="w-full h-full flex flex-col gap-20">
       <div data-testid="app-settings__audio" class="flex flex-col gap-8">
         <section-header>{{ t('settings.app-settings.audio.label') }}</section-header>
 
-        <div class="grid grid-cols-[auto_1fr] gap-y-8 gap-x-20 text-brown-700 select-none">
+        <div
+          class="grid grid-cols-[auto_1fr] gap-y-8 gap-x-20 text-brown-700 dark:text-brown-300
+            select-none"
+        >
           <h3>{{ t('settings.app-settings.audio.interface') }}</h3>
           <ui-slider
             :label="t('settings.app-settings.audio.interface')"

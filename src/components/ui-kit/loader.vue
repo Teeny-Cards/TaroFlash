@@ -11,8 +11,10 @@ const {
   burstDurationMs = 500,
   fadeMs = 120,
   loading,
+  immediate = false,
   loadingImage,
-  doneImage
+  doneImage,
+  delayMs = 200
 } = defineProps<{
   loadingImage: string
   doneImage?: string
@@ -21,9 +23,11 @@ const {
   loading?: boolean
   burstDurationMs?: number
   fadeMs?: number
+  delayMs?: number
+  immediate?: boolean
 }>()
 
-const phase = ref<'loading' | 'finishing' | 'done'>('loading')
+const phase = ref<'loading' | 'finishing' | 'done'>(!loading && immediate ? 'done' : 'loading')
 
 const showLoader = computed(() => phase.value !== 'done')
 
@@ -42,7 +46,7 @@ function clearFinishTimer() {
 }
 
 async function startFinishSequence() {
-  await new Promise((resolve) => setTimeout(resolve, 200))
+  await new Promise((resolve) => setTimeout(resolve, delayMs))
 
   clearFinishTimer()
   phase.value = 'finishing'
@@ -78,39 +82,37 @@ const loaderClasses = computed(() => [
 </script>
 
 <template>
-  <div class="ui-kit-loader-wrap">
-    <Transition name="ui-kit-loader-fade" appear mode="out-in">
-      <div v-if="showLoader" v-bind="$attrs" class="ui-kit-loader" :class="loaderClasses">
-        <ui-image
-          v-if="phase === 'loading'"
-          :src="loadingImage"
-          :size="size"
-          class="ui-kit-loader__image"
-        />
-        <ui-image
-          v-else
-          :src="doneImage ?? loadingImage"
-          :size="size"
-          class="ui-kit-loader__image"
-        />
+  <transition name="ui-kit-loader-fade" appear mode="out-in">
+    <div
+      v-if="showLoader"
+      v-bind="$attrs"
+      class="ui-kit-loader bg-(--loader-theme) dark:bg-(--loader-theme-dark)"
+      :class="loaderClasses"
+    >
+      <ui-image
+        v-if="phase === 'loading'"
+        :src="loadingImage"
+        :size="size"
+        class="ui-kit-loader__image"
+      />
+      <ui-image v-else :src="doneImage ?? loadingImage" :size="size" class="ui-kit-loader__image" />
 
-        <div class="burst">
-          <div class="spoke" style="--i: 0"><span class="dot"></span></div>
-          <div class="spoke" style="--i: 1"><span class="dot"></span></div>
-          <div class="spoke" style="--i: 2"><span class="dot"></span></div>
-          <div class="spoke" style="--i: 3"><span class="dot"></span></div>
-          <div class="spoke" style="--i: 4"><span class="dot"></span></div>
-          <div class="spoke" style="--i: 5"><span class="dot"></span></div>
-          <div class="spoke" style="--i: 6"><span class="dot"></span></div>
-          <div class="spoke" style="--i: 7"><span class="dot"></span></div>
-        </div>
+      <div class="burst">
+        <div class="spoke" style="--i: 0"><span class="dot"></span></div>
+        <div class="spoke" style="--i: 1"><span class="dot"></span></div>
+        <div class="spoke" style="--i: 2"><span class="dot"></span></div>
+        <div class="spoke" style="--i: 3"><span class="dot"></span></div>
+        <div class="spoke" style="--i: 4"><span class="dot"></span></div>
+        <div class="spoke" style="--i: 5"><span class="dot"></span></div>
+        <div class="spoke" style="--i: 6"><span class="dot"></span></div>
+        <div class="spoke" style="--i: 7"><span class="dot"></span></div>
       </div>
+    </div>
 
-      <div v-else class="contents">
-        <slot />
-      </div>
-    </Transition>
-  </div>
+    <div v-else class="contents">
+      <slot></slot>
+    </div>
+  </transition>
 </template>
 
 <style>
@@ -128,11 +130,6 @@ const loaderClasses = computed(() => [
   syntax: '<length>';
   inherits: true;
   initial-value: 0px;
-}
-
-.ui-kit-loader-wrap {
-  width: 100%;
-  height: 100%;
 }
 
 /* quick fade for content */
@@ -154,11 +151,9 @@ const loaderClasses = computed(() => [
   align-items: center;
   justify-content: center;
 
-  background-color: var(--theme);
-  position: relative;
+  z-index: 1000;
 }
 
-/* When LOADING: hide burst and shake image */
 .ui-kit-loader--loading .burst {
   display: none;
 }
@@ -168,28 +163,36 @@ const loaderClasses = computed(() => [
 
 /* themes */
 .ui-kit-loader--green {
-  --theme: var(--color-green-400);
+  --loader-theme: var(--color-green-400);
+  --loader-theme-dark: var(--color-green-500);
 }
 .ui-kit-loader--blue {
-  --theme: var(--color-blue-500);
+  --loader-theme: var(--color-blue-500);
+  --loader-theme-dark: var(--color-blue-500);
 }
 .ui-kit-loader--purple {
-  --theme: var(--color-purple-400);
+  --loader-theme: var(--color-purple-400);
+  --loader-theme-dark: var(--color-purple-500);
 }
 .ui-kit-loader--pink {
-  --theme: var(--color-pink-500);
+  --loader-theme: var(--color-pink-400);
+  --loader-theme-dark: var(--color-pink-500);
 }
 .ui-kit-loader--red {
-  --theme: var(--color-red-500);
+  --loader-theme: var(--color-red-400);
+  --loader-theme-dark: var(--color-red-500);
 }
 .ui-kit-loader--orange {
-  --theme: var(--color-orange-500);
+  --loader-theme: var(--color-orange-500);
+  --loader-theme-dark: var(--color-orange-500);
 }
 .ui-kit-loader--brown {
-  --theme: var(--color-brown-100);
+  --loader-theme: var(--color-brown-100);
+  --loader-theme-dark: var(--color-brown-900);
 }
 .ui-kit-loader--grey {
-  --theme: var(--color-grey-400);
+  --loader-theme: var(--color-grey-400);
+  --loader-theme-dark: var(--color-grey-500);
 }
 
 /* sizes (controls burst radius) */

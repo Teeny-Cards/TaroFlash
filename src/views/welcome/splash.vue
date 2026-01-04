@@ -68,7 +68,7 @@ const onLogin = (email: string, password: string) => {
       </ui-popover>
     </div>
 
-    <div class="flex w-full justify-center items-center gap-6 p-23">
+    <div class="flex w-full justify-center items-center gap-6 py-32">
       <div data-testid="welcome-view__content" class="flex flex-col items-center gap-7.5">
         <div class="flex flex-col gap-1.5">
           <h1 class="text-8xl text-brown-100 font-bold uppercase">{{ t('app.title') }}</h1>

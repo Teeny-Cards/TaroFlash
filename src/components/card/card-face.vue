@@ -34,8 +34,7 @@ const emit = defineEmits<{
       v-else
       :active="!!active"
       :data-testid="`card-face__text-editor__${side}`"
-      class="placeholder:text-brown-500 text-brown-700 h-full outline-none overflow-y-auto
-        scroll-hidden"
+      class="card-face__text-editor h-full outline-none overflow-y-auto scroll-hidden"
       :placeholder="placeholder"
       :delta="editor_delta"
       :disabled="mode !== 'edit'"
@@ -100,5 +99,12 @@ const emit = defineEmits<{
 .card-face[data-align='bottom'] .ql-editor {
   display: flex;
   align-items: flex-end;
+}
+
+.card-face__text-editor {
+  color: var(--card-text-color);
+}
+.card-face__text-editor::placeholder {
+  color: var(--card-text-color--placeholder);
 }
 </style>
