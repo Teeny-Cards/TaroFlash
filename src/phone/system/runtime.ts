@@ -1,6 +1,6 @@
 import { ref, shallowRef } from 'vue'
 import type { AppController, PhoneApp, PhoneContext } from './types'
-import type { PhoneNavigator, NavigateEvent } from './phone-navigator'
+import type { PhoneNavigator, NavigateEvent, TransitionPreset } from './phone-navigator'
 
 export type AppSession = {
   app: PhoneApp
@@ -27,7 +27,7 @@ export function createPhoneRuntime({ nav }: { nav: PhoneNavigator }) {
     }
   }
 
-  async function open(id: string) {
+  async function open(id: string, transition: TransitionPreset = 'slide-left') {
     const { app, controller } = _registry[id]
 
     // handle action-only apps
@@ -36,7 +36,7 @@ export function createPhoneRuntime({ nav }: { nav: PhoneNavigator }) {
       return
     }
 
-    const e = nav.push({ id })
+    const e = nav.push({ id, transition })
     _syncSession(e)
     await _loadApp(id)
   }

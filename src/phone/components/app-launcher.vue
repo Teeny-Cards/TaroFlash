@@ -72,6 +72,8 @@ function openApp(app?: PhoneApp) {
 
   active_app.value = apps.indexOf(found)
   phone.open(found.id)
+
+  if (found.type === 'widget') return
   emitSfx('ui.toggle_on')
 }
 

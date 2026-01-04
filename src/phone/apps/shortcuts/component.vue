@@ -6,7 +6,12 @@ const opening = ref(true)
 </script>
 
 <template>
-  <div class="w-full h-full rounded-[inherit] overflow-hidden">
-    <ui-loader image="shortcuts" size="lg" theme="orange" />
-  </div>
+  <ui-loader
+    loading-image="shortcuts"
+    done-image="shortcuts-hover"
+    theme="orange"
+    class="rounded-[inherit]"
+  >
+    <div class="w-full h-full bg-white rounded-[inherit]"></div>
+  </ui-loader>
 </template>

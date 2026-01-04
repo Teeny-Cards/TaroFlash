@@ -43,3 +43,46 @@ const controller = computed(() => {
     </transition>
   </div>
 </template>
+
+<style>
+/* App transitions */
+.slide-left-enter-active,
+.slide-right-enter-active,
+.pop-up-enter-active,
+.pop-down-enter-active,
+.slide-left-leave-active,
+.slide-right-leave-active,
+.pop-up-leave-active,
+.pop-down-leave-active {
+  transition-property: transform, opacity;
+  transition-timing-function: ease-in-out;
+  transition-duration: var(--duration);
+}
+
+.slide-left-leave-active,
+.slide-right-leave-active,
+.pop-up-leave-active,
+.pop-down-leave-active {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
+
+.slide-left-enter-from,
+.slide-right-leave-to {
+  transform: translateX(100%);
+}
+
+.slide-left-leave-to,
+.slide-right-enter-from {
+  transform: translateX(-100%);
+}
+
+.pop-down-enter-from,
+.pop-down-leave-to,
+.pop-up-enter-from,
+.pop-up-leave-to {
+  transform: scale(50%);
+  opacity: 0;
+}
+</style>
