@@ -1,24 +1,26 @@
 <script setup lang="ts">
-import { type PhoneNavigator, usePhoneNavigator } from '@/phone/system/phone-navigator'
+import { usePhoneNavigator } from '@/phone/system/phone-navigator'
 import { onMounted, ref, provide, computed } from 'vue'
 import { emitSfx } from '@/sfx/bus'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { installApps } from '@/phone/system/install-apps'
-import { type PhoneApp, type PhoneContext, type PhoneRuntime } from '@/phone/system/types'
+import { type PhoneApp, type PhoneContext } from '@/phone/system/types'
 import { createPhoneRuntime } from '@/phone/system/runtime'
 import phoneSm from '@/phone/components/phone-sm.vue'
 import phoneBase from '@/phone/components/phone-base.vue'
 import phoneLg from './components/phone-lg.vue'
 import { useI18n } from 'vue-i18n'
 
-const nav: PhoneNavigator = usePhoneNavigator()
+const nav = usePhoneNavigator()
 const shortcuts = useShortcuts('phone', { priority: 'background' })
+const runtime = createPhoneRuntime({ nav })
 
+const transitioning = ref(false)
+const loading = ref(false)
 const open = ref(false)
-const apps = ref<PhoneApp[]>([])
-const runtime = ref<PhoneRuntime | undefined>(undefined)
+const ctx: PhoneContext = { ...runtime.phoneOS, t: useI18n().t }
+let apps: PhoneApp[] = []
 
-const ctx: PhoneContext = { nav, t: useI18n().t }
 provide('phone-context', ctx)
 
 shortcuts.register({
@@ -27,12 +29,17 @@ shortcuts.register({
 })
 
 onMounted(async () => {
-  apps.value = await installApps()
-  runtime.value = createPhoneRuntime(apps.value, ctx)
+  loading.value = true
+  apps = await installApps()
+  runtime.init(apps, ctx)
+  loading.value = false
 })
 
 const fullscreen = computed(() => {
-  return nav.top.value?.display === 'full'
+  const { app } = runtime.active_session.value ?? {}
+
+  if (app?.type === 'widget') return false
+  return app?.display === 'full'
 })
 
 function togglePhone() {
@@ -44,19 +51,20 @@ function togglePhone() {
 }
 
 function openPhone() {
+  if (loading.value) return
+
   open.value = true
   emitSfx('ui.pop_window')
 }
 
 function closePhone() {
-  if (nav.can_go_back.value) {
-    nav.pop()
+  if (runtime.active_session.value) {
+    runtime.phoneOS.close()
     emitSfx('ui.toggle_off')
     return
   }
 
   open.value = false
-  nav.reset()
   emitSfx('ui.pop_window')
 }
 </script>
@@ -70,21 +78,31 @@ function closePhone() {
       data-testid="phone-dock"
       class="w-full max-w-(--page-width) flex items-center justify-center mx-4 sm:mx-10 relative"
     >
-      <transition name="phone-open">
-        <phone-base
-          v-if="open && !fullscreen"
-          :apps="apps"
-          :runtime="runtime"
-          @close="closePhone"
-        ></phone-base>
-      </transition>
+      <keep-alive>
+        <transition name="phone-open">
+          <phone-base
+            v-if="open && !fullscreen"
+            :apps="apps"
+            :transition="nav.transition.value"
+            :transitioning="transitioning"
+            :active_session="runtime.active_session.value"
+            @close="closePhone"
+          ></phone-base>
+        </transition>
+      </keep-alive>
 
       <transition
         name="phone-close"
-        @before-enter="nav.transitioning.value = true"
-        @after-leave="nav.transitioning.value = false"
+        @before-enter="transitioning = true"
+        @after-leave="transitioning = false"
       >
-        <phone-lg v-if="open && fullscreen" @close="closePhone" class="z-10"></phone-lg>
+        <phone-lg
+          v-if="open && fullscreen"
+          :active_session="runtime.active_session.value"
+          @close="closePhone"
+          class="z-10"
+        ></phone-lg>
+
         <phone-sm v-else-if="!open" @open="openPhone"></phone-sm>
       </transition>
 

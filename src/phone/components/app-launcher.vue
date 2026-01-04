@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { inject, onMounted, computed } from 'vue'
+import { inject, onMounted, ref } from 'vue'
 import App from '@/phone/components/app.vue'
-import { type PhoneApp, type PhoneContext, type PhoneRuntime } from '@/phone/system/types'
+import { type PhoneApp, type PhoneContext } from '@/phone/system/types'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { emitHoverSfx, emitSfx } from '@/sfx/bus'
 
-const { apps, runtime } = defineProps<{
+const { apps, transitioning } = defineProps<{
   apps: PhoneApp[]
-  runtime?: PhoneRuntime
+  transitioning: boolean
 }>()
 
 const emit = defineEmits<{
@@ -17,9 +17,8 @@ const emit = defineEmits<{
 
 const shortcuts = useShortcuts('phone/app-launcher')
 
-const phone_context = inject<PhoneContext>('phone-context')!
-const meta = phone_context.nav.meta
-const active_app = computed(() => phone_context.nav.meta.active_app_index)
+const phone = inject<PhoneContext>('phone-context')!
+const active_app = ref(-1)
 
 shortcuts.register([
   {
@@ -52,13 +51,13 @@ onMounted(() => {
 
 function focusApp(index: number, emit_hover_sfx = true) {
   if (index < 0) {
-    meta.active_app_index = apps.length - 1 // start from end
+    active_app.value = apps.length - 1 // start from end
   } else if (active_app.value === -1) {
-    meta.active_app_index = 0 // start from beginning
+    active_app.value = 0 // start from beginning
   } else if (index >= apps.length) {
-    meta.active_app_index = 0 // wrap to beginning
+    active_app.value = 0 // wrap to beginning
   } else {
-    meta.active_app_index = index
+    active_app.value = index
   }
 
   const app = _getActiveApp()
@@ -69,16 +68,11 @@ function focusApp(index: number, emit_hover_sfx = true) {
 
 function openApp(app?: PhoneApp) {
   const found = app ?? apps[active_app.value]
-  if (!found || !phone_context) return
+  if (!found || !phone) return
 
-  meta.active_app_index = apps.indexOf(found)
-
-  if (found.type === 'widget') {
-    runtime?.getController(found.id)?.run?.()
-  } else {
-    phone_context.nav?.push(found, { transition: 'pop-up' })
-    emitSfx('ui.toggle_on')
-  }
+  active_app.value = apps.indexOf(found)
+  phone.open(found.id)
+  emitSfx('ui.toggle_on')
 }
 
 // If the hovered app is not the active app,
@@ -88,14 +82,14 @@ function onHoverApp(app: PhoneApp) {
   if (index === active_app.value) return
 
   const found = _getActiveApp()
-  meta.active_app_index = -1
+  active_app.value = -1
   found?.blur()
 
   _playHoverSfx()
 }
 
 function _playHoverSfx() {
-  if (!phone_context.nav.transitioning.value) {
+  if (!transitioning) {
     emitHoverSfx('ui.pop_drip_mid')
   }
 }
@@ -123,6 +117,7 @@ function _getActiveApp() {
     >
       <app
         v-for="app in apps"
+        :id="app.id"
         :key="app.id"
         :app="app"
         @click="openApp(app)"
