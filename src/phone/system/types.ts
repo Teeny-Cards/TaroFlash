@@ -1,12 +1,11 @@
 import type { Component } from 'vue'
-import type { PhoneNavigator } from './phone-navigator'
 import { createPhoneRuntime } from './runtime'
 import { useI18n } from 'vue-i18n'
 
 export type PhoneAppDisplay = 'full' | 'panel'
+export type MountPolicy = 'immediate' | 'lazy'
 
-export type PhoneContext = {
-  nav: PhoneNavigator
+export type PhoneContext = PhoneOS & {
   t: ReturnType<typeof useI18n>['t']
 }
 
@@ -20,6 +19,7 @@ type BaseApp<TController extends AppController = AppController> = {
   id: string
   title: string
   launcher: LauncherConfig
+  mount_policy?: MountPolicy
   controller?: (ctx: PhoneContext) => TController
 }
 
@@ -42,3 +42,4 @@ export type AppController = {
 export type PhoneApp = ViewApp | WidgetApp
 export type Manifest = Omit<ViewApp, 'id'> | Omit<WidgetApp, 'id'>
 export type PhoneRuntime = ReturnType<typeof createPhoneRuntime>
+export type PhoneOS = PhoneRuntime['phoneOS']

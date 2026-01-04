@@ -1,28 +1,20 @@
-import { ref, computed, reactive } from 'vue'
-import { type PhoneAppDisplay, type PhoneApp } from './types'
+import { ref } from 'vue'
 
 export type TransitionPreset = 'slide-left' | 'slide-right' | 'pop-up' | 'pop-down' | 'none'
 
-type NavAction = 'push' | 'pop' | 'replace'
+export type PhoneRoute = { id: string; params?: any; transition?: TransitionPreset }
 
-export type NavigationEntry = {
-  display?: PhoneAppDisplay
-  component?: any
-  forwardPreset: TransitionPreset
-  id: string
+export type NavigateEvent = {
+  reason: 'push' | 'pop' | 'reset' | 'replace'
+  from: PhoneRoute | null
+  to: PhoneRoute | null
 }
 
 export type PhoneNavigator = ReturnType<typeof usePhoneNavigator>
 
-export type PhoneNavigatorOptions = {
-  default_preset?: TransitionPreset
-}
+const DEFAULT_TRANSITION = 'slide-left'
 
-type NavigationOptions = {
-  transition?: TransitionPreset
-}
-
-const reverse_preset: { [key in TransitionPreset]: TransitionPreset } = {
+const reverse_transition: { [key in TransitionPreset]: TransitionPreset } = {
   'slide-left': 'slide-right',
   'slide-right': 'slide-left',
   'pop-up': 'pop-down',
@@ -30,80 +22,63 @@ const reverse_preset: { [key in TransitionPreset]: TransitionPreset } = {
   none: 'none'
 }
 
-export function usePhoneNavigator(opts: PhoneNavigatorOptions = {}) {
-  const default_preset = opts.default_preset ?? 'slide-left'
+export function usePhoneNavigator() {
+  const stack = ref<PhoneRoute[]>([])
+  const transition = ref<TransitionPreset>(DEFAULT_TRANSITION)
 
-  const stack = ref<NavigationEntry[]>([])
-  const transitionName = ref<TransitionPreset>(default_preset)
-  const lastAction = ref<NavAction>('push')
-  const transitioning = ref(false)
+  function top() {
+    return stack.value.at(-1) ?? null
+  }
 
-  const meta = reactive({
-    active_app_index: -1
-  })
-
-  const top = computed(() => stack.value[stack.value.length - 1] ?? null)
-  const can_go_back = computed(() => stack.value.length > 0)
-
-  function _makeEntry(app: PhoneApp, opts: NavigationOptions = {}): NavigationEntry {
-    const component = app.type === 'view' ? app.component : undefined
-    const display = app.type === 'view' ? app.display : undefined
-
-    return {
-      component,
-      display,
-      forwardPreset: opts.transition ?? default_preset,
-      id: app.id
+  function push(r: PhoneRoute): NavigateEvent {
+    const from = top()
+    const route = {
+      ...r,
+      transition: r.transition ?? DEFAULT_TRANSITION
     }
+
+    transition.value = route.transition
+    stack.value.push(route)
+    return { reason: 'push', from, to: route }
   }
 
-  function resetTo(app: PhoneApp, opts?: NavigationOptions) {
-    transitionName.value = opts?.transition ?? default_preset
-    lastAction.value = 'push'
-    stack.value.splice(0, stack.value.length, _makeEntry(app, opts))
-  }
-
-  function push(app: PhoneApp, opts?: NavigationOptions) {
-    transitionName.value = opts?.transition ?? default_preset
-    lastAction.value = 'push'
-    stack.value.push(_makeEntry(app, opts))
-  }
-
-  function replace(app: PhoneApp, opts?: NavigationOptions) {
-    transitionName.value = opts?.transition ?? reverse_preset[top.value?.forwardPreset]
-    lastAction.value = 'replace'
-
-    if (stack.value.length) stack.value.pop()
-    stack.value.push(_makeEntry(app, opts))
-  }
-
-  function pop(transition_preset?: TransitionPreset) {
-    if (stack.value.length <= 0) return
-
-    lastAction.value = 'pop'
-    transitionName.value = transition_preset ?? reverse_preset[top.value?.forwardPreset]
+  function pop(): NavigateEvent {
+    const from = top()
     stack.value.pop()
+    const to = top()
+
+    transition.value = from?.transition ? reverse_transition[from.transition] : DEFAULT_TRANSITION
+    return { reason: 'pop', from, to }
   }
 
-  function reset() {
-    meta.active_app_index = -1
+  function reset(): NavigateEvent {
+    const from = top()
     stack.value = []
-    transitionName.value = default_preset
-    lastAction.value = 'push'
+    transition.value = DEFAULT_TRANSITION
+
+    return { reason: 'reset', from, to: null }
+  }
+
+  function replace(r: PhoneRoute): NavigateEvent {
+    const from = top()
+    if (stack.value.length) stack.value.pop()
+
+    const route = {
+      ...r,
+      transition: r.transition ?? DEFAULT_TRANSITION
+    }
+
+    stack.value.push(route)
+    return { reason: 'replace', from, to: route }
   }
 
   return {
     stack,
-    transitionName,
-    lastAction,
-    transitioning,
+    transition,
     top,
-    can_go_back,
-    meta,
-    resetTo,
     push,
-    replace,
     pop,
-    reset
+    reset,
+    replace
   }
 }

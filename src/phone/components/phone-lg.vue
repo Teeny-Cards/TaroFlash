@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { type PhoneContext } from '@/phone/system/types'
-import { computed, inject } from 'vue'
+import { type AppSession } from '@/phone/system/runtime'
+import { computed } from 'vue'
+
+const { active_session } = defineProps<{
+  active_session: AppSession | null
+}>()
 
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-const phone_context = inject<PhoneContext>('phone-context')
-const nav = phone_context?.nav
-
-const current_app = computed(() => nav?.top.value)
+const current_app = computed(() => {
+  return active_session?.app.type === 'view' ? active_session.app : null
+})
 </script>
 
 <template>
