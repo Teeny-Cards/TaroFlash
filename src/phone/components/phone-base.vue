@@ -28,8 +28,8 @@ const controller = computed(() => {
 <template>
   <div
     data-testid="phone-base"
-    class="absolute top-0 right-0 pointer-events-auto w-60 h-89.5 bg-brown-300 shadow-sm rounded-16
-      translate-y-7 overflow-hidden"
+    class="absolute top-0 right-0 pointer-events-auto w-60 h-89.5 bg-brown-300 dark:bg-grey-700
+      shadow-sm rounded-16 translate-y-7 overflow-hidden"
   >
     <app-launcher v-if="!app" :apps="apps" :transitioning="transitioning" @close="emit('close')" />
 

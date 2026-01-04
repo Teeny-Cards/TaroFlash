@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import UiLoader from '@/components/ui-kit/loader.vue'
-
-const opening = ref(true)
 </script>
 
 <template>

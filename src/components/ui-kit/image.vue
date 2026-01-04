@@ -14,7 +14,6 @@ const raster = import.meta.glob('../../assets/images/*.{png,jpg,jpeg}', {
   import: 'default'
 })
 
-// SVG → force URL
 const svgs = import.meta.glob('../../assets/images/*.svg', {
   query: '?url',
   import: 'default'

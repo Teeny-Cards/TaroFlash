@@ -224,6 +224,8 @@ watch(
 
 <style>
 .card-list-item {
+  --card-list-item-bg: transparent;
+
   position: relative;
 
   display: grid;
@@ -233,14 +235,15 @@ watch(
 
   width: 100%;
   border-radius: 24px;
+  background-color: var(--card-list-item-bg);
 
   transition: background-color 0.1s ease-in-out;
 }
 .card-list-item.active {
-  background-color: var(--color-brown-300);
+  --card-list-item-bg: var(--color-brown-300);
 }
 .card-list-item:not(.active):hover {
-  background-color: var(--color-brown-200);
+  --card-list-item-bg: var(--color-brown-200);
 }
 
 .card-list-item__options {
@@ -282,5 +285,14 @@ watch(
 }
 .card-list__button:hover {
   outline-color: var(--color-brown-300) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-list-item.active {
+    --card-list-item-bg: var(--color-blue-900);
+  }
+  .card-list-item:not(.active):hover {
+    --card-list-item-bg: var(--color-grey-700);
+  }
 }
 </style>

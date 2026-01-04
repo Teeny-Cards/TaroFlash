@@ -1,3 +1,12 @@
+<script setup lang="ts">
+import { RouterView } from 'vue-router'
+import { useToast } from '@/composables/toast'
+import UiToast from '@/components/ui-kit/toast.vue'
+import UiModal from '@/components/ui-kit/modal.vue'
+
+const { toasts } = useToast()
+</script>
+
 <template>
   <router-view />
 
@@ -8,22 +17,4 @@
   <teleport to="[data-testid='app-modal-container']">
     <ui-modal />
   </teleport>
-
-  <div
-    v-if="sessionStore.isLoading"
-    class="absolute inset-0 z-100 flex items-center justify-center bg-green-400"
-  >
-    Loading
-  </div>
 </template>
-
-<script setup lang="ts">
-import { RouterView } from 'vue-router'
-import { useToast } from '@/composables/toast'
-import { useSessionStore } from '@/stores/session'
-import UiToast from '@/components/ui-kit/toast.vue'
-import UiModal from '@/components/ui-kit/modal.vue'
-
-const sessionStore = useSessionStore()
-const { toasts } = useToast()
-</script>
