@@ -1,34 +1,115 @@
 <script lang="ts" setup>
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import UiImage from '@/components/ui-kit/image.vue'
+import { emitSfx } from '@/sfx/bus'
+
+type LoaderSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl'
 
 const {
-  image,
   size = 'base',
-  theme = 'green'
+  theme = 'green',
+  burstDurationMs = 500,
+  fadeMs = 120,
+  loading,
+  loadingImage,
+  doneImage
 } = defineProps<{
-  image: string
-  size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl'
-  theme?: 'green' | 'blue' | 'purple' | 'pink' | 'red' | 'orange' | 'brown' | 'grey'
+  loadingImage: string
+  doneImage?: string
+  size?: LoaderSize
+  theme?: MemberTheme
+  loading?: boolean
+  burstDurationMs?: number
+  fadeMs?: number
 }>()
+
+const phase = ref<'loading' | 'finishing' | 'done'>('loading')
+
+const showLoader = computed(() => phase.value !== 'done')
+
+let finishTimer: number | null = null
+
+onMounted(() => {
+  document.documentElement.style.setProperty('--burst-dur', `${burstDurationMs}ms`)
+  document.documentElement.style.setProperty('--fade-ms', `${fadeMs}ms`)
+})
+
+function clearFinishTimer() {
+  if (finishTimer != null) {
+    window.clearTimeout(finishTimer)
+    finishTimer = null
+  }
+}
+
+async function startFinishSequence() {
+  await new Promise((resolve) => setTimeout(resolve, 200))
+
+  clearFinishTimer()
+  phase.value = 'finishing'
+  emitSfx('ui.negative_pop')
+
+  finishTimer = window.setTimeout(() => {
+    phase.value = 'done'
+    finishTimer = null
+  }, burstDurationMs)
+}
+
+watch(
+  () => loading,
+  (isLoading) => {
+    if (isLoading) {
+      clearFinishTimer()
+      phase.value = 'loading'
+      return
+    }
+    if (phase.value !== 'done') startFinishSequence()
+  },
+  { immediate: true }
+)
+
+onBeforeUnmount(() => {
+  clearFinishTimer()
+})
+
+const loaderClasses = computed(() => [
+  `ui-kit-loader--${theme} ui-kit-loader--${size}`,
+  { 'ui-kit-loader--loading': phase.value === 'loading' }
+])
 </script>
 
 <template>
-  <div class="ui-kit-loader" :class="`ui-kit-loader--${theme} ui-kit-loader--${size}`">
-    <ui-image :src="image" :size="size" />
-    <div class="burst">
-      <div class="spoke" style="--i: 0"><span class="dot"></span></div>
-      <div class="spoke" style="--i: 1"><span class="dot"></span></div>
-      <div class="spoke" style="--i: 2"><span class="dot"></span></div>
-      <div class="spoke" style="--i: 3"><span class="dot"></span></div>
-      <div class="spoke" style="--i: 4"><span class="dot"></span></div>
-      <div class="spoke" style="--i: 5"><span class="dot"></span></div>
-      <div class="spoke" style="--i: 6"><span class="dot"></span></div>
-      <div class="spoke" style="--i: 7"><span class="dot"></span></div>
-    </div>
-  </div>
+  <div class="ui-kit-loader-wrap">
+    <Transition name="ui-kit-loader-fade" appear mode="out-in">
+      <div v-if="showLoader" v-bind="$attrs" class="ui-kit-loader" :class="loaderClasses">
+        <ui-image
+          v-if="phase === 'loading'"
+          :src="loadingImage"
+          :size="size"
+          class="ui-kit-loader__image"
+        />
+        <ui-image
+          v-else
+          :src="doneImage ?? loadingImage"
+          :size="size"
+          class="ui-kit-loader__image"
+        />
 
-  <div class="contents">
-    <slot></slot>
+        <div class="burst">
+          <div class="spoke" style="--i: 0"><span class="dot"></span></div>
+          <div class="spoke" style="--i: 1"><span class="dot"></span></div>
+          <div class="spoke" style="--i: 2"><span class="dot"></span></div>
+          <div class="spoke" style="--i: 3"><span class="dot"></span></div>
+          <div class="spoke" style="--i: 4"><span class="dot"></span></div>
+          <div class="spoke" style="--i: 5"><span class="dot"></span></div>
+          <div class="spoke" style="--i: 6"><span class="dot"></span></div>
+          <div class="spoke" style="--i: 7"><span class="dot"></span></div>
+        </div>
+      </div>
+
+      <div v-else class="contents">
+        <slot />
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -49,17 +130,43 @@ const {
   initial-value: 0px;
 }
 
+.ui-kit-loader-wrap {
+  width: 100%;
+  height: 100%;
+}
+
+/* quick fade for content */
+.ui-kit-loader-fade-enter-active,
+.ui-kit-loader-fade-leave-active {
+  transition: opacity var(--fade-ms, 120ms) ease;
+}
+.ui-kit-loader-fade-enter-from,
+.ui-kit-loader-fade-leave-to {
+  opacity: 0;
+}
+
 .ui-kit-loader {
   width: 100%;
   height: 100%;
 
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 
   background-color: var(--theme);
   position: relative;
 }
+
+/* When LOADING: hide burst and shake image */
+.ui-kit-loader--loading .burst {
+  display: none;
+}
+.ui-kit-loader--loading .ui-kit-loader__image {
+  animation: shake 1s ease-in-out infinite;
+}
+
+/* themes */
 .ui-kit-loader--green {
   --theme: var(--color-green-400);
 }
@@ -85,6 +192,7 @@ const {
   --theme: var(--color-grey-400);
 }
 
+/* sizes (controls burst radius) */
 .ui-kit-loader--xs {
   --radius-start: 10px;
   --radius-end: 20px;
@@ -109,12 +217,11 @@ const {
 .burst {
   --n: 8;
   --dot-size: 6px;
-  --dur: 500ms;
 
   --spoke-min: var(--dot-size);
   --spoke-max: 25px;
 
-  animation: burstProgress var(--dur) ease-out infinite;
+  animation: burstProgress var(--burst-dur) ease-out forwards;
 
   --radius: calc(var(--radius-start) + (var(--radius-end) - var(--radius-start)) * var(--p));
   --tri: min(calc(2 * var(--p)), calc(2 - 2 * var(--p)));
@@ -153,12 +260,19 @@ const {
   background: white;
   border-radius: 9999px;
 
-  /* Anchor at center for phase 1 (grow outward from center) */
   transform-origin: 50% 0%;
   translate: calc(-0.5 * var(--dot-size)) 0;
-
-  /* Push the base of the spoke out to current radius */
   transform: translateY(var(--radius));
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
 }
 
 @keyframes burstProgress {
