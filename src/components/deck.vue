@@ -43,7 +43,7 @@ function onStudyClicked() {
     </deck-preview>
 
     <div>
-      <h2 class="text-md text-brown-700">{{ deck.title }}</h2>
+      <h2 class="text-md text-brown-700 dark:text-brown-300">{{ deck.title }}</h2>
     </div>
   </div>
 </template>

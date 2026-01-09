@@ -188,7 +188,7 @@ const loaderClasses = computed(() => [
 }
 .ui-kit-loader--brown {
   --loader-theme: var(--color-brown-100);
-  --loader-theme-dark: var(--color-brown-900);
+  --loader-theme-dark: var(--color-brown-800);
 }
 .ui-kit-loader--grey {
   --loader-theme: var(--color-grey-400);
