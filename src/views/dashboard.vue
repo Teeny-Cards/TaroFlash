@@ -68,7 +68,9 @@ async function onCreateDeckClicked() {
 <template>
   <div data-testid="dashboard" class="flex h-full flex-col gap-16">
     <div class="flex flex-col gap-4">
-      <h1 class="text-brown-700 text-3xl">{{ t('dashboard.due') }} ({{ due_card_count }})</h1>
+      <h1 class="text-brown-700 dark:text-brown-300 text-3xl">
+        {{ t('dashboard.due') }} ({{ due_card_count }})
+      </h1>
       <div class="flex gap-4">
         <Deck
           v-for="(deck, index) in due_decks"
@@ -81,7 +83,7 @@ async function onCreateDeckClicked() {
     </div>
 
     <div class="flex flex-col gap-4">
-      <h1 class="text-brown-700 text-3xl">{{ t('dashboard.all') }}</h1>
+      <h1 class="text-brown-700 dark:text-brown-300 text-3xl">{{ t('dashboard.all') }}</h1>
       <div class="flex gap-4">
         <Deck
           v-for="(deck, index) in decks"

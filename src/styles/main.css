@@ -7,26 +7,21 @@
 @import '@/styles/animations.css';
 @import '@/styles/markdown.css';
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-blue-900: #1b2a3a;
-    --color-blue-500: #0a7588;
-  }
-}
-
 @theme {
   --*: initial;
   --spacing: 4px;
 
   --color-white: #ffffff;
   --color-black: #000000;
-  --color-blue-900: #2d455e;
+  --color-blue-900: #1b2a3a;
+  --color-blue-800: #2d455e;
+  --color-blue-650: #0a7588;
   --color-blue-500: #11b7d4;
   --color-blue-400: #68d1df;
   --color-green-400: #a4c6ae;
   --color-green-300: #e4edd9;
   --color-green-200: #e8f6e7;
-  --color-purple-900: #675694;
+  --color-purple-700: #675694;
   --color-purple-500: #ad89d8;
   --color-purple-400: #bea0df;
   --color-pink-500: #f388a5;
@@ -37,7 +32,7 @@
   --color-red-300: #ffa399;
   --color-orange-500: #fbc56f;
   --color-orange-400: #f7d279;
-  --color-brown-900: #4a3b30;
+  --color-brown-800: #4a3b30;
   --color-brown-700: #744e2a;
   --color-brown-500: #b8b1a9;
   --color-brown-300: #e7e0d5;
@@ -178,6 +173,7 @@
   html {
     font-family: var(--font-primary);
     font-size: var(--text-base);
+    line-height: var(--text-sm--line-height);
     scrollbar-width: none;
   }
 
@@ -186,6 +182,7 @@
     max-width: var(--page-width);
     padding: 0 4rem;
   }
+
   @media (width >= 40rem) {
     .app-container {
       padding: 0 16rem;

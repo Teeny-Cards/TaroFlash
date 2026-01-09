@@ -190,9 +190,9 @@ const back_image_url = computed(() => {
 
 @media (prefers-color-scheme: dark) {
   .card-container {
-    --card-bg-color: var(--color-black);
-    --card-text-color: var(--color-white);
-    --card-text-color--placeholder: var(--color-grey-900);
+    --card-bg-color: var(--color-brown-300);
+    --card-text-color: var(--color-brown-800);
+    --card-text-color--placeholder: var(--color-brown-500);
   }
 
   .card-container--green {

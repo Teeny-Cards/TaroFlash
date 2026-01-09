@@ -36,7 +36,7 @@ const tabs: { [key in SettingsPage]: any } = {
 
         <div
           datat-testid="settings__side-bar"
-          class="absolute -left-9 top-36.5 bg-blue-900 dark:bg-brown-300 rounded-7.5
+          class="absolute -left-9 top-36.5 bg-blue-800 dark:bg-brown-300 rounded-7.5
             outline-brown-300 dark:outline-blue-900 outline-12 flex flex-col items-center
             justify-center gap-3.5 px-3 py-6"
         >
@@ -98,7 +98,7 @@ const tabs: { [key in SettingsPage]: any } = {
 
 .settings__side-bar__item.selected {
   background-color: var(--color-brown-100);
-  color: var(--color-blue-900);
+  color: var(--color-blue-800);
 }
 
 @media (prefers-color-scheme: dark) {

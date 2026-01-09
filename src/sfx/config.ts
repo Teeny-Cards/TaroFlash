@@ -6,15 +6,21 @@ export const AUDIO_CONFIG = createAudioConfig({
       default_volume: 0.3
     },
     chime_short_chord_up: {},
-    click_04: {},
-    click_07: {},
+    click_04: {
+      default_volume: 0.1
+    },
+    click_07: {
+      default_volume: 0.1
+    },
     digi_powerdown: {},
     double_pop_down: {},
     double_pop_up: {},
     etc_camera_reel: {},
     etc_camera_shutter: {},
     etc_woodblock_stuck: {},
-    pop_drip_mid: {},
+    pop_drip_mid: {
+      default_volume: 0.3
+    },
     pop_window: {
       default_volume: 0.3
     },
@@ -24,7 +30,7 @@ export const AUDIO_CONFIG = createAudioConfig({
     trash_crumple_short: {},
     negative_pop: {
       ext: 'mp3',
-      default_volume: 0.3
+      default_volume: 0.5
     },
     select: {
       default_volume: 0.3

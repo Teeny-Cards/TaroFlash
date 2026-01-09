@@ -76,7 +76,7 @@ onDeactivate(() => {
     </div>
 
     <div class="h-full flex items-center">
-      <div class="h-8 border-r border-brown-900"></div>
+      <div class="h-8 border-r border-brown-800"></div>
     </div>
 
     <bg-color-selector :color="selection_format?.color" @select="cardBgColor" />

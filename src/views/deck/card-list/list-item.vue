@@ -123,7 +123,7 @@ watch(
     @click="onClick"
   >
     <button
-      class="sm:flex items-center justify-center w-12 h-12 rounded-full text-lg text-brown-900
+      class="sm:flex items-center justify-center w-12 h-12 rounded-full text-lg text-brown-800
         cursor-grab hidden"
       :class="{ 'bg-brown-300': !active, 'bg-brown-100': active }"
       @click.stop
@@ -289,7 +289,7 @@ watch(
 
 @media (prefers-color-scheme: dark) {
   .card-list-item.active {
-    --card-list-item-bg: var(--color-blue-900);
+    --card-list-item-bg: var(--color-blue-650);
   }
   .card-list-item:not(.active):hover {
     --card-list-item-bg: var(--color-grey-700);

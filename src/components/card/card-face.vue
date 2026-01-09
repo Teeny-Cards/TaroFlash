@@ -104,7 +104,7 @@ const emit = defineEmits<{
 .card-face__text-editor {
   color: var(--card-text-color);
 }
-.card-face__text-editor::placeholder {
+.card-face__text-editor .ql-blank::before {
   color: var(--card-text-color--placeholder);
 }
 </style>

@@ -34,9 +34,9 @@ const font_size_map: { [key: string]: number } = {
     <template #trigger>
       <button
         @click="open = !open"
-        class="flex gap-1 items-center px-3 py-1 h-full rounded-4 bg-brown-100 cursor-pointer transition-colors
-          duration-75"
-        :class="{ 'rounded-t-1 bg-purple-500 text-brown-100': open, 'text-brown-900': !open }"
+        class="flex gap-1 items-center px-3 py-1 h-full rounded-4 bg-brown-100 cursor-pointer
+          transition-colors duration-75"
+        :class="{ 'rounded-t-1 bg-purple-500 text-brown-100': open, 'text-brown-800': !open }"
       >
         {{ selected_font_size }}
         <ui-icon src="carat-down" />

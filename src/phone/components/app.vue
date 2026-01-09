@@ -57,7 +57,7 @@ defineProps<{ app: PhoneApp }>()
 }
 .theme-brown {
   --app-theme: var(--color-brown-100);
-  --app-theme-dark: var(--color-brown-900);
+  --app-theme-dark: var(--color-brown-800);
 }
 
 .phone-app:hover,
