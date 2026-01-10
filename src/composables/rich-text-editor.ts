@@ -97,36 +97,14 @@ export function useRichTextEditor() {
 
     if (delta) {
       q.setContents(delta, Quill.sources.API)
+
+      if (_isWhitespaceOnly(q)) {
+        _resetToEmpty(q)
+      }
     }
 
     if (!options.readOnly) {
-      q.on('editor-change', (eventName: string, ...args: any[]) =>
-        _onEditorChanged(q, eventName, ...args)
-      )
-      q.on('text-change', _onTextChange)
-      q.root.addEventListener('mouseup', () => _syncSelection(q))
-      q.root.addEventListener('keyup', (e: KeyboardEvent) => {
-        // especially important for Shift+Up/Down
-        if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'Shift') {
-          // next frame to let the browser update selection/layout
-          requestAnimationFrame(() => _syncSelection(q))
-        }
-      })
-      q.root.addEventListener('keydown', (e: KeyboardEvent) => {
-        const isSelectAll = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'a'
-        if (!isSelectAll) return
-
-        setTimeout(() => {
-          _syncSelection(q)
-          const r = q.getSelection()
-          if (r) _onEditorChanged(q, 'selection-change', r)
-        }, 10)
-      })
-      q.on('image-delete', (id: string) => {
-        const images = removed_images_per_quill.get(q) ?? new Set()
-        images.add(id)
-        removed_images_per_quill.set(q, images)
-      })
+      _attachListeners(q)
     }
   }
 
@@ -253,6 +231,51 @@ export function useRichTextEditor() {
       last_range.value = r
       selection_format.value = q.getFormat(r)
     }
+  }
+
+  function _isWhitespaceOnly(quill: Quill) {
+    // Quill always has a trailing newline.
+    // If everything except the final newline is whitespace, treat as empty.
+    const text = quill.getText() // includes trailing '\n'
+    return text.replace(/\n$/, '').trim().length === 0
+  }
+
+  function _resetToEmpty(quill: Quill) {
+    // This is the canonical “empty editor” state for Quill
+    quill.setContents([{ insert: '\n' }], Quill.sources.API)
+  }
+
+  function _attachListeners(q: Quill) {
+    q.on('editor-change', (eventName: string, ...args: any[]) =>
+      _onEditorChanged(q, eventName, ...args)
+    )
+    q.on('text-change', _onTextChange)
+    q.root.addEventListener('mouseup', () => _syncSelection(q))
+
+    q.root.addEventListener('keyup', (e: KeyboardEvent) => {
+      // especially important for Shift+Up/Down
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'Shift') {
+        // next frame to let the browser update selection/layout
+        requestAnimationFrame(() => _syncSelection(q))
+      }
+    })
+
+    q.root.addEventListener('keydown', (e: KeyboardEvent) => {
+      const isSelectAll = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'a'
+      if (!isSelectAll) return
+
+      setTimeout(() => {
+        _syncSelection(q)
+        const r = q.getSelection()
+        if (r) _onEditorChanged(q, 'selection-change', r)
+      }, 10)
+    })
+
+    q.on('image-delete', (id: string) => {
+      const images = removed_images_per_quill.get(q) ?? new Set()
+      images.add(id)
+      removed_images_per_quill.set(q, images)
+    })
   }
 
   return {

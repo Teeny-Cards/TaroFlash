@@ -18,7 +18,7 @@ import UiTabs from '@/components/ui-kit/tabs.vue'
 import { useToast } from '@/composables/toast'
 import UiButton from '@/components/ui-kit/button.vue'
 import SelectMenu from '@/views/deck/select-menu.vue'
-import TextEditorToolbar from './text-editor-toolbar/index.vue'
+import TextEditorToolbar from '@/components/text-editor-toolbar/index.vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 
