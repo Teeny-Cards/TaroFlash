@@ -4,7 +4,7 @@ import BgColorSelector from './bg-color-selector.vue'
 import FontSizeSelector from './font-size-selector.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiImage from '@/components/ui-kit/image.vue'
-import { ref, useTemplateRef } from 'vue'
+import { ref } from 'vue'
 
 defineProps<{
   inactive_classes: string
@@ -17,6 +17,7 @@ const {
   textSize,
   underline,
   align,
+  verticalAlign,
   divider,
   list,
   cardBgColor
@@ -61,6 +62,18 @@ onDeactivate(() => {
         <ui-icon src="link" />
       </div>
 
+      <div class="toolbar-option" @click="verticalAlign('top')">
+        <ui-icon src="align-v-top" />
+      </div>
+
+      <div class="toolbar-option" @click="verticalAlign('center')">
+        <ui-icon src="align-v-center" />
+      </div>
+
+      <div class="toolbar-option" @click="verticalAlign('bottom')">
+        <ui-icon src="align-v-bottom" />
+      </div>
+
       <div class="toolbar-option" @click="align(false)">
         <ui-icon src="align-left" />
       </div>
@@ -88,5 +101,6 @@ onDeactivate(() => {
 .toolbar-option {
   cursor: pointer;
   padding: 8px;
+  color: var(--color-grey-900);
 }
 </style>

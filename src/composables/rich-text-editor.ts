@@ -22,6 +22,10 @@ export type RenderOptions = {
 }
 
 type Align = 'center' | 'right' | 'justify' | false
+type ActionConfig = {
+  source?: 'user' | 'api' | 'silent'
+  quill?: Quill
+}
 
 Quill.register(DividerBlot, true)
 Quill.register(FontSizeBlot, true)
@@ -95,13 +99,7 @@ export function useRichTextEditor() {
       ...options
     })
 
-    if (delta) {
-      q.setContents(delta, Quill.sources.API)
-
-      if (_isWhitespaceOnly(q)) {
-        _resetToEmpty(q)
-      }
-    }
+    _render(q, delta)
 
     if (!options.readOnly) {
       _attachListeners(q)
@@ -143,12 +141,16 @@ export function useRichTextEditor() {
     q.format(key, val, 'user')
   }
 
-  function align(dir: Align) {
-    if (!active_quill) return
+  function align(dir: Align, { source = Quill.sources.USER, quill }: ActionConfig = {}) {
+    const q = quill ?? active_quill
+    if (!q) return
 
-    const range = last_range.value ?? active_quill.getSelection(true)
-    active_quill.formatLine(range.index, range.length, 'align', dir || false, Quill.sources.USER)
-    _emitChanged()
+    const range = last_range.value ?? q.getSelection(true)
+    q.formatLine(range.index, range.length, 'align', dir || false, source)
+
+    if (source === Quill.sources.USER) {
+      _emitChanged()
+    }
   }
 
   function link(url?: string) {
@@ -199,6 +201,16 @@ export function useRichTextEditor() {
   }
 
   // PRIVATE HELPERS
+  function _render(q: Quill, delta: any) {
+    q.setContents(delta, Quill.sources.API)
+    const isEmpty = q.getLength() === 1
+
+    if (_isWhitespaceOnly(q) || isEmpty) {
+      _resetToEmpty(q)
+      align('center', { source: Quill.sources.API, quill: q })
+    }
+  }
+
   function _onEditorChanged(quill: Quill, eventName: string, ...args: any[]) {
     if (eventName === 'selection-change') {
       let range = args[0]
@@ -295,6 +307,8 @@ export function useRichTextEditor() {
     cardBgColor: (c?: MemberTheme) => _emitChanged({ bg_color: c }),
     underline,
     align,
+    verticalAlign: (v?: CardAttributes['vertical_align']) =>
+      _emitChanged({ vertical_align: v ?? 'top' }),
     link,
     divider,
     list,

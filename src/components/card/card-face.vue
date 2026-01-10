@@ -26,7 +26,7 @@ const emit = defineEmits<{
     :data-image="!!image"
     :data-text="!!text"
     :data-mode="mode"
-    :data-align="attributes?.vertical_align || 'top'"
+    :data-align="attributes?.vertical_align || 'center'"
   >
     <img v-if="image" :src="image" class="h-full w-full object-cover" />
 
@@ -86,6 +86,22 @@ const emit = defineEmits<{
 
 .card-face[data-image='true'] {
   padding: 0;
+}
+
+.card-face[data-align='top'] .ql-editor {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.card-face[data-align='center'] .ql-editor {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.card-face[data-align='bottom'] .ql-editor {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .card-face__text-editor {
