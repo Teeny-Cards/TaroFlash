@@ -4,7 +4,7 @@ import BgColorSelector from './bg-color-selector.vue'
 import FontSizeSelector from './font-size-selector.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiImage from '@/components/ui-kit/image.vue'
-import { onMounted, ref, useTemplateRef } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 
 defineProps<{
   inactive_classes: string
@@ -22,7 +22,6 @@ const {
   cardBgColor
 } = useRichTextEditor()
 
-const toolbar = useTemplateRef('text-editor-toolbar')
 const active = ref(false)
 
 onActivate(() => {
