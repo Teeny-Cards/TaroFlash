@@ -2,6 +2,7 @@
 import { useStorage } from '@/composables/storage'
 import { onMounted } from 'vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
+import UiTooltip from '@/components/ui-kit/tooltip.vue'
 import { emitHoverSfx, emitSfx } from '@/sfx/bus'
 
 type Tab = {
@@ -49,22 +50,22 @@ function onHover(index: number) {
 </script>
 
 <template>
-  <div data-testid="ui-kit-tabs__tabs" class="ui-kit-tabs">
-    <div
+  <div data-testid="ui-kit-tabs" class="ui-kit-tabs">
+    <ui-tooltip
       v-for="(tab, index) in tabs"
       data-testid="ui-kit-tabs__tab"
+      theme="white"
+      :gap="-4"
+      :disabled="active_tab === index"
       class="ui-kit-tabs__tab"
+      :text="tab.label"
       :class="{ 'ui-kit-tabs__tab--active': active_tab === index }"
       @click="onTabClick(index)"
       @mouseenter="onHover(index)"
     >
       <ui-icon v-if="tab.icon" :src="tab.icon" size="small" class="ui-kit-tabs__tab-icon" />
       <span class="ui-kit-tabs__tab-label">{{ tab.label }}</span>
-
-      <span v-if="active_tab !== index" class="ui-kit-tabs__tab-tooltip shadow-xs">
-        {{ tab.label }}
-      </span>
-    </div>
+    </ui-tooltip>
   </div>
 </template>
 
@@ -77,8 +78,6 @@ function onHover(index: number) {
 }
 
 .ui-kit-tabs__tab {
-  position: relative;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -94,16 +93,16 @@ function onHover(index: number) {
   cursor: pointer;
 }
 
-.ui-kit-tabs__tab:nth-child(2) {
+.ui-kit-tabs__tab:nth-child(2 of .ui-kit-tabs__tab) {
   background-color: var(--color-purple-400);
 }
-.ui-kit-tabs__tab:nth-child(3) {
+.ui-kit-tabs__tab:nth-child(3 of .ui-kit-tabs__tab) {
   background-color: var(--color-orange-400);
 }
-.ui-kit-tabs__tab:nth-child(4) {
+.ui-kit-tabs__tab:nth-child(4 of .ui-kit-tabs__tab) {
   background-color: var(--color-green-400);
 }
-.ui-kit-tabs__tab:nth-child(5) {
+.ui-kit-tabs__tab:nth-child(5 of .ui-kit-tabs__tab) {
   background-color: var(--color-blue-500);
 }
 
@@ -128,24 +127,5 @@ function onHover(index: number) {
 .ui-kit-tabs__tab--active .ui-kit-tabs__tab-label {
   position: static;
   color: var(--color-white);
-}
-
-.ui-kit-tabs__tab-tooltip {
-  display: none;
-  position: absolute;
-  top: -22px;
-
-  border-radius: var(--radius-full);
-  padding: 6px 8px;
-
-  font-size: var(--text-sm);
-  line-height: var(--text-sm--line-height);
-  color: var(--color-brown-700);
-  white-space: nowrap;
-  background-color: var(--color-white);
-}
-
-.ui-kit-tabs__tab:hover .ui-kit-tabs__tab-tooltip {
-  display: block;
 }
 </style>

@@ -8,6 +8,7 @@ import { ref } from 'vue'
 
 defineProps<{
   inactive_classes: string
+  hide_on_mobile?: boolean
 }>()
 
 const {
@@ -41,7 +42,7 @@ onDeactivate(() => {
     class="fixed bottom-6 bg-white rounded-6 shadow-sm pl-3 pr-6.5 flex justify-center items-end
       gap-6 transition-transform duration-100 ease-in-out border-t border-l border-r
       border-brown-100 h-15 z-10"
-    :class="{ [inactive_classes]: !active }"
+    :class="{ [inactive_classes]: !active, 'hidden md:flex': hide_on_mobile }"
   >
     <div class="flex gap-1.5 items-center h-full py-3">
       <font-size-selector :selected_font_size="selection_format?.size" @select="textSize" />

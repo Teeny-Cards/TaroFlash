@@ -44,7 +44,7 @@ const show_backdrop = computed(() => {
       data-testid="ui-kit-modal-backdrop"
       ref="ui-kit-modal"
       class="pointer-events-auto fixed inset-0 flex items-center justify-center px-4 py-7"
-      :class="{ 'sm:backdrop-blur-4 sm:bg-black/10': show_backdrop }"
+      :class="{ 'backdrop-blur-4 bg-black/10': show_backdrop }"
       @click="pop"
     >
       <slot></slot>
@@ -54,7 +54,8 @@ const show_backdrop = computed(() => {
   <transition-group
     data-testid="ui-kit-modal-container"
     tag="div"
-    class="pointer-events-none fixed inset-0 z-90 flex items-center justify-center *:pointer-events-auto"
+    class="pointer-events-none fixed inset-0 z-90 flex items-center justify-center
+      *:pointer-events-auto"
     enter-from-class="scale-90 opacity-0"
     enter-to-class="scale-100 opacity-100"
     enter-active-class="transition-[all] ease-in-out duration-100"

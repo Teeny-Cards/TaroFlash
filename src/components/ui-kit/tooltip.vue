@@ -7,7 +7,9 @@ const {
   position = 'top',
   gap = 0,
   fallback_placements = ['right', 'left', 'top', 'bottom'],
-  element = 'div'
+  element = 'div',
+  theme = 'brown',
+  static_on_mobile = false
 } = defineProps<{
   text: string
   position?: Placement
@@ -16,6 +18,8 @@ const {
   element?: 'div' | 'span' | 'button'
   visible?: boolean
   disabled?: boolean
+  theme?: MemberTheme
+  static_on_mobile?: boolean
 }>()
 
 const triggerRef = useTemplateRef<HTMLElement>('ui-tooltip-trigger')
@@ -44,7 +48,10 @@ const { floatingStyles } = useFloating(triggerRef, popoverRef, {
     ref="ui-tooltip"
     :style="floatingStyles"
     class="ui-tooltip"
-    :class="{ 'ui-tooltip--visible': visible }"
+    :class="[
+      { 'ui-tooltip--visible': visible },
+      `ui-tooltip--${theme} ui-tooltip--${static_on_mobile ? 'static' : 'dynamic'}`
+    ]"
   >
     {{ text }}
   </div>
@@ -54,22 +61,42 @@ const { floatingStyles } = useFloating(triggerRef, popoverRef, {
 .ui-tooltip {
   display: none;
 
-  background-color: var(--color-brown-100);
+  --tooltip-bg: var(--color-brown-100);
+  --tooltip-color: var(--color-brown-700);
+
+  background-color: var(--tooltip-bg);
   border-radius: var(--radius-full);
   padding: 6px 8px;
 
   font-size: var(--text-sm);
   line-height: var(--text-sm--line-height);
-  color: var(--color-brown-700);
+  color: var(--tooltip-color);
 
   pointer-events: none;
   z-index: 10;
   user-select: none;
 }
 
-.ui-tooltip-trigger:hover + .ui-tooltip,
-.ui-tooltip-trigger:focus + .ui-tooltip,
-.ui-tooltip--visible {
-  display: block;
+@media (pointer: fine) {
+  .ui-tooltip-trigger:hover + .ui-tooltip,
+  .ui-tooltip-trigger:focus + .ui-tooltip,
+  .ui-tooltip--visible {
+    display: block;
+  }
+}
+
+@media (pointer: coarse) {
+  .ui-tooltip--static {
+    display: block;
+  }
+}
+
+.ui-tooltip--brown {
+  --tooltip-bg: var(--color-brown-100);
+  --tooltip-color: var(--color-brown-700);
+}
+.ui-tooltip--white {
+  --tooltip-bg: var(--color-white);
+  --tooltip-color: var(--color-brown-700);
 }
 </style>
