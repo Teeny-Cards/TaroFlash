@@ -27,6 +27,10 @@ const {
   immediate?: boolean
 }>()
 
+defineOptions({
+  inheritAttrs: false
+})
+
 const phase = ref<'loading' | 'finishing' | 'done'>(!loading && immediate ? 'done' : 'loading')
 
 const showLoader = computed(() => phase.value !== 'done')

@@ -34,8 +34,8 @@ async function onSettingsClicked() {
 <template>
   <div
     data-testid="overview-panel"
-    class="flex w-max flex-col items-center gap-6 md:flex-row md:items-end lg:flex-col
-      lg:items-start"
+    class="flex w-max flex-col items-center gap-6 md:flex-row md:items-end xl:flex-col
+      xl:items-start"
   >
     <card size="lg" class="relative" :front_image_url="imageUrl"></card>
 

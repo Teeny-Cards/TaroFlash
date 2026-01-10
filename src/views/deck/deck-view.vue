@@ -240,19 +240,23 @@ async function onMoveCards(id?: number) {
 <template>
   <section
     data-testid="deck-view"
-    class="flex h-full flex-col lg:flex-row items-center md:items-start gap-15 pb-24"
+    class="flex h-full flex-col xl:flex-row items-center xl:items-start gap-15 pb-24"
   >
     <overview-panel
       v-if="deck"
-      class="lg:sticky top-(--nav-height)"
+      class="xl:sticky top-(--nav-height)"
       :deck="deck"
       :image-url="image_url"
       @study-clicked="onStudy"
       @updated="refetchDeck()"
     />
 
-    <div class="relative flex h-full w-full flex-col">
-      <div class="sticky top-(--nav-height) z-10 flex w-full justify-between pb-2">
+    <div class="relative flex h-full w-full flex-col items-center">
+      <div
+        data-testid="deck-view__action-bar"
+        class="sticky top-(--nav-height) z-10 flex max-w-208 w-full xl:max-w-full justify-between
+          pb-2"
+      >
         <ui-tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
 
         <div class="flex items-center gap-4 text-brown-700 dark:text-brown-300">
@@ -302,7 +306,7 @@ async function onMoveCards(id?: number) {
           @delete="onDeleteCards"
         />
 
-        <text-editor-toolbar inactive_classes="transform translate-y-25" />
+        <text-editor-toolbar inactive_classes="transform translate-y-25" hide_on_mobile />
       </component>
     </div>
 
