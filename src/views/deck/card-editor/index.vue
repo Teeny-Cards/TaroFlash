@@ -6,6 +6,7 @@ import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { nextTick, ref } from 'vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
+import { useBreakpoint } from '@/composables/use-breakpoint'
 
 const { mode, activeCardId, cards } = defineProps<{
   cards: Card[]
@@ -27,6 +28,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const shortcuts = useShortcuts('card-list')
+const is_mobile = useBreakpoint('(max-width: 768px)')
 
 const active_side = ref<'front' | 'back'>('front')
 
@@ -113,7 +115,11 @@ function onAddCard(card: Card, side: 'left' | 'right') {
     </ui-button>
   </div>
 
-  <div v-else data-testid="card-list" class="relative flex pt-5 w-full flex-col items-center">
+  <div
+    v-else-if="!is_mobile"
+    data-testid="card-list"
+    class="relative flex pt-5 w-full flex-col items-center"
+  >
     <list-item
       v-for="(card, index) in cards"
       :key="card.id"
@@ -143,4 +149,6 @@ function onAddCard(card: Card, side: 'left' | 'right') {
 
     <slot></slot>
   </div>
+
+  <div v-else>test</div>
 </template>

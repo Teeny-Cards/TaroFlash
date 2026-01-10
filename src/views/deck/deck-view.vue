@@ -3,7 +3,7 @@ import OverviewPanel from '@/views/deck/overview-panel.vue'
 import { onMounted, ref } from 'vue'
 import { fetchDeck } from '@/api/decks'
 import StudySession from '@/components/modals/study-session/index.vue'
-import CardList from './card-list/index.vue'
+import CardEditor from './card-editor/index.vue'
 import CardGrid from './card-grid/index.vue'
 import { useI18n } from 'vue-i18n'
 import { useCardBulkEditor } from '@/composables/card-bulk-editor'
@@ -70,7 +70,7 @@ const tabs = [
 
 const tab_components: { [key: number]: any } = {
   0: CardGrid,
-  1: CardList
+  1: CardEditor
 }
 
 shortcuts.register({
