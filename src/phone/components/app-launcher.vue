@@ -105,12 +105,6 @@ function _getActiveApp() {
   <div data-testid="app-launcher" class="h-full flex flex-col gap-8 px-5 py-7 pt-4">
     <div class="grid grid-cols-[18px_1fr_18px] px-6 justify-center items-center">
       <h2 class="text-brown-500 select-none col-start-2 justify-self-center">TaroPhone</h2>
-      <button
-        class="text-brown-500 border-[1.5px] border-brown-500 rounded-full p-0.5 w-min
-          cursor-pointer"
-      >
-        <ui-icon src="edit" size="xs" />
-      </button>
     </div>
 
     <div

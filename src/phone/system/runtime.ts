@@ -46,6 +46,11 @@ export function createPhoneRuntime({ nav }: { nav: PhoneNavigator }) {
     _syncSession(e)
   }
 
+  function clear() {
+    const e = nav.reset()
+    _syncSession(e)
+  }
+
   function _syncSession(e: NavigateEvent) {
     if (!e.to) {
       active_session.value = null
@@ -76,6 +81,7 @@ export function createPhoneRuntime({ nav }: { nav: PhoneNavigator }) {
     phoneOS: {
       open,
       close,
+      clear,
       loading
     }
   }

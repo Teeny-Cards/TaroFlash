@@ -30,8 +30,10 @@ shortcuts.register({
 
 onMounted(async () => {
   loading.value = true
+
   apps = await installApps()
   runtime.init(apps, ctx)
+
   loading.value = false
 })
 
@@ -55,9 +57,16 @@ function openPhone() {
 
   open.value = true
   emitSfx('ui.pop_window')
+  document.addEventListener('click', onPageClick)
 }
 
-function closePhone() {
+function closePhone(force = false) {
+  if (force && runtime.active_session.value) {
+    runtime.phoneOS.clear()
+    emitSfx('ui.toggle_off')
+    return
+  }
+
   if (runtime.active_session.value) {
     runtime.phoneOS.close()
     emitSfx('ui.toggle_off')
@@ -66,6 +75,18 @@ function closePhone() {
 
   open.value = false
   emitSfx('ui.pop_window')
+  document.removeEventListener('click', onPageClick)
+}
+
+function onPageClick(e: Event) {
+  if (!isInsidePhone(e)) {
+    closePhone(true)
+  }
+}
+
+function isInsidePhone(e: Event) {
+  const path = (e.composedPath?.() ?? []) as EventTarget[]
+  return path.some((n) => n instanceof HTMLElement && n.matches?.('[data-testid="phone"]'))
 }
 </script>
 
@@ -78,18 +99,16 @@ function closePhone() {
       data-testid="phone-dock"
       class="w-full max-w-(--page-width) flex items-center justify-center mx-4 sm:mx-10 relative"
     >
-      <keep-alive>
-        <transition name="phone-open">
-          <phone-base
-            v-if="open && !fullscreen"
-            :apps="apps"
-            :transition="nav.transition.value"
-            :transitioning="transitioning"
-            :active_session="runtime.active_session.value"
-            @close="closePhone"
-          ></phone-base>
-        </transition>
-      </keep-alive>
+      <transition name="phone-open">
+        <phone-base
+          v-if="open && !fullscreen"
+          :apps="apps"
+          :transition="nav.transition.value"
+          :transitioning="transitioning"
+          :active_session="runtime.active_session.value"
+          @close="closePhone"
+        ></phone-base>
+      </transition>
 
       <transition
         name="phone-close"
@@ -120,7 +139,7 @@ function closePhone() {
 
 <style>
 [data-testid='phone-stage'] {
-  --duration: 100ms;
+  --phone-duration: 100ms;
 }
 
 /* ANIMATIONS */
@@ -136,7 +155,7 @@ function closePhone() {
 .phone-open-leave-active {
   transition-property: transform, opacity, filter;
   transition-timing-function: ease-in-out;
-  transition-duration: var(--duration);
+  transition-duration: var(--phone-duration);
 }
 
 /* Mini & large phone */
@@ -151,7 +170,7 @@ function closePhone() {
 .phone-close-leave-active {
   transition-property: transform, opacity, filter;
   transition-timing-function: ease-in-out;
-  transition-duration: var(--duration);
+  transition-duration: var(--phone-duration);
 }
 
 /* Backdrop */
@@ -163,6 +182,6 @@ function closePhone() {
 .phone-backdrop-leave-active {
   transition-property: opacity;
   transition-timing-function: ease-in-out;
-  transition-duration: var(--duration);
+  transition-duration: var(--phone-duration);
 }
 </style>

@@ -19,7 +19,7 @@ export const AUDIO_CONFIG = createAudioConfig({
     etc_camera_shutter: {},
     etc_woodblock_stuck: {},
     pop_drip_mid: {
-      default_volume: 0.3
+      default_volume: 0.1
     },
     pop_window: {
       default_volume: 0.3

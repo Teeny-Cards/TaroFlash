@@ -39,12 +39,12 @@ const removed_images_per_quill = new Map<Quill, Set<string>>()
 const image_ids_per_quill = new Map<Quill, Set<string>>()
 
 const selection_format = ref<{ [key: string]: any }>()
+const last_range = ref<Range | null>(null)
 
 export function useRichTextEditor() {
   const logger = useLogger()
 
   // PUBLIC API
-
   function activate(editor: HTMLElement | null) {
     if (hide_timeout) {
       clearTimeout(hide_timeout)
@@ -56,11 +56,11 @@ export function useRichTextEditor() {
 
       if (found instanceof Quill) {
         active_quill = found
-        _onEditorChanged(null)
+        _onEditorChanged(found, 'editor-change', null)
       }
     } else {
       active_quill = null
-      logger.warn('Failed to set active editor. Toolbar not set.')
+      logger.warn('Failed to activate editor: ', editor)
     }
 
     active_input = editor ?? null
@@ -81,7 +81,7 @@ export function useRichTextEditor() {
     }, delay)
   }
 
-  function render(el: HTMLElement, delta?: any, options: RenderOptions = {}) {
+  function setup(el: HTMLElement, delta?: any, options: RenderOptions = {}) {
     const found = Quill.find(el)
     if (found instanceof Quill) return
 
@@ -100,8 +100,28 @@ export function useRichTextEditor() {
     }
 
     if (!options.readOnly) {
-      q.on('editor-change', _onEditorChanged)
+      q.on('editor-change', (eventName: string, ...args: any[]) =>
+        _onEditorChanged(q, eventName, ...args)
+      )
       q.on('text-change', _onTextChange)
+      q.root.addEventListener('mouseup', () => _syncSelection(q))
+      q.root.addEventListener('keyup', (e: KeyboardEvent) => {
+        // especially important for Shift+Up/Down
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'Shift') {
+          // next frame to let the browser update selection/layout
+          requestAnimationFrame(() => _syncSelection(q))
+        }
+      })
+      q.root.addEventListener('keydown', (e: KeyboardEvent) => {
+        const isSelectAll = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'a'
+        if (!isSelectAll) return
+
+        setTimeout(() => {
+          _syncSelection(q)
+          const r = q.getSelection()
+          if (r) _onEditorChanged(q, 'selection-change', r)
+        }, 10)
+      })
       q.on('image-delete', (id: string) => {
         const images = removed_images_per_quill.get(q) ?? new Set()
         images.add(id)
@@ -148,7 +168,8 @@ export function useRichTextEditor() {
   function align(dir: Align) {
     if (!active_quill) return
 
-    active_quill.format('align', dir || false)
+    const range = last_range.value ?? active_quill.getSelection(true)
+    active_quill.formatLine(range.index, range.length, 'align', dir || false, Quill.sources.USER)
     _emitChanged()
   }
 
@@ -200,11 +221,14 @@ export function useRichTextEditor() {
   }
 
   // PRIVATE HELPERS
-  function _onEditorChanged(_r: Range | null) {
-    let range = active_quill?.getSelection()
-    if (!range) return
+  function _onEditorChanged(quill: Quill, eventName: string, ...args: any[]) {
+    if (eventName === 'selection-change') {
+      let range = args[0]
+      if (!range) return
 
-    selection_format.value = active_quill?.getFormat(range)
+      selection_format.value = quill?.getFormat(range)
+      last_range.value = range
+    }
   }
 
   function _onTextChange(_delta: any, _oldDelta: any, source: any) {
@@ -223,12 +247,20 @@ export function useRichTextEditor() {
     }
   }
 
+  function _syncSelection(q: Quill) {
+    const r = q.getSelection()
+    if (r) {
+      last_range.value = r
+      selection_format.value = q.getFormat(r)
+    }
+  }
+
   return {
     active_input,
     selection_format,
     activate,
     deactivate,
-    render,
+    setup,
     subscribe,
     unsubscribe,
     onActivate,
