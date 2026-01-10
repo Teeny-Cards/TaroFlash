@@ -53,8 +53,9 @@ export function usePhoneNavigator() {
 
   function reset(): NavigateEvent {
     const from = top()
+    const first = stack.value[0]
     stack.value = []
-    transition.value = DEFAULT_TRANSITION
+    transition.value = first?.transition ? reverse_transition[first.transition] : DEFAULT_TRANSITION
 
     return { reason: 'reset', from, to: null }
   }

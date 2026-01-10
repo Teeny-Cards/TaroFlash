@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted, useTemplateRef, watch } from 'vue'
+import { onMounted, useTemplateRef, watch } from 'vue'
 import { useRichTextEditor } from '@/composables/rich-text-editor'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 
@@ -21,7 +21,7 @@ const text_editor = useTemplateRef<HTMLDivElement>('text-editor')
 
 onMounted(() => {
   if (!text_editor.value) return
-  editor.render(text_editor.value, delta, { placeholder, readOnly: disabled })
+  editor.setup(text_editor.value, delta, { placeholder, readOnly: disabled })
 })
 
 async function onUpdate(payload: TextEditorUpdatePayload) {

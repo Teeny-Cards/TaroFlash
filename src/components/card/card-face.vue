@@ -88,19 +88,6 @@ const emit = defineEmits<{
   padding: 0;
 }
 
-.card-face[data-align='top'] .ql-editor {
-  display: flex;
-  align-items: flex-start;
-}
-.card-face[data-align='center'] .ql-editor {
-  display: flex;
-  align-items: center;
-}
-.card-face[data-align='bottom'] .ql-editor {
-  display: flex;
-  align-items: flex-end;
-}
-
 .card-face__text-editor {
   color: var(--card-text-color);
 }

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import AppLauncher from '@/phone/components/app-launcher.vue'
+import CloseButton from '@/phone/components/close-button.vue'
 import { type PhoneApp } from '@/phone/system/types'
 import { type AppSession } from '@/phone/system/runtime'
 import { computed } from 'vue'
 import { type TransitionPreset } from '@/phone/system/phone-navigator'
 
-const { active_session } = defineProps<{
+const { apps, transition, transitioning, active_session } = defineProps<{
   apps: PhoneApp[]
   transition: TransitionPreset
   transitioning: boolean
@@ -27,20 +28,33 @@ const controller = computed(() => {
 
 <template>
   <div
-    data-testid="phone-base"
+    data-testid="phone"
     class="absolute top-0 right-0 pointer-events-auto w-60 h-89.5 bg-brown-300 dark:bg-grey-700
-      shadow-sm rounded-16 translate-y-7 overflow-hidden"
+      drop-shadow-sm rounded-16 translate-y-7 group/phone"
   >
+    <close-button
+      class="absolute top-0 left-0 shadow-xs outline-1 outline-brown-500 pointer-fine:opacity-0
+        pointer-fine:group-hover/phone:opacity-100 opacity-100 transition-opacity duration-75"
+      @close="emit('close')"
+    />
+
     <app-launcher v-if="!app" :apps="apps" :transitioning="transitioning" @close="emit('close')" />
 
-    <transition :name="transition">
-      <component
-        v-if="app?.component"
-        :is="app.component"
-        @controller="controller"
-        @close="emit('close')"
-      />
-    </transition>
+    <div
+      data-testid="app-viewport"
+      class="rounded-[inherit] overflow-hidden absolute inset-0"
+      :class="{ 'pointer-events-none': !app }"
+    >
+      <transition :name="transition">
+        <div
+          v-if="app?.component"
+          data-testid="app-frame"
+          class="rounded-[inherit] overflow-hidden h-full w-full"
+        >
+          <component :is="app.component" @controller="controller" @close="emit('close')" />
+        </div>
+      </transition>
+    </div>
   </div>
 </template>
 
@@ -56,7 +70,7 @@ const controller = computed(() => {
 .pop-down-leave-active {
   transition-property: transform, opacity;
   transition-timing-function: ease-in-out;
-  transition-duration: var(--duration);
+  transition-duration: var(--phone-duration);
 }
 
 .slide-left-leave-active,
