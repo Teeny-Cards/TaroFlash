@@ -242,10 +242,6 @@ export function useRichTextEditor() {
         if (r) _onEditorChanged(q, 'selection-change', r)
       }, 10)
     })
-
-    q.root.addEventListener('focusout', () => {
-      _deactivate(q.container)
-    })
   }
 
   return {
