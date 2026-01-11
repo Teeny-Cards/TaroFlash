@@ -6,9 +6,10 @@ import { useModal } from '@/composables/modal'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
+import StudySession from '@/components/modals/study-session/index.vue'
 
 const { deck } = defineProps<{ deck: Deck; imageUrl?: string }>()
-const emit = defineEmits<{ (e: 'study-clicked'): void; (e: 'updated'): void }>()
+const emit = defineEmits<{ (e: 'updated'): void }>()
 
 const { t } = useI18n()
 const modal = useModal()
@@ -28,6 +29,17 @@ async function onSettingsClicked() {
   if (await response) {
     emit('updated')
   }
+}
+
+function onStudyClicked() {
+  modal.open(StudySession, {
+    backdrop: true,
+    props: {
+      deck
+    },
+    openAudio: 'ui.double_pop_up',
+    closeAudio: 'ui.double_pop_down'
+  })
 }
 </script>
 
@@ -72,7 +84,7 @@ async function onSettingsClicked() {
           icon-left="play"
           fancy-hover
           :disabled="study_disabled"
-          @click="$emit('study-clicked')"
+          @click="onStudyClicked"
         >
           {{ t('common.study') }}
         </ui-button>

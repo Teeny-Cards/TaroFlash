@@ -5,71 +5,45 @@ import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
 import { useToast } from '@/composables/toast'
-import { type CardEditorMode } from '@/composables/card-bulk-editor'
+import { type CardBulkEditor } from '@/composables/card-bulk-editor'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
-import { watch } from 'vue'
+import { inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ImageButton from '../image-button.vue'
 import { setCardImage, deleteCardImage } from '@/api/cards'
 
-const { card, mode, active, active_side } = defineProps<{
+const { card, index } = defineProps<{
   index: number
   card: Card
-  mode: CardEditorMode
-  active: boolean
-  selected: boolean
-  is_duplicate?: boolean
-  active_side: 'front' | 'back'
 }>()
 
 const emit = defineEmits<{
-  (e: 'selected'): void
-  (e: 'deleted'): void
-  (e: 'moved'): void
-  (e: 'activated'): void
-  (e: 'deactivated'): void
-  (e: 'updated', id: number, side: 'front' | 'back', payload: TextEditorUpdatePayload): void
-  (e: 'side-changed', side: 'front' | 'back'): void
-  (e: 'add-card', side: 'left' | 'right'): void
+  (e: 'delete', id: number): void
+  (e: 'move', id: number): void
+  (e: 'append', id: number): void
+  (e: 'prepend', id: number): void
 }>()
 
 const { t } = useI18n()
 const toast = useToast()
 
-function onClick() {
-  if (mode === 'select') {
-    emit('selected')
-  } else if (!active) {
-    emit('activated')
-  }
-}
+const { mode, selected_card_ids, toggleSelectCard, updateCard } =
+  inject<CardBulkEditor>('card-editor')!
+
+const isDuplicate = inject<(card: Card) => boolean>('is-duplicate')!
+
+const selected = computed(() => selected_card_ids.value.includes(card.id!))
+const is_duplicate = computed(() => isDuplicate(card))
 
 function onUpdate(id: number, side: 'front' | 'back', payload: TextEditorUpdatePayload) {
-  emit('updated', id, side, payload)
-}
-
-function activate(side: 'front' | 'back') {
-  if (active_side !== side) {
-    if (side === 'front') {
-      emit('side-changed', 'front')
-    } else if (side === 'back') {
-      emit('side-changed', 'back')
-    }
+  const { text, delta, attributes } = payload
+  const update: Partial<Card> = {
+    [`${side}_delta`]: delta,
+    [`${side}_text`]: text,
+    attributes
   }
 
-  if (!active) {
-    emit('activated')
-  }
-}
-
-function deactivate(e: Event) {
-  const target = e.target as HTMLElement
-  const is_toolbar = target.closest('[data-testid="text-editor-toolbar"]')
-  const is_card = target.closest(`[data-id="${card.id}"]`)
-
-  if (!is_toolbar && !is_card) {
-    emit('deactivated')
-  }
+  updateCard(id, update)
 }
 
 async function onImageUpload(side: 'front' | 'back', file: File) {
@@ -87,24 +61,13 @@ async function onImageDelete(side: 'front' | 'back') {
 
   try {
     await deleteCardImage(card.id, side)
-    emit('updated', card.id, side, {
+    onUpdate(card.id, side, {
       [`${side}_image`]: undefined
     })
   } catch (e: any) {
     toast.error(t('card.image-delete-error'))
   }
 }
-
-watch(
-  () => active,
-  (new_value) => {
-    if (new_value) {
-      document.addEventListener('click', deactivate)
-    } else {
-      document.removeEventListener('click', deactivate)
-    }
-  }
-)
 </script>
 
 <template>
@@ -117,32 +80,21 @@ watch(
     :class="{
       'mode-select cursor-pointer': mode === 'select',
       'mode-view': mode === 'view',
-      active: active,
       duplicate: is_duplicate
     }"
-    @click="onClick"
   >
     <button
       class="sm:flex items-center justify-center w-12 h-12 rounded-full text-lg text-brown-800
-        cursor-grab hidden"
-      :class="{ 'bg-brown-300': !active, 'bg-brown-100': active }"
+        cursor-grab hidden bg-brown-300 group-focus-within/listitem:bg-brown-100"
       @click.stop
     >
       <ui-icon
         src="reorder"
-        :class="{
-          'group-hover/listitem:block': !active && mode !== 'select',
-          block: active && mode !== 'select',
-          hidden: !active || mode === 'select'
-        }"
+        class="hidden group-hover/listitem:block group-focus-within/listitem:block"
       />
-      <span
-        :class="{
-          hidden: active && mode !== 'select',
-          'group-hover/listitem:hidden': !active && mode !== 'select'
-        }"
-        >{{ index + 1 }}</span
-      >
+      <span class="group-focus-within/listitem:hidden group-hover/listitem:hidden">{{
+        index + 1
+      }}</span>
     </button>
 
     <div class="flex flex-col md:flex-row w-full gap-6 justify-center">
@@ -156,9 +108,7 @@ watch(
         v-bind="card"
         class="group/card"
         :class="{ 'pointer-events-none': mode === 'select' }"
-        :active="active && active_side === 'front'"
         :placeholder="t('card.placeholder-front')"
-        @focus="activate('front')"
         @update:front="onUpdate(card.id!, 'front', $event)"
       >
         <image-button
@@ -179,9 +129,7 @@ watch(
         v-bind="card"
         class="group/card"
         :class="{ 'pointer-events-none': mode === 'select' }"
-        :active="active && active_side === 'back'"
         :placeholder="t('card.placeholder-back')"
-        @focus="activate('back')"
         @update:back="onUpdate(card.id!, 'back', $event)"
       >
         <image-button
@@ -197,9 +145,9 @@ watch(
     <item-options
       v-if="mode !== 'select'"
       class="card-list-item__options hidden sm:grid"
-      @select="emit('selected')"
-      @move="emit('moved')"
-      @delete="emit('deleted')"
+      @select="toggleSelectCard(card.id!)"
+      @move="emit('move', card.id!)"
+      @delete="emit('delete', card.id!)"
     />
     <ui-radio :checked="selected" v-else></ui-radio>
 
@@ -209,7 +157,7 @@ watch(
       theme="brown"
       size="xs"
       class="card-list__button card-list__button--top"
-      @click.stop="emit('add-card', 'left')"
+      @click.stop="emit('prepend', card.id!)"
     />
     <ui-button
       icon-left="add"
@@ -217,7 +165,7 @@ watch(
       theme="brown"
       size="xs"
       class="card-list__button card-list__button--bottom"
-      @click.stop="emit('add-card', 'right')"
+      @click.stop="emit('append', card.id!)"
     />
   </div>
 </template>
@@ -239,10 +187,10 @@ watch(
 
   transition: background-color 0.1s ease-in-out;
 }
-.card-list-item.active {
+.card-list-item:focus-within {
   --card-list-item-bg: var(--color-brown-300);
 }
-.card-list-item:not(.active):hover {
+.card-list-item:not(:focus-within):hover {
   --card-list-item-bg: var(--color-brown-200);
 }
 
@@ -251,7 +199,7 @@ watch(
   pointer-events: none;
   transition: opacity 0.1s ease-in-out;
 }
-.card-list-item.active .card-list-item__options,
+.card-list-item:focus-within .card-list-item__options,
 .card-list-item:hover .card-list-item__options {
   opacity: 1;
   pointer-events: auto;
@@ -266,7 +214,7 @@ watch(
   transition: opacity 0.1s ease-in-out;
 }
 .card-list-item:hover .card-list__button,
-.card-list-item.active .card-list__button {
+.card-list-item:focus-within .card-list__button {
   display: flex;
   opacity: 1;
   pointer-events: auto;
@@ -288,10 +236,10 @@ watch(
 }
 
 @media (prefers-color-scheme: dark) {
-  .card-list-item.active {
+  .card-list-item:focus-within {
     --card-list-item-bg: var(--color-blue-650);
   }
-  .card-list-item:not(.active):hover {
+  .card-list-item:not(:focus-within):hover {
     --card-list-item-bg: var(--color-grey-700);
   }
 }

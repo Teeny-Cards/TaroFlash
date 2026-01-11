@@ -4,19 +4,20 @@ import { debounce } from '@/utils/debounce'
 import { mergeCards } from '@/utils/card-utils'
 
 export type CardEditorMode = 'view' | 'select' | 'edit'
+export type CardBulkEditor = ReturnType<typeof useCardBulkEditor>
 
 export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
   const all_cards = ref<Card[]>(initial_cards)
   const deck_id = ref<number | undefined>(_deck_id)
-  const active_card_id = ref<number | undefined>()
   const selected_card_ids = ref<number[]>([])
   const mode = ref<CardEditorMode>('view')
+  const saving = ref(false)
 
   const all_cards_selected = computed(() => {
     return selected_card_ids.value.length === all_cards.value.length
   })
 
-  function updateCard(id: number, values: Partial<Card>) {
+  async function updateCard(id: number, values: Partial<Card>) {
     const idx = all_cards.value.findIndex((card) => card.id === id)
     if (idx === -1) return
 
@@ -25,7 +26,9 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
 
     if (diff) {
       all_cards.value[idx] = merged
-      return debounce(async () => await upsertCard(merged))
+      saving.value = true
+      await debounce(async () => await upsertCard(merged))
+      saving.value = false
     }
   }
 
@@ -64,14 +67,6 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
 
   function clearSelectedCards() {
     selected_card_ids.value = []
-  }
-
-  function activateCard(id: number) {
-    active_card_id.value = id
-  }
-
-  function deactivateCard() {
-    active_card_id.value = undefined
   }
 
   function getSelectedCards(clean = true): Card[] {
@@ -131,10 +126,10 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
 
   return {
     all_cards,
-    active_card_id,
     selected_card_ids,
     all_cards_selected,
     mode,
+    saving,
     addCard,
     deleteCards,
     updateCard,
@@ -144,8 +139,6 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
     toggleSelectAll,
     toggleSelectCard,
     clearSelectedCards,
-    activateCard,
-    deactivateCard,
     getSelectedCards,
     setMode,
     resetCards
