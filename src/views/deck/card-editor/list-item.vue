@@ -15,6 +15,7 @@ import { setCardImage, deleteCardImage } from '@/api/cards'
 const { card, index } = defineProps<{
   index: number
   card: Card
+  duplicate: boolean
 }>()
 
 const emit = defineEmits<{
@@ -30,10 +31,7 @@ const toast = useToast()
 const { mode, selected_card_ids, toggleSelectCard, updateCard } =
   inject<CardBulkEditor>('card-editor')!
 
-const isDuplicate = inject<(card: Card) => boolean>('is-duplicate')!
-
 const selected = computed(() => selected_card_ids.value.includes(card.id!))
-const is_duplicate = computed(() => isDuplicate(card))
 
 function onUpdate(id: number, side: 'front' | 'back', payload: TextEditorUpdatePayload) {
   const { text, delta, attributes } = payload
@@ -80,7 +78,7 @@ async function onImageDelete(side: 'front' | 'back') {
     :class="{
       'mode-select cursor-pointer': mode === 'select',
       'mode-view': mode === 'view',
-      duplicate: is_duplicate
+      duplicate
     }"
   >
     <button
