@@ -1,13 +1,13 @@
 import { computed, ref } from 'vue'
 import { upsertCard, deleteCards as upstreamDeleteCards, reserveCard } from '@/api/cards'
 import { debounce } from '@/utils/debounce'
-import { mergeCards } from '@/utils/card-utils'
+import CardRecord from '@/utils/card-record'
 
 export type CardEditorMode = 'view' | 'select' | 'edit'
 export type CardBulkEditor = ReturnType<typeof useCardBulkEditor>
 
 export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
-  const all_cards = ref<Card[]>(initial_cards)
+  const all_cards = ref<CardRecord[]>(initial_cards.map((card) => new CardRecord(card)))
   const deck_id = ref<number | undefined>(_deck_id)
   const selected_card_ids = ref<number[]>([])
   const mode = ref<CardEditorMode>('view')
@@ -18,23 +18,15 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
   })
 
   async function updateCard(id: number, values: Partial<Card>) {
-    const idx = all_cards.value.findIndex((card) => card.id === id)
-    if (idx === -1) return
+    const record = all_cards.value.find((card) => card.id === id)
 
-    const prev = all_cards.value[idx]
-    const { merged, diff } = mergeCards(prev, values, { sanitize: true })
-
-    if (diff) {
-      all_cards.value[idx] = merged
-      saving.value = true
-      await debounce(async () => await upsertCard(merged))
-      saving.value = false
-    }
+    saving.value = true
+    await record?.update(values)
+    saving.value = false
   }
 
   function selectCard(id: number) {
     if (selected_card_ids.value.includes(id)) return
-
     selected_card_ids.value.push(id)
   }
 
@@ -82,7 +74,7 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
   }
 
   function resetCards(cards: Card[], _deck_id?: number) {
-    all_cards.value = cards
+    all_cards.value = cards.map((card) => new CardRecord(card))
     deck_id.value = _deck_id ?? deck_id.value
   }
 
@@ -96,18 +88,14 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
       left_card_id = last_card?.id
     }
 
-    const { out_rank: rank, out_id: id } = await reserveCard(
-      deck_id.value!,
-      left_card_id,
-      right_card_id
-    )
+    const record = await CardRecord.create(deck_id.value!, left_card_id, right_card_id)
 
-    let index = all_cards.value.findIndex((card) => card.rank! > rank)
+    let index = all_cards.value.findIndex((card) => card.rank! > record.rank!)
     if (index === -1) {
       index = all_cards.value.length // append at end
     }
 
-    all_cards.value.splice(index, 0, { id, rank })
+    all_cards.value.splice(index, 0, record)
   }
 
   async function deleteCards() {

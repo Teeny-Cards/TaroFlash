@@ -54,24 +54,9 @@ const tab_components: { [key: number]: any } = {
   1: CardEditor
 }
 
-shortcuts.register({
-  combo: 'esc',
-  handler: onEsc,
-  when: () => editor.mode.value === 'select'
-})
-
 onMounted(async () => {
   await refetchDeck()
 })
-
-async function onEsc() {
-  editor.setMode('view')
-  emitSfx('ui.card_drop')
-
-  if (document.activeElement && document.activeElement instanceof HTMLElement) {
-    document.activeElement.blur()
-  }
-}
 
 async function onCancel() {
   emitSfx('ui.card_drop')
@@ -85,7 +70,6 @@ async function onCancel() {
 async function refetchDeck() {
   try {
     deck.value = await fetchDeck(Number(deck_id))
-    // image_url.value = useDeckEditor(deck.value).image_url.value
 
     if (deck.value.cards) {
       editor.resetCards(deck.value.cards)
@@ -113,34 +97,6 @@ async function onDeleteCards(id?: number) {
     editor.setMode('view')
   }
 }
-
-// function onSelectCard(id: number) {
-//   toggleSelectCard(id)
-//   deactivateCard()
-//   setMode('select')
-//   emitSfx('ui.etc_camera_shutter')
-// }
-
-// function onToggleSelectAll() {
-//   toggleSelectAll()
-//   emitSfx('ui.etc_camera_shutter')
-// }
-
-// function onCardActivated(id: number) {
-//   activateCard(id)
-//   emitSfx('ui.slide_up')
-// }
-
-// function onCardDeactivated() {
-//   deactivateCard()
-
-//   setTimeout(() => {
-//     // gotta wait a second to make sure another card hasn't been activated
-//     if (active_card_id.value === undefined) {
-//       emitSfx('ui.card_drop')
-//     }
-//   }, 0)
-// }
 
 function onSelect() {
   editor.setMode('select')

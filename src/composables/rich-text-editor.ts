@@ -1,7 +1,9 @@
-import { ref, onUnmounted, computed } from 'vue'
+import { ref, computed } from 'vue'
 import Quill, { type Range } from 'quill'
 import { DividerBlot } from '@/utils/formats/divider-blot'
 import { FontSizeBlot } from '@/utils/formats/font-size-blot'
+
+// TODO: Destroy quill instances when the associated edtor is destroyed
 
 export type TextEditorUpdatePayload = {
   delta?: Object
@@ -152,6 +154,8 @@ export function useRichTextEditor() {
   function _onEditorChanged(quill: Quill, eventName: string, ...args: any[]) {
     if (eventName === 'selection-change') {
       const [range, oldRange, source] = args as any
+
+      if (source === 'api') return
 
       if (range && !oldRange) {
         _activate(quill)
