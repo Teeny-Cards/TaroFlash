@@ -3,12 +3,10 @@ import ListItem from './list-item.vue'
 import ListItemMobile from './list-item-mobile.vue'
 import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
-import { nextTick, ref, inject, computed, provide } from 'vue'
-import { useShortcuts } from '@/composables/use-shortcuts'
+import { inject, computed } from 'vue'
 import { useBreakpoint } from '@/composables/use-breakpoint'
 import { type CardBulkEditor } from '@/composables/card-bulk-editor'
 import { useToast } from '@/composables/toast'
-import { emitSfx } from '@/sfx/bus'
 
 const { t } = useI18n()
 const toast = useToast()
@@ -18,12 +16,6 @@ const onDeleteCard = inject<(id: number) => void>('on-delete-card')!
 const onMoveCard = inject<(id: number) => void>('on-move-card')!
 
 const { all_cards: cards, addCard: upstreamAddCard } = editor
-
-// Provide context for child components
-provide('is-duplicate', isDuplicate)
-provide('on-delete-card', onDeleteCard)
-provide('on-move-card', onMoveCard)
-provide('on-append-card', onAppendCard)
 
 const list_item_component = computed(() => {
   return is_mobile.value ? ListItemMobile : ListItem
@@ -47,12 +39,12 @@ async function addCard(left_card_id?: number, right_card_id?: number) {
   }
 }
 
-async function onAppendCard(card_id: number, side: 'left' | 'right') {
+async function onAppendCard(card_id: number) {
   const other_card = cards.value[cards.value.findIndex((c) => c.id === card_id) + 1]
   await addCard(other_card?.id, card_id)
 }
 
-async function onPrependCard(card_id: number, side: 'left' | 'right') {
+async function onPrependCard(card_id: number) {
   const other_card = cards.value[cards.value.findIndex((c) => c.id === card_id) - 1]
   await addCard(card_id, other_card?.id)
 }
@@ -70,13 +62,14 @@ async function onPrependCard(card_id: number, side: 'left' | 'right') {
     </ui-button>
   </div>
 
-  <div v-else data-testid="card-list" class="card-list" :class="{ 'card-list--mobile': is_mobile }">
+  <div v-else data-testid="card-list" class="card-list">
     <component
       v-for="(card, index) in cards"
       :is="list_item_component"
       :key="card.id"
       :index="index"
       :card="card"
+      :duplicate="isDuplicate(card)"
       @delete="onDeleteCard"
       @move="onMoveCard"
       @append="onAppendCard"
@@ -95,13 +88,6 @@ async function onPrependCard(card_id: number, side: 'left' | 'right') {
   align-items: center;
 
   width: 100%;
-  padding-top: 5rem;
-}
-.card-list--mobile {
-  flex-direction: row;
-  gap: 1rem;
-
-  padding-top: 1rem;
-  overflow-x: auto;
+  padding-top: 1.5rem;
 }
 </style>
