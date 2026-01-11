@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ListItem from './list-item-mobile.vue'
+import ListItem from './list-item.vue'
 import { inject } from 'vue'
 import { type CardBulkEditor } from '@/composables/card-bulk-editor'
 
