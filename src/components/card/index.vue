@@ -105,14 +105,16 @@ const back_image_url = computed(() => {
   --card-bg-color: var(--color-white);
   --card-text-color: var(--color-brown-700);
   --card-text-color--placeholder: var(--color-brown-500);
+  --card-font-size: var(--text-base);
+  --card-font-size--line-height: var(--text-base--line-height);
 
   aspect-ratio: var(--aspect-card);
   position: relative;
   width: var(--card-width);
   transition: width 0.05s ease-in-out;
 
-  font-size: var(--text-base);
-  line-height: var(--text-base--line-height);
+  font-size: var(--card-font-size);
+  line-height: var(--card-font-size--line-height);
 }
 
 .card-container--2xl {
@@ -127,6 +129,8 @@ const back_image_url = computed(() => {
   --face-radius: 58px;
   --face-padding: 30px;
   --min-element-height: 80px;
+  --card-font-size: var(--text-lg);
+  --card-font-size--line-height: var(--text-lg--line-height);
 }
 .card-container--lg {
   --card-width: 260px;
