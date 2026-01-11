@@ -277,8 +277,8 @@ async function onMoveCards(id?: number) {
         </div>
 
         <div
-          class="bg-brown-100 dark:bg-grey-900 border-b-brown-500 absolute -top-10 -right-3 bottom-0
-            -left-3 -z-10 border-b"
+          class="bg-brown-100 dark:bg-grey-900 border-b-brown-500 absolute -top-10 right-0 left-0
+            sm:-right-3 bottom-0 sm:-left-3 -z-10 border-b"
         ></div>
       </div>
 

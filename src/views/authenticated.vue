@@ -19,7 +19,7 @@ const sessionStore = useSessionStore()
     <nav-bar />
     <phone />
 
-    <main class="h-full w-full max-w-(--page-width) px-4 sm:px-16">
+    <main class="h-full w-full max-w-(--page-width) sm:px-16">
       <router-view />
     </main>
   </ui-loader>
