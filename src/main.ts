@@ -34,6 +34,8 @@ const session = useSessionStore()
 try {
   session.startLoading()
   await audio_player.setup()
+} catch (e) {
+  console.error('Error initializing audio player: ', e)
 } finally {
   session.stopLoading()
 }
