@@ -9,18 +9,8 @@ const { card } = defineProps<{
 }>()
 
 const editor = inject<CardBulkEditor>('card-editor')!
-const active_side = inject<{ value: 'front' | 'back' }>('active-side')!
-
-const active = computed(() => editor.active_card_id.value === card.id)
 </script>
 
 <template>
-  <card
-    v-bind="card"
-    size="xl"
-    class="shrink-0"
-    mode="edit"
-    :side="active_side.value"
-    :active="active"
-  ></card>
+  <card v-bind="card" size="xl" class="shrink-0" mode="edit"></card>
 </template>
