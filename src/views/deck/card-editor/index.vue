@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import ListItem from './list-item.vue'
+import ListItemMobile from './list-item-mobile.vue'
 import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
-import { nextTick, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 import { useBreakpoint } from '@/composables/use-breakpoint'
@@ -44,6 +45,10 @@ shortcuts.register([
     when: () => activeCardId !== undefined
   }
 ])
+
+const list_item_component = computed(() => {
+  return is_mobile.value ? ListItemMobile : ListItem
+})
 
 async function onTab(is_going_back: boolean) {
   if (active_side.value === 'front' && !is_going_back) return
@@ -115,15 +120,12 @@ function onAddCard(card: Card, side: 'left' | 'right') {
     </ui-button>
   </div>
 
-  <div
-    v-else-if="!is_mobile"
-    data-testid="card-list"
-    class="relative flex pt-5 w-full flex-col items-center"
-  >
-    <list-item
+  <div v-else data-testid="card-list" class="card-list" :class="{ 'card-list--mobile': is_mobile }">
+    <component
       v-for="(card, index) in cards"
+      :is="list_item_component"
       :key="card.id"
-      :id="`card-${card.id}`"
+      :id="card.id"
       :index="index"
       :card="card"
       :mode="mode"
@@ -149,6 +151,23 @@ function onAddCard(card: Card, side: 'left' | 'right') {
 
     <slot></slot>
   </div>
-
-  <div v-else>test</div>
 </template>
+
+<style>
+.card-list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  padding-top: 5rem;
+}
+.card-list--mobile {
+  flex-direction: row;
+  gap: 1rem;
+
+  padding-top: 1rem;
+  overflow-x: auto;
+}
+</style>
