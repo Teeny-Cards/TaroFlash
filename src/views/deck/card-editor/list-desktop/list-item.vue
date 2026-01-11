@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Card from '@/components/card/index.vue'
-import ItemOptions from './item-options.vue'
+import ItemOptions from '../item-options.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
@@ -9,7 +9,7 @@ import { type CardBulkEditor } from '@/composables/card-bulk-editor'
 import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 import { inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import ImageButton from '../image-button.vue'
+import ImageButton from '../../image-button.vue'
 import { setCardImage, deleteCardImage } from '@/api/cards'
 
 const { card, index } = defineProps<{

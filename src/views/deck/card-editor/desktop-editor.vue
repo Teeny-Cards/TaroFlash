@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ListItem from './list-item.vue'
+import ListItem from './list-desktop/list-item.vue'
 import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
