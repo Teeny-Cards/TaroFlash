@@ -6,48 +6,17 @@ import UiButton from '@/components/ui-kit/button.vue'
 import { inject, computed } from 'vue'
 import { useBreakpoint } from '@/composables/use-breakpoint'
 import { type CardBulkEditor } from '@/composables/card-bulk-editor'
-import { useToast } from '@/composables/toast'
+import TextEditorToolbar from '@/components/text-editor-toolbar/index.vue'
 
 const { t } = useI18n()
-const toast = useToast()
 const is_mobile = useBreakpoint('(max-width: 768px)')
 const editor = inject<CardBulkEditor>('card-editor')!
-const onDeleteCard = inject<(id: number) => void>('on-delete-card')!
-const onMoveCard = inject<(id: number) => void>('on-move-card')!
 
-const { all_cards: cards, addCard: upstreamAddCard } = editor
+const { all_cards: cards, addCard, isDuplicate } = editor
 
 const list_item_component = computed(() => {
   return is_mobile.value ? ListItemMobile : ListItem
 })
-
-function isDuplicate(card: Card) {
-  const non_empty_cards = cards.value.filter((c) => c.front_text !== '' || c.back_text !== '')
-
-  return (
-    non_empty_cards.filter(
-      (c) => c.front_text === card.front_text || c.back_text === card.back_text
-    ).length > 1
-  )
-}
-
-async function addCard(left_card_id?: number, right_card_id?: number) {
-  try {
-    await upstreamAddCard(left_card_id, right_card_id)
-  } catch (e: any) {
-    toast.error(t('toast.error.add-card'))
-  }
-}
-
-async function onAppendCard(card_id: number) {
-  const other_card = cards.value[cards.value.findIndex((c) => c.id === card_id) + 1]
-  await addCard(other_card?.id, card_id)
-}
-
-async function onPrependCard(card_id: number) {
-  const other_card = cards.value[cards.value.findIndex((c) => c.id === card_id) - 1]
-  await addCard(card_id, other_card?.id)
-}
 </script>
 
 <template>
@@ -62,7 +31,7 @@ async function onPrependCard(card_id: number) {
     </ui-button>
   </div>
 
-  <div v-else data-testid="card-list" class="card-list">
+  <div v-else data-testid="card-list" class="card-list" :class="{ 'card-list--mobile': is_mobile }">
     <component
       v-for="(card, index) in cards"
       :is="list_item_component"
@@ -70,12 +39,9 @@ async function onPrependCard(card_id: number) {
       :index="index"
       :card="card"
       :duplicate="isDuplicate(card)"
-      @delete="onDeleteCard"
-      @move="onMoveCard"
-      @append="onAppendCard"
-      @prepend="onPrependCard"
     />
 
+    <text-editor-toolbar inactive_classes="transform translate-y-25" hide_on_mobile />
     <slot></slot>
   </div>
 </template>
@@ -89,5 +55,13 @@ async function onPrependCard(card_id: number) {
 
   width: 100%;
   padding-top: 1.5rem;
+}
+
+.card-list--mobile {
+  flex-direction: row;
+  gap: 1rem;
+
+  padding-top: 1rem;
+  overflow-x: auto;
 }
 </style>

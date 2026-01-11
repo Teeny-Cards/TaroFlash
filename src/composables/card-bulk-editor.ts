@@ -1,7 +1,8 @@
 import { computed, ref } from 'vue'
-import { upsertCard, deleteCards as upstreamDeleteCards, reserveCard } from '@/api/cards'
-import { debounce } from '@/utils/debounce'
+import { deleteCards as upstreamDeleteCards } from '@/api/cards'
 import CardRecord from '@/utils/card-record'
+
+// TODO: Add error handling for all async functions
 
 export type CardEditorMode = 'view' | 'select' | 'edit'
 export type CardBulkEditor = ReturnType<typeof useCardBulkEditor>
@@ -82,6 +83,26 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
     mode.value = new_mode
   }
 
+  function isDuplicate(card: Card) {
+    const non_empty_cards = all_cards.value.filter((c) => c.front_text !== '' || c.back_text !== '')
+
+    return (
+      non_empty_cards.filter(
+        (c) => c.front_text === card.front_text || c.back_text === card.back_text
+      ).length > 1
+    )
+  }
+
+  async function appendCard(card_id: number) {
+    const other_card = all_cards.value[all_cards.value.findIndex((c) => c.id === card_id) + 1]
+    await addCard(other_card?.id, card_id)
+  }
+
+  async function prependCard(card_id: number) {
+    const other_card = all_cards.value[all_cards.value.findIndex((c) => c.id === card_id) - 1]
+    await addCard(card_id, other_card?.id)
+  }
+
   async function addCard(left_card_id?: number, right_card_id?: number) {
     if (!left_card_id && !right_card_id) {
       const last_card = all_cards.value?.at(-1)
@@ -129,6 +150,9 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
     clearSelectedCards,
     getSelectedCards,
     setMode,
-    resetCards
+    resetCards,
+    isDuplicate,
+    appendCard,
+    prependCard
   }
 }

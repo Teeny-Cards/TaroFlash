@@ -147,7 +147,7 @@ export function useRichTextEditor() {
 
     if (_isWhitespaceOnly(q) || isEmpty) {
       _resetToEmpty(q)
-      align('center', { source: Quill.sources.API, quill: q })
+      q.formatLine(0, 1, 'align', 'center', Quill.sources.SILENT)
     }
   }
 
@@ -241,6 +241,10 @@ export function useRichTextEditor() {
         const r = q.getSelection()
         if (r) _onEditorChanged(q, 'selection-change', r)
       }, 10)
+    })
+
+    q.root.addEventListener('focusout', () => {
+      _deactivate(q.container)
     })
   }
 

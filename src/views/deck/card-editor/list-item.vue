@@ -18,18 +18,14 @@ const { card, index } = defineProps<{
   duplicate: boolean
 }>()
 
-const emit = defineEmits<{
-  (e: 'delete', id: number): void
-  (e: 'move', id: number): void
-  (e: 'append', id: number): void
-  (e: 'prepend', id: number): void
-}>()
-
 const { t } = useI18n()
 const toast = useToast()
 
-const { mode, selected_card_ids, toggleSelectCard, updateCard } =
+const { mode, selected_card_ids, updateCard, appendCard, prependCard } =
   inject<CardBulkEditor>('card-editor')!
+const onDeleteCard = inject<(id: number) => void>('on-delete-card')
+const onMoveCard = inject<(id: number) => void>('on-move-card')
+const onSelectCard = inject<(id: number) => void>('on-select-card')
 
 const selected = computed(() => selected_card_ids.value.includes(card.id!))
 
@@ -143,9 +139,9 @@ async function onImageDelete(side: 'front' | 'back') {
     <item-options
       v-if="mode !== 'select'"
       class="card-list-item__options hidden sm:grid"
-      @select="toggleSelectCard(card.id!)"
-      @move="emit('move', card.id!)"
-      @delete="emit('delete', card.id!)"
+      @select="onSelectCard?.(card.id!)"
+      @move="onMoveCard?.(card.id!)"
+      @delete="onDeleteCard?.(card.id!)"
     />
     <ui-radio :checked="selected" v-else></ui-radio>
 
@@ -155,7 +151,7 @@ async function onImageDelete(side: 'front' | 'back') {
       theme="brown"
       size="xs"
       class="card-list__button card-list__button--top"
-      @click.stop="emit('prepend', card.id!)"
+      @click.stop="prependCard(card.id!)"
     />
     <ui-button
       icon-left="add"
@@ -163,7 +159,7 @@ async function onImageDelete(side: 'front' | 'back') {
       theme="brown"
       size="xs"
       class="card-list__button card-list__button--bottom"
-      @click.stop="emit('append', card.id!)"
+      @click.stop="appendCard(card.id!)"
     />
   </div>
 </template>

@@ -15,9 +15,7 @@ import { moveCardsToDeck } from '@/api/cards'
 import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
 import UiButton from '@/components/ui-kit/button.vue'
-import BulkSelectMenu from '@/views/deck/bulk-select-menu.vue'
-import TextEditorToolbar from '@/components/text-editor-toolbar/index.vue'
-import { useShortcuts } from '@/composables/use-shortcuts'
+import BulkSelectToolbar from '@/views/deck/bulk-select-toolbar.vue'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -31,12 +29,12 @@ const image_url = ref<string | undefined>()
 const deck = ref<Deck>()
 const active_tab = ref(0)
 
-const shortcuts = useShortcuts('deck-view')
 const editor = useCardBulkEditor(deck.value?.cards ?? [], Number(deck_id))
 
 provide('card-editor', editor)
 provide('on-delete-card', onDeleteCards)
 provide('on-move-card', onMoveCards)
+provide('on-select-card', onSelectCard)
 
 const tabs = [
   {
@@ -98,7 +96,9 @@ async function onDeleteCards(id?: number) {
   }
 }
 
-function onSelect() {
+function onSelectCard(id?: number) {
+  if (id !== undefined) editor.selectCard(id)
+
   editor.setMode('select')
   emitSfx('ui.etc_camera_shutter')
 }
@@ -159,7 +159,7 @@ async function onMoveCards(id?: number) {
 
           <ui-split-button theme="purple" v-if="editor.mode.value === 'view'">
             <template #defaults="{ option }">
-              <component :is="option" icon="check" @click="onSelect">
+              <component :is="option" icon="check" @click="onSelectCard">
                 {{ t('deck-view.toggle-options.select') }}
               </component>
             </template>
@@ -182,8 +182,7 @@ async function onMoveCards(id?: number) {
       </div>
 
       <component :is="tab_components[active_tab]">
-        <bulk-select-menu @cancel="onCancel" @move="onMoveCards" @delete="onDeleteCards" />
-        <text-editor-toolbar inactive_classes="transform translate-y-25" hide_on_mobile />
+        <bulk-select-toolbar @cancel="onCancel" @move="onMoveCards" @delete="onDeleteCards" />
       </component>
     </div>
 
