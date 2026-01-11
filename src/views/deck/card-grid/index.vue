@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import GridItem from './grid-item.vue'
-import { type CardEditorMode } from '@/composables/card-bulk-editor'
+import { type CardBulkEditor } from '@/composables/card-bulk-editor'
+import { inject, ref } from 'vue'
 
-const { mode, side = 'front' } = defineProps<{
-  cards: Card[]
-  mode: CardEditorMode
-  side?: 'front' | 'back'
-  selectedCardIds?: number[]
-}>()
+const { all_cards, mode, selected_card_ids } = inject<CardBulkEditor>('card-editor')!
+
+const side = ref<'front' | 'back'>('front')
 
 const emit = defineEmits<{
   (e: 'card-selected', id: number): void
@@ -23,11 +21,11 @@ const emit = defineEmits<{
       xl:max-w-full"
   >
     <grid-item
-      v-for="card in cards"
+      v-for="card in all_cards"
       :card="card"
       :mode="mode"
       :side="side"
-      :selected="selectedCardIds?.includes(card.id!) ?? false"
+      :selected="selected_card_ids?.includes(card.id!) ?? false"
       @card-selected="emit('card-selected', card.id!)"
     ></grid-item>
   </div>

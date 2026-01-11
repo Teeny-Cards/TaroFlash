@@ -4,7 +4,8 @@ import BgColorSelector from './bg-color-selector.vue'
 import FontSizeSelector from './font-size-selector.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiImage from '@/components/ui-kit/image.vue'
-import { ref } from 'vue'
+import { emitSfx } from '@/sfx/bus'
+import { watch } from 'vue'
 
 defineProps<{
   inactive_classes: string
@@ -12,9 +13,8 @@ defineProps<{
 }>()
 
 const {
+  active,
   selection_format,
-  onActivate,
-  onDeactivate,
   textSize,
   underline,
   align,
@@ -24,14 +24,12 @@ const {
   cardBgColor
 } = useRichTextEditor()
 
-const active = ref(false)
-
-onActivate(() => {
-  active.value = true
-})
-
-onDeactivate(() => {
-  active.value = false
+watch(active, (newVal) => {
+  if (newVal) {
+    emitSfx('ui.slide_up')
+  } else {
+    emitSfx('ui.card_drop')
+  }
 })
 </script>
 

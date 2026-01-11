@@ -1,9 +1,7 @@
-import { ref, onUnmounted } from 'vue'
+import { ref, onUnmounted, computed } from 'vue'
 import Quill, { type Range } from 'quill'
-import { useLogger } from '@/composables/logger'
 import { DividerBlot } from '@/utils/formats/divider-blot'
 import { FontSizeBlot } from '@/utils/formats/font-size-blot'
-import { ImageBlot, type ImageValue } from '@/utils/formats/image-blot'
 
 export type TextEditorUpdatePayload = {
   delta?: Object
@@ -29,65 +27,21 @@ type ActionConfig = {
 
 Quill.register(DividerBlot, true)
 Quill.register(FontSizeBlot, true)
-Quill.register(ImageBlot, true)
 
 const TOOLBAR_HIDE_DELAY = 10
 
+const active_quill = ref<Quill | null>(null)
+
 let hide_timeout: number | null = null
-let active_quill: Quill | null = null
 let active_input: HTMLElement | null = null
-let active_input_onUpdate: null | ((payload: TextEditorUpdatePayload) => void) = null
-const activate_handlers = new Set<() => void>()
-const deactivate_handlers = new Set<() => void>()
-const removed_images_per_quill = new Map<Quill, Set<string>>()
-const image_ids_per_quill = new Map<Quill, Set<string>>()
 
 const selection_format = ref<{ [key: string]: any }>()
 const last_range = ref<Range | null>(null)
 
 export function useRichTextEditor() {
-  const logger = useLogger()
-
-  // PUBLIC API
-  function activate(editor: HTMLElement | null) {
-    if (hide_timeout) {
-      clearTimeout(hide_timeout)
-      hide_timeout = null
-    }
-
-    if (editor) {
-      const found = Quill.find(editor)
-
-      if (found instanceof Quill) {
-        active_quill = found
-        _onEditorChanged(found, 'editor-change', null)
-      }
-    } else {
-      active_quill = null
-      logger.warn('Failed to activate editor: ', editor)
-    }
-
-    active_input = editor ?? null
-    activate_handlers.forEach((h) => h())
-  }
-
-  function deactivate(expected_input: HTMLElement | null, delay = TOOLBAR_HIDE_DELAY) {
-    if (hide_timeout) clearTimeout(hide_timeout)
-
-    hide_timeout = window.setTimeout(() => {
-      // Only clear if nobody else claimed active in the meantime
-      if (active_input === expected_input) {
-        active_input = null
-        deactivate_handlers.forEach((h) => h())
-      }
-
-      hide_timeout = null
-    }, delay)
-  }
-
-  function setup(el: HTMLElement, delta?: any, options: RenderOptions = {}) {
+  function attachEditor(el: HTMLElement, delta?: any, options: RenderOptions = {}) {
     const found = Quill.find(el)
-    if (found instanceof Quill) return
+    if (found instanceof Quill) return // already setup
 
     const q = new Quill(el, {
       modules: {
@@ -106,55 +60,28 @@ export function useRichTextEditor() {
     }
   }
 
-  // EVENT SUBSCRIPTION
-  function subscribe(callback: (delta: any, text?: string) => void) {
-    active_input_onUpdate = callback
-  }
-
-  function unsubscribe(callback: (delta: any, text?: string) => void) {
-    if (active_input_onUpdate === callback) {
-      active_input_onUpdate = null
-    }
-  }
-
-  function onActivate(handler: () => void) {
-    activate_handlers.add(handler)
-
-    onUnmounted(() => {
-      activate_handlers.delete(handler)
-    })
-  }
-
-  function onDeactivate(handler: () => void) {
-    deactivate_handlers.add(handler)
-
-    onUnmounted(() => {
-      deactivate_handlers.delete(handler)
-    })
-  }
-
   // TOOLBAR ACTIONS
   function format(key: string, val: any) {
-    const q = active_quill
+    const q = active_quill.value
     if (!q) return
 
     q.format(key, val, 'user')
   }
 
   function align(dir: Align, { source = Quill.sources.USER, quill }: ActionConfig = {}) {
-    const q = quill ?? active_quill
+    const q = quill ?? active_quill.value
     if (!q) return
 
     const range = last_range.value ?? q.getSelection(true)
     q.formatLine(range.index, range.length, 'align', dir || false, source)
 
     if (source === Quill.sources.USER) {
-      _emitChanged()
+      _emitUpdate()
     }
   }
 
   function link(url?: string) {
-    const q = active_quill
+    const q = active_quill.value
     if (!q) return
     const u = url ?? prompt('URL:') ?? ''
     if (!u) return
@@ -162,45 +89,56 @@ export function useRichTextEditor() {
   }
 
   function divider() {
-    if (!active_quill) return
+    if (!active_quill.value) return
 
-    const range = active_quill.getSelection(true)
-    active_quill.insertText(range.index, '\n', Quill.sources.USER)
-    active_quill.insertEmbed(range.index + 1, 'divider', true, Quill.sources.USER)
-    // active_quill.insertText(range.index + 2, '\n', Quill.sources.USER)
+    const range = active_quill.value.getSelection(true)
+    active_quill.value.insertText(range.index, '\n', Quill.sources.USER)
+    active_quill.value.insertEmbed(range.index + 1, 'divider', true, Quill.sources.USER)
+    // active_quill.value.insertText(range.index + 2, '\n', Quill.sources.USER)
   }
 
   function list(type: 'bullet' | 'ordered' | false) {
-    if (!active_quill) return
-    active_quill.format('list', type)
+    if (!active_quill.value) return
+    active_quill.value.format('list', type)
   }
 
   function underline() {
-    if (!active_quill) return
+    if (!active_quill.value) return
 
-    const format = active_quill.getFormat()
+    const format = active_quill.value.getFormat()
     const isUnderlined = !!format.underline
 
-    active_quill.format('underline', !isUnderlined)
-    _emitChanged()
-  }
-
-  function image(value: ImageValue) {
-    const q = active_quill
-    if (!q || !value.url || !value.id) return
-
-    const images = image_ids_per_quill.get(q) ?? new Set()
-    images.add(value.id)
-    image_ids_per_quill.set(q, images)
-
-    const range = q.getSelection(true)
-    const index = range ? range.index : q.getLength()
-
-    q.insertEmbed(index, 'image', value, Quill.sources.USER)
-    q.setSelection(index, 0, Quill.sources.SILENT)
+    active_quill.value.format('underline', !isUnderlined)
+    _emitUpdate()
   }
 
   // PRIVATE HELPERS
+  function _activate(quill: Quill) {
+    if (hide_timeout) {
+      clearTimeout(hide_timeout)
+      hide_timeout = null
+    }
+
+    active_quill.value = quill
+    active_input = quill.container
+    _emitActivated()
+  }
+
+  function _deactivate(expected_input: HTMLElement | null, delay = TOOLBAR_HIDE_DELAY) {
+    if (hide_timeout) clearTimeout(hide_timeout)
+
+    hide_timeout = window.setTimeout(() => {
+      // Only clear if nobody else claimed active in the meantime
+      if (active_input === expected_input) {
+        active_input = null
+        active_quill.value = null
+        _emitDeactivated()
+      }
+
+      hide_timeout = null
+    }, delay)
+  }
+
   function _render(q: Quill, delta: any) {
     q.setContents(delta, Quill.sources.API)
     const isEmpty = q.getLength() === 1
@@ -213,7 +151,14 @@ export function useRichTextEditor() {
 
   function _onEditorChanged(quill: Quill, eventName: string, ...args: any[]) {
     if (eventName === 'selection-change') {
-      let range = args[0]
+      const [range, oldRange, source] = args as any
+
+      if (range && !oldRange) {
+        _activate(quill)
+      } else if (!range && oldRange) {
+        _deactivate(quill.container)
+      }
+
       if (!range) return
 
       selection_format.value = quill?.getFormat(range)
@@ -223,17 +168,28 @@ export function useRichTextEditor() {
 
   function _onTextChange(_delta: any, _oldDelta: any, source: any) {
     if (source === 'api') return
-    _emitChanged()
+    _emitUpdate()
   }
 
-  function _emitChanged(attributes?: CardAttributes) {
-    if (active_quill && active_input_onUpdate) {
-      const delta = active_quill?.getContents()
-      const text = active_quill?.getText()
+  function _emitActivated() {
+    const event = new CustomEvent('activate')
+    active_input?.dispatchEvent(event)
+  }
 
-      active_input_onUpdate({ delta, text, attributes })
-      removed_images_per_quill.delete(active_quill)
-      image_ids_per_quill.delete(active_quill)
+  function _emitDeactivated() {
+    const event = new CustomEvent('deactivate')
+    active_input?.dispatchEvent(event)
+  }
+
+  function _emitUpdate(attributes?: CardAttributes) {
+    if (active_quill.value) {
+      const delta = active_quill.value?.getContents()
+      const text = active_quill.value?.getText()
+      const payload: TextEditorUpdatePayload = { delta, text, attributes }
+
+      const el = active_quill.value.container
+      const event = new CustomEvent('update', { detail: payload })
+      el.dispatchEvent(event)
     }
   }
 
@@ -282,36 +238,24 @@ export function useRichTextEditor() {
         if (r) _onEditorChanged(q, 'selection-change', r)
       }, 10)
     })
-
-    q.on('image-delete', (id: string) => {
-      const images = removed_images_per_quill.get(q) ?? new Set()
-      images.add(id)
-      removed_images_per_quill.set(q, images)
-    })
   }
 
   return {
+    active: computed(() => active_quill.value !== null),
     active_input,
     selection_format,
-    activate,
-    deactivate,
-    setup,
-    subscribe,
-    unsubscribe,
-    onActivate,
-    onDeactivate,
+    attachEditor,
     // toolbar actions
     textColor: (c?: string) => format('color', c || false),
     textBgColor: (c?: string) => format('background', c || false),
     textSize: (s?: number) => format('size', s ? `${s}px` : false),
-    cardBgColor: (c?: MemberTheme) => _emitChanged({ bg_color: c }),
+    cardBgColor: (c?: MemberTheme) => _emitUpdate({ bg_color: c }),
     underline,
     align,
     verticalAlign: (v?: CardAttributes['vertical_align']) =>
-      _emitChanged({ vertical_align: v ?? 'top' }),
+      _emitUpdate({ vertical_align: v ?? 'top' }),
     link,
     divider,
-    list,
-    image
+    list
   }
 }

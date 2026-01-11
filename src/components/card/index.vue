@@ -12,7 +12,6 @@ type CardProps = Partial<CardBase> &
     size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
     mode?: CardEditorMode
     side?: 'front' | 'back'
-    active?: boolean
     placeholder?: string
     face_classes?: string
     sfx?: SfxOptions
@@ -29,7 +28,8 @@ const {
 const emit = defineEmits<{
   (e: 'update:front', payload: TextEditorUpdatePayload): void
   (e: 'update:back', payload: TextEditorUpdatePayload): void
-  (e: 'focus'): void
+  (e: 'focusin'): void
+  (e: 'focusout'): void
 }>()
 
 const front_image_url = computed(() => {
@@ -70,12 +70,12 @@ const back_image_url = computed(() => {
           :text="front_text"
           :editor_delta="front_delta"
           :mode="mode"
-          :active="active"
           :side="side"
           :attributes="attributes"
           :placeholder="placeholder"
           @update="emit('update:front', $event)"
-          @focus="emit('focus')"
+          @focusin.prevent="emit('focusin')"
+          @focusout.prevent="emit('focusout')"
         />
       </slot>
 
@@ -87,12 +87,12 @@ const back_image_url = computed(() => {
           :text="back_text"
           :editor_delta="back_delta"
           :mode="mode"
-          :active="active"
           :side="side"
           :attributes="attributes"
           :placeholder="placeholder"
           @update="emit('update:back', $event)"
-          @focus="emit('focus')"
+          @focusin.prevent="emit('focusin')"
+          @focusout.prevent="emit('focusout')"
         />
       </slot>
     </transition>

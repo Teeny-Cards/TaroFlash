@@ -1,30 +1,26 @@
 <script setup lang="ts">
 import Card from '@/components/card/index.vue'
-import { type CardEditorMode } from '@/composables/card-bulk-editor'
-import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
+import { type CardBulkEditor } from '@/composables/card-bulk-editor'
+import { inject, computed } from 'vue'
 
-const { card, mode, active, active_side } = defineProps<{
+const { card } = defineProps<{
   index: number
   card: Card
-  mode: CardEditorMode
-  active: boolean
-  selected: boolean
-  is_duplicate?: boolean
-  active_side: 'front' | 'back'
 }>()
 
-const emit = defineEmits<{
-  (e: 'selected'): void
-  (e: 'deleted'): void
-  (e: 'moved'): void
-  (e: 'activated'): void
-  (e: 'deactivated'): void
-  (e: 'updated', id: number, side: 'front' | 'back', payload: TextEditorUpdatePayload): void
-  (e: 'side-changed', side: 'front' | 'back'): void
-  (e: 'add-card', side: 'left' | 'right'): void
-}>()
+const editor = inject<CardBulkEditor>('card-editor')!
+const active_side = inject<{ value: 'front' | 'back' }>('active-side')!
+
+const active = computed(() => editor.active_card_id.value === card.id)
 </script>
 
 <template>
-  <card v-bind="card" size="xl" class="shrink-0" mode="edit"></card>
+  <card
+    v-bind="card"
+    size="xl"
+    class="shrink-0"
+    mode="edit"
+    :side="active_side.value"
+    :active="active"
+  ></card>
 </template>
