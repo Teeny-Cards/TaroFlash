@@ -31,8 +31,11 @@ app.directive('sfx', vSfx)
 
 const session = useSessionStore()
 
-session.startLoading()
-await audio_player.setup()
-session.stopLoading()
+try {
+  session.startLoading()
+  await audio_player.setup()
+} finally {
+  session.stopLoading()
+}
 
 app.mount('#app')
