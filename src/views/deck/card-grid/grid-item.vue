@@ -38,6 +38,9 @@ const emit = defineEmits<{
   position: relative;
   aspect-ratio: var(--aspect-card);
   overflow: hidden;
+
+  max-width: 314px;
+  width: 100%;
 }
 
 .grid-item .grid-item__card {

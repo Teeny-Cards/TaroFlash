@@ -13,11 +13,13 @@ import { useModal } from '@/composables/modal'
 import { useMemberStore } from '@/stores/member'
 import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
+import { useMediaQuery } from '@/composables/use-media-query'
 
 const { t } = useI18n()
 const toast = useToast()
 const router = useRouter()
-const memberStore = useMemberStore()
+const member_store = useMemberStore()
+const is_md = useMediaQuery('md')
 
 const modal = useModal()
 const loading = ref(true)
@@ -29,7 +31,7 @@ onMounted(async () => {
   due_card_count.value = await fetchMemberCardCount({ only_due_cards: true })
   loading.value = false
 
-  if (!memberStore.has_member) {
+  if (!member_store.has_member) {
     modal.open(MemberApplication, {
       backdrop: true,
       openAudio: 'ui.double_pop_up',
@@ -66,17 +68,19 @@ async function onCreateDeckClicked() {
 </script>
 
 <template>
-  <div data-testid="dashboard" class="flex h-full flex-col gap-16">
-    <div class="flex flex-col gap-4">
+  <div data-testid="dashboard" class="flex h-full flex-col gap-16 pb-12">
+    <div class="flex flex-col gap-1.5">
       <h1 class="text-brown-700 dark:text-brown-300 text-3xl">
         {{ t('dashboard.due') }} ({{ due_card_count }})
       </h1>
-      <div class="flex gap-4">
+      <div class="flex gap-2 overflow-y-auto pt-2.5">
         <Deck
           v-for="(deck, index) in due_decks"
           :key="index"
           :deck="deck"
-          @clicked="() => onDeckClicked(deck)"
+          :size="is_md ? 'sm' : 'xs'"
+          due
+          @click="onDeckClicked(deck)"
           @updated="refetchDecks"
         />
       </div>
@@ -84,12 +88,13 @@ async function onCreateDeckClicked() {
 
     <div class="flex flex-col gap-4">
       <h1 class="text-brown-700 dark:text-brown-300 text-3xl">{{ t('dashboard.all') }}</h1>
-      <div class="flex gap-4">
+      <div class="flex gap-x-4 gap-y-8 flex-wrap">
         <Deck
           v-for="(deck, index) in decks"
           :key="index"
           :deck="deck"
-          @clicked="() => onDeckClicked(deck)"
+          :size="is_md ? 'base' : 'sm'"
+          @click="onDeckClicked(deck)"
           @updated="refetchDecks"
         />
       </div>

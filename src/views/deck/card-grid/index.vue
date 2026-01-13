@@ -16,9 +16,9 @@ const emit = defineEmits<{
 <template>
   <div
     data-testid="card-grid"
-    class="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))]
-      sm:grid-cols-[repeat(auto-fit,minmax(192px,1fr))] gap-2 md:gap-4 py-3 w-full max-w-208
-      xl:max-w-full"
+    class="grid grid-cols-[repeat(auto-fit,minmax(176px,1fr))]
+      sm:grid-cols-[repeat(auto-fit,minmax(192px,1fr))] justify-items-center gap-2 md:gap-4 py-3
+      w-full max-w-208 xl:max-w-full"
   >
     <grid-item
       v-for="card in all_cards"

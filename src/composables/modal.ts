@@ -88,26 +88,29 @@ export function useModal() {
     let index = modal_stack.value.findIndex((m) => m.id === id)
     const modal = modal_stack.value[index]
 
-    if (modal?.global_close) {
-      modal.resolve()
-      modal.shortcutDispose?.()
-      modal.shortcutClearScope?.()
+    modal.resolve()
+    modal.shortcutDispose?.()
+    modal.shortcutClearScope?.()
 
-      modal_stack.value.splice(index, 1)
+    modal_stack.value.splice(index, 1)
 
-      const close_audio = opts?.override_close_audio ?? modal.closeAudio
-      if (close_audio) {
-        emitSfx(close_audio)
-      }
+    const close_audio = opts?.override_close_audio ?? modal.closeAudio
+    if (close_audio) {
+      emitSfx(close_audio)
     }
   }
 
   function pop() {
     const modal = modal_stack.value.pop()
+
     if (modal) {
       modal.resolve()
       modal.shortcutDispose?.()
       modal.shortcutClearScope?.()
+
+      if (modal.closeAudio) {
+        emitSfx(modal.closeAudio)
+      }
     }
   }
 

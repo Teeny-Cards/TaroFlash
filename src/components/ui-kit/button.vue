@@ -114,7 +114,7 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
   --btn-font-size: var(--text-sm);
   --btn-border-radius: var(--radius-3);
   --btn-gap: 6px;
-  --btn-padding: 4px 4px;
+  --btn-padding: 4px 6px;
 }
 .ui-kit-btn.btn-xs {
   --btn-font-size: var(--text-sm);

@@ -2,9 +2,11 @@
 import { onUnmounted, watchEffect, computed, onMounted, ref } from 'vue'
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
 import { useModal } from '@/composables/modal'
+import { useMediaQuery } from '@/composables/use-media-query'
 
 const { modal_stack, pop } = useModal()
 const modal_container = ref<HTMLElement | null>(null)
+const is_mobile = useMediaQuery('coarse')
 
 onMounted(() => {
   modal_container.value = document.querySelector('[data-testid="ui-kit-modal-container"]')
@@ -16,7 +18,7 @@ onUnmounted(() => {
 })
 
 watchEffect(() => {
-  if (!modal_container.value) return
+  if (!modal_container.value || is_mobile.value) return
 
   if (modal_stack.value.length > 0) {
     disableBodyScroll(modal_container.value, { reserveScrollBarGap: true })

@@ -5,6 +5,7 @@ import { useStudySession } from '@/composables/study-session'
 import { type RecordLogItem } from 'ts-fsrs'
 import { onMounted, ref } from 'vue'
 import UiButton from '@/components/ui-kit/button.vue'
+import Card from '@/components/card/index.vue'
 
 const { deck } = defineProps<{ deck: Deck }>()
 const emit = defineEmits<{
@@ -77,6 +78,7 @@ function onSideChanged(side: 'front' | 'back') {
       @side-changed="onSideChanged"
       @reviewed="onCardReviewed"
     />
+    <card v-else size="xl" />
 
     <rating-buttons
       class="z-10 mt-4"

@@ -1,4 +1,4 @@
-import { onScopeDispose } from 'vue'
+import { onScopeDispose, getCurrentScope } from 'vue'
 import {
   useShortcutStore,
   type Shortcut,
@@ -27,7 +27,9 @@ export function useShortcuts(id: ScopeId, { priority }: { priority?: Priority } 
     }
 
     // unregister when the component is destroyed
-    onScopeDispose(unregister)
+    if (getCurrentScope()) {
+      onScopeDispose(unregister)
+    }
   }
 
   function trapFocus() {
