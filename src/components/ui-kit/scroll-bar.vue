@@ -183,7 +183,7 @@ function isPageTarget(el: HTMLElement) {
   <div
     v-show="visible"
     ref="scrollBarRef"
-    class="ui-kit-scroll-bar hidden pointer-fine:sm:block"
+    class="ui-kit-scroll-bar hidden pointer-fine:md:block"
     @pointerdown.prevent="onTrackPointerDown"
   >
     <div

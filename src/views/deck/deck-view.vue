@@ -16,6 +16,7 @@ import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals
 import UiTabs from '@/components/ui-kit/tabs.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import BulkSelectToolbar from '@/views/deck/bulk-select-toolbar.vue'
+import { useMediaQuery } from '@/composables/use-media-query'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -24,6 +25,7 @@ const { id: deck_id } = defineProps<{
 const { t } = useI18n()
 const modal = useModal()
 const alert = useAlert()
+const is_md = useMediaQuery('md')
 
 const image_url = ref<string | undefined>()
 const deck = ref<Deck>()
@@ -135,7 +137,7 @@ async function onMoveCards(id?: number) {
 <template>
   <section
     data-testid="deck-view"
-    class="flex h-full flex-col xl:flex-row items-center xl:items-start gap-15 pb-24"
+    class="flex h-full flex-col xl:flex-row items-center xl:items-start gap-6 md:gap-15 pb-24"
   >
     <overview-panel
       v-if="deck"
@@ -148,8 +150,8 @@ async function onMoveCards(id?: number) {
     <div class="relative flex h-full w-full flex-col items-center">
       <div
         data-testid="deck-view__action-bar"
-        class="sticky top-(--nav-height) z-10 flex max-w-208 w-full xl:max-w-full justify-between
-          pb-2"
+        class="sticky top-(--nav-height) hidden z-10 md:flex max-w-208 w-full xl:max-w-full
+          justify-between pb-2"
       >
         <ui-tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
 
@@ -181,7 +183,7 @@ async function onMoveCards(id?: number) {
         ></div>
       </div>
 
-      <component :is="tab_components[active_tab]">
+      <component :is="is_md ? tab_components[active_tab] : CardGrid">
         <bulk-select-toolbar @cancel="onCancel" @move="onMoveCards" @delete="onDeleteCards" />
       </component>
     </div>
