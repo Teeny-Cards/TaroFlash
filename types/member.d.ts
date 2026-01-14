@@ -6,4 +6,13 @@ type Member = {
   created_at?: string
 }
 
-type MemberTheme = 'green' | 'blue' | 'purple' | 'pink' | 'red' | 'orange' | 'brown' | 'white'
+type MemberTheme =
+  | 'green'
+  | 'blue'
+  | 'purple'
+  | 'pink'
+  | 'red'
+  | 'orange'
+  | 'brown'
+  | 'white'
+  | 'grey'

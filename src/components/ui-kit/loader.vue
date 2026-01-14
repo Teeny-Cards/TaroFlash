@@ -196,7 +196,7 @@ const loaderClasses = computed(() => [
 }
 .ui-kit-loader--grey {
   --loader-theme: var(--color-grey-400);
-  --loader-theme-dark: var(--color-grey-500);
+  --loader-theme-dark: var(--color-grey-900);
 }
 
 /* sizes (controls burst radius) */
