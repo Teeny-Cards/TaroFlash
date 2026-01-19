@@ -4,8 +4,8 @@ const { reward } = defineProps<{ reward: Reward }>()
 
 <template>
   <div
-    class="aspect-card rounded-14 border-brown-300 flex w-80 flex-col items-center justify-between border-8
-      bg-blue-500 bg-(image:--aztec) bg-size-[12%]"
+    class="aspect-card rounded-14 border-brown-300 flex w-80 flex-col items-center justify-between
+      border-8 bg-blue-500 bgx-aztec bgx-size-[12%]"
   >
     <div class="paperclip-value">
       <h2>{{ reward.amount }}</h2>

@@ -15,7 +15,8 @@ defineProps<{ app: PhoneApp }>()
     data-testid="phone-app"
     class="phone-app rounded-5.5 w-15 h-15 cursor-pointer hover:scale-110 focus:scale-110
       transition-transform duration-50 flex items-center justify-center text-white group
-      animation-safe:animate-bg-slide outline-none bg-(--app-theme) dark:bg-(--app-theme-dark)"
+      outline-none bg-(--app-theme) dark:bg-(--app-theme-dark) hover:bgx-diagonal-stripes
+      animation-safe:hover:bgx-slide focus:bgx-diagonal-stripes"
     :class="`theme-${app.launcher.theme}`"
   >
     <ui-image
@@ -59,10 +60,5 @@ defineProps<{ app: PhoneApp }>()
 .theme-brown {
   --app-theme: var(--color-brown-100);
   --app-theme-dark: var(--color-brown-800);
-}
-
-.phone-app:hover,
-.phone-app:focus {
-  background-image: var(--diagonal-stripes);
 }
 </style>

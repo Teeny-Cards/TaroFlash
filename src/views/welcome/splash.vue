@@ -3,7 +3,8 @@ import LoginDialogue from '@/views/welcome/login-dialog.vue'
 import { useI18n } from 'vue-i18n'
 import UiImage from '@/components/ui-kit/image.vue'
 import UiPopover from '@/components/ui-kit/popover.vue'
-import { onMounted, ref } from 'vue'
+import UiButton from '@/components/ui-kit/button.vue'
+import { ref } from 'vue'
 import { emitSfx } from '@/sfx/bus'
 import SignupDialog from '@/components/modals/sign-up/signup-up.vue'
 import { useModal } from '@/composables/modal'
@@ -16,14 +17,6 @@ const { t } = useI18n()
 
 const login_dropdown_open = ref(false)
 const modal = useModal()
-
-// onMounted(() => {
-//   modal.open(SignupDialog, {
-//     backdrop: true,
-//     openAudio: 'ui.double_pop_up',
-//     closeAudio: 'ui.double_pop_down'
-//   })
-// })
 
 function openLoginDropdown() {
   login_dropdown_open.value = true
@@ -58,10 +51,10 @@ function onSignup() {
 
 <template>
   <section
-    class="flex flex-col w-full p-7.5 relative bg-green-400 wave-bottom-[30px]
-      bg-(image:--diagonal-stripes) bg-size-(--bg-sm) bg-center"
+    class="flex flex-col w-full p-7.5 relative bg-green-400 wave-bottom-[30px] bgx-diagonal-stripes
+      bgx-size-20 bg-center"
   >
-    <div class="absolute pointer-events-none inset-0 bg-(image:--stars) bg-center -z-1"></div>
+    <div class="absolute pointer-events-none inset-0 bg-(image:--bgx-stars) bg-center -z-1"></div>
 
     <div data-testid="welcome-view__top-bar" class="w-full flex justify-end">
       <ui-popover
@@ -89,21 +82,17 @@ function onSignup() {
 
     <div
       data-testid="welcome-view__content-container"
-      class="flex w-full justify-center items-center gap-6 py-64"
+      class="flex w-full justify-center items-center gap-16 py-64"
     >
       <div data-testid="welcome-view__content" class="flex flex-col items-center gap-7.5">
         <div class="flex flex-col items-center gap-1.5">
-          <h1 class="text-8xl text-brown-100 font-bold uppercase">{{ t('app.title') }}</h1>
+          <h1 class="text-8xl text-brown-100 font-bold">{{ t('app.title') }}</h1>
           <p class="text-brown-100 text-center text-lg w-60">{{ t('app.description') }}</p>
         </div>
 
-        <button
-          class="bg-blue-500 outline-4 outline-brown-100 text-brown-100 px-4 py-2.5 rounded-2.5
-            text-lg cursor-pointer"
-          @click="onSignup"
-        >
+        <ui-button size="lg" @click="onSignup" class="outline-4 outline-brown-100">
           {{ t('welcome-view.sign-up') }}
-        </button>
+        </ui-button>
       </div>
 
       <ui-image src="splash-logo" class="h-84" />

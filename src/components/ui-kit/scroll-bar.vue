@@ -266,6 +266,6 @@ function isPageTarget(el: HTMLElement) {
 }
 .ui-kit-scroll-bar__thumb:hover {
   outline: 4px solid var(--bar-color);
-  background-image: var(--diagonal-stripes);
+  background-image: var(--bgx-diagonal-stripes);
 }
 </style>

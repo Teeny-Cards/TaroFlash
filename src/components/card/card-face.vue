@@ -80,7 +80,7 @@ const emit = defineEmits<{
 
 .card-face[data-mode='view'][data-text='false'][data-image='false'],
 .card-face[data-mode='view'][data-image='false']:has(.ql-blank) {
-  background-image: var(--diagonal-stripes);
+  /* background-image: var(--bgx-diagonal-stripes); */
   background-color: var(--color-purple-400);
 }
 

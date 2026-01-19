@@ -6,6 +6,7 @@
 @import '@/styles/utilities.css';
 @import '@/styles/animations.css';
 @import '@/styles/markdown.css';
+@import '@/styles/bg-utils.css';
 
 @theme {
   --*: initial;
@@ -86,6 +87,17 @@
   --radius-31: --spacing(31); /* 124px */
   --radius-full: 9999px;
 
+  --bgx-diagonal-stripes: url('../assets/backgrounds/diagonal-stripes.svg');
+  --bgx-saw: url('../assets/backgrounds/saw.svg');
+  --bgx-wave: url('../assets/backgrounds/wave.svg');
+  --bgx-bank-note: url('../assets/backgrounds/bank-note.svg');
+  --bgx-aztec: url('../assets/backgrounds/aztec.svg');
+  --bgx-endless-clouds: url('../assets/backgrounds/endless-clouds.svg');
+  --bgx-stars: url('../assets/backgrounds/stars.svg');
+  --bgx-leaf: url('../assets/backgrounds/leaf.svg');
+  --bgx-taro-flash: url('../assets/backgrounds/taro-flash.svg');
+  --bgx-taro-flash-dark: url('../assets/backgrounds/taro-flash-dark.svg');
+
   /* Shadows */
   --shadow-xs: 3px 3px 0px 0px rgba(0, 0, 0, 0.25);
   --drop-shadow-xs: 3px 3px 0px rgba(0, 0, 0, 0.25);
@@ -98,18 +110,6 @@
 
   --shadow-lg: 6px 6px 0px 0px rgba(0, 0, 0, 0.25);
   --drop-shadow-lg: 10px 10px 0px rgba(0, 0, 0, 0.25);
-
-  /* Background Images */
-  --diagonal-stripes: url('../assets/backgrounds/diagonal-stripes.svg');
-  --saw: url('../assets/backgrounds/saw.svg');
-  --wave: url('../assets/backgrounds/wave.svg');
-  --bank-note: url('../assets/backgrounds/bank-note.svg');
-  --aztec: url('../assets/backgrounds/aztec.svg');
-  --endless-clouds: url('../assets/backgrounds/endless-clouds.svg');
-  --stars: url('../assets/backgrounds/stars.svg');
-  --leaf: url('../assets/backgrounds/leaf.svg');
-  --taro-flash: url('../assets/backgrounds/taro-flash.svg');
-  --taro-flash-dark: url('../assets/backgrounds/taro-flash-dark.svg');
 
   /* Transitions */
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
