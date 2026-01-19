@@ -1,0 +1,71 @@
+@utility bgx-* {
+  --bgx-image: --value(--bgx-*, [image]);
+
+  --bgx-size: auto;
+  --bgx-fill: var(--color-brown-100);
+  --bgx-opacity: 0.1;
+
+  --bgx-x: 0px;
+  --bgx-y: 0px;
+
+  position: relative;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+
+    background-color: var(--bgx-fill);
+    opacity: var(--bgx-opacity);
+
+    -webkit-mask-image: var(--bgx-image);
+    mask-image: var(--bgx-image);
+
+    -webkit-mask-repeat: repeat;
+    mask-repeat: repeat;
+
+    -webkit-mask-position: var(--bgx-x) var(--bgx-y);
+    mask-position: var(--bgx-x) var(--bgx-y);
+
+    -webkit-mask-size: var(--bgx-size);
+    mask-size: var(--bgx-size);
+  }
+
+  & > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@utility bgx-color-* {
+  --bgx-fill: --value(--color-*, [color]);
+}
+
+@utility bgx-opacity-* {
+  --bgx-opacity: calc(--value(integer) * 1%);
+}
+
+@utility bgx-size-* {
+  --bgx-size: --spacing(--value(integer));
+  --bgx-size: --value([length]);
+}
+
+@utility bgx-slide {
+  &::before {
+    animation: bgx-slide-x 400ms linear infinite;
+  }
+}
+
+@keyframes bgx-slide-x {
+  from {
+    -webkit-mask-position: 40px 0;
+    mask-position: 40px 0;
+  }
+  to {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+}

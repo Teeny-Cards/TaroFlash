@@ -86,7 +86,7 @@ function onMouseEnter() {
 }
 
 .ui-kit-list-item--hover-effect:hover .ui-kit-list-item__background {
-  background-image: var(--diagonal-stripes);
+  background-image: var(--bgx-diagonal-stripes);
   display: block;
 }
 

@@ -57,12 +57,12 @@ function onSideChanged(side: 'front' | 'back') {
     data-testid="study-session"
     :data-mode="mode"
     class="rounded-8 shadow-lg flex flex-col gap-6 items-center justify-between overflow-hidden
-      pb-10 relative bg-brown-300 w-full mx-3 sm:mx-0 h-auto sm:w-160"
+      pb-10 relative bg-brown-300 dark:bg-grey-900 w-full mx-3 sm:mx-0 h-auto sm:w-160"
   >
     <div
       data-testid="study-session__header"
       class="relative flex w-full justify-center bg-purple-500 wave-bottom-[50px]
-        bg-(image:--diagonal-stripes) bg-size-(--bg-sm) bg-center px-13 py-11.5 pb-14 z-10"
+        bgx-diagonal-stripes bgx-size-20 bg-center px-13 py-11.5 pb-14 z-10"
     >
       <div data-testid="study-session__actions" class="absolute top-0 left-0 p-4">
         <ui-button icon-left="close" theme="brown" icon-only @click="emit('closed')"></ui-button>
@@ -91,7 +91,7 @@ function onSideChanged(side: 'front' | 'back') {
 
     <div
       data-testid="study-session__pattern"
-      class="absolute inset-0 bg-(image:--taro-flash-dark) bg-size-[60px] text-brown-500
+      class="absolute inset-0 bg-(image:--bgx-taro-flash-dark) bg-size-[60px] text-brown-500
         bg-brown-300 opacity-4 bg-center"
     ></div>
   </div>

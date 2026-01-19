@@ -52,7 +52,7 @@ function onImageError() {
           class="h-full w-full object-cover"
           @error="onImageError"
         />
-        <div v-else class="h-full w-full bg-purple-400 bg-(image:--diagonal-stripes)"></div>
+        <div v-else class="h-full w-full bg-purple-400 bgx-diagonal-stripes"></div>
         <ui-button
           icon-left="settings"
           icon-only

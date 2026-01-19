@@ -30,8 +30,8 @@ const created_on = computed(() => {
     </div>
     <div
       data-testid="member-card__body"
-      class="wave-top flex h-full flex-col items-center gap-4.5 bg-(image:--bank-note)
-        bg-size-(--bg-sm) px-8 pt-9 pb-3"
+      class="wave-top flex h-full flex-col items-center gap-4.5 bgx-bank-note bgx-size-20 px-8 pt-9
+        pb-3"
       :class="`bg-${theme}`"
     >
       <div data-testid="member-card__avatar" class="flex h-full flex-col justify-center">
