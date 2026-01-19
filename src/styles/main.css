@@ -107,6 +107,7 @@
   --aztec: url('../assets/backgrounds/aztec.svg');
   --endless-clouds: url('../assets/backgrounds/endless-clouds.svg');
   --stars: url('../assets/backgrounds/stars.svg');
+  --leaf: url('../assets/backgrounds/leaf.svg');
   --taro-flash: url('../assets/backgrounds/taro-flash.svg');
   --taro-flash-dark: url('../assets/backgrounds/taro-flash-dark.svg');
 
@@ -139,10 +140,10 @@
   --text-sm--line-height: 133%;
 
   --text-base: 14px;
-  --text-base--line-height: 143%;
+  --text-base--line-height: 162%;
 
   --text-lg: 16px;
-  --text-lg--line-height: 150%;
+  --text-lg--line-height: 175%;
 
   --text-xl: 18px;
   --text-xl--line-height: 140%;

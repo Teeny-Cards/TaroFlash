@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import LoginDialogue from '@/components/login-dialog.vue'
+import LoginDialogue from '@/views/welcome/login-dialog.vue'
 import { useI18n } from 'vue-i18n'
 import UiImage from '@/components/ui-kit/image.vue'
 import UiPopover from '@/components/ui-kit/popover.vue'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { emitSfx } from '@/sfx/bus'
+import SignupDialog from '@/components/modals/sign-up/signup-up.vue'
+import { useModal } from '@/composables/modal'
 
 const emit = defineEmits<{
   (e: 'login', email: string, password: string): void
@@ -13,6 +15,15 @@ const emit = defineEmits<{
 const { t } = useI18n()
 
 const login_dropdown_open = ref(false)
+const modal = useModal()
+
+// onMounted(() => {
+//   modal.open(SignupDialog, {
+//     backdrop: true,
+//     openAudio: 'ui.double_pop_up',
+//     closeAudio: 'ui.double_pop_down'
+//   })
+// })
 
 function openLoginDropdown() {
   login_dropdown_open.value = true
@@ -35,6 +46,14 @@ function triggerLoginDropdown() {
 const onLogin = (email: string, password: string) => {
   emit('login', email, password)
 }
+
+function onSignup() {
+  modal.open(SignupDialog, {
+    backdrop: true,
+    openAudio: 'ui.double_pop_up',
+    closeAudio: 'ui.double_pop_down'
+  })
+}
 </script>
 
 <template>
@@ -54,7 +73,7 @@ const onLogin = (email: string, password: string) => {
       >
         <template #trigger>
           <button
-            class="bg-brown-300 text-brown-800 px-4 py-2.5 rounded-2.5 text-lg cursor-pointer"
+            class="bg-brown-300 text-brown-700 px-4 py-2.5 rounded-2.5 text-lg cursor-pointer"
             :class="{ 'rounded-b-0.5': login_dropdown_open }"
             @click="triggerLoginDropdown"
           >
@@ -68,14 +87,21 @@ const onLogin = (email: string, password: string) => {
       </ui-popover>
     </div>
 
-    <div class="flex w-full justify-center items-center gap-6 py-32">
+    <div
+      data-testid="welcome-view__content-container"
+      class="flex w-full justify-center items-center gap-6 py-64"
+    >
       <div data-testid="welcome-view__content" class="flex flex-col items-center gap-7.5">
-        <div class="flex flex-col gap-1.5">
+        <div class="flex flex-col items-center gap-1.5">
           <h1 class="text-8xl text-brown-100 font-bold uppercase">{{ t('app.title') }}</h1>
-          <p class="text-brown-100 text-center text-lg">{{ t('app.description') }}</p>
+          <p class="text-brown-100 text-center text-lg w-60">{{ t('app.description') }}</p>
         </div>
 
-        <button class="bg-blue-500 text-brown-100 px-4 py-2.5 rounded-2.5 text-lg cursor-pointer">
+        <button
+          class="bg-blue-500 outline-4 outline-brown-100 text-brown-100 px-4 py-2.5 rounded-2.5
+            text-lg cursor-pointer"
+          @click="onSignup"
+        >
           {{ t('welcome-view.sign-up') }}
         </button>
       </div>

@@ -17,17 +17,23 @@
   "common.logout": "Logout",
 
   "app.title": "TaroFlash",
-  "app.description": "A Spaced Repetition Flashcard App",
+  "app.description": "A warm little space to learn, make, and collect things you love.",
 
   "phone.apps.logout.title": "Logout",
   "phone.apps.logout.description": "Are you sure you want to logout?",
 
-  "welcome-view.login": "Log In",
-  "welcome-view.sign-up": "Make An Account",
-
   "login-dialog.email": "Email",
   "login-dialog.password": "Password",
   "login-dialog.lets-go": "Let's Go!",
+
+  "welcome-view.login": "Log In",
+  "welcome-view.sign-up": "Make An Account",
+  "welcome-view.build-decks": "Build Decks Of Cards",
+  "welcome-view.build-decks-desc": "Build your cards with a simple, flexible editor. Add background colors, images, and simple formatting to make your cards easier to read, easier to remember, and nicer to look at while you study.",
+  "welcome-view.study-decks": "Study Your Decks",
+  "welcome-view.study-decks-desc": "Study your decks in calm, focused sessions designed to help you stay present. Review cards at your own pace, repeat what matters, and make steady progress without feeling rushed.",
+  "welcome-view.design": "Designed to Feel Good",
+  "welcome-view.design-desc": "Taroflash is designed to feel calm, clear, and comfortable. Soft colors, simple layouts, and thoughtful compositions create a space where it’s easy to focus, easy to learn, and easy to come back.",
 
   "member-application.header": "Welcome To TaroFlash!",
   "member-application.subtitle": "Let’s get you set up with your new Member Card (You can update this at any time).",
