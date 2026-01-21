@@ -4,7 +4,7 @@ import type { SfxOptions } from '@/sfx/directive'
 
 export type ButtonProps = {
   theme?: 'green' | 'blue' | 'purple' | 'pink' | 'red' | 'orange' | 'brown' | 'grey'
-  size?: 'lg' | 'base' | 'sm' | 'xs'
+  size?: 'xl' | 'lg' | 'base' | 'sm' | 'xs'
   iconOnly?: boolean
   iconRight?: string
   iconLeft?: string
@@ -23,6 +23,7 @@ const {
 } = defineProps<ButtonProps>()
 
 const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
+  xl: 'large',
   lg: 'large',
   base: 'base',
   sm: 'small',
@@ -69,6 +70,7 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
   color: var(--btn-secondary-color);
   font-family: var(--font-primary);
   font-size: var(--btn-font-size);
+  line-height: var(--btn-font-size--line-height);
 
   border-radius: var(--btn-border-radius);
   padding: var(--btn-padding);
@@ -98,26 +100,37 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
 }
 
 /* Button sizes */
-.ui-kit-btn.btn-lg {
-  --btn-font-size: var(--text-lg);
-  --btn-border-radius: var(--radius-4);
+.ui-kit-btn.btn-xl {
+  --btn-font-size: var(--text-2xl);
+  --btn-font-size--line-height: var(--text-2xl--line-height);
+  --btn-border-radius: var(--radius-5_5);
   --btn-gap: 8px;
-  --btn-padding: 6px 10px;
+  --btn-padding: 14px 24px;
+}
+.ui-kit-btn.btn-lg {
+  --btn-font-size: var(--text-xl);
+  --btn-font-size--line-height: var(--text-xl--line-height);
+  --btn-border-radius: var(--radius-5);
+  --btn-gap: 8px;
+  --btn-padding: 14px 20px;
 }
 .ui-kit-btn.btn-base {
   --btn-font-size: var(--text-base);
+  --btn-font-size--line-height: var(--text-base--line-height);
   --btn-border-radius: var(--radius-4);
   --btn-gap: 8px;
   --btn-padding: 6px 10px;
 }
 .ui-kit-btn.btn-sm {
   --btn-font-size: var(--text-sm);
+  --btn-font-size--line-height: var(--text-sm--line-height);
   --btn-border-radius: var(--radius-3);
   --btn-gap: 6px;
   --btn-padding: 4px 6px;
 }
 .ui-kit-btn.btn-xs {
   --btn-font-size: var(--text-sm);
+  --btn-font-size--line-height: var(--text-sm--line-height);
   --btn-border-radius: var(--radius-3);
   --btn-gap: 6px;
   --btn-padding: 4px 6px;

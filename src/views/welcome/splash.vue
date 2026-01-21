@@ -6,7 +6,7 @@ import UiPopover from '@/components/ui-kit/popover.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import { ref } from 'vue'
 import { emitSfx } from '@/sfx/bus'
-import SignupDialog from '@/components/modals/sign-up/signup-up.vue'
+import SignupDialog from '@/components/modals/sign-up/sign-up.vue'
 import { useModal } from '@/composables/modal'
 
 const emit = defineEmits<{

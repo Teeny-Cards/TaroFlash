@@ -11,11 +11,11 @@ const {
   theme = 'brown',
   static_on_mobile = false
 } = defineProps<{
-  text: string
+  text?: string
   position?: Placement
   gap?: number
   fallback_placements?: Placement[]
-  element?: 'div' | 'span' | 'button'
+  element?: 'div' | 'span' | 'button' | 'label'
   visible?: boolean
   disabled?: boolean
   theme?: MemberTheme
@@ -77,10 +77,13 @@ const { floatingStyles } = useFloating(triggerRef, popoverRef, {
   user-select: none;
 }
 
+.ui-tooltip--visible {
+  display: block;
+}
+
 @media (pointer: fine) {
   .ui-tooltip-trigger:hover + .ui-tooltip,
-  .ui-tooltip-trigger:focus + .ui-tooltip,
-  .ui-tooltip--visible {
+  .ui-tooltip-trigger:focus + .ui-tooltip {
     display: block;
   }
 }
@@ -98,5 +101,9 @@ const { floatingStyles } = useFloating(triggerRef, popoverRef, {
 .ui-tooltip--white {
   --tooltip-bg: var(--color-white);
   --tooltip-color: var(--color-brown-700);
+}
+.ui-tooltip--red {
+  --tooltip-bg: var(--color-white);
+  --tooltip-color: var(--color-red-500);
 }
 </style>

@@ -3,9 +3,9 @@
 @import 'tailwindcss';
 @import '@/styles/custom-styles.css';
 @import '@/styles/custom-variants.css';
-@import '@/styles/utilities.css';
 @import '@/styles/animations.css';
 @import '@/styles/markdown.css';
+@import '@/styles/border-utils.css';
 @import '@/styles/bg-utils.css';
 
 @theme {
@@ -174,7 +174,7 @@
   html {
     font-family: var(--font-primary);
     font-size: var(--text-base);
-    line-height: var(--text-sm--line-height);
+    line-height: var(--text-base--line-height);
   }
 
   .app-container {

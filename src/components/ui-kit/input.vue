@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import UiTooltip from '@/components/ui-kit/tooltip.vue'
+
 const { textAlign = 'left', size = 'base' } = defineProps<{
   label?: string
   placeholder?: string
   textAlign?: 'left' | 'center' | 'right'
   size?: 'sm' | 'base' | 'lg'
+  error?: string
 }>()
 
 const emit = defineEmits<{
@@ -14,12 +17,23 @@ const value = defineModel<string>('value')
 </script>
 
 <template>
-  <label
+  <ui-tooltip
+    element="label"
     data-testid="ui-kit-input-container"
     class="ui-kit-input-container"
-    :class="[`ui-kit-input-container--text-${textAlign}`, `ui-kit-input-container--${size}`]"
+    :text="error"
+    :visible="!!error"
+    :disabled="!error"
+    theme="red"
+    position="top-end"
+    :gap="-14"
+    :class="[
+      `ui-kit-input-container--text-${textAlign}`,
+      `ui-kit-input-container--${size}`,
+      { 'ui-kit-input-container--error': !!error }
+    ]"
   >
-    <span>{{ label }}</span>
+    <span v-if="label">{{ label }}</span>
     <div data-testid="ui-kit-input" class="ui-kit-input">
       <input
         v-bind="$attrs"
@@ -28,7 +42,7 @@ const value = defineModel<string>('value')
         @input="emit('input', value)"
       />
     </div>
-  </label>
+  </ui-tooltip>
 </template>
 
 <style>
@@ -39,15 +53,16 @@ const value = defineModel<string>('value')
   width: 100%;
 }
 
-.ui-kit-input-container--sm {
+.ui-kit-input-container--sm .ui-kit-input {
   border-radius: var(--radius-3_5);
   font-size: var(--text-sm);
   line-height: var(--text-sm--line-height);
   padding: 8px 12px;
 }
 
-.ui-kit-input-container--lg {
+.ui-kit-input-container--lg .ui-kit-input {
   border-radius: var(--radius-5_5);
+  padding: 16px 24px;
 }
 
 .ui-kit-input-container span {
@@ -59,12 +74,19 @@ const value = defineModel<string>('value')
   border-radius: var(--radius-4);
   width: 100%;
   padding: 12px 16px;
+  outline: 1px solid transparent;
+  transition: outline-color 100ms ease-in-out;
 
   width: 100%;
+  position: relative;
+}
+
+.ui-kit-input-container--error .ui-kit-input {
+  outline-color: var(--color-red-500);
 }
 
 .ui-kit-input input {
-  border-bottom: 1px dashed var(--color-brown-500);
+  border-bottom: 1px dashed var(--color-brown-700);
   outline: none;
   background: transparent;
   color: var(--color-brown-700);
@@ -94,10 +116,5 @@ const value = defineModel<string>('value')
 
 .ui-kit-input-container--text-center input {
   text-align: center;
-}
-
-.ui-kit-input-container--lg input {
-  font-size: var(--text-lg);
-  line-height: var(--text-lg--line-height);
 }
 </style>
