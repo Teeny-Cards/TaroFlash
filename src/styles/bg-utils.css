@@ -33,11 +33,6 @@
     -webkit-mask-size: var(--bgx-size);
     mask-size: var(--bgx-size);
   }
-
-  & > * {
-    position: relative;
-    z-index: 1;
-  }
 }
 
 @utility bgx-color-* {
