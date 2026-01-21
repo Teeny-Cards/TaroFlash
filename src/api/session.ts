@@ -55,3 +55,13 @@ export async function signupEmail(
 
   return data?.session
 }
+
+export async function signInOAuth(provider: 'google' | 'apple'): Promise<void> {
+  const { data, error } = await supabase.auth.signInWithOAuth({ provider })
+
+  if (error) {
+    throw error
+  }
+
+  console.log(data)
+}
