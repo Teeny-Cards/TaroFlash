@@ -14,6 +14,7 @@ import { computed, ref } from 'vue'
 export const useSessionStore = defineStore('sessionStore', () => {
   const router = useRouter()
 
+  //update for stage
   const user = ref<User | undefined>(undefined)
   const loadingCount = ref(0)
 
