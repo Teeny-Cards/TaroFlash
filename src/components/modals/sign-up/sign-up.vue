@@ -4,15 +4,29 @@ import PlanOption from './plan-option.vue'
 import SignupForm from './form.vue'
 import { useI18n } from 'vue-i18n'
 import { ref, useTemplateRef } from 'vue'
+import { useRouter } from 'vue-router'
+
+const { close } = defineProps<{
+  close: (response?: boolean, opts?: any) => void
+}>()
 
 const { t } = useI18n()
+const router = useRouter()
 
 const form = useTemplateRef('form')
 
 const selected_plan = ref('free')
 
 async function onSubmit() {
-  await form.value?.submit()
+  try {
+    const success = await form.value?.submit()
+    if (!success) return
+
+    router.push('/dashboard')
+    close(true, { silent: true })
+  } catch (e) {
+    return // TODO: Show error message
+  }
 }
 </script>
 

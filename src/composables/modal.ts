@@ -27,6 +27,7 @@ type OpenArgs = {
 
 type closeOpts = {
   override_close_audio?: NamespacedAudioKey
+  silent?: boolean
 }
 
 export type ModalCloseFn = (responseValue?: any, opts?: closeOpts) => void
@@ -95,7 +96,7 @@ export function useModal() {
     modal_stack.value.splice(index, 1)
 
     const close_audio = opts?.override_close_audio ?? modal.closeAudio
-    if (close_audio) {
+    if (close_audio && !opts?.silent) {
       emitSfx(close_audio)
     }
   }
