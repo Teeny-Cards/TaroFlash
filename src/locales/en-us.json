@@ -18,6 +18,11 @@
 
   "app.title": "TaroFlash",
   "app.description": "A warm little space to learn, make, and collect things you love.",
+  "app.footer.privacy-policy": "Privacy Policy",
+  "app.footer.terms-of-service": "Terms of Service",
+  "app.footer.resources": "Resources",
+  "app.footer.about": "About",
+  "app.footer.description": "TaroFlash is an SRS flashcard app with deck management, rich card editing, and spaced-repetition scheduling.",
 
   "phone.apps.logout.title": "Logout",
   "phone.apps.logout.description": "Are you sure you want to logout?",
