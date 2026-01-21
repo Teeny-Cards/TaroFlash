@@ -138,5 +138,10 @@
   "reward-stack.single-reward.subheader": "Yout got a {type}! | You got <span>+{count}</span> {type}!",
   "reward-stack.multi-reward.subheader": "You got a {type}! + more... | You got <span>+{count}</span> {type}! + more...",
 
-  "move-cards-modal.title": "Move Card | Move <span>{front}</span><span>{back}</span> | Move {count} Cards"
+  "move-cards-modal.title": "Move Card | Move <span>{front}</span><span>{back}</span> | Move {count} Cards",
+
+  "privacy-policy.title": "Privacy Policy",
+  "privacy-policy.description": "TaroFlash collects only the information needed to provide its features and improve the experience. Your personal data and study content are never sold, and access is limited to essential services required to run the app.",
+  "terms-of-service.title": "Terms of Service",
+  "terms-of-service.description": "Using TaroFlash means agreeing to basic usage rules and acknowledging that features may change over time. The service is offered without guarantees, but always with the intent to provide a reliable, respectful study tool."
 }
