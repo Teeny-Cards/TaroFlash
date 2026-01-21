@@ -79,10 +79,16 @@ defineExpose({ submit, isValid })
 <template>
   <div data-testid="sign-up__form" class="w-94.5 flex flex-col gap-8">
     <div data-testid="social-auth" class="flex flex-col gap-4.5">
-      <ui-button size="lg" theme="brown" class="w-full!">
+      <ui-button
+        size="lg"
+        theme="brown"
+        class="w-full!"
+        icon-left="google-logo"
+        @click="session.signInOAuth('google')"
+      >
         {{ t('signup-dialog.google') }}
       </ui-button>
-      <ui-button size="lg" theme="brown" class="w-full!">
+      <ui-button size="lg" theme="brown" class="w-full!" @click="session.signInOAuth('apple')">
         {{ t('signup-dialog.apple') }}
       </ui-button>
     </div>

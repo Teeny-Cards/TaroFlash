@@ -95,7 +95,7 @@ function onSignup() {
         </ui-button>
       </div>
 
-      <ui-image src="splash-logo" class="h-84" />
+      <ui-image src="splash-logo" class="h-84 z-2" />
     </div>
 
     <div data-testid="stationary" class="absolute inset-0 pointer-events-none drop-shadow-sm">
