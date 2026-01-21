@@ -45,15 +45,11 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
       }
     ]"
   >
-    <div v-if="iconLeft" class="btn-icon" uikit-button__icon-left>
-      <ui-icon v-if="iconLeft" :src="iconLeft" :size="iconSize[size]" />
-    </div>
+    <ui-icon v-if="iconLeft" class="btn-icon" :src="iconLeft" />
     <div v-if="!iconOnly" class="btn-label">
       <slot></slot>
     </div>
-    <div v-if="iconRight" class="btn-icon" uikit-button__icon-right>
-      <ui-icon v-if="iconRight" :src="iconRight" :size="iconSize[size]" />
-    </div>
+    <ui-icon v-if="iconRight" class="btn-icon" :src="iconRight" />
 
     <div v-if="iconOnly && $slots.default" class="ui-kit-btn__tooltip">
       <slot></slot>
@@ -89,14 +85,9 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
 }
 
 .ui-kit-btn .btn-icon {
-  color: var(--btn-main-color);
-  background-color: var(--btn-secondary-color);
-
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2px;
+  height: 100%;
+  max-height: 100%;
+  color: var(--btn-secondary-color);
 }
 
 /* Button sizes */
@@ -111,7 +102,7 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
   --btn-font-size: var(--text-xl);
   --btn-font-size--line-height: var(--text-xl--line-height);
   --btn-border-radius: var(--radius-5);
-  --btn-gap: 8px;
+  --btn-gap: 16px;
   --btn-padding: 14px 20px;
 }
 .ui-kit-btn.btn-base {

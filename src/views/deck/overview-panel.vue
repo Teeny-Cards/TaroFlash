@@ -74,7 +74,7 @@ function onStudyClicked() {
       </div>
 
       <div class="flex items-center gap-2 text-blue-500">
-        <ui-icon src="teeny-cards" size="small" />
+        <ui-icon src="teeny-cards" class="w-5 h-5" />
         <h2 c>{{ deck.card_count ?? 0 }} cards in deck</h2>
       </div>
 
