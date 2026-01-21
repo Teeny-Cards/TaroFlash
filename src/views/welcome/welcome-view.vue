@@ -7,6 +7,7 @@ import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Splash from './splash.vue'
 import UiImage from '@/components/ui-kit/image.vue'
+import AppFooter from '@/components/app-footer.vue'
 
 const { t } = useI18n()
 const session = useSessionStore()
@@ -66,4 +67,6 @@ async function loginWithEmail(email: string, password: string): Promise<void> {
       </div>
     </div>
   </section>
+
+  <app-footer />
 </template>
