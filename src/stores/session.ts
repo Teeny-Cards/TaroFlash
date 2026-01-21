@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia'
 import type { User } from '@supabase/supabase-js'
-import { getSession, login as supaLogin, logout as supaLogout } from '@/api/session'
+import {
+  getSession,
+  login as supaLogin,
+  logout as supaLogout,
+  signupEmail as supaSignupEmail,
+  type SignupEmailOptions
+} from '@/api/session'
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
 
@@ -34,6 +40,15 @@ export const useSessionStore = defineStore('sessionStore', () => {
     router.push({ name: 'welcome' })
   }
 
+  async function signupEmail(
+    email: string,
+    password: string,
+    opts?: SignupEmailOptions
+  ): Promise<void> {
+    const session = await supaSignupEmail(email, password, opts)
+    user.value = session?.user
+  }
+
   function startLoading(): void {
     loadingCount.value++
   }
@@ -51,6 +66,7 @@ export const useSessionStore = defineStore('sessionStore', () => {
     login,
     restoreSession,
     logout,
+    signupEmail,
     startLoading,
     stopLoading
   }

@@ -46,7 +46,7 @@ const show_backdrop = computed(() => {
       data-testid="ui-kit-modal-backdrop"
       ref="ui-kit-modal"
       class="pointer-events-auto fixed inset-0 flex items-center justify-center px-4 py-7"
-      :class="{ 'backdrop-blur-4 bg-black/10': show_backdrop }"
+      :class="{ 'pointer-fine:backdrop-blur-4 pointer-fine:bg-black/10': show_backdrop }"
       @click="pop"
     >
       <slot></slot>

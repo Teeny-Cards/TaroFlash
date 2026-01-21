@@ -32,30 +32,37 @@ async function loginWithEmail(email: string, password: string): Promise<void> {
 
 <template>
   <splash @login="loginWithEmail" />
-  <section class="w-full bg-brown-100 py-54.5 flex flex-col gap-80">
+  <section class="w-full py-54.5 flex flex-col gap-80">
     <div class="flex gap-21 justify-center items-center">
-      <div class="flex flex-col gap-3 w-152">
-        <h2 class="text-brown-700 text-6xl">{{ t('welcome-view.build-decks') }}</h2>
-        <p class="text-brown-700 text-lg">{{ t('welcome-view.build-decks-desc') }}</p>
+      <div class="flex flex-col gap-3 w-152 text-brown-700 dark:text-brown-100">
+        <h2 class="text-6xl">
+          {{ t('welcome-view.build-decks') }}
+        </h2>
+        <p class="text-lg">
+          {{ t('welcome-view.build-decks-desc') }}
+        </p>
       </div>
       <ui-image src="deck-example" class="w-100" />
     </div>
 
     <div class="flex flex-col gap-6 justify-center items-center">
-      <div class="flex flex-col gap-3 w-152 items-center">
-        <h2 class="text-brown-700 text-6xl">{{ t('welcome-view.study-decks') }}</h2>
-        <p class="text-brown-700 text-lg text-center">{{ t('welcome-view.study-decks-desc') }}</p>
+      <div class="flex flex-col gap-3 w-152 items-center text-brown-700 dark:text-brown-100">
+        <h2 class="text-6xl">{{ t('welcome-view.study-decks') }}</h2>
+        <p class="text-lg text-center">{{ t('welcome-view.study-decks-desc') }}</p>
       </div>
       <ui-image src="study-example" class="w-200" />
     </div>
   </section>
 
-  <section class="w-full bg-brown-300 bgx-bank-note py-54.5 flex flex-col wave-top-[30px]">
+  <section
+    class="w-full bg-brown-300 dark:bg-blue-650 bgx-bank-note dark:bgx-color-brown-800 py-54.5 flex
+      flex-col wave-top-[30px]"
+  >
     <div class="flex gap-21 justify-center items-center">
       <ui-image src="phone-example" class="w-60" />
-      <div class="flex flex-col gap-3 w-152">
-        <h2 class="text-brown-700 text-6xl">{{ t('welcome-view.design') }}</h2>
-        <p class="text-brown-700 text-lg">{{ t('welcome-view.design-desc') }}</p>
+      <div class="flex flex-col gap-3 w-152 text-brown-700 dark:text-brown-100">
+        <h2 class="text-6xl">{{ t('welcome-view.design') }}</h2>
+        <p class="text-lg">{{ t('welcome-view.design-desc') }}</p>
       </div>
     </div>
   </section>

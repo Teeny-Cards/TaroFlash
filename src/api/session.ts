@@ -1,6 +1,10 @@
 import { supabase } from '@/supabase-client'
 import type { Session } from '@supabase/supabase-js'
 
+export type SignupEmailOptions = {
+  display_name?: string
+}
+
 export async function getSession(): Promise<Session | null> {
   const { data, error } = await supabase.auth.getSession()
 
@@ -30,4 +34,24 @@ export async function logout(): Promise<void> {
   if (error) {
     throw new Error(error.message)
   }
+}
+
+export async function signupEmail(
+  email: string,
+  password: string,
+  opts?: SignupEmailOptions
+): Promise<Session | null> {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: opts
+    }
+  })
+
+  if (error) {
+    throw error
+  }
+
+  return data?.session
 }
