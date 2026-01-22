@@ -3,11 +3,15 @@ import UiInput from '@/components/ui-kit/input.vue'
 import UiDivider from '@/components/ui-kit/divider.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import { useSessionStore } from '@/stores/session'
-import { ref, computed, reactive } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { AuthError } from '@supabase/supabase-js'
 
 type FieldName = 'username' | 'email' | 'password' | 'confirm_password'
+
+const { plan } = defineProps<{
+  plan: MemberType
+}>()
 
 const session = useSessionStore()
 const { t } = useI18n()
@@ -73,6 +77,13 @@ async function submit() {
   }
 }
 
+async function submitOAuth(provider: 'google' | 'apple') {
+  const path = plan === 'paid' ? '/welcome' : '/dashboard?payment=true'
+  const redirectTo = `${window.location.origin}${path}`
+
+  await session.signInOAuth(provider, { redirectTo })
+}
+
 defineExpose({ submit, isValid })
 </script>
 
@@ -84,11 +95,11 @@ defineExpose({ submit, isValid })
         theme="brown"
         class="w-full!"
         icon-left="google-logo"
-        @click="session.signInOAuth('google')"
+        @click="submitOAuth('google')"
       >
         {{ t('signup-dialog.google') }}
       </ui-button>
-      <ui-button size="lg" theme="brown" class="w-full!" @click="session.signInOAuth('apple')">
+      <ui-button size="lg" theme="brown" class="w-full!" @click="submitOAuth('apple')">
         {{ t('signup-dialog.apple') }}
       </ui-button>
     </div>
