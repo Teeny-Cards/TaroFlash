@@ -16,3 +16,5 @@ type MemberTheme =
   | 'brown'
   | 'white'
   | 'grey'
+
+declare type MemberType = 'free' | 'paid'

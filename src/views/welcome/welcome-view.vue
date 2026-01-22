@@ -3,17 +3,26 @@ import router from '@/router'
 import { initUser } from '@/stores/initUser'
 import { useSessionStore } from '@/stores/session'
 import { useToast } from '@/composables/toast'
-import { onMounted } from 'vue'
+import { onMounted, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Splash from './splash.vue'
 import UiImage from '@/components/ui-kit/image.vue'
 import AppFooter from '@/components/app-footer.vue'
+import { useRoute } from 'vue-router'
 
 const { t } = useI18n()
 const session = useSessionStore()
 const toast = useToast()
+const route = useRoute()
+
+const splash = useTemplateRef('splash')
 
 onMounted(async () => {
+  if (route.query.payment === 'true') {
+    splash.value?.openSignup(true)
+    return
+  }
+
   const authenticated = await initUser()
 
   if (authenticated) {
@@ -32,7 +41,7 @@ async function loginWithEmail(email: string, password: string): Promise<void> {
 </script>
 
 <template>
-  <splash @login="loginWithEmail" />
+  <splash ref="splash" @login="loginWithEmail" />
   <section class="w-full py-54.5 flex flex-col gap-80">
     <div class="flex gap-21 justify-center items-center">
       <div class="flex flex-col gap-3 w-152 text-brown-700 dark:text-brown-100">
@@ -56,11 +65,11 @@ async function loginWithEmail(email: string, password: string): Promise<void> {
   </section>
 
   <section
-    class="w-full bg-brown-300 dark:bg-blue-650 bgx-bank-note dark:bgx-color-brown-800 py-54.5 flex
-      flex-col wave-top-[30px]"
+    class="w-full bg-brown-300 dark:bg-grey-800 bgx-bank-note dark:bgx-color-brown-800
+      dark:bgx-color-brown-300 py-54.5 flex flex-col wave-top-[30px]"
   >
     <div class="flex gap-21 justify-center items-center">
-      <ui-image src="phone-example" class="w-60" />
+      <ui-image src="phone-example" class="w-60 z-1" />
       <div class="flex flex-col gap-3 w-152 text-brown-700 dark:text-brown-100">
         <h2 class="text-6xl">{{ t('welcome-view.design') }}</h2>
         <p class="text-lg">{{ t('welcome-view.design-desc') }}</p>

@@ -6,7 +6,8 @@ import { useI18n } from 'vue-i18n'
 import { ref, useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'
 
-const { close } = defineProps<{
+const { payment, close } = defineProps<{
+  payment?: boolean
   close: (response?: boolean, opts?: any) => void
 }>()
 
@@ -15,7 +16,7 @@ const router = useRouter()
 
 const form = useTemplateRef('form')
 
-const selected_plan = ref('free')
+const selected_plan = ref<MemberType>('free')
 
 async function onSubmit() {
   try {
@@ -31,11 +32,15 @@ async function onSubmit() {
 </script>
 
 <template>
-  <div data-testid="signup-container" class="bg-brown-300 rounded-10 shadow-lg overflow-hidden">
+  <div
+    data-testid="signup-container"
+    class="bg-brown-300 dark:bg-grey-800 rounded-10 shadow-lg overflow-hidden"
+  >
     <div
       data-testid="signup__header"
-      class="px-8 py-10 bg-blue-500 bgx-leaf bgx-fill-brown-100 bgx-opacity-10 bgx-size-25
-        bg-size-[10%] wave-bottom-[30px] flex items-center justify-center"
+      class="px-8 py-10 bg-blue-500 dark:bg-blue-650 bgx-leaf bgx-fill-brown-100
+        dark:bgx-fill-brown-300 bgx-opacity-10 bgx-size-25 bg-size-[10%] wave-bottom-[30px] flex
+        items-center justify-center"
     >
       <h1 class="text-5xl text-brown-100">{{ t('signup-dialog.header') }}</h1>
     </div>
@@ -45,7 +50,9 @@ async function onSubmit() {
       class="grid grid-cols-[1fr_auto] gap-x-15 gap-y-8 py-8 px-15 items-center relative"
     >
       <div data-testid="signup__plan-selector" class="w-151.75 flex flex-col items-center">
-        <h1 class="text-3xl text-brown-700">{{ t('signup-dialog.plan-header') }}</h1>
+        <h1 class="text-3xl text-brown-700 dark:text-brown-100">
+          {{ t('signup-dialog.plan-header') }}
+        </h1>
         <p class="text-brown-500 text-center">{{ t('signup-dialog.plan-desc') }}</p>
 
         <div class="w-full grid grid-cols-2 gap-3.5 pt-10.5">
@@ -86,7 +93,7 @@ async function onSubmit() {
         </div>
       </div>
 
-      <signup-form ref="form" />
+      <signup-form ref="form" :plan="selected_plan" />
 
       <div data-testid="actions" class="w-full flex justify-center gap-2.5 col-start-2">
         <ui-button size="lg" theme="brown">Cancel</ui-button>

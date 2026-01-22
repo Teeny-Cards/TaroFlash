@@ -52,7 +52,7 @@ function onSelect() {
       class="text-2xl"
       :class="{
         'text-blue-500': selected,
-        'text-brown-700': !selected
+        'text-brown-700 dark:text-brown-100': !selected
       }"
     >
       {{ name }}
