@@ -23,9 +23,7 @@ onMounted(async () => {
     return
   }
 
-  const authenticated = await initUser()
-
-  if (authenticated) {
+  if (session.authenticated) {
     router.push({ name: 'authenticated' })
   }
 })

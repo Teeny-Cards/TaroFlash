@@ -5,9 +5,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createI18n } from 'vue-i18n'
 import messages from '@intlify/unplugin-vue-i18n/messages'
-import audio_player from '@/sfx/player'
 import { vSfx } from '@/sfx/directive'
-import { useSessionStore } from './stores/session'
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.unregister()))
@@ -28,16 +26,5 @@ app.use(i18n)
 app.use(router)
 
 app.directive('sfx', vSfx)
-
-const session = useSessionStore()
-
-try {
-  session.startLoading()
-  await audio_player.setup()
-} catch (e) {
-  console.error('Error initializing audio player: ', e)
-} finally {
-  session.stopLoading()
-}
 
 app.mount('#app')
