@@ -1,16 +1,24 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import UiInput from '@/components/ui-kit/input.vue'
 import { useI18n } from 'vue-i18n'
+import UiInput from '@/components/ui-kit/input.vue'
+import UiButton from '@/components/ui-kit/button.vue'
+import UiDivider from '@/components/ui-kit/divider.vue'
+import { useSessionStore } from '@/stores/session'
 
 const emit = defineEmits<{
   (e: 'submit', email: string, password: string): void
 }>()
 
 const { t } = useI18n()
+const session = useSessionStore()
 
 const email = ref('')
 const password = ref('')
+
+function submitOAuth(provider: 'google' | 'apple') {
+  session.signInOAuth(provider)
+}
 
 function onSubmit(): void {
   emit('submit', email.value, password.value)
@@ -18,30 +26,41 @@ function onSubmit(): void {
 </script>
 
 <template>
-  <form class="flex flex-col items-center gap-10" @submit.prevent="onSubmit">
+  <form class="flex flex-col items-center gap-6" @submit.prevent="onSubmit">
+    <ui-button
+      theme="brown"
+      size="lg"
+      class="w-full!"
+      icon-left="google-logo"
+      @click="submitOAuth('google')"
+    >
+      {{ t('signup-dialog.google') }}
+    </ui-button>
+
+    <ui-divider :label="t('common.or')" />
+
     <div class="flex flex-col gap-4 w-full">
       <ui-input
         type="email"
         name="email"
         autocomplete="username"
+        size="lg"
         v-model="email"
-        :label="t('login-dialog.email')"
+        :placeholder="t('login-dialog.email')"
       />
 
       <ui-input
         type="password"
         name="password"
         autocomplete="current-password"
+        size="lg"
         v-model="password"
-        :label="t('login-dialog.password')"
+        :placeholder="t('login-dialog.password')"
       />
     </div>
 
-    <button
-      type="submit"
-      class="w-full px-4 py-2.5 rounded-2.5 bg-purple-500 text-lg text-brown-100 cursor-pointer"
-    >
+    <ui-button size="lg" class="w-full!" @click="onSubmit">
       {{ t('login-dialog.lets-go') }}
-    </button>
+    </ui-button>
   </form>
 </template>
