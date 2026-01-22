@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { supabase } from '@/supabase-client'
-import { loadStripe, type Stripe, type StripeElements } from '@stripe/stripe-js'
+import { loadStripe, type StripeElements } from '@stripe/stripe-js'
 import { onMounted, ref } from 'vue'
 import { useSessionStore } from '@/stores/session'
 
@@ -50,7 +50,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="max-w-150 mx-auto">
+  <div class="w-150 h-100 p-6">
     <h1 class="text-xl font-semibold mb-4">Subscribe</h1>
 
     <div>
