@@ -104,7 +104,7 @@ defineExpose({ submit, isValid })
       </ui-button> -->
     </div>
 
-    <ui-divider label="Or" />
+    <ui-divider :label="t('common.or')" />
 
     <form data-testid="email-auth" class="flex flex-col gap-4.5">
       <ui-input size="lg" placeholder="Username" v-model="username" :error="errors.username" />

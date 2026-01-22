@@ -79,7 +79,7 @@ defineExpose({ openSignup })
           </button>
         </template>
 
-        <div class="w-80 bg-brown-300 rounded-l-2.5 rounded-br-2.5 rounded-tr-0.5 p-6 shadow-sm">
+        <div class="w-80 bg-brown-300 rounded-l-6 rounded-br-6 rounded-tr-0.5 p-6 shadow-sm">
           <LoginDialogue @submit="onLogin" />
         </div>
       </ui-popover>
