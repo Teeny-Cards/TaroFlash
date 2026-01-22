@@ -31,11 +31,11 @@ function onSelect() {
     >
       <div
         class="w-full h-full flex gap-4 flex-col items-start bgx-leaf bgx-size-25 rounded-9 px-11
-          py-5"
+          py-5 bgx-opacity-10"
         :class="{
           'bg-brown-100 bgx-color-brown-500': theme === 'brown',
           'bg-green-400': theme === 'green',
-          'bg-blue-500': theme === 'blue'
+          'bg-blue-500 bgx-fill-brown-100': theme === 'blue'
         }"
       >
         <slot name="header"></slot>
