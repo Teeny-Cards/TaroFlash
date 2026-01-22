@@ -78,7 +78,7 @@ async function submit() {
 }
 
 async function submitOAuth(provider: 'google' | 'apple') {
-  const path = plan === 'paid' ? '/welcome' : '/dashboard?payment=true'
+  const path = plan === 'paid' ? '/welcome?payment=true' : '/dashboard'
   const redirectTo = `${window.location.origin}${path}`
 
   await session.signInOAuth(provider, { redirectTo })
@@ -99,9 +99,9 @@ defineExpose({ submit, isValid })
       >
         {{ t('signup-dialog.google') }}
       </ui-button>
-      <ui-button size="lg" theme="brown" class="w-full!" @click="submitOAuth('apple')">
+      <!-- <ui-button size="lg" theme="brown" class="w-full!" @click="submitOAuth('apple')">
         {{ t('signup-dialog.apple') }}
-      </ui-button>
+      </ui-button> -->
     </div>
 
     <ui-divider label="Or" />
