@@ -60,6 +60,14 @@ sql_paths = ["./seed.sql"]
 [remotes.stage]
 project_id="kjxijaowaogiepqteqjk"
 
+[functions.cleanup-media]
+enabled = true
+verify_jwt = true
+
+[functions.create-subscription]
+enabled = true
+verify_jwt = true
+
 [realtime]
 enabled = true
 # Bind realtime via either IPv4 or IPv6. (default: IPv4)
