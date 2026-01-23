@@ -21,14 +21,6 @@ const {
   fancyHover = false,
   sfx = { hover: 'ui.click_07' }
 } = defineProps<ButtonProps>()
-
-const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
-  xl: 'large',
-  lg: 'large',
-  base: 'base',
-  sm: 'small',
-  xs: 'xs'
-}
 </script>
 
 <template>
@@ -99,7 +91,7 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
   --btn-padding: 14px 24px;
 }
 .ui-kit-btn.btn-lg {
-  --btn-font-size: var(--text-xl);
+  --btn-font-size: var(--text-lg);
   --btn-font-size--line-height: var(--text-xl--line-height);
   --btn-border-radius: var(--radius-5);
   --btn-gap: 16px;
@@ -174,7 +166,7 @@ const iconSize: { [key: string]: 'large' | 'base' | 'small' | 'xs' } = {
   --btn-hover-color: var(--color-green-300);
 }
 .ui-kit-btn.btn-purple {
-  --btn-main-color: var(--color-purple-400);
+  --btn-main-color: var(--color-purple-500);
   --btn-secondary-color: var(--color-white);
   --btn-hover-color: var(--color-purple-500);
 }

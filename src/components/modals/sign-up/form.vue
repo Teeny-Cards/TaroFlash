@@ -3,9 +3,10 @@ import UiInput from '@/components/ui-kit/input.vue'
 import UiDivider from '@/components/ui-kit/divider.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import { useSessionStore } from '@/stores/session'
-import { ref, computed, reactive } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { AuthError } from '@supabase/supabase-js'
+import type { OAuthProvider } from '@/api/session'
 
 type FieldName = 'username' | 'email' | 'password' | 'confirm_password'
 
@@ -73,6 +74,10 @@ async function submit() {
   }
 }
 
+async function submitOAuth(provider: OAuthProvider) {
+  await session.signInOAuth(provider, { redirectTo: '/dashboard' })
+}
+
 defineExpose({ submit, isValid })
 </script>
 
@@ -84,16 +89,16 @@ defineExpose({ submit, isValid })
         theme="brown"
         class="w-full!"
         icon-left="google-logo"
-        @click="session.signInOAuth('google')"
+        @click="submitOAuth('google')"
       >
         {{ t('signup-dialog.google') }}
       </ui-button>
-      <ui-button size="lg" theme="brown" class="w-full!" @click="session.signInOAuth('apple')">
+      <!-- <ui-button size="lg" theme="brown" class="w-full!" @click="submitOAuth('apple')">
         {{ t('signup-dialog.apple') }}
-      </ui-button>
+      </ui-button> -->
     </div>
 
-    <ui-divider label="Or" />
+    <ui-divider :label="t('common.or')" />
 
     <form data-testid="email-auth" class="flex flex-col gap-4.5">
       <ui-input size="lg" placeholder="Username" v-model="username" :error="errors.username" />

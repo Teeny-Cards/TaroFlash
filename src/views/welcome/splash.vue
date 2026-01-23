@@ -40,19 +40,24 @@ const onLogin = (email: string, password: string) => {
   emit('login', email, password)
 }
 
-function onSignup() {
+function openSignup(payment?: boolean) {
   modal.open(SignupDialog, {
     backdrop: true,
     openAudio: 'ui.double_pop_up',
-    closeAudio: 'ui.double_pop_down'
+    closeAudio: 'ui.double_pop_down',
+    props: {
+      payment
+    }
   })
 }
+
+defineExpose({ openSignup })
 </script>
 
 <template>
   <section
     class="flex flex-col w-full p-7.5 relative bg-green-400 wave-bottom-[30px] bgx-diagonal-stripes
-      bgx-size-20 bg-center"
+      bgx-size-20 bgx-opacity-12 bg-center"
   >
     <div class="absolute pointer-events-none inset-0 bg-(image:--bgx-stars) bg-center -z-1"></div>
 
@@ -74,7 +79,7 @@ function onSignup() {
           </button>
         </template>
 
-        <div class="w-80 bg-brown-300 rounded-l-2.5 rounded-br-2.5 rounded-tr-0.5 p-6 shadow-sm">
+        <div class="w-80 bg-brown-300 rounded-l-6 rounded-br-6 rounded-tr-0.5 p-6 shadow-sm">
           <LoginDialogue @submit="onLogin" />
         </div>
       </ui-popover>
@@ -90,7 +95,7 @@ function onSignup() {
           <p class="text-brown-100 text-center text-lg w-60">{{ t('app.description') }}</p>
         </div>
 
-        <ui-button size="lg" @click="onSignup" class="outline-4 outline-brown-100">
+        <ui-button size="lg" @click="openSignup" class="outline-4 outline-brown-100">
           {{ t('welcome-view.sign-up') }}
         </ui-button>
       </div>
