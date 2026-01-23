@@ -5,6 +5,12 @@ export type SignupEmailOptions = {
   display_name?: string
 }
 
+export type SignupOAuthOptions = {
+  redirectTo?: string
+}
+
+export type OAuthProvider = 'google'
+
 export async function getSession(): Promise<Session | null> {
   const { data, error } = await supabase.auth.getSession()
 
@@ -56,12 +62,13 @@ export async function signupEmail(
   return data?.session
 }
 
-export async function signInOAuth(provider: 'google' | 'apple'): Promise<void> {
-  const { data, error } = await supabase.auth.signInWithOAuth({ provider })
+export async function signInOAuth(
+  provider: OAuthProvider,
+  options?: SignupOAuthOptions
+): Promise<void> {
+  const { error } = await supabase.auth.signInWithOAuth({ provider, options })
 
   if (error) {
     throw error
   }
-
-  console.log(data)
 }

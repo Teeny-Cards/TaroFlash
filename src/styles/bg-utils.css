@@ -3,7 +3,7 @@
 
   --bgx-size: auto;
   --bgx-fill: var(--color-brown-100);
-  --bgx-opacity: 0.1;
+  --bgx-opacity: 0.2;
 
   --bgx-x: 0px;
   --bgx-y: 0px;
@@ -16,7 +16,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
 
     background-color: var(--bgx-fill);
     opacity: var(--bgx-opacity);

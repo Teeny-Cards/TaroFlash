@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import UiInput from '@/components/ui-kit/input.vue'
 import { useI18n } from 'vue-i18n'
+import UiInput from '@/components/ui-kit/input.vue'
+import UiButton from '@/components/ui-kit/button.vue'
+import UiDivider from '@/components/ui-kit/divider.vue'
+import { useSessionStore } from '@/stores/session'
+import type { OAuthProvider } from '@/api/session'
 
 const emit = defineEmits<{
   (e: 'submit', email: string, password: string): void
 }>()
 
 const { t } = useI18n()
+const session = useSessionStore()
 
 const email = ref('')
 const password = ref('')
+
+function submitOAuth(provider: OAuthProvider) {
+  session.signInOAuth(provider)
+}
 
 function onSubmit(): void {
   emit('submit', email.value, password.value)
@@ -18,30 +27,43 @@ function onSubmit(): void {
 </script>
 
 <template>
-  <form class="flex flex-col items-center gap-10" @submit.prevent="onSubmit">
-    <div class="flex flex-col gap-4 w-full">
-      <ui-input
-        type="email"
-        name="email"
-        autocomplete="username"
-        v-model="email"
-        :label="t('login-dialog.email')"
-      />
-
-      <ui-input
-        type="password"
-        name="password"
-        autocomplete="current-password"
-        v-model="password"
-        :label="t('login-dialog.password')"
-      />
-    </div>
-
-    <button
-      type="submit"
-      class="w-full px-4 py-2.5 rounded-2.5 bg-purple-500 text-lg text-brown-100 cursor-pointer"
+  <div class="flex flex-col items-center gap-6">
+    <ui-button
+      theme="brown"
+      size="lg"
+      class="w-full!"
+      icon-left="google-logo"
+      @click="submitOAuth('google')"
     >
-      {{ t('login-dialog.lets-go') }}
-    </button>
-  </form>
+      {{ t('signup-dialog.google') }}
+    </ui-button>
+
+    <ui-divider :label="t('common.or')" />
+
+    <form class="w-full flex flex-col items-center gap-6" @submit.prevent="onSubmit">
+      <div class="flex flex-col gap-4 w-full">
+        <ui-input
+          type="email"
+          name="email"
+          autocomplete="username"
+          size="lg"
+          v-model="email"
+          :placeholder="t('login-dialog.email')"
+        />
+
+        <ui-input
+          type="password"
+          name="password"
+          autocomplete="current-password"
+          size="lg"
+          v-model="password"
+          :placeholder="t('login-dialog.password')"
+        />
+      </div>
+
+      <ui-button size="lg" class="w-full!" @click="onSubmit">
+        {{ t('login-dialog.lets-go') }}
+      </ui-button>
+    </form>
+  </div>
 </template>

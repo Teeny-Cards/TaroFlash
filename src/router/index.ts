@@ -5,7 +5,6 @@ import ShopView from '@/views/shop/shop-view.vue'
 import WelcomeView from '@/views/welcome/welcome-view.vue'
 import DeckView from '@/views/deck/deck-view.vue'
 import AuthenticatedView from '@/views/authenticated.vue'
-import CheckoutView from '@/views/checkout.vue'
 import PrivacyPolicyView from '@/views/privacy-policy.vue'
 import TermsOfServiceView from '@/views/terms-of-service.vue'
 
@@ -52,11 +51,6 @@ const router = createRouter({
           name: 'deck',
           component: DeckView,
           props: true
-        },
-        {
-          path: '/checkout',
-          name: 'checkout',
-          component: CheckoutView
         }
       ]
     }
