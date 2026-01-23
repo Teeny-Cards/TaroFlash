@@ -9,6 +9,8 @@ export type SignupOAuthOptions = {
   redirectTo?: string
 }
 
+export type OAuthProvider = 'google'
+
 export async function getSession(): Promise<Session | null> {
   const { data, error } = await supabase.auth.getSession()
 
@@ -61,7 +63,7 @@ export async function signupEmail(
 }
 
 export async function signInOAuth(
-  provider: 'google' | 'apple',
+  provider: OAuthProvider,
   options?: SignupOAuthOptions
 ): Promise<void> {
   const { error } = await supabase.auth.signInWithOAuth({ provider, options })

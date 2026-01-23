@@ -29,7 +29,7 @@ const controller = computed(() => {
 <template>
   <div
     data-testid="phone"
-    class="absolute top-0 right-0 pointer-events-auto w-60 h-89.5 bg-brown-300 dark:bg-grey-700
+    class="absolute top-0 right-0 pointer-events-auto w-60 h-89.5 bg-brown-300 dark:bg-grey-800
       drop-shadow-sm rounded-16 translate-y-7 group/phone"
   >
     <close-button

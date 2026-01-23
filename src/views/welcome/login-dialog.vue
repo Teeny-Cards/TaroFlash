@@ -5,6 +5,7 @@ import UiInput from '@/components/ui-kit/input.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiDivider from '@/components/ui-kit/divider.vue'
 import { useSessionStore } from '@/stores/session'
+import type { OAuthProvider } from '@/api/session'
 
 const emit = defineEmits<{
   (e: 'submit', email: string, password: string): void
@@ -16,7 +17,7 @@ const session = useSessionStore()
 const email = ref('')
 const password = ref('')
 
-function submitOAuth(provider: 'google' | 'apple') {
+function submitOAuth(provider: OAuthProvider) {
   session.signInOAuth(provider)
 }
 
@@ -26,7 +27,7 @@ function onSubmit(): void {
 </script>
 
 <template>
-  <form class="flex flex-col items-center gap-6" @submit.prevent="onSubmit">
+  <div class="flex flex-col items-center gap-6">
     <ui-button
       theme="brown"
       size="lg"
@@ -39,28 +40,30 @@ function onSubmit(): void {
 
     <ui-divider :label="t('common.or')" />
 
-    <div class="flex flex-col gap-4 w-full">
-      <ui-input
-        type="email"
-        name="email"
-        autocomplete="username"
-        size="lg"
-        v-model="email"
-        :placeholder="t('login-dialog.email')"
-      />
+    <form class="w-full flex flex-col items-center gap-6" @submit.prevent="onSubmit">
+      <div class="flex flex-col gap-4 w-full">
+        <ui-input
+          type="email"
+          name="email"
+          autocomplete="username"
+          size="lg"
+          v-model="email"
+          :placeholder="t('login-dialog.email')"
+        />
 
-      <ui-input
-        type="password"
-        name="password"
-        autocomplete="current-password"
-        size="lg"
-        v-model="password"
-        :placeholder="t('login-dialog.password')"
-      />
-    </div>
+        <ui-input
+          type="password"
+          name="password"
+          autocomplete="current-password"
+          size="lg"
+          v-model="password"
+          :placeholder="t('login-dialog.password')"
+        />
+      </div>
 
-    <ui-button size="lg" class="w-full!" @click="onSubmit">
-      {{ t('login-dialog.lets-go') }}
-    </ui-button>
-  </form>
+      <ui-button size="lg" class="w-full!" @click="onSubmit">
+        {{ t('login-dialog.lets-go') }}
+      </ui-button>
+    </form>
+  </div>
 </template>
