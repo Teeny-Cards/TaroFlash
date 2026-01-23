@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import UiButton from '@/components/ui-kit/button.vue'
-import PlanSelector from './plan-selector.vue'
 import SignupForm from './form.vue'
 import { useI18n } from 'vue-i18n'
-import { ref, useTemplateRef } from 'vue'
+import { useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'
 
-const { payment, close } = defineProps<{
-  payment?: boolean
+const { close } = defineProps<{
   close: (response?: boolean, opts?: any) => void
 }>()
 
@@ -15,12 +13,6 @@ const { t } = useI18n()
 const router = useRouter()
 
 const form = useTemplateRef('form')
-
-const selected_plan = ref<MemberType>('free')
-
-function onPlanSelect(plan: MemberType) {
-  selected_plan.value = plan
-}
 
 async function onSubmit() {
   try {
@@ -49,12 +41,8 @@ async function onSubmit() {
       <h1 class="text-5xl text-brown-100">{{ t('signup-dialog.header') }}</h1>
     </div>
 
-    <div
-      data-testid="signup__body"
-      class="grid grid-cols-[1fr_auto] gap-x-15 gap-y-8 py-8 px-15 items-center relative"
-    >
-      <plan-selector :selected_plan="selected_plan" @select="onPlanSelect" />
-      <signup-form ref="form" :plan="selected_plan" />
+    <div data-testid="signup__body" class="flex flex-col gap-8 py-8 px-15 items-center relative">
+      <signup-form ref="form" />
 
       <div data-testid="actions" class="w-full flex justify-center gap-2.5 col-start-2">
         <ui-button size="lg" theme="brown">{{ t('common.cancel') }}</ui-button>
@@ -63,3 +51,20 @@ async function onSubmit() {
     </div>
   </div>
 </template>
+
+<style>
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: all 0.5s ease;
+}
+
+.slide-right-enter-from {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.slide-right-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+</style>

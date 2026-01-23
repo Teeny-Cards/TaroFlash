@@ -7,7 +7,8 @@ import {
   signupEmail as supaSignupEmail,
   signInOAuth as supaSignInOAuth,
   type SignupEmailOptions,
-  type SignupOAuthOptions
+  type SignupOAuthOptions,
+  type OAuthProvider
 } from '@/api/session'
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
@@ -15,7 +16,6 @@ import { computed, ref } from 'vue'
 export const useSessionStore = defineStore('sessionStore', () => {
   const router = useRouter()
 
-  //update for stage
   const user = ref<User | undefined>(undefined)
   const loadingCount = ref(0)
 
@@ -52,10 +52,7 @@ export const useSessionStore = defineStore('sessionStore', () => {
     user.value = session?.user
   }
 
-  async function signInOAuth(
-    provider: 'google' | 'apple',
-    options?: SignupOAuthOptions
-  ): Promise<void> {
+  async function signInOAuth(provider: OAuthProvider, options?: SignupOAuthOptions): Promise<void> {
     await supaSignInOAuth(provider, options)
   }
 

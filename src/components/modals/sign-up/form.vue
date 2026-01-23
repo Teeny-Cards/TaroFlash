@@ -6,12 +6,9 @@ import { useSessionStore } from '@/stores/session'
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { AuthError } from '@supabase/supabase-js'
+import type { OAuthProvider } from '@/api/session'
 
 type FieldName = 'username' | 'email' | 'password' | 'confirm_password'
-
-const { plan } = defineProps<{
-  plan: MemberType
-}>()
 
 const session = useSessionStore()
 const { t } = useI18n()
@@ -77,11 +74,8 @@ async function submit() {
   }
 }
 
-async function submitOAuth(provider: 'google' | 'apple') {
-  const path = plan === 'paid' ? '/welcome?payment=true' : '/dashboard'
-  const redirectTo = `${window.location.origin}${path}`
-
-  await session.signInOAuth(provider, { redirectTo })
+async function submitOAuth(provider: OAuthProvider) {
+  await session.signInOAuth(provider, { redirectTo: '/dashboard' })
 }
 
 defineExpose({ submit, isValid })
