@@ -14,6 +14,11 @@ export type PlayOptions = {
   debounce?: number
 }
 
+const AUDIO_FILES = import.meta.glob('@/assets/audio/**/*.{wav,mp3,ogg}', {
+  eager: true,
+  as: 'url'
+}) as Record<string, string>
+
 const DEFAULT_VOLUME = 0.5
 const DEFAULT_CATEGORY_VOLUME = 1
 const DEBOUNCE_DELAY = 50
@@ -100,7 +105,10 @@ class AudioPlayer {
     volume: number
   ): Promise<Howl> {
     const audio_name = key.split('.')[1]
-    const url = cfg.path ?? `/src/assets/audio/${audio_name}.${cfg.ext ?? 'wav'}`
+    const ext = cfg.ext ?? 'wav'
+    const path = `/src/assets/audio/${audio_name}.${ext}`
+
+    const url = AUDIO_FILES[path]
 
     return new Promise((resolve, reject) => {
       const sound = new Howl({
