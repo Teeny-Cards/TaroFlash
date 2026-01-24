@@ -11,9 +11,9 @@ const { t } = useI18n()
 const session = useSessionStore()
 
 onMounted(async () => {
-  await session.setup()
+  const authenticated = await session.restoreSession()
 
-  if (session.authenticated) {
+  if (authenticated) {
     router.push({ name: 'authenticated' })
   }
 })

@@ -13,35 +13,37 @@ import {
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
 import { useMemberStore } from './member'
+import { useLogger } from '@/composables/logger'
 
 export const useSessionStore = defineStore('sessionStore', () => {
   const router = useRouter()
+  const memberStore = useMemberStore()
+  const logger = useLogger()
 
   const user = ref<User | undefined>(undefined)
   const loading_count = ref(0)
-  const has_setup = ref(false)
 
   const authenticated = computed(() => Boolean(user.value?.aud === 'authenticated'))
   const isLoading = computed(() => loading_count.value > 0)
+  const user_id = computed(() => user.value?.id ?? '')
 
-  async function setup(): Promise<void> {
-    if (has_setup.value) return
-
+  async function restoreSession(): Promise<boolean> {
     startLoading()
 
     try {
-      const session = await getSession()
-      user.value = session?.user
-
-      if (!user.value) {
-        throw new Error('Not authenticated')
+      if (!authenticated.value) {
+        const session = await getSession()
+        user.value = session?.user
       }
 
-      console.log(user.value)
-      await useMemberStore().fetchMember(user.value.id)
-      has_setup.value = true
+      if (user_id.value && !memberStore.has_member) {
+        await memberStore.fetchMember(user_id.value)
+      }
+
+      return authenticated.value
     } catch (e: any) {
-      user.value = undefined
+      logger.error(`Error initializing user: ${e.message}`)
+      return false
     } finally {
       stopLoading()
     }
@@ -49,13 +51,11 @@ export const useSessionStore = defineStore('sessionStore', () => {
 
   async function login(email: string, password: string): Promise<void> {
     await supaLogin(email, password)
-    await setup()
   }
 
   async function logout(): Promise<void> {
     await supaLogout()
-    user.value = undefined
-    has_setup.value = false
+    reset()
     router.push({ name: 'welcome' })
   }
 
@@ -65,12 +65,14 @@ export const useSessionStore = defineStore('sessionStore', () => {
     opts?: SignupEmailOptions
   ): Promise<void> {
     await supaSignupEmail(email, password, opts)
-    await setup()
   }
 
   async function signInOAuth(provider: OAuthProvider, options?: SignupOAuthOptions): Promise<void> {
     await supaSignInOAuth(provider, options)
-    await setup()
+  }
+
+  function reset() {
+    user.value = undefined
   }
 
   function startLoading(): void {
@@ -86,7 +88,7 @@ export const useSessionStore = defineStore('sessionStore', () => {
     authenticated,
     isLoading,
     login,
-    setup,
+    restoreSession,
     logout,
     signupEmail,
     signInOAuth,

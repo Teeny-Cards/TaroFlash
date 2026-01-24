@@ -33,9 +33,9 @@ const router = createRouter({
       redirect: '/dashboard',
       beforeEnter: async () => {
         const session = useSessionStore()
-        await session.setup()
+        const authenticated = await session.restoreSession()
 
-        if (!session.authenticated) return { name: 'welcome' }
+        if (!authenticated) return { name: 'welcome' }
       },
       children: [
         {
