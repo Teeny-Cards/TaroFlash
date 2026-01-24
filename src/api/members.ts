@@ -4,7 +4,7 @@ import { useLogger } from '@/composables/logger'
 const logger = useLogger()
 
 export async function fetchMemberById(id: string): Promise<Member | null> {
-  const { data, error } = await supabase.from('members').select('*').eq('id', id).single()
+  const { data, error } = await supabase.from('members').select('*').eq('user_id', id).single()
 
   if (error) {
     logger.error(error.message)
