@@ -1,25 +1,17 @@
 <script setup lang="ts">
 import router from '@/router'
 import { useSessionStore } from '@/stores/session'
-import { useToast } from '@/composables/toast'
-import { onMounted, useTemplateRef } from 'vue'
+import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Splash from './splash.vue'
 import UiImage from '@/components/ui-kit/image.vue'
 import AppFooter from '@/components/app-footer.vue'
-import { useRoute } from 'vue-router'
 
 const { t } = useI18n()
 const session = useSessionStore()
-const route = useRoute()
-
-const splash = useTemplateRef('splash')
 
 onMounted(async () => {
-  if (route.query.payment === 'true') {
-    splash.value?.openSignup(true)
-    return
-  }
+  await session.setup()
 
   if (session.authenticated) {
     router.push({ name: 'authenticated' })
@@ -28,7 +20,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <splash ref="splash" />
+  <splash />
   <section class="w-full py-54.5 flex flex-col gap-80">
     <div class="flex gap-21 justify-center items-center">
       <div class="flex flex-col gap-3 w-152 text-brown-700 dark:text-brown-100">

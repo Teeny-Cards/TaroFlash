@@ -12,34 +12,50 @@ import {
 } from '@/api/session'
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
+import { useMemberStore } from './member'
 
 export const useSessionStore = defineStore('sessionStore', () => {
   const router = useRouter()
 
-  const user = ref<User | undefined | null>(undefined)
-  const loadingCount = ref(0)
+  const user = ref<User | undefined>(undefined)
+  const loading_count = ref(0)
+  const has_setup = ref(false)
 
-  const authenticated = computed(() => {
-    return Boolean(user.value?.aud === 'authenticated')
-  })
+  const authenticated = computed(() => Boolean(user.value?.aud === 'authenticated'))
+  const isLoading = computed(() => loading_count.value > 0)
 
-  const isLoading = computed(() => loadingCount.value > 0)
-  const user_id = computed(() => user.value?.id)
-  const user_email = computed(() => user.value?.email)
+  async function setup(): Promise<void> {
+    if (has_setup.value) return
 
-  async function login(email: string, password: string): Promise<void> {
-    const session = await supaLogin(email, password)
-    user.value = session?.user
+    startLoading()
+
+    try {
+      const session = await getSession()
+      user.value = session?.user
+
+      if (!user.value) {
+        throw new Error('Not authenticated')
+      }
+
+      console.log(user.value)
+      await useMemberStore().fetchMember(user.value.id)
+      has_setup.value = true
+    } catch (e: any) {
+      user.value = undefined
+    } finally {
+      stopLoading()
+    }
   }
 
-  async function restoreSession(): Promise<void> {
-    const session = await getSession()
-    user.value = session?.user
+  async function login(email: string, password: string): Promise<void> {
+    await supaLogin(email, password)
+    await setup()
   }
 
   async function logout(): Promise<void> {
     await supaLogout()
     user.value = undefined
+    has_setup.value = false
     router.push({ name: 'welcome' })
   }
 
@@ -48,30 +64,29 @@ export const useSessionStore = defineStore('sessionStore', () => {
     password: string,
     opts?: SignupEmailOptions
   ): Promise<void> {
-    const session = await supaSignupEmail(email, password, opts)
-    user.value = session?.user
+    await supaSignupEmail(email, password, opts)
+    await setup()
   }
 
   async function signInOAuth(provider: OAuthProvider, options?: SignupOAuthOptions): Promise<void> {
     await supaSignInOAuth(provider, options)
+    await setup()
   }
 
   function startLoading(): void {
-    loadingCount.value++
+    loading_count.value++
   }
 
   function stopLoading(): void {
-    loadingCount.value--
+    loading_count.value--
   }
 
   return {
     user,
     authenticated,
     isLoading,
-    user_id,
-    user_email,
     login,
-    restoreSession,
+    setup,
     logout,
     signupEmail,
     signInOAuth,

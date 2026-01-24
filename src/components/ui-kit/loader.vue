@@ -15,7 +15,8 @@ const {
   immediate = false,
   loadingImage,
   doneImage,
-  delayMs = 200
+  delayMs = 200,
+  keepAlive = false
 } = defineProps<{
   loadingImage: string
   doneImage?: string
@@ -27,6 +28,7 @@ const {
   fadeMs?: number
   delayMs?: number
   immediate?: boolean
+  keepAlive?: boolean
 }>()
 
 defineOptions({
@@ -85,45 +87,46 @@ watch(
 onBeforeUnmount(() => {
   clearFinishTimer()
 })
-
-const loaderClasses = computed(() => [
-  `ui-kit-loader--${theme} ui-kit-loader--${themeDark ?? 'dark-' + theme} ui-kit-loader--${size}`,
-  { 'ui-kit-loader--loading': phase.value === 'loading' }
-])
 </script>
 
 <template>
-  <transition name="ui-kit-loader-fade" appear mode="out-in">
-    <div
-      v-if="showLoader"
-      v-bind="$attrs"
-      class="ui-kit-loader bg-(--loader-theme) dark:bg-(--loader-theme-dark)"
-      :class="loaderClasses"
-    >
-      <ui-image
-        v-if="phase === 'loading'"
-        :src="loadingImage"
-        :size="size"
-        class="ui-kit-loader__image"
-      />
-      <ui-image v-else :src="doneImage ?? loadingImage" :size="size" class="ui-kit-loader__image" />
+  <div
+    v-if="showLoader"
+    v-bind="$attrs"
+    class="ui-kit-loader bg-(--loader-theme) dark:bg-(--loader-theme-dark)"
+    :class="[
+      `ui-kit-loader--${theme}`,
+      `ui-kit-loader--dark-${themeDark ?? theme}`,
+      `ui-kit-loader--${size}`,
+      {
+        'ui-kit-loader--loading': phase === 'loading',
+        'ui-kit-loader--keep-alive': keepAlive
+      }
+    ]"
+  >
+    <ui-image
+      v-if="phase === 'loading'"
+      :src="loadingImage"
+      :size="size"
+      class="ui-kit-loader__image"
+    />
+    <ui-image v-else :src="doneImage ?? loadingImage" :size="size" class="ui-kit-loader__image" />
 
-      <div class="burst">
-        <div class="spoke" style="--i: 0"><span class="dot"></span></div>
-        <div class="spoke" style="--i: 1"><span class="dot"></span></div>
-        <div class="spoke" style="--i: 2"><span class="dot"></span></div>
-        <div class="spoke" style="--i: 3"><span class="dot"></span></div>
-        <div class="spoke" style="--i: 4"><span class="dot"></span></div>
-        <div class="spoke" style="--i: 5"><span class="dot"></span></div>
-        <div class="spoke" style="--i: 6"><span class="dot"></span></div>
-        <div class="spoke" style="--i: 7"><span class="dot"></span></div>
-      </div>
+    <div class="burst">
+      <div class="spoke" style="--i: 0"><span class="dot"></span></div>
+      <div class="spoke" style="--i: 1"><span class="dot"></span></div>
+      <div class="spoke" style="--i: 2"><span class="dot"></span></div>
+      <div class="spoke" style="--i: 3"><span class="dot"></span></div>
+      <div class="spoke" style="--i: 4"><span class="dot"></span></div>
+      <div class="spoke" style="--i: 5"><span class="dot"></span></div>
+      <div class="spoke" style="--i: 6"><span class="dot"></span></div>
+      <div class="spoke" style="--i: 7"><span class="dot"></span></div>
     </div>
+  </div>
 
-    <div v-else class="contents">
-      <slot></slot>
-    </div>
-  </transition>
+  <div v-if="!showLoader || keepAlive" class="contents">
+    <slot></slot>
+  </div>
 </template>
 
 <style>
@@ -165,6 +168,11 @@ const loaderClasses = computed(() => [
   z-index: 1000;
 }
 
+.ui-kit-loader--keep-alive {
+  position: absolute;
+  inset: 0;
+}
+
 .ui-kit-loader--loading .burst {
   display: none;
 }
@@ -184,7 +192,7 @@ const loaderClasses = computed(() => [
   --loader-theme: var(--color-blue-500);
 }
 .ui-kit-loader--dark-blue {
-  --loader-theme-dark: var(--color-blue-400);
+  --loader-theme-dark: var(--color-blue-650);
 }
 
 .ui-kit-loader--purple {
