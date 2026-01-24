@@ -1,8 +1,0 @@
-@keyframes background-slide {
-  to {
-    background-position: 0 0;
-  }
-  from {
-    background-position: 40px 0;
-  }
-}
