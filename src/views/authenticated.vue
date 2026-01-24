@@ -4,16 +4,17 @@ import Phone from '@/phone/phone.vue'
 import UiLoader from '@/components/ui-kit/loader.vue'
 import { useSessionStore } from '@/stores/session'
 
-const sessionStore = useSessionStore()
+const session = useSessionStore()
 </script>
 
 <template>
   <ui-loader
-    :loading="sessionStore.isLoading"
+    :loading="session.isLoading"
     :delay-ms="1000"
     loading-image="logo"
     size="lg"
-    theme="grey"
+    theme="blue"
+    theme-dark="grey"
     class="absolute inset-0 text-white"
   >
     <nav-bar />

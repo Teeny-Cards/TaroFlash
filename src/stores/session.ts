@@ -16,7 +16,7 @@ import { computed, ref } from 'vue'
 export const useSessionStore = defineStore('sessionStore', () => {
   const router = useRouter()
 
-  const user = ref<User | undefined>(undefined)
+  const user = ref<User | undefined | null>(undefined)
   const loadingCount = ref(0)
 
   const authenticated = computed(() => {

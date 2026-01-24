@@ -8,6 +8,7 @@ type LoaderSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl'
 const {
   size = 'base',
   theme = 'green',
+  themeDark,
   burstDurationMs = 500,
   fadeMs = 120,
   loading,
@@ -20,6 +21,7 @@ const {
   doneImage?: string
   size?: LoaderSize
   theme?: MemberTheme
+  themeDark?: MemberTheme
   loading?: boolean
   burstDurationMs?: number
   fadeMs?: number
@@ -30,6 +32,10 @@ const {
 defineOptions({
   inheritAttrs: false
 })
+
+const emit = defineEmits<{
+  (e: 'finish'): void
+}>()
 
 const phase = ref<'loading' | 'finishing' | 'done'>(!loading && immediate ? 'done' : 'loading')
 
@@ -59,6 +65,7 @@ async function startFinishSequence() {
   finishTimer = window.setTimeout(() => {
     phase.value = 'done'
     finishTimer = null
+    emit('finish')
   }, burstDurationMs)
 }
 
@@ -80,7 +87,7 @@ onBeforeUnmount(() => {
 })
 
 const loaderClasses = computed(() => [
-  `ui-kit-loader--${theme} ui-kit-loader--${size}`,
+  `ui-kit-loader--${theme} ui-kit-loader--${themeDark ?? 'dark-' + theme} ui-kit-loader--${size}`,
   { 'ui-kit-loader--loading': phase.value === 'loading' }
 ])
 </script>
@@ -168,34 +175,57 @@ const loaderClasses = computed(() => [
 /* themes */
 .ui-kit-loader--green {
   --loader-theme: var(--color-green-400);
+}
+.ui-kit-loader--dark-green {
   --loader-theme-dark: var(--color-green-500);
 }
+
 .ui-kit-loader--blue {
   --loader-theme: var(--color-blue-500);
-  --loader-theme-dark: var(--color-blue-500);
 }
+.ui-kit-loader--dark-blue {
+  --loader-theme-dark: var(--color-blue-400);
+}
+
 .ui-kit-loader--purple {
   --loader-theme: var(--color-purple-400);
+}
+.ui-kit-loader--dark-purple {
   --loader-theme-dark: var(--color-purple-500);
 }
+
 .ui-kit-loader--pink {
   --loader-theme: var(--color-pink-400);
+}
+.ui-kit-loader--dark-pink {
   --loader-theme-dark: var(--color-pink-500);
 }
+
 .ui-kit-loader--red {
   --loader-theme: var(--color-red-400);
+}
+.ui-kit-loader--dark-red {
   --loader-theme-dark: var(--color-red-500);
 }
+
 .ui-kit-loader--orange {
   --loader-theme: var(--color-orange-500);
+}
+.ui-kit-loader--dark-orange {
   --loader-theme-dark: var(--color-orange-500);
 }
+
 .ui-kit-loader--brown {
   --loader-theme: var(--color-brown-100);
+}
+.ui-kit-loader--dark-brown {
   --loader-theme-dark: var(--color-brown-800);
 }
+
 .ui-kit-loader--grey {
   --loader-theme: var(--color-grey-400);
+}
+.ui-kit-loader--dark-grey {
   --loader-theme-dark: var(--color-grey-900);
 }
 

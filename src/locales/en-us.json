@@ -16,6 +16,7 @@
   "common.beta": "Beta",
   "common.logout": "Logout",
   "common.or": "Or",
+  "common.close": "Close",
 
   "app.title": "TaroFlash",
   "app.description": "A warm little space to learn, make, and collect things you love.",
@@ -59,6 +60,8 @@
   "signup-dialog.paid-plan.deck-image-upload": "Upload Images to Decks",
   "signup-dialog.paid-plan.card-image-upload": "Upload Images to Cards",
   "signup-dialog.paid-plan.cancel-anytime": "Cancel anytime",
+  "signup-dialog.alert.generic-title": "Oops!",
+  "signup-dialog.alert.generic-message": "Look's like something might have gone wrong. Please try again.",
 
   "welcome-view.login": "Log In",
   "welcome-view.sign-up": "Make An Account",

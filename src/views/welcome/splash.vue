@@ -9,10 +9,6 @@ import { emitSfx } from '@/sfx/bus'
 import SignupDialog from '@/components/modals/sign-up/sign-up.vue'
 import { useModal } from '@/composables/modal'
 
-const emit = defineEmits<{
-  (e: 'login', email: string, password: string): void
-}>()
-
 const { t } = useI18n()
 
 const login_dropdown_open = ref(false)
@@ -34,10 +30,6 @@ function triggerLoginDropdown() {
   } else {
     openLoginDropdown()
   }
-}
-
-const onLogin = (email: string, password: string) => {
-  emit('login', email, password)
 }
 
 function openSignup(payment?: boolean) {
@@ -79,9 +71,7 @@ defineExpose({ openSignup })
           </button>
         </template>
 
-        <div class="w-80 bg-brown-300 rounded-l-6 rounded-br-6 rounded-tr-0.5 p-6 shadow-sm">
-          <LoginDialogue @submit="onLogin" />
-        </div>
+        <LoginDialogue />
       </ui-popover>
     </div>
 
@@ -95,7 +85,7 @@ defineExpose({ openSignup })
           <p class="text-brown-100 text-center text-lg w-60">{{ t('app.description') }}</p>
         </div>
 
-        <ui-button size="lg" @click="openSignup" class="outline-4 outline-brown-100">
+        <ui-button size="lg" @click="openSignup" class="outline-4! outline-brown-100!">
           {{ t('welcome-view.sign-up') }}
         </ui-button>
       </div>

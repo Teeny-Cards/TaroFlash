@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import router from '@/router'
-import { initUser } from '@/stores/initUser'
 import { useSessionStore } from '@/stores/session'
 import { useToast } from '@/composables/toast'
 import { onMounted, useTemplateRef } from 'vue'
@@ -12,7 +11,6 @@ import { useRoute } from 'vue-router'
 
 const { t } = useI18n()
 const session = useSessionStore()
-const toast = useToast()
 const route = useRoute()
 
 const splash = useTemplateRef('splash')
@@ -27,19 +25,10 @@ onMounted(async () => {
     router.push({ name: 'authenticated' })
   }
 })
-
-async function loginWithEmail(email: string, password: string): Promise<void> {
-  try {
-    await session.login(email, password)
-    router.push({ name: 'authenticated' })
-  } catch (e: any) {
-    toast.error(e.message)
-  }
-}
 </script>
 
 <template>
-  <splash ref="splash" @login="loginWithEmail" />
+  <splash ref="splash" />
   <section class="w-full py-54.5 flex flex-col gap-80">
     <div class="flex gap-21 justify-center items-center">
       <div class="flex flex-col gap-3 w-152 text-brown-700 dark:text-brown-100">
