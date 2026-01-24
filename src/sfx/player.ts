@@ -32,7 +32,7 @@ class AudioPlayer {
   queued_sound: { key: NamespacedAudioKey; options: PlayOptions } | undefined
 
   setup = () => {
-    if (this.initialized) return
+    if (this.initialized) return Promise.resolve()
     this.initialized = true
 
     const categories = Object.entries(AUDIO_CONFIG)

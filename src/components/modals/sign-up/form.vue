@@ -7,6 +7,7 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { AuthError } from '@supabase/supabase-js'
 import type { OAuthProvider } from '@/api/session'
+import { emitSfx } from '@/sfx/bus'
 
 type FieldName = 'username' | 'email' | 'password' | 'confirm_password'
 
@@ -18,6 +19,7 @@ const email = ref('')
 const password = ref('')
 const confirm_password = ref('')
 const tried_submit = ref(false)
+const loading = ref(false)
 
 function isEmail(s: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim())
@@ -57,20 +59,34 @@ const errors = computed(() => ({
 const isValid = computed(() => Object.keys(errors.value).length === 0)
 
 async function submit() {
-  tried_submit.value = true
-  if (!isValid.value) return false
-
   try {
+    tried_submit.value = true
+
+    if (!isValid.value) {
+      throw new Error('Invalid form')
+    }
+
+    loading.value = true
     await session.signupEmail(email.value.trim(), password.value, {
       display_name: username.value.trim()
     })
+
+    return true
   } catch (e: any) {
     const authError = e as AuthError
 
     if (authError.code === 'user_already_exists') {
+      emitSfx('ui.etc_woodblock_stuck')
       serverErrors.value.email = t('signup-dialog.form-validation.email-already-in-use')
-      return false
     }
+
+    if (e.message === 'Invalid form') {
+      emitSfx('ui.etc_woodblock_stuck')
+    }
+
+    return false
+  } finally {
+    loading.value = false
   }
 }
 
@@ -78,7 +94,7 @@ async function submitOAuth(provider: OAuthProvider) {
   await session.signInOAuth(provider, { redirectTo: '/dashboard' })
 }
 
-defineExpose({ submit, isValid })
+defineExpose({ submit, isValid, loading })
 </script>
 
 <template>

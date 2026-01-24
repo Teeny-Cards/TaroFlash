@@ -48,7 +48,7 @@ function onConfirm() {
       v-bind="$attrs"
     >
       <div data-testid="ui-kit-alert__body" class="flex flex-col gap-2 p-10">
-        <h1 class="text-brown-700 text-4xl">{{ title ?? t('alert.generic-title') }}</h1>
+        <h1 class="text-brown-700 text-3xl">{{ title ?? t('alert.generic-title') }}</h1>
         <p class="text-brown-500">{{ message ?? t('alert.generic-message') }}</p>
       </div>
 
@@ -69,6 +69,7 @@ function onConfirm() {
         </button>
 
         <button
+          v-if="confirmLabel"
           data-testid="ui-kit-alert__confirm"
           class="ui-kit-alert__confirm group"
           @click="onConfirm"

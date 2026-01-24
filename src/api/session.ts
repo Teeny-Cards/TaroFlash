@@ -1,5 +1,5 @@
 import { supabase } from '@/supabase-client'
-import type { Session } from '@supabase/supabase-js'
+import type { Session, User } from '@supabase/supabase-js'
 
 export type SignupEmailOptions = {
   display_name?: string

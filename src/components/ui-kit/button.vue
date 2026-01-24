@@ -26,7 +26,7 @@ const {
 <template>
   <button
     data-testid="ui-kit-button"
-    class="ui-kit-btn"
+    class="ui-kit-btn group/btn"
     v-sfx="sfx"
     :class="[
       `btn-${theme}`,
@@ -46,6 +46,11 @@ const {
     <div v-if="iconOnly && $slots.default" class="ui-kit-btn__tooltip">
       <slot></slot>
     </div>
+
+    <div
+      class="absolute inset-0 hidden group-hover/btn:block bgx-diagonal-stripes
+        animation-safe:bgx-slide rounded-(--btn-border-radius) pointer-events-none"
+    ></div>
   </button>
 </template>
 
@@ -60,6 +65,7 @@ const {
   font-size: var(--btn-font-size);
   line-height: var(--btn-font-size--line-height);
 
+  outline: var(--btn-outline-width, 0) solid var(--btn-outline-color, var(--btn-main-color));
   border-radius: var(--btn-border-radius);
   padding: var(--btn-padding);
   height: max-content;
@@ -73,7 +79,8 @@ const {
   cursor: pointer;
 }
 .ui-kit-btn:hover {
-  outline: 2px solid var(--btn-hover-color);
+  --btn-outline-color: var(--btn-hover-color);
+  --btn-outline-width: 2px;
 }
 
 .ui-kit-btn .btn-icon {
