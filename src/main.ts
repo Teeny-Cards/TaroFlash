@@ -7,11 +7,6 @@ import { createI18n } from 'vue-i18n'
 import messages from '@intlify/unplugin-vue-i18n/messages'
 import { vSfx } from '@/sfx/directive'
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.unregister()))
-  caches?.keys?.().then((keys) => keys.forEach((k) => caches.delete(k)))
-}
-
 const i18n = createI18n({
   locale: 'en-us',
   legacy: false,

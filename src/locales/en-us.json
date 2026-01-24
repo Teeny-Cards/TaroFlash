@@ -16,6 +16,7 @@
   "common.beta": "Beta",
   "common.logout": "Logout",
   "common.or": "Or",
+  "common.close": "Close",
 
   "app.title": "TaroFlash",
   "app.description": "A warm little space to learn, make, and collect things you love.",
@@ -59,6 +60,8 @@
   "signup-dialog.paid-plan.deck-image-upload": "Upload Images to Decks",
   "signup-dialog.paid-plan.card-image-upload": "Upload Images to Cards",
   "signup-dialog.paid-plan.cancel-anytime": "Cancel anytime",
+  "signup-dialog.alert.generic-title": "Oops!",
+  "signup-dialog.alert.generic-message": "Look's like something might have gone wrong. Please try again.",
 
   "welcome-view.login": "Log In",
   "welcome-view.sign-up": "Make An Account",
@@ -157,7 +160,78 @@
   "move-cards-modal.title": "Move Card | Move <span>{front}</span><span>{back}</span> | Move {count} Cards",
 
   "privacy-policy.title": "Privacy Policy",
-  "privacy-policy.description": "TaroFlash collects only the information needed to provide its features and improve the experience. Your personal data and study content are never sold, and access is limited to essential services required to run the app.",
+  "privacy-policy.intro": "TaroFlash respects your privacy and is committed to handling user data transparently and responsibly. This policy explains what information we collect, how it is used, and how it is stored.",
+
+  "privacy-policy.section-1.title": "Information We Collect",
+  "privacy-policy.section-1.subsection-1.title": "Account Information",
+  "privacy-policy.section-1.subsection-1.content": "When you create an account, TaroFlash collects the following information:",
+  "privacy-policy.section-1.subsection-1.item-1": "Email address",
+  "privacy-policy.section-1.subsection-1.item-2": "Display name",
+  "privacy-policy.section-1.subsection-1.item-3": "Profile image (avatar URL), if provided",
+  "privacy-policy.section-1.subsection-1.footer": "This information is required to create and manage your account.",
+
+  "privacy-policy.section-1.subsection-2.title": "Google Sign-In Data",
+  "privacy-policy.section-1.subsection-2.content": "If you choose to sign in using Google, TaroFlash accesses the following Google user data:",
+  "privacy-policy.section-1.subsection-2.item-1": "Email address",
+  "privacy-policy.section-1.subsection-2.item-2": "Basic profile information (name and profile image)",
+  "privacy-policy.section-1.subsection-2.footer": "TaroFlash only requests non-sensitive scopes (email and userinfo.profile) for authentication purposes.",
+
+  "privacy-policy.section-2.title": "How We Use Your Information",
+  "privacy-policy.section-2.content": "Your information is used only to:",
+  "privacy-policy.section-2.item-1": "Authenticate and identify your account",
+  "privacy-policy.section-2.item-2": "Display account-related information within the app",
+  "privacy-policy.section-2.item-3": "Provide core app functionality such as deck management and study sessions",
+  "privacy-policy.section-2.item-4": "Support account recovery and communication related to your account",
+  "privacy-policy.section-2.footer": "Your data is not used for advertising or marketing purposes.",
+
+  "privacy-policy.section-3.title": "Data Storage and Security",
+  "privacy-policy.section-3.item-1": "User data is securely stored using Supabase.",
+  "privacy-policy.section-3.item-2": "TaroFlash does not store Google access tokens.",
+  "privacy-policy.section-3.item-3": "Authentication sessions are handled securely by our authentication provider.",
+  "privacy-policy.section-3.item-4": "Payment-related data is processed securely by Stripe; TaroFlash does not store full payment details.",
+  "privacy-policy.section-3.item-5": "Reasonable technical and organizational measures are used to protect user data from unauthorized access.",
+
+  "privacy-policy.section-4.title": "Data Sharing",
+  "privacy-policy.section-4.content-1": "TaroFlash does not sell or rent user data.",
+  "privacy-policy.section-4.content-2": "User data is shared only with the following service providers, solely to operate the app:",
+  "privacy-policy.section-4.item-1": "Supabase — authentication, database, and backend infrastructure",
+  "privacy-policy.section-4.item-2": "Stripe — payment processing for paid plans",
+  "privacy-policy.section-4.footer": "No user data is shared with advertisers.",
+
+  "privacy-policy.section-5.title": "Future Social Features",
+  "privacy-policy.section-5.content": "TaroFlash may introduce optional social features in the future, such as public profiles or shared decks. If these features are added, users will be clearly informed about what information is public and given control over their participation.",
+
+  "privacy-policy.section-6.title": "Data Deletion",
+  "privacy-policy.section-6.content": "Users may request deletion of their account and associated data at any time through the app or by contacting support.",
+
+  "privacy-policy.section-7.title": "Changes to This Policy",
+  "privacy-policy.section-7.content": "This privacy policy may be updated as the app evolves. Any changes will be reflected on this page.",
+
+  "privacy-policy.section-8.title": "Contact",
+  "privacy-policy.section-8.content": "If you have questions about this policy, you may contact us at:",
+  "privacy-policy.section-8.email": "support{'@'}taro-flash.com",
   "terms-of-service.title": "Terms of Service",
-  "terms-of-service.description": "Using TaroFlash means agreeing to basic usage rules and acknowledging that features may change over time. The service is offered without guarantees, but always with the intent to provide a reliable, respectful study tool."
+  "terms-of-service.intro": "By using TaroFlash, you agree to the following terms.",
+
+  "terms-of-service.section-1.title": "Use of the Service",
+  "terms-of-service.section-1.content": "TaroFlash provides a spaced-repetition flashcard application for personal study. You agree to use the service lawfully and as intended.",
+
+  "terms-of-service.section-2.title": "Accounts",
+  "terms-of-service.section-2.content": "You are responsible for maintaining the security of your account. Account information must be accurate and up to date.",
+
+  "terms-of-service.section-3.title": "User Content",
+  "terms-of-service.section-3.content-1": "All study content you create remains yours. You grant TaroFlash permission to store and display this content as necessary to provide the service.",
+  "terms-of-service.section-3.content-2": "Future features may allow users to share content publicly or with other users. Participation in such features will be optional.",
+
+  "terms-of-service.section-4.title": "Payments",
+  "terms-of-service.section-4.content": "Some features may require a paid subscription. Payments are processed securely by Stripe.",
+
+  "terms-of-service.section-5.title": "Service Availability",
+  "terms-of-service.section-5.content": "The service is provided \"as is\" and may change or evolve over time. We make no guarantees regarding uninterrupted availability.",
+
+  "terms-of-service.section-6.title": "Termination",
+  "terms-of-service.section-6.content": "Accounts may be suspended or deleted if these terms are violated.",
+
+  "terms-of-service.section-7.title": "Changes to These Terms",
+  "terms-of-service.section-7.content": "These terms may be updated periodically. Continued use of the service constitutes acceptance of the updated terms."
 }
