@@ -18,6 +18,7 @@ const tabs: { [key in SettingsPage]: any } = {
 
 <template>
   <ui-loader
+    :immediate="false"
     loading-image="settings"
     done-image="settings-hover"
     size="lg"
