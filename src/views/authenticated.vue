@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import NavBar from '@/components/nav-bar.vue'
 import Phone from '@/phone/phone.vue'
-import UiLoader from '@/components/ui-kit/loader.vue'
+import UiLoader from '@/components/ui-kit/loader/index.vue'
 import { useSessionStore } from '@/stores/session'
 
 const session = useSessionStore()

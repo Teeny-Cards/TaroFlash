@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import UiLoader from '@/components/ui-kit/loader.vue'
+import UiLoader from '@/components/ui-kit/loader/index.vue'
 </script>
 
 <template>

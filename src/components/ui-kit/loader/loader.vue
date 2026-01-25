@@ -1,114 +1,26 @@
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import UiImage from '@/components/ui-kit/image.vue'
-import { emitSfx } from '@/sfx/bus'
-import { useMediaQuery } from '@/composables/use-media-query'
+import { type LoaderProps, type LoaderPhase } from './index.vue'
 
-type LoaderSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl'
-
-const {
-  size = 'base',
-  theme = 'green',
-  themeDark,
-  burstDurationMs = 500,
-  fadeMs = 120,
-  loading,
-  immediate = false,
-  loadingImage,
-  doneImage,
-  delayMs = 200,
-  keepAlive = false
-} = defineProps<{
-  loadingImage: string
-  doneImage?: string
-  size?: LoaderSize
-  theme?: MemberTheme
-  themeDark?: MemberTheme
-  loading?: boolean
-  burstDurationMs?: number
-  fadeMs?: number
-  delayMs?: number
-  immediate?: boolean
-  keepAlive?: boolean
-}>()
-
-defineOptions({
-  inheritAttrs: false
-})
-
-const emit = defineEmits<{
-  (e: 'finish'): void
-}>()
-
-const slots = defineSlots<{
-  default(): any
-}>()
-
-const is_dark_mode = useMediaQuery('dark')
-
-const phase = ref<'loading' | 'finishing' | 'done'>(!loading && immediate ? 'done' : 'loading')
-
-const showLoader = computed(() => phase.value !== 'done')
-
-let finishTimer: number | null = null
-
-onMounted(() => {
-  document.documentElement.style.setProperty('--burst-dur', `${burstDurationMs}ms`)
-  document.documentElement.style.setProperty('--fade-ms', `${fadeMs}ms`)
-
-  console.log(slots.default())
-})
-
-function clearFinishTimer() {
-  if (finishTimer != null) {
-    window.clearTimeout(finishTimer)
-    finishTimer = null
-  }
+type ScopedProps = Omit<
+  LoaderProps,
+  'keepAlive | immediate | loading | burstDurationMs | fadeMs | delayMs'
+> & {
+  phase: LoaderPhase
+  is_dark_mode: boolean
 }
 
-async function startFinishSequence() {
-  await new Promise((resolve) => setTimeout(resolve, delayMs))
-
-  clearFinishTimer()
-  phase.value = 'finishing'
-  emitSfx('ui.negative_pop')
-
-  finishTimer = window.setTimeout(() => {
-    phase.value = 'done'
-    finishTimer = null
-    emit('finish')
-  }, burstDurationMs)
-}
-
-watch(
-  () => loading,
-  (isLoading) => {
-    if (isLoading) {
-      clearFinishTimer()
-      phase.value = 'loading'
-      return
-    }
-    if (phase.value !== 'done') startFinishSequence()
-  },
-  { immediate: true }
-)
-
-onBeforeUnmount(() => {
-  clearFinishTimer()
-})
+defineProps<ScopedProps>()
 </script>
 
 <template>
   <div
-    v-if="showLoader"
-    v-bind="$attrs"
     class="ui-kit-loader bg-(--theme-primary)"
     :data-theme="is_dark_mode ? (themeDark ?? theme) : theme"
     :class="[
       `ui-kit-loader--${size}`,
       {
-        'ui-kit-loader--loading': phase === 'loading',
-        'ui-kit-loader--keep-alive': keepAlive
+        'ui-kit-loader--loading': phase === 'loading'
       }
     ]"
   >
@@ -130,10 +42,6 @@ onBeforeUnmount(() => {
       <div class="spoke" style="--i: 6"><span class="dot"></span></div>
       <div class="spoke" style="--i: 7"><span class="dot"></span></div>
     </div>
-  </div>
-
-  <div v-if="!showLoader || keepAlive" class="contents">
-    <slot></slot>
   </div>
 </template>
 
@@ -174,11 +82,6 @@ onBeforeUnmount(() => {
   justify-content: center;
 
   z-index: 1000;
-}
-
-.ui-kit-loader--keep-alive {
-  position: absolute;
-  inset: 0;
 }
 
 .ui-kit-loader--loading .burst {
