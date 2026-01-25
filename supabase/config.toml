@@ -141,15 +141,8 @@ password_requirements = ""
 
 [remotes.stage.auth]
 site_url = "https://stage.taro-flash.com"
-additional_redirect_urls = [
-  "https://stage.taro-flash.com/auth/callback"
-]
+additional_redirect_urls = ["https://stage.taro-flash.com/auth/callback"]
 
-[remotes.prod.auth]
-site_url = "https://taro-flash.com"
-additional_redirect_urls = [
-  "https://taro-flash.com/auth/callback"
-]
 
 [auth.email]
 # Allow/disallow new user signups via email to your project.
