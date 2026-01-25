@@ -11,7 +11,11 @@ const i18n = createI18n({
   locale: 'en-us',
   legacy: false,
   escapeParameter: false,
-  messages
+  messages,
+  messageCompiler: {
+    // disables linked message parsing
+    linked: false
+  }
 })
 
 const app = createApp(App)

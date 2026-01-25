@@ -1,5 +1,5 @@
 import { supabase } from '@/supabase-client'
-import { useSessionStore } from '@/stores/session'
+import { useMemberStore } from '@/stores/member'
 import { useLogger } from '@/composables/logger'
 import { DateTime } from 'luxon'
 
@@ -7,7 +7,7 @@ const logger = useLogger()
 
 export async function fetchMemberDecks(): Promise<Deck[]> {
   const { data, error } = await supabase.rpc('get_member_decks_with_due_count', {
-    p_member_id: useSessionStore().user_id,
+    p_member_id: useMemberStore().user_id,
     p_now: DateTime.now().toISO()
   })
 

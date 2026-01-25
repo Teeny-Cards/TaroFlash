@@ -9,6 +9,7 @@ export type ButtonProps = {
   iconRight?: string
   iconLeft?: string
   fancyHover?: boolean
+  loading?: boolean
   sfx?: SfxOptions
 }
 
@@ -48,9 +49,15 @@ const {
     </div>
 
     <div
-      class="absolute inset-0 hidden group-hover/btn:block bgx-diagonal-stripes
-        animation-safe:bgx-slide rounded-(--btn-border-radius) pointer-events-none"
-    ></div>
+      class="absolute inset-0 bgx-diagonal-stripes animation-safe:bgx-slide
+        rounded-(--btn-border-radius) pointer-events-none"
+      :class="{
+        'bg-(--btn-main-color) flex items-center justify-center': loading,
+        'hidden group-hover/btn:block': !loading
+      }"
+    >
+      <ui-icon v-if="loading" src="loading-dots" class="h-12 w-12" />
+    </div>
   </button>
 </template>
 

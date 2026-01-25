@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { initUser } from '@/stores/initUser'
+import { useSessionStore } from '@/stores/session'
 import Dashboard from '@/views/dashboard.vue'
 import ShopView from '@/views/shop/shop-view.vue'
 import WelcomeView from '@/views/welcome/welcome-view.vue'
@@ -32,7 +32,9 @@ const router = createRouter({
       component: AuthenticatedView,
       redirect: '/dashboard',
       beforeEnter: async () => {
-        const authenticated = await initUser()
+        const session = useSessionStore()
+        const authenticated = await session.restoreSession()
+
         if (!authenticated) return { name: 'welcome' }
       },
       children: [
