@@ -7,7 +7,7 @@ const logger = useLogger()
 
 export async function fetchMemberDecks(): Promise<Deck[]> {
   const { data, error } = await supabase.rpc('get_member_decks_with_due_count', {
-    p_member_id: useMemberStore().user_id,
+    p_member_id: useMemberStore().id,
     p_now: DateTime.now().toISO()
   })
 

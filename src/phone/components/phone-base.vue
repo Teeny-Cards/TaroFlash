@@ -54,7 +54,12 @@ const controller = computed(() => {
           data-testid="app-frame"
           class="rounded-[inherit] overflow-hidden h-full w-full"
         >
-          <component :is="app.component" @controller="controller" @close="emit('close')" />
+          <component
+            :is="app.component"
+            :display="app.display"
+            @controller="controller"
+            @close="emit('close')"
+          />
         </div>
       </transition>
     </div>

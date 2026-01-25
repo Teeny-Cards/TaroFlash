@@ -24,7 +24,7 @@ const created_at_formatted = DateTime.fromISO(created_at).toFormat('LLL d, yyyy'
 const member = reactive<Member>({
   display_name: '',
   description: '',
-  id: memberStore.user_id
+  id: memberStore.id
 })
 
 const selected_theme = ref<MemberTheme>('green-400')

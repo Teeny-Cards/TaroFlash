@@ -18,9 +18,13 @@ const current_app = computed(() => {
 <template>
   <div
     data-testid="phone"
-    class="pointer-events-auto w-223.75 h-150 bg-brown-300 dark:bg-grey-800 rounded-10 shadow-sm
-      overflow-hidden"
+    class="pointer-events-auto bg-brown-300 dark:bg-grey-800 rounded-10 shadow-sm overflow-hidden"
   >
-    <component v-if="current_app" :is="current_app.component" @close="emit('close')" />
+    <component
+      v-if="current_app"
+      :is="current_app.component"
+      @close="emit('close')"
+      :display="current_app.display"
+    />
   </div>
 </template>

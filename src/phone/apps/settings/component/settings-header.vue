@@ -3,7 +3,7 @@ import UiButton from '@/components/ui-kit/button.vue'
 import { type SettingsTab } from './index.vue'
 import { useI18n } from 'vue-i18n'
 
-defineProps<{
+const { selectedTab } = defineProps<{
   selectedTab: SettingsTab
 }>()
 
@@ -39,13 +39,17 @@ const tabs: Array<{
 function titleFor(tab: SettingsTab) {
   return tabs.find((t) => t.key === tab)?.label
 }
+
+function isSelected(tab: SettingsTab) {
+  return selectedTab === tab
+}
 </script>
 
 <template>
   <div
     data-testid="settings__header"
     class="w-full grid grid-cols-[40px_1fr_40px] grid-rows-[auto_auto] items-center bg-blue-800 p-5
-      gap-6 cloud-bottom-[40px]"
+      pb-4 gap-6 cloud-bottom-[40px]"
   >
     <ui-button icon-left="close" icon-only theme="blue-800" inverted @click="emit('close')" />
 
@@ -64,9 +68,13 @@ function titleFor(tab: SettingsTab) {
         theme="blue-800"
         size="lg"
         rounded-full
-        :variant="selectedTab === tab.key ? 'solid' : 'outline'"
+        :variant="isSelected(tab.key) ? 'solid' : 'outline'"
         inverted
         :sfx="{ click: 'ui.select' }"
+        :class="{
+          [`hover:[&_.btn-icon]:scale-110 hover:[&_.btn-icon]:rotate-10 transition-transform
+          duration-75`]: !isSelected(tab.key)
+        }"
         @click="emit('change-tab', tab.key)"
       >
         {{ tab.label }}

@@ -93,6 +93,7 @@
   "settings.app-settings.audio.rewards": "Reward Volume",
   "settings.app-settings.accessibility.label": "Accessibility",
   "settings.member-settings.title": "Member Settings",
+  "settings.member-settings.general.label": "General",
   "settings.member-settings.subscription.label": "Subscription",
   "settings.notification-settings.title": "Notification Settings",
 
