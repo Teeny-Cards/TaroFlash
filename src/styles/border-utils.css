@@ -51,3 +51,22 @@
   -webkit-mask: var(--wave-mask);
   mask: var(--wave-mask);
 }
+
+@utility cloud-bottom-* {
+  /* main control */
+  --cloud-size: --value([length]);
+
+  --cloud-cut: var(--cloud-size);
+  --cloud-tile-w: calc(var(--cloud-size) * 1.85); /* 55.5 / 30 */
+  --cloud-tile-h: calc(var(--cloud-size) * 2); /* 60 / 30 */
+
+  --cloud-mask:
+    /* hide the bottom strip so bumps carve upward */
+    linear-gradient(0deg, #0000 var(--cloud-cut), #000 0),
+    /* repeated circular bumps along bottom */
+      radial-gradient(var(--cloud-size), #000 calc(100% - 1px), #0000) bottom / var(--cloud-tile-w)
+      var(--cloud-tile-h) repeat-x;
+
+  -webkit-mask: var(--cloud-mask);
+  mask: var(--cloud-mask);
+}
