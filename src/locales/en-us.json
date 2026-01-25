@@ -94,6 +94,7 @@
   "settings.app-settings.accessibility.label": "Accessibility",
   "settings.member-settings.title": "Member Settings",
   "settings.member-settings.subscription.label": "Subscription",
+  "settings.notification-settings.title": "Notification Settings",
 
   "alert.generic-title": "Continue?",
   "alert.generic-message": "Are you sure you want to continue?",

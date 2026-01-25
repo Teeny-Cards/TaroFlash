@@ -97,9 +97,8 @@ onBeforeUnmount(() => {
     v-if="showLoader"
     v-bind="$attrs"
     class="ui-kit-loader bg-(--theme-primary)"
-    :data-theme="theme"
+    :data-theme="is_dark_mode ? (themeDark ?? theme) : theme"
     :class="[
-      `ui-kit-loader--${is_dark_mode ? (themeDark ?? theme) : theme}`,
       `ui-kit-loader--${size}`,
       {
         'ui-kit-loader--loading': phase === 'loading',

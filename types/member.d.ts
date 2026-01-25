@@ -23,7 +23,7 @@ type MemberTheme =
   // | 'brown-800'
   // | 'brown-300'
   | 'brown-100'
-  // | 'grey-900'
+  | 'grey-900'
   | 'grey-400'
 // | 'white'
 

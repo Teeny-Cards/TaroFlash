@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import type { SfxOptions } from '@/sfx/directive'
 
@@ -24,8 +25,15 @@ const {
   iconRight,
   iconLeft,
   fancyHover = true,
-  sfx = { hover: 'ui.click_07' }
+  sfx = {}
 } = defineProps<ButtonProps>()
+
+const merged_sfx = computed(() => {
+  return {
+    ...sfx,
+    hover: sfx.hover ?? 'ui.click_07'
+  }
+})
 </script>
 
 <template>
@@ -33,7 +41,7 @@ const {
     data-testid="ui-kit-button"
     :data-theme="theme"
     class="ui-kit-btn group/btn"
-    v-sfx="sfx"
+    v-sfx="merged_sfx"
     :class="[
       `ui-kit-btn--${size}`,
       `ui-kit-btn--${variant}`,

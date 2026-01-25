@@ -34,7 +34,7 @@ const controller = computed(() => {
   >
     <ui-button
       class="absolute! top-0 left-0 shadow-xs pointer-fine:opacity-0
-        pointer-fine:group-hover/phone:opacity-100 opacity-100 transition-opacity duration-75"
+        pointer-fine:group-hover/phone:opacity-100 opacity-100 transition-opacity duration-75 z-10"
       icon-left="close"
       icon-only
       theme="brown-100"

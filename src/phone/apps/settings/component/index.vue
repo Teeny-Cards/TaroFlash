@@ -6,13 +6,18 @@ import UiLoader from '@/components/ui-kit/loader.vue'
 import { ref } from 'vue'
 import SettingsHeader from './settings-header.vue'
 
-export type SettingsPage = 'app-settings' | 'member-settings'
+export type SettingsTab = 'app-settings' | 'member-settings' | 'notification-settings'
 
-const tab = ref<SettingsPage>('app-settings')
+const emit = defineEmits<{
+  (e: 'close'): void
+}>()
 
-const tabs: { [key in SettingsPage]: any } = {
+const tab = ref<SettingsTab>('app-settings')
+
+const tabs: { [key in SettingsTab]: any } = {
   'app-settings': AppSettings,
-  'member-settings': MemberSettings
+  'member-settings': MemberSettings,
+  'notification-settings': undefined
 }
 </script>
 
@@ -29,7 +34,7 @@ const tabs: { [key in SettingsPage]: any } = {
       data-testid="settings-container"
       class="flex flex-col items-center w-full h-full rounded-16"
     >
-      <settings-header :tab="tab" @change-tab="tab = $event" />
+      <settings-header :selected-tab="tab" @change-tab="tab = $event" @close="emit('close')" />
 
       <div
         data-testid="settings"
