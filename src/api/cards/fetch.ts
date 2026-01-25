@@ -11,7 +11,7 @@ type FetchMemberCardCountOptions = {
 
 export async function fetchMemberCardCount(opts: FetchMemberCardCountOptions): Promise<number> {
   const { data, error } = await supabase.rpc('get_member_card_count', {
-    p_member_id: useMemberStore().user_id,
+    p_member_id: useMemberStore().id,
     p_now: DateTime.now().toISO(),
     p_only_due_cards: opts.only_due_cards
   })

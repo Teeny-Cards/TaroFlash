@@ -4,6 +4,9 @@ type Member = {
   description?: string
   theme?: MemberTheme
   created_at?: string
+  email?: string
+  avatar_url?: string
+  updated_at?: string
 }
 
 type MemberTheme =

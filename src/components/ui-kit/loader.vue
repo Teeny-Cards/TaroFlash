@@ -40,6 +40,10 @@ const emit = defineEmits<{
   (e: 'finish'): void
 }>()
 
+const slots = defineSlots<{
+  default(): any
+}>()
+
 const is_dark_mode = useMediaQuery('dark')
 
 const phase = ref<'loading' | 'finishing' | 'done'>(!loading && immediate ? 'done' : 'loading')
@@ -51,6 +55,8 @@ let finishTimer: number | null = null
 onMounted(() => {
   document.documentElement.style.setProperty('--burst-dur', `${burstDurationMs}ms`)
   document.documentElement.style.setProperty('--fade-ms', `${fadeMs}ms`)
+
+  console.log(slots.default())
 })
 
 function clearFinishTimer() {

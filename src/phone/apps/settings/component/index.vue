@@ -5,12 +5,12 @@ import MemberSettings from './member-settings.vue'
 import UiLoader from '@/components/ui-kit/loader.vue'
 import { ref } from 'vue'
 import SettingsHeader from './settings-header.vue'
+import type { AppProps, AppEmits } from '@/phone/system/types'
 
 export type SettingsTab = 'app-settings' | 'member-settings' | 'notification-settings'
 
-const emit = defineEmits<{
-  (e: 'close'): void
-}>()
+defineProps<AppProps>()
+const emit = defineEmits<AppEmits>()
 
 const tab = ref<SettingsTab>('app-settings')
 
@@ -23,8 +23,8 @@ const tabs: { [key in SettingsTab]: any } = {
 
 <template>
   <ui-loader
-    :immediate="false"
     loading-image="settings"
+    keep-alive
     done-image="settings-hover"
     size="lg"
     theme="blue-800"
@@ -32,13 +32,13 @@ const tabs: { [key in SettingsTab]: any } = {
   >
     <div
       data-testid="settings-container"
-      class="flex flex-col items-center w-full h-full rounded-16"
+      class="flex flex-col items-center w-157.5 h-full rounded-16"
     >
       <settings-header :selected-tab="tab" @change-tab="tab = $event" @close="emit('close')" />
 
       <div
         data-testid="settings"
-        class="w-full h-full px-18 py-8 relative grid grid-cols-1 grid-rows-1"
+        class="w-full h-full px-10 py-8 relative grid grid-cols-1 grid-rows-1"
       >
         <component :is="tabs[tab]" class="z-10" />
 

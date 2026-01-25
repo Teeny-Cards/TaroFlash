@@ -140,6 +140,7 @@ const merged_sfx = computed(() => {
 .ui-kit-btn .btn-icon {
   height: 100%;
   max-height: 100%;
+  max-width: 100%;
   z-index: 10;
 }
 
@@ -151,11 +152,12 @@ const merged_sfx = computed(() => {
 
 /* Button sizes */
 .ui-kit-btn.ui-kit-btn--xl {
-  --btn-font-size: var(--text-2xl);
-  --btn-font-size--line-height: var(--text-2xl--line-height);
+  --btn-font-size: var(--text-xl);
+  --btn-font-size--line-height: var(--text-xl--line-height);
   --btn-border-radius: var(--radius-5_5);
-  --btn-gap: 8px;
+  --btn-gap: 16px;
   --btn-padding: 14px 24px;
+  --btn-height: 50px;
 }
 .ui-kit-btn.ui-kit-btn--lg {
   --btn-font-size: var(--text-lg);
@@ -196,9 +198,14 @@ const merged_sfx = computed(() => {
 .ui-kit-btn.ui-kit-btn--xs {
   --btn-font-size: var(--text-sm);
   --btn-font-size--line-height: var(--text-sm--line-height);
-  --btn-border-radius: var(--radius-3);
+  --btn-border-radius: var(--radius-3_25);
   --btn-gap: 6px;
   --btn-padding: 4px 6px;
+  --btn-height: 30px;
+
+  &.ui-kit-btn--icon-only {
+    --btn-padding: 4px;
+  }
 }
 
 /* Button tooltips */
