@@ -5,6 +5,7 @@ import type { SfxOptions } from '@/sfx/directive'
 export type ButtonProps = {
   theme?: MemberTheme
   size?: 'xl' | 'lg' | 'base' | 'sm' | 'xs'
+  variant?: 'primary' | 'secondary'
   iconOnly?: boolean
   iconRight?: string
   iconLeft?: string
@@ -16,10 +17,11 @@ export type ButtonProps = {
 const {
   theme = 'blue-500',
   size = 'base',
+  variant = 'primary',
   iconOnly = false,
   iconRight,
   iconLeft,
-  fancyHover = false,
+  fancyHover = true,
   sfx = { hover: 'ui.click_07' }
 } = defineProps<ButtonProps>()
 </script>
@@ -27,11 +29,12 @@ const {
 <template>
   <button
     data-testid="ui-kit-button"
+    :data-theme="theme"
     class="ui-kit-btn group/btn"
     v-sfx="sfx"
     :class="[
-      `btn-${theme}`,
-      `btn-${size}`,
+      `ui-kit-btn--${size}`,
+      `ui-kit-btn--${variant}`,
       {
         'btn-icon-only': iconOnly,
         'btn-fancy-hover': fancyHover
@@ -52,8 +55,11 @@ const {
       class="absolute inset-0 bgx-diagonal-stripes animation-safe:bgx-slide
         rounded-(--btn-border-radius) pointer-events-none"
       :class="{
-        'bg-(--btn-main-color) flex items-center justify-center': loading,
-        'hidden group-hover/btn:block': !loading
+        'bg-(--theme-primary) flex items-center justify-center': loading,
+        hidden: !loading,
+        'group-hover/btn:block': !loading && fancyHover,
+        'bgx-color-[var(--theme-neutral)]': variant === 'primary',
+        'bgx-color-[var(--theme-on-neutral)]': variant === 'secondary'
       }"
     >
       <ui-icon v-if="loading" src="loading-dots" class="h-12 w-12" />
@@ -66,13 +72,12 @@ const {
 .ui-kit-btn {
   position: relative;
 
-  background-color: var(--btn-main-color);
-  color: var(--btn-secondary-color);
-  font-family: var(--font-primary);
+  background-color: var(--btn-theme-primary);
+  color: var(--btn-theme-secondary);
   font-size: var(--btn-font-size);
   line-height: var(--btn-font-size--line-height);
 
-  outline: var(--btn-outline-width, 0) solid var(--btn-outline-color, var(--btn-main-color));
+  outline: var(--btn-outline-width, 0) solid var(--btn-outline-color);
   border-radius: var(--btn-border-radius);
   padding: var(--btn-padding);
   height: max-content;
@@ -85,47 +90,60 @@ const {
   user-select: none;
   cursor: pointer;
 }
+
+.ui-kit-btn.ui-kit-btn--primary {
+  --btn-theme-primary: var(--theme-primary);
+  --btn-theme-secondary: var(--theme-on-primary);
+  --btn-outline-color: var(--theme-accent);
+  --btn-icon-color: var(--theme-on-primary);
+}
+.ui-kit-btn.ui-kit-btn--secondary {
+  --btn-theme-primary: var(--theme-neutral);
+  --btn-theme-secondary: var(--theme-on-neutral);
+  --btn-outline-color: var(--theme-accent);
+  --btn-icon-color: var(--theme-primary);
+}
+
 .ui-kit-btn:hover {
-  --btn-outline-color: var(--btn-hover-color);
   --btn-outline-width: 2px;
 }
 
 .ui-kit-btn .btn-icon {
   height: 100%;
   max-height: 100%;
-  color: var(--btn-secondary-color);
+  color: var(--btn-icon-color);
 }
 
 /* Button sizes */
-.ui-kit-btn.btn-xl {
+.ui-kit-btn.ui-kit-btn--xl {
   --btn-font-size: var(--text-2xl);
   --btn-font-size--line-height: var(--text-2xl--line-height);
   --btn-border-radius: var(--radius-5_5);
   --btn-gap: 8px;
   --btn-padding: 14px 24px;
 }
-.ui-kit-btn.btn-lg {
+.ui-kit-btn.ui-kit-btn--lg {
   --btn-font-size: var(--text-lg);
   --btn-font-size--line-height: var(--text-xl--line-height);
   --btn-border-radius: var(--radius-5);
   --btn-gap: 16px;
   --btn-padding: 14px 20px;
 }
-.ui-kit-btn.btn-base {
+.ui-kit-btn.ui-kit-btn--base {
   --btn-font-size: var(--text-base);
   --btn-font-size--line-height: var(--text-base--line-height);
   --btn-border-radius: var(--radius-4);
   --btn-gap: 8px;
   --btn-padding: 6px 10px;
 }
-.ui-kit-btn.btn-sm {
+.ui-kit-btn.ui-kit-btn--sm {
   --btn-font-size: var(--text-sm);
   --btn-font-size--line-height: var(--text-sm--line-height);
   --btn-border-radius: var(--radius-3);
   --btn-gap: 6px;
   --btn-padding: 4px 6px;
 }
-.ui-kit-btn.btn-xs {
+.ui-kit-btn.ui-kit-btn--xs {
   --btn-font-size: var(--text-sm);
   --btn-font-size--line-height: var(--text-sm--line-height);
   --btn-border-radius: var(--radius-3);
@@ -137,11 +155,9 @@ const {
 .ui-kit-btn.btn-icon-only {
   --btn-padding: 8px;
   --btn-border-radius: var(--radius-4);
-  --btn-secondary-color: var(--color-white);
 }
 .ui-kit-btn.btn-icon-only .btn-icon {
   background-color: transparent;
-  color: var(--btn-secondary-color);
 }
 .ui-kit-btn.btn-icon-only.btn-sm {
   --btn-padding: 4px;
@@ -163,50 +179,9 @@ const {
   background-color: var(--color-white);
 
   pointer-events: none;
+  z-index: 10;
 }
 .ui-kit-btn:hover .ui-kit-btn__tooltip {
   display: block;
-}
-
-/* Button themes */
-.ui-kit-btn.btn-blue-500 {
-  --btn-main-color: var(--color-blue-500);
-  --btn-secondary-color: var(--color-white);
-  --btn-hover-color: var(--color-blue-400);
-}
-.ui-kit-btn.btn-green-400 {
-  --btn-main-color: var(--color-green-400);
-  --btn-secondary-color: var(--color-white);
-  --btn-hover-color: var(--color-green-300);
-}
-.ui-kit-btn.btn-purple-500 {
-  --btn-main-color: var(--color-purple-500);
-  --btn-secondary-color: var(--color-white);
-  --btn-hover-color: var(--color-purple-500);
-}
-.ui-kit-btn.btn-pink-500 {
-  --btn-main-color: var(--color-pink-500);
-  --btn-secondary-color: var(--color-white);
-  --btn-hover-color: var(--color-pink-400);
-}
-.ui-kit-btn.btn-red-500 {
-  --btn-main-color: var(--color-red-500);
-  --btn-secondary-color: var(--color-white);
-  --btn-hover-color: var(--color-red-400);
-}
-.ui-kit-btn.btn-orange-500 {
-  --btn-main-color: var(--color-orange-500);
-  --btn-secondary-color: var(--color-white);
-  --btn-hover-color: var(--color-orange-400);
-}
-.ui-kit-btn.btn-brown-100 {
-  --btn-main-color: var(--color-brown-100);
-  --btn-secondary-color: var(--color-brown-700);
-  --btn-hover-color: var(--color-brown-500);
-}
-.ui-kit-btn.btn-grey-400 {
-  --btn-main-color: var(--color-grey-400);
-  --btn-secondary-color: var(--color-white);
-  --btn-hover-color: var(--color-grey-500);
 }
 </style>

@@ -19,7 +19,13 @@ const emit = defineEmits<{
     class="w-full grid grid-cols-[40px_1fr_40px] grid-rows-[auto_auto] items-center bg-blue-800 p-5
       gap-6 cloud-bottom-[40px]"
   >
-    <ui-button icon-left="close" icon-only theme="brown-100" size="lg"></ui-button>
+    <ui-button
+      icon-left="close"
+      icon-only
+      theme="blue-800"
+      variant="secondary"
+      size="lg"
+    ></ui-button>
 
     <h1 class="text-5xl text-brown-100 col-start-2 w-full text-center">App Settings</h1>
 
