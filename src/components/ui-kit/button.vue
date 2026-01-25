@@ -5,8 +5,10 @@ import type { SfxOptions } from '@/sfx/directive'
 export type ButtonProps = {
   theme?: MemberTheme
   size?: 'xl' | 'lg' | 'base' | 'sm' | 'xs'
-  variant?: 'primary' | 'secondary'
+  variant?: 'solid' | 'outline'
+  inverted?: boolean
   iconOnly?: boolean
+  roundedFull?: boolean
   iconRight?: string
   iconLeft?: string
   fancyHover?: boolean
@@ -17,7 +19,7 @@ export type ButtonProps = {
 const {
   theme = 'blue-500',
   size = 'base',
-  variant = 'primary',
+  variant = 'solid',
   iconOnly = false,
   iconRight,
   iconLeft,
@@ -36,8 +38,9 @@ const {
       `ui-kit-btn--${size}`,
       `ui-kit-btn--${variant}`,
       {
-        'btn-icon-only': iconOnly,
-        'btn-fancy-hover': fancyHover
+        'ui-kit-btn--icon-only': iconOnly,
+        'ui-kit-btn--inverted': inverted,
+        'rounded-full!': roundedFull
       }
     ]"
   >
@@ -58,8 +61,8 @@ const {
         'bg-(--theme-primary) flex items-center justify-center': loading,
         hidden: !loading,
         'group-hover/btn:block': !loading && fancyHover,
-        'bgx-color-[var(--theme-neutral)]': variant === 'primary',
-        'bgx-color-[var(--theme-on-neutral)]': variant === 'secondary'
+        'bgx-color-[var(--theme-neutral)]': variant === 'solid',
+        'bgx-color-[var(--theme-on-neutral)]': inverted
       }"
     >
       <ui-icon v-if="loading" src="loading-dots" class="h-12 w-12" />
@@ -72,15 +75,15 @@ const {
 .ui-kit-btn {
   position: relative;
 
-  background-color: var(--btn-theme-primary);
-  color: var(--btn-theme-secondary);
+  background-color: var(--btn-bg-color);
+  color: var(--btn-text-color);
   font-size: var(--btn-font-size);
   line-height: var(--btn-font-size--line-height);
 
   outline: var(--btn-outline-width, 0) solid var(--btn-outline-color);
   border-radius: var(--btn-border-radius);
   padding: var(--btn-padding);
-  height: max-content;
+  height: var(--btn-height, max-content);
   width: max-content;
 
   display: flex;
@@ -91,17 +94,35 @@ const {
   cursor: pointer;
 }
 
-.ui-kit-btn.ui-kit-btn--primary {
-  --btn-theme-primary: var(--theme-primary);
-  --btn-theme-secondary: var(--theme-on-primary);
+.ui-kit-btn--solid {
+  --btn-bg-color: var(--theme-primary);
+  --btn-text-color: var(--theme-on-primary);
   --btn-outline-color: var(--theme-accent);
-  --btn-icon-color: var(--theme-on-primary);
 }
-.ui-kit-btn.ui-kit-btn--secondary {
-  --btn-theme-primary: var(--theme-neutral);
-  --btn-theme-secondary: var(--theme-on-neutral);
+
+.ui-kit-btn--outline {
+  --btn-bg-color: transparent;
+  --btn-text-color: var(--theme-primary);
+  --btn-outline-width: 2px;
+  --btn-outline-color: var(--theme-primary);
+}
+
+.ui-kit-btn--solid.ui-kit-btn--inverted {
+  --btn-bg-color: var(--theme-neutral);
+  --btn-text-color: var(--theme-primary);
   --btn-outline-color: var(--theme-accent);
-  --btn-icon-color: var(--theme-primary);
+}
+
+.ui-kit-btn--outline.ui-kit-btn--inverted {
+  --btn-bg-color: transparent;
+  --btn-text-color: var(--theme-neutral);
+  --btn-outline-width: 2px;
+  --btn-outline-color: var(--theme-neutral);
+
+  &:hover {
+    --btn-bg-color: var(--theme-neutral);
+    --btn-text-color: var(--theme-primary);
+  }
 }
 
 .ui-kit-btn:hover {
@@ -111,7 +132,13 @@ const {
 .ui-kit-btn .btn-icon {
   height: 100%;
   max-height: 100%;
-  color: var(--btn-icon-color);
+  z-index: 10;
+}
+
+.ui-kit-btn.ui-kit-btn--icon-only {
+  --btn-padding: 8px;
+  --btn-border-radius: var(--radius-4);
+  aspect-ratio: 1/1;
 }
 
 /* Button sizes */
@@ -128,6 +155,11 @@ const {
   --btn-border-radius: var(--radius-5);
   --btn-gap: 16px;
   --btn-padding: 14px 20px;
+  --btn-height: 46px;
+
+  &.ui-kit-btn--icon-only {
+    --btn-padding: 10px;
+  }
 }
 .ui-kit-btn.ui-kit-btn--base {
   --btn-font-size: var(--text-base);
@@ -135,6 +167,12 @@ const {
   --btn-border-radius: var(--radius-4);
   --btn-gap: 8px;
   --btn-padding: 6px 10px;
+  --btn-height: 40px;
+
+  &.ui-kit-btn--icon-only {
+    --btn-padding: 8px;
+    --btn-border-radius: var(--radius-4_5);
+  }
 }
 .ui-kit-btn.ui-kit-btn--sm {
   --btn-font-size: var(--text-sm);
@@ -142,6 +180,10 @@ const {
   --btn-border-radius: var(--radius-3);
   --btn-gap: 6px;
   --btn-padding: 4px 6px;
+
+  &.ui-kit-btn--icon-only {
+    --btn-padding: 4px;
+  }
 }
 .ui-kit-btn.ui-kit-btn--xs {
   --btn-font-size: var(--text-sm);
@@ -149,18 +191,6 @@ const {
   --btn-border-radius: var(--radius-3);
   --btn-gap: 6px;
   --btn-padding: 4px 6px;
-}
-
-/* Icon-only buttons */
-.ui-kit-btn.btn-icon-only {
-  --btn-padding: 8px;
-  --btn-border-radius: var(--radius-4);
-}
-.ui-kit-btn.btn-icon-only .btn-icon {
-  background-color: transparent;
-}
-.ui-kit-btn.btn-icon-only.btn-sm {
-  --btn-padding: 4px;
 }
 
 /* Button tooltips */

@@ -3,6 +3,7 @@ import UiTooltip from '@/components/ui-kit/tooltip.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import { type SettingsPage } from './index.vue'
+import { useI18n } from 'vue-i18n'
 
 defineProps<{
   tab: SettingsPage
@@ -11,6 +12,8 @@ defineProps<{
 const emit = defineEmits<{
   (e: 'change-tab', tab: SettingsPage): void
 }>()
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -19,35 +22,51 @@ const emit = defineEmits<{
     class="w-full grid grid-cols-[40px_1fr_40px] grid-rows-[auto_auto] items-center bg-blue-800 p-5
       gap-6 cloud-bottom-[40px]"
   >
-    <ui-button
-      icon-left="close"
-      icon-only
-      theme="blue-800"
-      variant="secondary"
-      size="lg"
-    ></ui-button>
+    <ui-button icon-left="close" icon-only theme="blue-800" inverted></ui-button>
 
     <h1 class="text-5xl text-brown-100 col-start-2 w-full text-center">App Settings</h1>
 
     <div
       data-testid="header__tabs"
-      class="flex items-center justify-center gap-3.5 col-start-2 row-start-2"
+      class="flex items-center justify-center gap-6.75 col-start-2 row-start-2"
     >
-      <div class="header__tab" :class="{ selected: tab === 'member-settings' }">
-        <ui-tooltip position="bottom" text="Member Settings" :disabled="tab === 'member-settings'">
-          <ui-icon src="id-card" size="large" @click="emit('change-tab', 'member-settings')" />
-        </ui-tooltip>
-      </div>
+      <ui-button
+        icon-left="id-card"
+        icon-only
+        theme="blue-800"
+        size="lg"
+        rounded-full
+        :variant="tab === 'member-settings' ? 'solid' : 'outline'"
+        inverted
+        @click="emit('change-tab', 'member-settings')"
+      >
+        {{ t('settings.member-settings.title') }}
+      </ui-button>
 
-      <div class="header__tab" :class="{ selected: tab === 'app-settings' }">
-        <ui-tooltip position="bottom" text="App Settings" :disabled="tab === 'app-settings'">
-          <ui-icon src="settings" size="large" @click="emit('change-tab', 'app-settings')" />
-        </ui-tooltip>
-      </div>
+      <ui-button
+        icon-left="settings"
+        icon-only
+        theme="blue-800"
+        size="lg"
+        rounded-full
+        :variant="tab === 'app-settings' ? 'solid' : 'outline'"
+        inverted
+        @click="emit('change-tab', 'app-settings')"
+      >
+        {{ t('settings.app-settings.title') }}
+      </ui-button>
 
-      <div class="header__tab">
-        <ui-icon src="book" size="large" />
-      </div>
+      <ui-button
+        icon-left="book"
+        icon-only
+        theme="blue-800"
+        size="lg"
+        rounded-full
+        :variant="tab === 'member-settings' ? 'solid' : 'outline'"
+        inverted
+      >
+        {{ t('settings.member-settings.title') }}
+      </ui-button>
     </div>
   </div>
 </template>
