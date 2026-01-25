@@ -96,7 +96,8 @@ onBeforeUnmount(() => {
   <div
     v-if="showLoader"
     v-bind="$attrs"
-    class="ui-kit-loader bg-(--loader-bg)"
+    class="ui-kit-loader bg-(--theme-primary)"
+    :data-theme="theme"
     :class="[
       `ui-kit-loader--${is_dark_mode ? (themeDark ?? theme) : theme}`,
       `ui-kit-loader--${size}`,
@@ -180,53 +181,6 @@ onBeforeUnmount(() => {
 }
 .ui-kit-loader--loading .ui-kit-loader__image {
   animation: shake 1s ease-in-out infinite;
-}
-
-/* themes */
-.ui-kit-loader--green-400 {
-  --loader-bg: var(--color-green-400);
-}
-.ui-kit-loader--blue-650 {
-  --loader-bg: var(--color-blue-650);
-}
-.ui-kit-loader--blue-500 {
-  --loader-bg: var(--color-blue-500);
-}
-.ui-kit-loader--purple-400 {
-  --loader-bg: var(--color-purple-400);
-}
-.ui-kit-loader--purple-500 {
-  --loader-bg: var(--color-purple-500);
-}
-.ui-kit-loader--pink-400 {
-  --loader-bg: var(--color-pink-400);
-}
-.ui-kit-loader--pink-500 {
-  --loader-bg: var(--color-pink-500);
-}
-.ui-kit-loader--red-400 {
-  --loader-bg: var(--color-red-400);
-}
-.ui-kit-loader--red-500 {
-  --loader-bg: var(--color-red-500);
-}
-.ui-kit-loader--orange-500 {
-  --loader-bg: var(--color-orange-500);
-}
-.ui-kit-loader--orange-400 {
-  --loader-bg: var(--color-orange-400);
-}
-.ui-kit-loader--brown-100 {
-  --loader-bg: var(--color-brown-100);
-}
-.ui-kit-loader--brown-800 {
-  --loader-bg: var(--color-brown-800);
-}
-.ui-kit-loader--grey-400 {
-  --loader-bg: var(--color-grey-400);
-}
-.ui-kit-loader--grey-900 {
-  --loader-bg: var(--color-grey-900);
 }
 
 /* sizes (controls burst radius) */

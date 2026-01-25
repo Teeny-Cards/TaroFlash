@@ -51,3 +51,29 @@
   --theme-neutral: var(--color-brown-500);
   --theme-on-neutral: var(--color-brown-700);
 }
+
+[data-theme='pink-400'] {
+  --theme-primary: var(--color-pink-400);
+  --theme-on-primary: var(--color-brown-100);
+
+  --theme-secondary: var(--color-pink-500);
+  --theme-on-secondary: var(--color-brown-100);
+
+  --theme-accent: var(--color-pink-500);
+  --theme-on-accent: var(--color-brown-100);
+
+  --theme-neutral: var(--color-brown-100);
+  --theme-on-neutral: var(--color-brown-500);
+}
+
+[data-theme='purple-500'] {
+  --theme-primary: var(--color-purple-500);
+}
+
+[data-theme='red-400'] {
+  --theme-primary: var(--color-red-400);
+}
+
+[data-theme='orange-500'] {
+  --theme-primary: var(--color-orange-500);
+}
