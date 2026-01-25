@@ -68,10 +68,7 @@ export async function signInOAuth(
 ): Promise<void> {
   const { error } = await supabase.auth.signInWithOAuth({
     provider,
-    options: {
-      ...options,
-      redirectTo: `${window.location.origin}/dashboard`
-    }
+    options
   })
 
   if (error) {
