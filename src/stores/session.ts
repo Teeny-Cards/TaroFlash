@@ -12,34 +12,50 @@ import {
 } from '@/api/session'
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
+import { useMemberStore } from './member'
+import { useLogger } from '@/composables/logger'
 
 export const useSessionStore = defineStore('sessionStore', () => {
   const router = useRouter()
+  const memberStore = useMemberStore()
+  const logger = useLogger()
 
-  const user = ref<User | undefined | null>(undefined)
-  const loadingCount = ref(0)
+  const user = ref<User | undefined>(undefined)
+  const loading_count = ref(0)
 
-  const authenticated = computed(() => {
-    return Boolean(user.value?.aud === 'authenticated')
-  })
+  const authenticated = computed(() => Boolean(user.value?.aud === 'authenticated'))
+  const isLoading = computed(() => loading_count.value > 0)
+  const user_id = computed(() => user.value?.id ?? '')
 
-  const isLoading = computed(() => loadingCount.value > 0)
-  const user_id = computed(() => user.value?.id)
-  const user_email = computed(() => user.value?.email)
+  async function restoreSession(): Promise<boolean> {
+    startLoading()
 
-  async function login(email: string, password: string): Promise<void> {
-    const session = await supaLogin(email, password)
-    user.value = session?.user
+    try {
+      if (!authenticated.value) {
+        const session = await getSession()
+        user.value = session?.user
+      }
+
+      if (user_id.value && !memberStore.has_member) {
+        await memberStore.fetchMember(user_id.value)
+      }
+
+      return authenticated.value
+    } catch (e: any) {
+      logger.error(`Error initializing user: ${e.message}`)
+      return false
+    } finally {
+      stopLoading()
+    }
   }
 
-  async function restoreSession(): Promise<void> {
-    const session = await getSession()
-    user.value = session?.user
+  async function login(email: string, password: string): Promise<void> {
+    await supaLogin(email, password)
   }
 
   async function logout(): Promise<void> {
     await supaLogout()
-    user.value = undefined
+    reset()
     router.push({ name: 'welcome' })
   }
 
@@ -48,28 +64,29 @@ export const useSessionStore = defineStore('sessionStore', () => {
     password: string,
     opts?: SignupEmailOptions
   ): Promise<void> {
-    const session = await supaSignupEmail(email, password, opts)
-    user.value = session?.user
+    await supaSignupEmail(email, password, opts)
   }
 
   async function signInOAuth(provider: OAuthProvider, options?: SignupOAuthOptions): Promise<void> {
     await supaSignInOAuth(provider, options)
   }
 
+  function reset() {
+    user.value = undefined
+  }
+
   function startLoading(): void {
-    loadingCount.value++
+    loading_count.value++
   }
 
   function stopLoading(): void {
-    loadingCount.value--
+    loading_count.value--
   }
 
   return {
     user,
     authenticated,
     isLoading,
-    user_id,
-    user_email,
     login,
     restoreSession,
     logout,

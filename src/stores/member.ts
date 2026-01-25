@@ -1,15 +1,12 @@
 import { fetchMemberById } from '@/api/members'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { useSessionStore } from './session'
 
 export const useMemberStore = defineStore('member', () => {
   const member = ref<Member | null>(null)
 
   async function fetchMember(user_id: string): Promise<void> {
-    if (user_id) {
-      member.value = await fetchMemberById(user_id)
-    }
+    member.value = await fetchMemberById(user_id)
   }
 
   const has_member = computed(() => Boolean(member.value))
@@ -17,6 +14,7 @@ export const useMemberStore = defineStore('member', () => {
   const display_name = computed(() => member.value?.display_name ?? '')
   const created_at = computed(() => member.value?.created_at ?? '')
   const description = computed(() => member.value?.description ?? '')
+  const user_id = computed(() => member.value?.id ?? '')
 
   return {
     member,
@@ -25,6 +23,7 @@ export const useMemberStore = defineStore('member', () => {
     id,
     display_name,
     created_at,
-    description
+    description,
+    user_id
   }
 })
