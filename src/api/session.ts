@@ -70,7 +70,7 @@ export async function signInOAuth(
     provider,
     options: {
       ...options,
-      redirectTo: import.meta.env.VITE_AUTH_PUBLIC_URL
+      redirectTo: `${window.location.origin}/dashboard`
     }
   })
 
