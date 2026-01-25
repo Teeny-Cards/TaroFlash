@@ -14,8 +14,6 @@ const { t } = useI18n()
 const login_dropdown_open = ref(false)
 const modal = useModal()
 
-console.log('VITE_AUTH_PUBLIC_URL', import.meta.env.VITE_AUTH_PUBLIC_URL)
-
 function openLoginDropdown() {
   login_dropdown_open.value = true
   emitSfx('ui.slide_up')
