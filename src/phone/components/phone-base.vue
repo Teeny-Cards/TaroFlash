@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppLauncher from '@/phone/components/app-launcher.vue'
-import CloseButton from '@/phone/components/close-button.vue'
+import UiButton from '@/components/ui-kit/button.vue'
 import { type PhoneApp } from '@/phone/system/types'
 import { type AppSession } from '@/phone/system/runtime'
 import { computed } from 'vue'
@@ -32,10 +32,13 @@ const controller = computed(() => {
     class="absolute top-0 right-0 pointer-events-auto w-60 h-89.5 bg-brown-300 dark:bg-grey-800
       drop-shadow-sm rounded-16 translate-y-7 group/phone"
   >
-    <close-button
-      class="absolute top-0 left-0 shadow-xs outline-1 outline-brown-500 pointer-fine:opacity-0
+    <ui-button
+      class="absolute! top-0 left-0 shadow-xs pointer-fine:opacity-0
         pointer-fine:group-hover/phone:opacity-100 opacity-100 transition-opacity duration-75"
-      @close="emit('close')"
+      icon-left="close"
+      icon-only
+      theme="brown-100"
+      @click="emit('close')"
     />
 
     <app-launcher v-if="!app" :apps="apps" :transitioning="transitioning" @close="emit('close')" />
