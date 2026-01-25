@@ -241,7 +241,7 @@ enabled = true
 client_id = "env(AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
 secret = "env(AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET)"
 
-redirect_uri = "env(AUTH_PUBLIC_URL)/auth/v1/callback"
+redirect_uri = "env(AUTH_PUBLIC_URL)"
 # Required for local sign in with Google auth:
 skip_nonce_check = true
 
