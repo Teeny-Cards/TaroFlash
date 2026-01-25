@@ -3,7 +3,7 @@ import UiIcon from '@/components/ui-kit/icon.vue'
 import type { SfxOptions } from '@/sfx/directive'
 
 export type ButtonProps = {
-  theme?: 'green' | 'blue' | 'purple' | 'pink' | 'red' | 'orange' | 'brown' | 'grey'
+  theme?: MemberTheme
   size?: 'xl' | 'lg' | 'base' | 'sm' | 'xs'
   iconOnly?: boolean
   iconRight?: string
@@ -14,7 +14,7 @@ export type ButtonProps = {
 }
 
 const {
-  theme = 'blue',
+  theme = 'blue-500',
   size = 'base',
   iconOnly = false,
   iconRight,
@@ -169,42 +169,42 @@ const {
 }
 
 /* Button themes */
-.ui-kit-btn.btn-blue {
+.ui-kit-btn.btn-blue-500 {
   --btn-main-color: var(--color-blue-500);
   --btn-secondary-color: var(--color-white);
   --btn-hover-color: var(--color-blue-400);
 }
-.ui-kit-btn.btn-green {
+.ui-kit-btn.btn-green-400 {
   --btn-main-color: var(--color-green-400);
   --btn-secondary-color: var(--color-white);
   --btn-hover-color: var(--color-green-300);
 }
-.ui-kit-btn.btn-purple {
+.ui-kit-btn.btn-purple-500 {
   --btn-main-color: var(--color-purple-500);
   --btn-secondary-color: var(--color-white);
   --btn-hover-color: var(--color-purple-500);
 }
-.ui-kit-btn.btn-pink {
+.ui-kit-btn.btn-pink-500 {
   --btn-main-color: var(--color-pink-500);
   --btn-secondary-color: var(--color-white);
   --btn-hover-color: var(--color-pink-400);
 }
-.ui-kit-btn.btn-red {
+.ui-kit-btn.btn-red-500 {
   --btn-main-color: var(--color-red-500);
   --btn-secondary-color: var(--color-white);
   --btn-hover-color: var(--color-red-400);
 }
-.ui-kit-btn.btn-orange {
+.ui-kit-btn.btn-orange-500 {
   --btn-main-color: var(--color-orange-500);
   --btn-secondary-color: var(--color-white);
   --btn-hover-color: var(--color-orange-400);
 }
-.ui-kit-btn.btn-brown {
+.ui-kit-btn.btn-brown-100 {
   --btn-main-color: var(--color-brown-100);
   --btn-secondary-color: var(--color-brown-700);
   --btn-hover-color: var(--color-brown-500);
 }
-.ui-kit-btn.btn-grey {
+.ui-kit-btn.btn-grey-400 {
   --btn-main-color: var(--color-grey-400);
   --btn-secondary-color: var(--color-white);
   --btn-hover-color: var(--color-grey-500);

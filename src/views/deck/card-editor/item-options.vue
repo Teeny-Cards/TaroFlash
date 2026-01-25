@@ -17,7 +17,7 @@ const { t } = useI18n()
       @click.stop="emit('select')"
       icon-only
       icon-left="data-check"
-      theme="brown"
+      theme="brown-100"
       :sfx="{ hover: 'ui.pop_drip_mid' }"
     >
       {{ t('deck-view.item-options.select') }}
@@ -27,7 +27,7 @@ const { t } = useI18n()
       @click.stop="emit('move')"
       icon-only
       icon-left="move-item"
-      theme="brown"
+      theme="brown-100"
       :sfx="{ hover: 'ui.pop_drip_mid' }"
     >
       {{ t('deck-view.item-options.move') }}
@@ -37,7 +37,7 @@ const { t } = useI18n()
       @click.stop="emit('delete')"
       icon-only
       icon-left="delete"
-      theme="red"
+      theme="red-500"
       :sfx="{ hover: 'ui.pop_drip_mid' }"
     >
       {{ t('deck-view.item-options.delete') }}

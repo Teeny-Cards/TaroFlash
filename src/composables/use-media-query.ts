@@ -2,6 +2,7 @@ import { ref, onMounted, onUnmounted, type Ref } from 'vue'
 
 type BreakpointKey = 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 type PointerKey = 'coarse' | 'fine'
+type ColorSchemeKey = 'light' | 'dark'
 
 let styles = getComputedStyle(document.documentElement)
 
@@ -18,6 +19,11 @@ const POINTER: Record<PointerKey, string> = {
   fine: '(pointer: fine)'
 }
 
+const COLOR_SCHEME: Record<ColorSchemeKey, string> = {
+  light: '(prefers-color-scheme: light)',
+  dark: '(prefers-color-scheme: dark)'
+}
+
 function toMediaQuery(input: string) {
   const q = input.trim()
 
@@ -26,6 +32,9 @@ function toMediaQuery(input: string) {
   }
   if (q in POINTER) {
     return POINTER[q as PointerKey]
+  }
+  if (q in COLOR_SCHEME) {
+    return COLOR_SCHEME[q as ColorSchemeKey]
   }
 
   return q // string query
@@ -36,7 +45,7 @@ const cache = new Map<
   { ref: Ref<boolean>; mq: MediaQueryList; count: number; handler: () => void }
 >()
 
-export function useMediaQuery(breakpoint: BreakpointKey | PointerKey) {
+export function useMediaQuery(breakpoint: BreakpointKey | PointerKey | ColorSchemeKey) {
   const query = toMediaQuery(breakpoint)
 
   let entry = cache.get(query)

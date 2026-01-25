@@ -8,7 +8,7 @@ const {
   gap = 0,
   fallback_placements = ['right', 'left', 'top', 'bottom'],
   element = 'div',
-  theme = 'brown',
+  theme = 'brown-100',
   static_on_mobile = false
 } = defineProps<{
   text?: string
@@ -94,7 +94,7 @@ const { floatingStyles } = useFloating(triggerRef, popoverRef, {
   }
 }
 
-.ui-tooltip--brown {
+.ui-tooltip--brown-100 {
   --tooltip-bg: var(--color-brown-100);
   --tooltip-color: var(--color-brown-700);
 }
@@ -102,7 +102,7 @@ const { floatingStyles } = useFloating(triggerRef, popoverRef, {
   --tooltip-bg: var(--color-white);
   --tooltip-color: var(--color-brown-700);
 }
-.ui-tooltip--red {
+.ui-tooltip--red-500 {
   --tooltip-bg: var(--color-white);
   --tooltip-color: var(--color-red-500);
 }

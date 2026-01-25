@@ -102,7 +102,7 @@ defineExpose({ submit, isValid, loading })
     <div data-testid="social-auth" class="flex flex-col gap-4.5">
       <ui-button
         size="lg"
-        theme="brown"
+        theme="brown-100"
         class="w-full!"
         icon-left="google-logo"
         @click="submitOAuth('google')"

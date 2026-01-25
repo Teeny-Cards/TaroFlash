@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import UiRadio from '@/components/ui-kit/radio.vue'
 
-const { theme = 'brown' } = defineProps<{
+const { theme = 'brown-100' } = defineProps<{
   theme?: MemberTheme
   name: string
   selected?: boolean
@@ -33,9 +33,9 @@ function onSelect() {
         class="w-full h-full flex gap-4 flex-col items-start bgx-leaf bgx-size-25 rounded-9 px-11
           py-5 bgx-opacity-10"
         :class="{
-          'bg-brown-100 bgx-color-brown-500': theme === 'brown',
-          'bg-green-400': theme === 'green',
-          'bg-blue-500 bgx-fill-brown-100': theme === 'blue'
+          'bg-brown-100 bgx-color-brown-500': theme === 'brown-100',
+          'bg-green-400': theme === 'green-400',
+          'bg-blue-500 bgx-fill-brown-100': theme === 'blue-500'
         }"
       >
         <slot name="header"></slot>

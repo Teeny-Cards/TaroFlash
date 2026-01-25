@@ -148,7 +148,7 @@ async function onImageDelete(side: 'front' | 'back') {
     <ui-button
       icon-left="add"
       icon-only
-      theme="brown"
+      theme="brown-100"
       size="xs"
       class="card-list__button card-list__button--top"
       @click.stop="prependCard(card.id!)"
@@ -156,7 +156,7 @@ async function onImageDelete(side: 'front' | 'back') {
     <ui-button
       icon-left="add"
       icon-only
-      theme="brown"
+      theme="brown-100"
       size="xs"
       class="card-list__button card-list__button--bottom"
       @click.stop="appendCard(card.id!)"
