@@ -103,6 +103,7 @@ defineExpose({ submit, isValid, loading })
       <ui-button
         size="lg"
         theme="brown-100"
+        :fancy-hover="false"
         class="w-full!"
         icon-left="google-logo"
         @click="submitOAuth('google')"

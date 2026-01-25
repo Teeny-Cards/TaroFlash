@@ -9,6 +9,7 @@ type Member = {
 type MemberTheme =
   | 'green-500'
   | 'green-400'
+  | 'blue-800'
   | 'blue-500'
   | 'blue-400'
   | 'purple-500'

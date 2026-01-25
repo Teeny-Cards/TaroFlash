@@ -46,6 +46,7 @@ async function onSubmit(): Promise<void> {
       <ui-button
         theme="brown-100"
         size="lg"
+        :fancy-hover="false"
         class="w-full!"
         icon-left="google-logo"
         @click="submitOAuth('google')"
