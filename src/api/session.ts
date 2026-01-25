@@ -69,8 +69,8 @@ export async function signInOAuth(
   const { error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: import.meta.env.VITE_AUTH_PUBLIC_URL,
-      ...options
+      ...options,
+      redirectTo: import.meta.env.VITE_AUTH_PUBLIC_URL
     }
   })
 
