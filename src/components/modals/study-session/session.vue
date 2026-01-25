@@ -65,7 +65,12 @@ function onSideChanged(side: 'front' | 'back') {
         bgx-diagonal-stripes bgx-size-20 bg-center px-13 py-11.5 pb-14 z-10"
     >
       <div data-testid="study-session__actions" class="absolute top-0 left-0 p-4">
-        <ui-button icon-left="close" theme="brown" icon-only @click="emit('closed')"></ui-button>
+        <ui-button
+          icon-left="close"
+          theme="brown-100"
+          icon-only
+          @click="emit('closed')"
+        ></ui-button>
       </div>
       <h1 class="text-5xl text-white">{{ deck?.title }}</h1>
     </div>

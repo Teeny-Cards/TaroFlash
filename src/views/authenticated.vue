@@ -13,8 +13,8 @@ const session = useSessionStore()
     :delay-ms="1000"
     loading-image="logo"
     size="lg"
-    theme="blue"
-    theme-dark="grey"
+    theme="blue-500"
+    theme-dark="grey-900"
     class="absolute inset-0 text-white"
   >
     <nav-bar />

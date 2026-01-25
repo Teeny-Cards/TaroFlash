@@ -33,31 +33,31 @@ defineProps<{ app: PhoneApp }>()
 </template>
 
 <style>
-.theme-blue {
+.theme-blue-500 {
   --app-theme: var(--color-blue-500);
   --app-theme-dark: var(--color-blue-400);
 }
-.theme-purple {
+.theme-purple-500 {
   --app-theme: var(--color-purple-500);
   --app-theme-dark: var(--color-purple-500);
 }
-.theme-orange {
+.theme-orange-500 {
   --app-theme: var(--color-orange-500);
   --app-theme-dark: var(--color-orange-500);
 }
-.theme-green {
+.theme-green-400 {
   --app-theme: var(--color-green-400);
   --app-theme-dark: var(--color-green-500);
 }
-.theme-pink {
+.theme-pink-400 {
   --app-theme: var(--color-pink-400);
   --app-theme-dark: var(--color-pink-500);
 }
-.theme-red {
+.theme-red-400 {
   --app-theme: var(--color-red-400);
   --app-theme-dark: var(--color-red-500);
 }
-.theme-brown {
+.theme-brown-100 {
   --app-theme: var(--color-brown-100);
   --app-theme-dark: var(--color-brown-800);
 }

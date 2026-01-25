@@ -22,7 +22,7 @@ const tabs: { [key in SettingsPage]: any } = {
     loading-image="settings"
     done-image="settings-hover"
     size="lg"
-    theme="pink"
+    theme="pink-500"
     class="rounded-[inherit]"
   >
     <div

@@ -43,7 +43,7 @@ function onImageRemoved() {
         <ui-button
           v-if="!preview_image"
           @click="trigger"
-          theme="brown"
+          theme="brown-100"
           icon-left="add-image"
           icon-only
           class="ring-brown-300 absolute! -top-4 -left-4 ring-6"
@@ -52,7 +52,7 @@ function onImageRemoved() {
         <ui-button
           v-else
           @click="onImageRemoved"
-          theme="brown"
+          theme="brown-100"
           icon-left="remove-image"
           icon-only
           class="ring-brown-300 absolute! -top-4 -left-4 ring-6"

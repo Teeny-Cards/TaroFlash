@@ -20,12 +20,12 @@ const editor = inject<CardBulkEditor>('card-editor')
       gap-4 transition-transform duration-100 ease-in-out z-10"
     :class="{ 'transform translate-y-22': editor?.mode.value !== 'select' }"
   >
-    <ui-button icon-left="close" theme="grey" @click="emit('cancel')">Cancel</ui-button>
-    <ui-button theme="brown" icon-left="check" @click="emit('toggle-all')">
+    <ui-button icon-left="close" theme="grey-400" @click="emit('cancel')">Cancel</ui-button>
+    <ui-button theme="brown-100" icon-left="check" @click="emit('toggle-all')">
       {{ editor?.all_cards_selected ? 'Deselect All' : 'Select All' }}
     </ui-button>
-    <ui-button theme="brown" icon-left="arrow-forward" @click="emit('move')">Move</ui-button>
-    <ui-button theme="red" icon-left="delete" @click="emit('delete')"
+    <ui-button theme="brown-100" icon-left="arrow-forward" @click="emit('move')">Move</ui-button>
+    <ui-button theme="red-500" icon-left="delete" @click="emit('delete')"
       >Delete ({{ editor?.selected_card_ids.value.length ?? 0 }})</ui-button
     >
   </div>

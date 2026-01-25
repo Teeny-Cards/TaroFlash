@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import UiImage from '@/components/ui-kit/image.vue'
 import { emitSfx } from '@/sfx/bus'
+import { useMediaQuery } from '@/composables/use-media-query'
 
 type LoaderSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl'
 
@@ -38,6 +39,8 @@ defineOptions({
 const emit = defineEmits<{
   (e: 'finish'): void
 }>()
+
+const is_dark_mode = useMediaQuery('dark')
 
 const phase = ref<'loading' | 'finishing' | 'done'>(!loading && immediate ? 'done' : 'loading')
 
@@ -93,10 +96,9 @@ onBeforeUnmount(() => {
   <div
     v-if="showLoader"
     v-bind="$attrs"
-    class="ui-kit-loader bg-(--loader-theme) dark:bg-(--loader-theme-dark)"
+    class="ui-kit-loader bg-(--loader-bg)"
     :class="[
-      `ui-kit-loader--${theme}`,
-      `ui-kit-loader--dark-${themeDark ?? theme}`,
+      `ui-kit-loader--${is_dark_mode ? (themeDark ?? theme) : theme}`,
       `ui-kit-loader--${size}`,
       {
         'ui-kit-loader--loading': phase === 'loading',
@@ -181,60 +183,50 @@ onBeforeUnmount(() => {
 }
 
 /* themes */
-.ui-kit-loader--green {
-  --loader-theme: var(--color-green-400);
+.ui-kit-loader--green-400 {
+  --loader-bg: var(--color-green-400);
 }
-.ui-kit-loader--dark-green {
-  --loader-theme-dark: var(--color-green-500);
+.ui-kit-loader--blue-650 {
+  --loader-bg: var(--color-blue-650);
 }
-
-.ui-kit-loader--blue {
-  --loader-theme: var(--color-blue-500);
+.ui-kit-loader--blue-500 {
+  --loader-bg: var(--color-blue-500);
 }
-.ui-kit-loader--dark-blue {
-  --loader-theme-dark: var(--color-blue-650);
+.ui-kit-loader--purple-400 {
+  --loader-bg: var(--color-purple-400);
 }
-
-.ui-kit-loader--purple {
-  --loader-theme: var(--color-purple-400);
+.ui-kit-loader--purple-500 {
+  --loader-bg: var(--color-purple-500);
 }
-.ui-kit-loader--dark-purple {
-  --loader-theme-dark: var(--color-purple-500);
+.ui-kit-loader--pink-400 {
+  --loader-bg: var(--color-pink-400);
 }
-
-.ui-kit-loader--pink {
-  --loader-theme: var(--color-pink-400);
+.ui-kit-loader--pink-500 {
+  --loader-bg: var(--color-pink-500);
 }
-.ui-kit-loader--dark-pink {
-  --loader-theme-dark: var(--color-pink-500);
+.ui-kit-loader--red-400 {
+  --loader-bg: var(--color-red-400);
 }
-
-.ui-kit-loader--red {
-  --loader-theme: var(--color-red-400);
+.ui-kit-loader--red-500 {
+  --loader-bg: var(--color-red-500);
 }
-.ui-kit-loader--dark-red {
-  --loader-theme-dark: var(--color-red-500);
+.ui-kit-loader--orange-500 {
+  --loader-bg: var(--color-orange-500);
 }
-
-.ui-kit-loader--orange {
-  --loader-theme: var(--color-orange-500);
+.ui-kit-loader--orange-400 {
+  --loader-bg: var(--color-orange-400);
 }
-.ui-kit-loader--dark-orange {
-  --loader-theme-dark: var(--color-orange-500);
+.ui-kit-loader--brown-100 {
+  --loader-bg: var(--color-brown-100);
 }
-
-.ui-kit-loader--brown {
-  --loader-theme: var(--color-brown-100);
+.ui-kit-loader--brown-800 {
+  --loader-bg: var(--color-brown-800);
 }
-.ui-kit-loader--dark-brown {
-  --loader-theme-dark: var(--color-brown-800);
+.ui-kit-loader--grey-400 {
+  --loader-bg: var(--color-grey-400);
 }
-
-.ui-kit-loader--grey {
-  --loader-theme: var(--color-grey-400);
-}
-.ui-kit-loader--dark-grey {
-  --loader-theme-dark: var(--color-grey-900);
+.ui-kit-loader--grey-900 {
+  --loader-bg: var(--color-grey-900);
 }
 
 /* sizes (controls burst radius) */

@@ -97,7 +97,7 @@ function onClick(deck_id?: number) {
     >
       <ui-button
         data-testid="move-cards__cancel"
-        theme="grey"
+        theme="grey-400"
         icon-left="close"
         @click="close(false)"
         class="ring-brown-300 ring-7"

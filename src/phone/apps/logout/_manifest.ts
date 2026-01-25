@@ -8,6 +8,6 @@ export default defineApp({
   launcher: {
     icon_src: 'logout',
     hover_icon_src: 'logout-hover',
-    theme: 'red'
+    theme: 'red-400'
   }
 })

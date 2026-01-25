@@ -14,7 +14,14 @@ const emit = defineEmits<{
 
 const open = ref(false)
 
-const themes: MemberTheme[] = ['green', 'blue', 'purple', 'pink', 'red', 'orange', 'white']
+const themes: MemberTheme[] = [
+  'green-400',
+  'blue-500',
+  'purple-500',
+  'pink-500',
+  'red-500',
+  'orange-500'
+]
 </script>
 
 <template>
@@ -47,25 +54,25 @@ const themes: MemberTheme[] = ['green', 'blue', 'purple', 'pink', 'red', 'orange
 </template>
 
 <style>
-.selector--green {
+.selector--green-400 {
   background-color: var(--color-green-400);
 }
-.selector--blue {
+.selector--blue-400 {
   background-color: var(--color-blue-400);
 }
-.selector--purple {
+.selector--purple-400 {
   background-color: var(--color-purple-400);
 }
-.selector--pink {
+.selector--pink-400 {
   background-color: var(--color-pink-400);
 }
-.selector--red {
+.selector--red-400 {
   background-color: var(--color-red-400);
 }
-.selector--orange {
+.selector--orange-400 {
   background-color: var(--color-orange-400);
 }
-.selector--brown {
+.selector--brown-300 {
   background-color: var(--color-brown-300);
 }
 .selector--white {
