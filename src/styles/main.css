@@ -129,6 +129,7 @@
   --aspect-card: 7 / 8;
   --page-width: 1500px;
   --blur-md: 24px;
+  --blur-4: 4px;
 
   /* Typography */
   --font-primary: 'Tilt Neon', sans-serif;
