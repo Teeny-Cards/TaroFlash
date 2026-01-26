@@ -43,3 +43,11 @@ export type PhoneApp = ViewApp | WidgetApp
 export type Manifest = Omit<ViewApp, 'id'> | Omit<WidgetApp, 'id'>
 export type PhoneRuntime = ReturnType<typeof createPhoneRuntime>
 export type PhoneOS = PhoneRuntime['phoneOS']
+
+export type AppProps = {
+  display: PhoneAppDisplay
+}
+
+export type AppEmits = {
+  (e: 'close'): void
+}

@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { reactive, ref } from 'vue'
 import { DateTime } from 'luxon'
 import { upsertMember } from '@/api/members'
-import { useSessionStore } from '@/stores/session'
+import { useMemberStore } from '@/stores/member'
 import UiInput from '@/components/ui-kit/input.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiTag from '@/components/ui-kit/tag.vue'
@@ -16,7 +16,7 @@ const { close } = defineProps<{
 }>()
 
 const { t } = useI18n()
-const sessionStore = useSessionStore()
+const memberStore = useMemberStore()
 
 const created_at = DateTime.now().toISO()
 const created_at_formatted = DateTime.fromISO(created_at).toFormat('LLL d, yyyy')
@@ -24,7 +24,7 @@ const created_at_formatted = DateTime.fromISO(created_at).toFormat('LLL d, yyyy'
 const member = reactive<Member>({
   display_name: '',
   description: '',
-  id: sessionStore.user_id
+  id: memberStore.id
 })
 
 const selected_theme = ref<MemberTheme>('green-400')
@@ -116,7 +116,7 @@ async function onConfirm() {
                 transition-all duration-75 hover:scale-110"
               :class="`bg-${theme} text-${theme}`"
               @click="setTheme(theme)"
-              @mouseenter="audio.play('ui.click_04')"
+              v-sfx.hover="'ui.click_04'"
             >
               <ui-icon
                 src="check"

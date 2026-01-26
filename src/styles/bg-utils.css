@@ -38,7 +38,7 @@
 }
 
 @utility bgx-color-* {
-  --bgx-fill: --value(--color-*, [color]);
+  --bgx-fill: --value(--color-*, [*]);
 }
 
 @utility bgx-opacity-* {

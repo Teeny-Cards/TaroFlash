@@ -159,7 +159,7 @@ async function onMoveCards(id?: number) {
           <p v-if="editor.saving.value">Saving...</p>
           <p v-else>Saved</p>
 
-          <ui-split-button theme="purple" v-if="editor.mode.value === 'view'">
+          <ui-split-button theme="purple-400" v-if="editor.mode.value === 'view'">
             <template #defaults="{ option }">
               <component :is="option" icon="check" @click="onSelectCard">
                 {{ t('deck-view.toggle-options.select') }}
@@ -171,7 +171,7 @@ async function onMoveCards(id?: number) {
             v-if="editor.mode.value === 'select'"
             @click="onCancel"
             icon-left="close"
-            theme="grey"
+            theme="grey-400"
           >
             {{ t('common.cancel') }}
           </ui-button>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import NavBar from '@/components/nav-bar.vue'
 import Phone from '@/phone/phone.vue'
-import UiLoader from '@/components/ui-kit/loader.vue'
+import UiLoader from '@/components/ui-kit/loader/index.vue'
 import { useSessionStore } from '@/stores/session'
 
 const session = useSessionStore()
@@ -13,8 +13,8 @@ const session = useSessionStore()
     :delay-ms="1000"
     loading-image="logo"
     size="lg"
-    theme="blue"
-    theme-dark="grey"
+    theme="blue-500"
+    theme-dark="grey-900"
     class="absolute inset-0 text-white"
   >
     <nav-bar />

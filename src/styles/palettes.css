@@ -1,0 +1,95 @@
+/* base: if no theme provided, defaults to blue-500 */
+[data-theme],
+[data-theme='blue-500'] {
+  --theme-primary: var(--color-blue-500);
+  --theme-on-primary: var(--color-white);
+
+  --theme-secondary: var(--color-blue-400);
+  --theme-on-secondary: var(--color-brown-100);
+
+  --theme-accent: var(--color-blue-400);
+  --theme-on-accent: var(--color-brown-100);
+
+  --theme-neutral: var(--color-brown-100);
+  --theme-on-neutral: var(--color-grey-900);
+}
+
+[data-theme='blue-800'] {
+  --theme-primary: var(--color-blue-800);
+  --theme-on-primary: var(--color-brown-100);
+
+  --theme-secondary: var(--color-blue-400);
+  --theme-on-secondary: var(--color-brown-100);
+
+  --theme-accent: var(--color-white);
+  --theme-on-accent: var(--color-blue-900);
+
+  --theme-neutral: var(--color-brown-100);
+  --theme-on-neutral: var(--color-brown-500);
+}
+
+[data-theme='grey-400'] {
+  --theme-primary: var(--color-grey-400);
+  --theme-on-primary: var(--color-white);
+
+  --theme-secondary: var(--color-grey-300);
+  --theme-on-secondary: var(--color-brown-100);
+
+  --theme-accent: var(--color-grey-300);
+  --theme-on-accent: var(--color-grey-900);
+}
+
+[data-theme='grey-900'] {
+  --theme-primary: var(--color-grey-900);
+}
+
+[data-theme='brown-100'] {
+  --theme-primary: var(--color-brown-100);
+  --theme-on-primary: var(--color-brown-700);
+
+  --theme-secondary: var(--color-brown-500);
+  --theme-on-secondary: var(--color-brown-700);
+
+  --theme-accent: var(--color-brown-500);
+  --theme-on-accent: var(--color-brown-700);
+
+  --theme-neutral: var(--color-brown-500);
+  --theme-on-neutral: var(--color-brown-700);
+}
+
+[data-theme='pink-400'] {
+  --theme-primary: var(--color-pink-400);
+  --theme-on-primary: var(--color-brown-100);
+
+  --theme-secondary: var(--color-pink-500);
+  --theme-on-secondary: var(--color-brown-100);
+
+  --theme-accent: var(--color-pink-500);
+  --theme-on-accent: var(--color-brown-100);
+
+  --theme-neutral: var(--color-brown-100);
+  --theme-on-neutral: var(--color-brown-500);
+}
+
+[data-theme='purple-500'] {
+  --theme-primary: var(--color-purple-500);
+}
+
+[data-theme='red-400'] {
+  --theme-primary: var(--color-red-400);
+}
+
+[data-theme='red-500'] {
+  --theme-primary: var(--color-red-500);
+  --theme-on-primary: var(--color-white);
+
+  --theme-accent: var(--color-red-400);
+  --theme-on-accent: var(--color-white);
+}
+
+[data-theme='orange-500'] {
+  --theme-primary: var(--color-orange-500);
+
+  --theme-accent: var(--color-orange-400);
+  --theme-on-accent: var(--color-brown-100);
+}

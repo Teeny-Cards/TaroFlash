@@ -9,6 +9,6 @@ export default defineApp({
   launcher: {
     icon_src: 'settings',
     hover_icon_src: 'settings-hover',
-    theme: 'pink'
+    theme: 'pink-400'
   }
 })

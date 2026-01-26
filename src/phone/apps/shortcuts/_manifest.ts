@@ -9,6 +9,6 @@ export default defineApp({
   launcher: {
     icon_src: 'shortcuts',
     hover_icon_src: 'shortcuts-hover',
-    theme: 'orange'
+    theme: 'orange-500'
   }
 })
