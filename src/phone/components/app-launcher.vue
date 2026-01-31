@@ -72,6 +72,9 @@ function openApp(app?: PhoneApp) {
   if (!found || !phone) return
 
   active_app.value = apps.indexOf(found)
+
+  if (found.type === 'widget') return
+
   phone.open(found.id)
 
   if (found.type === 'view') {
@@ -127,6 +130,7 @@ function _getActiveApp() {
           v-else-if="app.type === 'widget'"
           :is="app.component"
           @mouseenter="onHoverApp(app)"
+          @click="openApp(app)"
         />
       </template>
     </div>
