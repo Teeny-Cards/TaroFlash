@@ -31,6 +31,7 @@
   --color-red-500: #e66061;
   --color-red-400: #f97b7b;
   --color-red-300: #ffa399;
+  --color-orange-600: #fc946f;
   --color-orange-500: #fbc56f;
   --color-orange-400: #f7d279;
   --color-brown-800: #4a3b30;
@@ -111,7 +112,7 @@
   --drop-shadow-md: 5px 5px 0px rgba(0, 0, 0, 0.25);
 
   --shadow-lg: 6px 6px 0px 0px rgba(0, 0, 0, 0.25);
-  --drop-shadow-lg: 10px 10px 0px rgba(0, 0, 0, 0.25);
+  --drop-shadow-lg: 6px 6px 0px rgba(0, 0, 0, 0.25);
 
   /* Transitions */
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);

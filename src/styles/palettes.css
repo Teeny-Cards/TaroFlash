@@ -71,8 +71,16 @@
   --theme-on-neutral: var(--color-brown-500);
 }
 
+[data-theme='green-400'] {
+  --theme-primary: var(--color-green-400);
+}
+
 [data-theme='purple-500'] {
   --theme-primary: var(--color-purple-500);
+}
+
+[data-theme='purple-700'] {
+  --theme-primary: var(--color-purple-700);
 }
 
 [data-theme='red-400'] {
@@ -89,6 +97,14 @@
 
 [data-theme='orange-500'] {
   --theme-primary: var(--color-orange-500);
+
+  --theme-accent: var(--color-orange-400);
+  --theme-on-accent: var(--color-brown-100);
+}
+
+[data-theme='orange-600'] {
+  --theme-primary: var(--color-orange-600);
+  --theme-on-primary: var(--color-white);
 
   --theme-accent: var(--color-orange-400);
   --theme-on-accent: var(--color-brown-100);
