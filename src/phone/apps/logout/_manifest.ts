@@ -3,7 +3,7 @@ import { createLogoutController } from './controller'
 
 export default defineApp({
   title: 'Logout',
-  type: 'widget',
+  type: 'trigger',
   controller: createLogoutController,
   launcher: {
     icon_src: 'logout',

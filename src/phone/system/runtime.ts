@@ -31,7 +31,7 @@ export function createPhoneRuntime({ nav }: { nav: PhoneNavigator }) {
     const { app, controller } = _registry[id]
 
     // handle action-only apps
-    if (app.type === 'widget') {
+    if (app.type === 'trigger') {
       await controller?.run?.()
       return
     }
