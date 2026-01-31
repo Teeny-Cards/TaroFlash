@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useStorage } from '@/composables/storage'
+import { useStorage } from '@/composables/use-storage'
 import { onMounted } from 'vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiTooltip from '@/components/ui-kit/tooltip.vue'

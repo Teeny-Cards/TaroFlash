@@ -8,6 +8,27 @@
 @import '@/styles/border-utils.css';
 @import '@/styles/bg-utils.css';
 
+@custom-variant dark {
+  /* Explicit dark mode wins */
+  &:where([data-theme='dark'], [data-theme='dark'] *) {
+    @slot;
+  }
+
+  /* System dark mode fallback ONLY when no explicit theme is set anywhere */
+  @media (prefers-color-scheme: dark) {
+    &:where(:not([data-theme] *)) {
+      @slot;
+    }
+  }
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
 @theme {
   --*: initial;
   --spacing: 4px;

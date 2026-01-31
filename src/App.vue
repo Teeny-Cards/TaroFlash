@@ -7,13 +7,16 @@ import audio_player from '@/sfx/player'
 import { useSessionStore } from '@/stores/session'
 import { onMounted } from 'vue'
 import { useLogger } from '@/composables/logger'
+import { useTheme } from '@/composables/use-theme'
 
 const { toasts } = useToast()
 const session = useSessionStore()
 const logger = useLogger()
+const theme = useTheme()
 
 onMounted(async () => {
   try {
+    theme.load()
     session.startLoading()
     await audio_player.setup()
   } catch (e: any) {
