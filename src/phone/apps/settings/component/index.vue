@@ -6,7 +6,7 @@ import UiLoader from '@/components/ui-kit/loader/index.vue'
 import { ref, onMounted } from 'vue'
 import SettingsHeader from './settings-header.vue'
 import type { AppProps, AppEmits } from '@/phone/system/types'
-import { useStorage } from '@/composables/storage'
+import { useStorage } from '@/composables/use-storage'
 
 export type SettingsTab = 'app-settings' | 'member-settings' | 'notification-settings'
 
