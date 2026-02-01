@@ -58,7 +58,9 @@ function onDeckClicked(deck: Deck) {
 
 async function onCreateDeckClicked() {
   const { response: deck_created } = modal.open<DeckSettingsResponse>(deckSettings, {
-    backdrop: true
+    backdrop: true,
+    openAudio: 'ui.double_pop_up',
+    closeAudio: 'ui.double_pop_down'
   })
 
   if (await deck_created) {
@@ -68,39 +70,23 @@ async function onCreateDeckClicked() {
 </script>
 
 <template>
-  <div data-testid="dashboard" class="flex h-full flex-col gap-16 pb-12">
-    <div class="flex flex-col gap-1.5">
-      <h1 class="text-brown-700 dark:text-brown-300 text-3xl">
-        {{ t('dashboard.due') }} ({{ due_card_count }})
-      </h1>
-      <div class="flex gap-2 overflow-y-auto pt-2.5">
-        <Deck
-          v-for="(deck, index) in due_decks"
-          :key="index"
-          :deck="deck"
-          :size="is_md ? 'sm' : 'xs'"
-          due
-          @click="onDeckClicked(deck)"
-          @updated="refetchDecks"
-        />
-      </div>
-    </div>
-
-    <div class="flex flex-col gap-4">
-      <h1 class="text-brown-700 dark:text-brown-300 text-3xl">{{ t('dashboard.all') }}</h1>
-      <div class="flex gap-x-4 gap-y-8 flex-wrap">
-        <Deck
-          v-for="(deck, index) in decks"
-          :key="index"
-          :deck="deck"
-          :size="is_md ? 'base' : 'sm'"
-          @click="onDeckClicked(deck)"
-          @updated="refetchDecks"
-        />
-      </div>
-      <ui-button icon-left="add" @click="onCreateDeckClicked">
-        {{ t('dashboard.create-deck') }}
-      </ui-button>
+  <div
+    data-testid="dashboard"
+    class="grid grid-cols-[345px_1fr] grid-rows-[auto_1fr] gap-x-15.5 gap-y-11.5 h-full pb-12"
+  >
+    <ui-button icon-left="add" class="w-full!" size="xl" @click="onCreateDeckClicked">
+      {{ t('dashboard.create-deck') }}
+    </ui-button>
+    <h1 class="text-brown-700 dark:text-brown-300 text-4xl self-end">{{ t('dashboard.all') }}</h1>
+    <div class="flex gap-x-4 gap-y-8 flex-wrap col-start-2">
+      <Deck
+        v-for="(deck, index) in decks"
+        :key="index"
+        :deck="deck"
+        :size="is_md ? 'base' : 'sm'"
+        @click="onDeckClicked(deck)"
+        @updated="refetchDecks"
+      />
     </div>
   </div>
 </template>
