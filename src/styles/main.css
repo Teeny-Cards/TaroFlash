@@ -119,8 +119,7 @@
   --bgx-endless-clouds: url('../assets/backgrounds/endless-clouds.svg');
   --bgx-stars: url('../assets/backgrounds/stars.svg');
   --bgx-leaf: url('../assets/backgrounds/leaf.svg');
-  --bgx-taro-flash: url('../assets/backgrounds/taro-flash.svg');
-  --bgx-taro-flash-dark: url('../assets/backgrounds/taro-flash-dark.svg');
+  --bgx-dot-grid: url('../assets/backgrounds/dot-grid.svg');
 
   /* Shadows */
   --shadow-xs: 3px 3px 0px 0px rgba(0, 0, 0, 0.25);

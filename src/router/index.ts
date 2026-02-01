@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useSessionStore } from '@/stores/session'
-import Dashboard from '@/views/dashboard.vue'
+import Dashboard from '@/views/dashboard/dashboard.vue'
 import ShopView from '@/views/shop/shop-view.vue'
 import WelcomeView from '@/views/welcome/welcome-view.vue'
 import DeckView from '@/views/deck/deck-view.vue'
@@ -32,8 +32,8 @@ const router = createRouter({
       component: AuthenticatedView,
       redirect: '/dashboard',
       beforeEnter: async () => {
-        const session = useSessionStore()
-        const authenticated = await session.restoreSession()
+        const { restoreSession } = useSessionStore()
+        const authenticated = await restoreSession()
 
         if (!authenticated) return { name: 'welcome' }
       },

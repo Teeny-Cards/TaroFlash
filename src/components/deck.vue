@@ -3,7 +3,7 @@ defineProps<{ deck: Deck }>()
 </script>
 
 <template>
-  <div data-testid="deck" class="relative cursor-pointer">
+  <div data-testid="deck" class="relative cursor-pointer h-min">
     <div
       class="aspect-card w-48 rounded-10 ring-6 border-3 border-purple-400 ring-purple-400
         bg-purple-400"
