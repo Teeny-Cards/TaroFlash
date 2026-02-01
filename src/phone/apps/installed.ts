@@ -1,8 +1,8 @@
 export default {
   settings: true,
-  inventory: false,
+  darkmode: true,
+  inventory: true,
   shortcuts: true,
   feedback: true,
-  darkmode: true,
   logout: true
 }
