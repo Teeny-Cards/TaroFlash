@@ -8,17 +8,15 @@ import { useRouter } from 'vue-router'
 import deckSettings, {
   type DeckSettingsResponse
 } from '@/components/modals/deck-settings/index.vue'
-import MemberApplication from '@/components/modals/member-application.vue'
 import { useModal } from '@/composables/modal'
-import { useMemberStore } from '@/stores/member'
 import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
 import { useMediaQuery } from '@/composables/use-media-query'
+import DueCards from './due-cards.vue'
 
 const { t } = useI18n()
 const toast = useToast()
 const router = useRouter()
-const member_store = useMemberStore()
 const is_md = useMediaQuery('md')
 
 const modal = useModal()
@@ -30,14 +28,6 @@ onMounted(async () => {
   await refetchDecks()
   due_card_count.value = await fetchMemberCardCount({ only_due_cards: true })
   loading.value = false
-
-  if (!member_store.has_member) {
-    modal.open(MemberApplication, {
-      backdrop: true,
-      openAudio: 'ui.double_pop_up',
-      closeAudio: 'ui.double_pop_down'
-    })
-  }
 })
 
 const due_decks = computed(() => {
@@ -78,6 +68,9 @@ async function onCreateDeckClicked() {
       {{ t('dashboard.create-deck') }}
     </ui-button>
     <h1 class="text-brown-700 dark:text-brown-300 text-4xl self-end">{{ t('dashboard.all') }}</h1>
+
+    <due-cards />
+
     <div class="flex gap-x-4 gap-y-8 flex-wrap col-start-2">
       <Deck
         v-for="(deck, index) in decks"

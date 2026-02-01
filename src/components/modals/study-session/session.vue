@@ -57,7 +57,8 @@ function onSideChanged(side: 'front' | 'back') {
     data-testid="study-session"
     :data-mode="mode"
     class="rounded-8 shadow-lg flex flex-col gap-6 items-center justify-between overflow-hidden
-      pb-10 relative bg-brown-300 dark:bg-grey-900 w-full mx-3 sm:mx-0 h-auto sm:w-160"
+      pb-10 relative bg-brown-300 dark:bg-grey-900 w-full mx-3 sm:mx-0 h-auto sm:w-160 bgx-dot-grid
+      bgx-size-12 bgx-color-brown-500 bgx-opacity-30"
   >
     <div
       data-testid="study-session__header"
@@ -93,11 +94,5 @@ function onSideChanged(side: 'front' | 'back') {
       @reviewed="onCardReviewed"
       @revealed="current_card_side = 'back'"
     />
-
-    <div
-      data-testid="study-session__pattern"
-      class="absolute inset-0 bg-(image:--bgx-taro-flash-dark) bg-size-[60px] text-brown-500
-        bg-brown-300 opacity-4 bg-center"
-    ></div>
   </div>
 </template>
