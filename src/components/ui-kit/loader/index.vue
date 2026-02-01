@@ -2,7 +2,7 @@
 import Loader from './loader.vue'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { emitSfx } from '@/sfx/bus'
-import { useMediaQuery } from '@/composables/use-media-query'
+import { useTheme } from '@/composables/use-theme'
 
 type LoaderSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl'
 export type LoaderPhase = 'loading' | 'finishing' | 'done'
@@ -38,7 +38,7 @@ const emit = defineEmits<{
   (e: 'finish'): void
 }>()
 
-const is_dark_mode = useMediaQuery('dark')
+const { is_dark } = useTheme()
 
 const phase = ref<LoaderPhase>(!loading && immediate ? 'done' : 'loading')
 
@@ -100,7 +100,7 @@ defineExpose({ phase })
     :theme="theme"
     :theme-dark="themeDark"
     :phase="phase"
-    :is_dark_mode="is_dark_mode"
+    :is_dark_mode="is_dark"
   >
   </loader>
 

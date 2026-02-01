@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useStorage } from '@/composables/use-storage'
 import { useMediaQuery } from '@/composables/use-media-query'
 
@@ -8,7 +8,15 @@ const mode = ref<ThemeMode>('system')
 
 export function useTheme() {
   const storage = useStorage()
-  const is_dark_mode = useMediaQuery('dark')
+  const is_system_dark = useMediaQuery('dark')
+
+  const is_dark = computed(() => {
+    if (mode.value === 'system') {
+      return is_system_dark.value
+    }
+
+    return mode.value === 'dark'
+  })
 
   function load() {
     const saved = storage.get<ThemeMode>(STORAGE_KEY)
@@ -25,7 +33,7 @@ export function useTheme() {
   function cycle() {
     let order: ThemeMode[] = ['light', 'system', 'dark']
 
-    if (is_dark_mode.value) {
+    if (is_system_dark.value) {
       order = ['light', 'dark', 'system']
     }
 
@@ -44,6 +52,7 @@ export function useTheme() {
 
   return {
     mode,
+    is_dark,
     setMode,
     cycle,
     load
