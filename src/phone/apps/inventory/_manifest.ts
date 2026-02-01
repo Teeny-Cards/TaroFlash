@@ -2,10 +2,10 @@ import { defineApp } from '@/phone/system/install-apps'
 
 export default defineApp({
   title: 'Inventory',
-  type: 'widget',
+  type: 'trigger',
   launcher: {
     icon_src: 'inventory',
     hover_icon_src: 'inventory-hover',
-    theme: 'purple-500'
+    theme: 'blue-400'
   }
 })

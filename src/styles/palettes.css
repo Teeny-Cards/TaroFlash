@@ -33,6 +33,11 @@
   --theme-on-primary: var(--color-white);
 }
 
+[data-theme='blue-400'] {
+  --theme-primary: var(--color-blue-400);
+  --theme-on-primary: var(--color-brown-100);
+}
+
 [data-theme='grey-400'] {
   --theme-primary: var(--color-grey-400);
   --theme-on-primary: var(--color-white);
