@@ -23,6 +23,7 @@ const toast = useToast()
 
 const { mode, selected_card_ids, updateCard, appendCard, prependCard } =
   inject<CardBulkEditor>('card-editor')!
+
 const onDeleteCard = inject<(id: number) => void>('on-delete-card')
 const onMoveCard = inject<(id: number) => void>('on-move-card')
 const onSelectCard = inject<(id: number) => void>('on-select-card')
@@ -31,6 +32,7 @@ const selected = computed(() => selected_card_ids.value.includes(card.id!))
 
 function onUpdate(id: number, side: 'front' | 'back', payload: TextEditorUpdatePayload) {
   const { text, delta, attributes } = payload
+
   const update: Partial<Card> = {
     [`${side}_delta`]: delta,
     [`${side}_text`]: text,
@@ -68,30 +70,33 @@ async function onImageDelete(side: 'front' | 'back') {
   <div
     data-testid="card-list-item"
     :data-id="card.id"
-    :hover_effect="mode === 'select'"
     v-sfx.hover="'ui.click_07'"
-    class="card-list-item group/listitem p-0 sm:p-6"
+    class="group/listitem relative grid w-full grid-cols-[1fr_auto_1fr] place-items-center rounded-6
+      bg-transparent p-0 sm:p-6 transition-colors duration-100 ease-in-out focus-within:bg-brown-300
+      hover:focus-within:bg-brown-300 hover:not-focus-within:bg-brown-200
+      dark:focus-within:bg-blue-650 dark:hover:focus-within:bg-blue-650
+      dark:hover:not-focus-within:bg-grey-700"
     :class="{
-      'mode-select cursor-pointer': mode === 'select',
-      'mode-view': mode === 'view',
+      'cursor-pointer': mode === 'select',
       duplicate
     }"
   >
     <button
-      class="sm:flex items-center justify-center w-12 h-12 rounded-full text-lg text-brown-800
-        cursor-grab hidden bg-brown-300 group-focus-within/listitem:bg-brown-100"
+      data-testid="card-list-item__reorder"
+      class="hidden h-12 w-12 cursor-grab items-center justify-center rounded-full bg-brown-300
+        text-lg text-brown-800 sm:flex group-focus-within/listitem:bg-brown-100"
       @click.stop
     >
       <ui-icon
         src="reorder"
         class="hidden group-hover/listitem:block group-focus-within/listitem:block"
       />
-      <span class="group-focus-within/listitem:hidden group-hover/listitem:hidden">{{
-        index + 1
-      }}</span>
+      <span class="group-focus-within/listitem:hidden group-hover/listitem:hidden">
+        {{ index + 1 }}
+      </span>
     </button>
 
-    <div class="flex flex-col md:flex-row w-full gap-6 justify-center">
+    <div class="flex w-full flex-col justify-center gap-6 md:flex-row">
       <card
         data-testid="front-input"
         ref="front-input"
@@ -106,13 +111,15 @@ async function onImageDelete(side: 'front' | 'back') {
         @update:front="onUpdate(card.id!, 'front', $event)"
       >
         <image-button
-          class="absolute! -top-2 -left-2 opacity-0 group-hover/card:opacity-100"
+          class="absolute! -top-2 -left-2 opacity-0 transition-opacity duration-100 ease-in-out
+            group-hover/card:opacity-100"
           :image="card.front_image_path"
           @image-uploaded="onImageUpload('front', $event)"
           @image-deleted="onImageDelete('front')"
           @click.stop
         />
       </card>
+
       <card
         data-testid="back-input"
         ref="back-input"
@@ -127,7 +134,8 @@ async function onImageDelete(side: 'front' | 'back') {
         @update:back="onUpdate(card.id!, 'back', $event)"
       >
         <image-button
-          class="absolute! -top-2 -right-2 opacity-0 group-hover/card:opacity-100"
+          class="absolute! -top-2 -right-2 opacity-0 transition-opacity duration-100 ease-in-out
+            group-hover/card:opacity-100"
           :image="card.back_image_path"
           @image-uploaded="onImageUpload('back', $event)"
           @image-deleted="onImageDelete('back')"
@@ -138,103 +146,38 @@ async function onImageDelete(side: 'front' | 'back') {
 
     <item-options
       v-if="mode !== 'select'"
-      class="card-list-item__options hidden sm:grid"
+      class="hidden sm:grid opacity-0 pointer-events-none transition-opacity duration-100
+        ease-in-out group-hover/listitem:opacity-100 group-hover/listitem:pointer-events-auto
+        group-focus-within/listitem:opacity-100 group-focus-within/listitem:pointer-events-auto"
       @select="onSelectCard?.(card.id!)"
       @move="onMoveCard?.(card.id!)"
       @delete="onDeleteCard?.(card.id!)"
     />
-    <ui-radio :checked="selected" v-else></ui-radio>
+    <ui-radio v-else :checked="selected" />
 
     <ui-button
+      data-testid="card-list-item__add-above"
       icon-left="add"
       icon-only
       theme="brown-100"
       size="xs"
-      class="card-list__button card-list__button--top"
+      class="absolute! z-1 top-0 -translate-y-1/2 opacity-0 pointer-events-none transition-opacity
+        duration-100 ease-in-out group-hover/listitem:opacity-100
+        group-hover/listitem:pointer-events-auto group-focus-within/listitem:opacity-100
+        group-focus-within/listitem:pointer-events-auto"
       @click.stop="prependCard(card.id!)"
     />
     <ui-button
+      data-testid="card-list-item__add-below"
       icon-left="add"
       icon-only
       theme="brown-100"
       size="xs"
-      class="card-list__button card-list__button--bottom"
+      class="absolute! z-1 bottom-0 translate-y-1/2 opacity-0 pointer-events-none transition-opacity
+        duration-100 ease-in-out group-hover/listitem:opacity-100
+        group-hover/listitem:pointer-events-auto group-focus-within/listitem:opacity-100
+        group-focus-within/listitem:pointer-events-auto"
       @click.stop="appendCard(card.id!)"
     />
   </div>
 </template>
-
-<style>
-.card-list-item {
-  --card-list-item-bg: transparent;
-
-  position: relative;
-
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  justify-items: center;
-
-  width: 100%;
-  border-radius: 24px;
-  background-color: var(--card-list-item-bg);
-
-  transition: background-color 0.1s ease-in-out;
-}
-.card-list-item:focus-within {
-  --card-list-item-bg: var(--color-brown-300);
-}
-.card-list-item:not(:focus-within):hover {
-  --card-list-item-bg: var(--color-brown-200);
-}
-
-.card-list-item__options {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.1s ease-in-out;
-}
-.card-list-item:focus-within .card-list-item__options,
-.card-list-item:hover .card-list-item__options {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.card-list__button {
-  opacity: 0;
-  pointer-events: none;
-
-  position: absolute;
-  z-index: 1;
-  transition: opacity 0.1s ease-in-out;
-}
-.card-list-item:hover .card-list__button,
-.card-list-item:focus-within .card-list__button {
-  display: flex;
-  opacity: 1;
-  pointer-events: auto;
-}
-.card-list__button--top {
-  top: 0;
-  transform: translate(0, -50%);
-}
-.card-list__button--bottom {
-  bottom: 0;
-  transform: translate(0, 50%);
-}
-
-.card-list__button .btn-icon {
-  color: var(--color-brown-500) !important;
-}
-.card-list__button:hover {
-  outline-color: var(--color-brown-300) !important;
-}
-
-@media (prefers-color-scheme: dark) {
-  .card-list-item:focus-within {
-    --card-list-item-bg: var(--color-blue-650);
-  }
-  .card-list-item:not(:focus-within):hover {
-    --card-list-item-bg: var(--color-grey-700);
-  }
-}
-</style>
