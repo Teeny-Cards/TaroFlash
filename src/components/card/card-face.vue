@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import textEditor from '../text-editor.vue'
+import textEditor from '../text-editor/text-editor.vue'
 import { type CardAttributes, type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 
