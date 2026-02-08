@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Card from '@/components/card/index.vue'
+import Deck from '@/components/deck.vue'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useModal } from '@/composables/modal'
@@ -49,16 +49,9 @@ function onStudyClicked() {
     class="flex w-max flex-col items-center gap-6 md:flex-row md:items-end xl:flex-col
       xl:items-start"
   >
-    <card size="lg" class="relative" :front_image_url="imageUrl"></card>
+    <deck size="lg" class="relative" :deck="deck"></deck>
 
     <div class="flex flex-col items-center gap-2 md:items-start">
-      <h1
-        data-testid="overview-panel__title"
-        class="text-brown-700 dark:text-brown-300 w-64 text-center text-5xl md:text-left"
-      >
-        {{ deck.title }}
-      </h1>
-
       <h2
         data-testid="overview-panel__description"
         class="text-grey-500 dark:text-brown-500 w-64 text-center md:text-left"

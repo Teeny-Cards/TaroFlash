@@ -12,7 +12,7 @@ import { useModal } from '@/composables/modal'
 import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
 import { useMediaQuery } from '@/composables/use-media-query'
-import DueCards from './due-cards.vue'
+import ReviewInbox from './review-inbox.vue'
 
 const { t } = useI18n()
 const toast = useToast()
@@ -67,11 +67,18 @@ async function onCreateDeckClicked() {
     <ui-button icon-left="add" class="w-full!" size="xl" @click="onCreateDeckClicked">
       {{ t('dashboard.create-deck') }}
     </ui-button>
-    <h1 class="text-brown-700 dark:text-brown-300 text-4xl self-end">{{ t('dashboard.all') }}</h1>
 
-    <due-cards />
+    <h1
+      class="text-brown-700 dark:text-brown-300 text-4xl self-end relative text-nowrap w-min
+        after:absolute after:-right-2 after:bottom-0 after:-left-2 after:rounded-1.5 after:h-4
+        after:-z-1 after:bg-brown-300"
+    >
+      {{ t('dashboard.all') }}
+    </h1>
 
-    <div class="flex gap-x-4 gap-y-8 flex-wrap col-start-2">
+    <review-inbox :due_decks="due_decks" />
+
+    <div class="flex gap-x-6.5 gap-y-8 flex-wrap col-start-2">
       <Deck
         v-for="(deck, index) in decks"
         :key="index"

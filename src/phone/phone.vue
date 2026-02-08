@@ -39,9 +39,7 @@ onMounted(async () => {
 
 const fullscreen = computed(() => {
   const { app } = runtime.active_session.value ?? {}
-
-  if (app?.type === 'widget') return false
-  return app?.display === 'full'
+  return app?.type === 'view' && app.display === 'full'
 })
 
 function togglePhone() {
