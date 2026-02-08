@@ -52,11 +52,11 @@ const merged_sfx = computed(() => {
       }
     ]"
   >
-    <ui-icon v-if="iconLeft" class="btn-icon" :src="iconLeft" />
+    <ui-icon v-if="iconLeft" class="btn-icon btn-icon--left" :src="iconLeft" />
     <div v-if="!iconOnly" class="btn-label">
       <slot></slot>
     </div>
-    <ui-icon v-if="iconRight" class="btn-icon" :src="iconRight" />
+    <ui-icon v-if="iconRight" class="btn-icon btn-icon--right" :src="iconRight" />
 
     <div v-if="iconOnly && $slots.default" class="ui-kit-btn__tooltip">
       <slot></slot>
@@ -133,15 +133,10 @@ const merged_sfx = computed(() => {
   }
 }
 
-.ui-kit-btn:hover {
-  --btn-outline-width: 2px;
-}
-
 .ui-kit-btn .btn-icon {
   height: 100%;
   max-height: 100%;
   max-width: 100%;
-  z-index: 10;
 }
 
 .ui-kit-btn.ui-kit-btn--icon-only {
@@ -206,6 +201,16 @@ const merged_sfx = computed(() => {
   &.ui-kit-btn--icon-only {
     --btn-padding: 4px;
   }
+}
+
+.ui-kit-btn:hover {
+  --btn-outline-width: 2px;
+}
+.ui-kit-btn:hover .btn-icon.btn-icon--left {
+  transform: scale(1.3) rotate(-5deg);
+}
+.ui-kit-btn:hover .btn-icon.btn-icon--right {
+  transform: scale(1.3) rotate(5deg);
 }
 
 /* Button tooltips */

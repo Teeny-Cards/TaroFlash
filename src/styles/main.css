@@ -8,27 +8,6 @@
 @import '@/styles/border-utils.css';
 @import '@/styles/bg-utils.css';
 
-@custom-variant dark {
-  /* Explicit dark mode wins */
-  &:where([data-theme='dark'], [data-theme='dark'] *) {
-    @slot;
-  }
-
-  /* System dark mode fallback ONLY when no explicit theme is set anywhere */
-  @media (prefers-color-scheme: dark) {
-    &:where(:not([data-theme] *)) {
-      @slot;
-    }
-  }
-}
-
-:root[data-theme='light'] {
-  color-scheme: light;
-}
-:root[data-theme='dark'] {
-  color-scheme: dark;
-}
-
 @theme {
   --*: initial;
   --spacing: 4px;
@@ -40,6 +19,7 @@
   --color-blue-650: #0a7588;
   --color-blue-500: #11b7d4;
   --color-blue-400: #6cbfd5;
+  --color-green-600: #6f9b80;
   --color-green-400: #a4c6ae;
   --color-green-300: #e4edd9;
   --color-green-200: #e8f6e7;
@@ -122,17 +102,17 @@
   --bgx-dot-grid: url('../assets/backgrounds/dot-grid.svg');
 
   /* Shadows */
-  --shadow-xs: 3px 3px 0px 0px rgba(0, 0, 0, 0.25);
-  --drop-shadow-xs: 3px 3px 0px rgba(0, 0, 0, 0.25);
+  --shadow-xs: 3px 3px 0px 0px var(--shadow-color);
+  --drop-shadow-xs: 3px 3px 0px var(--shadow-color);
 
-  --shadow-sm: 4px 4px 0px 0px rgba(0, 0, 0, 0.25);
-  --drop-shadow-sm: 4px 4px 0px rgba(0, 0, 0, 0.25);
+  --shadow-sm: 4px 4px 0px 0px var(--shadow-color);
+  --drop-shadow-sm: 4px 4px 0px var(--shadow-color);
 
-  --shadow-md: 5px 5px 0px 0px rgba(0, 0, 0, 0.25);
-  --drop-shadow-md: 5px 5px 0px rgba(0, 0, 0, 0.25);
+  --shadow-md: 5px 5px 0px 0px var(--shadow-color);
+  --drop-shadow-md: 5px 5px 0px var(--shadow-color);
 
-  --shadow-lg: 6px 6px 0px 0px rgba(0, 0, 0, 0.25);
-  --drop-shadow-lg: 6px 6px 0px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 6px 6px 0px 0px var(--shadow-color);
+  --drop-shadow-lg: 6px 6px 0px var(--shadow-color);
 
   /* Transitions */
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -151,6 +131,7 @@
   --page-width: 1500px;
   --blur-md: 24px;
   --blur-4: 4px;
+  --shadow-color: rgba(0, 0, 0, 0.25);
 
   /* Typography */
   --font-primary: 'Tilt Neon', sans-serif;
@@ -213,4 +194,37 @@
       scrollbar-width: none;
     }
   }
+
+  /* DARK MODE EXPLICIT OVERRIDES */
+  /* Warning: This is global and will affect everything */
+  &:where([data-theme='dark'], [data-theme='dark'] *) {
+    --shadow-color: rgba(0, 0, 0, 1);
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:not([data-theme] *)) {
+      --shadow-color: rgba(0, 0, 0, 1);
+    }
+  }
+}
+
+/* Dark Mode Tailwind Variant Override */
+@custom-variant dark {
+  /* Explicit dark mode wins */
+  &:where([data-theme='dark'], [data-theme='dark'] *) {
+    @slot;
+  }
+
+  /* System dark mode fallback ONLY when no explicit theme is set anywhere */
+  @media (prefers-color-scheme: dark) {
+    &:where(:not([data-theme] *)) {
+      @slot;
+    }
+  }
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
 }

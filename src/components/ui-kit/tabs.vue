@@ -63,7 +63,7 @@ function onHover(index: number) {
       @click="onTabClick(index)"
       @mouseenter="onHover(index)"
     >
-      <ui-icon v-if="tab.icon" :src="tab.icon" size="small" class="ui-kit-tabs__tab-icon" />
+      <ui-icon v-if="tab.icon" :src="tab.icon" class="ui-kit-tabs__tab-icon h-6" />
       <span class="ui-kit-tabs__tab-label">{{ tab.label }}</span>
     </ui-tooltip>
   </div>

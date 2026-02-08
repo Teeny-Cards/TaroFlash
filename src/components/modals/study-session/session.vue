@@ -68,7 +68,8 @@ function onSideChanged(side: 'front' | 'back') {
       <div data-testid="study-session__actions" class="absolute top-0 left-0 p-4">
         <ui-button
           icon-left="close"
-          theme="brown-100"
+          theme="purple-500"
+          inverted
           icon-only
           @click="emit('closed')"
         ></ui-button>
