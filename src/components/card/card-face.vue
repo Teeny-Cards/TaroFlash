@@ -16,7 +16,7 @@ const { image, text } = defineProps<{
 const emit = defineEmits<{
   (e: 'focusin', event: Event): void
   (e: 'focusout', event: Event): void
-  (e: 'update', payload: TextEditorUpdatePayload): void
+  (e: 'update', text: string): void
 }>()
 </script>
 
@@ -35,7 +35,7 @@ const emit = defineEmits<{
       :data-testid="`card-face__text-editor__${side}`"
       class="card-face__text-editor h-full outline-none overflow-y-auto scroll-hidden"
       :placeholder="placeholder"
-      :delta="editor_delta"
+      :content="text"
       :disabled="mode !== 'edit'"
       @focusin.prevent="emit('focusin', $event)"
       @focusout.prevent="emit('focusout', $event)"

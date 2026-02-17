@@ -26,8 +26,8 @@ const {
 } = defineProps<CardProps>()
 
 const emit = defineEmits<{
-  (e: 'update:front', payload: TextEditorUpdatePayload): void
-  (e: 'update:back', payload: TextEditorUpdatePayload): void
+  (e: 'update:front', text: string): void
+  (e: 'update:back', text: string): void
   (e: 'focusin'): void
   (e: 'focusout'): void
 }>()
