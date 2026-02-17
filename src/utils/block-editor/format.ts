@@ -1,38 +1,6 @@
-export function getSelectionRange(): Range | null {
-  const sel = window.getSelection()
-  if (!sel || sel.rangeCount === 0) return null
+export type SupportedTag = 'p' | 'h1' | 'h2' | 'h3' | 'li'
 
-  return sel.getRangeAt(0)
-}
-
-export function closestBlock(node: Node | null): HTMLElement | null {
-  const el = node?.nodeType === Node.ELEMENT_NODE ? (node as Element) : node?.parentElement
-  if (!el) return null
-
-  return el.closest('li, p, h1, h2, h3') as HTMLElement | null
-}
-
-export function setCaretToStart(el: HTMLElement) {
-  const range = document.createRange()
-  const sel = window.getSelection()
-
-  range.selectNodeContents(el)
-  range.collapse(true)
-  sel?.removeAllRanges()
-  sel?.addRange(range)
-}
-
-export function replaceTag(block: HTMLElement, tag: 'p' | 'h1' | 'h2' | 'h3') {
-  if (block.tagName.toLowerCase() === tag) return
-
-  const next = document.createElement(tag)
-  // Move children (preserves text nodes)
-  while (block.firstChild) next.appendChild(block.firstChild)
-  block.replaceWith(next)
-  setCaretToStart(next)
-}
-
-export function setBlock(editor: HTMLElement, tag: 'p' | 'h1' | 'h2' | 'h3') {
+export function setBlock(editor: HTMLElement, tag: SupportedTag) {
   const r = getSelectionRange()
   if (!r || !editor) return
 
@@ -51,7 +19,30 @@ export function setBlock(editor: HTMLElement, tag: 'p' | 'h1' | 'h2' | 'h3') {
   replaceTag(block, tag)
 }
 
-export function convertListItemToParagraph(li: HTMLElement) {
+export function toggleBullets(editor: HTMLElement) {
+  const r = getSelectionRange()
+  if (!r || !editor) return
+  const block = closestBlock(r.startContainer)
+  if (!block) return
+
+  const parent = block.parentElement
+
+  if (block.tagName !== 'LI' && parent?.tagName === 'UL') {
+    replaceTag(block, 'li')
+    return
+  }
+
+  if (block.tagName === 'LI') {
+    convertListItemToParagraph(block)
+    return
+  }
+
+  // If we’re on P/H1/H2/H3: wrap into UL/LI
+  convertBlockToList(block)
+}
+
+// Helpers
+function convertListItemToParagraph(li: HTMLElement) {
   const ul = li.closest('ul')
   const p = document.createElement('p')
   while (li.firstChild) p.appendChild(li.firstChild)
@@ -63,7 +54,7 @@ export function convertListItemToParagraph(li: HTMLElement) {
   setCaretToStart(p)
 }
 
-export function convertBlockToList(block: HTMLElement) {
+function convertBlockToList(block: HTMLElement) {
   const ul = document.createElement('ul')
   const li = document.createElement('li')
 
@@ -75,17 +66,37 @@ export function convertBlockToList(block: HTMLElement) {
   setCaretToStart(li)
 }
 
-export function toggleBullets(editor: HTMLElement) {
-  const r = getSelectionRange()
-  if (!r || !editor) return
-  const block = closestBlock(r.startContainer)
-  if (!block) return
+function closestBlock(node: Node | null): HTMLElement | null {
+  const el = node?.nodeType === Node.ELEMENT_NODE ? (node as Element) : node?.parentElement
+  if (!el) return null
 
-  if (block.tagName === 'LI') {
-    convertListItemToParagraph(block)
-    return
-  }
+  return el.closest('li, p, h1, h2, h3') as HTMLElement | null
+}
 
-  // If we’re on P/H1/H2/H3: wrap into UL/LI
-  convertBlockToList(block)
+function getSelectionRange(): Range | null {
+  const sel = window.getSelection()
+  if (!sel || sel.rangeCount === 0) return null
+
+  return sel.getRangeAt(0)
+}
+
+function setCaretToStart(el: HTMLElement) {
+  const range = document.createRange()
+  const sel = window.getSelection()
+
+  range.selectNodeContents(el)
+  range.collapse(true)
+  sel?.removeAllRanges()
+  sel?.addRange(range)
+}
+
+function replaceTag(block: HTMLElement, tag: SupportedTag) {
+  console.log(block)
+  if (block.tagName.toLowerCase() === tag) return
+
+  const next = document.createElement(tag)
+  // Move children (preserves text nodes)
+  while (block.firstChild) next.appendChild(block.firstChild)
+  block.replaceWith(next)
+  setCaretToStart(next)
 }

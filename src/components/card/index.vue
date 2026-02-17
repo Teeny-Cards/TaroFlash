@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import CardFace from './card-face.vue'
-import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { type CardBase, type ImageCard } from '@type/card'
 import { getImageUrl } from '@/api/media'
@@ -47,8 +46,7 @@ const back_image_url = computed(() => {
   <div
     data-testid="card"
     class="card-container"
-    :class="`card-container--${size} card-container--${mode}
-      card-container--${attributes?.bg_color || 'white'}`"
+    :class="`card-container--${size} card-container--${mode}`"
     v-sfx="sfx"
   >
     <slot></slot>
@@ -68,10 +66,8 @@ const back_image_url = computed(() => {
           :class="face_classes"
           :image="front_image_url"
           :text="front_text"
-          :editor_delta="front_delta"
           :mode="mode"
           :side="side"
-          :attributes="attributes"
           :placeholder="placeholder"
           @update="emit('update:front', $event)"
           @focusin.prevent="emit('focusin')"
@@ -85,10 +81,8 @@ const back_image_url = computed(() => {
           :class="face_classes"
           :image="back_image_url"
           :text="back_text"
-          :editor_delta="back_delta"
           :mode="mode"
           :side="side"
-          :attributes="attributes"
           :placeholder="placeholder"
           @update="emit('update:back', $event)"
           @focusin.prevent="emit('focusin')"

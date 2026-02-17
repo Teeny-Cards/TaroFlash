@@ -1,5 +1,10 @@
 import { ref } from 'vue'
-import { markdownLiteToHtml, normalizeEditorDom, textFromNode } from './utils'
+import { markdownLiteToHtml, normalizeEditorDom, htmlToMarkdownLite } from './utils'
+import {
+  setBlock as upstreamSetBlock,
+  toggleBullets as upstreamToggleBullets,
+  type SupportedTag
+} from './format'
 
 export type EditorSettings = {
   horizontal_align?: 'left' | 'center' | 'right'
@@ -42,59 +47,9 @@ export default class BlockEditor {
    *  - Blank lines separate blocks.
    *  - UL becomes consecutive "- " lines.
    */
-  getContent(root: HTMLElement): string {
-    const out: string[] = []
-
-    const children = Array.from(root.children) as HTMLElement[]
-
-    for (const child of children) {
-      const tag = child.tagName
-
-      if (tag === 'H1') {
-        const t = textFromNode(child)
-        if (t) out.push(`# ${t}`, '') // blank line after block
-        continue
-      }
-
-      if (tag === 'H2') {
-        const t = textFromNode(child)
-        if (t) out.push(`## ${t}`, '')
-        continue
-      }
-
-      if (tag === 'H3') {
-        const t = textFromNode(child)
-        if (t) out.push(`### ${t}`, '')
-        continue
-      }
-
-      if (tag === 'P') {
-        const t = textFromNode(child)
-        if (t) out.push(t)
-        else out.push('')
-        continue
-      }
-
-      if (tag === 'UL') {
-        const items = Array.from(child.querySelectorAll(':scope > li')) as HTMLElement[]
-        for (const li of items) {
-          const t = textFromNode(li)
-          // keep empty list items out for MVP
-          if (t) out.push(`- ${t}`)
-        }
-        out.push('') // blank line after list block
-        continue
-      }
-
-      // Anything unexpected: treat as paragraph fallback
-      const fallback = textFromNode(child)
-      if (fallback) out.push(fallback, '')
-    }
-
-    // Remove trailing blank lines
-    while (out.length && out[out.length - 1] === '') out.pop()
-
-    return out.join('\n')
+  getContent(editor: HTMLElement): string {
+    normalizeEditorDom(editor)
+    return htmlToMarkdownLite(editor)
   }
 
   /**
@@ -108,26 +63,46 @@ export default class BlockEditor {
     normalizeEditorDom(editor)
   }
 
-  private _onInput(editor: HTMLElement, e: Event) {
-    e.preventDefault()
-    e.stopPropagation()
+  setBlock = (tag: SupportedTag) => {
+    if (!this.active_editor.value) return
 
+    upstreamSetBlock(this.active_editor.value, tag)
+    this._emitUpdate(this.active_editor.value)
+  }
+
+  toggleBullets = () => {
+    if (!this.active_editor.value) return
+
+    upstreamToggleBullets(this.active_editor.value)
+    this._emitUpdate(this.active_editor.value)
+  }
+
+  activateEditor = (editor: HTMLElement) => {
+    this.active_editor.value = editor
+  }
+
+  private _emitUpdate = (editor: HTMLElement) => {
     const md = this.getContent(editor)
     const event = new CustomEvent('update', { detail: md })
-
     editor.dispatchEvent(event)
   }
 
-  private _onFocusIn(editor: HTMLElement, e: Event) {
+  private _onInput = (editor: HTMLElement, e: Event) => {
+    e.preventDefault()
+    e.stopPropagation()
+    this._emitUpdate(editor)
+  }
+
+  private _onFocusIn = (editor: HTMLElement, e: Event) => {
     e.preventDefault()
     e.stopPropagation()
 
-    this.active_editor.value = editor
+    this.activateEditor(editor)
     const event = new CustomEvent('activate')
     editor.dispatchEvent(event)
   }
 
-  private _onFocusOut(editor: HTMLElement, e: Event) {
+  private _onFocusOut = (editor: HTMLElement, e: Event) => {
     e.preventDefault()
     e.stopPropagation()
 

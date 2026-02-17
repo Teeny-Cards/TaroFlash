@@ -2,23 +2,23 @@
 import { ref } from 'vue'
 import UiPopover from '@/components/ui-kit/popover.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
+import { type SupportedTag } from '@/utils/block-editor/format'
 
-const { selected_font_size = '14px' } = defineProps<{
-  selected_font_size: string
+const { selected_font_size = 'p' } = defineProps<{
+  selected_font_size?: SupportedTag
 }>()
 
 const emit = defineEmits<{
-  (e: 'select', size: number): void
+  (e: 'select', size: SupportedTag): void
 }>()
 
 const open = ref(false)
 
-const font_size_map: { [key: string]: number } = {
-  '24px': 24,
-  '18px': 18,
-  '16px': 16,
-  '14px': 14,
-  '12px': 12
+const font_size_map: { [key in SupportedTag]?: string } = {
+  h1: 'Heading 1',
+  h2: 'Heading 2',
+  h3: 'Heading 3',
+  p: 'Paragraph'
 }
 </script>
 
@@ -33,12 +33,13 @@ const font_size_map: { [key: string]: number } = {
   >
     <template #trigger>
       <button
-        @click="open = !open"
+        @pointerdown.prevent
+        @click.prevent="open = !open"
         class="flex gap-1 items-center px-3 py-1 h-full rounded-4 bg-brown-100 cursor-pointer
           transition-colors duration-75"
         :class="{ 'rounded-t-1 bg-purple-500 text-brown-100': open, 'text-brown-800': !open }"
       >
-        {{ selected_font_size }}
+        {{ font_size_map[selected_font_size] }}
         <ui-icon src="carat-down" />
       </button>
     </template>
@@ -48,12 +49,13 @@ const font_size_map: { [key: string]: number } = {
       class="flex flex-col gap-3 bg-purple-500 rounded-6 rounded-bl-1 p-3 w-25"
     >
       <div
-        v-for="(size, name) in font_size_map"
-        :key="name"
+        v-for="(label, tag) in font_size_map"
+        :key="tag"
         class="cursor-pointer rounded-full text-brown-100 flex flex-col items-center"
-        @click="emit('select', size)"
+        @pointerdown.prevent
+        @click.prevent="emit('select', tag)"
       >
-        {{ name }}
+        {{ label }}
       </div>
     </div>
   </ui-popover>

@@ -31,12 +31,13 @@ function onUpdate(e: CustomEvent) {
     <div
       data-testid="text-editor"
       ref="text-editor"
-      contenteditable
-      class="w-full h-full outline-none"
+      :contenteditable="!disabled"
+      class="w-full h-full outline-none **:[h1]:text-6xl **:[h2]:text-5xl **:[h3]:text-3xl
+        **:[p]:text-base **:[li]:text-base **:[ul]:list-disc **:[ul]:list-inside"
       @update="onUpdate"
     ></div>
     <span
-      v-if="!has_content"
+      v-if="!has_content && !disabled"
       class="absolute inset-0 flex items-center justify-center text-center pointer-events-none
         text-brown-300"
     >
@@ -44,29 +45,3 @@ function onUpdate(e: CustomEvent) {
     </span>
   </div>
 </template>
-
-<style>
-.ql-editor {
-  height: 100%;
-  width: 100%;
-  outline: none;
-}
-
-.ql-editor hr {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-.ql-align-center {
-  text-align: center;
-}
-.ql-align-right {
-  text-align: right;
-}
-.ql-align-justify {
-  text-align: justify;
-}
-.ql-align-left {
-  text-align: left;
-}
-</style>

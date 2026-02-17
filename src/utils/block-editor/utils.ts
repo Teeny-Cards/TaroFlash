@@ -64,24 +64,77 @@ export function markdownLiteToHtml(md: string): string {
   return out.join('')
 }
 
+export function htmlToMarkdownLite(root: HTMLElement): string {
+  const out: string[] = []
+
+  const children = Array.from(root.children) as HTMLElement[]
+
+  for (const child of children) {
+    const tag = child.tagName
+
+    if (tag === 'H1') {
+      const t = textFromNode(child)
+      if (t) out.push(`# ${t}`)
+      else out.push('')
+      continue
+    }
+
+    if (tag === 'H2') {
+      const t = textFromNode(child)
+      if (t) out.push(`## ${t}`)
+      else out.push('')
+      continue
+    }
+
+    if (tag === 'H3') {
+      const t = textFromNode(child)
+      if (t) out.push(`### ${t}`)
+      else out.push('')
+      continue
+    }
+
+    if (tag === 'P') {
+      const t = textFromNode(child)
+      out.push(t ?? '')
+      continue
+    }
+
+    if (tag === 'UL') {
+      const items = Array.from(child.querySelectorAll(':scope > li')) as HTMLElement[]
+      for (const li of items) {
+        const t = textFromNode(li)
+        // keep empty list items out for MVP
+        if (t) out.push(`- ${t}`)
+      }
+
+      continue
+    }
+
+    // Anything unexpected: treat as paragraph fallback
+    const fallback = textFromNode(child)
+    out.push(fallback ?? '')
+  }
+
+  // Remove trailing blank lines
+  while (out.length && out[out.length - 1] === '') out.pop()
+
+  return out.join('\n')
+}
+
 export function normalizeEditorDom(root: HTMLElement) {
   const allowed = new Set(['H1', 'H2', 'H3', 'P', 'UL', 'LI', 'BR'])
-
-  // Strip unexpected tags + attributes (defensive)
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT)
   const els: Element[] = []
+
   while (walker.nextNode()) els.push(walker.currentNode as Element)
 
   for (const el of els) {
-    if (!allowed.has(el.tagName)) {
-      // unwrap unknown nodes
-      const parent = el.parentNode
-      if (!parent) continue
-      while (el.firstChild) parent.insertBefore(el.firstChild, el)
-      parent.removeChild(el)
-      continue
-    }
-    // for (const attr of [...el.attributes]) el.removeAttribute(attr.name)
+    if (allowed.has(el.tagName)) continue
+
+    // Convert unknown element -> <p> (preserve children)
+    const p = document.createElement('p')
+    while (el.firstChild) p.appendChild(el.firstChild) // move children
+    el.replaceWith(p)
   }
 
   // Ensure empty blocks contain <br> so caret can land there

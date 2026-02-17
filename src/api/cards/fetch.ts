@@ -26,7 +26,7 @@ export async function fetchMemberCardCount(opts: FetchMemberCardCountOptions): P
 
 export async function fetchAllCardsByDeckId(deck_id: number): Promise<Card[]> {
   const { data, error } = await supabase
-    .from('card_with_images')
+    .from('cards_with_images')
     .select('*, review:reviews(*)')
     .eq('deck_id', deck_id)
     .order('rank', { ascending: true })
@@ -43,7 +43,7 @@ export async function fetchDueCardsByDeckId(deck_id: number): Promise<Card[]> {
   const end_of_day = DateTime.now().endOf('day').toISO()
 
   const { data, error } = await supabase
-    .from('card_with_images')
+    .from('cards_with_images')
     .select('*, review:reviews(*)')
     .eq('deck_id', deck_id)
     .or(`due.is.null,due.lte.${end_of_day}`, { referencedTable: 'cards.reviews' })

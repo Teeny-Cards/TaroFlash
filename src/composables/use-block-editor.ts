@@ -20,7 +20,8 @@ export function useBlockEditor(editor: ShallowRef<HTMLElement | null>, settings?
   })
 
   function setActive() {
-    block_editor.active_editor.value = editor.value
+    if (!editor.value) return
+    block_editor.activateEditor(editor.value)
   }
 
   return {
