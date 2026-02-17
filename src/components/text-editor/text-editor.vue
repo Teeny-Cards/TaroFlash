@@ -1,41 +1,48 @@
 <script setup lang="ts">
-import { onMounted, useTemplateRef } from 'vue'
-import { useRichTextEditor } from '@/composables/rich-text-editor'
-import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
+import { onMounted, useTemplateRef, computed } from 'vue'
+import { useBlockEditor } from '@/composables/use-block-editor'
 
-const { delta, placeholder, disabled } = defineProps<{
-  delta?: Object
+const { placeholder, disabled, content } = defineProps<{
+  content?: string
   placeholder?: string
   disabled?: boolean
 }>()
 
 const emit = defineEmits<{
-  (e: 'update', payload: TextEditorUpdatePayload): void
+  (e: 'update', text: string): void
   (e: 'focusin', event: Event): void
   (e: 'focusout', event: Event): void
 }>()
 
-const editor = useRichTextEditor()
+const text_editor = useTemplateRef('text-editor')
+const editor = useBlockEditor(text_editor, { content })
 
-const text_editor = useTemplateRef<HTMLDivElement>('text-editor')
-
-onMounted(() => {
-  if (!text_editor.value) return
-  editor.attachEditor(text_editor.value, delta, { placeholder, readOnly: disabled })
+const has_content = computed(() => {
+  return (content?.length ?? 0) > 0
 })
+
+function onUpdate(e: CustomEvent) {
+  emit('update', e.detail)
+}
 </script>
 
 <template>
-  <!-- The rich-text-editor composable will attach a quill editor to this element and emit events on it -->
-  <div
-    data-testid="text-editor"
-    ref="text-editor"
-    @update="emit('update', $event.detail)"
-    @activate="emit('focusin', $event)"
-    @deactivate="emit('focusout', $event)"
-    @focusin.prevent
-    @focusout.prevent
-  ></div>
+  <div data-testid="text-editor-container" class="relative">
+    <div
+      data-testid="text-editor"
+      ref="text-editor"
+      contenteditable
+      class="w-full h-full outline-none"
+      @update="onUpdate"
+    ></div>
+    <span
+      v-if="!has_content"
+      class="absolute inset-0 flex items-center justify-center text-center pointer-events-none
+        text-brown-300"
+    >
+      {{ placeholder }}
+    </span>
+  </div>
 </template>
 
 <style>
@@ -61,22 +68,5 @@ onMounted(() => {
 }
 .ql-align-left {
   text-align: left;
-}
-
-.ql-editor.ql-blank::before {
-  content: attr(data-placeholder);
-
-  position: absolute;
-  inset: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-
-  color: var(--color-brown-300);
-  text-align: center;
-  pointer-events: none;
 }
 </style>

@@ -30,13 +30,9 @@ const onSelectCard = inject<(id: number) => void>('on-select-card')
 
 const selected = computed(() => selected_card_ids.value.includes(card.id!))
 
-function onUpdate(id: number, side: 'front' | 'back', payload: TextEditorUpdatePayload) {
-  const { text, delta, attributes } = payload
-
+function onUpdate(id: number, side: 'front' | 'back', text: string) {
   const update: Partial<Card> = {
-    [`${side}_delta`]: delta,
-    [`${side}_text`]: text,
-    attributes
+    [`${side}_text`]: text
   }
 
   updateCard(id, update)
@@ -53,13 +49,11 @@ async function onImageUpload(side: 'front' | 'back', file: File) {
 }
 
 async function onImageDelete(side: 'front' | 'back') {
+  throw "Doesn't work, need to re-implement"
   if (!card.id) return
 
   try {
     await deleteCardImage(card.id, side)
-    onUpdate(card.id, side, {
-      [`${side}_image`]: undefined
-    })
   } catch (e: any) {
     toast.error(t('card.image-delete-error'))
   }
