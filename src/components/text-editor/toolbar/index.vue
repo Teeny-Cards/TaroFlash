@@ -3,9 +3,9 @@ import BgColorSelector from './bg-color-selector.vue'
 import FontSizeSelector from './font-size-selector.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiImage from '@/components/ui-kit/image.vue'
-import BlockEditor from '@/utils/block-editor'
+import TextComposer from '@/utils/text-composer'
 
-const block_editor = BlockEditor.getInstance()
+const text_composer = TextComposer.getInstance()
 </script>
 
 <template>
@@ -17,9 +17,9 @@ const block_editor = BlockEditor.getInstance()
       border-brown-100 h-15 z-10"
   >
     <div class="flex gap-1.5 items-center h-full py-3">
-      <font-size-selector @select="block_editor.setBlock" />
+      <font-size-selector @select="text_composer.setBlock" />
 
-      <div class="toolbar-option" @mousedown.prevent @click="block_editor.toggleBullets">
+      <div class="toolbar-option" @mousedown.prevent @click="text_composer.toggleList">
         <ui-icon src="bullets" />
       </div>
 
