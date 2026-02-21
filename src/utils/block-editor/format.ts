@@ -7,13 +7,34 @@ export function setBlock(editor: HTMLElement, tag: SupportedTag) {
   const block = closestBlock(r.startContainer)
   if (!block) return
 
+  // LI special handling
   if (block.tagName === 'LI') {
-    // If you’re in a list, apply block format *inside the list item* by inserting a child block.
-    // MVP simplification: convert the LI to P first, then replace tag.
-    convertListItemToParagraph(block)
-    const newBlock = closestBlock(getSelectionRange()?.startContainer ?? null)
-    if (newBlock) replaceTag(newBlock, tag)
-    return
+    // Convert LI -> P (your MVP path)
+    if (tag === 'li') {
+      convertListItemToParagraph(block)
+      const newBlock = closestBlock(getSelectionRange()?.startContainer ?? null)
+      if (newBlock) replaceTag(newBlock, tag)
+      return
+    }
+
+    // Toggle/replace text tag inside LI
+    if (tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'p') {
+      const firstEl = Array.from(block.childNodes).find((n) => n.nodeType === Node.ELEMENT_NODE) as
+        | HTMLElement
+        | undefined
+
+      if (firstEl && isTextTagName(firstEl.tagName)) {
+        if (firstEl.tagName === tagUpper(tag)) {
+          removeTagFromListItem(block, firstEl)
+        } else {
+          replaceTag(firstEl, tag) // just changes H1/H2/H3/P
+        }
+        return
+      }
+
+      addTagToListItem(block, tag)
+      return
+    }
   }
 
   replaceTag(block, tag)
@@ -54,6 +75,42 @@ function convertListItemToParagraph(li: HTMLElement) {
   setCaretToStart(p)
 }
 
+function addTagToListItem(li: HTMLElement, tag: 'h1' | 'h2' | 'h3' | 'p') {
+  const header = document.createElement(tag)
+
+  // Move only the “content” nodes (everything before a nested UL/OL)
+  const toMove: Node[] = []
+
+  for (let n = li.firstChild; n; n = n.nextSibling) {
+    // Stop before nested list blocks
+    if (n.nodeType === Node.ELEMENT_NODE && isNestedListEl(n as Element)) break
+    toMove.push(n)
+  }
+
+  // Nothing to wrap? Create a <br> so the caret can land.
+  if (toMove.length === 0) {
+    header.appendChild(document.createElement('br'))
+    li.insertBefore(header, li.firstChild)
+    return
+  }
+
+  for (const n of toMove) header.appendChild(n)
+  li.insertBefore(header, li.firstChild)
+}
+
+function removeTagFromListItem(li: HTMLElement, header: HTMLElement) {
+  // Unwrap header but keep nested lists where they are.
+  const frag = document.createDocumentFragment()
+  while (header.firstChild) frag.appendChild(header.firstChild)
+
+  // Replace header with its children
+  li.insertBefore(frag, header)
+  header.remove()
+
+  // If LI content becomes empty, keep it editable
+  if (!li.firstChild) li.appendChild(document.createElement('br'))
+}
+
 function convertBlockToList(block: HTMLElement) {
   const ul = document.createElement('ul')
   const li = document.createElement('li')
@@ -91,7 +148,6 @@ function setCaretToStart(el: HTMLElement) {
 }
 
 function replaceTag(block: HTMLElement, tag: SupportedTag) {
-  console.log(block)
   if (block.tagName.toLowerCase() === tag) return
 
   const next = document.createElement(tag)
@@ -99,4 +155,16 @@ function replaceTag(block: HTMLElement, tag: SupportedTag) {
   while (block.firstChild) next.appendChild(block.firstChild)
   block.replaceWith(next)
   setCaretToStart(next)
+}
+
+function tagUpper(tag: string) {
+  return tag.toUpperCase()
+}
+
+function isTextTagName(tagName: string) {
+  return tagName === 'H1' || tagName === 'H2' || tagName === 'H3' || tagName === 'P'
+}
+
+function isNestedListEl(el: Element) {
+  return el.tagName === 'UL' || el.tagName === 'OL'
 }
