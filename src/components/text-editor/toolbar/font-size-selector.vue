@@ -2,19 +2,19 @@
 import { ref } from 'vue'
 import UiPopover from '@/components/ui-kit/popover.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
-import { type SupportedTag } from '@/utils/block-editor/format'
+import { type TextBlockType } from '@/utils/text-composer/doc'
 
 const { selected_font_size = 'p' } = defineProps<{
-  selected_font_size?: SupportedTag
+  selected_font_size?: TextBlockType
 }>()
 
 const emit = defineEmits<{
-  (e: 'select', size: SupportedTag): void
+  (e: 'select', size: TextBlockType): void
 }>()
 
 const open = ref(false)
 
-const font_size_map: { [key in SupportedTag]?: string } = {
+const font_size_map: { [key in TextBlockType]?: string } = {
   h1: 'Heading 1',
   h2: 'Heading 2',
   h3: 'Heading 3',

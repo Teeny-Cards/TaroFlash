@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, useTemplateRef, computed } from 'vue'
-import { useBlockEditor } from '@/composables/use-block-editor'
+import { useTemplateRef, computed } from 'vue'
+import { useTextComposer } from '@/composables/use-text-composer'
 
 const { placeholder, disabled, content } = defineProps<{
   content?: string
@@ -15,7 +15,7 @@ const emit = defineEmits<{
 }>()
 
 const text_editor = useTemplateRef('text-editor')
-const editor = useBlockEditor(text_editor, { content })
+useTextComposer(text_editor, { content })
 
 const has_content = computed(() => {
   return (content?.length ?? 0) > 0
@@ -29,8 +29,8 @@ const has_content = computed(() => {
       ref="text-editor"
       :contenteditable="!disabled"
       class="w-full h-full outline-none **:[h1]:text-6xl **:[h1]:inline-block **:[h2]:text-5xl
-        **:[h2]:inline-block **:[h3]:text-3xl **:[h3]:inline-block **:[p]:inline-block
-        **:[p]:text-base **:[li]:text-base **:[ul]:list-disc **:[ul]:list-inside"
+        **:[h2]:inline-block **:[h3]:text-3xl **:[h3]:inline-block **:[p]:text-base
+        **:[li]:text-base **:[ul]:list-disc **:[ul]:list-inside **:[li>p]:inline-block"
       @update="emit('update', $event.detail)"
     ></div>
     <span
