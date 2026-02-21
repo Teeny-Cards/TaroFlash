@@ -47,7 +47,7 @@ export function markdownLiteToHtml(md: string): string {
         out.push('<ul>')
         inUl = true
       }
-      out.push(`<li>${escapeHtml(li[1])}</li>`)
+      out.push(`<li>${markdownLiteToHtml(li[1])}</li>`)
       continue
     }
 
@@ -102,7 +102,7 @@ export function htmlToMarkdownLite(root: HTMLElement): string {
     if (tag === 'UL') {
       const items = Array.from(child.querySelectorAll(':scope > li')) as HTMLElement[]
       for (const li of items) {
-        const t = textFromNode(li)
+        const t = htmlToMarkdownLite(li)
         // keep empty list items out for MVP
         if (t) out.push(`- ${t}`)
       }

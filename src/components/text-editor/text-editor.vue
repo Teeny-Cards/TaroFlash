@@ -20,10 +20,6 @@ const editor = useBlockEditor(text_editor, { content })
 const has_content = computed(() => {
   return (content?.length ?? 0) > 0
 })
-
-function onUpdate(e: CustomEvent) {
-  emit('update', e.detail)
-}
 </script>
 
 <template>
@@ -32,9 +28,10 @@ function onUpdate(e: CustomEvent) {
       data-testid="text-editor"
       ref="text-editor"
       :contenteditable="!disabled"
-      class="w-full h-full outline-none **:[h1]:text-6xl **:[h2]:text-5xl **:[h3]:text-3xl
+      class="w-full h-full outline-none **:[h1]:text-6xl **:[h1]:inline-block **:[h2]:text-5xl
+        **:[h2]:inline-block **:[h3]:text-3xl **:[h3]:inline-block **:[p]:inline-block
         **:[p]:text-base **:[li]:text-base **:[ul]:list-disc **:[ul]:list-inside"
-      @update="onUpdate"
+      @update="emit('update', $event.detail)"
     ></div>
     <span
       v-if="!has_content && !disabled"
