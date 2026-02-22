@@ -44,3 +44,15 @@ export function setBlockKind(root: HTMLElement, range: Range, kind: TextBlockTyp
     setCaretToStart(next)
   }
 }
+
+export function insertHr(root: HTMLElement, range: Range) {
+  normalizeEditorDom(root)
+
+  const block = closestBlock(range.startContainer)
+  if (!block) return
+
+  const hr = document.createElement('hr')
+  block.after(hr)
+  normalizeEditorDom(root)
+  setCaretToStart(hr)
+}

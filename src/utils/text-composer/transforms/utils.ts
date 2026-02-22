@@ -1,12 +1,6 @@
-import type { Doc, ListItem, TextBlockType } from '../doc'
+import type { Doc, TextBlockType } from '../doc'
 
 export type ParsedHeading = { kind: TextBlockType; text: string }
-export type ParsedListItem = { kind: TextBlockType; text: string }
-export type ParseState = {
-  blocks: Doc['blocks']
-  paragraphLines: string[]
-  listItems: ListItem[] | null
-}
 
 // ---------- text utilities ----------
 
@@ -51,8 +45,6 @@ export function hashesFromKind(kind: TextBlockType): string | null {
   return null
 }
 
-// ---------- line classifiers (small, focused) ----------
-
 /**
  * Checks if a trimmed line is blank (empty).
  * @param trimmed - The trimmed line to check
@@ -60,6 +52,11 @@ export function hashesFromKind(kind: TextBlockType): string | null {
  */
 export function isBlankLine(trimmed: string) {
   return trimmed.length === 0
+}
+
+// must be exactly --- (optionally surrounded by spaces)
+export function isHorizontalRuleLine(trimmed: string) {
+  return /^---$/.test(trimmed)
 }
 
 /**
@@ -77,79 +74,17 @@ export function parseHeadingLine(trimmed: string): ParsedHeading | null {
 }
 
 /**
- * Parses a markdown list item line (e.g., "- Item", "-").
- * Supports nested headings within list items.
- * @param trimmed - The trimmed line to parse
- * @returns An object with the item kind and text, or null if not a list item
- */
-export function parseListItemLine(trimmed: string): ParsedListItem | null {
-  const m = trimmed.match(/^[-](?:\s+(.*))?$/)
-  if (!m) return null
-
-  const body = m[1]?.trim() ?? ''
-  const headingInside = parseHeadingLine(body) // reuse heading parsing
-  if (headingInside) return headingInside
-
-  return { kind: 'p', text: body }
-}
-
-// ---------- state + flush helpers ----------
-
-/**
- * Creates a new initial parse state for markdown parsing.
- * @returns A fresh ParseState with empty blocks, paragraph lines, and no list items
- */
-export function startState(): ParseState {
-  return { blocks: [], paragraphLines: [], listItems: null }
-}
-
-/**
- * Flushes accumulated paragraph lines into a text block.
- * Joins all paragraph lines with newlines and adds to blocks.
- * Preserves explicit blank paragraphs.
- * @param s - The parse state to modify
- */
-export function flushParagraph(s: ParseState) {
-  if (s.paragraphLines.length === 0) return
-
-  const text = s.paragraphLines.join('\n').trim()
-
-  // preserve explicit blank paragraph (when paragraphLines existed but trimmed empty)
-  s.blocks.push({ type: 'text', kind: 'p', text: text.length > 0 ? text : '' })
-  s.paragraphLines = []
-}
-
-/**
- * Flushes accumulated list items into a list block.
- * Only creates a block if there are items to flush.
- * @param s - The parse state to modify
- */
-export function flushList(s: ParseState) {
-  if (s.listItems && s.listItems.length > 0) {
-    s.blocks.push({ type: 'ul', items: s.listItems })
-  }
-  s.listItems = null
-}
-
-/**
  * Adds a text block to the parse state.
  * @param s - The parse state to modify
  * @param kind - The type of text block (e.g., 'p', 'h1', 'h2', 'h3')
  * @param text - The text content of the block
  */
-export function pushTextBlock(s: ParseState, kind: TextBlockType, text: string) {
+export function pushTextBlock(s: Doc, kind: TextBlockType, text: string) {
   s.blocks.push({ type: 'text', kind, text })
 }
 
-/**
- * Adds a list item to the current list in the parse state.
- * Initializes the list array if it doesn't exist.
- * @param s - The parse state to modify
- * @param item - The list item to add
- */
-export function pushListItem(s: ParseState, item: ListItem) {
-  if (!s.listItems) s.listItems = []
-  s.listItems.push(item)
+export function pushHorizontalRule(s: Doc) {
+  s.blocks.push({ type: 'hr' })
 }
 
 /**
@@ -157,6 +92,6 @@ export function pushListItem(s: ParseState, item: ListItem) {
  * Adds an empty paragraph block if no blocks exist.
  * @param s - The parse state to modify
  */
-export function ensureAtLeastOneBlock(s: ParseState) {
+export function ensureAtLeastOneBlock(s: Doc) {
   if (s.blocks.length === 0) s.blocks.push({ type: 'text', kind: 'p', text: '' })
 }

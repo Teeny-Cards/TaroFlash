@@ -23,7 +23,7 @@ const text_composer = TextComposer.getInstance()
         <ui-icon src="bullets" />
       </div> -->
 
-      <div class="toolbar-option">
+      <div class="toolbar-option" @mousedown.prevent @click="text_composer.insertHr">
         <ui-icon src="horizontal-rule" />
       </div>
 

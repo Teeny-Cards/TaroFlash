@@ -35,18 +35,8 @@ export function docToHtml(doc: Doc): string {
       continue
     }
 
-    if (b.type === 'ul') {
-      out.push('<ul>')
-      for (const item of b.items) {
-        const tag = tagForKind(item.kind)
-        // Ensure LI always has a block element (helps selection logic)
-        const inner =
-          item.text && item.text.trim()
-            ? `<${tag}>${escapeHtml(item.text)}</${tag}>`
-            : `<${tag}><br/></${tag}>`
-        out.push(`<li>${inner}</li>`)
-      }
-      out.push('</ul>')
+    if (b.type === 'hr') {
+      out.push('<hr/>')
       continue
     }
   }

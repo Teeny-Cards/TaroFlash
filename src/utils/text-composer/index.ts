@@ -2,9 +2,9 @@
 import { ref } from 'vue'
 import { normalizeEditorDom } from './dom/normalize'
 import { domToDoc } from './transforms/html-to-doc'
-import { parseMarkdownLite, serializeMarkdownLite } from './transforms/markdown-lite'
+import { parse, serialize } from './transforms/serialize'
 import { docToHtml } from './transforms/doc-to-html'
-import { setBlockKind } from './commands/block'
+import { setBlockKind, insertHr } from './commands/block'
 import { toggleList as upstreamToggleList } from './commands/list'
 import type { TextBlockType } from './doc'
 import { interceptEnter } from './dom/enter'
@@ -40,11 +40,11 @@ export default class TextComposer {
 
   getContent(editor: HTMLElement): string {
     const doc = domToDoc(editor)
-    return serializeMarkdownLite(doc)
+    return serialize(doc)
   }
 
   setContent(editor: HTMLElement, markdown: string) {
-    const doc = parseMarkdownLite(markdown)
+    const doc = parse(markdown)
     editor.innerHTML = docToHtml(doc)
     normalizeEditorDom(editor)
   }
@@ -56,6 +56,16 @@ export default class TextComposer {
     if (!range) return
 
     setBlockKind(editor, range, kind)
+    this._emitUpdate(editor)
+  }
+
+  insertHr = () => {
+    const editor = this.active_editor.value
+    if (!editor) return
+    const range = this._getRange()
+    if (!range) return
+
+    insertHr(editor, range)
     this._emitUpdate(editor)
   }
 

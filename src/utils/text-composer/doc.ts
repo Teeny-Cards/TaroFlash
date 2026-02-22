@@ -7,6 +7,7 @@ export type Doc = {
 
 export type Block =
   | { type: 'text'; kind: TextBlockType; text: string }
+  | { type: 'hr' }
   | { type: 'ul'; items: ListItem[] }
 
 export type ListItem = {
