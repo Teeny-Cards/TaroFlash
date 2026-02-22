@@ -1,19 +1,20 @@
 // editor.ts
 import { ref } from 'vue'
 import { normalizeEditorDom } from './dom/normalize'
-import { domToDoc } from './transforms/dom-to-doc'
+import { domToDoc } from './transforms/html-to-doc'
 import { parseMarkdownLite, serializeMarkdownLite } from './transforms/markdown-lite'
-import { docToHtml } from './transforms/html'
+import { docToHtml } from './transforms/doc-to-html'
 import { setBlockKind } from './commands/block'
-import { toggleList } from './commands/list'
+import { toggleList as upstreamToggleList } from './commands/list'
 import type { TextBlockType } from './doc'
+import { interceptEnter } from './dom/enter'
 
 export default class TextComposer {
   static instance: TextComposer | null = null
 
-  active_editor = ref<HTMLElement | null>(null)
-  editors = new Set<HTMLElement>()
-  private _isComposing = new WeakMap<HTMLElement, boolean>()
+  private active_editor = ref<HTMLElement | null>(null)
+  private editors = new Set<HTMLElement>()
+  private is_composing = new WeakMap<HTMLElement, boolean>()
 
   static getInstance() {
     if (!TextComposer.instance) TextComposer.instance = new TextComposer()
@@ -26,10 +27,11 @@ export default class TextComposer {
     editor.addEventListener('input', () => this._onInput(editor))
     editor.addEventListener('focusin', () => this._onFocusIn(editor))
     editor.addEventListener('focusout', () => this._onFocusOut(editor))
+    editor.addEventListener('keydown', (e) => this._onEnter(e, editor))
 
-    editor.addEventListener('compositionstart', () => this._isComposing.set(editor, true))
+    editor.addEventListener('compositionstart', () => this.is_composing.set(editor, true))
     editor.addEventListener('compositionend', () => {
-      this._isComposing.set(editor, false)
+      this.is_composing.set(editor, false)
       this._emitUpdate(editor)
     })
 
@@ -37,7 +39,6 @@ export default class TextComposer {
   }
 
   getContent(editor: HTMLElement): string {
-    normalizeEditorDom(editor)
     const doc = domToDoc(editor)
     return serializeMarkdownLite(doc)
   }
@@ -58,13 +59,14 @@ export default class TextComposer {
     this._emitUpdate(editor)
   }
 
+  /** NOT SUPPORTED IN MVP */
   toggleList = () => {
     const editor = this.active_editor.value
     if (!editor) return
     const range = this._getRange()
     if (!range) return
 
-    toggleList(editor, range)
+    upstreamToggleList(editor, range)
     this._emitUpdate(editor)
   }
 
@@ -73,7 +75,7 @@ export default class TextComposer {
   }
 
   private _emitUpdate(editor: HTMLElement) {
-    if (this._isComposing.get(editor)) return
+    if (this.is_composing.get(editor)) return
 
     const md = this.getContent(editor)
     editor.dispatchEvent(new CustomEvent('update', { detail: md }))
@@ -91,6 +93,17 @@ export default class TextComposer {
   private _onFocusOut(editor: HTMLElement) {
     if (this.active_editor.value === editor) this.active_editor.value = null
     editor.dispatchEvent(new CustomEvent('deactivate'))
+  }
+
+  private _onEnter(e: KeyboardEvent, editor: HTMLElement) {
+    if (e.key !== 'Enter') return
+    const range = this._getRange()
+    if (!range) return
+
+    if (interceptEnter(range)) {
+      e.preventDefault()
+      this._emitUpdate(editor)
+    }
   }
 
   private _getRange(): Range | null {

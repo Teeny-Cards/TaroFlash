@@ -24,13 +24,4 @@ export function useTextComposer(editor: ShallowRef<HTMLElement | null>, settings
       text_composer.setContent(editor.value, settings.content)
     }
   })
-
-  function setActive() {
-    if (!editor.value) return
-    text_composer.activateEditor(editor.value)
-  }
-
-  return {
-    setActive
-  }
 }

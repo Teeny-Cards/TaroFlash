@@ -19,9 +19,9 @@ const text_composer = TextComposer.getInstance()
     <div class="flex gap-1.5 items-center h-full py-3">
       <font-size-selector @select="text_composer.setBlock" />
 
-      <div class="toolbar-option" @mousedown.prevent @click="text_composer.toggleList">
+      <!-- <div class="toolbar-option" @mousedown.prevent @click="text_composer.toggleList">
         <ui-icon src="bullets" />
-      </div>
+      </div> -->
 
       <div class="toolbar-option">
         <ui-icon src="horizontal-rule" />

@@ -1,5 +1,5 @@
 const ALLOWED = new Set(['H1', 'H2', 'H3', 'P', 'UL', 'LI', 'BR'])
-const WRAPPERS = new Set(['DIV'])
+const WRAPPERS = new Set(['DIV', 'SPAN'])
 
 /**
  * DOM normalizer rules:
@@ -10,7 +10,7 @@ const WRAPPERS = new Set(['DIV'])
  *   and remove nested UL/OL if they show up
  */
 export function normalizeEditorDom(root: HTMLElement) {
-  replaceUnknownElements(root)
+  replaceInvalidElements(root)
   normalizeUlLi(root)
   ensureEmptyBlocks(root)
 
@@ -21,13 +21,15 @@ export function normalizeEditorDom(root: HTMLElement) {
 /**
  * Replace unknown elements with `<p>` preserving children
  */
-function replaceUnknownElements(root: HTMLElement) {
+function replaceInvalidElements(root: HTMLElement) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT)
   const els: Element[] = []
   while (walker.nextNode()) els.push(walker.currentNode as Element)
 
   for (const el of els) {
     if (isAllowedBlockEl(el)) continue
+
+    console.warn(`normalizeEditorDom: found unknown element <${el.tagName}>`)
 
     // Handle wrapper DIVs created by contenteditable Enter:
     // If DIV is just a wrapper, unwrap it (prevents <p><p/></p>).
