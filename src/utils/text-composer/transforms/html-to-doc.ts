@@ -35,29 +35,15 @@ export function domToDoc(root: HTMLElement): Doc {
   for (const child of children) {
     const tag = child.tagName
 
-    // UL
-    if (tag === 'UL') {
-      const items: ListItem[] = []
-      const lis = Array.from(child.querySelectorAll(':scope > li')) as HTMLElement[]
-      for (const li of lis) {
-        const textBlock = firstTextBlockChild(li)
-        if (textBlock) {
-          const kind = kindFromTag(textBlock.tagName) ?? 'p'
-          items.push({ kind, text: textFromEl(textBlock) })
-        } else {
-          // fallback: direct text
-          const t = normalizeText(li.textContent ?? '')
-          items.push({ kind: 'p', text: t })
-        }
-      }
-      blocks.push({ type: 'ul', items })
-      continue
-    }
-
     // P/H1/H2/H3
     const kind = kindFromTag(tag)
     if (kind) {
       blocks.push({ type: 'text', kind, text: textFromEl(child) })
+      continue
+    }
+
+    if (tag === 'HR') {
+      blocks.push({ type: 'hr' })
       continue
     }
 

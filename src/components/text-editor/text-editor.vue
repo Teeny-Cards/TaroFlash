@@ -30,8 +30,8 @@ const has_content = computed(() => {
       ref="text-editor"
       :contenteditable="!disabled"
       class="w-full h-full outline-none **:[h1]:text-6xl **:[h1]:inline-block **:[h2]:text-5xl
-        **:[h2]:inline-block **:[h3]:text-3xl **:[h3]:inline-block **:[p]:text-base
-        **:[li]:text-base **:[ul]:list-disc **:[ul]:list-inside **:[li>p]:inline"
+        **:[h2]:inline-block **:[h3]:text-3xl **:[h3]:inline-block **:[p]:text-base **:[hr]:my-1
+        **:[hr]:border-brown-700 text-brown-700"
       @update="emit('update', $event.detail)"
     ></div>
 

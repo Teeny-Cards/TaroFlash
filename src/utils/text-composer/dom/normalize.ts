@@ -1,4 +1,4 @@
-const ALLOWED = new Set(['H1', 'H2', 'H3', 'P', 'UL', 'LI', 'BR'])
+const ALLOWED = new Set(['H1', 'H2', 'H3', 'P', 'UL', 'LI', 'BR', 'HR'])
 const WRAPPERS = new Set(['DIV', 'SPAN'])
 
 /**
