@@ -77,16 +77,16 @@ export function parseHeadingLine(trimmed: string): ParsedHeading | null {
 }
 
 /**
- * Parses a markdown list item line (e.g., "- Item", "* Item").
+ * Parses a markdown list item line (e.g., "- Item", "-").
  * Supports nested headings within list items.
  * @param trimmed - The trimmed line to parse
  * @returns An object with the item kind and text, or null if not a list item
  */
 export function parseListItemLine(trimmed: string): ParsedListItem | null {
-  const m = trimmed.match(/^[-*]\s+(.*)$/)
+  const m = trimmed.match(/^[-](?:\s+(.*))?$/)
   if (!m) return null
 
-  const body = m[1].trim()
+  const body = m[1]?.trim() ?? ''
   const headingInside = parseHeadingLine(body) // reuse heading parsing
   if (headingInside) return headingInside
 

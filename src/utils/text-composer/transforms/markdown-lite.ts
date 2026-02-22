@@ -12,7 +12,7 @@ import {
   pushTextBlock,
   pushListItem,
   ensureAtLeastOneBlock
-} from './markdown-lite-helpers'
+} from './utils'
 
 /**
  * PURE: markdown-lite -> Doc
@@ -31,33 +31,33 @@ export function parseMarkdownLite(md: string): Doc {
     const trimmed = line.trim()
 
     if (isBlankLine(trimmed)) {
-      flushParagraph(s)
-      flushList(s)
+      pushTextBlock(s, 'p', '')
+      // flushList(s)
       continue
     }
 
     const li = parseListItemLine(trimmed)
     if (li) {
-      flushParagraph(s) // list item starts a list; paragraph ends
-      pushListItem(s, li)
+      flushParagraph(s)
+      // pushListItem(s, li)
       continue
     }
 
     const h = parseHeadingLine(trimmed)
     if (h) {
       flushParagraph(s)
-      flushList(s) // headings break lists in your grammar
+      // flushList(s)
       pushTextBlock(s, h.kind, h.text)
       continue
     }
 
     // paragraph line
-    flushList(s) // paragraphs break lists in your grammar
+    // flushList(s)
     pushTextBlock(s, 'p', trimmed)
   }
 
   flushParagraph(s)
-  flushList(s)
+  // flushList(s)
   ensureAtLeastOneBlock(s)
 
   return { blocks: s.blocks }

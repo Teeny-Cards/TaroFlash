@@ -1,21 +1,26 @@
 import { normalizeEditorDom } from '../dom/normalize'
+import { closestBlock, setCaretToStart, isEffectivelyEmptyTextBlock } from './utils'
+import { makeEmptyP } from './block'
 
-function closestBlock(node: Node | null): HTMLElement | null {
-  const el = node?.nodeType === Node.ELEMENT_NODE ? (node as Element) : node?.parentElement
-  if (!el) return null
-  return el.closest('li, p, h1, h2, h3') as HTMLElement | null
+export function toggleList(root: HTMLElement, range: Range) {
+  normalizeEditorDom(root)
+
+  const block = closestBlock(range.startContainer)
+  if (!block) return
+
+  // If we're in LI -> remove list (convert to its text block)
+  if (block.tagName === 'LI') {
+    convertListItemToBlock(block)
+    normalizeEditorDom(root)
+    return
+  }
+
+  // If we're in P/H1/H2/H3 -> make a UL with LI containing a P (keep it simple)
+  convertBlockToList(block)
+  normalizeEditorDom(root)
 }
 
-function setCaretToStart(el: HTMLElement) {
-  const range = document.createRange()
-  const sel = window.getSelection()
-  range.selectNodeContents(el)
-  range.collapse(true)
-  sel?.removeAllRanges()
-  sel?.addRange(range)
-}
-
-function ensureTextBlockInLi(li: HTMLElement): HTMLElement {
+export function ensureTextBlockInLi(li: HTMLElement): HTMLElement {
   const child = Array.from(li.children).find((c) => {
     const tag = (c as HTMLElement).tagName
     return tag === 'P' || tag === 'H1' || tag === 'H2' || tag === 'H3'
@@ -29,6 +34,20 @@ function ensureTextBlockInLi(li: HTMLElement): HTMLElement {
   return p
 }
 
+export function makeEmptyLi(): HTMLLIElement {
+  const li = document.createElement('li')
+  li.appendChild(makeEmptyP())
+  return li
+}
+
+export function isEmptyLi(li: HTMLElement) {
+  const tb = ensureTextBlockInLi(li)
+  return isEffectivelyEmptyTextBlock(tb)
+}
+
+/************************************************************
+ *                        HELPERS
+ ************************************************************/
 function convertBlockToList(block: HTMLElement) {
   const ul = document.createElement('ul')
   const li = document.createElement('li')
@@ -56,20 +75,7 @@ function convertListItemToBlock(li: HTMLElement) {
   setCaretToStart(textBlock)
 }
 
-export function toggleList(root: HTMLElement, range: Range) {
-  normalizeEditorDom(root)
-
-  const block = closestBlock(range.startContainer)
-  if (!block) return
-
-  // If we're in LI -> remove list (convert to its text block)
-  if (block.tagName === 'LI') {
-    convertListItemToBlock(block)
-    normalizeEditorDom(root)
-    return
-  }
-
-  // If we're in P/H1/H2/H3 -> make a UL with LI containing a P (keep it simple)
-  convertBlockToList(block)
-  normalizeEditorDom(root)
+function getOwningUl(li: HTMLElement): HTMLUListElement | null {
+  const ul = li.closest('ul')
+  return ul && ul.tagName === 'UL' ? (ul as HTMLUListElement) : null
 }

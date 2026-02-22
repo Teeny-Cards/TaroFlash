@@ -23,6 +23,7 @@ const has_content = computed(() => {
 </script>
 
 <template>
+  <!-- TextComposer will emit custom DOM events on this element -->
   <div data-testid="text-editor-container" class="relative">
     <div
       data-testid="text-editor"
@@ -30,9 +31,10 @@ const has_content = computed(() => {
       :contenteditable="!disabled"
       class="w-full h-full outline-none **:[h1]:text-6xl **:[h1]:inline-block **:[h2]:text-5xl
         **:[h2]:inline-block **:[h3]:text-3xl **:[h3]:inline-block **:[p]:text-base
-        **:[li]:text-base **:[ul]:list-disc **:[ul]:list-inside **:[li>p]:inline-block"
+        **:[li]:text-base **:[ul]:list-disc **:[ul]:list-inside **:[li>p]:inline"
       @update="emit('update', $event.detail)"
     ></div>
+
     <span
       v-if="!has_content && !disabled"
       class="absolute inset-0 flex items-center justify-center text-center pointer-events-none
