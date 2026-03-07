@@ -1,16 +1,10 @@
-import { onMounted, type ShallowRef } from 'vue'
+import { onMounted, type ShallowRef, onBeforeUnmount } from 'vue'
 import { useLogger } from './logger'
-import TextComposer from '@/utils/text-composer'
+import TextComposer, { type EditorConfig } from '@/utils/text-composer'
 
-export type EditorSettings = {
-  horizontal_align?: 'left' | 'center' | 'right'
-  vertical_align?: 'top' | 'middle' | 'bottom'
-  content?: string
-}
-
-export function useTextComposer(editor: ShallowRef<HTMLElement | null>, settings?: EditorSettings) {
+export function useTextComposer(editor: ShallowRef<HTMLElement | null>, config?: EditorConfig) {
   const logger = useLogger()
-  const text_composer = TextComposer.getInstance()
+  let unregister: (() => void) | undefined = undefined
 
   onMounted(() => {
     if (!editor.value) {
@@ -18,10 +12,14 @@ export function useTextComposer(editor: ShallowRef<HTMLElement | null>, settings
       return
     }
 
-    text_composer.attachEditor(editor.value)
+    unregister = TextComposer.attachEditor(editor.value, config)
 
-    if (settings?.content) {
-      text_composer.setContent(editor.value, settings.content)
+    if (config?.content) {
+      TextComposer.renderStatic(editor.value, config.content)
     }
+  })
+
+  onBeforeUnmount(() => {
+    unregister?.()
   })
 }

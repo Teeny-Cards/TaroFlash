@@ -15,15 +15,18 @@ const emit = defineEmits<{
 }>()
 
 const text_editor = useTemplateRef('text-editor')
-useTextComposer(text_editor, { content })
+useTextComposer(text_editor, { content, onUpdate })
 
 const has_content = computed(() => {
   return (content?.length ?? 0) > 0
 })
+
+function onUpdate(text: string) {
+  emit('update', text)
+}
 </script>
 
 <template>
-  <!-- TextComposer will emit custom DOM events on this element -->
   <div data-testid="text-editor-container" class="relative">
     <div
       data-testid="text-editor"
@@ -32,7 +35,6 @@ const has_content = computed(() => {
       class="w-full h-full outline-none **:[h1]:text-6xl **:[h1]:inline-block **:[h2]:text-5xl
         **:[h2]:inline-block **:[h3]:text-3xl **:[h3]:inline-block **:[p]:text-base **:[hr]:my-1
         **:[hr]:border-brown-700 text-brown-700"
-      @update="emit('update', $event.detail)"
     ></div>
 
     <span
