@@ -5,7 +5,7 @@ import UiIcon from '@/components/ui-kit/icon.vue'
 import UiImage from '@/components/ui-kit/image.vue'
 import TextComposer from '@/utils/text-composer'
 
-const text_composer = TextComposer.getInstance()
+const text_composer = TextComposer
 </script>
 
 <template>
@@ -17,15 +17,15 @@ const text_composer = TextComposer.getInstance()
       border-brown-100 h-15 z-10"
   >
     <div class="flex gap-1.5 items-center h-full py-3">
-      <font-size-selector @select="text_composer.setBlock" />
+      <!-- <font-size-selector @select="text_composer.setBlock" /> -->
 
       <!-- <div class="toolbar-option" @mousedown.prevent @click="text_composer.toggleList">
         <ui-icon src="bullets" />
       </div> -->
 
-      <div class="toolbar-option" @mousedown.prevent @click="text_composer.insertHr">
+      <!-- <div class="toolbar-option" @mousedown.prevent @click="text_composer.insertHr">
         <ui-icon src="horizontal-rule" />
-      </div>
+      </div> -->
 
       <div class="toolbar-option">
         <ui-icon src="align-v-top" />
