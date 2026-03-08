@@ -14,28 +14,22 @@ import { ref } from 'vue'
 export type TextBlockType = 'p' | HeadingTagType
 
 export type ToolbarState = {
-  blockType: TextBlockType
-  bold: boolean
-  italic: boolean
-  underline: boolean
-  canFormat: boolean
-}
-
-function getDefaultState(): ToolbarState {
-  return {
-    blockType: 'p',
-    bold: false,
-    italic: false,
-    underline: false,
-    canFormat: false
-  }
+  block_type?: TextBlockType
+  bold?: boolean
+  italic?: boolean
+  underline?: boolean
 }
 
 class ToolbarController {
-  private _state = ref<ToolbarState>(getDefaultState())
+  private _state = ref<ToolbarState>()
+  private _unregister?: () => void
 
   constructor() {
-    textComposer.onActiveEditorChange(this._updateState)
+    this._unregister = textComposer.registerUpdateListener(this._updateState)
+  }
+
+  destroy() {
+    this._unregister?.()
   }
 
   get editor() {
@@ -46,9 +40,26 @@ class ToolbarController {
     return editor
   }
 
-  _updateState = (editorState: EditorState): void => {
-    editorState.read(() => {
-      this._state.value = this._readState() ?? getDefaultState()
+  get block_type() {
+    return this._state.value?.block_type ?? 'p'
+  }
+
+  get bold() {
+    return this._state.value?.bold ?? false
+  }
+
+  get italic() {
+    return this._state.value?.italic ?? false
+  }
+
+  get underline() {
+    return this._state.value?.underline ?? false
+  }
+
+  _updateState = (): void => {
+    const editorState = this.editor?.getEditorState()
+    editorState?.read(() => {
+      this._state.value = this._readState()
     })
   }
 
@@ -82,17 +93,16 @@ class ToolbarController {
 
   private _readState(): ToolbarState {
     const selection = $getSelection()
-    if (!$isRangeSelection(selection)) return getDefaultState()
+    if (!$isRangeSelection(selection)) return {}
 
     const anchorNode = selection.anchor.getNode()
     const topLevel = anchorNode.getTopLevelElementOrThrow()
 
     return {
-      blockType: $isHeadingNode(topLevel) ? topLevel.getTag() : 'p',
+      block_type: $isHeadingNode(topLevel) ? topLevel.getTag() : 'p',
       bold: selection.hasFormat('bold'),
       italic: selection.hasFormat('italic'),
-      underline: selection.hasFormat('underline'),
-      canFormat: true
+      underline: selection.hasFormat('underline')
     }
   }
 }

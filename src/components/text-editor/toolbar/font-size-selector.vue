@@ -35,7 +35,7 @@ const font_size_map: { [key in TextBlockType]?: string } = {
       <button
         @pointerdown.prevent
         @click.prevent="open = !open"
-        class="flex gap-1 items-center px-3 py-1 h-full rounded-4 bg-brown-100 cursor-pointer
+        class="flex gap-1 items-center px-3 py-2 h-full rounded-2.5 bg-brown-100 cursor-pointer
           transition-colors duration-75"
         :class="{ 'rounded-t-1 bg-purple-500 text-brown-100': open, 'text-brown-800': !open }"
       >

@@ -5,16 +5,7 @@ import { type CardEditorMode } from '@/composables/card-bulk-editor'
 const { image, text } = defineProps<{
   image?: string
   text?: string
-  editor_delta?: any
   mode?: CardEditorMode
-  side?: 'front' | 'back'
-  placeholder?: string
-}>()
-
-const emit = defineEmits<{
-  (e: 'focusin', event: Event): void
-  (e: 'focusout', event: Event): void
-  (e: 'update', text: string): void
 }>()
 </script>
 
@@ -22,17 +13,9 @@ const emit = defineEmits<{
   <div class="card-face" :data-image="!!image" :data-text="!!text" :data-mode="mode">
     <img v-if="image" :src="image" class="h-full w-full object-cover" />
 
-    <text-editor
-      v-else
-      :data-testid="`card-face__text-editor__${side}`"
-      class="card-face__text-editor h-full outline-none overflow-y-auto scroll-hidden"
-      :placeholder="placeholder"
-      :content="text"
-      :disabled="mode !== 'edit'"
-      @focusin.prevent="emit('focusin', $event)"
-      @focusout.prevent="emit('focusout', $event)"
-      @update="emit('update', $event)"
-    />
+    <slot name="editor" v-else>
+      <text-editor :content="text" disabled class="w-full h-full" />
+    </slot>
   </div>
 </template>
 
