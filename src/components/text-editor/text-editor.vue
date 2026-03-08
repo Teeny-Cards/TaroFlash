@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTemplateRef, computed } from 'vue'
+import { useTemplateRef } from 'vue'
 import { useTextComposer } from '@/composables/use-text-composer'
 
 const { placeholder, disabled, content } = defineProps<{
@@ -15,11 +15,7 @@ const emit = defineEmits<{
 }>()
 
 const text_editor = useTemplateRef('text-editor')
-useTextComposer(text_editor, { content, onUpdate })
-
-const has_content = computed(() => {
-  return (content?.length ?? 0) > 0
-})
+const { has_content } = useTextComposer(text_editor, { content, onUpdate })
 
 function onUpdate(text: string) {
   emit('update', text)

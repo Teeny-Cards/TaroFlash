@@ -20,6 +20,12 @@ dependencies:
   '@lexical/rich-text':
     specifier: ^0.41.0
     version: 0.41.0
+  '@lexical/selection':
+    specifier: ^0.41.0
+    version: 0.41.0
+  '@lexical/utils':
+    specifier: ^0.41.0
+    version: 0.41.0
   '@stripe/stripe-js':
     specifier: ^8.5.2
     version: 8.5.2
