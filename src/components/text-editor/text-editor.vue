@@ -2,7 +2,11 @@
 import { useTemplateRef } from 'vue'
 import { useTextComposer } from '@/composables/use-text-composer'
 
-const { placeholder, disabled, content } = defineProps<{
+const {
+  placeholder,
+  disabled = false,
+  content
+} = defineProps<{
   content?: string
   placeholder?: string
   disabled?: boolean
@@ -10,16 +14,19 @@ const { placeholder, disabled, content } = defineProps<{
 
 const emit = defineEmits<{
   (e: 'update', text: string): void
-  (e: 'focusin', event: Event): void
-  (e: 'focusout', event: Event): void
+  (e: 'focus'): void
+  (e: 'blur'): void
 }>()
 
 const text_editor = useTemplateRef('text-editor')
-const { has_content } = useTextComposer(text_editor, { content, onUpdate })
 
-function onUpdate(text: string) {
-  emit('update', text)
-}
+const { has_content } = useTextComposer(text_editor, {
+  content,
+  disabled,
+  onUpdate: (text: string) => emit('update', text),
+  onFocus: () => emit('focus'),
+  onBlur: () => emit('blur')
+})
 </script>
 
 <template>
@@ -27,10 +34,8 @@ function onUpdate(text: string) {
     <div
       data-testid="text-editor"
       ref="text-editor"
-      :contenteditable="!disabled"
-      class="w-full h-full outline-none **:[h1]:text-6xl **:[h1]:inline-block **:[h2]:text-5xl
-        **:[h2]:inline-block **:[h3]:text-3xl **:[h3]:inline-block **:[p]:text-base **:[hr]:my-1
-        **:[hr]:border-brown-700 text-brown-700"
+      class="w-full h-full outline-none **:[h1]:text-6xl **:[h2]:text-5xl **:[h3]:text-3xl
+        **:[p]:text-base **:[hr]:my-1 **:[hr]:border-brown-700 text-brown-700"
     ></div>
 
     <span

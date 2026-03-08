@@ -15,8 +15,11 @@ const { all_cards, isDuplicate } = inject<CardBulkEditor>('card-editor')!
       :index="index"
       :card="card"
       :duplicate="isDuplicate(card)"
-    />
+    >
+      <template #toolbar>
+        <toolbar />
+      </template>
+    </list-item>
     <slot></slot>
   </div>
-  <toolbar />
 </template>

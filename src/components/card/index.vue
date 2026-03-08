@@ -11,7 +11,6 @@ type CardProps = Partial<CardBase> &
     size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
     mode?: CardEditorMode
     side?: 'front' | 'back'
-    placeholder?: string
     face_classes?: string
     sfx?: SfxOptions
   }
@@ -23,13 +22,6 @@ const {
   front_image_path,
   back_image_path
 } = defineProps<CardProps>()
-
-const emit = defineEmits<{
-  (e: 'update:front', text: string): void
-  (e: 'update:back', text: string): void
-  (e: 'focusin'): void
-  (e: 'focusout'): void
-}>()
 
 const front_image_url = computed(() => {
   if (!front_image_path) return undefined
@@ -67,12 +59,11 @@ const back_image_url = computed(() => {
           :image="front_image_url"
           :text="front_text"
           :mode="mode"
-          :side="side"
-          :placeholder="placeholder"
-          @update="emit('update:front', $event)"
-          @focusin.prevent="emit('focusin')"
-          @focusout.prevent="emit('focusout')"
-        />
+        >
+          <template #editor>
+            <slot name="editor"></slot>
+          </template>
+        </card-face>
       </slot>
 
       <slot name="back" v-else>
@@ -82,12 +73,11 @@ const back_image_url = computed(() => {
           :image="back_image_url"
           :text="back_text"
           :mode="mode"
-          :side="side"
-          :placeholder="placeholder"
-          @update="emit('update:back', $event)"
-          @focusin.prevent="emit('focusin')"
-          @focusout.prevent="emit('focusout')"
-        />
+        >
+          <template #editor>
+            <slot name="editor"></slot>
+          </template>
+        </card-face>
       </slot>
     </transition>
   </div>

@@ -21,7 +21,7 @@ type MemberTheme =
   // | 'purple-400'
   // | 'pink-500'
   | 'pink-400'
-  // | 'red-500'
+  | 'red-500'
   | 'red-400'
   | 'orange-600'
   | 'orange-500'
