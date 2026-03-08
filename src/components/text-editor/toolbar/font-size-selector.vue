@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import UiPopover from '@/components/ui-kit/popover.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
-import { type TextBlockType } from '@/utils/text-composer/doc'
+import { type TextBlockType } from '@/utils/text-composer/toolbar'
 
 const { selected_font_size = 'p' } = defineProps<{
   selected_font_size?: TextBlockType

@@ -1,4 +1,4 @@
-import { onMounted, type ShallowRef, onBeforeUnmount } from 'vue'
+import { onMounted, type ShallowRef, onBeforeUnmount, computed } from 'vue'
 import { useLogger } from './logger'
 import TextComposer, { type EditorConfig } from '@/utils/text-composer'
 
@@ -22,4 +22,12 @@ export function useTextComposer(editor: ShallowRef<HTMLElement | null>, config?:
   onBeforeUnmount(() => {
     unregister?.()
   })
+
+  const has_content = computed(() => {
+    return (config?.content?.length ?? 0) > 0
+  })
+
+  return {
+    has_content
+  }
 }

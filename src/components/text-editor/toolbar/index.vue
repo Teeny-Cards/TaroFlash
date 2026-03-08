@@ -3,9 +3,15 @@ import BgColorSelector from './bg-color-selector.vue'
 import FontSizeSelector from './font-size-selector.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiImage from '@/components/ui-kit/image.vue'
-import TextComposer from '@/utils/text-composer'
+import Toolbar, { type TextBlockType } from '@/utils/text-composer/toolbar'
 
-const text_composer = TextComposer
+function setFontSize(size: TextBlockType | 'p') {
+  if (size === 'p') {
+    Toolbar.setParagraph()
+  } else {
+    Toolbar.setHeading(size)
+  }
+}
 </script>
 
 <template>
@@ -17,15 +23,15 @@ const text_composer = TextComposer
       border-brown-100 h-15 z-10"
   >
     <div class="flex gap-1.5 items-center h-full py-3">
-      <!-- <font-size-selector @select="text_composer.setBlock" /> -->
+      <font-size-selector @select="setFontSize" />
 
       <!-- <div class="toolbar-option" @mousedown.prevent @click="text_composer.toggleList">
         <ui-icon src="bullets" />
       </div> -->
 
-      <!-- <div class="toolbar-option" @mousedown.prevent @click="text_composer.insertHr">
+      <div class="toolbar-option" @mousedown.prevent>
         <ui-icon src="horizontal-rule" />
-      </div> -->
+      </div>
 
       <div class="toolbar-option">
         <ui-icon src="align-v-top" />

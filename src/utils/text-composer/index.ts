@@ -2,6 +2,7 @@
 import {
   createEditor as createLexicalEditor,
   type CreateEditorArgs,
+  type EditorState,
   type LexicalEditor
 } from 'lexical'
 import { createHeadlessEditor } from '@lexical/headless'
@@ -17,10 +18,9 @@ import { registerRichText } from '@lexical/rich-text'
 
 const MARKDOWN_TRANSFORMERS = [HEADING]
 
-const config: CreateEditorArgs = {
+const lexical_config: CreateEditorArgs = {
   namespace: 'text-composer',
-  nodes: [HeadingNode],
-  onError: console.error
+  nodes: [HeadingNode]
 }
 
 export type EditorConfig = {
@@ -33,10 +33,12 @@ export type EditorConfig = {
  * and managing multiple text editors in the DOM.
  */
 class TextComposer {
-  private lexical: LexicalEditor = createLexicalEditor(config)
-  private headless: LexicalEditor = createHeadlessEditor(config)
+  private lexical: LexicalEditor = createLexicalEditor(lexical_config)
+  private headless: LexicalEditor = createHeadlessEditor(lexical_config)
   private unregister?: () => void
   private editors: Map<HTMLElement, EditorConfig> = new Map()
+  private editor_content_cache: Map<HTMLElement, string> = new Map()
+  private focus_listeners = new Set<(editorState: EditorState) => void>()
 
   constructor() {
     const unregisterUpdate = this.lexical.registerUpdateListener(this._onUpdate)
@@ -56,6 +58,21 @@ class TextComposer {
   destroy() {
     this.unregister?.()
     this.editors.clear()
+    this.editor_content_cache.clear()
+  }
+
+  /**
+   * Returns the lexical editor instance.
+   */
+  getEditor() {
+    return this.lexical
+  }
+
+  /**
+   * Returns the active root element, if it exists.
+   */
+  getActiveRoot() {
+    return this.lexical.getRootElement()
   }
 
   /**
@@ -77,9 +94,10 @@ class TextComposer {
     }
 
     this.editors.set(rootEl, { ...config })
+    this._cacheEditorContent(config.content, { rootEl })
 
-    const boundFocusIn = this._onFocusIn.bind(this, rootEl)
-    const boundFocusOut = this._onFocusOut.bind(this, rootEl)
+    const boundFocusIn = this._focusEditor.bind(this, rootEl)
+    const boundFocusOut = this._blurEditor.bind(this)
 
     rootEl.addEventListener('focusin', boundFocusIn)
     rootEl.addEventListener('focusout', boundFocusOut)
@@ -88,6 +106,21 @@ class TextComposer {
       rootEl.removeEventListener('focusin', boundFocusIn)
       rootEl.removeEventListener('focusout', boundFocusOut)
     }
+  }
+
+  /**
+   * Registers a listener to be called when the active editor changes.
+   * Editor changes when:
+   *  - the active editor element changes.
+   *  - the active editor content changes.
+   *  - the active editor selection changes.
+   *
+   * @param listener The listener to be called.
+   * @returns A function to remove the listener.
+   */
+  onActiveEditorChange(listener: (editorState: EditorState) => void) {
+    this.focus_listeners.add(listener)
+    return () => this.focus_listeners.delete(listener)
   }
 
   /**
@@ -113,17 +146,77 @@ class TextComposer {
   }
 
   /**
+   * Notifies listeners that the active editor has changed.
+   */
+  private _notifyActiveEditorChange() {
+    const editorState = this.lexical.getEditorState()
+    for (const listener of this.focus_listeners) listener(editorState)
+  }
+
+  /**
+   * Caches the given Markdown content for the current editor element.
+   * If no editor element is focused, does nothing.
+   *
+   * @param md The Markdown content to cache.
+   * @param opts Optional parameters.
+   *   - rootEl Optional element to cache the content for. If not provided, uses the current focused element.
+   */
+  private _cacheEditorContent(md?: string, { rootEl }: { rootEl?: HTMLElement } = {}) {
+    const el = rootEl ?? this.getActiveRoot()
+    if (!el) return
+
+    this.editor_content_cache.set(el, md ?? '')
+  }
+
+  /**
    * Finds the editor config for the current root element, if it exists.
    * Calls the onUpdate callback if it exists, passing the given Markdown content.
    *
    * @param markdown The Markdown content to pass to the onUpdate callback.
    */
   private _emitUpdate(markdown: string) {
-    const rootEl = this.lexical.getRootElement()
+    const rootEl = this.getActiveRoot()
     if (!rootEl) return
 
     const editor = this.editors.get(rootEl)
     editor?.onUpdate?.(markdown)
+  }
+
+  /**
+   * Sets the lexical editor root element to the given element.
+   * Finds the last known `content` state for the given element, if it exists,
+   * and populates the editor with it.
+   *
+   * @param rootEl The element to set as the lexical editor root.
+   */
+  private _focusEditor(rootEl: HTMLElement) {
+    this.lexical.setRootElement(rootEl)
+    const markdown = this.editor_content_cache.get(rootEl) ?? ''
+
+    this.lexical.update(() => {
+      $convertFromMarkdownString(markdown, MARKDOWN_TRANSFORMERS)
+    })
+  }
+
+  /**
+   * Converts the current editor state to Markdown.
+   * Caches the new Markdown in the editor content cache.
+   * Clears the lexical editor root element.
+   * Renders the Markdown as static HTML in the editor element.
+   */
+  private _blurEditor() {
+    let markdown = ''
+    const rootEl = this.getActiveRoot()
+
+    if (!rootEl) return
+
+    this.lexical.getEditorState().read(() => {
+      markdown = $convertToMarkdownString(MARKDOWN_TRANSFORMERS)
+    })
+
+    this._cacheEditorContent(markdown)
+    this.lexical.setRootElement(null)
+    this.renderStatic(rootEl, markdown)
   }
 
   /**
@@ -136,40 +229,7 @@ class TextComposer {
     })
 
     this._emitUpdate(markdown)
-  }
-
-  /**
-   * Sets the lexical editor root element to the given element.
-   * Converts the editor config content to the lexical state.
-   *
-   * @param rootEl The element to set as the lexical editor root.
-   */
-  private _onFocusIn(rootEl: HTMLElement) {
-    this.lexical.setRootElement(rootEl)
-    const markdown = this.editors.get(rootEl)?.content ?? ''
-
-    this.lexical.update(() => {
-      $convertFromMarkdownString(markdown, MARKDOWN_TRANSFORMERS)
-    })
-  }
-
-  /**
-   * Converts the current editor state to Markdown.
-   * Updates the editor config content with the new Markdown.
-   * Clears the lexical editor root element.
-   * Renders the Markdown as static HTML in the editor element.
-   */
-  private _onFocusOut(rootEl: HTMLElement) {
-    let markdown = ''
-
-    this.lexical.getEditorState().read(() => {
-      markdown = $convertToMarkdownString(MARKDOWN_TRANSFORMERS)
-    })
-
-    const config = this.editors.get(rootEl)
-    this.editors.set(rootEl, { ...config, content: markdown })
-    this.lexical.setRootElement(null)
-    this.renderStatic(rootEl, markdown)
+    this._notifyActiveEditorChange()
   }
 }
 

@@ -25,6 +25,8 @@
     "@lexical/html": "^0.41.0",
     "@lexical/markdown": "^0.41.0",
     "@lexical/rich-text": "^0.41.0",
+    "@lexical/selection": "^0.41.0",
+    "@lexical/utils": "^0.41.0",
     "@stripe/stripe-js": "^8.5.2",
     "@supabase/supabase-js": "^2.75.1",
     "@types/howler": "^2.2.12",
