@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, describe, it } from 'vitest'
+import { expect, describe, it } from 'vite-plus/test'
 import Button from '@/components/ui-kit/button.vue'
 
 // Test basic rendering

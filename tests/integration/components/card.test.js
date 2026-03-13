@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, it } from 'vitest'
+import { expect, it } from 'vite-plus/test'
 import Card from '@/components/card/index.vue'
 import { mockAndSimulateFileUpload } from '../../mocks/file-upload.js'
 

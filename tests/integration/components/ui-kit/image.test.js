@@ -1,5 +1,5 @@
 import { shallowMount, flushPromises } from '@vue/test-utils'
-import { expect, it, vi } from 'vitest'
+import { expect, it, vi } from 'vite-plus/test'
 import Image from '@/components/ui-kit/image.vue'
 
 const { mockedConsoleWarn } = vi.hoisted(() => {

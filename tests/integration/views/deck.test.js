@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, describe, it, vi, beforeEach, afterEach } from 'vitest'
+import { expect, describe, it, vi, beforeEach, afterEach } from 'vite-plus/test'
 import { createTestingPinia } from '@pinia/testing'
 import DeckView from '@/views/deck.vue'
 import { deck } from '@tests/mocks/models/deck'

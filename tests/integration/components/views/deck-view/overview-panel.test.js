@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, test } from 'vitest'
+import { expect, test } from 'vite-plus/test'
 import OverviewPanel from '@/components/views/deck-view/overview-panel.vue'
 import { deck as deckBuilder } from '@tests/mocks/models/deck'
 

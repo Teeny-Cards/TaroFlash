@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, it, vi } from 'vitest'
+import { expect, it, vi } from 'vite-plus/test'
 import MoveCards from '@/components/modals/move-cards.vue'
 import { card } from '@tests/mocks/models/card'
 import { deck } from '@tests/mocks/models/deck'

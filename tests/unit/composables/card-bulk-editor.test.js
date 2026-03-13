@@ -1,4 +1,4 @@
-import { expect, test, describe, vi, beforeEach } from 'vitest'
+import { expect, test, describe, vi, beforeEach } from 'vite-plus/test'
 import { useCardBulkEditor } from '@/composables/card-bulk-editor'
 import { card } from '@tests/mocks/models/card'
 

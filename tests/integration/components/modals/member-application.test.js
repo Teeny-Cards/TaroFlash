@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, it, vi, describe, beforeEach } from 'vitest'
+import { expect, it, vi, describe, beforeEach } from 'vite-plus/test'
 import { createTestingPinia } from '@pinia/testing'
 import MemberApplication from '@/components/modals/member-application.vue'
 import MemberCard from '@/components/modals/member-card.vue'

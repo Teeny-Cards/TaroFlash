@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, it, vi, beforeEach, afterEach } from 'vitest'
+import { expect, it, vi, beforeEach, afterEach } from 'vite-plus/test'
 import Toast from '@/components/ui-kit/toast.vue'
 
 // Mock timers

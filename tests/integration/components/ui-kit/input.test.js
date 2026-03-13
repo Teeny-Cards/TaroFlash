@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import { expect, test } from 'vitest'
+import { expect, test } from 'vite-plus/test'
 import Input from '@/components/ui-kit/input.vue'
 
 test('renders the input element with default props', () => {
