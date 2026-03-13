@@ -3,9 +3,9 @@ import {
   $createParagraphNode,
   $getSelection,
   $isRangeSelection,
-  FORMAT_TEXT_COMMAND,
-  type EditorState
+  FORMAT_TEXT_COMMAND
 } from 'lexical'
+import { $isListNode, INSERT_UNORDERED_LIST_COMMAND, REMOVE_LIST_COMMAND } from '@lexical/list'
 import { $setBlocksType } from '@lexical/selection'
 import { $createHeadingNode, $isHeadingNode, type HeadingTagType } from '@lexical/rich-text'
 import textComposer from './index'
@@ -18,6 +18,7 @@ export type ToolbarState = {
   bold?: boolean
   italic?: boolean
   underline?: boolean
+  list?: boolean
 }
 
 class ToolbarController {
@@ -91,6 +92,11 @@ class ToolbarController {
     this.editor?.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')
   }
 
+  toggleUnorderedList = () => {
+    const cmd = this._state.value?.list ? REMOVE_LIST_COMMAND : INSERT_UNORDERED_LIST_COMMAND
+    this.editor?.dispatchCommand(cmd, undefined)
+  }
+
   private _readState(): ToolbarState {
     const selection = $getSelection()
     if (!$isRangeSelection(selection)) return {}
@@ -98,11 +104,17 @@ class ToolbarController {
     const anchorNode = selection.anchor.getNode()
     const topLevel = anchorNode.getTopLevelElementOrThrow()
 
+    let block_type: TextBlockType = 'p'
+    if ($isHeadingNode(topLevel)) {
+      block_type = topLevel.getTag()
+    }
+
     return {
-      block_type: $isHeadingNode(topLevel) ? topLevel.getTag() : 'p',
+      block_type,
       bold: selection.hasFormat('bold'),
       italic: selection.hasFormat('italic'),
-      underline: selection.hasFormat('underline')
+      underline: selection.hasFormat('underline'),
+      list: $isListNode(topLevel)
     }
   }
 }

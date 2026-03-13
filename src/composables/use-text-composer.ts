@@ -31,11 +31,22 @@ export function useTextComposer(editor: ShallowRef<HTMLElement | null>, config?:
    * @param md The Markdown content to check for length.
    */
   function _onUpdate(md: string) {
-    has_content.value = Boolean(md?.length ?? 0 > 0)
+    const clean = md
+      .replace(/#{1,6}\s?/g, '') // headings
+      .replace(/>\s?/g, '') // blockquotes
+      .replace(/```/g, '') // code fences
+      .replace(/==/g, '') // highlight
+      .trim()
+
+    has_content.value = Boolean(clean.length > 0)
     config?.onUpdate?.(md)
   }
 
   return {
-    has_content
+    has_content,
+    focus: () => {
+      if (!editor.value) return
+      TextComposer.focusEditor(editor.value)
+    }
   }
 }

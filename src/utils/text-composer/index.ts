@@ -2,7 +2,6 @@
 import {
   createEditor as createLexicalEditor,
   type CreateEditorArgs,
-  type EditorState,
   type LexicalEditor
 } from 'lexical'
 import { createHeadlessEditor } from '@lexical/headless'
@@ -11,16 +10,18 @@ import {
   $convertFromMarkdownString,
   $convertToMarkdownString,
   registerMarkdownShortcuts,
-  HEADING
+  HEADING,
+  UNORDERED_LIST
 } from '@lexical/markdown'
-import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html'
+import { $generateHtmlFromNodes } from '@lexical/html'
 import { registerRichText } from '@lexical/rich-text'
+import { registerList, ListNode, ListItemNode } from '@lexical/list'
 
-const MARKDOWN_TRANSFORMERS = [HEADING]
+const MARKDOWN_TRANSFORMERS = [HEADING, UNORDERED_LIST]
 
 const lexical_config: CreateEditorArgs = {
   namespace: 'text-composer',
-  nodes: [HeadingNode]
+  nodes: [HeadingNode, ListNode, ListItemNode]
 }
 
 export type EditorConfig = {
@@ -45,11 +46,13 @@ class TextComposer {
   constructor() {
     const unregisterUpdate = this.lexical.registerUpdateListener(this._onUpdate)
     const unregisterRichText = registerRichText(this.lexical)
+    const unregisterList = registerList(this.lexical)
     const unregisterMarkdown = registerMarkdownShortcuts(this.lexical, MARKDOWN_TRANSFORMERS)
 
     this.unregister = () => {
       unregisterUpdate()
       unregisterRichText()
+      unregisterList()
       unregisterMarkdown()
     }
   }
@@ -68,6 +71,10 @@ class TextComposer {
    */
   getEditor() {
     return this.lexical
+  }
+
+  focusEditor(rootEl: HTMLElement) {
+    rootEl.focus()
   }
 
   /**
