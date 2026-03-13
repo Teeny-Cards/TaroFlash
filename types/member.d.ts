@@ -27,10 +27,10 @@ type MemberTheme =
   | 'orange-500'
   // | 'orange-400'
   // | 'brown-800'
-  // | 'brown-300'
+  | 'brown-300'
   | 'brown-100'
   | 'grey-900'
   | 'grey-400'
-// | 'white'
+  | 'white'
 
 declare type MemberType = 'free' | 'paid'

@@ -19,6 +19,8 @@ const { card } = defineProps<{
 const { t } = useI18n()
 const toast = useToast()
 const list_item_card = useTemplateRef('list-item-card')
+const front_input = useTemplateRef('front-input')
+
 const focused = ref(false)
 const focusOutPromise = ref<Promise<void> | null>(null)
 
@@ -30,6 +32,12 @@ function onUpdate(side: 'front' | 'back', text: string) {
   }
 
   updateCard(card.id, update)
+}
+
+function focusEditor() {
+  if (!focused.value) {
+    front_input.value?.focus()
+  }
 }
 
 async function onImageUpload(side: 'front' | 'back', file: File) {
@@ -75,6 +83,8 @@ async function onBlur() {
 function hasFocusWithin() {
   return list_item_card.value?.contains(document.activeElement) ?? false
 }
+
+defineExpose({ focusEditor, hasFocusWithin })
 </script>
 
 <template>
@@ -85,7 +95,6 @@ function hasFocusWithin() {
   >
     <card
       data-testid="front-input"
-      ref="front-input"
       :data-id="card.id"
       side="front"
       size="xl"
@@ -105,6 +114,7 @@ function hasFocusWithin() {
 
       <template #editor>
         <text-editor
+          ref="front-input"
           :content="card.front_text"
           :placeholder="t('common.front')"
           class="w-full h-full"
@@ -117,7 +127,6 @@ function hasFocusWithin() {
 
     <card
       data-testid="back-input"
-      ref="back-input"
       :data-id="card.id"
       side="back"
       size="xl"
@@ -137,6 +146,7 @@ function hasFocusWithin() {
 
       <template #editor>
         <text-editor
+          ref="back-input"
           :content="card.back_text"
           :placeholder="t('common.back')"
           class="w-full h-full"

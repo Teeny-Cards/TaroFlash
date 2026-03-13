@@ -4,7 +4,7 @@ import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
 import { type CardBulkEditor } from '@/composables/card-bulk-editor'
-import { inject, computed } from 'vue'
+import { inject, computed, useTemplateRef } from 'vue'
 import ListItemCard from './list-item-card.vue'
 
 const { card, index } = defineProps<{
@@ -19,7 +19,19 @@ const onDeleteCard = inject<(id: number) => void>('on-delete-card')
 const onMoveCard = inject<(id: number) => void>('on-move-card')
 const onSelectCard = inject<(id: number) => void>('on-select-card')
 
+const list_item_card = useTemplateRef('list-item-card')
+
 const selected = computed(() => selected_card_ids.value.includes(card.id!))
+
+function onClick(e: MouseEvent) {
+  if (!(e.target as HTMLElement)?.closest('[contenteditable]')) {
+    e.preventDefault()
+  }
+
+  if (list_item_card.value?.hasFocusWithin()) return
+
+  list_item_card.value?.focusEditor()
+}
 </script>
 
 <template>
@@ -33,6 +45,7 @@ const selected = computed(() => selected_card_ids.value.includes(card.id!))
       dark:focus-within:bg-blue-650 dark:hover:focus-within:bg-blue-650
       dark:hover:not-focus-within:bg-grey-700"
     :class="{ 'cursor-pointer': mode === 'select' }"
+    @mousedown="onClick"
   >
     <button
       data-testid="card-list-item__reorder"
@@ -49,7 +62,7 @@ const selected = computed(() => selected_card_ids.value.includes(card.id!))
       </span>
     </button>
 
-    <list-item-card :card="card" :duplicate="duplicate" />
+    <list-item-card ref="list-item-card" :card="card" :duplicate="duplicate" />
 
     <item-options
       v-if="mode !== 'select'"

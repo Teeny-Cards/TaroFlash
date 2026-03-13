@@ -85,7 +85,7 @@ function onStudyClicked() {
         <ui-button
           data-testid="overview-panel__settings-button"
           icon-left="settings"
-          theme="grey-400"
+          theme="brown-300"
           icon-only
           @click="onSettingsClicked()"
         >
