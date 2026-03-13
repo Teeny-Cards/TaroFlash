@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import { expect, test } from 'vitest'
+import { expect, test } from 'vite-plus/test'
 import Toggle from '@/components/ui-kit/toggle.vue'
 
 test('renders the component with slot content', () => {

@@ -1,4 +1,4 @@
-import { expect, test, describe, vi, beforeEach } from 'vitest'
+import { expect, test, describe, vi, beforeEach } from 'vite-plus/test'
 import { useStudySession } from '@/composables/study-session'
 import { card, review } from '@tests/mocks/models/card'
 import { Rating } from 'ts-fsrs'

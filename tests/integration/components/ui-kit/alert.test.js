@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, it, vi } from 'vitest'
+import { expect, it, vi } from 'vite-plus/test'
 import Alert from '@/components/ui-kit/alert.vue'
 
 const mocks = vi.hoisted(() => {

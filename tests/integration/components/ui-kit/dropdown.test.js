@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import { expect, it, vi, beforeEach } from 'vitest'
+import { expect, it, vi, beforeEach } from 'vite-plus/test'
 import Dropdown from '@/components/ui-kit/dropdown.vue'
 
 // Mock document event listeners

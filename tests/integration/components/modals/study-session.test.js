@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, it, vi, beforeEach } from 'vitest'
+import { expect, it, vi, beforeEach } from 'vite-plus/test'
 import StudySession from '@/components/modals/study-session/index.vue'
 import { deck } from '@tests/mocks/models/deck'
 import { card } from '@tests/mocks/models/card'

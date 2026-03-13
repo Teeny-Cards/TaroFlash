@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, test, vi, beforeEach } from 'vitest'
+import { expect, test, vi, beforeEach } from 'vite-plus/test'
 import GridItem from '@/components/views/deck-view/card-grid/grid-item.vue'
 import { card } from '@tests/mocks/models/card'
 import { mockAndSimulateFileUpload } from '@tests/mocks/file-upload.js'

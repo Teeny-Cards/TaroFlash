@@ -1,5 +1,5 @@
 import { build, sequence } from 'mimicry-js'
-import { vi } from 'vitest'
+import { vi } from 'vite-plus/test'
 
 export const ModalEntryBuilder = (component) => {
   return build({

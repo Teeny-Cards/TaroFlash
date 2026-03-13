@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, describe, it, vi, beforeEach } from 'vitest'
+import { expect, describe, it, vi, beforeEach } from 'vite-plus/test'
 import SplitButton from '@/components/ui-kit/split-button.vue'
 
 // Mock the useAudio composable

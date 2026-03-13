@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, it, vi, beforeEach, afterEach } from 'vitest'
+import { expect, it, vi, beforeEach, afterEach } from 'vite-plus/test'
 import ButtonMenu from '@/components/ui-kit/button-menu.vue'
 
 // Mock document event listeners

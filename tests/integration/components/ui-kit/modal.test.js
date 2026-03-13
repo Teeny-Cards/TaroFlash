@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils'
-import { expect, test, vi } from 'vitest'
+import { expect, test, vi } from 'vite-plus/test'
 import Modal from '@/components/ui-kit/modal.vue'
 import { shallowRef, defineComponent, markRaw } from 'vue'
 import { ModalEntryBuilder } from '@tests/mocks/types/modal-entry'
-import { beforeEach } from 'vitest'
+import { beforeEach } from 'vite-plus/test'
 
 // Since ui-kit components are imported in a setup file
 // Vitest will not mock modules imported inside them.
