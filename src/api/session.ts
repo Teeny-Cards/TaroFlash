@@ -100,11 +100,15 @@ export async function signInOAuth(
   }
 
   return new Promise((resolve, reject) => {
-    const interval = setInterval(async () => {
-      if (!popup.closed) return
+    window.addEventListener(
+      'message',
+      async (event) => {
+        if (event.origin !== window.location.origin) reject(new Error('Invalid origin'))
+        if (event.data !== 'auth_complete') reject(new Error('Invalid message'))
 
-      clearInterval(interval)
-      resolve()
-    }, 500)
+        resolve()
+      },
+      { once: true }
+    )
   })
 }
