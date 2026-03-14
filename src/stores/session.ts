@@ -68,8 +68,12 @@ export const useSessionStore = defineStore('sessionStore', () => {
   }
 
   async function signInOAuth(provider: OAuthProvider, options?: SignupOAuthOptions): Promise<void> {
-    await supaSignInOAuth(provider, options)
-    await restoreSession()
+    try {
+      await supaSignInOAuth(provider, options)
+    } catch (e: any) {
+      logger.error(`Error signing in with OAuth: ${e.message}`)
+    }
+
     router.push({ name: 'dashboard' })
   }
 
