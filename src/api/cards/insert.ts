@@ -1,7 +1,5 @@
 import { supabase } from '@/supabase-client'
-import { useLogger } from '@/composables/logger'
-
-const logger = useLogger()
+import logger from '@/utils/logger'
 
 export async function reserveCard(
   deck_id: number,

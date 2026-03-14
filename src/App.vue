@@ -6,12 +6,11 @@ import UiModal from '@/components/ui-kit/modal.vue'
 import audio_player from '@/sfx/player'
 import { useSessionStore } from '@/stores/session'
 import { onMounted } from 'vue'
-import { useLogger } from '@/composables/logger'
+import logger from '@/utils/logger'
 import { useTheme } from '@/composables/use-theme'
 
 const { toasts } = useToast()
 const session = useSessionStore()
-const logger = useLogger()
 const theme = useTheme()
 
 onMounted(async () => {

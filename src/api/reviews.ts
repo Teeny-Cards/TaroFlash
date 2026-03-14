@@ -1,7 +1,5 @@
 import { supabase } from '@/supabase-client'
-import { useLogger } from '@/composables/logger'
-
-const logger = useLogger()
+import logger from '@/utils/logger'
 
 export async function updateReviewByCardId(id: number, review: Review): Promise<Card> {
   const { error, data } = await supabase

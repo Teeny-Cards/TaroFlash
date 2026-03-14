@@ -1,11 +1,9 @@
 import { supabase } from '@/supabase-client'
-import { useLogger } from '@/composables/logger'
+import logger from '@/utils/logger'
 import { DateTime } from 'luxon'
 import { uploadImage, insertMedia, deleteImage } from '@/api/media'
 import uid from '@/utils/uid'
 import { type CardBase } from '@type/card'
-
-const logger = useLogger()
 
 export async function upsertCard(card: CardBase): Promise<Card> {
   const sanitized = {
