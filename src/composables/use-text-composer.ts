@@ -1,9 +1,8 @@
 import { onMounted, type ShallowRef, onBeforeUnmount, ref } from 'vue'
-import { useLogger } from '../utils/logger'
+import logger from '@/utils/logger'
 import TextComposer, { type EditorConfig } from '@/utils/text-composer'
 
 export function useTextComposer(editor: ShallowRef<HTMLElement | null>, config?: EditorConfig) {
-  const logger = useLogger()
   const has_content = ref(false)
   let unregister: (() => void) | undefined = undefined
 
