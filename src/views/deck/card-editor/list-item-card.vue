@@ -104,8 +104,7 @@ defineExpose({ focusEditor, hasFocusWithin })
       :class="{ 'pointer-events-none': mode === 'select' }"
     >
       <image-button
-        class="absolute! -top-2 -left-2 opacity-0 transition-opacity duration-100 ease-in-out
-          group-hover/card:opacity-100"
+        class="absolute! -top-2 -left-2 opacity-0 transition-opacity duration-100 ease-in-out group-hover/card:opacity-100"
         :image="card.front_image_path"
         @image-uploaded="onImageUpload('front', $event)"
         @image-deleted="onImageDelete('front')"
@@ -136,8 +135,7 @@ defineExpose({ focusEditor, hasFocusWithin })
       :class="{ 'pointer-events-none': mode === 'select' }"
     >
       <image-button
-        class="absolute! -top-2 -right-2 opacity-0 transition-opacity duration-100 ease-in-out
-          group-hover/card:opacity-100"
+        class="absolute! -top-2 -right-2 opacity-0 transition-opacity duration-100 ease-in-out group-hover/card:opacity-100"
         :image="card.back_image_path"
         @image-uploaded="onImageUpload('back', $event)"
         @image-deleted="onImageDelete('back')"

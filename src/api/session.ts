@@ -7,6 +7,7 @@ export type SignupEmailOptions = {
 
 export type SignupOAuthOptions = {
   redirectTo?: string
+  skipBrowserRedirect?: boolean
 }
 
 export type OAuthProvider = 'google'
@@ -66,12 +67,40 @@ export async function signInOAuth(
   provider: OAuthProvider,
   options?: SignupOAuthOptions
 ): Promise<void> {
-  const { error } = await supabase.auth.signInWithOAuth({
+  const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
-    options
+    options: {
+      skipBrowserRedirect: true,
+      ...options
+    }
   })
 
-  if (error) {
-    throw error
+  if (error || !data?.url) {
+    throw error ?? new Error('No URL returned')
   }
+
+  // Calculate centered position
+  const width = 500
+  const height = 600
+  const left = window.screenX + (window.outerWidth - width) / 2
+  const top = window.screenY + (window.outerHeight - height) / 2
+
+  const popupFeatures = `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
+
+  // Check if window.open is supported and not blocked
+  const popup = window.open(data.url, 'googleAuth', popupFeatures)
+
+  if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+    // Fallback: redirect the current tab instead
+    window.location.href = data.url
+    return
+  }
+
+  const interval = setInterval(async () => {
+    if (popup.closed) {
+      clearInterval(interval)
+      const { data: sessionData } = await supabase.auth.getSession()
+      console.log('Session:', sessionData.session)
+    }
+  }, 500)
 }
