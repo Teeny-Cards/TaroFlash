@@ -70,6 +70,7 @@ export const useSessionStore = defineStore('sessionStore', () => {
   async function signInOAuth(provider: OAuthProvider, options?: SignupOAuthOptions): Promise<void> {
     await supaSignInOAuth(provider, options)
     await restoreSession()
+    router.push({ name: 'dashboard' })
   }
 
   function reset() {
