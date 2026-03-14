@@ -1,9 +1,8 @@
 import { supabase } from '@/supabase-client'
 import { useMemberStore } from '@/stores/member'
-import { useLogger } from '@/composables/logger'
 import { DateTime } from 'luxon'
 
-const logger = useLogger()
+import logger from '@/utils/logger'
 
 type FetchMemberCardCountOptions = {
   only_due_cards?: boolean

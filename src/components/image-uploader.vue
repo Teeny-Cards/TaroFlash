@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
-import { useLogger } from '@/composables/logger'
+import logger from '@/utils/logger'
 
 export type ImageUploadPayload = {
   preview: string
@@ -20,7 +20,6 @@ const loading = ref(false)
 const dragging = ref(false)
 
 const fileInput = useTemplateRef<HTMLInputElement>('fileInput')
-const logger = useLogger()
 
 onMounted(() => {
   if (!allow_drop) return

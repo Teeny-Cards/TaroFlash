@@ -1,7 +1,5 @@
 import { supabase } from '@/supabase-client'
-import { useLogger } from '@/composables/logger'
-
-const logger = useLogger()
+import logger from '@/utils/logger'
 
 export async function searchCardsInDeck(deck_id: number, query: string): Promise<Card[]> {
   const search_query = `%${query}%`

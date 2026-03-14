@@ -1,4 +1,4 @@
-import { useLogger } from '@/composables/logger'
+import logger from '@/utils/logger'
 import { type AudioCategoryKey, type NamespacedAudioKey } from './config'
 import player, { type PlayOptions } from './player'
 
@@ -34,7 +34,7 @@ export async function emitSfx(audio_key: NamespacedAudioKey, opts: PlayOptions =
   try {
     await player.play(audio_key, opts)
   } catch (e) {
-    useLogger().error((e as Error).message, e)
+    logger.error((e as Error).message, e)
   }
 }
 

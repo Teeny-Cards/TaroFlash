@@ -13,12 +13,11 @@ import {
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
 import { useMemberStore } from './member'
-import { useLogger } from '@/composables/logger'
+import logger from '@/utils/logger'
 
 export const useSessionStore = defineStore('sessionStore', () => {
   const router = useRouter()
   const memberStore = useMemberStore()
-  const logger = useLogger()
 
   const user = ref<User | undefined>(undefined)
   const loading_count = ref(0)
