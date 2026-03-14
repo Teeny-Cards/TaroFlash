@@ -7,6 +7,7 @@ import DeckView from '@/views/deck/deck-view.vue'
 import AuthenticatedView from '@/views/authenticated.vue'
 import PrivacyPolicyView from '@/views/privacy-policy.vue'
 import TermsOfServiceView from '@/views/terms-of-service.vue'
+import AuthCallbackView from '@/views/auth/callback.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +26,11 @@ const router = createRouter({
       path: '/terms',
       name: 'terms-of-service',
       component: TermsOfServiceView
+    },
+    {
+      path: '/auth/callback',
+      name: 'auth-callback',
+      component: AuthCallbackView
     },
     {
       path: '/',
