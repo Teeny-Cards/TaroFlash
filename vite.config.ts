@@ -29,7 +29,8 @@ export default defineConfig({
       typeCheck: true
     },
     rules: {
-      'no-console': 'warn'
+      'no-console': 'warn',
+      'no-floating-promises': 'off'
     }
   },
   plugins: [

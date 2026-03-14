@@ -12,6 +12,8 @@ export type SignupOAuthOptions = {
 
 export type OAuthProvider = 'google'
 
+const AUTH_REDIRECT_URL = import.meta.env.VITE_AUTH_REDIRECT_URL
+
 export async function getSession(): Promise<Session | null> {
   const { data, error } = await supabase.auth.getSession()
 
@@ -71,6 +73,7 @@ export async function signInOAuth(
     provider,
     options: {
       skipBrowserRedirect: true,
+      redirectTo: AUTH_REDIRECT_URL,
       ...options
     }
   })
@@ -96,11 +99,12 @@ export async function signInOAuth(
     return
   }
 
-  const interval = setInterval(async () => {
-    if (popup.closed) {
+  return new Promise((resolve, reject) => {
+    const interval = setInterval(async () => {
+      if (!popup.closed) return
+
       clearInterval(interval)
-      const { data: sessionData } = await supabase.auth.getSession()
-      console.log('Session:', sessionData.session)
-    }
-  }, 500)
+      resolve()
+    }, 500)
+  })
 }
