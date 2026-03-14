@@ -13,7 +13,6 @@
   "compilerOptions": {
     "composite": true,
     "noEmit": true,
-    "baseUrl": ".",
     "lib": ["es2022", "dom"],
     "paths": {
       "@/*": ["./src/*"],

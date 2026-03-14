@@ -1,23 +1,22 @@
-import { fileURLToPath, URL } from 'node:url'
-import { resolve, dirname } from 'node:path'
-import svgLoader from 'vite-svg-loader'
-import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
-import { defineConfig } from 'vite-plus'
-import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
-import tailwindcss from '@tailwindcss/vite'
-import { VitePWA } from 'vite-plugin-pwa'
+import { fileURLToPath, URL } from "node:url";
+import { resolve, dirname } from "node:path";
+import svgLoader from "vite-svg-loader";
+import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
+import { defineConfig } from "vite-plus";
+import vue from "@vitejs/plugin-vue";
+import vueJsx from "@vitejs/plugin-vue-jsx";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  lint: {"options":{"typeAware":true,"typeCheck":true}},
+  lint: { options: { typeAware: true, typeCheck: true } },
   fmt: {
-    "semi": false,
-    "tabWidth": 2,
-    "singleQuote": true,
-    "printWidth": 100,
-    "trailingComma": "none",
-    "sortPackageJson": false,
-    "ignorePatterns": []
+    semi: false,
+    tabWidth: 2,
+    singleQuote: true,
+    printWidth: 100,
+    trailingComma: "none",
+    sortPackageJson: false,
+    ignorePatterns: [],
   },
   plugins: [
     vue(),
@@ -25,9 +24,12 @@ export default defineConfig({
     svgLoader(),
     tailwindcss(),
     VueI18nPlugin({
-      include: resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/**'),
-      strictMessage: false
-    })
+      include: resolve(
+        dirname(fileURLToPath(import.meta.url)),
+        "./src/locales/**",
+      ),
+      strictMessage: false,
+    }),
     // VitePWA({
     //   registerType: 'autoUpdate',
     //   includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
@@ -49,9 +51,9 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '@type': fileURLToPath(new URL('./types', import.meta.url)),
-      '@tests': fileURLToPath(new URL('./tests', import.meta.url))
-    }
-  }
-})
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      "@type": fileURLToPath(new URL("./types", import.meta.url)),
+      "@tests": fileURLToPath(new URL("./tests", import.meta.url)),
+    },
+  },
+});
