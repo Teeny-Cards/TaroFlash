@@ -9,10 +9,20 @@ onMounted(async () => {
   loading.value = true
   await supabase.auth.exchangeCodeForSession(window.location.href)
   loading.value = false
-  window.close()
 })
+
+function onFinish() {
+  console.log('closing window')
+  window.close()
+}
 </script>
 
 <template>
-  <ui-loader :loading="loading" loading-image="logo" done-image="logo-hover" theme="blue-500" />
+  <ui-loader
+    :loading="loading"
+    loading-image="logo"
+    done-image="logo-hover"
+    theme="blue-500"
+    @finish="onFinish"
+  />
 </template>
