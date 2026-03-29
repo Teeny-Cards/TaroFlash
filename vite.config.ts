@@ -15,12 +15,12 @@ export default defineConfig({
     printWidth: 100,
     trailingComma: 'none',
     sortPackageJson: false,
-    ignorePatterns: [],
-    sortTailwindcss: {
-      stylesheet: resolve(dirname(fileURLToPath(import.meta.url)), './src/styles/main.css'),
-      attributes: [':class'],
-      preserveWhitespace: true
-    }
+    ignorePatterns: []
+    // sortTailwindcss: {
+    //   stylesheet: resolve(dirname(fileURLToPath(import.meta.url)), './src/styles/main.css'),
+    //   attributes: [':class'],
+    //   preserveWhitespace: true
+    // }
   },
   lint: {
     ignorePatterns: ['dist/**'],
