@@ -13,7 +13,7 @@ export function useTextComposer(editor: ShallowRef<HTMLElement | null>, config?:
     }
 
     unregister = TextComposer.attachEditor(editor.value, { ...config, onUpdate: _onUpdate })
-    has_content.value = Boolean(config?.content?.length ?? 0 > 0)
+    has_content.value = Boolean((config?.content?.length ?? 0) > 0)
 
     if (config?.content) {
       TextComposer.renderStatic(editor.value, config.content)
