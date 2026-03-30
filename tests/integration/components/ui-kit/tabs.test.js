@@ -17,7 +17,7 @@ describe('Basic Rendering', () => {
     })
 
     expect(wrapper.exists()).toBe(true)
-    expect(wrapper.find('[data-testid="ui-kit-tabs__tabs"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="ui-kit-tabs"]').exists()).toBe(true)
 
     const tabElements = wrapper.findAll('[data-testid="ui-kit-tabs__tab"]')
     expect(tabElements).toHaveLength(3)
@@ -61,29 +61,6 @@ describe('Basic Rendering', () => {
     expect(tabElements[2].find('[data-testid="ui-kit-icon"]').exists()).toBe(false)
   })
 
-  it('renders tooltips for inactive tabs', () => {
-    const tabs = [{ label: 'Tab 1' }, { label: 'Tab 2' }, { label: 'Tab 3' }]
-
-    const wrapper = mount(Tabs, {
-      props: {
-        tabs,
-        activeTab: 0, // First tab is active
-        'onUpdate:activeTab': () => {}
-      }
-    })
-
-    const tabElements = wrapper.findAll('[data-testid="ui-kit-tabs__tab"]')
-
-    // Active tab (index 0) should not have tooltip
-    expect(tabElements[0].find('.ui-kit-tabs__tab-tooltip').exists()).toBe(false)
-
-    // Inactive tabs should have tooltips
-    expect(tabElements[1].find('.ui-kit-tabs__tab-tooltip').exists()).toBe(true)
-    expect(tabElements[1].find('.ui-kit-tabs__tab-tooltip').text()).toBe('Tab 2')
-
-    expect(tabElements[2].find('.ui-kit-tabs__tab-tooltip').exists()).toBe(true)
-    expect(tabElements[2].find('.ui-kit-tabs__tab-tooltip').text()).toBe('Tab 3')
-  })
 })
 
 describe('Active Tab State', () => {

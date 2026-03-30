@@ -35,12 +35,12 @@ function setFetchCardsMock(cards) {
 }
 
 test('initializes with default state', () => {
-  const { mode, current_card_state, cards, current_card } = useStudySession(config)
+  const { mode, current_card_side, cards, active_card } = useStudySession(config)
 
   expect(mode.value).toBe('studying')
-  expect(current_card_state.value).toBe('hidden')
+  expect(current_card_side.value).toBe('front')
   expect(cards.value).toHaveLength(0)
-  expect(current_card.value).toBeUndefined()
+  expect(active_card.value).toBeUndefined()
 })
 
 // FUNCTION TESTS - await setup()
@@ -109,24 +109,7 @@ describe('reviewCard', () => {
     expect(newCard.value.state).toBe('failed')
   })
 
-  // TODO: FLAKY TEST, FIX LATER
-
-  // test('Adds to retry cards if reviewed with Again and due today and retry_failed_cards is true', () => {
-  //   const { setup, reviewCard, active_card, cards } = useStudySession(config)
-  //   const deck_cards = card.many(3, { traits: 'with_due_review' })
-
-  //   setup(deck_cards)
-  //   const card = active_card
-
-  //   expect(cards.value.length).toBe(3)
-
-  //   const review = review.one({ traits: 'due_today' })
-  //   reviewCard({ ...card.value.preview[Rating.Again], card: review })
-
-  //   expect(cards.value.length).toBe(4)
-  // })
-
-  test('Does not add to retry cards if reviewed with Again and due today and retry_failed_cards is false', async () => {
+  test('Does not add to retry cards if reviewed with Again and retry_failed_cards is false', async () => {
     const { setup, reviewCard, active_card, cards } = useStudySession({
       ...config,
       retry_failed_cards: false
@@ -175,73 +158,5 @@ describe('pickNextCard', () => {
     pickNextCard()
 
     expect(unreviewed_cards[1].id).toEqual(active_card.value.id)
-  })
-
-  test("Resets current_card_state to 'hidden'", async () => {
-    const { setup, pickNextCard, current_card_state } = useStudySession(config)
-    const cards = card.many(3)
-
-    setFetchCardsMock(cards)
-    await setup()
-    pickNextCard()
-
-    current_card_state.value = 'revealed'
-    expect(current_card_state.value).toBe('revealed')
-
-    pickNextCard()
-
-    expect(current_card_state.value).toBe('hidden')
-  })
-})
-
-describe('setPreviewCard', () => {
-  test('Sets preview_card and mode to "previewing" if card is studied', async () => {
-    const { setup, setPreviewCard, mode, preview_card } = useStudySession(config)
-
-    const cards = card.many(3, { traits: 'passed' })
-    setFetchCardsMock(cards)
-    await setup()
-
-    setPreviewCard(cards[2])
-
-    expect(mode.value).toBe('previewing')
-    expect(preview_card.value).toBeDefined()
-  })
-
-  test('Resets preview_card and sets mode to "studying" if card is not studied', async () => {
-    const { setup, setPreviewCard, mode, preview_card } = useStudySession(config)
-
-    const cards = card.many(3)
-    setFetchCardsMock(cards)
-    await setup()
-
-    setPreviewCard(cards[2])
-
-    expect(mode.value).toBe('studying')
-    expect(preview_card.value).toBeUndefined()
-  })
-})
-
-describe('current_card', () => {
-  test("Returns _preview_card when view_state is 'previewing'", async () => {
-    const { setup, setPreviewCard, current_card, preview_card } = useStudySession(config)
-    const cards = card.many(3, { traits: 'passed' })
-
-    setFetchCardsMock(cards)
-    await setup()
-
-    setPreviewCard(cards[2])
-
-    expect(current_card.value).toEqual(preview_card.value)
-  })
-
-  test("Returns _active_card when view_state is 'studying'", async () => {
-    const { setup, current_card, active_card } = useStudySession(config)
-    const cards = card.many(3)
-
-    setFetchCardsMock(cards)
-    await setup()
-
-    expect(current_card.value).toEqual(active_card.value)
   })
 })

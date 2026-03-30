@@ -1,17 +1,11 @@
-import { shallowMount } from '@vue/test-utils'
+import { shallowMount, mount } from '@vue/test-utils'
 import { expect, test } from 'vite-plus/test'
 import Input from '@/components/ui-kit/input.vue'
 
 test('renders the input element with default props', () => {
-  const wrapper = shallowMount(Input)
+  const wrapper = mount(Input)
   expect(wrapper.exists()).toBe(true)
-
-  // Check the container element classes
-  expect(wrapper.classes()).toContain('ui-kit-input-container')
-  expect(wrapper.classes()).toContain('ui-kit-input-container--text-left')
-  expect(wrapper.classes()).toContain('ui-kit-input-container--base')
-
-  // Check that the input wrapper exists
+  expect(wrapper.find('[data-testid="ui-kit-input-container"]').exists()).toBe(true)
   expect(wrapper.find('[data-testid="ui-kit-input"]').exists()).toBe(true)
   expect(wrapper.find('input').exists()).toBe(true)
 })
@@ -35,7 +29,7 @@ test('Applies correct size class based on prop', () => {
 })
 
 test('Accepts and displays a custom placeholder', () => {
-  const wrapper = shallowMount(Input, {
+  const wrapper = mount(Input, {
     props: {
       placeholder: 'Enter your name'
     }
@@ -44,7 +38,7 @@ test('Accepts and displays a custom placeholder', () => {
 })
 
 test('Displays label when provided', () => {
-  const wrapper = shallowMount(Input, {
+  const wrapper = mount(Input, {
     props: {
       label: 'Username'
     }
@@ -53,7 +47,7 @@ test('Displays label when provided', () => {
 })
 
 test('Binds model value using v-model (initial + updates)', async () => {
-  const wrapper = shallowMount(Input, {
+  const wrapper = mount(Input, {
     props: {
       value: 'Initial value'
     }

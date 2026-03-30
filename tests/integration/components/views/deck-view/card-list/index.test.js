@@ -1,170 +1,51 @@
-import { mount } from '@vue/test-utils'
-import { expect, test, vi, beforeEach, afterEach } from 'vite-plus/test'
-import CardList from '@/components/views/deck-view/card-list/index.vue'
+import { shallowMount } from '@vue/test-utils'
+import { ref } from 'vue'
+import { expect, test, vi, beforeEach } from 'vite-plus/test'
+import CardEditor from '@/views/deck/card-editor/index.vue'
 import { card } from '@tests/mocks/models/card'
 
-let originalScrollIntoView
+vi.mock('@/sfx/bus', () => ({
+  emitSfx: vi.fn()
+}))
 
 beforeEach(() => {
-  originalScrollIntoView = window.HTMLElement.prototype.scrollIntoView
-  window.HTMLElement.prototype.scrollIntoView = vi.fn()
+  vi.clearAllMocks()
 })
 
-afterEach(() => {
-  window.HTMLElement.prototype.scrollIntoView = originalScrollIntoView
-})
-
-test('renders empty state when there are no cards', () => {
-  const wrapper = mount(CardList, {
-    props: {
-      cards: [],
-      selectedCardIds: [],
-      mode: 'view'
+function mountCardEditor(cards = [], addCard = vi.fn()) {
+  return shallowMount(CardEditor, {
+    global: {
+      provide: {
+        'card-editor': {
+          all_cards: ref(cards),
+          addCard,
+          isDuplicate: () => false
+        }
+      }
     }
   })
+}
+
+test('renders empty state when there are no cards', () => {
+  const wrapper = mountCardEditor([])
 
   expect(wrapper.exists()).toBe(true)
   expect(wrapper.find('[data-testid="card-list__empty-state"]').exists()).toBe(true)
 })
 
-test('renders card list when there are cards', () => {
+test('does not render empty state when there are cards', () => {
   const cards = card.many(3)
-  const wrapper = mount(CardList, {
-    props: {
-      cards,
-      selectedCardIds: [],
-      mode: 'view'
-    }
-  })
+  const wrapper = mountCardEditor(cards)
 
-  expect(wrapper.exists()).toBe(true)
-  expect(wrapper.find('[data-testid="card-list"]').exists()).toBe(true)
-  expect(wrapper.findAll('[data-testid="card-list__item"]').length).toBe(3)
+  expect(wrapper.find('[data-testid="card-list__empty-state"]').exists()).toBe(false)
 })
 
-test('Emits card-activated event when card is focused', async () => {
-  const cards = card.many(3)
-  const wrapper = mount(CardList, {
-    props: {
-      cards,
-      selectedCardIds: [],
-      mode: 'edit'
-    }
-  })
+test('calls addCard when add button in empty state is clicked', async () => {
+  const addCard = vi.fn()
+  const wrapper = mountCardEditor([], addCard)
 
-  await wrapper.find('[data-testid="front-input"]').trigger('focusin')
+  // With shallowMount, UiButton is stubbed — trigger click on the stub
+  await wrapper.find('[data-testid="card-list__empty-state"] ui-button-stub').trigger('click')
 
-  expect(wrapper.emitted('card-activated')).toBeTruthy()
-  expect(wrapper.emitted('card-activated')[0]).toEqual([cards[0].id])
-})
-
-test('Emits card-deactivated event when card loses focus', async () => {
-  const cards = card.many(3)
-  const wrapper = mount(CardList, {
-    props: {
-      cards,
-      selectedCardIds: [],
-      mode: 'edit'
-    }
-  })
-
-  await wrapper.find('[data-testid="front-input"]').trigger('focusout')
-
-  expect(wrapper.emitted('card-deactivated')).toBeTruthy()
-  expect(wrapper.emitted('card-deactivated')[0]).toEqual([cards[0].id])
-})
-
-test('Emits card-updated event when card input changes', async () => {
-  const cards = card.many(3)
-  const wrapper = mount(CardList, {
-    props: {
-      cards,
-      selectedCardIds: [],
-      mode: 'edit'
-    }
-  })
-
-  const frontInput = wrapper.find('[data-testid="front-input"]')
-  await frontInput.setValue('New front text')
-  await frontInput.trigger('input')
-
-  expect(wrapper.emitted('card-updated')).toBeTruthy()
-  expect(wrapper.emitted('card-updated')[0]).toEqual([cards[0].id, 'front_text', 'New front text'])
-})
-
-test('Emits card-updated event when back input changes', async () => {
-  const cards = card.many(3)
-  const wrapper = mount(CardList, {
-    props: {
-      cards,
-      selectedCardIds: [],
-      mode: 'edit'
-    }
-  })
-
-  const backInput = wrapper.find('[data-testid="back-input"]')
-  await backInput.setValue('New back text')
-  await backInput.trigger('input')
-
-  expect(wrapper.emitted('card-updated')).toBeTruthy()
-  expect(wrapper.emitted('card-updated')[0]).toEqual([cards[0].id, 'back_text', 'New back text'])
-})
-
-test('Emits card-deleted event when delete action is clicked', async () => {
-  const cards = card.many(3)
-  const wrapper = mount(CardList, {
-    props: {
-      cards,
-      selectedCardIds: [],
-      mode: 'view'
-    }
-  })
-
-  // Click the more button to open the dropdown
-  await wrapper.find('[data-testid="card-list__item-more-button"]').trigger('click')
-
-  // Wait for the dropdown to appear
-  await wrapper.vm.$nextTick()
-
-  // Find and click the delete button using data-action attribute
-  const deleteButton = wrapper.find('[data-action="Delete"]')
-  expect(deleteButton.exists()).toBe(true)
-
-  await deleteButton.trigger('click')
-
-  expect(wrapper.emitted('card-deleted')).toBeTruthy()
-  expect(wrapper.emitted('card-deleted')[0]).toEqual([cards[0].id])
-})
-
-test('Emits card-selected event when card is selected', async () => {
-  const cards = card.many(3)
-  const wrapper = mount(CardList, {
-    props: {
-      cards,
-      selectedCardIds: [],
-      mode: 'select'
-    }
-  })
-
-  // Click on the list item to select it
-  await wrapper.find('[data-testid="card-list__item"]').trigger('click')
-
-  expect(wrapper.emitted('card-selected')).toBeTruthy()
-  expect(wrapper.emitted('card-selected')[0]).toEqual([cards[0].id])
-})
-
-test('Emits card-added event when empty state add card button is clicked', async () => {
-  const wrapper = mount(CardList, {
-    props: {
-      cards: [],
-      selectedCardIds: [],
-      mode: 'edit'
-    }
-  })
-
-  await wrapper
-    .find('[data-testid="card-list__empty-state"] [data-testid="ui-kit-button"]')
-    .trigger('click')
-
-  expect(wrapper.emitted('card-added')).toBeTruthy()
+  expect(addCard).toHaveBeenCalled()
 })

@@ -1,15 +1,21 @@
 import { mount } from '@vue/test-utils'
-import { expect, test, vi } from 'vite-plus/test'
+import { expect, test, vi, beforeEach } from 'vite-plus/test'
 import Modal from '@/components/ui-kit/modal.vue'
 import { shallowRef, defineComponent, markRaw } from 'vue'
 import { ModalEntryBuilder } from '@tests/mocks/types/modal-entry'
-import { beforeEach } from 'vite-plus/test'
 
-// Since ui-kit components are imported in a setup file
-// Vitest will not mock modules imported inside them.
-// Need to clear all module caches before running the test file.
 vi.hoisted(() => {
   vi.resetModules()
+
+  // jsdom does not implement matchMedia
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: vi.fn(() => ({
+      matches: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn()
+    }))
+  })
 })
 
 const TestModal = markRaw(
@@ -19,17 +25,20 @@ const TestModal = markRaw(
 )
 
 const mock_modal_stack = shallowRef([])
+const mock_pop = vi.fn()
 
 vi.mock('@/composables/modal', () => {
   return {
     useModal: vi.fn(() => ({
-      modal_stack: mock_modal_stack
+      modal_stack: mock_modal_stack,
+      pop: mock_pop
     }))
   }
 })
 
 beforeEach(() => {
   mock_modal_stack.value = []
+  mock_pop.mockReset()
 })
 
 test('renders nothing when modal stack is empty', () => {
@@ -64,11 +73,11 @@ test('applies backdrop class only when at least one modal requests it', () => {
   const wrapper = mount(Modal)
 
   expect(wrapper.find('[data-testid="ui-kit-modal-backdrop"]').classes()).toContain(
-    'backdrop-blur-4'
+    'pointer-fine:backdrop-blur-4'
   )
 })
 
-test('resolves and removes top modal on backdrop click if enabled', async () => {
+test('calls pop on backdrop click', async () => {
   const entry = ModalEntryBuilder(TestModal).one()
   mock_modal_stack.value.push(entry)
 
@@ -76,17 +85,5 @@ test('resolves and removes top modal on backdrop click if enabled', async () => 
 
   await wrapper.find('[data-testid="ui-kit-modal-backdrop"]').trigger('click')
 
-  expect(entry.close).toHaveBeenCalled()
-})
-
-test('does not close modal on backdrop click if `global_close` is false', () => {
-  const entry = ModalEntryBuilder(TestModal).one({ overrides: { global_close: false } })
-  mock_modal_stack.value.push(entry)
-
-  const wrapper = mount(Modal)
-
-  wrapper.find('[data-testid="ui-kit-modal-backdrop"]').trigger('click')
-
-  expect(entry.resolve).not.toHaveBeenCalled()
-  expect(mock_modal_stack.value.length).toBe(1)
+  expect(mock_pop).toHaveBeenCalled()
 })

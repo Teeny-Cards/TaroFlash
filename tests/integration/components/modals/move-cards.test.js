@@ -18,7 +18,7 @@ vi.mock('@/api/decks', () => ({
 it('renders properly with default props', () => {
   const wrapper = mount(MoveCards, {
     props: {
-      cards: [],
+      cards: card.many(1),
       current_deck_id: 0,
       close: vi.fn()
     }
@@ -68,7 +68,7 @@ it('calls close function when cancel button is clicked', async () => {
   const close = vi.fn()
   const wrapper = mount(MoveCards, {
     props: {
-      cards: [],
+      cards: card.many(1),
       current_deck_id: 0,
       close
     }
@@ -83,7 +83,7 @@ it('calls close function with deck_id when move button is clicked', async () => 
   const close = vi.fn()
   const wrapper = mount(MoveCards, {
     props: {
-      cards: [],
+      cards: card.many(1),
       current_deck_id: 0,
       close
     }
@@ -104,7 +104,7 @@ it('does not call close function with false when move button is clicked and no d
   const close = vi.fn()
   const wrapper = mount(MoveCards, {
     props: {
-      cards: [],
+      cards: card.many(1),
       current_deck_id: 0,
       close
     }
@@ -118,7 +118,7 @@ it('does not call close function with false when move button is clicked and no d
 it('sets deck_id when list item is clicked', async () => {
   const wrapper = mount(MoveCards, {
     props: {
-      cards: [],
+      cards: card.many(1),
       current_deck_id: 0,
       close: vi.fn()
     }
@@ -137,7 +137,7 @@ it('sets deck_id when list item is clicked', async () => {
 it('unsets deck_id when list item is clicked again', async () => {
   const wrapper = mount(MoveCards, {
     props: {
-      cards: [],
+      cards: card.many(1),
       current_deck_id: 0,
       close: vi.fn()
     }
