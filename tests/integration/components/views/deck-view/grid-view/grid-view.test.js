@@ -1,95 +1,48 @@
-import { mount } from '@vue/test-utils'
+import { shallowMount } from '@vue/test-utils'
+import { ref } from 'vue'
 import { expect, test, vi, beforeEach } from 'vite-plus/test'
-import CardGrid from '@/components/views/deck-view/card-grid/index.vue'
+import CardGrid from '@/views/deck/card-grid/index.vue'
 import { card } from '@tests/mocks/models/card'
-import { mockAndSimulateFileUpload } from '@tests/mocks/file-upload.js'
-
-const mocks = vi.hoisted(() => ({
-  play: vi.fn()
-}))
-
-vi.mock('@/composables/audio', () => ({
-  useAudio: () => {
-    return {
-      play: mocks.play
-    }
-  }
-}))
 
 beforeEach(() => {
   vi.clearAllMocks()
 })
 
+function mountCardGrid(cards = [], mode = 'view') {
+  return shallowMount(CardGrid, {
+    global: {
+      provide: {
+        'card-editor': {
+          all_cards: ref(cards),
+          mode: ref(mode),
+          selected_card_ids: ref([])
+        }
+      }
+    }
+  })
+}
+
+test('Renders the card grid container', () => {
+  const wrapper = mountCardGrid()
+  expect(wrapper.find('[data-testid="card-grid"]').exists()).toBe(true)
+})
+
 test('Renders a grid item per card', () => {
   const cards = card.many(3)
-  const wrapper = mount(CardGrid, {
-    props: {
-      cards,
-      mode: 'view',
-      side: 'front'
-    }
-  })
-
-  expect(wrapper.exists()).toBe(true)
-  expect(wrapper.findAll('[data-testid="card"]').length).toBe(3)
+  const wrapper = mountCardGrid(cards)
+  expect(wrapper.findAll('grid-item-stub').length).toBe(3)
 })
 
-test('Default side is "front" when omitted', () => {
-  const cards = card.many(3)
-  const wrapper = mount(CardGrid, {
-    props: {
-      cards,
-      mode: 'view'
-    }
-  })
-
-  expect(wrapper.find('[data-testid="card-face__front"]').exists()).toBe(true)
+test('Renders no grid items when cards array is empty', () => {
+  const wrapper = mountCardGrid([])
+  expect(wrapper.findAll('grid-item-stub').length).toBe(0)
 })
 
-test('Passes "side" prop to child grid items', () => {
-  const cards = card.many(3)
-  const wrapper = mount(CardGrid, {
-    props: {
-      cards,
-      mode: 'view',
-      side: 'back'
-    }
-  })
+test('Emits card-selected when a grid item emits card-selected', async () => {
+  const cards = card.many(2)
+  const wrapper = mountCardGrid(cards)
 
-  expect(wrapper.find('[data-testid="card-face__back"]').exists()).toBe(true)
-})
+  await wrapper.find('grid-item-stub').trigger('card-selected')
 
-test('Emits card-updated event when child grid-item emits card-updated', async () => {
-  const cards = card.many(3)
-  const wrapper = mount(CardGrid, {
-    props: {
-      cards,
-      mode: 'edit',
-      side: 'front',
-      activeCardId: cards[0].id
-    }
-  })
-
-  await wrapper.find('[data-testid="card-face__text-input"]').setValue('test')
-
-  expect(wrapper.emitted('card-updated')).toBeTruthy()
-})
-
-test('Emits card-image-updated event when child grid-item emits card-image-updated', async () => {
-  const cards = card.many(3)
-  const wrapper = mount(CardGrid, {
-    props: {
-      cards,
-      mode: 'edit',
-      side: 'front',
-      activeCardId: cards[0].id
-    }
-  })
-
-  const { file } = await mockAndSimulateFileUpload(
-    wrapper,
-    '[data-testid="card-face__front"] input[type="file"]'
-  )
-
-  expect(wrapper.emitted('card-image-updated')).toBeTruthy()
+  expect(wrapper.emitted('card-selected')).toBeTruthy()
 })

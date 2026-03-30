@@ -2,26 +2,19 @@ import { mount } from '@vue/test-utils'
 import { expect, it, vi } from 'vite-plus/test'
 import Alert from '@/components/ui-kit/alert.vue'
 
-const mocks = vi.hoisted(() => {
-  return {
-    play: vi.fn()
-  }
-})
-
-vi.mock('@/composables/audio', () => ({
-  useAudio: vi.fn(() => ({
-    play: mocks.play
-  }))
-}))
-
 it('renders properly with default props', () => {
-  const wrapper = mount(Alert)
+  const wrapper = mount(Alert, {
+    props: {
+      close: vi.fn()
+    }
+  })
   expect(wrapper.exists()).toBe(true)
 })
 
 it('renders properly with custom props', () => {
   const wrapper = mount(Alert, {
     props: {
+      close: vi.fn(),
       title: 'Test Title',
       message: 'Test Message',
       confirmLabel: 'Test Confirm',
@@ -40,7 +33,8 @@ it('calls close function when confirm button is clicked', async () => {
   const close = vi.fn()
   const wrapper = mount(Alert, {
     props: {
-      close
+      close,
+      confirmLabel: 'Confirm'
     }
   })
 
@@ -67,13 +61,14 @@ it('calls close function with correct value when confirm button is clicked', asy
   const wrapper = mount(Alert, {
     props: {
       close,
+      confirmLabel: 'Confirm',
       confirmAudio: 'test_audio'
     }
   })
 
   await wrapper.find('[data-testid="ui-kit-alert__confirm"]').trigger('click')
 
-  expect(close).toHaveBeenCalledWith(true, { overrideCloseAudio: 'test_audio' })
+  expect(close).toHaveBeenCalledWith(true, { override_close_audio: 'test_audio' })
 })
 
 it('calls close function with correct value when cancel button is clicked', async () => {
@@ -87,33 +82,5 @@ it('calls close function with correct value when cancel button is clicked', asyn
 
   await wrapper.find('[data-testid="ui-kit-alert__cancel"]').trigger('click')
 
-  expect(close).toHaveBeenCalledWith(false, { overrideCloseAudio: 'test_audio' })
-})
-
-it('plays cancel audio when cancel button is clicked', async () => {
-  const close = vi.fn()
-  const wrapper = mount(Alert, {
-    props: {
-      close,
-      cancelAudio: 'test_audio'
-    }
-  })
-
-  await wrapper.find('[data-testid="ui-kit-alert__cancel"]').trigger('click')
-
-  expect(close).toHaveBeenCalledWith(false, { overrideCloseAudio: 'test_audio' })
-})
-
-it('plays confirm audio when confirm button is clicked', async () => {
-  const close = vi.fn()
-  const wrapper = mount(Alert, {
-    props: {
-      close,
-      confirmAudio: 'test_audio'
-    }
-  })
-
-  await wrapper.find('[data-testid="ui-kit-alert__confirm"]').trigger('click')
-
-  expect(close).toHaveBeenCalledWith(true, { overrideCloseAudio: 'test_audio' })
+  expect(close).toHaveBeenCalledWith(false, { override_close_audio: 'test_audio' })
 })

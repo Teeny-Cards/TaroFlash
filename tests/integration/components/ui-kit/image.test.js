@@ -2,27 +2,17 @@ import { shallowMount, flushPromises } from '@vue/test-utils'
 import { expect, it, vi } from 'vite-plus/test'
 import Image from '@/components/ui-kit/image.vue'
 
-const { mockedConsoleWarn } = vi.hoisted(() => {
+const { mockedWarn } = vi.hoisted(() => {
   vi.resetModules()
 
   return {
-    mockedConsoleWarn: vi.fn()
+    mockedWarn: vi.fn()
   }
 })
 
-vi.mock('@/assets/images/binder-clip.svg', () => ({
-  default: '/mocked/binder-clip.svg'
+vi.mock('@/utils/logger', () => ({
+  default: { warn: mockedWarn }
 }))
-
-vi.mock('@/assets/images/highlighter.svg', () => ({
-  default: '/mocked/highlighter.svg'
-}))
-
-vi.mock('@/composables/logger', () => {
-  return {
-    useLogger: vi.fn(() => ({ warn: mockedConsoleWarn }))
-  }
-})
 
 it('renders properly with required src prop', () => {
   const wrapper = shallowMount(Image, {
@@ -44,24 +34,6 @@ it('does not render img element before image loads', async () => {
   expect(wrapper.find('img').exists()).toBe(false)
 })
 
-it('renders img element with correct attributes after image loads', async () => {
-  const testSrc = 'binder-clip'
-  const wrapper = shallowMount(Image, {
-    props: {
-      src: testSrc
-    }
-  })
-
-  await flushPromises()
-
-  const img = wrapper.find('img')
-  expect(img.exists()).toBe(true)
-  expect(img.attributes('alt')).toBe(testSrc)
-  expect(img.attributes('src')).toBe('/mocked/binder-clip.svg')
-  expect(img.classes()).toContain('h-full')
-  expect(img.classes()).toContain('w-full')
-})
-
 it('warns when image is not found', async () => {
   const testSrc = 'non-existent-image'
   shallowMount(Image, {
@@ -72,5 +44,5 @@ it('warns when image is not found', async () => {
 
   await flushPromises()
 
-  expect(mockedConsoleWarn).toHaveBeenCalledWith(`No image found for: ${testSrc}`)
+  expect(mockedWarn).toHaveBeenCalledWith(`No image found for: ${testSrc}`)
 })

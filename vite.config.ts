@@ -2,7 +2,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { resolve, dirname } from 'node:path'
 import svgLoader from 'vite-svg-loader'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
-import { defineConfig } from 'vite-plus'
+import { defineConfig, configDefaults, coverageConfigDefaults } from 'vite-plus'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import tailwindcss from '@tailwindcss/vite'
@@ -16,11 +16,6 @@ export default defineConfig({
     trailingComma: 'none',
     sortPackageJson: false,
     ignorePatterns: []
-    // sortTailwindcss: {
-    //   stylesheet: resolve(dirname(fileURLToPath(import.meta.url)), './src/styles/main.css'),
-    //   attributes: [':class'],
-    //   preserveWhitespace: true
-    // }
   },
   lint: {
     ignorePatterns: ['dist/**'],
@@ -43,6 +38,30 @@ export default defineConfig({
       strictMessage: false
     })
   ],
+  test: {
+    environment: 'jsdom',
+    exclude: [...configDefaults.exclude, 'e2e/*'],
+    root: fileURLToPath(new URL('./', import.meta.url)),
+    setupFiles: ['./tests/setup.js'],
+    coverage: {
+      enabled: true,
+      reporter: ['text', 'html', 'json-summary'],
+      reportOnFailure: true,
+      exclude: [
+        '**/postcss.config.js',
+        '**/App.vue',
+        '**/main.ts',
+        '**/supabase-client.ts',
+        '**/router/**',
+        '**/src/api/**',
+        '**/src/components/ui-kit/_index.ts',
+        '**/types/**',
+        '**/src/utils/logger.ts',
+        '**/src/utils/uid.ts',
+        ...coverageConfigDefaults.exclude
+      ]
+    }
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

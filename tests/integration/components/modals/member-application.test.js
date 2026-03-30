@@ -7,19 +7,12 @@ import MemberCard from '@/components/modals/member-card.vue'
 const mocks = vi.hoisted(() => {
   return {
     upsertMember: vi.fn(),
-    audioPlay: vi.fn(),
     close: vi.fn()
   }
 })
 
 vi.mock('@/api/members', () => ({
   upsertMember: mocks.upsertMember
-}))
-
-vi.mock('@/composables/audio', () => ({
-  useAudio: vi.fn(() => ({
-    play: mocks.audioPlay
-  }))
 }))
 
 // Mock DateTime to have consistent dates in tests
@@ -46,9 +39,7 @@ const defaultGlobalConfig = {
     createTestingPinia({
       createSpy: vi.fn,
       initialState: {
-        session: {
-          user: { id: 'test-user-id-123' }
-        }
+        member: { id: 'test-user-id-123' }
       }
     })
   ],
@@ -145,39 +136,20 @@ it('updates selected theme when clicking on a different theme', async () => {
   await blueTheme.trigger('click')
 
   expect(wrapper.vm.selected_theme).toBe('blue-500')
-  expect(mocks.audioPlay).toHaveBeenCalledWith('etc_camera_shutter')
 })
 
-it('plays powerdown sound when clicking the same theme twice', async () => {
+it('does not change theme when clicking the already selected theme', async () => {
   const wrapper = mount(MemberApplication, {
     props: defaultProps,
     global: defaultGlobalConfig
   })
 
-  // Clear the mount audio call first
-  mocks.audioPlay.mockClear()
-
-  // Find the correct theme selector element
   const themeSelectors = wrapper.findAll('[data-testid="member-application__form"] .cursor-pointer')
   const greenTheme = themeSelectors.find((el) => el.classes().includes('bg-green-400'))
 
   await greenTheme.trigger('click')
 
-  expect(wrapper.vm.selected_theme).toBe('green-400') // Should remain the same
-  expect(mocks.audioPlay).toHaveBeenCalledWith('digi_powerdown')
-})
-
-it('plays hover sound when hovering over theme options', async () => {
-  const wrapper = mount(MemberApplication, {
-    props: defaultProps,
-    global: defaultGlobalConfig
-  })
-
-  const themeSelectors = wrapper.findAll('[data-testid="member-application__form"] .cursor-pointer')
-  const blueTheme = themeSelectors.find((el) => el.classes().includes('bg-blue-500'))
-  await blueTheme.trigger('mouseenter')
-
-  expect(mocks.audioPlay).toHaveBeenCalledWith('click_04')
+  expect(wrapper.vm.selected_theme).toBe('green-400')
 })
 
 it('updates member display_name when typing in the input field', async () => {

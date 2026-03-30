@@ -1,5 +1,11 @@
-import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
+import { describe, test, expect, vi } from 'vite-plus/test'
 import { useAlert } from '@/composables/alert'
+
+vi.mock('@/composables/modal', () => ({
+  useModal: vi.fn(() => ({
+    open: vi.fn().mockReturnValue({ response: Promise.resolve(true), close: vi.fn() })
+  }))
+}))
 
 test('warn opens alert with warn type', () => {
   const { warn } = useAlert()
