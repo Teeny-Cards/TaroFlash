@@ -66,6 +66,8 @@ export default defineConfig({
     ],
     coverage: {
       enabled: true,
+      all: true,
+      include: ['src/**/*.{ts,vue}'],
       reporter: ['text', 'html', 'json-summary'],
       reportOnFailure: true,
       exclude: [
