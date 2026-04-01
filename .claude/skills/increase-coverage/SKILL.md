@@ -49,7 +49,7 @@ If any test fails:
 
 ### Step 5 — Review and quality check
 
-Once all tests are written and passing, review the full set of new tests for quality using `test-quality-checklist.md` in the `skills/testing` directory.
+Once all tests are written and passing, review the full set of new tests for quality using `test-quality-checklist.md` in the `skills` directory.
 
 **Fix any critical issues** — specifically anything that would cause intermittent CI failures or mask real regressions. Call out non-critical issues (low severity style/practice notes) in the report but do not auto-fix them.
 
