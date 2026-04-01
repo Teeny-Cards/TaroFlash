@@ -53,7 +53,13 @@ Once all tests are written and passing, review the full set of new tests for qua
 
 **Fix any critical issues** — specifically anything that would cause intermittent CI failures or mask real regressions. Call out non-critical issues (low severity style/practice notes) in the report but do not auto-fix them.
 
-### Step 6 — Report
+### Step 6 - Open a PR
+
+- Create a new branch based off the current branch
+- Commit the changes
+- Open a PR against the current branch with the title: "chore(tests): increase coverage"
+
+### Step 7 — Report
 
 After writing all tests, output a short summary table:
 
