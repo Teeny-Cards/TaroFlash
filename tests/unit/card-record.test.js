@@ -14,26 +14,7 @@ vi.mock('@/utils/debounce', () => ({
 import CardRecord from '@/utils/card-record'
 import { upsertCard, reserveCard } from '@/api/cards'
 import { debounce } from '@/utils/debounce'
-
-function makeCard(overrides = {}) {
-  return {
-    id: 1,
-    deck_id: 10,
-    front_text: 'Front',
-    back_text: 'Back',
-    front_delta: null,
-    back_delta: null,
-    attributes: null,
-    created_at: '2024-01-01',
-    updated_at: '2024-01-01',
-    rank: 0,
-    member_id: 5,
-    front_image_path: null,
-    back_image_path: null,
-    review: null,
-    ...overrides
-  }
-}
+import { card } from '../fixtures/card'
 
 describe('CardRecord', () => {
   beforeEach(() => {
@@ -42,14 +23,14 @@ describe('CardRecord', () => {
 
   describe('constructor', () => {
     test('copies all card properties', () => {
-      const card = makeCard()
-      const record = new CardRecord(card)
-      expect(record.id).toBe(1)
-      expect(record.deck_id).toBe(10)
-      expect(record.front_text).toBe('Front')
-      expect(record.back_text).toBe('Back')
-      expect(record.rank).toBe(0)
-      expect(record.member_id).toBe(5)
+      const c = card.one()
+      const record = new CardRecord(c)
+      expect(record.id).toBe(c.id)
+      expect(record.deck_id).toBe(c.deck_id)
+      expect(record.front_text).toBe(c.front_text)
+      expect(record.back_text).toBe(c.back_text)
+      expect(record.rank).toBe(c.rank)
+      expect(record.member_id).toBe(c.member_id)
       expect(record.front_image_path).toBeNull()
       expect(record.back_image_path).toBeNull()
       expect(record.review).toBeNull()
@@ -72,53 +53,55 @@ describe('CardRecord', () => {
 
   describe('update', () => {
     test('calls upsertCard via debounce when values differ', async () => {
-      const record = new CardRecord(makeCard())
+      const record = new CardRecord(card.one())
       await record.update({ front_text: 'Updated' })
       expect(debounce).toHaveBeenCalled()
       expect(upsertCard).toHaveBeenCalled()
     })
 
     test('skips upsert when values are unchanged', async () => {
-      const record = new CardRecord(makeCard())
-      await record.update({ front_text: 'Front' }) // same as makeCard default
+      const c = card.one()
+      const record = new CardRecord(c)
+      await record.update({ front_text: c.front_text })
       expect(upsertCard).not.toHaveBeenCalled()
     })
 
     test('skips upsert when id is falsy', async () => {
-      const record = new CardRecord(makeCard({ id: 0 }))
+      const record = new CardRecord(card.one({ overrides: { id: 0 } }))
       await record.update({ front_text: 'New' })
       expect(upsertCard).not.toHaveBeenCalled()
     })
 
     test('assigns new values to the record before saving', async () => {
-      const record = new CardRecord(makeCard())
+      const record = new CardRecord(card.one())
       await record.update({ front_text: 'Changed', back_text: 'Also Changed' })
       expect(record.front_text).toBe('Changed')
       expect(record.back_text).toBe('Also Changed')
     })
 
     test('uses card id as debounce key', async () => {
-      const record = new CardRecord(makeCard({ id: 99 }))
+      const c = card.one()
+      const record = new CardRecord(c)
       await record.update({ front_text: 'X' })
-      expect(debounce).toHaveBeenCalledWith(expect.any(Function), { key: 'card-99' })
+      expect(debounce).toHaveBeenCalledWith(expect.any(Function), { key: `card-${c.id}` })
     })
 
     test('ignores undefined values when comparing — does not trigger save', async () => {
-      const record = new CardRecord(makeCard())
+      const record = new CardRecord(card.one())
       await record.update({ front_text: undefined })
       expect(upsertCard).not.toHaveBeenCalled()
     })
 
     test('excludes undefined properties from upsert payload', async () => {
       // attributes is undefined (not set on card)
-      const record = new CardRecord(makeCard({ attributes: undefined }))
+      const record = new CardRecord(card.one({ overrides: { attributes: undefined } }))
       await record.update({ front_text: 'X' })
       const payload = vi.mocked(upsertCard).mock.calls[0][0]
       expect('attributes' in payload).toBe(false)
     })
 
     test('keeps null properties in upsert payload', async () => {
-      const record = new CardRecord(makeCard({ front_delta: null }))
+      const record = new CardRecord(card.one({ overrides: { front_delta: null } }))
       await record.update({ front_text: 'X' })
       const payload = vi.mocked(upsertCard).mock.calls[0][0]
       expect('front_delta' in payload).toBe(true)
@@ -126,10 +109,11 @@ describe('CardRecord', () => {
     })
 
     test('payload always includes the record id', async () => {
-      const record = new CardRecord(makeCard({ id: 7 }))
+      const c = card.one()
+      const record = new CardRecord(c)
       await record.update({ front_text: 'X' })
       const payload = vi.mocked(upsertCard).mock.calls[0][0]
-      expect(payload.id).toBe(7)
+      expect(payload.id).toBe(c.id)
     })
   })
 })
