@@ -1,4 +1,12 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(vp *)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)"
+    ]
+  },
   "enabledPlugins": {
     "vue-best-practices@vue-skills": true,
     "vue-options-api-best-practices@vue-skills": true,
