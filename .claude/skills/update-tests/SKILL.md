@@ -30,6 +30,11 @@ You are left with the **source files to cover**.
 
 ### Step 2 — Understand the changes
 
+Before reading source files, check two things in `vite.config.ts` (or equivalent):
+
+- **Test file locations**: Look at `test.projects` include globs (e.g. `tests/unit/**/*.test.js`) so new test files are placed where the runner will find them.
+- **Coverage exclusions**: Check `coverage.exclude` — do not write tests for excluded files.
+
 For each source file:
 
 1. Run the following commands to see exactly what lines changed.
@@ -39,7 +44,7 @@ For each source file:
 - For uncommitted unstaged changes: `git diff -- <file>`
 - If all three return nothing for a file (e.g. a newly untracked file), use `git status` output to confirm its state and read the file directly.
 
-2. Read the file to understand the full context of the changed code.
+2. Read the file to understand the full context of the changed code. Watch for module-level `ref`/`reactive` state in Vue composables — these values persist across `useXxx()` calls and across tests, and need an explicit reset in `beforeEach`.
 3. Check whether an existing test file already covers this source file (look under `tests/` mirroring the source path, e.g. `src/components/foo/bar.vue` → `tests/integration/components/foo/bar.test.js`, or `src/composables/foo.ts` → `tests/unit/composables/foo.test.js`).
 4. If a test file exists, read it to understand what is already covered before writing new tests.
 
@@ -60,14 +65,16 @@ For each changed unit of code, choose the **lowest-cost test type** that can mea
 Before writing any new tests, run the relevant existing test files to establish a baseline.
 
 ```bash
-vp test <path-to-test-file>
+vp test --no-coverage <path-to-test-file>
 ```
 
 For example:
 
 ```bash
-vp test tests/integration/components/ui-kit/toggle.test.js
+vp test --no-coverage tests/integration/components/ui-kit/toggle.test.js
 ```
+
+**Always use `--no-coverage` when running targeted file paths.** Running with coverage against a subset of files can crash the coverage provider.
 
 #### Interpreting results
 
@@ -110,6 +117,6 @@ After writing all tests, output a short summary table:
 | ------------ | --------- | ---------------- | --------- | ---------------------- |
 | ...          | ...       | unit/integration | N         | ~X%                    |
 
-If any changed file was skipped (e.g., already well-covered, or not testable), explain why in one line.
+If any changed file was skipped (e.g., already well-covered, excluded from coverage config, or not testable), explain why in one line.
 
 Also include a **Quality notes** section listing any non-critical issues spotted during the review (step 7) that were not auto-fixed, so the author is aware of them.
