@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(vp *)"
+      "Bash(vp *)",
+      "Bash(git add tests/*)",
+      "Bash(git commit*)",
+      "Bash(git checkout -b *)",
+      "Bash(git push -u origin *)",
+      "Bash(gh pr create*)",
+      "Write(tests/**)",
+      "Edit(tests/**)"
     ],
     "deny": [
       "Bash(rm -rf *)"
