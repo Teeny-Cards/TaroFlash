@@ -9,8 +9,8 @@
       data-testid="nav-bar"
       class="flex w-full max-w-(--page-width) items-center justify-between sm:px-16 relative"
     >
-      <RouterLink to="/dashboard" class="flex items-center text-4xl text-white">
-        <ui-icon src="logo" size="xl" />
+      <RouterLink to="/dashboard" class="flex items-center gap-1 text-4xl text-white">
+        <ui-icon src="logo" class="h-9" />
         <div>TaroFlash</div>
       </RouterLink>
     </div>

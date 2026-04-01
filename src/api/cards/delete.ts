@@ -1,8 +1,6 @@
 import { supabase } from '@/supabase-client'
-import { useLogger } from '@/composables/logger'
+import logger from '@/utils/logger'
 import { type CardBase } from '@type/card'
-
-const logger = useLogger()
 
 export async function deleteCards(cards: CardBase[]): Promise<void> {
   const ids = cards.map((card) => card.id).filter((id) => id !== undefined)

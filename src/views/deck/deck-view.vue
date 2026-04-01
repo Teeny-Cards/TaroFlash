@@ -99,7 +99,7 @@ async function onDeleteCards(id?: number) {
 }
 
 function onSelectCard(id?: number) {
-  if (id !== undefined) editor.selectCard(id)
+  if (id !== undefined) editor.toggleSelectCard(id)
 
   editor.setMode('select')
   emitSfx('ui.etc_camera_shutter')
@@ -150,8 +150,7 @@ async function onMoveCards(id?: number) {
     <div class="relative flex h-full w-full flex-col items-center">
       <div
         data-testid="deck-view__action-bar"
-        class="sticky top-(--nav-height) hidden z-10 md:flex max-w-208 w-full xl:max-w-full
-          justify-between pb-2"
+        class="sticky top-(--nav-height) hidden z-10 md:flex max-w-208 w-full xl:max-w-full justify-between pb-2"
       >
         <ui-tabs :tabs="tabs" v-model:activeTab="active_tab" storage-key="deck-view-tabs" />
 
@@ -159,27 +158,18 @@ async function onMoveCards(id?: number) {
           <p v-if="editor.saving.value">Saving...</p>
           <p v-else>Saved</p>
 
-          <ui-split-button theme="purple" v-if="editor.mode.value === 'view'">
-            <template #defaults="{ option }">
-              <component :is="option" icon="check" @click="onSelectCard">
-                {{ t('deck-view.toggle-options.select') }}
-              </component>
-            </template>
-          </ui-split-button>
-
           <ui-button
             v-if="editor.mode.value === 'select'"
             @click="onCancel"
             icon-left="close"
-            theme="grey"
+            theme="grey-400"
           >
             {{ t('common.cancel') }}
           </ui-button>
         </div>
 
         <div
-          class="bg-brown-100 dark:bg-grey-900 border-b-brown-500 absolute -top-10 right-0 left-0
-            sm:-right-3 bottom-0 sm:-left-3 -z-10 border-b"
+          class="bg-brown-100 dark:bg-grey-900 border-b-brown-500 absolute -top-10 right-0 left-0 sm:-right-3 bottom-0 sm:-left-3 -z-10 border-b"
         ></div>
       </div>
 

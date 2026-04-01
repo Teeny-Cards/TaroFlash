@@ -4,8 +4,8 @@ import { emitSfx } from '@/sfx/bus'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import Option from './option.vue'
 
-const { theme = 'blue' } = defineProps<{
-  theme?: 'blue' | 'purple' | 'orange' | 'green' | 'pink' | 'red' | 'grey'
+const { theme = 'blue-500' } = defineProps<{
+  theme?: MemberTheme
 }>()
 
 const open = ref(false)
@@ -96,31 +96,31 @@ function onToggle() {
   margin-top: 3px;
 }
 
-.ui-kit-split-button__option--blue {
+.ui-kit-split-button__option--blue-500 {
   --split-button-theme: var(--color-blue-500);
 }
 
-.ui-kit-split-button__option--purple {
+.ui-kit-split-button__option--purple-400 {
   --split-button-theme: var(--color-purple-400);
 }
 
-.ui-kit-split-button__option--orange {
+.ui-kit-split-button__option--orange-500 {
   --split-button-theme: var(--color-orange-500);
 }
 
-.ui-kit-split-button__option--green {
+.ui-kit-split-button__option--green-500 {
   --split-button-theme: var(--color-green-500);
 }
 
-.ui-kit-split-button__option--pink {
+.ui-kit-split-button__option--pink-500 {
   --split-button-theme: var(--color-pink-500);
 }
 
-.ui-kit-split-button__option--red {
+.ui-kit-split-button__option--red-500 {
   --split-button-theme: var(--color-red-500);
 }
 
-.ui-kit-split-button__option--grey {
+.ui-kit-split-button__option--grey-400 {
   --split-button-theme: var(--color-grey-400);
 }
 </style>

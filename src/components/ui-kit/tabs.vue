@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useStorage } from '@/composables/storage'
+import { useStorage } from '@/composables/use-storage'
 import { onMounted } from 'vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiTooltip from '@/components/ui-kit/tooltip.vue'
@@ -10,9 +10,10 @@ type Tab = {
   icon?: string
 }
 
-const { storageKey } = defineProps<{
+const { storageKey, theme = 'blue-500' } = defineProps<{
   tabs: Tab[]
   storageKey?: string
+  theme?: MemberTheme
 }>()
 const emit = defineEmits<{
   (e: 'update:activeTab', index: number): void
@@ -50,7 +51,7 @@ function onHover(index: number) {
 </script>
 
 <template>
-  <div data-testid="ui-kit-tabs" class="ui-kit-tabs">
+  <div data-testid="ui-kit-tabs" :data-theme="theme" class="ui-kit-tabs">
     <ui-tooltip
       v-for="(tab, index) in tabs"
       data-testid="ui-kit-tabs__tab"
@@ -63,7 +64,7 @@ function onHover(index: number) {
       @click="onTabClick(index)"
       @mouseenter="onHover(index)"
     >
-      <ui-icon v-if="tab.icon" :src="tab.icon" size="small" class="ui-kit-tabs__tab-icon" />
+      <ui-icon v-if="tab.icon" :src="tab.icon" class="ui-kit-tabs__tab-icon h-6" />
       <span class="ui-kit-tabs__tab-label">{{ tab.label }}</span>
     </ui-tooltip>
   </div>
@@ -87,23 +88,10 @@ function onHover(index: number) {
   min-width: 32px;
   padding: 6px;
   border-radius: var(--radius-3_5);
-  background-color: var(--color-pink-400);
+  background-color: var(--theme-primary);
 
   transition: width 75ms ease-in-out;
   cursor: pointer;
-}
-
-.ui-kit-tabs__tab:nth-child(2 of .ui-kit-tabs__tab) {
-  background-color: var(--color-purple-400);
-}
-.ui-kit-tabs__tab:nth-child(3 of .ui-kit-tabs__tab) {
-  background-color: var(--color-orange-400);
-}
-.ui-kit-tabs__tab:nth-child(4 of .ui-kit-tabs__tab) {
-  background-color: var(--color-green-400);
-}
-.ui-kit-tabs__tab:nth-child(5 of .ui-kit-tabs__tab) {
-  background-color: var(--color-blue-500);
 }
 
 .ui-kit-tabs__tab.ui-kit-tabs__tab--active {

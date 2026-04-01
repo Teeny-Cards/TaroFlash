@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from 'vue'
 import App from '@/phone/components/app.vue'
+import Widget from '@/phone/components/widget.vue'
 import { type PhoneApp, type PhoneContext } from '@/phone/system/types'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
@@ -71,10 +72,14 @@ function openApp(app?: PhoneApp) {
   if (!found || !phone) return
 
   active_app.value = apps.indexOf(found)
-  phone.open(found.id)
 
   if (found.type === 'widget') return
-  emitSfx('ui.toggle_on')
+
+  phone.open(found.id)
+
+  if (found.type === 'view') {
+    emitSfx('ui.toggle_on')
+  }
 }
 
 // If the hovered app is not the active app,
@@ -111,14 +116,23 @@ function _getActiveApp() {
       class="w-full grid grid-cols-[auto_auto_auto] grid-rows-[auto_auto_auto] gap-2 gap-y-6
         sm:gap-y-2 justify-center content-center"
     >
-      <app
-        v-for="app in apps"
-        :id="app.id"
-        :key="app.id"
-        :app="app"
-        @click="openApp(app)"
-        @mouseenter="onHoverApp(app)"
-      />
+      <template v-for="app in apps">
+        <app
+          v-if="app.type === 'view' || app.type === 'trigger'"
+          :id="app.id"
+          :key="app.id"
+          :app="app"
+          @click="openApp(app)"
+          @mouseenter="onHoverApp(app)"
+        />
+
+        <component
+          v-else-if="app.type === 'widget'"
+          :is="app.component"
+          @mouseenter="onHoverApp(app)"
+          @click="openApp(app)"
+        />
+      </template>
     </div>
   </div>
 </template>

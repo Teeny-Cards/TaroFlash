@@ -25,11 +25,17 @@ async function onImageDelete() {
 
 <template>
   <image-uploader @image-uploaded="onImageUpload" :allow_drop="false" v-slot="{ trigger }">
-    <ui-button v-if="image" icon-only icon-left="delete" theme="red" @click.stop="onImageDelete">
+    <ui-button
+      v-if="image"
+      icon-only
+      icon-left="delete"
+      theme="red-500"
+      @click.stop="onImageDelete"
+    >
       {{ t('deck-view.item-options.remove-image') }}
     </ui-button>
 
-    <ui-button v-else icon-only icon-left="add-image" theme="orange" @click.stop="trigger">
+    <ui-button v-else icon-only icon-left="add-image" theme="orange-500" @click.stop="trigger">
       {{ t('deck-view.item-options.upload-image') }}
     </ui-button>
   </image-uploader>

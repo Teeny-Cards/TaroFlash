@@ -188,7 +188,7 @@ function isPageTarget(el: HTMLElement) {
   >
     <div
       ref="thumbEl"
-      class="ui-kit-scroll-bar__thumb"
+      class="ui-kit-scroll-bar__thumb hover:bgx-diagonal-stripes"
       :style="thumbStyle"
       @pointerdown.stop.prevent="onThumbPointerDown"
     />
@@ -266,6 +266,5 @@ function isPageTarget(el: HTMLElement) {
 }
 .ui-kit-scroll-bar__thumb:hover {
   outline: 4px solid var(--bar-color);
-  background-image: var(--bgx-diagonal-stripes);
 }
 </style>

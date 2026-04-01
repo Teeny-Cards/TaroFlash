@@ -1,19 +1,24 @@
 <script lang="ts" setup>
-import List from './list-desktop/list.vue'
-import ListMobile from './list-mobile/list.vue'
+import List from './list.vue'
 import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
-import { inject, computed } from 'vue'
-import { useMediaQuery } from '@/composables/use-media-query'
+import { inject } from 'vue'
 import { type CardBulkEditor } from '@/composables/card-bulk-editor'
+import text_composer from '@/utils/text-composer'
+import { emitSfx } from '@/sfx/bus'
 
 const { t } = useI18n()
-const is_desktop = useMediaQuery('md')
 const { all_cards, addCard } = inject<CardBulkEditor>('card-editor')!
 
-const list_component = computed(() => {
-  return is_desktop.value ? List : ListMobile
-})
+// const unsub = text_composer.registerUpdateListener(onTextComposerUpdate)
+
+// function onTextComposerUpdate() {
+//   setTimeout(() => {
+//     if (!text_composer.hasActiveRoot()) {
+//       emitSfx('ui.card_drop')
+//     }
+//   }, 100)
+// }
 </script>
 
 <template>
@@ -28,5 +33,5 @@ const list_component = computed(() => {
     </ui-button>
   </div>
 
-  <component :is="list_component" />
+  <list />
 </template>

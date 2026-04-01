@@ -57,7 +57,8 @@ function onSideChanged(side: 'front' | 'back') {
     data-testid="study-session"
     :data-mode="mode"
     class="rounded-8 shadow-lg flex flex-col gap-6 items-center justify-between overflow-hidden
-      pb-10 relative bg-brown-300 dark:bg-grey-900 w-full mx-3 sm:mx-0 h-auto sm:w-160"
+      pb-10 relative bg-brown-300 dark:bg-grey-900 w-full mx-3 sm:mx-0 h-auto sm:w-160 bgx-dot-grid
+      bgx-size-12 bgx-color-brown-500 bgx-opacity-30"
   >
     <div
       data-testid="study-session__header"
@@ -65,7 +66,13 @@ function onSideChanged(side: 'front' | 'back') {
         bgx-diagonal-stripes bgx-size-20 bg-center px-13 py-11.5 pb-14 z-10"
     >
       <div data-testid="study-session__actions" class="absolute top-0 left-0 p-4">
-        <ui-button icon-left="close" theme="brown" icon-only @click="emit('closed')"></ui-button>
+        <ui-button
+          icon-left="close"
+          theme="purple-500"
+          inverted
+          icon-only
+          @click="emit('closed')"
+        ></ui-button>
       </div>
       <h1 class="text-5xl text-white">{{ deck?.title }}</h1>
     </div>
@@ -88,11 +95,5 @@ function onSideChanged(side: 'front' | 'back') {
       @reviewed="onCardReviewed"
       @revealed="current_card_side = 'back'"
     />
-
-    <div
-      data-testid="study-session__pattern"
-      class="absolute inset-0 bg-(image:--bgx-taro-flash-dark) bg-size-[60px] text-brown-500
-        bg-brown-300 opacity-4 bg-center"
-    ></div>
   </div>
 </template>

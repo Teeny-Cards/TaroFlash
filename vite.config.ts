@@ -2,13 +2,33 @@ import { fileURLToPath, URL } from 'node:url'
 import { resolve, dirname } from 'node:path'
 import svgLoader from 'vite-svg-loader'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
-import { defineConfig } from 'vite'
+import { defineConfig, coverageConfigDefaults } from 'vite-plus'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import tailwindcss from '@tailwindcss/vite'
-import { VitePWA } from 'vite-plugin-pwa'
+import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
+  fmt: {
+    semi: false,
+    tabWidth: 2,
+    singleQuote: true,
+    printWidth: 100,
+    trailingComma: 'none',
+    sortPackageJson: false,
+    ignorePatterns: []
+  },
+  lint: {
+    ignorePatterns: ['dist/**'],
+    options: {
+      typeAware: true,
+      typeCheck: true
+    },
+    rules: {
+      'no-console': 'warn',
+      'no-floating-promises': 'off'
+    }
+  },
   plugins: [
     vue(),
     vueJsx(),
@@ -18,25 +38,51 @@ export default defineConfig({
       include: resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/**'),
       strictMessage: false
     })
-    // VitePWA({
-    //   registerType: 'autoUpdate',
-    //   includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
-    //   manifest: {
-    //     name: 'TaroFlash',
-    //     short_name: 'TaroFlash',
-    //     start_url: '/',
-    //     scope: '/',
-    //     display: 'standalone',
-    //     background_color: '#f3f1ea',
-    //     theme_color: '#f3f1ea',
-    //     icons: [
-    //       { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
-    //       { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
-    //       { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
-    //     ]
-    //   }
-    // })
   ],
+  test: {
+    setupFiles: ['./tests/setup.js'],
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: { label: 'Unit', color: 'blue' },
+          include: ['tests/unit/**/*.test.js'],
+          environment: 'jsdom'
+        }
+      },
+      {
+        extends: true,
+        test: {
+          name: { label: 'Integration', color: 'green' },
+          include: ['tests/integration/**/*.test.js'],
+          environment: 'node',
+          browser: {
+            enabled: true,
+            provider: playwright(),
+            instances: [{ browser: 'chromium' }]
+          }
+        }
+      }
+    ],
+    coverage: {
+      enabled: true,
+      reporter: ['text', 'html', 'json-summary'],
+      reportOnFailure: true,
+      exclude: [
+        '**/postcss.config.js',
+        '**/App.vue',
+        '**/main.ts',
+        '**/supabase-client.ts',
+        '**/router/**',
+        '**/src/api/**',
+        '**/src/components/ui-kit/_index.ts',
+        '**/types/**',
+        '**/src/utils/logger.ts',
+        '**/src/utils/uid.ts',
+        ...coverageConfigDefaults.exclude
+      ]
+    }
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

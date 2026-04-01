@@ -51,8 +51,10 @@ async function onSubmit() {
       <signup-form ref="form" />
 
       <div data-testid="actions" class="w-full flex justify-center gap-2.5 col-start-2">
-        <ui-button size="lg" theme="brown" @click="close()">{{ t('common.cancel') }}</ui-button>
-        <ui-button size="lg" fancy-hover :loading="form?.loading" @click="onSubmit">{{
+        <ui-button size="lg" theme="brown-100" :fancy-hover="false" @click="close()">{{
+          t('common.cancel')
+        }}</ui-button>
+        <ui-button size="lg" :loading="form?.loading" @click="onSubmit">{{
           t('signup-dialog.cta')
         }}</ui-button>
       </div>

@@ -57,7 +57,7 @@ function onImageError() {
           icon-left="settings"
           icon-only
           class="absolute! top-4 right-4"
-          theme="brown"
+          theme="brown-100"
           size="sm"
           @click.stop="onSettingsClicked"
         />
