@@ -41,6 +41,12 @@ Before writing, read the source file and note:
 - **What the composable returns** vs. what it stores internally
 - **Dependencies** — prefer `vi.mock('@/composables/...')` over mocking browser APIs; reset with `vi.mocked(...).mockReturnValue(...)` in `beforeEach`, override per-test as needed
 
+**All test data must come from fixtures** — no inline dummy objects or hardcoded field values. Use `mimicry-js` + `faker-js` builders:
+- Single test file → `tests/unit/<subject>/fixtures.js`
+- Shared across multiple test files → `tests/fixtures/<subject>.js`
+
+Assert against the generated object's properties (e.g. `expect(record.id).toBe(c.id)`), not hardcoded values.
+
 Write up to **200 lines**. If you hit the limit mid-test, finish or drop the current test then stop.
 
 ### Step 4 — Validate
@@ -57,20 +63,57 @@ Review new tests against `test-quality-checklist.md`. Fix critical issues (flaki
 
 ### Step 6 — Open a PR
 
+Record the current branch before doing anything — this is the base branch for the PR:
+
+```bash
+BASE=$(git rev-parse --abbrev-ref HEAD)
+```
+
+Create a new branch off it, commit, and open the PR targeting that base:
+
 ```bash
 git checkout -b <branch>
 git add tests/
 git commit -m "chore(tests): increase coverage"
 git push -u origin <branch>
-gh pr create --title "chore(tests): increase coverage" --body "..."
+gh pr create --title "chore(tests): increase coverage" --base "$BASE" --body "..."
 ```
 
-If `gh` is unavailable, output: `https://github.com/<owner>/<repo>/compare/<branch>`
+If `gh` is unavailable, output: `https://github.com/<owner>/<repo>/compare/<base>...<branch>`
 
-### Step 7 — Report
+### Step 7 — Report then wait for review
 
 | File | Test file | Type | New tests | Coverage |
 | ---- | --------- | ---- | --------- | -------- |
 | ...  | ...       | unit/integration | N | ~X% |
 
 Include a **Quality notes** section for non-critical issues from Step 5, a link to the PR, and note any coverage crashes with the fallback used.
+
+Tell the user the PR is ready for review and **wait for them to say so** before continuing.
+
+### Step 8 — PR review loop
+
+When the user signals they've finished reviewing, fetch all review comments (excluding bots):
+
+```bash
+# Get PR number and owner/repo
+gh pr view --json number,headRepository
+
+# PR-level comments (exclude bots)
+gh api /repos/{owner}/{repo}/issues/{number}/comments \
+  | jq '[.[] | select(.user.type != "Bot")]'
+
+# Code review comments — these include diff_hunk, path, line
+gh api /repos/{owner}/{repo}/pulls/{number}/comments \
+  | jq '[.[] | {id, in_reply_to_id, author: .user.login, body, path, line, diff_hunk}]'
+```
+
+> **Note:** Review comments can be large. Always pipe through `jq` to extract only the fields you need — fetching raw JSON will overflow the context.
+
+For each comment thread:
+- **If the feedback is valid** — fix the code, run `vp test --no-coverage` to confirm green, push, then reply to the comment via `gh api /repos/{owner}/{repo}/pulls/{number}/comments/{comment_id}/replies -X POST -f body="..."` explaining what changed.
+- **If the feedback doesn't make sense** — reply to the comment explaining why, without making changes.
+
+Always prefix replies with `🤖 Claude:` so the author can distinguish automated replies from their own.
+
+After addressing all comments, push any changes and tell the user you're done. **Wait again** for their next review signal. Repeat until the user confirms everything looks good.
