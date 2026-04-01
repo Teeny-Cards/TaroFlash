@@ -21,9 +21,19 @@ Run the following command to run tests and generate a coverage report:
 vp test --coverage
 ```
 
-This will generate a coverage report in `coverage/` directory. Open `coverage/index.html` to view the report.
+Once complete, print a ranked list of low-coverage files directly from the JSON report — this is faster than opening the HTML report:
 
-Identify all files with low coverage. If there are no tests, move on to the next step. If all files have 100% coverage, stop.
+```bash
+node -e "
+const s = JSON.parse(require('fs').readFileSync('coverage/coverage-summary.json', 'utf8'))
+Object.entries(s)
+  .filter(([k]) => k !== 'total')
+  .sort((a, b) => a[1].lines.pct - b[1].lines.pct)
+  .forEach(([f, d]) => console.log(d.lines.pct.toFixed(1).padStart(6) + '%  ' + f))
+"
+```
+
+Identify all files with low coverage. If all files have 100% coverage, stop.
 
 **If `vp test --coverage` crashes** (e.g. a coverage provider version mismatch), fall back to `vp test --no-coverage` to confirm the test suite runs, and use source file line counts as a rough proxy for ranking in Step 2. Note the crash in the final report.
 
@@ -41,8 +51,10 @@ Pick the file with the highest rank.
 ### Step 3 — Write tests for the highest priority file
 
 Before writing, read the source file to understand:
-- Module-level state: Vue composables often hold `ref`/`reactive` values at module scope. These persist across `useXxx()` calls and across tests — they need an explicit reset in `beforeEach`.
-- What the function/composable actually returns vs. what it stores internally.
+
+- **Module-level state:** Vue composables often hold `ref`/`reactive` values at module scope. These persist across `useXxx()` calls and across tests — they need an explicit reset in `beforeEach` via the composable's own setters. Flag these in a comment so future readers know why the reset is there.
+- **What the function/composable actually returns** vs. what it stores internally.
+- **Dependencies that need mocking:** prefer `vi.mock('@/composables/...')` over mocking browser APIs like `window.matchMedia`. Module mocks are more isolated. Use `vi.mocked(...).mockReturnValue(...)` in `beforeEach` to reset to a safe default, then override per-test as needed.
 
 Write a test suite for the high priority file up to a maximum of 200 lines of code changed. If you reach 200 lines and there are still uncovered lines:
 
