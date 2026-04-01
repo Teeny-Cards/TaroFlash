@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useLogger } from '@/composables/logger'
+import logger from '@/utils/logger'
 
 const { src, size = 'unset' } = defineProps<{
   src: string
@@ -8,7 +8,6 @@ const { src, size = 'unset' } = defineProps<{
 }>()
 
 const imageUrl = ref<string | null>(null)
-const logger = useLogger()
 
 const raster = import.meta.glob('../../assets/images/*.{png,jpg,jpeg}', {
   import: 'default'

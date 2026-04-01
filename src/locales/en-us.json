@@ -1,7 +1,6 @@
 {
   "common.loading": "Loading",
   "common.study": "Study",
-  "common.back": "Back",
   "common.cancel": "Cancel",
   "common.save": "Save",
   "common.delete": "Delete",
@@ -17,6 +16,8 @@
   "common.logout": "Logout",
   "common.or": "Or",
   "common.close": "Close",
+  "common.front": "Front",
+  "common.back": "Back",
 
   "app.title": "TaroFlash",
   "app.description": "A warm little space to learn, make, and collect things you love.",
@@ -93,7 +94,9 @@
   "settings.app-settings.audio.rewards": "Reward Volume",
   "settings.app-settings.accessibility.label": "Accessibility",
   "settings.member-settings.title": "Member Settings",
+  "settings.member-settings.general.label": "General",
   "settings.member-settings.subscription.label": "Subscription",
+  "settings.notification-settings.title": "Notification Settings",
 
   "alert.generic-title": "Continue?",
   "alert.generic-message": "Are you sure you want to continue?",
@@ -107,8 +110,6 @@
 
   "toast.error.add-card": "Failed to add a new card",
 
-  "card.placeholder-front": "Front",
-  "card.placeholder-back": "Back",
   "card.add-image": "Add Image",
   "card.add-text": "Add Text",
   "card.save-error": "Something went wrong while trying to save your card",
@@ -125,7 +126,7 @@
 
   "dashboard.due": "Due",
   "dashboard.all": "All Decks",
-  "dashboard.create-deck": "Create Deck",
+  "dashboard.create-deck": "Make a New Deck",
 
   "deck.description-placeholder": "Add a short description to your deck.",
   "deck.title-placeholder": "Deck Name",

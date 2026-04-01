@@ -13,12 +13,11 @@ import {
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
 import { useMemberStore } from './member'
-import { useLogger } from '@/composables/logger'
+import logger from '@/utils/logger'
 
 export const useSessionStore = defineStore('sessionStore', () => {
   const router = useRouter()
   const memberStore = useMemberStore()
-  const logger = useLogger()
 
   const user = ref<User | undefined>(undefined)
   const loading_count = ref(0)
@@ -68,7 +67,13 @@ export const useSessionStore = defineStore('sessionStore', () => {
   }
 
   async function signInOAuth(provider: OAuthProvider, options?: SignupOAuthOptions): Promise<void> {
-    await supaSignInOAuth(provider, options)
+    try {
+      await supaSignInOAuth(provider, options)
+    } catch (e: any) {
+      logger.error(`Error signing in with OAuth: ${e.message}`)
+    }
+
+    router.push({ name: 'dashboard' })
   }
 
   function reset() {

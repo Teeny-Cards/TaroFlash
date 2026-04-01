@@ -1,13 +1,11 @@
 import { supabase } from '@/supabase-client'
 import { useMemberStore } from '@/stores/member'
-import { useLogger } from '@/composables/logger'
+import logger from '@/utils/logger'
 import { DateTime } from 'luxon'
-
-const logger = useLogger()
 
 export async function fetchMemberDecks(): Promise<Deck[]> {
   const { data, error } = await supabase.rpc('get_member_decks_with_due_count', {
-    p_member_id: useMemberStore().user_id,
+    p_member_id: useMemberStore().id,
     p_now: DateTime.now().toISO()
   })
 
@@ -22,9 +20,9 @@ export async function fetchMemberDecks(): Promise<Deck[]> {
 export async function fetchDeck(id: number): Promise<Deck> {
   const { data, error } = await supabase
     .from('decks')
-    .select('*, cards:card_with_images(*, review:reviews(*)), member:members(display_name)')
+    .select('*, cards:cards_with_images(*, review:reviews(*)), member:members(display_name)')
     .eq('id', id)
-    .order('rank', { ascending: true, referencedTable: 'card_with_images' })
+    .order('rank', { ascending: true, referencedTable: 'cards_with_images' })
     .single()
 
   if (error) {

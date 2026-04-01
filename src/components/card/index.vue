@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import CardFace from './card-face.vue'
-import { type TextEditorUpdatePayload } from '@/composables/rich-text-editor'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { type CardBase, type ImageCard } from '@type/card'
 import { getImageUrl } from '@/api/media'
@@ -12,7 +11,6 @@ type CardProps = Partial<CardBase> &
     size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
     mode?: CardEditorMode
     side?: 'front' | 'back'
-    placeholder?: string
     face_classes?: string
     sfx?: SfxOptions
   }
@@ -24,13 +22,6 @@ const {
   front_image_path,
   back_image_path
 } = defineProps<CardProps>()
-
-const emit = defineEmits<{
-  (e: 'update:front', payload: TextEditorUpdatePayload): void
-  (e: 'update:back', payload: TextEditorUpdatePayload): void
-  (e: 'focusin'): void
-  (e: 'focusout'): void
-}>()
 
 const front_image_url = computed(() => {
   if (!front_image_path) return undefined
@@ -47,8 +38,7 @@ const back_image_url = computed(() => {
   <div
     data-testid="card"
     class="card-container"
-    :class="`card-container--${size} card-container--${mode}
-      card-container--${attributes?.bg_color || 'white'}`"
+    :class="`card-container--${size} card-container--${mode}`"
     v-sfx="sfx"
   >
     <slot></slot>
@@ -68,15 +58,12 @@ const back_image_url = computed(() => {
           :class="face_classes"
           :image="front_image_url"
           :text="front_text"
-          :editor_delta="front_delta"
           :mode="mode"
-          :side="side"
-          :attributes="attributes"
-          :placeholder="placeholder"
-          @update="emit('update:front', $event)"
-          @focusin.prevent="emit('focusin')"
-          @focusout.prevent="emit('focusout')"
-        />
+        >
+          <template #editor>
+            <slot name="editor"></slot>
+          </template>
+        </card-face>
       </slot>
 
       <slot name="back" v-else>
@@ -85,15 +72,12 @@ const back_image_url = computed(() => {
           :class="face_classes"
           :image="back_image_url"
           :text="back_text"
-          :editor_delta="back_delta"
           :mode="mode"
-          :side="side"
-          :attributes="attributes"
-          :placeholder="placeholder"
-          @update="emit('update:back', $event)"
-          @focusin.prevent="emit('focusin')"
-          @focusout.prevent="emit('focusout')"
-        />
+        >
+          <template #editor>
+            <slot name="editor"></slot>
+          </template>
+        </card-face>
       </slot>
     </transition>
   </div>

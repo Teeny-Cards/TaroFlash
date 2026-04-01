@@ -44,8 +44,9 @@ async function onSubmit(): Promise<void> {
   >
     <div class="flex flex-col items-center gap-6">
       <ui-button
-        theme="brown"
+        theme="brown-100"
         size="lg"
+        :fancy-hover="false"
         class="w-full!"
         icon-left="google-logo"
         @click="submitOAuth('google')"

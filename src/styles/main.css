@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap');
 
 @import 'tailwindcss';
+@import '@/styles/palettes.css';
 @import '@/styles/custom-styles.css';
 @import '@/styles/custom-variants.css';
-@import '@/styles/markdown.css';
 @import '@/styles/border-utils.css';
 @import '@/styles/bg-utils.css';
 
@@ -17,7 +17,8 @@
   --color-blue-800: #2d455e;
   --color-blue-650: #0a7588;
   --color-blue-500: #11b7d4;
-  --color-blue-400: #68d1df;
+  --color-blue-400: #6cbfd5;
+  --color-green-600: #6f9b80;
   --color-green-400: #a4c6ae;
   --color-green-300: #e4edd9;
   --color-green-200: #e8f6e7;
@@ -30,6 +31,7 @@
   --color-red-500: #e66061;
   --color-red-400: #f97b7b;
   --color-red-300: #ffa399;
+  --color-orange-600: #fc946f;
   --color-orange-500: #fbc56f;
   --color-orange-400: #f7d279;
   --color-brown-800: #4a3b30;
@@ -46,12 +48,25 @@
   --color-grey-400: #b2b2b2;
   --color-grey-300: #d2d2d2;
 
+  --theme-primary: var(--color-blue-500);
+  --theme-on-primary: var(--color-brown-100);
+
+  --theme-secondary: var(--color-blue-400);
+  --theme-on-secondary: var(--color-brown-100);
+
+  --theme-accent: var(--color-blue-400);
+  --theme-on-accent: var(--color-brown-100);
+
+  --theme-neutral: var(--color-brown-100);
+  --theme-on-neutral: var(--color-grey-900);
+
   --radius-0_5: --spacing(0.5); /* 2px */
   --radius-1: --spacing(1); /* 4px */
   --radius-1_5: --spacing(1.5); /* 6px */
   --radius-2: --spacing(2); /* 8px */
   --radius-2_5: --spacing(2.5); /* 10px */
   --radius-3: --spacing(3); /* 12px */
+  --radius-3_25: --spacing(3.25); /* 13px */
   --radius-3_5: --spacing(3.5); /* 14px */
   --radius-4: --spacing(4); /* 16px */
   --radius-4_5: --spacing(4.5); /* 18px */
@@ -95,21 +110,20 @@
   --bgx-endless-clouds: url('../assets/backgrounds/endless-clouds.svg');
   --bgx-stars: url('../assets/backgrounds/stars.svg');
   --bgx-leaf: url('../assets/backgrounds/leaf.svg');
-  --bgx-taro-flash: url('../assets/backgrounds/taro-flash.svg');
-  --bgx-taro-flash-dark: url('../assets/backgrounds/taro-flash-dark.svg');
+  --bgx-dot-grid: url('../assets/backgrounds/dot-grid.svg');
 
   /* Shadows */
-  --shadow-xs: 3px 3px 0px 0px rgba(0, 0, 0, 0.25);
-  --drop-shadow-xs: 3px 3px 0px rgba(0, 0, 0, 0.25);
+  --shadow-xs: 3px 3px 0px 0px var(--shadow-color);
+  --drop-shadow-xs: 3px 3px 0px var(--shadow-color);
 
-  --shadow-sm: 4px 4px 0px 0px rgba(0, 0, 0, 0.25);
-  --drop-shadow-sm: 4px 4px 0px rgba(0, 0, 0, 0.25);
+  --shadow-sm: 4px 4px 0px 0px var(--shadow-color);
+  --drop-shadow-sm: 4px 4px 0px var(--shadow-color);
 
-  --shadow-md: 5px 5px 0px 0px rgba(0, 0, 0, 0.25);
-  --drop-shadow-md: 5px 5px 0px rgba(0, 0, 0, 0.25);
+  --shadow-md: 5px 5px 0px 0px var(--shadow-color);
+  --drop-shadow-md: 5px 5px 0px var(--shadow-color);
 
-  --shadow-lg: 6px 6px 0px 0px rgba(0, 0, 0, 0.25);
-  --drop-shadow-lg: 10px 10px 0px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 6px 6px 0px 0px var(--shadow-color);
+  --drop-shadow-lg: 6px 6px 0px var(--shadow-color);
 
   /* Transitions */
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -127,6 +141,8 @@
   --aspect-card: 7 / 8;
   --page-width: 1500px;
   --blur-md: 24px;
+  --blur-4: 4px;
+  --shadow-color: rgba(0, 0, 0, 0.25);
 
   /* Typography */
   --font-primary: 'Tilt Neon', sans-serif;
@@ -189,4 +205,37 @@
       scrollbar-width: none;
     }
   }
+
+  /* DARK MODE EXPLICIT OVERRIDES */
+  /* Warning: This is global and will affect everything */
+  &:where([data-theme='dark'], [data-theme='dark'] *) {
+    --shadow-color: rgba(0, 0, 0, 1);
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:not([data-theme] *)) {
+      --shadow-color: rgba(0, 0, 0, 1);
+    }
+  }
+}
+
+/* Dark Mode Tailwind Variant Override */
+@custom-variant dark {
+  /* Explicit dark mode wins */
+  &:where([data-theme='dark'], [data-theme='dark'] *) {
+    @slot;
+  }
+
+  /* System dark mode fallback ONLY when no explicit theme is set anywhere */
+  @media (prefers-color-scheme: dark) {
+    &:where(:not([data-theme] *)) {
+      @slot;
+    }
+  }
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
 }

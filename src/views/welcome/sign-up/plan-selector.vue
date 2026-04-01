@@ -44,7 +44,7 @@ const { t } = useI18n()
       <plan-option
         :selected="selected_plan === 'paid'"
         @select="emit('select', 'paid')"
-        theme="blue"
+        theme="blue-500"
         :name="t('signup-dialog.plan-paid')"
         class="text-brown-100"
       >

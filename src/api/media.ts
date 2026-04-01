@@ -1,8 +1,6 @@
 import { supabase } from '@/supabase-client'
 import { useMemberStore } from '@/stores/member'
-import { useLogger } from '@/composables/logger'
-
-const logger = useLogger()
+import logger from '@/utils/logger'
 
 export async function uploadImage(bucket: string, path: string, file: File): Promise<string> {
   const member_id = useMemberStore().id
