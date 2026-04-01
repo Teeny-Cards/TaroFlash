@@ -5,63 +5,51 @@ paths:
 
 # Writing Tests
 
-Use **vue-testing-best-practices@vue-skills** to guide you in writing the tests.
+Use **vue-testing-best-practices@vue-skills** to guide you.
 
-Choose the **lowest-cost test type** that can meaningfully cover the file. Use the following priority order:
+## Test type selection
 
-| Priority | Type            | When to use                                                                                                 |
-| -------- | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| 1        | **Unit**        | Pure functions, utilities, composables with no rendering, store logic that can be called directly           |
-| 2        | **Integration** | Vue components — anything that renders HTML or interacts with stores/composables via `shallowMount`/`mount` |
+| Priority | Type            | Environment        | When to use                                                           |
+| -------- | --------------- | ------------------ | --------------------------------------------------------------------- |
+| 1        | **Unit**        | jsdom (Node)       | Pure functions, utilities, composables with no rendering, store logic |
+| 2        | **Integration** | Chromium (browser) | Vue components — anything that renders HTML                           |
 
-Default to integration tests for components. Use `shallowMount` for isolated component tests (stub child components) and `mount` only when child component behaviour is directly under test.
+- Unit tests → `tests/unit/`, integration tests → `tests/integration/`
+- Target **100% coverage**; minimum **85%**
+- For components, prefer `shallowMount` (stubs children) over `mount` unless child behaviour is directly under test
 
-If possible attempt to reach 100% coverage, but if that is not possible, aim for at least 85% coverage.
+**Use browser mode (integration) when** the component depends on real browser APIs (layout, focus, clipboard, media queries) or jsdom would require so many mocks the test stops reflecting real behaviour. Otherwise prefer jsdom — browser tests are slower.
 
-Integration tests should be added under `tests/integration` and unit tests should be added under `tests/unit`.
+## Fixtures and test data
 
-Always attempt to use factory builders for mocking test data using `mimicry-js` and `faker-js` in a separate fixtures file.
+Use `mimicry-js` + `faker-js` factory builders for test data, in a separate `fixtures.js` file.
+
+- **Single test file** → colocate `fixtures.js` in a subdirectory named after the subject (e.g. `tests/unit/use-theme/fixtures.js`)
+- **Shared across tests** → add to `tests/fixtures/[subject].js`
 
 ## Composable singleton state
 
-Some composables hold `ref`/`reactive` values at **module scope** (outside the function body). These persist across `useXxx()` calls and between tests — they need an explicit reset in `beforeEach` using the composable's own setters:
+Some composables hold `ref`/`reactive` at **module scope** — these persist between tests. Reset in `beforeEach` via the composable's own setter:
 
 ```js
 beforeEach(() => {
-  useTheme().setMode('system') // resets module-level mode ref via its own setter
+  useTheme().setMode('system') // resets module-level ref
 })
 ```
 
-If no setter exists and the ref is not exported, use `vi.resetModules()` to fully re-import the module fresh — but prefer the setter approach when available since it's faster and doesn't break mock registrations.
+If no setter exists, fall back to `vi.resetModules()`.
 
-## Mocking composable dependencies
+## Mocking
 
-Prefer mocking a composable dependency via `vi.mock('@/composables/...')` over mocking browser APIs directly (e.g. `window.matchMedia`). Module mocks are more isolated and avoid cache/side-effect state leaking between tests.
+Prefer `vi.mock('@/composables/...')` over mocking browser APIs directly — module mocks are more isolated and avoid cache leaking between tests. Reset return values in `beforeEach` with `vi.mocked(...).mockReturnValue(...)`, then override per-test as needed.
 
-Use `vi.mocked(...).mockReturnValue(...)` in `beforeEach` to reset the mock's return value for each test, then override in individual tests that need a different value.
+## Suspect source logic
 
-- If the data is specific to a single test file, colocate a new `fixtures.js` file next to the test file. Wrap the new fixtures file and test file in a subdirectory named for the component/composable/etc being tested.
-- If the data is general and can be used across multiple tests, add it to `tests/fixtures/[subject].js`.
-
-If the source file has logic that appears wrong or you are unsure if it is correct, ask the user for confirmation before writing the test:
-
-- If the user confirms that the logic is correct, write the test. Clarify in comments of tests for future reference in case of confusion.
-- If the user confirms that the logic is incorrect, wait for the user to fix the logic before writing the test. potentially offer a suggestion on how to fix the logic.
-- Provide the user with two options:
-  1. The user can fix the logic themselves and then confirm.
-  2. The user can ask for help to fix the logic.
-- Call out in the summary
+If source logic looks wrong, ask the user before writing the test. Once confirmed correct, add a comment explaining the non-obvious behaviour. If confirmed wrong, wait for the fix before writing.
 
 # Running Tests
 
-Use the command `vp test` to run the test suite. If you want to run a specific test file, you can pass the path to the file as an argument.
-
 ```bash
-vp test [path/to/test/file]
-```
-
-For example:
-
-```bash
-vp test tests/integration/components/ui-kit/toggle.test.js
+vp test                                        # full suite
+vp test tests/unit/use-theme.test.js           # single file
 ```
