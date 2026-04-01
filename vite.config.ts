@@ -2,10 +2,11 @@ import { fileURLToPath, URL } from 'node:url'
 import { resolve, dirname } from 'node:path'
 import svgLoader from 'vite-svg-loader'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
-import { defineConfig, configDefaults, coverageConfigDefaults } from 'vite-plus'
+import { defineConfig, coverageConfigDefaults } from 'vite-plus'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import tailwindcss from '@tailwindcss/vite'
+import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
   fmt: {
@@ -39,10 +40,30 @@ export default defineConfig({
     })
   ],
   test: {
-    environment: 'jsdom',
-    exclude: [...configDefaults.exclude, 'e2e/*'],
-    root: fileURLToPath(new URL('./', import.meta.url)),
     setupFiles: ['./tests/setup.js'],
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: { label: 'Unit', color: 'blue' },
+          include: ['tests/unit/**/*.test.js'],
+          environment: 'jsdom'
+        }
+      },
+      {
+        extends: true,
+        test: {
+          name: { label: 'Integration', color: 'green' },
+          include: ['tests/integration/**/*.test.js'],
+          environment: 'node',
+          browser: {
+            enabled: true,
+            provider: playwright(),
+            instances: [{ browser: 'chromium' }]
+          }
+        }
+      }
+    ],
     coverage: {
       enabled: true,
       reporter: ['text', 'html', 'json-summary'],

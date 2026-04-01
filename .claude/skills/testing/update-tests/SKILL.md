@@ -1,7 +1,6 @@
-# update-tests — Branch Coverage Workflow
-
-Rules for analysing branch changes in `src/` and writing tests to reach ~90% coverage of changed lines.
-
+---
+name: update-tests
+description: Analyse branch changes in `src/` and write tests to reach ~90% coverage of changed lines
 ---
 
 ## Workflow
@@ -99,23 +98,7 @@ Do not proceed to the next file until the current file's tests are passing.
 
 ### Step 7 — Review and quality check
 
-Once all tests are written and passing, review the full set of new tests for quality:
-
-**Check for potential flakiness:**
-
-- Tests that depend on timing or animation without a concrete trigger
-- Tests that assert on elements that may not be in the DOM yet (missing `await` before queries)
-- Tests that share mutable state between `test()` blocks (missing resets in `beforeEach`/`afterEach`)
-- Hard-coded values that could vary by environment or locale
-- Tests that depend on dates or times — check for month/year boundaries that could cause failures
-
-**Check for bad practices:**
-
-- Asserting on implementation details (internal state, private methods) rather than observable behaviour
-- Overly broad assertions (e.g., `expect(element).toBeDefined()` instead of asserting actual content)
-- Duplicate tests that cover exactly the same code path
-- Tests that never actually exercise the changed lines
-- Assertions on external libraries or dependencies (e.g., third-party component internals)
+Once all tests are written and passing, review the full set of new tests for quality using `test-quality-checklist.md` in the `skills/testing` directory.
 
 **Fix any critical issues** — specifically anything that would cause intermittent CI failures or mask real regressions. Call out non-critical issues (low severity style/practice notes) in the report but do not auto-fix them.
 
