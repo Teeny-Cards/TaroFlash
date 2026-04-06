@@ -37,8 +37,8 @@ function onStudyClicked() {
     props: {
       deck
     },
-    openAudio: 'ui.double_pop_up',
-    closeAudio: 'ui.double_pop_down'
+    openAudio: 'ui.slide_up',
+    closeAudio: 'ui.slide_up'
   })
 }
 </script>
@@ -46,8 +46,7 @@ function onStudyClicked() {
 <template>
   <div
     data-testid="overview-panel"
-    class="flex w-max flex-col items-center gap-6 md:flex-row md:items-end xl:flex-col
-      xl:items-start"
+    class="flex w-max flex-col items-center gap-6 md:flex-row md:items-end xl:flex-col xl:items-start"
   >
     <deck size="lg" class="relative" :deck="deck"></deck>
 
