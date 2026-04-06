@@ -54,16 +54,10 @@ const show_backdrop = computed(() => {
   </transition>
 
   <transition-group
+    :name="is_mobile ? 'slide' : 'pop'"
     data-testid="ui-kit-modal-container"
     tag="div"
-    class="pointer-events-none fixed inset-0 z-90 flex items-center justify-center
-      *:pointer-events-auto"
-    enter-from-class="scale-90 opacity-0"
-    enter-to-class="scale-100 opacity-100"
-    enter-active-class="transition-[all] ease-in-out duration-100"
-    leave-from-class="scale-100 opacity-100"
-    leave-to-class="scale-90 opacity-0"
-    leave-active-class="transition-[all] ease-in-out duration-100"
+    class="pointer-events-none fixed inset-0 z-90 flex items-center justify-center *:pointer-events-auto"
   >
     <component
       v-for="modal in modal_stack"
@@ -74,3 +68,39 @@ const show_backdrop = computed(() => {
     />
   </transition-group>
 </template>
+
+<style>
+.pop-enter-from,
+.pop-leave-to {
+  transform: scale(90%);
+  opacity: 0;
+}
+
+.pop-enter-active,
+.pop-leave-active {
+  transition: all 100ms ease-out;
+}
+
+.pop-leave-from,
+.pop-enter-to {
+  transform: scale(100%);
+  opacity: 1;
+}
+
+/* Mobile transitions */
+
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateY(100%);
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 100ms ease-out;
+}
+
+.slide-leave-from,
+.slide-enter-to {
+  transform: translateY(0);
+}
+</style>
