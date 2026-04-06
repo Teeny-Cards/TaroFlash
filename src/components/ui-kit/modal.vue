@@ -3,6 +3,7 @@ import { onUnmounted, watchEffect, computed, onMounted, ref } from 'vue'
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
 import { useModal } from '@/composables/modal'
 import { useMediaQuery } from '@/composables/use-media-query'
+import { gsap } from 'gsap'
 
 const { modal_stack, pop } = useModal()
 const modal_container = ref<HTMLElement | null>(null)
@@ -30,6 +31,15 @@ watchEffect(() => {
 const show_backdrop = computed(() => {
   return modal_stack.value.some((m) => m.backdrop)
 })
+
+function onEnter(el: Element, done: () => void) {
+  gsap.fromTo(el, { translateY: '100%' }, { translateY: 0, duration: 0.2, ease: 'expo.out' })
+  done()
+}
+
+function onLeave(el: Element, done: () => void) {
+  gsap.to(el, { translateY: '100%', duration: 0.2, ease: 'expo.out', onComplete: done })
+}
 </script>
 
 <template>
@@ -54,7 +64,8 @@ const show_backdrop = computed(() => {
   </transition>
 
   <transition-group
-    :name="is_mobile ? 'slide' : 'pop'"
+    @enter="onEnter"
+    @leave="onLeave"
     data-testid="ui-kit-modal-container"
     tag="div"
     class="pointer-events-none fixed inset-0 z-90 flex items-center justify-center *:pointer-events-auto"
