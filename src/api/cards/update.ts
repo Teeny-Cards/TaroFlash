@@ -5,7 +5,7 @@ import { uploadImage, insertMedia, deleteImage } from '@/api/media'
 import uid from '@/utils/uid'
 import { type CardBase } from '@type/card'
 
-export async function upsertCard(card: CardBase): Promise<Card> {
+export async function upsertCard(card: Partial<CardBase>): Promise<Card> {
   const sanitized = {
     ...card,
     updated_at: DateTime.now().toISO()
@@ -25,7 +25,7 @@ export async function upsertCard(card: CardBase): Promise<Card> {
   return data
 }
 
-export async function upsertCards(cards: CardBase[]): Promise<Card[]> {
+export async function upsertCards(cards: Partial<CardBase>[]): Promise<Card[]> {
   const sanitized = cards.map((card) => ({
     ...card,
     updated_at: DateTime.now().toISO()
