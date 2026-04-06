@@ -1,6 +1,7 @@
 ---
 name: increase-coverage
 description: Increase test coverage of existing files by adding new tests
+allowed-tools: Read, Edit, Write, Bash, Glob, Grep
 ---
 
 Steps:

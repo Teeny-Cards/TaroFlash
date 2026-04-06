@@ -4,6 +4,7 @@ import { onMounted, ref, provide } from 'vue'
 import { fetchDeck } from '@/api/decks'
 import CardEditor from './card-editor/index.vue'
 import CardGrid from './card-grid/index.vue'
+import CardImporter from './card-importer.vue'
 import { useI18n } from 'vue-i18n'
 import { useCardBulkEditor } from '@/composables/card-bulk-editor'
 import { useAlert } from '@/composables/alert'
@@ -46,12 +47,17 @@ const tabs = [
   {
     label: t('deck-view.tabs.edit-cards'),
     icon: 'edit'
+  },
+  {
+    label: t('deck-view.tabs.import-cards'),
+    icon: 'arrow-circle-up'
   }
 ]
 
 const tab_components: { [key: number]: any } = {
   0: CardGrid,
-  1: CardEditor
+  1: CardEditor,
+  2: CardImporter
 }
 
 onMounted(async () => {
@@ -173,7 +179,7 @@ async function onMoveCards(id?: number) {
         ></div>
       </div>
 
-      <component :is="is_md ? tab_components[active_tab] : CardGrid">
+      <component :is="is_md ? tab_components[active_tab] : CardGrid" :deck_id="Number(deck_id)">
         <bulk-select-toolbar @cancel="onCancel" @move="onMoveCards" @delete="onDeleteCards" />
       </component>
     </div>
