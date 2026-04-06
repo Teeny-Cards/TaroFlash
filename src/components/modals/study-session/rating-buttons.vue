@@ -27,7 +27,7 @@ function getRatingTimeFormat(grade: Grade) {
   if (!date) return ''
 
   const time = DateTime.fromJSDate(date)
-  const timeString = time.toRelativeCalendar()
+  const timeString = time.toRelative({ style: 'short' })
 
   return t('study.study-again', { time: timeString })
 }
@@ -49,8 +49,7 @@ function onRatingClicked(grade: Grade) {
         element="button"
         :gap="-12"
         data-testid="rating-buttons__again"
-        class="text-brown-700 cursor-pointer rounded-full bg-white px-13 py-4 hover:-translate-0.5
-          hover:shadow-sm transition-all duration-50"
+        class="text-brown-700 cursor-pointer rounded-full bg-white px-13 py-4 hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
         :class="{ 'opacity-50': disabled }"
         :disabled="disabled"
         @click="onRatingClicked(Rating.Again)"
@@ -63,8 +62,7 @@ function onRatingClicked(grade: Grade) {
         element="button"
         :gap="-12"
         data-testid="rating-buttons__good"
-        class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white hover:-translate-0.5
-          hover:shadow-sm transition-all duration-50"
+        class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
         :class="{ 'opacity-50': disabled }"
         :disabled="disabled"
         @click="onRatingClicked(Rating.Good)"
@@ -76,8 +74,7 @@ function onRatingClicked(grade: Grade) {
     <button
       v-else
       data-testid="rating-buttons__show"
-      class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white hover:-translate-0.5
-        hover:shadow-sm transition-all duration-50"
+      class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
       @click="$emit('revealed')"
     >
       {{ t('study.flip') }}

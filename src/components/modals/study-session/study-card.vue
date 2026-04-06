@@ -49,7 +49,7 @@ function getRatingTimeFormat(grade: Grade) {
   if (!date) return ''
 
   const time = DateTime.fromJSDate(date)
-  const timeString = time.toRelativeCalendar()
+  const timeString = time.toRelative()
 
   return t('study.study-again', { time: timeString })
 }
@@ -238,6 +238,8 @@ function _cleanupListeners() {
   pointer-events: none;
   opacity: 0;
 
+  user-select: none;
+  z-index: 10;
   transform: scale(50%);
   transition:
     transform var(--duration) linear,

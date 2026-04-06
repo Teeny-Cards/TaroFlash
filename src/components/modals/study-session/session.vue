@@ -6,6 +6,7 @@ import { type RecordLogItem } from 'ts-fsrs'
 import { onMounted, ref } from 'vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import Card from '@/components/card/index.vue'
+import { fetchAllCardsByDeckId } from '@/api/cards'
 
 const { deck } = defineProps<{ deck: Deck }>()
 const emit = defineEmits<{
@@ -21,7 +22,7 @@ const {
   num_correct,
   pickNextCard,
   reviewCard,
-  setup
+  setCards
 } = useStudySession(deck.config)
 
 const loading = ref(true)
@@ -35,6 +36,12 @@ onMounted(async () => {
   await setup(deck.id!)
   loading.value = false
 })
+
+async function setup(deck_id: number) {
+  let cards = await fetchAllCardsByDeckId(deck_id)
+
+  setCards(cards)
+}
 
 function onCardReviewed(item: RecordLogItem) {
   if (active_card.value?.id && mode.value === 'studying') {
@@ -56,14 +63,11 @@ function onSideChanged(side: 'front' | 'back') {
   <div
     data-testid="study-session"
     :data-mode="mode"
-    class="rounded-8 shadow-lg flex flex-col gap-6 items-center justify-between overflow-hidden
-      pb-10 relative bg-brown-300 dark:bg-grey-900 w-full mx-3 sm:mx-0 h-auto sm:w-160 bgx-dot-grid
-      bgx-size-12 bgx-color-brown-500 bgx-opacity-30"
+    class="rounded-8 shadow-lg flex flex-col gap-6 items-center justify-between overflow-hidden pb-10 relative bg-brown-300 dark:bg-grey-800 w-full mx-3 sm:mx-0 h-auto sm:w-160"
   >
     <div
       data-testid="study-session__header"
-      class="relative flex w-full justify-center bg-purple-500 wave-bottom-[50px]
-        bgx-diagonal-stripes bgx-size-20 bg-center px-13 py-11.5 pb-14 z-10"
+      class="relative flex w-full justify-center bg-purple-500 wave-bottom-[50px] bgx-diagonal-stripes bgx-size-20 bg-center px-13 py-11.5 pb-14 z-10"
     >
       <div data-testid="study-session__actions" class="absolute top-0 left-0 p-4">
         <ui-button

@@ -8,7 +8,6 @@ import {
   type RecordLogItem
 } from 'ts-fsrs'
 import { DateTime } from 'luxon'
-import { fetchDueCardsByDeckId, fetchAllCardsByDeckId } from '@/api/cards'
 import { updateReviewByCardId } from '@/api/reviews'
 
 export type StudyMode = 'studying' | 'completed'
@@ -17,12 +16,17 @@ export type StudyCard = Card & { preview?: IPreview; state: ReviewState }
 type ReviewState = 'failed' | 'passed' | 'unreviewed'
 
 const defaultConfig: DeckConfig = {
-  study_all_cards: true,
-  retry_failed_cards: true
+  study_all_cards: false,
+  retry_failed_cards: false
 }
 
 export function useStudySession(config: DeckConfig = defaultConfig) {
-  const _PARAMS = generatorParameters({ enable_fuzz: true })
+  const _PARAMS = generatorParameters({
+    enable_fuzz: true,
+    learning_steps: [],
+    relearning_steps: []
+  })
+
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
   const _cards_in_deck = shallowRef<StudyCard[]>([])
   const _retry_cards = ref<StudyCard[]>([])
@@ -41,14 +45,14 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     return cards.value.filter((c) => c.state === 'passed').length
   })
 
-  async function setup(deck_id: number) {
-    const cardFetch = config.study_all_cards
-      ? fetchAllCardsByDeckId(deck_id)
-      : fetchDueCardsByDeckId(deck_id)
+  function setCards(cards: Card[]) {
+    let filtered = cards
 
-    const cards = await cardFetch
+    if (!config.study_all_cards) {
+      filtered = cards.filter((c) => _isCardDue(c))
+    }
 
-    _cards_in_deck.value = cards.map(_setupCard)
+    _cards_in_deck.value = filtered.map(_setupCard)
     pickNextCard()
   }
 
@@ -101,13 +105,22 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     _retry_cards.value.push(retry_card)
   }
 
+  function _isCardDue(card: Card) {
+    if (!card.review?.due) return true
+
+    const due = DateTime.fromISO(card.review?.due as string)
+    const now = DateTime.now()
+
+    return due <= now
+  }
+
   return {
     mode,
     current_card_side,
     active_card,
     cards,
     num_correct,
-    setup,
+    setCards,
     pickNextCard,
     reviewCard
   }
