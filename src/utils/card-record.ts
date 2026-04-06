@@ -57,14 +57,14 @@ export default class CardRecord {
 
     this._assign(values)
 
-    const payload = this._buildUpsertPayload()
+    const payload = this.buildUpsertPayload()
     await debounce(async () => await upsertCard(payload), { key: `card-${this.id}` })
   }
 
   async save() {
     if (!this.id) return
 
-    const payload = this._buildUpsertPayload()
+    const payload = this.buildUpsertPayload()
     await upsertCard(payload)
   }
 
@@ -74,9 +74,9 @@ export default class CardRecord {
     }
   }
 
-  private _buildUpsertPayload(): Partial<Card> & { id: number } {
-    const payload: Partial<Card> & { id: number } = {
-      id: this.id,
+  buildUpsertPayload(): Partial<Card> {
+    const payload: Partial<Card> = {
+      id: this.has_temp_id ? undefined : this.id,
       deck_id: this.deck_id,
       front_text: this.front_text,
       back_text: this.back_text,
