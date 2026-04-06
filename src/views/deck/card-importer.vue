@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { getCards } from '@/cards'
 import UiButton from '@/components/ui-kit/button.vue'
 import CardRecord from '@/utils/card-record'
 import Card from '@/components/card/index.vue'
+import { upsertCards } from '@/api/cards'
 
 const saving = ref(false)
 const delimiter = ref<string>('::')
@@ -10,6 +12,10 @@ const raw_text = ref<string>('')
 const cards = ref<CardRecord[]>([])
 
 const { deck_id } = defineProps<{ deck_id: number }>()
+
+onMounted(() => {
+  raw_text.value = getCards().join('\n')
+})
 
 const has_unsaved_changes = computed(() => {
   return cards.value.some((card) => card.has_temp_id)
@@ -35,7 +41,10 @@ async function onSave() {
   if (cards.value.length <= 0 || saving.value) return
 
   saving.value = true
-  await Promise.all(cards.value.map((card) => card.save()))
+
+  const payload = cards.value.map((card) => card.buildUpsertPayload())
+  await upsertCards(payload)
+
   saving.value = false
   cards.value = []
 }
