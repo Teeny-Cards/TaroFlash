@@ -63,7 +63,7 @@ function onSideChanged(side: 'front' | 'back') {
   <div
     data-testid="study-session"
     :data-mode="mode"
-    class="rounded-b-0 sm:rounded-b-8 rounded-t-8 shadow-lg flex flex-col gap-6 items-center justify-between overflow-hidden pb-10 relative bg-brown-300 dark:bg-grey-800 w-full mt-10 h-[calc(100%-40px)] sm:h-auto sm:w-160"
+    class="rounded-b-0 sm:rounded-b-8 rounded-t-8 shadow-lg flex flex-col gap-6 items-center justify-between overflow-hidden pb-10 relative bg-brown-300 dark:bg-grey-800 w-full h-full sm:h-auto sm:w-160"
   >
     <div
       data-testid="study-session__header"
