@@ -109,7 +109,7 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
       left_card_id = last_card?.id
     }
 
-    const record = await CardRecord.create(deck_id.value!, left_card_id, right_card_id)
+    const record = await CardRecord.reserve(deck_id.value!, left_card_id, right_card_id)
 
     let index = all_cards.value.findIndex((card) => card.rank! > record.rank!)
     if (index === -1) {
