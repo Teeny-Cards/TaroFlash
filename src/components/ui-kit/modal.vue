@@ -68,7 +68,7 @@ function onLeave(el: Element, done: () => void) {
     @leave="onLeave"
     data-testid="ui-kit-modal-container"
     tag="div"
-    class="pointer-events-none fixed inset-0 z-90 flex items-center justify-center *:pointer-events-auto"
+    class="pointer-events-none fixed inset-0 z-90 flex items-end pt-4 sm:pt-0 sm:items-center justify-center *:pointer-events-auto"
   >
     <component
       v-for="modal in modal_stack"
