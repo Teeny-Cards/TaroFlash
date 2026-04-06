@@ -5,8 +5,6 @@ paths:
 
 # Writing Tests
 
-Use **vue-testing-best-practices@vue-skills** to guide you.
-
 ## Test type selection
 
 | Priority | Type            | Environment        | When to use                                                           |
