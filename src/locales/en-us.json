@@ -140,6 +140,7 @@
   "deck-view.no-cards": "No Cards",
   "deck-view.tabs.card-view": "View",
   "deck-view.tabs.edit-cards": "Edit",
+  "deck-view.tabs.import-cards": "Import",
   "deck-view.tabs.card-list-view": "Card List View",
   "deck-view.empty-state.no-cards": "You don't have any cards in this deck.",
   "deck-view.item-options.upload-image": "Upload Image",
