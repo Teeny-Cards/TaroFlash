@@ -14,7 +14,7 @@ const cards = ref<CardRecord[]>([])
 const { deck_id } = defineProps<{ deck_id: number }>()
 
 onMounted(() => {
-  raw_text.value = getCards().join('\n')
+  // raw_text.value = getCards().join('\n')
 })
 
 const has_unsaved_changes = computed(() => {
