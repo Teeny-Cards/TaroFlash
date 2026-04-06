@@ -2,12 +2,13 @@ import { upsertCard, deleteCards as upstreamDeleteCards, reserveCard } from '@/a
 import { debounce } from '@/utils/debounce'
 
 export default class CardRecord {
+  static card_count = 0
+
   id: number
+  has_temp_id: boolean = false // true if the card has a temporary id (not yet saved to the server)
   deck_id?: Card['deck_id']
   front_text?: Card['front_text']
   back_text?: Card['back_text']
-  front_delta?: Card['front_delta']
-  back_delta?: Card['back_delta']
   attributes?: Card['attributes']
   created_at?: Card['created_at']
   updated_at?: Card['updated_at']
@@ -17,17 +18,30 @@ export default class CardRecord {
   back_image_path?: Card['back_image_path']
   review?: Card['review']
 
-  static async create(deck_id: number, left_card_id?: number, right_card_id?: number) {
+  /**
+   * Reserves a new card id and rank for a given deck and optional neighbour cards.
+   * @return A new CardRecord with the reserved id and rank.
+   */
+  static async reserve(deck_id: number, left_card_id?: number, right_card_id?: number) {
     const { out_rank: rank, out_id: id } = await reserveCard(deck_id, left_card_id, right_card_id)
     return new CardRecord({ id, rank })
+  }
+
+  static create(card: Partial<Card>) {
+    if (!card.id) {
+      card.id = CardRecord.card_count++
+    }
+
+    const record = new CardRecord(card as Card)
+    record.has_temp_id = true
+
+    return record
   }
 
   constructor(card: Card) {
     this.id = card.id
     this.front_text = card.front_text
     this.back_text = card.back_text
-    this.front_delta = card.front_delta
-    this.back_delta = card.back_delta
     this.deck_id = card.deck_id
     this.created_at = card.created_at
     this.updated_at = card.updated_at
@@ -47,6 +61,13 @@ export default class CardRecord {
     await debounce(async () => await upsertCard(payload), { key: `card-${this.id}` })
   }
 
+  async save() {
+    if (!this.id) return
+
+    const payload = this._buildUpsertPayload()
+    await upsertCard(payload)
+  }
+
   private _assign(card: Partial<Card>) {
     for (const [k, v] of Object.entries(card) as [keyof Card, Card[keyof Card]][]) {
       ;(this as any)[k] = v
@@ -59,8 +80,6 @@ export default class CardRecord {
       deck_id: this.deck_id,
       front_text: this.front_text,
       back_text: this.back_text,
-      front_delta: this.front_delta,
-      back_delta: this.back_delta,
       attributes: this.attributes,
       created_at: this.created_at,
       updated_at: this.updated_at,
