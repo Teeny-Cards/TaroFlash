@@ -41,6 +41,8 @@ export interface GestureCallbacks {
   onMove?: (coords: GestureMoveCoords) => void
   /** Fires when the pointer/touch is released and the gesture is recognized. */
   onEnd?: (result: SwipeResult) => void
+  /** Fires when the pointer/touch is released but no gesture was recognized. */
+  onCancel?: () => void
 }
 
 export interface UseGesturesOptions {
@@ -156,6 +158,9 @@ function onPointerUp(e: PointerEvent): void {
 
   const gesture = classifySwipe(dx, dy)
 
+  const active = _tracking.active
+  _tracking = null
+
   if (gesture !== null) {
     const direction: SwipeResult['direction'] =
       gesture === 'swipe-down' ? 'down'
@@ -163,16 +168,19 @@ function onPointerUp(e: PointerEvent): void {
       : gesture === 'swipe-left' ? 'left'
       : 'right'
     const result: SwipeResult = { x: e.clientX, y: e.clientY, dx, dy, velocity, duration, direction }
-    for (const reg of _tracking.active) {
+    for (const reg of active) {
       if (reg.gesture === gesture) reg.callbacks.onEnd?.(result)
     }
+  } else {
+    for (const reg of active) reg.callbacks.onCancel?.()
   }
-
-  _tracking = null
 }
 
 function onPointerCancel(e: PointerEvent): void {
-  if (_tracking?.pointer_id === e.pointerId) _tracking = null
+  if (!_tracking || _tracking.pointer_id !== e.pointerId) return
+  const active = _tracking.active
+  _tracking = null
+  for (const reg of active) reg.callbacks.onCancel?.()
 }
 
 // ── Listener lifecycle ────────────────────────────────────────────────────────
