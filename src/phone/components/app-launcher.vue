@@ -105,9 +105,12 @@ function _getActiveApp() {
 </script>
 
 <template>
-  <div data-testid="app-launcher" class="h-full flex flex-col gap-8 px-5 py-7 pt-4">
+  <div
+    data-testid="app-launcher"
+    class="h-full flex flex-col gap-8.75 sm:gap-8 px-5 py-7 pt-4.5 sm:pt-4"
+  >
     <div class="grid grid-cols-[18px_1fr_18px] px-6 justify-center items-center">
-      <h2 class="text-brown-500 text-3xl sm:text-sm select-none col-start-2 justify-self-center">
+      <h2 class="text-brown-500 text-lg sm:text-sm select-none col-start-2 justify-self-center">
         TaroPhone
       </h2>
     </div>

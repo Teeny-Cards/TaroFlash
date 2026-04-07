@@ -18,7 +18,7 @@ const current_app = computed(() => {
 <template>
   <div
     data-testid="phone"
-    class="pointer-events-auto bg-brown-300 dark:bg-grey-800 rounded-10 shadow-lg overflow-hidden"
+    class="absolute pointer-events-auto bg-brown-300 dark:bg-grey-800 rounded-10 shadow-lg overflow-hidden"
   >
     <component
       v-if="current_app"
