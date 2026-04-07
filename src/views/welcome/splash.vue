@@ -33,14 +33,9 @@ function triggerLoginDropdown() {
 }
 
 function openSignup(payment?: boolean) {
-  modal.open(SignupDialog, {
-    backdrop: true,
-    openAudio: 'ui.double_pop_up',
-    closeAudio: 'ui.double_pop_down',
-    props: {
-      payment
-    }
-  })
+  emitSfx('ui.double_pop_up')
+  const { response } = modal.open(SignupDialog, { backdrop: true, props: { payment } })
+  response.then(() => emitSfx('ui.double_pop_down'))
 }
 
 defineExpose({ openSignup })
