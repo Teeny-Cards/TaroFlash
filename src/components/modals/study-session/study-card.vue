@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import Card from '@/components/card/index.vue'
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
 import { useI18n } from 'vue-i18n'
 import { emitSfx } from '@/sfx/bus'
 import { DateTime } from 'luxon'
+import { useGestures } from '@/composables/use-gestures'
 
 const { card, side, options } = defineProps<{
   card?: Card
@@ -19,29 +20,54 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const FLIP_THRESHOLD = 0
 const SWIPE_DISTANCE_THRESHOLD = 50
 const FLING_SPEED = 0.25
 
 const swipe_zone = ref<-1 | 0 | 1>(0)
-const start_pos = ref<{ x: number; y: number } | undefined>()
-const study_card = ref<HTMLElement | null>(null)
+const card_ref = ref<InstanceType<typeof Card> | null>(null)
 const card_offset = ref<number>(0)
-const pointerId = ref<number | null>(null)
 
-const is_dragging = computed(() => Math.abs(card_offset.value) > FLIP_THRESHOLD)
+const is_dragging = computed(() => card_offset.value !== 0)
 
-const passVisible = computed(() => {
-  if (card_offset.value <= 0) return false
-  return card_offset.value > SWIPE_DISTANCE_THRESHOLD
+const passVisible = computed(() => card_offset.value > SWIPE_DISTANCE_THRESHOLD)
+const failVisible = computed(() => card_offset.value < -SWIPE_DISTANCE_THRESHOLD)
+
+const { register } = useGestures()
+
+onMounted(() => {
+  const el = card_ref.value?.$el as HTMLElement | null
+  if (!el) return
+
+  // swipe-right holds onStart/onMove since it fires for all horizontal drags,
+  // regardless of which direction is ultimately recognised.
+  register(el, 'swipe-right', {
+    onStart() {
+      el.style.transition = 'none'
+    },
+    onMove({ dx }) {
+      card_offset.value = dx
+      el.style.transform = `translateX(${dx}px) rotate(${dx / 10}deg)`
+      _updateSwipeZone(dx)
+    },
+    onEnd({ dx }) {
+      if (Math.abs(dx) > SWIPE_DISTANCE_THRESHOLD) flingCard(el, 1)
+      else _snapBack(el)
+    },
+    onCancel() {
+      _snapBack(el)
+    },
+  })
+
+  register(el, 'swipe-left', {
+    onEnd({ dx }) {
+      if (Math.abs(dx) > SWIPE_DISTANCE_THRESHOLD) flingCard(el, -1)
+      else _snapBack(el)
+    },
+    onCancel() {
+      _snapBack(el)
+    },
+  })
 })
-
-const failVisible = computed(() => {
-  if (card_offset.value >= 0) return false
-  return card_offset.value < -SWIPE_DISTANCE_THRESHOLD
-})
-
-onBeforeUnmount(_cleanupListeners)
 
 function getRatingTimeFormat(grade: Grade) {
   const date = options?.[grade].card.due
@@ -59,87 +85,25 @@ function toggleSide() {
   emit('side-changed', side === 'front' ? 'back' : 'front')
 }
 
-function onPointerDown(e: PointerEvent) {
-  if (e.pointerType === 'mouse' && e.button !== 0) return // only left click
-
-  pointerId.value = e.pointerId
-  start_pos.value = { x: e.clientX, y: e.clientY }
-  study_card.value = e.currentTarget as HTMLElement
-
-  if (!study_card.value) return
-
-  study_card.value.style.transition = 'none'
-
-  document.addEventListener('pointermove', onPointerMove)
-  document.addEventListener('pointerup', onPointerUp)
-  document.addEventListener('pointercancel', onPointerUp)
-}
-
-function onPointerMove(e: PointerEvent) {
-  if (
-    pointerId.value === null ||
-    e.pointerId !== pointerId.value ||
-    !start_pos.value ||
-    !study_card.value
-  )
-    return
-
-  e.preventDefault()
-  const { x } = start_pos.value
-  const clientX = e.clientX
-
-  card_offset.value = clientX - x
-  const rotation = card_offset.value / 10
-  study_card.value.style.transform = `translateX(${card_offset.value}px) rotate(${rotation}deg)`
-
-  // check the threshold and play audio
-  _updateSwipeZone(card_offset.value)
-}
-
-function onPointerUp(e?: PointerEvent) {
-  if (pointerId.value !== null && e?.pointerId !== pointerId.value) return
-
-  const cardEl = study_card.value
-  _cleanupListeners()
-
-  if (!cardEl) {
-    _resetDragState()
-  } else if (Math.abs(card_offset.value) > SWIPE_DISTANCE_THRESHOLD) {
-    const direction = Math.sign(card_offset.value)
-    flingCard(direction)
-  } else {
-    cardEl.style.transition = 'transform 0.15s ease-out'
-    cardEl.style.transform = ''
-    _resetDragState()
-  }
-}
-
-function flingCard(direction: number) {
-  const cardEl = study_card.value
-  if (!cardEl) {
-    _resetDragState()
-    return
-  }
-
-  const targetX = _getFlingTargetX(cardEl, direction)
+function flingCard(el: HTMLElement, direction: number) {
+  const targetX = _getFlingTargetX(el, direction)
   const rotation = direction * 45
 
-  cardEl.style.transition = `transform ${FLING_SPEED}s ease-out`
-  cardEl.style.transform = `translateX(${targetX}px) rotate(${rotation}deg)`
+  el.style.transition = `transform ${FLING_SPEED}s ease-out`
+  el.style.transform = `translateX(${targetX}px) rotate(${rotation}deg)`
 
   const rating = direction > 0 ? Rating.Good : Rating.Again
 
   const handleTransitionEnd = () => {
-    cardEl.removeEventListener('transitionend', handleTransitionEnd)
-
+    el.removeEventListener('transitionend', handleTransitionEnd)
     reviewCard(rating)
     card_offset.value = 0
-    cardEl.style.transition = 'none'
-    cardEl.style.transform = ''
+    el.style.transition = 'none'
+    el.style.transform = ''
     swipe_zone.value = 0
   }
 
-  cardEl.addEventListener('transitionend', handleTransitionEnd)
+  el.addEventListener('transitionend', handleTransitionEnd)
   emitSfx('ui.slide_up')
 }
 
@@ -148,6 +112,13 @@ function reviewCard(grade: Grade) {
   if (item) {
     emit('reviewed', item)
   }
+}
+
+function _snapBack(el: HTMLElement) {
+  el.style.transition = 'transform 0.15s ease-out'
+  el.style.transform = ''
+  card_offset.value = 0
+  swipe_zone.value = 0
 }
 
 function _updateSwipeZone(offset: number) {
@@ -175,26 +146,12 @@ function _getFlingTargetX(cardEl: HTMLElement, direction: number) {
 
   return direction * (distanceToEdge + extra)
 }
-
-function _resetDragState() {
-  setTimeout(() => {
-    start_pos.value = undefined
-    pointerId.value = null
-    card_offset.value = 0
-    swipe_zone.value = 0
-  }, 0)
-}
-
-function _cleanupListeners() {
-  document.removeEventListener('pointermove', onPointerMove)
-  document.removeEventListener('pointerup', onPointerUp)
-  document.removeEventListener('pointercancel', onPointerUp)
-}
 </script>
 
 <template>
   <div class="relative">
     <card
+      ref="card_ref"
       data-testid="study-card"
       class="z-10"
       :class="is_dragging ? 'cursor-grabbing' : 'cursor-grab'"
@@ -202,7 +159,6 @@ function _cleanupListeners() {
       v-bind="card"
       :side="side"
       @mouseup="toggleSide"
-      @pointerdown="onPointerDown"
     >
       <div class="absolute inset-0 overflow-hidden rounded-(--face-radius)">
         <div class="review-label bg-pink-400" :class="{ 'review-label--visible': failVisible }">
