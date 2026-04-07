@@ -399,6 +399,42 @@ describe('useGestures', () => {
     expect(onEnd).toHaveBeenCalledTimes(2)
   })
 
+  // ── onCancel ──────────────────────────────────────────────────────────────
+
+  test('onCancel fires when pointer is released without a recognized swipe', () => {
+    const onCancel = vi.fn()
+    const onEnd = vi.fn()
+    const { register } = useGestures()
+    register(el, 'swipe-right', { onCancel, onEnd })
+
+    pointerDown(el, 100, 100)
+    pointerUp(105, 100) // too short to be a swipe
+
+    expect(onCancel).toHaveBeenCalledOnce()
+    expect(onEnd).not.toHaveBeenCalled()
+  })
+
+  test('onCancel does not fire when a swipe is recognized', () => {
+    const onCancel = vi.fn()
+    const { register } = useGestures()
+    register(el, 'swipe-right', { onCancel })
+
+    swipe(el, 80, 0)
+
+    expect(onCancel).not.toHaveBeenCalled()
+  })
+
+  test('onCancel fires on pointercancel', () => {
+    const onCancel = vi.fn()
+    const { register } = useGestures()
+    register(el, 'swipe-right', { onCancel })
+
+    pointerDown(el, 100, 100)
+    pointerCancel()
+
+    expect(onCancel).toHaveBeenCalledOnce()
+  })
+
   // ── Pointer cancel ────────────────────────────────────────────────────────
 
   test('pointercancel aborts tracking so a subsequent swipe is fresh', () => {
