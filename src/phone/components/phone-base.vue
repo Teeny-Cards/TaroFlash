@@ -29,12 +29,10 @@ const controller = computed(() => {
 <template>
   <div
     data-testid="phone"
-    class="absolute top-0 right-0 pointer-events-auto w-60 h-89.5 bg-brown-300 dark:bg-grey-800
-      drop-shadow-sm rounded-16 translate-y-7 group/phone"
+    class="absolute top-0 right-0 pointer-events-auto w-102 sm:w-60 aspect-120/179 bg-brown-300 dark:bg-grey-800 drop-shadow-sm rounded-27 sm:rounded-16 translate-y-7 group/phone"
   >
     <ui-button
-      class="absolute! top-0 left-0 shadow-xs pointer-fine:opacity-0
-        pointer-fine:group-hover/phone:opacity-100 opacity-100 transition-opacity duration-75 z-10"
+      class="absolute! top-0 left-0 shadow-xs pointer-fine:opacity-0 pointer-fine:group-hover/phone:opacity-100 opacity-100 transition-opacity duration-75 z-10"
       icon-left="close"
       icon-only
       theme="brown-100"

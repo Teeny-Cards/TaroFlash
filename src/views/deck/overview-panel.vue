@@ -6,13 +6,14 @@ import { useModal } from '@/composables/modal'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
-import StudySession from '@/components/modals/study-session/index.vue'
+import { useStudySessionModal } from '@/composables/modals/use-study-session'
 
 const { deck } = defineProps<{ deck: Deck; imageUrl?: string }>()
 const emit = defineEmits<{ (e: 'updated'): void }>()
 
 const { t } = useI18n()
 const modal = useModal()
+const study_session = useStudySessionModal()
 
 const study_disabled = computed(() => {
   return deck.cards?.length === 0
@@ -32,14 +33,7 @@ async function onSettingsClicked() {
 }
 
 function onStudyClicked() {
-  modal.open(StudySession, {
-    backdrop: true,
-    props: {
-      deck
-    },
-    openAudio: 'ui.slide_up',
-    closeAudio: 'ui.slide_up'
-  })
+  study_session.open(deck)
 }
 </script>
 
