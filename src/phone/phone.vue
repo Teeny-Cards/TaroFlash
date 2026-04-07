@@ -10,10 +10,13 @@ import phoneSm from '@/phone/components/phone-sm.vue'
 import phoneBase from '@/phone/components/phone-base.vue'
 import phoneLg from './components/phone-lg.vue'
 import { useI18n } from 'vue-i18n'
+import { useMediaQuery } from '@/composables/use-media-query'
+import { blurIn, blurOut, blurUp, slideUp, slideDown, blurDown } from '@/phone/system/animations'
 
 const nav = usePhoneNavigator()
 const shortcuts = useShortcuts('phone', { priority: 'background' })
 const runtime = createPhoneRuntime({ nav })
+const is_pointer_coarse = useMediaQuery('coarse')
 
 const transitioning = ref(false)
 const loading = ref(false)
@@ -86,6 +89,24 @@ function isInsidePhone(e: Event) {
   const path = (e.composedPath?.() ?? []) as EventTarget[]
   return path.some((n) => n instanceof HTMLElement && n.matches?.('[data-testid="phone"]'))
 }
+
+function onOpenBasePhone(el: Element, done: () => void) {
+  const animation = is_pointer_coarse.value ? blurIn : blurUp
+  animation(el, done)
+}
+
+function onCloseBasePhone(el: Element, done: () => void) {
+  const animation = is_pointer_coarse.value ? blurOut : blurDown
+  animation(el, done)
+}
+
+function onOpenLgPhone(el: Element, done: () => void) {
+  blurUp(el, done)
+}
+
+function onCloseLgPhone(el: Element, done: () => void) {
+  blurDown(el, done)
+}
 </script>
 
 <template>
@@ -97,7 +118,7 @@ function isInsidePhone(e: Event) {
       data-testid="phone-dock"
       class="w-full max-w-(--page-width) flex items-center justify-center mx-4 sm:mx-10 relative"
     >
-      <transition name="phone-open">
+      <transition @enter="onOpenBasePhone" @leave="onCloseBasePhone">
         <phone-base
           v-if="open && !fullscreen"
           :apps="apps"
@@ -109,7 +130,8 @@ function isInsidePhone(e: Event) {
       </transition>
 
       <transition
-        name="phone-close"
+        @enter="onOpenLgPhone"
+        @leave="onCloseLgPhone"
         @before-enter="transitioning = true"
         @after-leave="transitioning = false"
       >
@@ -127,8 +149,7 @@ function isInsidePhone(e: Event) {
         <div
           v-if="open && fullscreen"
           data-testid="phone-backdrop"
-          class="pointer-events-auto fixed inset-0 flex items-center justify-center px-4 py-7
-            sm:backdrop-blur-4 sm:bg-black/10"
+          class="pointer-events-auto fixed inset-0 flex items-center justify-center px-4 py-7 backdrop-blur-4 sm:bg-black/10 -z-1"
         ></div>
       </transition>
     </div>
@@ -138,37 +159,6 @@ function isInsidePhone(e: Event) {
 <style>
 [data-testid='phone-stage'] {
   --phone-duration: 100ms;
-}
-
-/* ANIMATIONS */
-/* Base phone */
-.phone-open-enter-from,
-.phone-open-leave-to {
-  opacity: 0;
-  filter: blur(var(--blur-md));
-  transform: translateY(-40px);
-}
-
-.phone-open-enter-active,
-.phone-open-leave-active {
-  transition-property: transform, opacity, filter;
-  transition-timing-function: ease-in-out;
-  transition-duration: var(--phone-duration);
-}
-
-/* Mini & large phone */
-.phone-close-enter-from,
-.phone-close-leave-to {
-  opacity: 0;
-  filter: blur(var(--blur-md));
-  transform: translateY(40px);
-}
-
-.phone-close-enter-active,
-.phone-close-leave-active {
-  transition-property: transform, opacity, filter;
-  transition-timing-function: ease-in-out;
-  transition-duration: var(--phone-duration);
 }
 
 /* Backdrop */
