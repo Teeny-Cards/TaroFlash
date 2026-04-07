@@ -60,7 +60,7 @@ function toggleSide() {
 }
 
 function onPointerDown(e: PointerEvent) {
-  if (side === 'front' || (e.pointerType === 'mouse' && e.button !== 0)) return // only left click
+  if (e.pointerType === 'mouse' && e.button !== 0) return // only left click
 
   pointerId.value = e.pointerId
   start_pos.value = { x: e.clientX, y: e.clientY }
