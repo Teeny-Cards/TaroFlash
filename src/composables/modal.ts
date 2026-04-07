@@ -32,13 +32,15 @@ type closeOpts = {
 
 export type ModalCloseFn = (responseValue?: any, opts?: closeOpts) => void
 
+export type OpenModalResult = {
+  response: Promise<any>
+  close: ModalCloseFn
+}
+
 const modal_stack = ref<ModalEntry[]>([])
 
 export function useModal() {
-  function open<T = any>(
-    component: any,
-    args?: OpenArgs
-  ): { response: Promise<T>; close: ModalCloseFn } {
+  function open<T = any>(component: any, args?: OpenArgs): OpenModalResult {
     let resolveFn!: (result: any) => void
 
     const id = uid()
@@ -87,6 +89,7 @@ export function useModal() {
 
   function close(id?: string, opts?: closeOpts) {
     let index = modal_stack.value.findIndex((m) => m.id === id)
+
     const modal = modal_stack.value[index]
 
     modal.resolve()
