@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from 'vue'
 import App from '@/phone/components/app.vue'
-import Widget from '@/phone/components/widget.vue'
 import { type PhoneApp, type PhoneContext } from '@/phone/system/types'
-import UiIcon from '@/components/ui-kit/icon.vue'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { emitHoverSfx, emitSfx } from '@/sfx/bus'
 
@@ -109,12 +107,13 @@ function _getActiveApp() {
 <template>
   <div data-testid="app-launcher" class="h-full flex flex-col gap-8 px-5 py-7 pt-4">
     <div class="grid grid-cols-[18px_1fr_18px] px-6 justify-center items-center">
-      <h2 class="text-brown-500 select-none col-start-2 justify-self-center">TaroPhone</h2>
+      <h2 class="text-brown-500 text-3xl sm:text-sm select-none col-start-2 justify-self-center">
+        TaroPhone
+      </h2>
     </div>
 
     <div
-      class="w-full grid grid-cols-[auto_auto_auto] grid-rows-[auto_auto_auto] gap-2 gap-y-6
-        sm:gap-y-2 justify-center content-center"
+      class="w-full grid grid-cols-[auto_auto_auto] grid-rows-[auto_auto_auto] gap-2 justify-center content-center"
     >
       <template v-for="app in apps">
         <app

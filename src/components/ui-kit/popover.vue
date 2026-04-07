@@ -26,6 +26,7 @@ type PopoverProps = {
   fallback_placements?: Placement[]
   shadow?: boolean
   use_arrow?: boolean
+  clip?: boolean
 }
 
 const {
@@ -39,7 +40,8 @@ const {
   padding = 24,
   fallback_placements = ['right', 'left', 'top', 'bottom'],
   shadow = false,
-  use_arrow = true
+  use_arrow = true,
+  clip = true
 } = defineProps<PopoverProps>()
 
 const emit = defineEmits<{
@@ -64,9 +66,7 @@ const { placement, middlewareData, floatingStyles } = useFloating(triggerRef, po
       fallbackPlacements: fallback_placements
     }),
     ...(use_arrow ? [arrow({ element: arrowRef })] : []),
-    hide({
-      padding: clip_margin
-    })
+    ...(clip ? [hide({ padding: clip_margin })] : [])
   ]
 })
 

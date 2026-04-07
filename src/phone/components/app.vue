@@ -14,10 +14,7 @@ defineProps<{ app: ViewApp | TriggerApp }>()
     :gap="-5"
     element="button"
     data-testid="phone-app"
-    class="rounded-5.5 w-15 h-15 cursor-pointer hover:scale-110 focus:scale-110 transition-transform
-      duration-50 flex items-center justify-center text-white group outline-none
-      bg-(--theme-primary) hover:bgx-diagonal-stripes animation-safe:hover:bgx-slide
-      animation-safe:focus:bgx-slide focus:bgx-diagonal-stripes"
+    class="rounded-9 sm:rounded-5.5 w-25.5 sm:w-15 aspect-square cursor-pointer hover:scale-110 focus:scale-110 transition-transform duration-50 flex items-center justify-center text-white group outline-none bg-(--theme-primary) hover:bgx-diagonal-stripes animation-safe:hover:bgx-slide animation-safe:focus:bgx-slide focus:bgx-diagonal-stripes"
   >
     <ui-image
       :src="app.launcher.icon_src"

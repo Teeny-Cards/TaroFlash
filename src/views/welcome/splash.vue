@@ -48,8 +48,7 @@ defineExpose({ openSignup })
 
 <template>
   <section
-    class="flex flex-col w-full p-7.5 relative bg-green-400 wave-bottom-[30px] bgx-diagonal-stripes
-      bgx-size-20 bgx-opacity-12 bg-center"
+    class="flex flex-col w-full p-7.5 relative bg-green-400 wave-bottom-[30px] bgx-diagonal-stripes bgx-size-20 bgx-opacity-12 bg-center"
   >
     <div class="absolute pointer-events-none inset-0 bg-(image:--bgx-stars) bg-center -z-1"></div>
 
@@ -58,6 +57,7 @@ defineExpose({ openSignup })
         :open="login_dropdown_open"
         :gap="4"
         :use_arrow="false"
+        :clip="false"
         position="bottom-end"
         @close="closeLoginDropdown"
       >
