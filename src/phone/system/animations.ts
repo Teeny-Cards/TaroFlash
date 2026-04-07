@@ -4,15 +4,13 @@ const BLUR_AMOUNT = 12
 const TRANSLATE_AMOUNT = 100
 
 const blurIn = (el: Element, done: () => void) => {
-  const filters = getComputedStyle(el).filter
-
   gsap.fromTo(
     el,
     { translateY: `-${TRANSLATE_AMOUNT}px`, opacity: 0, filter: `blur(${BLUR_AMOUNT}px)` },
     {
       translateY: 0,
       opacity: 1,
-      filter: `blur(0) ${filters}`,
+      filter: 'blur(0)',
       duration: 0.1,
       ease: 'expo.out',
       onComplete: done

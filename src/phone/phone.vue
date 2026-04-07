@@ -125,6 +125,7 @@ function onCloseLgPhone(el: Element, done: () => void) {
           :transition="nav.transition.value"
           :transitioning="transitioning"
           :active_session="runtime.active_session.value"
+          class="z-10"
           @close="closePhone"
         ></phone-base>
       </transition>

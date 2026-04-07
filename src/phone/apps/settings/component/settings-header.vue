@@ -48,8 +48,7 @@ function isSelected(tab: SettingsTab) {
 <template>
   <div
     data-testid="settings__header"
-    class="w-full grid grid-cols-[40px_1fr_40px] grid-rows-[auto_auto] items-center bg-blue-800 p-5
-      pb-4 gap-6 cloud-bottom-[40px]"
+    class="w-full grid grid-cols-[40px_1fr_40px] grid-rows-[auto_auto] items-center bg-blue-800 p-5 pb-4 gap-6 cloud-bottom-[40px]"
   >
     <ui-button icon-left="close" icon-only theme="blue-800" inverted @click="emit('close')" />
 
