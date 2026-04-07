@@ -11,7 +11,7 @@ import phoneBase from '@/phone/components/phone-base.vue'
 import phoneLg from './components/phone-lg.vue'
 import { useI18n } from 'vue-i18n'
 import { useMediaQuery } from '@/composables/use-media-query'
-import { blurIn, blurOut, blurUp, slideUp, slideDown, blurDown } from '@/phone/system/animations'
+import { blurIn, blurOut, blurUp, blurDown } from '@/phone/system/animations'
 
 const nav = usePhoneNavigator()
 const shortcuts = useShortcuts('phone', { priority: 'background' })

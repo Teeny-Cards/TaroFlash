@@ -81,23 +81,30 @@ function onSideChanged(side: 'front' | 'back') {
       <h1 class="text-5xl text-white">{{ deck?.title }}</h1>
     </div>
 
-    <study-card
-      v-if="!loading"
-      :card="active_card"
-      :side="current_card_side"
-      :options="active_card?.preview"
-      @side-changed="onSideChanged"
-      @reviewed="onCardReviewed"
-    />
-    <card v-else size="xl" />
+    <div
+      data-testid="study-session__body"
+      class="w-full h-full flex flex-col items-center justify-center gap-6"
+    >
+      <div>1/1</div>
 
-    <rating-buttons
-      class="z-10 mt-4"
-      :options="active_card?.preview"
-      :show-options="current_card_side === 'back'"
-      :disabled="mode !== 'studying'"
-      @reviewed="onCardReviewed"
-      @revealed="current_card_side = 'back'"
-    />
+      <study-card
+        v-if="!loading"
+        :card="active_card"
+        :side="current_card_side"
+        :options="active_card?.preview"
+        @side-changed="onSideChanged"
+        @reviewed="onCardReviewed"
+      />
+      <card v-else size="xl" />
+
+      <rating-buttons
+        class="z-10 mt-4"
+        :options="active_card?.preview"
+        :show-options="current_card_side === 'back'"
+        :disabled="mode !== 'studying'"
+        @reviewed="onCardReviewed"
+        @revealed="current_card_side = 'back'"
+      />
+    </div>
   </div>
 </template>

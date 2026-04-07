@@ -69,4 +69,4 @@ const blurDown = (el: Element, done: () => void) => {
   })
 }
 
-export { blurIn, blurOut, blurUp, blurDown, slideUp, slideDown }
+export { blurIn, blurOut, blurUp, blurDown }
