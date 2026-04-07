@@ -16,8 +16,7 @@ const { hoverEffect = true } = defineProps<{
     :gap="-5"
     element="button"
     data-testid="phone-app"
-    class="rounded-5.5 w-15 h-15 cursor-pointer hover:scale-110 focus:scale-110 transition-transform
-      duration-50 flex items-center justify-center text-white outline-none bg-(--theme-primary)"
+    class="rounded-6 sm:rounded-5.5 w-16.5 sm:w-15 aspect-square cursor-pointer hover:scale-110 focus:scale-110 transition-transform duration-50 flex items-center justify-center text-white outline-none bg-(--theme-primary)"
     :class="{
       [`hover:bgx-diagonal-stripes animation-safe:hover:bgx-slide animation-safe:focus:bgx-slide
       focus:bgx-diagonal-stripes`]: hoverEffect
