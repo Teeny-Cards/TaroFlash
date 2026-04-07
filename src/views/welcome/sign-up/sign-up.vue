@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router'
 import { useAlert } from '@/composables/alert'
 
 const { close } = defineProps<{
-  close: (response?: boolean, opts?: any) => void
+  close: (response?: boolean) => void
 }>()
 
 const { t } = useI18n()
@@ -29,7 +29,7 @@ async function onSubmit() {
     })
   }
 
-  close(true, { silent: true })
+  close(true)
 }
 </script>
 

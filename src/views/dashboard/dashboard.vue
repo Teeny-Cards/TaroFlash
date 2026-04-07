@@ -5,10 +5,9 @@ import { fetchMemberCardCount } from '@/api/cards'
 import { useToast } from '@/composables/toast'
 import Deck from '@/components/deck.vue'
 import { useRouter } from 'vue-router'
-import deckSettings, {
-  type DeckSettingsResponse
-} from '@/components/modals/deck-settings/index.vue'
+import deckSettings from '@/components/modals/deck-settings/index.vue'
 import { useModal } from '@/composables/modal'
+import { emitSfx } from '@/sfx/bus'
 import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
 import { useMediaQuery } from '@/composables/use-media-query'
@@ -47,11 +46,9 @@ function onDeckClicked(deck: Deck) {
 }
 
 async function onCreateDeckClicked() {
-  const { response: deck_created } = modal.open<DeckSettingsResponse>(deckSettings, {
-    backdrop: true,
-    openAudio: 'ui.double_pop_up',
-    closeAudio: 'ui.double_pop_down'
-  })
+  emitSfx('ui.double_pop_up')
+  const { response: deck_created } = modal.open(deckSettings, { backdrop: true })
+  deck_created.then(() => emitSfx('ui.double_pop_down'))
 
   if (await deck_created) {
     await refetchDecks()

@@ -3,6 +3,7 @@ import Deck from '@/components/deck.vue'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useModal } from '@/composables/modal'
+import { emitSfx } from '@/sfx/bus'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
@@ -20,12 +21,9 @@ const study_disabled = computed(() => {
 })
 
 async function onSettingsClicked() {
-  const { response } = modal.open(deckSettings, {
-    props: { deck },
-    backdrop: true,
-    openAudio: 'ui.etc_camera_reel',
-    closeAudio: 'ui.card_drop'
-  })
+  emitSfx('ui.etc_camera_reel')
+  const { response } = modal.open(deckSettings, { props: { deck }, backdrop: true })
+  response.then(() => emitSfx('ui.card_drop'))
 
   if (await response) {
     emit('updated')
