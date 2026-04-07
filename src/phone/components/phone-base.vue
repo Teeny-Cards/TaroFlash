@@ -6,7 +6,6 @@ import { type AppSession } from '@/phone/system/runtime'
 import { computed } from 'vue'
 import { type TransitionPreset } from '@/phone/system/phone-navigator'
 import { useMediaQuery } from '@/composables/use-media-query'
-import { cn } from '@/utils/cn'
 
 const { apps, transition, transitioning, active_session } = defineProps<{
   apps: PhoneApp[]
