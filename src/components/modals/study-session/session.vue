@@ -39,7 +39,6 @@ onMounted(async () => {
 
 async function setup(deck_id: number) {
   let cards = await fetchAllCardsByDeckId(deck_id)
-
   setCards(cards)
 }
 
@@ -60,11 +59,7 @@ function onSideChanged(side: 'front' | 'back') {
 </script>
 
 <template>
-  <div
-    data-testid="study-session"
-    :data-mode="mode"
-    class="rounded-b-0 sm:rounded-b-8 rounded-t-8 shadow-lg flex flex-col gap-6 items-center justify-between overflow-hidden pb-10 relative bg-brown-300 dark:bg-grey-800 w-full h-full sm:h-auto sm:w-160"
-  >
+  <div class="flex flex-col gap-6 items-center justify-between w-full h-full" :data-mode="mode">
     <div
       data-testid="study-session__header"
       class="relative flex w-full justify-center bg-purple-500 wave-bottom-[50px] bgx-diagonal-stripes bgx-size-20 bg-center px-13 py-11.5 pb-14 z-10"
@@ -85,7 +80,10 @@ function onSideChanged(side: 'front' | 'back') {
       data-testid="study-session__body"
       class="w-full h-full flex flex-col items-center justify-center gap-6"
     >
-      <div>1/1</div>
+      <div class="text-brown-700 text-lg">
+        {{ cards.findIndex((c) => c.id === active_card?.id) + 1
+        }}<span class="text-sm">/{{ cards.length }}</span>
+      </div>
 
       <study-card
         v-if="!loading"
