@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from 'vue'
-import App from '@/phone/components/app.vue'
+import ViewApp from '@/phone/components/view-app.vue'
 import { type PhoneApp, type PhoneContext } from '@/phone/system/types'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { emitHoverSfx, emitSfx } from '@/sfx/bus'
@@ -116,10 +116,10 @@ function _getActiveApp() {
     </div>
 
     <div
-      class="w-full grid grid-cols-[auto_auto_auto] grid-rows-[auto_auto_auto] gap-2 justify-center content-center"
+      class="w-full grid grid-cols-[auto_auto_auto] grid-rows-[auto_auto_auto] gap-2 pointer-coarse:gap-y-4 justify-center content-center"
     >
       <template v-for="app in apps">
-        <app
+        <view-app
           v-if="app.type === 'view' || app.type === 'trigger'"
           :id="app.id"
           :key="app.id"
