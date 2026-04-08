@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { DateTime } from 'luxon'
 import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
 import { useI18n } from 'vue-i18n'
 import UiTooltip from '@/components/ui-kit/tooltip.vue'
+import { useRatingFormat } from '@/utils/fsrs'
 
 const { t } = useI18n()
+const { getRatingTimeFormat } = useRatingFormat()
 
 const {
   options,
@@ -21,17 +22,6 @@ const emit = defineEmits<{
   (e: 'reviewed', item: RecordLogItem): void
 }>()
 
-function getRatingTimeFormat(grade: Grade) {
-  const date = options?.[grade].card.due
-
-  if (!date) return ''
-
-  const time = DateTime.fromJSDate(date)
-  const timeString = time.toRelative({ style: 'short' })
-
-  return t('study.study-again', { time: timeString })
-}
-
 function onRatingClicked(grade: Grade) {
   const item = options?.[grade]
 
@@ -45,7 +35,7 @@ function onRatingClicked(grade: Grade) {
   <div data-testid="rating-buttons" class="flex justify-center gap-2 text-2xl">
     <template v-if="showOptions">
       <ui-tooltip
-        :text="getRatingTimeFormat(Rating.Again)"
+        :text="getRatingTimeFormat(Rating.Again, options, 'short')"
         element="button"
         :gap="-12"
         data-testid="rating-buttons__again"
@@ -58,7 +48,7 @@ function onRatingClicked(grade: Grade) {
       </ui-tooltip>
 
       <ui-tooltip
-        :text="getRatingTimeFormat(Rating.Good)"
+        :text="getRatingTimeFormat(Rating.Good, options, 'short')"
         element="button"
         :gap="-12"
         data-testid="rating-buttons__good"
