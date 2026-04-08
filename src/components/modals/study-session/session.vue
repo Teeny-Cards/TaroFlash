@@ -18,9 +18,9 @@ const {
   mode,
   cards,
   current_card_side,
+  current_index,
   active_card,
   num_correct,
-  pickNextCard,
   reviewCard,
   setCards
 } = useStudySession(deck.config)
@@ -43,18 +43,11 @@ async function setup(deck_id: number) {
 }
 
 function onCardReviewed(item: RecordLogItem) {
-  if (active_card.value?.id && mode.value === 'studying') {
-    reviewCard(item)
-    pickNextCard()
-  }
+  if (!active_card.value?.id || mode.value !== 'studying') return
 
-  if (mode.value === 'completed') {
-    emit('finished', num_correct.value, cards.value.length)
-  }
-}
+  reviewCard(item)
 
-function onSideChanged(side: 'front' | 'back') {
-  current_card_side.value = side
+  emit('finished', num_correct.value, cards.value.length)
 }
 </script>
 
@@ -81,8 +74,7 @@ function onSideChanged(side: 'front' | 'back') {
       class="w-full h-full flex flex-col items-center justify-center gap-6"
     >
       <div class="text-brown-700 text-lg">
-        {{ cards.findIndex((c) => c.id === active_card?.id) + 1
-        }}<span class="text-sm">/{{ cards.length }}</span>
+        {{ current_index + 1 }}<span class="text-sm">/{{ cards.length }}</span>
       </div>
 
       <study-card
@@ -90,7 +82,7 @@ function onSideChanged(side: 'front' | 'back') {
         :card="active_card"
         :side="current_card_side"
         :options="active_card?.preview"
-        @side-changed="onSideChanged"
+        @side-changed="(side) => (current_card_side = side)"
         @reviewed="onCardReviewed"
       />
       <card v-else size="xl" />

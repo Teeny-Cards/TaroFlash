@@ -29,7 +29,7 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
 
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
   const _cards_in_deck = shallowRef<StudyCard[]>([])
-  const _retry_cards = ref<StudyCard[]>([])
+  const _retry_cards = shallowRef<StudyCard[]>([])
 
   const mode = ref<StudyMode>('studying')
   const current_card_side = ref<'front' | 'back'>('front')
@@ -41,8 +41,11 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     return [..._cards_in_deck.value, ..._retry_cards.value]
   })
 
-  const num_correct = computed(() => {
-    return cards.value.filter((c) => c.state === 'passed').length
+  const num_correct = computed(() => cards.value.filter((c) => c.state === 'passed').length)
+
+  const current_index = computed(() => {
+    if (!active_card.value) return cards.value.length
+    return cards.value.findIndex((c) => c.id === active_card.value!.id)
   })
 
   function setCards(cards: Card[]) {
@@ -53,10 +56,10 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     }
 
     _cards_in_deck.value = filtered.map(_setupCard)
-    pickNextCard()
+    _pickNextCard()
   }
 
-  function pickNextCard() {
+  function _pickNextCard() {
     current_card_side.value = 'front'
     active_card.value = cards.value.find((c) => c.state === 'unreviewed')
 
@@ -68,11 +71,13 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
   function reviewCard(item: RecordLogItem) {
     if (!active_card.value) return
 
-    active_card.value.review = item.card
+    const card = active_card.value
+    card.review = item.card
     _markCurrentCardStudied(item.log.rating)
+    _pickNextCard()
 
-    if (active_card.value?.id) {
-      return updateReviewByCardId(active_card.value.id, item.card)
+    if (card.id) {
+      return updateReviewByCardId(card.id, item.card)
     }
   }
 
@@ -85,7 +90,7 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
 
   function _markCurrentCardStudied(rating?: Rating) {
     const card = active_card.value
-    if (!card || card !== active_card.value || !card.id) return
+    if (!card || !card.id) return
 
     if (rating === Rating.Again) {
       card.state = 'failed'
@@ -120,8 +125,8 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     active_card,
     cards,
     num_correct,
+    current_index,
     setCards,
-    pickNextCard,
     reviewCard
   }
 }

@@ -2,10 +2,9 @@
 import Card from '@/components/card/index.vue'
 import { computed, onMounted, ref } from 'vue'
 import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
-import { useI18n } from 'vue-i18n'
 import { emitSfx } from '@/sfx/bus'
-import { DateTime } from 'luxon'
 import { useGestures } from '@/composables/use-gestures'
+import { useRatingFormat } from '@/utils/fsrs'
 
 const { card, side, options } = defineProps<{
   card?: Card
@@ -18,7 +17,7 @@ const emit = defineEmits<{
   (e: 'reviewed', item: RecordLogItem): void
 }>()
 
-const { t } = useI18n()
+const { getRatingTimeFormat } = useRatingFormat()
 
 const SWIPE_DISTANCE_THRESHOLD = 50
 const FLING_SPEED = 0.25
@@ -55,7 +54,7 @@ onMounted(() => {
     },
     onCancel() {
       _snapBack(el)
-    },
+    }
   })
 
   register(el, 'swipe-left', {
@@ -65,20 +64,9 @@ onMounted(() => {
     },
     onCancel() {
       _snapBack(el)
-    },
+    }
   })
 })
-
-function getRatingTimeFormat(grade: Grade) {
-  const date = options?.[grade].card.due
-
-  if (!date) return ''
-
-  const time = DateTime.fromJSDate(date)
-  const timeString = time.toRelative()
-
-  return t('study.study-again', { time: timeString })
-}
 
 function toggleSide() {
   if (is_dragging.value) return
@@ -162,12 +150,12 @@ function _getFlingTargetX(cardEl: HTMLElement, direction: number) {
     >
       <div class="absolute inset-0 overflow-hidden rounded-(--face-radius)">
         <div class="review-label bg-pink-400" :class="{ 'review-label--visible': failVisible }">
-          {{ t('study.nope') }}
-          <p class="text-sm">{{ getRatingTimeFormat(Rating.Again) }}</p>
+          {{ $t('study.nope') }}
+          <p class="text-sm">{{ getRatingTimeFormat(Rating.Again, options) }}</p>
         </div>
         <div class="review-label bg-green-400" :class="{ 'review-label--visible': passVisible }">
-          {{ t('study.got-it') }}
-          <p class="text-sm">{{ getRatingTimeFormat(Rating.Good) }}</p>
+          {{ $t('study.got-it') }}
+          <p class="text-sm">{{ getRatingTimeFormat(Rating.Good, options) }}</p>
         </div>
       </div>
     </card>
