@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppWrapper from '@/phone/components/app-wrapper.vue'
 import UiTooltip from '@/components/ui-kit/tooltip.vue'
 
 const { hoverEffect = true } = defineProps<{
@@ -9,19 +10,15 @@ const { hoverEffect = true } = defineProps<{
 </script>
 
 <template>
-  <ui-tooltip
-    :text="title"
-    position="bottom"
-    :data-theme="theme"
-    :gap="-5"
-    element="button"
-    data-testid="phone-app"
-    class="rounded-6 sm:rounded-5.5 w-16.5 sm:w-15 aspect-square cursor-pointer hover:scale-110 focus:scale-110 transition-transform duration-50 flex items-center justify-center text-white outline-none bg-(--theme-primary)"
+  <app-wrapper
+    :title="title"
+    :theme="theme"
+    class="rounded-6 pointer-fine:rounded-5.5 w-16.5 pointer-fine:w-15 aspect-square cursor-pointer hover:scale-110 focus:scale-110 transition-transform duration-50 flex items-center justify-center text-white outline-none bg-(--theme-primary)"
     :class="{
       [`hover:bgx-diagonal-stripes animation-safe:hover:bgx-slide animation-safe:focus:bgx-slide
       focus:bgx-diagonal-stripes`]: hoverEffect
     }"
   >
     <slot></slot>
-  </ui-tooltip>
+  </app-wrapper>
 </template>

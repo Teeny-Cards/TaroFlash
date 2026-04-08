@@ -51,7 +51,7 @@ export type PhoneRuntime = ReturnType<typeof createPhoneRuntime>
 export type PhoneOS = PhoneRuntime['phoneOS']
 
 export type AppProps = {
-  display: PhoneAppDisplay
+  close: () => void
 }
 
 export type AppEmits = {
