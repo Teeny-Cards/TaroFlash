@@ -107,6 +107,7 @@ function onCardReviewed(item?: RecordLogItem) {
         :card="active_card"
         :side="current_card_side"
         :options="active_card?.preview"
+        @started="onStart"
         @side-changed="onSideChanged"
         @reviewed="onCardReviewed"
       />

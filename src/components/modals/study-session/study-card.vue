@@ -15,6 +15,7 @@ const { card, side, options } = defineProps<{
 }>()
 
 const emit = defineEmits<{
+  (e: 'started'): void
   (e: 'side-changed', side: 'front' | 'back'): void
   (e: 'reviewed', item: RecordLogItem | undefined): void
 }>()
@@ -65,8 +66,14 @@ function rate(grade: Grade) {
 }
 
 /** Flips the card face unless a drag just ended (prevents accidental flips on release). */
-function toggleSide() {
-  if (is_dragging.value || side === 'cover') return
+function onCardClick() {
+  if (is_dragging.value) return
+
+  if (side === 'cover') {
+    emit('started')
+    return
+  }
+
   emit('side-changed', side === 'front' ? 'back' : 'front')
 }
 
@@ -148,7 +155,7 @@ watch(card_offset, (val, prev) => {
       size="xl"
       v-bind="card"
       :side="side"
-      @mouseup="toggleSide"
+      @mouseup="onCardClick"
     >
       <div class="absolute inset-0 overflow-hidden rounded-(--face-radius)">
         <div

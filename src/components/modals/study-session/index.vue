@@ -5,9 +5,9 @@ import RewardDialog from '../reward-dialog/index.vue'
 
 const { deck, close } = defineProps<{ deck: Deck; close: (response?: any) => void }>()
 
-export type StudyStage = 'starting' | 'studying' | 'completed'
+export type StudyStage = 'studying' | 'completed'
 
-const stage = ref<StudyStage>('starting')
+const stage = ref<StudyStage>('studying')
 const score = ref(0)
 const total = ref(0)
 const rewards = ref<Reward[]>([])
