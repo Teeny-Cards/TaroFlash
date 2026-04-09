@@ -26,6 +26,7 @@ docs/.vitepress/dist
 *.njsproj
 *.sln
 *.sw?
+**/DO_NOT_COMMIT.*
 
 *.tsbuildinfo
 .env
