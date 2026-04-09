@@ -45,7 +45,8 @@ export const AUDIO_CONFIG = createAudioConfig({
     transition_up: {},
     music_plink_locancel: {},
     music_plink_ok: {},
-    music_plink_mid: {}
+    music_plink_mid: {},
+    music_plink_chordyes: {}
   }
 })
 

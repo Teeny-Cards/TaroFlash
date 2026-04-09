@@ -50,6 +50,11 @@ function onSideChanged(side: 'front' | 'back') {
   current_card_side.value = side
 }
 
+function onStart() {
+  emitSfx('ui.music_plink_chordyes')
+  current_card_side.value = 'front'
+}
+
 function onRated(grade: Grade) {
   study_card_ref.value?.rate(grade)
 }
@@ -110,8 +115,8 @@ function onCardReviewed(item?: RecordLogItem) {
       <rating-buttons
         class="z-10 mt-4"
         :options="active_card?.preview"
-        :show-options="current_card_side === 'back'"
-        :disabled="mode !== 'studying'"
+        :side="current_card_side"
+        @started="onStart"
         @rated="onRated"
         @revealed="onSideChanged('back')"
       />

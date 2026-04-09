@@ -32,7 +32,7 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
   const _retry_cards = shallowRef<StudyCard[]>([])
 
   const mode = ref<StudyMode>('studying')
-  const current_card_side = ref<'front' | 'back'>('front')
+  const current_card_side = ref<'front' | 'back' | 'cover'>('cover')
   const active_card = shallowRef<StudyCard | undefined>(undefined)
 
   const cards = computed(() => {
@@ -56,11 +56,11 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     }
 
     _cards_in_deck.value = filtered.map(_setupCard)
-    _pickNextCard()
+    _pickNextCard({ first: true })
   }
 
-  function _pickNextCard() {
-    current_card_side.value = 'front'
+  function _pickNextCard({ first }: { first?: boolean } = {}) {
+    current_card_side.value = first ? 'cover' : 'front'
     active_card.value = cards.value.find((c) => c.state === 'unreviewed')
 
     if (!active_card.value) {
