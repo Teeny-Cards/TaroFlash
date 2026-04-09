@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-// import { getCards } from '@/cards'
+import { getCards } from '@/cards'
 import UiButton from '@/components/ui-kit/button.vue'
 import CardRecord from '@/utils/card-record'
 import Card from '@/components/card/index.vue'
@@ -14,7 +14,7 @@ const cards = ref<CardRecord[]>([])
 const { deck_id } = defineProps<{ deck_id: number }>()
 
 onMounted(() => {
-  // raw_text.value = getCards().join('\n')
+  raw_text.value = getCards().join('\n')
 })
 
 const has_unsaved_changes = computed(() => {

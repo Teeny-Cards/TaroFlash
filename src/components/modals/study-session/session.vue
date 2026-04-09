@@ -62,7 +62,10 @@ function onCardReviewed(item: RecordLogItem) {
 </script>
 
 <template>
-  <div class="flex flex-col gap-6 items-center justify-between w-full h-full" :data-mode="mode">
+  <div
+    class="grid grid-rows-[auto_1fr] grid-cols-1 gap-2 items-center justify-between w-full h-full"
+    :data-mode="mode"
+  >
     <div
       data-testid="study-session__header"
       class="relative flex w-full justify-center bg-purple-500 wave-bottom-[50px] bgx-diagonal-stripes bgx-size-20 bg-center px-13 py-11.5 pb-14 z-10"
@@ -81,9 +84,9 @@ function onCardReviewed(item: RecordLogItem) {
 
     <div
       data-testid="study-session__body"
-      class="w-full h-full flex flex-col items-center justify-center gap-6"
+      class="w-full h-full max-h-130 flex flex-col items-center justify-between gap-2 self-center"
     >
-      <div class="text-brown-700 text-lg">
+      <div class="text-brown-700 dark:text-brown-300 text-lg">
         {{ current_index + 1 }}<span class="text-sm">/{{ cards.length }}</span>
       </div>
 

@@ -26,7 +26,7 @@ const swipe_zone = ref<-1 | 0 | 1>(0)
 const card_ref = ref<InstanceType<typeof Card> | null>(null)
 const card_offset = ref<number>(0)
 
-const is_dragging = computed(() => card_offset.value !== 0)
+const is_dragging = ref(false)
 
 const passVisible = computed(() => card_offset.value > SWIPE_DISTANCE_THRESHOLD)
 const failVisible = computed(() => card_offset.value < -SWIPE_DISTANCE_THRESHOLD)
@@ -44,6 +44,7 @@ onMounted(() => {
       el.style.transition = 'none'
     },
     onMove({ dx }) {
+      is_dragging.value = true
       card_offset.value = dx
       el.style.transform = `translateX(${dx}px) rotate(${dx / 10}deg)`
       _updateSwipeZone(dx)
@@ -111,6 +112,10 @@ function _snapBack(el: HTMLElement) {
   el.style.transform = ''
   card_offset.value = 0
   swipe_zone.value = 0
+
+  setTimeout(() => {
+    is_dragging.value = false
+  }, 150)
 }
 
 function _updateSwipeZone(offset: number) {
@@ -118,7 +123,7 @@ function _updateSwipeZone(offset: number) {
     offset > SWIPE_DISTANCE_THRESHOLD ? 1 : offset < -SWIPE_DISTANCE_THRESHOLD ? -1 : 0
 
   if (zone !== swipe_zone.value) {
-    emitSfx('ui.pop_drip_mid')
+    emitSfx('ui.music_plink_mid')
   }
 
   swipe_zone.value = zone
