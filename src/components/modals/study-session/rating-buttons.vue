@@ -3,6 +3,7 @@ import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
 import { useI18n } from 'vue-i18n'
 import UiTooltip from '@/components/ui-kit/tooltip.vue'
 import { useRatingFormat } from '@/utils/fsrs'
+import { emitSfx } from '@/sfx/bus'
 
 const { t } = useI18n()
 const { getRatingTimeFormat } = useRatingFormat()
@@ -26,6 +27,7 @@ function onRatingClicked(grade: Grade) {
   const item = options?.[grade]
 
   if (item) {
+    emitSfx(grade === Rating.Good ? 'ui.music_plink_ok' : 'ui.music_plink_locancel')
     emit('reviewed', item)
   }
 }
