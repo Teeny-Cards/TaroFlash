@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
+import { type Grade, Rating, type RecordLog } from 'ts-fsrs'
 import { useI18n } from 'vue-i18n'
 import UiTooltip from '@/components/ui-kit/tooltip.vue'
 import { useRatingFormat } from '@/utils/fsrs'
-import { emitSfx } from '@/sfx/bus'
 
 const { t } = useI18n()
 const { getRatingTimeFormat } = useRatingFormat()
@@ -20,16 +19,11 @@ const {
 
 const emit = defineEmits<{
   (e: 'revealed'): void
-  (e: 'reviewed', item: RecordLogItem): void
+  (e: 'rated', grade: Grade): void
 }>()
 
 function onRatingClicked(grade: Grade) {
-  const item = options?.[grade]
-
-  if (item) {
-    emitSfx(grade === Rating.Good ? 'ui.music_plink_ok' : 'ui.music_plink_locancel')
-    emit('reviewed', item)
-  }
+  emit('rated', grade)
 }
 </script>
 

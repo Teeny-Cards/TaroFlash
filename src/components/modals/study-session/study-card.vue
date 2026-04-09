@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import Card from '@/components/card/index.vue'
 import { computed, onMounted, ref, watch } from 'vue'
-import { Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
+import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
 import { emitSfx } from '@/sfx/bus'
 import { useGestures } from '@/composables/use-gestures'
 import { useRatingFormat } from '@/utils/fsrs'
+
+defineExpose({ rate })
 
 const { card, side, options } = defineProps<{
   card?: Card
@@ -52,6 +54,13 @@ onMounted(() => {
     onCancel: (el) => snapBack(el as HTMLElement)
   })
 })
+
+/** Triggers the fling animation for a given grade. Called by the parent via template ref. */
+function rate(grade: Grade) {
+  const el = card_ref.value?.$el as HTMLElement | null
+  if (!el) return
+  flingCard(el, grade === Rating.Good ? 1 : -1)
+}
 
 /** Flips the card face unless a drag just ended (prevents accidental flips on release). */
 function toggleSide() {
