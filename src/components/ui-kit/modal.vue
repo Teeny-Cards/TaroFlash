@@ -12,10 +12,6 @@ const shortcuts = useShortcuts('modal')
 
 const modal_container = useTemplateRef<{ $el: HTMLElement }>('modal_container')
 
-onMounted(() => {
-  shortcuts.register({ combo: 'esc', handler: () => pop() })
-})
-
 onUnmounted(() => {
   shortcuts.dispose()
   if (modal_container.value?.$el) enableBodyScroll(modal_container.value.$el)
@@ -26,8 +22,10 @@ watchEffect(() => {
 
   if (modal_stack.value.length > 0) {
     disableBodyScroll(modal_container.value.$el, { reserveScrollBarGap: true })
+    shortcuts.register({ combo: 'esc', handler: () => pop() })
   } else {
     enableBodyScroll(modal_container.value.$el)
+    shortcuts.clearScope()
   }
 })
 

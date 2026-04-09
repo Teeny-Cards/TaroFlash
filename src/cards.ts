@@ -9,2034 +9,241 @@ export function getCards() {
 
 const blah = {
   count: 633,
-  next: 'https://www.lingq.com/api/v3/zh/cards/?page=2&page_size=200&search_criteria=startsWith&sort=alpha&status=0&status=1&status=2&status=3&status=4',
-  previous: null,
+  next: 'https://www.lingq.com/api/v3/zh/cards/?page=3&page_size=200&search_criteria=startsWith&sort=alpha&status=0&status=1&status=2&status=3&status=4',
+  previous:
+    'https://www.lingq.com/api/v3/zh/cards/?page_size=200&search_criteria=startsWith&sort=alpha&status=0&status=1&status=2&status=3&status=4',
   results: [
     {
-      pk: 776161052,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776161052/',
-      term: '\u4e00\u4e0b',
-      fragment: '\u80fd \u5e2e \u6211 \u4e00\u4e0b \u5417\uff1f',
+      pk: 776511171,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776511171/',
+      term: '\u5531',
+      fragment: '',
       importance: 3,
       status: 3,
-      extended_status: 3,
+      extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2039-11-10T05:21:28.995788',
-      status_changed_date: '2026-03-03T05:21:28.995788',
+      srs_due_date: '2026-02-16T03:54:08.594583',
+      status_changed_date: '2026-02-01T03:54:08.594583',
       notes: '',
       audio: null,
-      words: ['\u4e00\u4e0b'],
+      words: ['\u5531'],
       tags: [],
       hints: [
         {
-          id: 13515058,
+          id: 13497279,
           locale: 'en',
-          text: 'a bit',
-          term: '\u4e00\u4e0b',
-          popularity: 858,
+          text: 'sing',
+          term: '\u5531',
+          popularity: 510,
           is_google_translate: true,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['y\u012bxi\u00e0'],
-        hant: ['\u4e00\u4e0b']
+        pinyin: ['ch\u00e0ng'],
+        hant: ['\u5531']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u4e00\u4e0b']
+      writings: ['\u5531']
     },
     {
-      pk: 775453638,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775453638/',
-      term: '\u4e00\u4e2a',
-      fragment: '\u5979 \u6709 \u4e00\u4e2a \u59b9\u59b9\u3002',
-      importance: 3,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-11-10T05:21:05.136154',
-      status_changed_date: '2026-03-03T05:21:05.136154',
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u4e2a'],
-      tags: [],
-      hints: [
-        {
-          id: 17889302,
-          locale: 'en',
-          text: 'one',
-          term: '\u4e00\u4e2a',
-          popularity: 496,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012b g\u00e8'],
-        hant: ['\u4e00\u500b']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u4e2a']
-    },
-    {
-      pk: 784784542,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784784542/',
-      term: '\u4e00\u4e9b',
-      fragment:
-        '\u2026\u51ac\u5929 \u8fbe\u65af\u6c40 \u53ef\u4ee5 \u6709 \u4e00\u4e9b \u7a7a\u95f2 \u65f6\u95f4 \u4e86 \u5417\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-06-01T05:19:51.309932',
-      status_changed_date: '2026-03-03T05:19:51.309932',
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u4e9b'],
-      tags: [],
-      hints: [
-        {
-          id: 6315126,
-          locale: 'en',
-          text: 'some',
-          term: '\u4e00\u4e9b',
-          popularity: 353815,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012bxi\u0113'],
-        hant: ['\u4e00\u4e9b']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u4e9b']
-    },
-    {
-      pk: 790056350,
-      url: 'https://www.lingq.com/api/v3/zh/cards/790056350/',
-      term: '\u4e00\u4ef6',
-      fragment: '\u6211 \u6709 \u4e00\u4ef6 \u7eff\u8272 \u7684 \u4e0a\u8863',
-      importance: 3,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-06T05:21:21.446274',
-      status_changed_date: '2026-03-03T05:21:21.446274',
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u4ef6'],
-      tags: [],
-      hints: [
-        {
-          id: 18710771,
-          locale: 'en',
-          text: 'one (article of clothing)',
-          term: '\u4e00\u4ef6',
-          popularity: 228,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012b ji\u00e0n'],
-        hant: ['\u4e00\u4ef6']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u4ef6']
-    },
-    {
-      pk: 795224223,
-      url: 'https://www.lingq.com/api/v3/zh/cards/795224223/',
-      term: '\u4e00\u4efd',
-      fragment: '\u6211\u4eec \u627e \u670d\u52a1\u5458 \u8981 \u4e00\u4efd \u83dc\u5355 \u5427',
+      pk: 776511054,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776511054/',
+      term: '\u5531\u6b4c',
+      fragment: '\u6765 \uff0c\u5531\u6b4c \u5427',
       importance: 2,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-13T03:45:28.381000',
-      status_changed_date: null,
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u4efd'],
-      tags: [],
-      hints: [
-        {
-          id: 18277312,
-          locale: 'en',
-          text: 'measure word for gifts, newspaper, magazine, papers, reports, contracts etc',
-          term: '\u4e00\u4efd',
-          popularity: 647,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012b f\u00e8n'],
-        hant: ['\u4e00\u4efd']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u4efd']
-    },
-    {
-      pk: 792383376,
-      url: 'https://www.lingq.com/api/v3/zh/cards/792383376/',
-      term: '\u4e00\u4f1a\u89c1',
-      fragment: '\u597d\u7684\u3002 \u62dc\u62dc\uff0c \u4e00\u4f1a\u89c1\u3002',
-      importance: 0,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-06T05:19:24.196221',
-      status_changed_date: '2026-03-03T05:19:24.196221',
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u4f1a\u89c1'],
-      tags: [],
-      hints: [
-        {
-          id: 217145633,
-          locale: 'en',
-          text: 'see you in a while',
-          term: '\u4e00\u4f1a\u89c1',
-          popularity: 30,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012b hu\u00ec xi\u00e0n'],
-        hant: ['\u4e00\u6703\u898b']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u4f1a\u89c1']
-    },
-    {
-      pk: 795223994,
-      url: 'https://www.lingq.com/api/v3/zh/cards/795223994/',
-      term: '\u4e00\u5171',
-      fragment: '\u4f60 \u4ee5\u524d \u4e00\u5171 \u6765\u8fc7 \u51e0\u6b21',
-      importance: 2,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-13T03:43:34.051000',
-      status_changed_date: null,
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u5171'],
-      tags: [],
-      hints: [
-        {
-          id: 5942010,
-          locale: 'en',
-          text: 'altogether',
-          term: '\u4e00\u5171',
-          popularity: 156,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012bg\u00f2ng'],
-        hant: ['\u4e00\u5171']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u5171']
-    },
-    {
-      pk: 794246222,
-      url: 'https://www.lingq.com/api/v3/zh/cards/794246222/',
-      term: '\u4e00\u573a',
-      fragment:
-        '\u7535\u89c6 \u91cc \u6b63\u5728 \u64ad\u653e \u4e00\u573a \u8db3\u7403 \u6bd4\u8d5b',
-      importance: 2,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-10T03:52:44.845000',
-      status_changed_date: null,
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u573a'],
-      tags: [],
-      hints: [
-        {
-          id: 28215117,
-          locale: 'en',
-          text: 'measure word for events; ground, place, courtyard',
-          term: '\u4e00\u573a',
-          popularity: 1664,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012b ch\u01ceng'],
-        hant: ['\u4e00\u5834']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u573a']
-    },
-    {
-      pk: 779643746,
-      url: 'https://www.lingq.com/api/v3/zh/cards/779643746/',
-      term: '\u4e00\u5757\u94b1',
-      fragment: '\u4e00\u5757\u94b1\u3002',
-      importance: 0,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-11-10T05:20:40.721014',
-      status_changed_date: '2026-03-03T05:20:40.721014',
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u5757\u94b1'],
-      tags: [],
-      hints: [
-        {
-          id: 160441152,
-          locale: 'en',
-          text: 'one yuan',
-          term: '\u4e00\u5757\u94b1',
-          popularity: 99,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012b ku\u00e0i qi\u00e1n'],
-        hant: ['\u4e00\u584a\u9322']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u5757\u94b1']
-    },
-    {
-      pk: 783754630,
-      url: 'https://www.lingq.com/api/v3/zh/cards/783754630/',
-      term: '\u4e00\u5bb6',
-      fragment: '\u8fc8\u514b \u5728 \u4e00\u5bb6 \u9910\u5385 \u505a \u53a8\u5e08\u3002',
-      importance: 2,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-06-01T05:21:28.992050',
-      status_changed_date: '2026-03-03T05:21:28.992050',
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u5bb6'],
-      tags: [],
-      hints: [
-        {
-          id: 23831392,
-          locale: 'en',
-          text: 'one + measure word for families or businesses;',
-          term: '\u4e00\u5bb6',
-          popularity: 528,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012bji\u0101'],
-        hant: ['\u4e00\u5bb6']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u5bb6']
-    },
-    {
-      pk: 777213879,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777213879/',
-      term: '\u4e00\u676f',
-      fragment: '\u505a \u65e9\u996d \u5e76 \u559d \u4e00\u676f \u5496\u5561',
-      importance: 1,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-11-10T05:19:51.316486',
-      status_changed_date: '2026-03-03T05:19:51.316486',
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u676f'],
-      tags: [],
-      hints: [
-        {
-          id: 164719207,
-          locale: 'en',
-          text: 'one cup',
-          term: '\u4e00\u676f',
-          popularity: 2249,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012b b\u0113i'],
-        hant: ['\u4e00\u676f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u676f']
-    },
-    {
-      pk: 794247039,
-      url: 'https://www.lingq.com/api/v3/zh/cards/794247039/',
-      term: '\u4e00\u6b21',
-      fragment: '\u957f \u65f6\u95f4 \u53bb \u6ed1 \u4e00\u6b21 \u96ea',
-      importance: 3,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-10T03:56:38.604000',
-      status_changed_date: null,
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u6b21'],
-      tags: [],
-      hints: [
-        {
-          id: 376115,
-          locale: 'en',
-          text: 'once',
-          term: '\u4e00\u6b21',
-          popularity: 2264,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012bc\u00ec'],
-        hant: ['\u4e00\u6b21']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u6b21']
-    },
-    {
-      pk: 784431158,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784431158/',
-      term: '\u4e00\u6bb5',
-      fragment:
-        '\u2026\u51ac\u5929 \u4ed6 \u53ef\u4ee5 \u4f11\u606f \u4e00\u6bb5 \u65f6\u95f4 \u4e86\u3002',
-      importance: 2,
-      status: 0,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T05:33:17.128182',
-      status_changed_date: '2026-03-06T05:33:17.128182',
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u6bb5'],
-      tags: [],
-      hints: [
-        {
-          id: 224551176,
-          locale: 'en',
-          text: 'a period / segment',
-          term: '\u4e00\u6bb5',
-          popularity: 2,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012b du\u00e0n'],
-        hant: ['\u4e00\u6bb5']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u6bb5']
-    },
-    {
-      pk: 776157758,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776157758/',
-      term: '\u4e00\u70b9',
-      fragment: '\u2026\u53ef\u4ee5 \u8bf4 \u5f97 \u6162 \u4e00\u70b9 \u5417\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-11-10T05:19:43.657662',
-      status_changed_date: '2026-03-03T05:19:43.657662',
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u70b9'],
-      tags: [],
-      hints: [
-        {
-          id: 13628808,
-          locale: 'en',
-          text: 'a little',
-          term: '\u4e00\u70b9',
-          popularity: 2546,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012bdi\u01cen'],
-        hant: ['\u4e00\u9ede']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u70b9']
-    },
-    {
-      pk: 775823827,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775823827/',
-      term: '\u4e00\u767e',
-      fragment: '\u4e00\u767e \u5757 \u94b1',
-      importance: 2,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-11-10T05:19:18.199973',
-      status_changed_date: '2026-03-03T05:19:18.199973',
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u767e'],
-      tags: [],
-      hints: [
-        {
-          id: 98714538,
-          locale: 'en',
-          text: 'one hundred',
-          term: '\u4e00\u767e',
-          popularity: 227,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012b b\u01cei'],
-        hant: ['\u4e00\u767e']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u767e']
-    },
-    {
-      pk: 775819396,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775819396/',
-      term: '\u4e00\u767e\u4e09\u5341\u4e94',
-      fragment: '\u5730\u5740 \u662f \u5357\u4eac \u8def \u4e00\u767e\u4e09\u5341\u4e94 \u53f7',
-      importance: 0,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-11-10T05:19:28.550673',
-      status_changed_date: '2026-03-03T05:19:28.550673',
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u767e\u4e09\u5341\u4e94'],
-      tags: [],
-      hints: [
-        {
-          id: 188940954,
-          locale: 'en',
-          text: 'one hundred thirty-five',
-          term: '\u4e00\u767e\u4e09\u5341\u4e94',
-          popularity: 181,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012b b\u01cei s\u0101n sh\u00ed w\u01d4'],
-        hant: ['\u4e00\u767e\u4e09\u5341\u4e94']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u767e\u4e09\u5341\u4e94']
-    },
-    {
-      pk: 780704962,
-      url: 'https://www.lingq.com/api/v3/zh/cards/780704962/',
-      term: '\u4e00\u76f4',
-      fragment: '\u4e00\u76f4 \u8d70\uff0c \u53f3 \u8f6c\u3002',
-      importance: 3,
       status: 3,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-03-19T04:09:14.925521',
-      status_changed_date: '2026-03-04T04:09:14.925521',
+      srs_due_date: '2026-02-20T05:15:31.034552',
+      status_changed_date: '2026-02-05T05:15:31.034552',
       notes: '',
       audio: null,
-      words: ['\u4e00\u76f4'],
+      words: ['\u5531\u6b4c'],
       tags: [],
       hints: [
         {
-          id: 19065781,
+          id: 65269093,
           locale: 'en',
-          text: 'straight',
-          term: '\u4e00\u76f4',
-          popularity: 136,
+          text: 'sing',
+          term: '\u5531\u6b4c',
+          popularity: 183,
           is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['y\u012bzh\u00ed'],
-        hant: ['\u4e00\u76f4']
+        pinyin: ['ch\u00e0ngg\u0113'],
+        hant: ['\u5531\u6b4c']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u4e00\u76f4']
+      writings: ['\u5531\u6b4c']
     },
     {
-      pk: 794246650,
-      url: 'https://www.lingq.com/api/v3/zh/cards/794246650/',
-      term: '\u4e00\u79cd',
-      fragment: '\u4f60 \u559c\u6b22 \u54ea \u4e00\u79cd \u8fd0\u52a8',
-      importance: 3,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-10T03:54:55.360000',
-      status_changed_date: null,
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u79cd'],
-      tags: [],
-      hints: [
-        {
-          id: 20990487,
-          locale: 'en',
-          text: 'one kind of / one type of',
-          term: '\u4e00\u79cd',
-          popularity: 122,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012bzh\u01d2ng'],
-        hant: ['\u4e00\u7a2e']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u79cd']
-    },
-    {
-      pk: 794554610,
-      url: 'https://www.lingq.com/api/v3/zh/cards/794554610/',
-      term: '\u4e00\u822c\u6765\u8bf4',
-      fragment: '\u4e00\u822c\u6765\u8bf4 \uff0c\u6211 \u5f00\u8f66 \u53bb \u9644\u8fd1',
+      pk: 786157475,
+      url: 'https://www.lingq.com/api/v3/zh/cards/786157475/',
+      term: '\u5546\u573a',
+      fragment: '\u6211 \u6b63\u8981 \u53bb \u5546\u573a\u3002',
       importance: 1,
       status: 0,
       extended_status: null,
       last_reviewed_correct: null,
-      srs_due_date: '2026-03-11T02:08:34.657000',
+      srs_due_date: '2026-02-13T04:36:27.214153',
       status_changed_date: null,
       notes: '',
       audio: null,
-      words: ['\u4e00\u822c\u6765\u8bf4'],
+      words: ['\u5546\u573a'],
       tags: [],
       hints: [
         {
-          id: 5548447,
+          id: 23957451,
           locale: 'en',
-          text: 'Generally speaking',
-          term: '\u4e00\u822c\u6765\u8bf4',
-          popularity: 187,
+          text: 'shopping mall',
+          term: '\u5546\u573a',
+          popularity: 258,
           is_google_translate: true,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['y\u012bb\u0101nl\u00e1ishu\u014d'],
-        hant: ['\u4e00\u822c\u4f86\u8aaa']
+        pinyin: ['sh\u0101ngch\u01ceng'],
+        hant: ['\u5546\u5834']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u4e00\u822c\u6765\u8bf4']
+      writings: ['\u5546\u573a']
     },
     {
-      pk: 792059020,
-      url: 'https://www.lingq.com/api/v3/zh/cards/792059020/',
-      term: '\u4e00\u8d77',
-      fragment: '\u4e3a\u4ec0\u4e48 \u4e0d \u548c \u6211 \u4e00\u8d77 \u53bb \u5462\uff1f',
-      importance: 3,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-06T05:19:43.651818',
-      status_changed_date: '2026-03-03T05:19:43.651818',
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u8d77'],
-      tags: [],
-      hints: [
-        {
-          id: 2788205,
-          locale: 'en',
-          text: 'together',
-          term: '\u4e00\u8d77',
-          popularity: 1033,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012bq\u01d0'],
-        hant: ['\u4e00\u8d77']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u8d77']
-    },
-    {
-      pk: 785462591,
-      url: 'https://www.lingq.com/api/v3/zh/cards/785462591/',
-      term: '\u4e00\u904d',
-      fragment:
-        '\u5bf9\u4e0d\u8d77\uff0c \u8bf7 \u518d \u8bf4 \u4e00\u904d\uff0c \u6162 \u70b9\u3002',
-      importance: 2,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T05:41:35.508969',
-      status_changed_date: '2026-03-06T05:41:35.508969',
-      notes: '',
-      audio: null,
-      words: ['\u4e00\u904d'],
-      tags: [],
-      hints: [
-        {
-          id: 224864859,
-          locale: 'en',
-          text: 'one more time, one time',
-          term: '\u4e00\u904d',
-          popularity: 1,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u012bbi\u00e0n'],
-        hant: ['\u4e00\u904d']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e00\u904d']
-    },
-    {
-      pk: 780326277,
-      url: 'https://www.lingq.com/api/v3/zh/cards/780326277/',
-      term: '\u4e03\u6708',
-      fragment: '\u4f60 \u4e03\u6708 \u53bb \u7f8e\u56fd \u5417\uff1f',
-      importance: 1,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-11-10T05:19:41.499086',
-      status_changed_date: '2026-03-03T05:19:41.499086',
-      notes: '',
-      audio: null,
-      words: ['\u4e03\u6708'],
-      tags: [],
-      hints: [
-        {
-          id: 13309411,
-          locale: 'en',
-          text: 'July',
-          term: '\u4e03\u6708',
-          popularity: 138,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['q\u012byu\u00e8'],
-        hant: ['\u4e03\u6708']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e03\u6708']
-    },
-    {
-      pk: 784071140,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784071140/',
-      term: '\u4e03\u70b9',
-      fragment:
-        '\u6211 \u6bcf\u5929 \u65e9\u4e0a \u4e03\u70b9 \u534a \u5f00\u59cb \u5de5\u4f5c\u3002',
-      importance: 1,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-06-01T05:22:14.269265',
-      status_changed_date: '2026-03-03T05:22:14.269265',
-      notes: '',
-      audio: null,
-      words: ['\u4e03\u70b9'],
-      tags: [],
-      hints: [
-        {
-          id: 27725940,
-          locale: 'en',
-          text: "seven o'clock",
-          term: '\u4e03\u70b9',
-          popularity: 508,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['q\u012b di\u01cen'],
-        hant: ['\u4e03\u9ede']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e03\u70b9']
-    },
-    {
-      pk: 784072602,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784072602/',
-      term: '\u4e03\u70b9\u534a',
-      fragment:
-        '\u2026\u4e03\u70b9 \u5f00\u59cb \u4e0a\u73ed\uff0c \u4ed6 \u4e03\u70b9\u534a \u5f00\u59cb \u4e0a\u73ed\u3002',
-      importance: 0,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-06-01T05:19:27.409411',
-      status_changed_date: '2026-03-03T05:19:27.409411',
-      notes: '',
-      audio: null,
-      words: ['\u4e03\u70b9\u534a'],
-      tags: [],
-      hints: [
-        {
-          id: 22339070,
-          locale: 'en',
-          text: 'seven thirty',
-          term: '\u4e03\u70b9\u534a',
-          popularity: 643,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['q\u012b di\u01cen b\u00e0n'],
-        hant: ['\u4e03\u9ede\u534a']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e03\u70b9\u534a']
-    },
-    {
-      pk: 777563474,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777563474/',
-      term: '\u4e09',
-      fragment: '\u4e00 \u4e09 \u4e94\uff0c \u4e8c \u516b \u96f6\u2026',
-      importance: 3,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-11-10T05:22:01.239623',
-      status_changed_date: '2026-03-03T05:22:01.239623',
-      notes: '',
-      audio: null,
-      words: ['\u4e09'],
-      tags: [],
-      hints: [
-        {
-          id: 6880105,
-          locale: 'en',
-          text: 'three',
-          term: '\u4e09',
-          popularity: 957,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['s\u0101n'],
-        hant: ['\u4e09']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e09']
-    },
-    {
-      pk: 780705764,
-      url: 'https://www.lingq.com/api/v3/zh/cards/780705764/',
-      term: '\u4e09\u70b9',
-      fragment: '\u4e09\u70b9\u3002',
-      importance: 0,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-11-10T05:21:09.519111',
-      status_changed_date: '2026-03-03T05:21:09.519111',
-      notes: '',
-      audio: null,
-      words: ['\u4e09\u70b9'],
-      tags: [],
-      hints: [
-        {
-          id: 92264043,
-          locale: 'en',
-          text: "three o'clock",
-          term: '\u4e09\u70b9',
-          popularity: 131,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['s\u0101n di\u01cen'],
-        hant: ['\u4e09\u9ede']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e09\u70b9']
-    },
-    {
-      pk: 790055355,
-      url: 'https://www.lingq.com/api/v3/zh/cards/790055355/',
-      term: '\u4e0a',
-      fragment: '\u65c1\u8fb9 \u7684 \u90a3\u4e2a \u6905\u5b50 \u4e0a',
+      pk: 776889184,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776889184/',
+      term: '\u554a',
+      fragment: '\u554a \uff0c\u600e\u4e48 \u4e86',
       importance: 3,
       status: 2,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-03-10T05:22:07.869072',
-      status_changed_date: '2026-03-03T05:22:07.869072',
+      srs_due_date: '2026-02-13T03:34:16.686072',
+      status_changed_date: '2026-02-06T03:34:16.686072',
       notes: '',
       audio: null,
-      words: ['\u4e0a'],
+      words: ['\u554a'],
       tags: [],
       hints: [
         {
-          id: 17493142,
+          id: 31025853,
           locale: 'en',
-          text: 'on, up, above',
-          term: '\u4e0a',
+          text: 'ah',
+          term: '\u554a',
           popularity: 164,
           is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['sh\u00e0ng'],
-        hant: ['\u4e0a']
+        pinyin: ['\u00e1'],
+        hant: ['\u554a']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u4e0a']
+      writings: ['\u554a']
     },
     {
-      pk: 778652957,
-      url: 'https://www.lingq.com/api/v3/zh/cards/778652957/',
-      term: '\u4e0a\u5348',
-      fragment: '\u6211 \u660e\u5929 \u4e0a\u5348 \u6765\u3002',
-      importance: 2,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-11-10T05:22:07.868283',
-      status_changed_date: '2026-03-03T05:22:07.868283',
-      notes: '',
-      audio: null,
-      words: ['\u4e0a\u5348'],
-      tags: [],
-      hints: [
-        {
-          id: 2788368,
-          locale: 'en',
-          text: 'morning',
-          term: '\u4e0a\u5348',
-          popularity: 837,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['sh\u00e0ngw\u01d4'],
-        hant: ['\u4e0a\u5348']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0a\u5348']
-    },
-    {
-      pk: 783076299,
-      url: 'https://www.lingq.com/api/v3/zh/cards/783076299/',
-      term: '\u4e0a\u6d77',
-      fragment: '\u4e0a\u6d77\u3002',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-06-01T05:22:04.964099',
-      status_changed_date: '2026-03-03T05:22:04.964099',
-      notes: '',
-      audio: null,
-      words: ['\u4e0a\u6d77'],
-      tags: [],
-      hints: [
-        {
-          id: 3444405,
-          locale: 'en',
-          text: 'Shanghai',
-          term: '\u4e0a\u6d77',
-          popularity: 1119,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['sh\u00e0ngh\u01cei'],
-        hant: ['\u4e0a\u6d77']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0a\u6d77']
-    },
-    {
-      pk: 777214234,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777214234/',
-      term: '\u4e0a\u73ed',
-      fragment: '\u63a5\u7740 \u5f00\u8f66 \u53bb \u4e0a\u73ed',
-      importance: 2,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-11-10T05:20:55.381181',
-      status_changed_date: '2026-03-03T05:20:55.381181',
-      notes: '',
-      audio: null,
-      words: ['\u4e0a\u73ed'],
-      tags: [],
-      hints: [
-        {
-          id: 376465,
-          locale: 'en',
-          text: 'go to work',
-          term: '\u4e0a\u73ed',
-          popularity: 199857,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['sh\u00e0ngb\u0101n'],
-        hant: ['\u4e0a\u73ed']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0a\u73ed']
-    },
-    {
-      pk: 776511974,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776511974/',
-      term: '\u4e0a\u7f51',
-      fragment: '\u6211 \u5728 \u4e0a\u7f51',
-      importance: 2,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-11-10T05:19:34.997714',
-      status_changed_date: '2026-03-03T05:19:34.997714',
-      notes: '',
-      audio: null,
-      words: ['\u4e0a\u7f51'],
-      tags: [],
-      hints: [
-        {
-          id: 173301743,
-          locale: 'en',
-          text: 'surfing the internet',
-          term: '\u4e0a\u7f51',
-          popularity: 46,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['sh\u00e0ngw\u01ceng'],
-        hant: ['\u4e0a\u7db2']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0a\u7f51']
-    },
-    {
-      pk: 786158206,
-      url: 'https://www.lingq.com/api/v3/zh/cards/786158206/',
-      term: '\u4e0a\u8863',
-      fragment: '\u8bf7 \u628a \u6211 \u7684 \u4e0a\u8863 \u7ed9 \u6211\u3002',
+      pk: 782329255,
+      url: 'https://www.lingq.com/api/v3/zh/cards/782329255/',
+      term: '\u554a\u5440',
+      fragment: '\u554a\u5440\uff01',
       importance: 0,
       status: 2,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-03-08T04:15:45.641718',
-      status_changed_date: '2026-03-01T04:15:45.641718',
+      srs_due_date: '2026-02-14T04:19:19.715804',
+      status_changed_date: '2026-02-07T04:19:19.715804',
       notes: '',
       audio: null,
-      words: ['\u4e0a\u8863'],
+      words: ['\u554a\u5440'],
       tags: [],
       hints: [
         {
-          id: 376481,
+          id: 195693671,
           locale: 'en',
-          text: 'jacket, coat, upper outer garment',
-          term: '\u4e0a\u8863',
-          popularity: 544,
+          text: 'Ah',
+          term: '\u554a\u5440',
+          popularity: 19,
           is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['sh\u00e0ngy\u012b'],
-        hant: ['\u4e0a\u8863']
+        pinyin: ['\u0101y\u0101'],
+        hant: ['\u554a\u5440']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u4e0a\u8863']
+      writings: ['\u554a\u5440']
     },
     {
-      pk: 776512921,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776512921/',
-      term: '\u4e0b',
-      fragment: '\u6211 \u4e0b \u661f\u671f \u4e0d \u6765',
-      importance: 3,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-10-18T05:34:39.889454',
-      status_changed_date: '2026-02-08T05:34:39.889454',
-      notes: '',
-      audio: null,
-      words: ['\u4e0b'],
-      tags: [],
-      hints: [
-        {
-          id: 12750172,
-          locale: 'en',
-          text: 'next',
-          term: '\u4e0b',
-          popularity: 105,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['xi\u00e0'],
-        hant: ['\u4e0b']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0b']
-    },
-    {
-      pk: 778653080,
-      url: 'https://www.lingq.com/api/v3/zh/cards/778653080/',
-      term: '\u4e0b\u5348',
-      fragment: '\u90a3\uff0c \u660e\u5929 \u4e0b\u5348 \u53ef\u4ee5 \u5417\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-09T05:35:38.450374',
-      status_changed_date: '2026-02-08T05:35:38.450374',
-      notes: '',
-      audio: null,
-      words: ['\u4e0b\u5348'],
-      tags: [],
-      hints: [
-        {
-          id: 12818473,
-          locale: 'en',
-          text: 'afternoon',
-          term: '\u4e0b\u5348',
-          popularity: 789,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['xi\u00e0w\u01d4'],
-        hant: ['\u4e0b\u5348']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0b\u5348']
-    },
-    {
-      pk: 783076988,
-      url: 'https://www.lingq.com/api/v3/zh/cards/783076988/',
-      term: '\u4e0b\u73ed',
-      fragment: '\u4f60 \u51e0\u70b9 \u4e0b\u73ed\uff1f',
+      pk: 777562989,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777562989/',
+      term: '\u5564\u9152',
+      fragment: '\u9752\u5c9b \u5564\u9152\u3002',
       importance: 2,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-19T04:20:05.353752',
-      status_changed_date: '2026-03-04T04:20:05.353752',
-      notes: '',
-      audio: null,
-      words: ['\u4e0b\u73ed'],
-      tags: [],
-      hints: [
-        {
-          id: 14512259,
-          locale: 'en',
-          text: 'get off work',
-          term: '\u4e0b\u73ed',
-          popularity: 1640,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['xi\u00e0b\u0101n'],
-        hant: ['\u4e0b\u73ed']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0b\u73ed']
-    },
-    {
-      pk: 776888627,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776888627/',
-      term: '\u4e0b\u96e8',
-      fragment: '',
-      importance: 2,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-09T05:33:39.793104',
-      status_changed_date: '2026-02-08T05:33:39.793104',
-      notes: '',
-      audio: null,
-      words: ['\u4e0b\u96e8'],
-      tags: [],
-      hints: [
-        {
-          id: 160046423,
-          locale: 'en',
-          text: "it's raining",
-          term: '\u4e0b\u96e8',
-          popularity: 29,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['xi\u00e0y\u01d4'],
-        hant: ['\u4e0b\u96e8']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0b\u96e8']
-    },
-    {
-      pk: 775818309,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775818309/',
-      term: '\u4e0d',
-      fragment: '\u4e0d \u662f',
-      importance: 3,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-10-18T05:35:12.949620',
-      status_changed_date: '2026-02-08T05:35:12.949620',
-      notes: '',
-      audio: null,
-      words: ['\u4e0d'],
-      tags: [],
-      hints: [
-        {
-          id: 15899108,
-          locale: 'en',
-          text: 'not',
-          term: '\u4e0d',
-          popularity: 133162,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00f9'],
-        hant: ['\u4e0d']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0d']
-    },
-    {
-      pk: 781714057,
-      url: 'https://www.lingq.com/api/v3/zh/cards/781714057/',
-      term: '\u4e0d\u4e86',
-      fragment:
-        '\u2026\u4f60\uff0c \u4f60 \u4e5f \u63a5 \u4e0d\u4e86 \u90a3\u6837\u7684 \u7403\u3002',
-      importance: 0,
-      status: 2,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-08T04:13:22.604584',
-      status_changed_date: '2026-03-01T04:13:22.604584',
-      notes: '',
-      audio: null,
-      words: ['\u4e0d\u4e86'],
-      tags: [],
-      hints: [
-        {
-          id: 29444376,
-          locale: 'en',
-          text: 'unable to',
-          term: '\u4e0d\u4e86',
-          popularity: 23,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00f9li\u01ceo'],
-        hant: ['\u4e0d\u4e86']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0d\u4e86']
-    },
-    {
-      pk: 776511167,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776511167/',
-      term: '\u4e0d\u4f1a',
-      fragment: '',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-04-30T03:31:00.383480',
-      status_changed_date: '2026-01-30T03:31:00.383480',
-      notes: '',
-      audio: null,
-      words: ['\u4e0d\u4f1a'],
-      tags: [],
-      hints: [
-        {
-          id: 16228514,
-          locale: 'en',
-          text: 'cannot',
-          term: '\u4e0d\u4f1a',
-          popularity: 433,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00f9hu\u00ec'],
-        hant: ['\u4e0d\u6703']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0d\u4f1a']
-    },
-    {
-      pk: 777212921,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777212921/',
-      term: '\u4e0d\u540c',
-      fragment: '\u7528 \u4e0d\u540c \u7684 \u65b9\u5f0f \u8bb2\u8ff0 \u540c',
-      importance: 3,
-      status: 3,
-      extended_status: 1,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-26T03:24:30.145669',
-      status_changed_date: '2026-02-24T03:24:30.145669',
-      notes: '',
-      audio: null,
-      words: ['\u4e0d\u540c'],
-      tags: [],
-      hints: [
-        {
-          id: 13568307,
-          locale: 'en',
-          text: 'different',
-          term: '\u4e0d\u540c',
-          popularity: 4667,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00f9t\u00f3ng'],
-        hant: ['\u4e0d\u540c']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0d\u540c']
-    },
-    {
-      pk: 781713449,
-      url: 'https://www.lingq.com/api/v3/zh/cards/781713449/',
-      term: '\u4e0d\u597d',
-      fragment:
-        '\u2026\u7fbd\u6bdb\u7403 \u6211 \u53ef \u6253 \u4e0d\u597d\uff0c \u4f60 \u6765 \u53d1\u7403 \u5427\u3002',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-30T04:15:41.752692',
-      status_changed_date: '2026-03-01T04:15:41.752692',
-      notes: '',
-      audio: null,
-      words: ['\u4e0d\u597d'],
-      tags: [],
-      hints: [
-        {
-          id: 73610932,
-          locale: 'en',
-          text: 'not well',
-          term: '\u4e0d\u597d',
-          popularity: 20,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00f9h\u01ceo'],
-        hant: ['\u4e0d\u597d']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0d\u597d']
-    },
-    {
-      pk: 778976009,
-      url: 'https://www.lingq.com/api/v3/zh/cards/778976009/',
-      term: '\u4e0d\u597d\u610f\u601d',
-      fragment: '\u4e0d\u597d\u610f\u601d\uff01',
-      importance: 2,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-30T04:15:56.916196',
-      status_changed_date: '2026-03-01T04:15:56.916196',
-      notes: '',
-      audio: null,
-      words: ['\u4e0d\u597d\u610f\u601d'],
-      tags: [],
-      hints: [
-        {
-          id: 20797185,
-          locale: 'en',
-          text: 'sorry',
-          term: '\u4e0d\u597d\u610f\u601d',
-          popularity: 107,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00f9h\u01ceoy\u00ecsi'],
-        hant: ['\u4e0d\u597d\u610f\u601d']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0d\u597d\u610f\u601d']
-    },
-    {
-      pk: 778647853,
-      url: 'https://www.lingq.com/api/v3/zh/cards/778647853/',
-      term: '\u4e0d\u5bf9',
-      fragment: '\u4e0d\u5bf9\uff0c \u5341\u56db \u5757\u94b1\u3002',
-      importance: 2,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-11T03:16:29.333062',
-      status_changed_date: '2026-02-24T03:16:29.333062',
-      notes: '',
-      audio: null,
-      words: ['\u4e0d\u5bf9'],
-      tags: [],
-      hints: [
-        {
-          id: 182696766,
-          locale: 'en',
-          text: 'not correct',
-          term: '\u4e0d\u5bf9',
-          popularity: 41,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00f9du\u00ec'],
-        hant: ['\u4e0d\u5c0d']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0d\u5bf9']
-    },
-    {
-      pk: 784072569,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784072569/',
-      term: '\u4e0d\u662f',
-      fragment: '\u4e0d\u662f\uff0c \u4ed6 \u4e0d \u662f \u4e03\u70b9\u2026',
-      importance: 0,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-11T03:20:00.127387',
-      status_changed_date: '2026-02-24T03:20:00.127387',
-      notes: '',
-      audio: null,
-      words: ['\u4e0d\u662f'],
-      tags: [],
-      hints: [
-        {
-          id: 19483390,
-          locale: 'en',
-          text: 'no / is not / not',
-          term: '\u4e0d\u662f',
-          popularity: 742552,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00fashi'],
-        hant: ['\u4e0d\u662f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0d\u662f']
-    },
-    {
-      pk: 784431246,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784431246/',
-      term: '\u4e0d\u7528',
-      fragment:
-        '\u2026\u7684 \u65f6\u95f4 \u91cc\uff0c \u4ed6 \u4e0d\u7528 \u518d \u53bb \u5de5\u4f5c\u3002',
-      importance: 3,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-19T04:23:44.332319',
-      status_changed_date: '2026-03-04T04:23:44.332319',
-      notes: '',
-      audio: null,
-      words: ['\u4e0d\u7528'],
-      tags: [],
-      hints: [
-        {
-          id: 217144676,
-          locale: 'en',
-          text: "doesn't need to",
-          term: '\u4e0d\u7528',
-          popularity: 72,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00f9y\u00f2ng'],
-        hant: ['\u4e0d\u7528']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0d\u7528']
-    },
-    {
-      pk: 777563677,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777563677/',
-      term: '\u4e0d\u7528\u8c22',
-      fragment: '\u4e0d\u7528\u8c22\u3002',
-      importance: 0,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-04-30T03:30:02.497116',
-      status_changed_date: '2026-01-30T03:30:02.497116',
-      notes: '',
-      audio: null,
-      words: ['\u4e0d\u7528\u8c22'],
-      tags: [],
-      hints: [
-        {
-          id: 3690990,
-          locale: 'en',
-          text: "You're welcome",
-          term: '\u4e0d\u7528\u8c22',
-          popularity: 54,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00f9y\u00f2ngxi\u00e8'],
-        hant: ['\u4e0d\u7528\u8b1d']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0d\u7528\u8c22']
-    },
-    {
-      pk: 776888254,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776888254/',
-      term: '\u4e0d\u8981',
-      fragment: '\u4e0d\u8981 \u559d \u81ea\u6765\u6c34',
-      importance: 3,
-      status: 3,
-      extended_status: 1,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-26T03:22:20.169647',
-      status_changed_date: '2026-02-24T03:22:20.169647',
-      notes: '',
-      audio: null,
-      words: ['\u4e0d\u8981'],
-      tags: [],
-      hints: [
-        {
-          id: 22990631,
-          locale: 'en',
-          text: "don't",
-          term: '\u4e0d\u8981',
-          popularity: 158,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00f9y\u00e0o'],
-        hant: ['\u4e0d\u8981']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0d\u8981']
-    },
-    {
-      pk: 779328027,
-      url: 'https://www.lingq.com/api/v3/zh/cards/779328027/',
-      term: '\u4e0d\u89c1',
-      fragment: '\u597d\u4e45 \u4e0d\u89c1\uff01',
-      importance: 1,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-30T04:16:00.088918',
-      status_changed_date: '2026-03-01T04:16:00.088918',
-      notes: '',
-      audio: null,
-      words: ['\u4e0d\u89c1'],
-      tags: [],
-      hints: [
-        {
-          id: 190519716,
-          locale: 'en',
-          text: 'no see',
-          term: '\u4e0d\u89c1',
-          popularity: 42,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00f9ji\u00e0n'],
-        hant: ['\u4e0d\u898b']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0d\u89c1']
-    },
-    {
-      pk: 782329321,
-      url: 'https://www.lingq.com/api/v3/zh/cards/782329321/',
-      term: '\u4e0d\u89c1\u4e86',
-      fragment: '\u6211 \u7684 \u94a5\u5319 \u4e0d\u89c1\u4e86\uff01',
-      importance: 0,
-      status: 2,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-08T04:16:32.535491',
-      status_changed_date: '2026-03-01T04:16:32.535491',
-      notes: '',
-      audio: null,
-      words: ['\u4e0d\u89c1\u4e86'],
-      tags: [],
-      hints: [
-        {
-          id: 93657947,
-          locale: 'en',
-          text: 'disappeared',
-          term: '\u4e0d\u89c1\u4e86',
-          popularity: 182,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00f9 xi\u00e0n le'],
-        hant: ['\u4e0d\u898b\u4e86']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0d\u89c1\u4e86']
-    },
-    {
-      pk: 782707954,
-      url: 'https://www.lingq.com/api/v3/zh/cards/782707954/',
-      term: '\u4e0d\u8c22',
-      fragment: '\u4e0d\u8c22\u3002',
-      importance: 0,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-11T03:16:05.805064',
-      status_changed_date: '2026-02-24T03:16:05.805064',
-      notes: '',
-      audio: null,
-      words: ['\u4e0d\u8c22'],
-      tags: [],
-      hints: [
-        {
-          id: 20481806,
-          locale: 'en',
-          text: 'not at all, do not mention it',
-          term: '\u4e0d\u8c22',
-          popularity: 97,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00f9xi\u00e8'],
-        hant: ['\u4e0d\u8b1d']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0d\u8c22']
-    },
-    {
-      pk: 779328161,
-      url: 'https://www.lingq.com/api/v3/zh/cards/779328161/',
-      term: '\u4e0d\u9519',
-      fragment: '\u4e0d\u9519\uff01',
-      importance: 3,
-      status: 3,
-      extended_status: 1,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-26T03:24:30.146454',
-      status_changed_date: '2026-02-24T03:24:30.146454',
-      notes: '',
-      audio: null,
-      words: ['\u4e0d\u9519'],
-      tags: [],
-      hints: [
-        {
-          id: 376795,
-          locale: 'en',
-          text: 'not bad',
-          term: '\u4e0d\u9519',
-          popularity: 342749,
-          is_google_translate: false,
-          flagged: true
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00f9cu\u00f2'],
-        hant: ['\u4e0d\u932f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e0d\u9519']
-    },
-    {
-      pk: 783753037,
-      url: 'https://www.lingq.com/api/v3/zh/cards/783753037/',
-      term: '\u4e0e',
-      fragment: '\u4e0e \u8fd9\u4e9b \u987e\u5ba2 \u804a\u5929\uff0c \u8fc8\u514b\u2026',
-      importance: 3,
       status: 0,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T05:33:08.361978',
-      status_changed_date: '2026-03-06T05:33:08.361978',
+      srs_due_date: '2026-03-10T03:49:11.653205',
+      status_changed_date: '2026-03-09T03:49:11.653205',
       notes: '',
       audio: null,
-      words: ['\u4e0e'],
+      words: ['\u5564\u9152'],
       tags: [],
       hints: [
         {
-          id: 23903630,
+          id: 7321599,
           locale: 'en',
-          text: 'together with, to give, and',
-          term: '\u4e0e',
-          popularity: 54,
-          is_google_translate: false,
+          text: 'beer',
+          term: '\u5564\u9152',
+          popularity: 426,
+          is_google_translate: true,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['y\u01d4'],
-        hant: ['\u8207']
+        pinyin: ['p\u00edji\u01d4'],
+        hant: ['\u5564\u9152']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u4e0e']
+      writings: ['\u5564\u9152']
     },
     {
-      pk: 775820178,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775820178/',
-      term: '\u4e1c\u897f',
-      fragment: '\u4f60 \u6709 \u4ec0\u4e48 \u4e1c\u897f \u4e0d \u5403 \u5417',
+      pk: 780327714,
+      url: 'https://www.lingq.com/api/v3/zh/cards/780327714/',
+      term: '\u5582',
+      fragment: '\u5582\uff0c \u674e \u5148\u751f \u5728 \u5417\uff1f',
       importance: 3,
       status: 1,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-03-09T05:32:53.345257',
-      status_changed_date: '2026-03-06T05:32:53.345257',
+      srs_due_date: '2026-02-08T05:15:25.819224',
+      status_changed_date: '2026-02-05T05:15:25.819224',
       notes: '',
       audio: null,
-      words: ['\u4e1c\u897f'],
+      words: ['\u5582'],
       tags: [],
       hints: [
         {
-          id: 7479747,
+          id: 223543095,
           locale: 'en',
-          text: 'things',
-          term: '\u4e1c\u897f',
-          popularity: 448,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['d\u014dngx\u012b'],
-        hant: ['\u6771\u897f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e1c\u897f']
-    },
-    {
-      pk: 784431223,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784431223/',
-      term: '\u4e24\u5468',
-      fragment: '\u4e24\u5468 \u7684 \u65f6\u95f4 \u91cc\uff0c \u4ed6\u2026',
-      importance: 0,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-19T04:26:13.032951',
-      status_changed_date: '2026-03-04T04:26:13.032951',
-      notes: '',
-      audio: null,
-      words: ['\u4e24\u5468'],
-      tags: [],
-      hints: [
-        {
-          id: 23074146,
-          locale: 'en',
-          text: 'two weeks',
-          term: '\u4e24\u5468',
-          popularity: 609,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['li\u01ceng zh\u014du'],
-        hant: ['\u5169\u5468']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e24\u5468']
-    },
-    {
-      pk: 775818084,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775818084/',
-      term: '\u4e2d\u56fd',
-      fragment: '\u60a8 \u7b2c\u4e00\u6b21 \u6765 \u4e2d\u56fd \u5417',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-04-22T03:46:13.740086',
-      status_changed_date: '2026-01-22T03:46:13.740086',
-      notes: '',
-      audio: null,
-      words: ['\u4e2d\u56fd'],
-      tags: [],
-      hints: [
-        {
-          id: 1294360,
-          locale: 'en',
-          text: 'China',
-          term: '\u4e2d\u56fd',
-          popularity: 4097,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['zh\u014dnggu\u00f3'],
-        hant: ['\u4e2d\u570b']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e2d\u56fd']
-    },
-    {
-      pk: 775453024,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775453024/',
-      term: '\u4e2d\u56fd\u4eba',
-      fragment: '\u4f60 \u662f \u4e2d\u56fd\u4eba \u5417\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-10-01T03:44:57.349478',
-      status_changed_date: '2026-01-22T03:44:57.349478',
-      notes: '',
-      audio: null,
-      words: ['\u4e2d\u56fd\u4eba'],
-      tags: [],
-      hints: [
-        {
-          id: 9595598,
-          locale: 'en',
-          text: 'Chinese',
-          term: '\u4e2d\u56fd\u4eba',
-          popularity: 88,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['zh\u014dnggu\u00f3r\u00e9n'],
-        hant: ['\u4e2d\u570b\u4eba']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e2d\u56fd\u4eba']
-    },
-    {
-      pk: 779643686,
-      url: 'https://www.lingq.com/api/v3/zh/cards/779643686/',
-      term: '\u4e2d\u6587',
-      fragment: '\u8981 \u4e2d\u6587 \u7684 \u8fd8\u662f \u82f1\u6587 \u7684\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 1,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-26T03:20:00.118612',
-      status_changed_date: '2026-02-24T03:20:00.118612',
-      notes: '',
-      audio: null,
-      words: ['\u4e2d\u6587'],
-      tags: [],
-      hints: [
-        {
-          id: 9953078,
-          locale: 'en',
-          text: 'Chinese',
-          term: '\u4e2d\u6587',
-          popularity: 2634,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['zh\u014dngw\u00e9n'],
-        hant: ['\u4e2d\u6587']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e2d\u6587']
-    },
-    {
-      pk: 783077828,
-      url: 'https://www.lingq.com/api/v3/zh/cards/783077828/',
-      term: '\u4e3a',
-      fragment: '\u4ed6 \u4e3a \u809a\u5b50 \u997f \u7684 \u987e\u5ba2\u2026',
-      importance: 3,
-      status: 2,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-11T04:19:34.360536',
-      status_changed_date: '2026-03-04T04:19:34.360536',
-      notes: '',
-      audio: null,
-      words: ['\u4e3a'],
-      tags: [],
-      hints: [
-        {
-          id: 377075,
-          locale: 'en',
-          text: 'for, because of',
-          term: '\u4e3a',
+          text: 'hello (phone)',
+          term: '\u5582',
           popularity: 1,
           is_google_translate: false,
           flagged: false
@@ -2044,5011 +251,6811 @@ const blah = {
       ],
       transliteration: {
         pinyin: ['w\u00e9i'],
-        hant: ['\u70ba']
+        hant: ['\u9935']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u4e3a']
+      writings: ['\u5582']
     },
     {
-      pk: 776513049,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776513049/',
-      term: '\u4e3a\u4ec0\u4e48',
-      fragment: '\u4e3a\u4ec0\u4e48',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-08T04:21:45.392449',
-      status_changed_date: '2026-02-07T04:21:45.392449',
-      notes: '',
-      audio: null,
-      words: ['\u4e3a\u4ec0\u4e48'],
-      tags: [],
-      hints: [
-        {
-          id: 10629674,
-          locale: 'en',
-          text: 'Why',
-          term: '\u4e3a\u4ec0\u4e48',
-          popularity: 2047,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['w\u00e8ish\u00e9nme'],
-        hant: ['\u70ba\u4ec0\u9ebc']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e3a\u4ec0\u4e48']
-    },
-    {
-      pk: 792059199,
-      url: 'https://www.lingq.com/api/v3/zh/cards/792059199/',
-      term: '\u4e3b\u610f',
-      fragment: '\u6069\uff0c \u597d \u4e3b\u610f\u3002',
-      importance: 1,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T04:19:32.740870',
-      status_changed_date: '2026-03-04T04:19:32.740870',
-      notes: '',
-      audio: null,
-      words: ['\u4e3b\u610f'],
-      tags: [],
-      hints: [
-        {
-          id: 13579260,
-          locale: 'en',
-          text: 'idea',
-          term: '\u4e3b\u610f',
-          popularity: 1050,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['zh\u01d4yi'],
-        hant: ['\u4e3b\u610f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e3b\u610f']
-    },
-    {
-      pk: 794245953,
-      url: 'https://www.lingq.com/api/v3/zh/cards/794245953/',
-      term: '\u4e3b\u9898',
-      fragment: '\u8fd9 \u662f \u4e00\u5bb6 \u8fd0\u52a8 \u4e3b\u9898 \u9152\u5427',
-      importance: 2,
-      status: 0,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-10T03:51:28.116954',
-      status_changed_date: '2026-03-09T03:51:28.116954',
-      notes: '',
-      audio: null,
-      words: ['\u4e3b\u9898'],
-      tags: [],
-      hints: [
-        {
-          id: 18053593,
-          locale: 'en',
-          text: 'theme, subject, topic',
-          term: '\u4e3b\u9898',
-          popularity: 35,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['zh\u01d4t\u00ed'],
-        hant: ['\u4e3b\u984c']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e3b\u9898']
-    },
-    {
-      pk: 792383202,
-      url: 'https://www.lingq.com/api/v3/zh/cards/792383202/',
-      term: '\u4e4b\u524d',
-      fragment:
-        '\u5728 \u53bb \u996d\u9986 \u4e4b\u524d\uff0c \u6211\u4eec \u53ef\u4ee5 \u5148 \u559d\u2026',
+      pk: 775453582,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775453582/',
+      term: '\u559c\u6b22',
+      fragment: '\u5979 \u5f88 \u559c\u6b22 \u5357\u4eac\u3002',
       importance: 3,
       status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T05:41:25.196163',
-      status_changed_date: '2026-03-06T05:41:25.196163',
-      notes: '',
-      audio: null,
-      words: ['\u4e4b\u524d'],
-      tags: [],
-      hints: [
-        {
-          id: 377209,
-          locale: 'en',
-          text: 'before',
-          term: '\u4e4b\u524d',
-          popularity: 3379,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['zh\u012bqi\u00e1n'],
-        hant: ['\u4e4b\u524d']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e4b\u524d']
-    },
-    {
-      pk: 775819980,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775819980/',
-      term: '\u4e56',
-      fragment: '\u5b9d\u5b9d \uff0c\u4e56',
-      importance: 0,
-      status: 3,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-03-11T03:16:05.805334',
-      status_changed_date: '2026-02-24T03:16:05.805334',
+      srs_due_date: '2026-03-10T03:54:07.407034',
+      status_changed_date: '2026-03-09T03:54:07.407034',
       notes: '',
       audio: null,
-      words: ['\u4e56'],
+      words: ['\u559c\u6b22'],
       tags: [],
       hints: [
         {
-          id: 160214601,
+          id: 5941989,
           locale: 'en',
-          text: 'well-behaved',
-          term: '\u4e56',
-          popularity: 58,
+          text: 'to like; to be fond of',
+          term: '\u559c\u6b22',
+          popularity: 745,
           is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['gu\u0101i'],
-        hant: ['\u4e56']
+        pinyin: ['x\u01d0huan'],
+        hant: ['\u559c\u6b61']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u4e56']
+      writings: ['\u559c\u6b22']
     },
     {
-      pk: 777563534,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777563534/',
-      term: '\u4e5d',
-      fragment: '\u2026\u516b\uff0c \u56db \u56db \u4e03 \u4e5d\u3002',
-      importance: 3,
-      status: 3,
-      extended_status: 1,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-26T03:16:05.798418',
-      status_changed_date: '2026-02-24T03:16:05.798418',
-      notes: '',
-      audio: null,
-      words: ['\u4e5d'],
-      tags: [],
-      hints: [
-        {
-          id: 10670527,
-          locale: 'en',
-          text: 'nine',
-          term: '\u4e5d',
-          popularity: 639,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ji\u01d4'],
-        hant: ['\u4e5d']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e5d']
-    },
-    {
-      pk: 780326322,
-      url: 'https://www.lingq.com/api/v3/zh/cards/780326322/',
-      term: '\u4e5d\u6708',
-      fragment: '\u6211 \u4e5d\u6708 \u53bb\u3002',
-      importance: 1,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-16T04:13:43.388547',
-      status_changed_date: '2026-03-01T04:13:43.388547',
-      notes: '',
-      audio: null,
-      words: ['\u4e5d\u6708'],
-      tags: [],
-      hints: [
-        {
-          id: 2585868,
-          locale: 'en',
-          text: 'September',
-          term: '\u4e5d\u6708',
-          popularity: 928,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ji\u01d4yu\u00e8'],
-        hant: ['\u4e5d\u6708']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e5d\u6708']
-    },
-    {
-      pk: 783076960,
-      url: 'https://www.lingq.com/api/v3/zh/cards/783076960/',
-      term: '\u4e5d\u70b9',
-      fragment: '\u65e9\u4e0a \u4e5d\u70b9\u3002',
-      importance: 1,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-11T03:16:05.799919',
-      status_changed_date: '2026-02-24T03:16:05.799919',
-      notes: '',
-      audio: null,
-      words: ['\u4e5d\u70b9'],
-      tags: [],
-      hints: [
-        {
-          id: 18367809,
-          locale: 'en',
-          text: "nine o'clock",
-          term: '\u4e5d\u70b9',
-          popularity: 510,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ji\u01d4 di\u01cen'],
-        hant: ['\u4e5d\u9ede']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e5d\u70b9']
-    },
-    {
-      pk: 775450798,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775450798/',
-      term: '\u4e5f',
-      fragment: '\u6211 \u4e5f \u5f88 \u597d\uff0c \u8c22\u8c22\u3002',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-06T05:11:27.746399',
-      status_changed_date: '2026-02-05T05:11:27.746399',
-      notes: '',
-      audio: null,
-      words: ['\u4e5f'],
-      tags: [],
-      hints: [
-        {
-          id: 377281,
-          locale: 'en',
-          text: 'also',
-          term: '\u4e5f',
-          popularity: 2908,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u011b'],
-        hant: ['\u4e5f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e5f']
-    },
-    {
-      pk: 781714402,
-      url: 'https://www.lingq.com/api/v3/zh/cards/781714402/',
-      term: '\u4e60\u60ef\u4e86',
-      fragment: '\u4e0d \u597d\u610f\u601d\uff0c \u4e60\u60ef\u4e86\u3002',
-      importance: 0,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-16T04:15:32.189939',
-      status_changed_date: '2026-03-01T04:15:32.189939',
-      notes: '',
-      audio: null,
-      words: ['\u4e60\u60ef\u4e86'],
-      tags: [],
-      hints: [
-        {
-          id: 182130075,
-          locale: 'en',
-          text: 'used to it',
-          term: '\u4e60\u60ef\u4e86',
-          popularity: 22,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['x\u00ed gu\u00e0n le'],
-        hant: ['\u7fd2\u6163\u4e86']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e60\u60ef\u4e86']
-    },
-    {
-      pk: 782708413,
-      url: 'https://www.lingq.com/api/v3/zh/cards/782708413/',
-      term: '\u4e66',
-      fragment: '\u6253\u5f00 \u4e66\u3002',
-      importance: 3,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-11T03:22:20.172057',
-      status_changed_date: '2026-02-24T03:22:20.172057',
-      notes: '',
-      audio: null,
-      words: ['\u4e66'],
-      tags: [],
-      hints: [
-        {
-          id: 12713007,
-          locale: 'en',
-          text: 'book',
-          term: '\u4e66',
-          popularity: 495,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['sh\u016b'],
-        hant: ['\u66f8']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e66']
-    },
-    {
-      pk: 782329092,
-      url: 'https://www.lingq.com/api/v3/zh/cards/782329092/',
-      term: '\u4e70',
-      fragment: '\u8981 \u4e70 \u4ec0\u4e48\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-16T04:16:31.542797',
-      status_changed_date: '2026-03-01T04:16:31.542797',
-      notes: '',
-      audio: null,
-      words: ['\u4e70'],
-      tags: [],
-      hints: [
-        {
-          id: 6027034,
-          locale: 'en',
-          text: 'buy',
-          term: '\u4e70',
-          popularity: 245967,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['m\u01cei'],
-        hant: ['\u8cb7']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e70']
-    },
-    {
-      pk: 775822858,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775822858/',
-      term: '\u4e86',
-      fragment: '\u9760\u8fb9 \u505c \u5c31 \u53ef\u4ee5 \u4e86',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-07T03:31:50.828511',
-      status_changed_date: '2026-02-06T03:31:50.828511',
-      notes: '',
-      audio: null,
-      words: ['\u4e86'],
-      tags: [],
-      hints: [
-        {
-          id: 15039986,
-          locale: 'en',
-          text: 'completed action marker',
-          term: '\u4e86',
-          popularity: 418393,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['le'],
-        hant: ['\u4e86']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e86']
-    },
-    {
-      pk: 776160742,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776160742/',
-      term: '\u4e8b',
-      fragment: '\u4ec0\u4e48 \u4e8b\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-11T03:18:20.111835',
-      status_changed_date: '2026-02-24T03:18:20.111835',
-      notes: '',
-      audio: null,
-      words: ['\u4e8b'],
-      tags: [],
-      hints: [
-        {
-          id: 13634443,
-          locale: 'en',
-          text: 'thing',
-          term: '\u4e8b',
-          popularity: 867,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['sh\u00ec'],
-        hant: ['\u4e8b']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e8b']
-    },
-    {
-      pk: 779644834,
-      url: 'https://www.lingq.com/api/v3/zh/cards/779644834/',
-      term: '\u4e8b\u513f',
-      fragment: '\u6211 \u6ca1 \u4e8b\u513f\u3002',
-      importance: 2,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-30T04:16:28.040950',
-      status_changed_date: '2026-03-01T04:16:28.040950',
-      notes: '',
-      audio: null,
-      words: ['\u4e8b\u513f'],
-      tags: [],
-      hints: [
-        {
-          id: 65112650,
-          locale: 'en',
-          text: 'matter',
-          term: '\u4e8b\u513f',
-          popularity: 76,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['sh\u00ecr'],
-        hant: ['\u4e8b\u5152']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e8b\u513f']
-    },
-    {
-      pk: 777563505,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777563505/',
-      term: '\u4e8c',
-      fragment: '\u4e00 \u4e09 \u4e94\uff0c \u4e8c \u516b \u96f6 \u516b\uff0c \u56db\u2026',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-30T04:16:39.786440',
-      status_changed_date: '2026-03-01T04:16:39.786440',
-      notes: '',
-      audio: null,
-      words: ['\u4e8c'],
-      tags: [],
-      hints: [
-        {
-          id: 10670522,
-          locale: 'en',
-          text: 'two',
-          term: '\u4e8c',
-          popularity: 195409,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['\u00e8r'],
-        hant: ['\u4e8c']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e8c']
-    },
-    {
-      pk: 784072915,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784072915/',
-      term: '\u4e8e',
-      fragment:
-        '\u2026\u987e\u5ba2 \u4e0d \u662f \u6765\u81ea \u4e8e \u540c\u4e00\u4e2a \u56fd\u5bb6\uff0c \u4ed6\u4eec \u6765\u81ea\u2026',
-      importance: 3,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T05:32:41.762999',
-      status_changed_date: '2026-03-06T05:32:41.762999',
-      notes: '',
-      audio: null,
-      words: ['\u4e8e'],
-      tags: [],
-      hints: [
-        {
-          id: 226996774,
-          locale: 'en',
-          text: 'formal preposition meaning \u201cin, at, from, to, or than.\u201d',
-          term: '\u4e8e',
-          popularity: 1,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u00fa'],
-        hant: ['\u65bc']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e8e']
-    },
-    {
-      pk: 777215374,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777215374/',
-      term: '\u4e91',
-      fragment: '\u767d \u767d \u7684 \u4e91\uff0c',
-      importance: 2,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-30T04:13:46.333744',
-      status_changed_date: '2026-03-01T04:13:46.333744',
-      notes: '',
-      audio: null,
-      words: ['\u4e91'],
-      tags: [],
-      hints: [
-        {
-          id: 13521766,
-          locale: 'en',
-          text: 'cloud',
-          term: '\u4e91',
-          popularity: 860,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u00fan'],
-        hant: ['\u96f2']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e91']
-    },
-    {
-      pk: 777563478,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777563478/',
-      term: '\u4e94',
-      fragment: '\u4e00 \u4e09 \u4e94\uff0c \u4e8c \u516b \u96f6 \u516b\uff0c\u2026',
-      importance: 3,
-      status: 3,
-      extended_status: 1,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-26T03:22:20.168297',
-      status_changed_date: '2026-02-24T03:22:20.168297',
-      notes: '',
-      audio: null,
-      words: ['\u4e94'],
-      tags: [],
-      hints: [
-        {
-          id: 7846757,
-          locale: 'en',
-          text: 'five',
-          term: '\u4e94',
-          popularity: 535,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['w\u01d4'],
-        hant: ['\u4e94']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e94']
-    },
-    {
-      pk: 795224082,
-      url: 'https://www.lingq.com/api/v3/zh/cards/795224082/',
-      term: '\u4e94\u6b21',
-      fragment: '\u6211 \u81f3\u5c11 \u6765\u8fc7 \u4e94\u6b21',
-      importance: 0,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-13T03:44:18.073000',
-      status_changed_date: null,
-      notes: '',
-      audio: null,
-      words: ['\u4e94\u6b21'],
-      tags: [],
-      hints: [
-        {
-          id: 114818938,
-          locale: 'en',
-          text: '5 times',
-          term: '\u4e94\u6b21',
-          popularity: 5,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['w\u01d4 c\u00ec'],
-        hant: ['\u4e94\u6b21']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4e94\u6b21']
-    },
-    {
-      pk: 783752478,
-      url: 'https://www.lingq.com/api/v3/zh/cards/783752478/',
-      term: '\u4e9b',
-      fragment: '\u8fd9 \u4e9b \u987e\u5ba2 \u6765\u81ea \u5f88 \u591a\u2026',
+      pk: 777213866,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777213866/',
+      term: '\u559d',
+      fragment: '\u5148 \u505a \u65e9\u996d \u5e76 \u559d \u4e00\u676f \u5496\u5561',
       importance: 3,
       status: 1,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-03-16T22:42:20.660514',
-      status_changed_date: '2026-03-13T22:42:20.660514',
+      srs_due_date: '2026-03-06T05:09:06.624148',
+      status_changed_date: '2026-03-03T05:09:06.624148',
       notes: '',
       audio: null,
-      words: ['\u4e9b'],
+      words: ['\u559d'],
       tags: [],
       hints: [
         {
-          id: 224350903,
+          id: 129190478,
           locale: 'en',
-          text: 'these / some / few',
-          term: '\u4e9b',
-          popularity: 1,
+          text: 'drink',
+          term: '\u559d',
+          popularity: 3349,
           is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['xi\u0113'],
-        hant: ['\u4e9b']
+        pinyin: ['h\u0113'],
+        hant: ['\u559d']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u4e9b']
+      writings: ['\u559d']
     },
     {
-      pk: 785461566,
-      url: 'https://www.lingq.com/api/v3/zh/cards/785461566/',
-      term: '\u4eac',
-      fragment: '\u6211 \u53eb \u5218 \u4eac \u4eac\u3002',
-      importance: 1,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-19T04:23:39.997757',
-      status_changed_date: '2026-03-04T04:23:39.997757',
-      notes: '',
-      audio: null,
-      words: ['\u4eac'],
-      tags: [],
-      hints: [
-        {
-          id: 116539831,
-          locale: 'en',
-          text: 'capital',
-          term: '\u4eac',
-          popularity: 10,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['j\u012bng'],
-        hant: ['\u4eac']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4eac']
-    },
-    {
-      pk: 795224668,
-      url: 'https://www.lingq.com/api/v3/zh/cards/795224668/',
-      term: '\u4eac\u4eac',
-      fragment: '\u5218 \u4eac\u4eac\uff1f',
-      importance: 0,
-      status: 0,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-14T22:44:43.591077',
-      status_changed_date: null,
-      notes: '',
-      audio: null,
-      words: ['\u4eac\u4eac'],
-      tags: [],
-      hints: [
-        {
-          id: 13820749,
-          locale: 'en',
-          text: 'Jingjing',
-          term: '\u4eac\u4eac',
-          popularity: 23,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['j\u012bng j\u012bng'],
-        hant: ['\u4eac\u4eac']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4eac\u4eac']
-    },
-    {
-      pk: 777908126,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777908126/',
-      term: '\u4eb2',
-      fragment: '\u6765\uff0c \u4eb2 \u4e00\u4e0b\u3002',
-      importance: 1,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-04T04:15:32.193133',
-      status_changed_date: '2026-03-01T04:15:32.193133',
-      notes: '',
-      audio: null,
-      words: ['\u4eb2'],
-      tags: [],
-      hints: [
-        {
-          id: 80968552,
-          locale: 'en',
-          text: 'kiss',
-          term: '\u4eb2',
-          popularity: 161,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['q\u012bn'],
-        hant: ['\u89aa']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4eb2']
-    },
-    {
-      pk: 775455461,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775455461/',
-      term: '\u4eba',
-      fragment: 'John \u662f \u7f8e\u56fd \u4eba\u3002',
-      importance: 3,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-10-22T04:53:01.640962',
-      status_changed_date: '2026-02-12T04:53:01.640962',
-      notes: '',
-      audio: null,
-      words: ['\u4eba'],
-      tags: [],
-      hints: [
-        {
-          id: 377703,
-          locale: 'en',
-          text: 'person',
-          term: '\u4eba',
-          popularity: 257124,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['r\u00e9n'],
-        hant: ['\u4eba']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4eba']
-    },
-    {
-      pk: 775451127,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775451127/',
-      term: '\u4ec0\u4e48',
-      fragment: '\u4f60 \u53eb \u4ec0\u4e48 \u540d\u5b57\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-04-28T01:57:23.312616',
-      status_changed_date: '2026-01-28T01:57:23.312616',
-      notes: '',
-      audio: null,
-      words: ['\u4ec0\u4e48'],
-      tags: [],
-      hints: [
-        {
-          id: 8842403,
-          locale: 'en',
-          text: 'what',
-          term: '\u4ec0\u4e48',
-          popularity: 146472,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['sh\u00e9nme'],
-        hant: ['\u4ec0\u9ebc']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4ec0\u4e48']
-    },
-    {
-      pk: 782020163,
-      url: 'https://www.lingq.com/api/v3/zh/cards/782020163/',
-      term: '\u4eca\u5929',
-      fragment: '\u4f60 \u4eca\u5929 \u5f88 \u7d2f \u5417\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-11T03:22:20.171033',
-      status_changed_date: '2026-02-24T03:22:20.171033',
-      notes: '',
-      audio: null,
-      words: ['\u4eca\u5929'],
-      tags: [],
-      hints: [
-        {
-          id: 2859769,
-          locale: 'en',
-          text: 'Today',
-          term: '\u4eca\u5929',
-          popularity: 2047,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['j\u012bnti\u0101n'],
-        hant: ['\u4eca\u5929']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4eca\u5929']
-    },
-    {
-      pk: 795224292,
-      url: 'https://www.lingq.com/api/v3/zh/cards/795224292/',
-      term: '\u4eca\u665a',
-      fragment:
-        '\u4f60\u597d \uff0c\u6211 \u662f \u4f60\u4eec \u4eca\u665a \u7684 \u670d\u52a1\u5458',
+      pk: 785461680,
+      url: 'https://www.lingq.com/api/v3/zh/cards/785461680/',
+      term: '\u55e8',
+      fragment: '\u55e8\uff0c \u6700\u8fd1 \u600e\u4e48\u6837\uff1f',
       importance: 1,
       status: 0,
       extended_status: null,
       last_reviewed_correct: null,
-      srs_due_date: '2026-03-13T03:45:53.634000',
+      srs_due_date: '2026-02-11T04:01:29.054267',
       status_changed_date: null,
       notes: '',
       audio: null,
-      words: ['\u4eca\u665a'],
+      words: ['\u55e8'],
       tags: [],
       hints: [
         {
-          id: 15092273,
+          id: 1916861,
           locale: 'en',
-          text: 'tonight, this evening',
-          term: '\u4eca\u665a',
-          popularity: 1400,
+          text: 'hi',
+          term: '\u55e8',
+          popularity: 3364,
           is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['j\u012bnw\u01cen'],
-        hant: ['\u4eca\u665a']
+        pinyin: ['h\u0101i'],
+        hant: ['\u55e8']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u4eca\u665a']
+      writings: ['\u55e8']
     },
     {
-      pk: 795223806,
-      url: 'https://www.lingq.com/api/v3/zh/cards/795223806/',
-      term: '\u4ee5\u524d',
-      fragment: '\u4f60 \u4ee5\u524d \u6765 \u8fc7 \u8fd9 \u5bb6',
-      importance: 3,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-13T03:42:05.759000',
-      status_changed_date: null,
-      notes: '',
-      audio: null,
-      words: ['\u4ee5\u524d'],
-      tags: [],
-      hints: [
-        {
-          id: 13548125,
-          locale: 'en',
-          text: 'before',
-          term: '\u4ee5\u524d',
-          popularity: 2544,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u01d0qi\u00e1n'],
-        hant: ['\u4ee5\u524d']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4ee5\u524d']
-    },
-    {
-      pk: 784073129,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784073129/',
-      term: '\u4eec',
-      fragment: '\u4e03: \u987e\u5ba2 \u4eec \u90fd \u5f88 \u53cb\u597d\u3002',
-      importance: 3,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-11T03:22:20.173278',
-      status_changed_date: '2026-02-24T03:22:20.173278',
-      notes: '',
-      audio: null,
-      words: ['\u4eec'],
-      tags: [],
-      hints: [
-        {
-          id: 18003081,
-          locale: 'en',
-          text: 'plural marker for pronouns and nouns',
-          term: '\u4eec',
-          popularity: 893,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['men'],
-        hant: ['\u5011']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4eec']
-    },
-    {
-      pk: 790056262,
-      url: 'https://www.lingq.com/api/v3/zh/cards/790056262/',
-      term: '\u4ef6',
-      fragment: '\u8fd9 \u4ef6 \u4e0a\u8863 \u5f88 \u597d\u770b',
+      pk: 781020754,
+      url: 'https://www.lingq.com/api/v3/zh/cards/781020754/',
+      term: '\u55ef',
+      fragment: '\u55ef\u3002',
       importance: 3,
       status: 1,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T04:19:50.162290',
-      status_changed_date: '2026-03-04T04:19:50.162290',
+      srs_due_date: '2026-02-08T05:14:11.963414',
+      status_changed_date: '2026-02-05T05:14:11.963414',
       notes: '',
       audio: null,
-      words: ['\u4ef6'],
+      words: ['\u55ef'],
       tags: [],
       hints: [
         {
-          id: 15055382,
+          id: 168725653,
           locale: 'en',
-          text: 'measure word for clothes',
-          term: '\u4ef6',
-          popularity: 1784,
+          text: 'uh-huh',
+          term: '\u55ef',
+          popularity: 30,
           is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['ji\u00e0n'],
-        hant: ['\u4ef6']
+        pinyin: ['\u0113n'],
+        hant: ['\u55ef']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u4ef6']
+      writings: ['\u55ef']
     },
     {
-      pk: 784431333,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784431333/',
-      term: '\u4f11\u5047',
-      fragment: '\u4ed6 \u60f3 \u53bb \u4f11\u5047\u3002',
-      importance: 0,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T05:41:45.967574',
-      status_changed_date: '2026-03-06T05:41:45.967574',
-      notes: '',
-      audio: null,
-      words: ['\u4f11\u5047'],
-      tags: [],
-      hints: [
-        {
-          id: 34431174,
-          locale: 'en',
-          text: 'to take a vacation',
-          term: '\u4f11\u5047',
-          popularity: 130,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['xi\u016bji\u00e0'],
-        hant: ['\u4f11\u5047']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4f11\u5047']
-    },
-    {
-      pk: 784431093,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784431093/',
-      term: '\u4f11\u606f',
-      fragment:
-        '\u2026\u4e2a \u51ac\u5929 \u4ed6 \u53ef\u4ee5 \u4f11\u606f \u4e00\u6bb5 \u65f6\u95f4 \u4e86\u3002',
-      importance: 3,
-      status: 2,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-11T04:24:23.811389',
-      status_changed_date: '2026-03-04T04:24:23.811389',
-      notes: '',
-      audio: null,
-      words: ['\u4f11\u606f'],
-      tags: [],
-      hints: [
-        {
-          id: 12979172,
-          locale: 'en',
-          text: 'rest',
-          term: '\u4f11\u606f',
-          popularity: 1762,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['xi\u016bxi'],
-        hant: ['\u4f11\u606f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4f11\u606f']
-    },
-    {
-      pk: 779979373,
-      url: 'https://www.lingq.com/api/v3/zh/cards/779979373/',
-      term: '\u4f1a',
-      fragment: '\u4f60 \u4f1a \u8bf4 \u4e2d\u6587 \u5417\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-30T04:13:21.997857',
-      status_changed_date: '2026-03-01T04:13:21.997857',
-      notes: '',
-      audio: null,
-      words: ['\u4f1a'],
-      tags: [],
-      hints: [
-        {
-          id: 33782013,
-          locale: 'en',
-          text: 'can',
-          term: '\u4f1a',
-          popularity: 589,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['hu\u00ec'],
-        hant: ['\u6703']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4f1a']
-    },
-    {
-      pk: 784431441,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784431441/',
-      term: '\u4f46\u662f',
-      fragment: '\u4f46\u662f \u6cd5\u56fd \u592a \u8d35 \u4e86\u3002',
+      pk: 781714814,
+      url: 'https://www.lingq.com/api/v3/zh/cards/781714814/',
+      term: '\u563f\u563f',
+      fragment: '\u55ef...... \u54e6\uff0c \u6ca1 \u51fa\u754c\uff0c \u563f\u563f\u3002',
       importance: 0,
       status: 2,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-03-09T05:21:01.495086',
-      status_changed_date: '2026-03-02T05:21:01.495086',
+      srs_due_date: '2026-02-12T05:14:04.626785',
+      status_changed_date: '2026-02-05T05:14:04.626785',
       notes: '',
       audio: null,
-      words: ['\u4f46\u662f'],
+      words: ['\u563f\u563f'],
       tags: [],
       hints: [
         {
-          id: 40887986,
+          id: 159715168,
           locale: 'en',
-          text: 'but, yet',
-          term: '\u4f46\u662f',
-          popularity: 1,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['d\u00e0nsh\u00ec'],
-        hant: ['\u4f46\u662f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4f46\u662f']
-    },
-    {
-      pk: 775453456,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775453456/',
-      term: '\u4f4f',
-      fragment: '\u5979 \u4f4f \u5728 \u5357\u4eac\u3002',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-11T04:28:13.128645',
-      status_changed_date: '2026-02-10T04:28:13.128645',
-      notes: '',
-      audio: null,
-      words: ['\u4f4f'],
-      tags: [],
-      hints: [
-        {
-          id: 15053264,
-          locale: 'en',
-          text: 'to live, to inhabit, to reside',
-          term: '\u4f4f',
-          popularity: 380,
-          is_google_translate: false,
-          flagged: true
-        }
-      ],
-      transliteration: {
-        pinyin: ['zh\u00f9'],
-        hant: ['\u4f4f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4f4f']
-    },
-    {
-      pk: 775450777,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775450777/',
-      term: '\u4f60',
-      fragment: '\u4f60 \u5462\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-04-28T01:59:36.712638',
-      status_changed_date: '2026-01-28T01:59:36.712638',
-      notes: '',
-      audio: null,
-      words: ['\u4f60'],
-      tags: [],
-      hints: [
-        {
-          id: 145797895,
-          locale: 'en',
-          text: 'you',
-          term: '\u4f60',
-          popularity: 3163,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['n\u01d0'],
-        hant: ['\u4f60']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4f60']
-    },
-    {
-      pk: 779327364,
-      url: 'https://www.lingq.com/api/v3/zh/cards/779327364/',
-      term: '\u4f60\u4eec',
-      fragment: '\u6211\u4eec\u3001 \u4f60\u4eec\u3001 \u4ed6\u4eec',
-      importance: 3,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-10-02T04:38:45.572673',
-      status_changed_date: '2026-01-23T04:38:45.572673',
-      notes: '',
-      audio: null,
-      words: ['\u4f60\u4eec'],
-      tags: [],
-      hints: [
-        {
-          id: 15069008,
-          locale: 'en',
-          text: 'you (plural)',
-          term: '\u4f60\u4eec',
-          popularity: 1971,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['n\u01d0men'],
-        hant: ['\u4f60\u5011']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4f60\u4eec']
-    },
-    {
-      pk: 775823656,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775823656/',
-      term: '\u4f60\u597d',
-      fragment: '\u4f60\u597d \uff0c\u53ef\u4ee5 \u6362 \u96f6\u94b1 \u5417',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-01T04:23:35.109975',
-      status_changed_date: '2026-01-31T04:23:35.109975',
-      notes: '',
-      audio: null,
-      words: ['\u4f60\u597d'],
-      tags: [],
-      hints: [
-        {
-          id: 101051484,
-          locale: 'en',
-          text: 'hello',
-          term: '\u4f60\u597d',
-          popularity: 25276,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['n\u01d0h\u01ceo'],
-        hant: ['\u4f60\u597d']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4f60\u597d']
-    },
-    {
-      pk: 775450709,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775450709/',
-      term: '\u4f60\u597d\u5417',
-      fragment: '\u4f60\u597d\u5417\uff1f',
-      importance: 0,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-06T05:12:45.334335',
-      status_changed_date: '2026-02-05T05:12:45.334335',
-      notes: '',
-      audio: null,
-      words: ['\u4f60\u597d\u5417'],
-      tags: [],
-      hints: [
-        {
-          id: 1402580,
-          locale: 'en',
-          text: 'How are you?',
-          term: '\u4f60\u597d\u5417',
-          popularity: 137,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['n\u01d0 h\u01ceo ma'],
-        hant: ['\u4f60\u597d\u55ce']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4f60\u597d\u5417']
-    },
-    {
-      pk: 784784819,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784784819/',
-      term: '\u4fbf\u5b9c',
-      fragment: '\u6cd5\u56fd \u5f88 \u4fbf\u5b9c \u5417\uff1f',
-      importance: 2,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T04:23:31.890797',
-      status_changed_date: '2026-03-04T04:23:31.890797',
-      notes: '',
-      audio: null,
-      words: ['\u4fbf\u5b9c'],
-      tags: [],
-      hints: [
-        {
-          id: 102008108,
-          locale: 'en',
-          text: 'cheap',
-          term: '\u4fbf\u5b9c',
-          popularity: 397418,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['bi\u00e0ny\u00ed'],
-        hant: ['\u4fbf\u5b9c']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u4fbf\u5b9c']
-    },
-    {
-      pk: 784785053,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784785053/',
-      term: '\u5047\u671f',
-      fragment:
-        '\u2026\u5b66 \u6cd5\u8bed\u3001 \u7701\u94b1\u3001 \u6574\u4e2a \u5047\u671f \u90fd \u5f85 \u5728 \u5bb6\u91cc\u3002',
-      importance: 1,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-05T04:25:35.241754',
-      status_changed_date: '2026-03-04T04:25:35.241754',
-      notes: '',
-      audio: null,
-      words: ['\u5047\u671f'],
-      tags: [],
-      hints: [
-        {
-          id: 29202512,
-          locale: 'en',
-          text: 'vacation; holiday',
-          term: '\u5047\u671f',
-          popularity: 637183,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ji\u00e0q\u012b'],
-        hant: ['\u5047\u671f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5047\u671f']
-    },
-    {
-      pk: 777213841,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777213841/',
-      term: '\u505a',
-      fragment: '\u6211 \u5148 \u505a \u65e9\u996d \u5e76 \u559d \u4e00\u676f',
-      importance: 3,
-      status: 2,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-09T05:21:04.170304',
-      status_changed_date: '2026-03-02T05:21:04.170304',
-      notes: '',
-      audio: null,
-      words: ['\u505a'],
-      tags: [],
-      hints: [
-        {
-          id: 224351514,
-          locale: 'en',
-          text: 'Work As / Do',
-          term: '\u505a',
-          popularity: 1,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['zu\u00f2'],
-        hant: ['\u505a']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u505a']
-    },
-    {
-      pk: 784071373,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784071373/',
-      term: '\u505a\u996d',
-      fragment: '\u2026\u809a\u5b50 \u997f \u7684 \u987e\u5ba2 \u505a\u996d\u3002',
-      importance: 1,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-17T05:22:34.346323',
-      status_changed_date: '2026-03-02T05:22:34.346323',
-      notes: '',
-      audio: null,
-      words: ['\u505a\u996d'],
-      tags: [],
-      hints: [
-        {
-          id: 49646958,
-          locale: 'en',
-          text: 'cook',
-          term: '\u505a\u996d',
-          popularity: 508,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['zu\u00f2f\u00e0n'],
-        hant: ['\u505a\u98ef']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u505a\u996d']
-    },
-    {
-      pk: 775822797,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775822797/',
-      term: '\u505c',
-      fragment: '\u9760\u8fb9 \u505c \u5c31 \u53ef\u4ee5 \u4e86',
-      importance: 2,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-31T05:22:19.648538',
-      status_changed_date: '2026-03-02T05:22:19.648538',
-      notes: '',
-      audio: null,
-      words: ['\u505c'],
-      tags: [],
-      hints: [
-        {
-          id: 223339389,
-          locale: 'en',
-          text: 'to stop, to park',
-          term: '\u505c',
-          popularity: 1,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['t\u00edng'],
-        hant: ['\u505c']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u505c']
-    },
-    {
-      pk: 776889207,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776889207/',
-      term: '\u505c\u7535',
-      fragment: '\u505c\u7535 \u4e86',
-      importance: 0,
-      status: 3,
-      extended_status: 1,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-04-01T05:18:32.848090',
-      status_changed_date: '2026-03-02T05:18:32.848090',
-      notes: '',
-      audio: null,
-      words: ['\u505c\u7535'],
-      tags: [],
-      hints: [
-        {
-          id: 160046583,
-          locale: 'en',
-          text: 'power outage',
-          term: '\u505c\u7535',
-          popularity: 242,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['t\u00edngdi\u00e0n'],
-        hant: ['\u505c\u96fb']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u505c\u7535']
-    },
-    {
-      pk: 775822721,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775822721/',
-      term: '\u505c\u8f66',
-      fragment: '\u5e08\u5085 \uff0c\u5728 \u8fd9\u513f \u505c\u8f66',
-      importance: 1,
-      status: 3,
-      extended_status: 1,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-04-01T05:18:56.908501',
-      status_changed_date: '2026-03-02T05:18:56.908501',
-      notes: '',
-      audio: null,
-      words: ['\u505c\u8f66'],
-      tags: [],
-      hints: [
-        {
-          id: 89699361,
-          locale: 'en',
-          text: 'park car',
-          term: '\u505c\u8f66',
-          popularity: 61,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['t\u00edngch\u0113'],
-        hant: ['\u505c\u8eca']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u505c\u8f66']
-    },
-    {
-      pk: 777213789,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777213789/',
-      term: '\u5148',
-      fragment: '\u6211 \u5148 \u505a \u65e9\u996d \u5e76 \u559d',
-      importance: 3,
-      status: 0,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T05:33:13.077477',
-      status_changed_date: '2026-03-06T05:33:13.077477',
-      notes: '',
-      audio: null,
-      words: ['\u5148'],
-      tags: [],
-      hints: [
-        {
-          id: 137586823,
-          locale: 'en',
-          text: 'first, first of all',
-          term: '\u5148',
-          popularity: 216419,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['xi\u0101n'],
-        hant: ['\u5148']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5148']
-    },
-    {
-      pk: 779979805,
-      url: 'https://www.lingq.com/api/v3/zh/cards/779979805/',
-      term: '\u5148\u751f',
-      fragment: '\u5148\u751f\uff0c \u4f60 \u60f3 \u5403 \u4ec0\u4e48\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 1,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-26T03:20:00.118006',
-      status_changed_date: '2026-02-24T03:20:00.118006',
-      notes: '',
-      audio: null,
-      words: ['\u5148\u751f'],
-      tags: [],
-      hints: [
-        {
-          id: 65214928,
-          locale: 'en',
-          text: 'sir',
-          term: '\u5148\u751f',
-          popularity: 46,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['xi\u0101nsheng'],
-        hant: ['\u5148\u751f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5148\u751f']
-    },
-    {
-      pk: 786157042,
-      url: 'https://www.lingq.com/api/v3/zh/cards/786157042/',
-      term: '\u5168\u90fd',
-      fragment: '\u8fd9 \u5168\u90fd \u662f \u6211\u4eec \u7684 \u4e66\uff0c\u2026',
-      importance: 2,
-      status: 0,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T05:38:03.123411',
-      status_changed_date: '2026-03-06T05:38:03.123411',
-      notes: '',
-      audio: null,
-      words: ['\u5168\u90fd'],
-      tags: [],
-      hints: [
-        {
-          id: 15055343,
-          locale: 'en',
-          text: 'all, without exception',
-          term: '\u5168\u90fd',
-          popularity: 2444,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['qu\u00e1nd\u014du'],
-        hant: ['\u5168\u90fd']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5168\u90fd']
-    },
-    {
-      pk: 777563509,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777563509/',
-      term: '\u516b',
-      fragment: '\u4e00 \u4e09 \u4e94\uff0c \u4e8c \u516b \u96f6 \u516b\uff0c \u56db \u56db\u2026',
-      importance: 3,
-      status: 3,
-      extended_status: 1,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-26T03:22:20.167805',
-      status_changed_date: '2026-02-24T03:22:20.167805',
-      notes: '',
-      audio: null,
-      words: ['\u516b'],
-      tags: [],
-      hints: [
-        {
-          id: 16858886,
-          locale: 'en',
-          text: 'eight',
-          term: '\u516b',
-          popularity: 747019,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u0101'],
-        hant: ['\u516b']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u516b']
-    },
-    {
-      pk: 777563858,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777563858/',
-      term: '\u516b\u70b9',
-      fragment: '\u90fd \u516b\u70b9 \u4e86\uff01',
-      importance: 1,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-31T05:20:48.894494',
-      status_changed_date: '2026-03-02T05:20:48.894494',
-      notes: '',
-      audio: null,
-      words: ['\u516b\u70b9'],
-      tags: [],
-      hints: [
-        {
-          id: 44321615,
-          locale: 'en',
-          text: "eight o'clock",
-          term: '\u516b\u70b9',
-          popularity: 258,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u0101 di\u01cen'],
-        hant: ['\u516b\u9ede']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u516b\u70b9']
-    },
-    {
-      pk: 779644518,
-      url: 'https://www.lingq.com/api/v3/zh/cards/779644518/',
-      term: '\u516c\u53f8',
-      fragment: '\u6211 \u53bb \u516c\u53f8\u3002',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-31T05:19:14.371222',
-      status_changed_date: '2026-03-02T05:19:14.371222',
-      notes: '',
-      audio: null,
-      words: ['\u516c\u53f8'],
-      tags: [],
-      hints: [
-        {
-          id: 2144824,
-          locale: 'en',
-          text: 'company',
-          term: '\u516c\u53f8',
-          popularity: 395,
-          is_google_translate: true,
-          flagged: false
-        },
-        {
-          id: 28818072,
-          locale: 'en',
-          text: 'work',
-          term: '\u516c\u53f8',
-          popularity: 19,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['g\u014dngs\u012b'],
-        hant: ['\u516c\u53f8']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u516c\u53f8']
-    },
-    {
-      pk: 775819480,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775819480/',
-      term: '\u516c\u56ed',
-      fragment: '\u5728 \u516c\u56ed \u5bf9\u9762 \u5417',
-      importance: 2,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-31T05:18:51.662635',
-      status_changed_date: '2026-03-02T05:18:51.662635',
-      notes: '',
-      audio: null,
-      words: ['\u516c\u56ed'],
-      tags: [],
-      hints: [
-        {
-          id: 13489733,
-          locale: 'en',
-          text: 'park',
-          term: '\u516c\u56ed',
-          popularity: 268,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['g\u014dngyu\u00e1n'],
-        hant: ['\u516c\u5712']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u516c\u56ed']
-    },
-    {
-      pk: 782328840,
-      url: 'https://www.lingq.com/api/v3/zh/cards/782328840/',
-      term: '\u516d',
-      fragment: '\u5e7a \u4e09 \u516d\u2026\u2026',
-      importance: 3,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-17T05:18:53.479224',
-      status_changed_date: '2026-03-02T05:18:53.479224',
-      notes: '',
-      audio: null,
-      words: ['\u516d'],
-      tags: [],
-      hints: [
-        {
-          id: 10610686,
-          locale: 'en',
-          text: 'six',
-          term: '\u516d',
-          popularity: 154426,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['li\u00f9'],
-        hant: ['\u516d']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u516d']
-    },
-    {
-      pk: 777907274,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777907274/',
-      term: '\u516d\u4e2a',
-      fragment: '\u6211 \u5bb6 \u6709 \u516d\u4e2a \u4eba\u3002',
-      importance: 1,
-      status: 3,
-      extended_status: 3,
-      last_reviewed_correct: null,
-      srs_due_date: '2039-11-09T05:20:43.349076',
-      status_changed_date: '2026-03-02T05:20:43.349076',
-      notes: '',
-      audio: null,
-      words: ['\u516d\u4e2a'],
-      tags: [],
-      hints: [
-        {
-          id: 19147746,
-          locale: 'en',
-          text: 'six',
-          term: '\u516d\u4e2a',
-          popularity: 164,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['li\u00f9 g\u00e8'],
-        hant: ['\u516d\u500b']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u516d\u4e2a']
-    },
-    {
-      pk: 775817636,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775817636/',
-      term: '\u516d\u70b9',
-      fragment: '\u8fc8\u514b \u6bcf\u5929 \u65e9\u6668 \u516d\u70b9 \u8d77\u5e8a',
-      importance: 1,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-13T04:55:11.351126',
-      status_changed_date: '2026-02-12T04:55:11.351126',
-      notes: '',
-      audio: null,
-      words: ['\u516d\u70b9'],
-      tags: [],
-      hints: [
-        {
-          id: 15067791,
-          locale: 'en',
-          text: "six o'clock",
-          term: '\u516d\u70b9',
-          popularity: 5719,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['li\u00f9 di\u01cen'],
-        hant: ['\u516d\u9ede']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u516d\u70b9']
-    },
-    {
-      pk: 792383104,
-      url: 'https://www.lingq.com/api/v3/zh/cards/792383104/',
-      term: '\u516d\u70b9\u534a',
-      fragment: '\u516d\u70b9\u534a \u600e\u4e48\u6837\uff1f',
-      importance: 0,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T05:34:01.201277',
-      status_changed_date: '2026-03-06T05:34:01.201277',
-      notes: '',
-      audio: null,
-      words: ['\u516d\u70b9\u534a'],
-      tags: [],
-      hints: [
-        {
-          id: 13399324,
-          locale: 'en',
-          text: 'six thirty',
-          term: '\u516d\u70b9\u534a',
-          popularity: 88,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['li\u00f9 di\u01cen b\u00e0n'],
-        hant: ['\u516d\u9ede\u534a']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u516d\u70b9\u534a']
-    },
-    {
-      pk: 778648685,
-      url: 'https://www.lingq.com/api/v3/zh/cards/778648685/',
-      term: '\u5173\u706f',
-      fragment: '\u597d \u4e86\uff0c \u5173\u706f \u5427\u3002',
-      importance: 0,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-17T05:20:56.736045',
-      status_changed_date: '2026-03-02T05:20:56.736045',
-      notes: '',
-      audio: null,
-      words: ['\u5173\u706f'],
-      tags: [],
-      hints: [
-        {
-          id: 91535622,
-          locale: 'en',
-          text: 'turn off the lights',
-          term: '\u5173\u706f',
-          popularity: 140,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['gu\u0101n d\u0113ng'],
-        hant: ['\u95dc\u71c8']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5173\u706f']
-    },
-    {
-      pk: 792058309,
-      url: 'https://www.lingq.com/api/v3/zh/cards/792058309/',
-      term: '\u5173\u95e8',
-      fragment: '\u8fd9 \u5bb6 \u996d\u9986 \u51e0\u70b9 \u5173\u95e8\uff1f',
-      importance: 1,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T04:25:50.930913',
-      status_changed_date: '2026-03-04T04:25:50.930913',
-      notes: '',
-      audio: null,
-      words: ['\u5173\u95e8'],
-      tags: [],
-      hints: [
-        {
-          id: 226800216,
-          locale: 'en',
-          text: 'close (plural)',
-          term: '\u5173\u95e8',
-          popularity: 1,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['gu\u0101nm\u00e9n'],
-        hant: ['\u95dc\u9580']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5173\u95e8']
-    },
-    {
-      pk: 784430939,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784430939/',
-      term: '\u5174\u594b',
-      fragment: '\u2026\u5230 \u4e86\uff0c \u8fbe\u65af\u6c40 \u5f88 \u5174\u594b\u3002',
-      importance: 1,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T05:32:59.763745',
-      status_changed_date: '2026-03-06T05:32:59.763745',
-      notes: '',
-      audio: null,
-      words: ['\u5174\u594b'],
-      tags: [],
-      hints: [
-        {
-          id: 18020512,
-          locale: 'en',
-          text: 'excited',
-          term: '\u5174\u594b',
-          popularity: 1100,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['x\u012bngf\u00e8n'],
-        hant: ['\u8208\u596e']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5174\u594b']
-    },
-    {
-      pk: 777563559,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777563559/',
-      term: '\u518d',
-      fragment: '\u518d \u8bf4 \u4e00 \u6b21\u3002',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-31T05:19:05.657903',
-      status_changed_date: '2026-03-02T05:19:05.657903',
-      notes: '',
-      audio: null,
-      words: ['\u518d'],
-      tags: [],
-      hints: [
-        {
-          id: 25903470,
-          locale: 'en',
-          text: 'again, once more',
-          term: '\u518d',
-          popularity: 1,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['z\u00e0i'],
-        hant: ['\u518d']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u518d']
-    },
-    {
-      pk: 781020427,
-      url: 'https://www.lingq.com/api/v3/zh/cards/781020427/',
-      term: '\u518d\u6765',
-      fragment: '\u518d\u6765 \u4e00 \u676f\uff01',
-      importance: 1,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-17T05:21:18.323704',
-      status_changed_date: '2026-03-02T05:21:18.323704',
-      notes: '',
-      audio: null,
-      words: ['\u518d\u6765'],
-      tags: [],
-      hints: [
-        {
-          id: 103352739,
-          locale: 'en',
-          text: 'again',
-          term: '\u518d\u6765',
-          popularity: 98,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['z\u00e0i l\u00e1i'],
-        hant: ['\u518d\u4f86']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u518d\u6765']
-    },
-    {
-      pk: 777210642,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777210642/',
-      term: '\u518d\u89c1',
-      fragment: '',
-      importance: 2,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-31T05:22:37.735073',
-      status_changed_date: '2026-03-02T05:22:37.735073',
-      notes: '',
-      audio: null,
-      words: ['\u518d\u89c1'],
-      tags: [],
-      hints: [
-        {
-          id: 2102499,
-          locale: 'en',
-          text: 'goodbye',
-          term: '\u518d\u89c1',
-          popularity: 555,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['z\u00e0iji\u00e0n'],
-        hant: ['\u518d\u898b']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u518d\u89c1']
-    },
-    {
-      pk: 784431048,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784431048/',
-      term: '\u51ac\u5929',
-      fragment: '\u8fd9 \u4e2a \u51ac\u5929 \u4ed6 \u53ef\u4ee5 \u4f11\u606f \u4e00\u6bb5\u2026',
-      importance: 2,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-05T05:21:31.221147',
-      status_changed_date: '2026-03-02T05:21:31.221147',
-      notes: '',
-      audio: null,
-      words: ['\u51ac\u5929'],
-      tags: [],
-      hints: [
-        {
-          id: 5986619,
-          locale: 'en',
-          text: 'winter',
-          term: '\u51ac\u5929',
-          popularity: 2640,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['d\u014dngti\u0101n'],
-        hant: ['\u51ac\u5929']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u51ac\u5929']
-    },
-    {
-      pk: 782018443,
-      url: 'https://www.lingq.com/api/v3/zh/cards/782018443/',
-      term: '\u51af',
-      fragment: '\u8bf7\u95ee \u662f \u51af \u5148\u751f \u5417\uff1f',
-      importance: 0,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-05T05:18:32.855537',
-      status_changed_date: '2026-03-02T05:18:32.855537',
-      notes: '',
-      audio: null,
-      words: ['\u51af'],
-      tags: [],
-      hints: [
-        {
-          id: 94036740,
-          locale: 'en',
-          text: 'surname Feng',
-          term: '\u51af',
-          popularity: 11,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['f\u00e9ng'],
-        hant: ['\u99ae']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u51af']
-    },
-    {
-      pk: 777563057,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777563057/',
-      term: '\u51b0',
-      fragment: '\u8981 \u51b0 \u7684 \u5417\uff1f',
-      importance: 1,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-31T05:22:22.113685',
-      status_changed_date: '2026-03-02T05:22:22.113685',
-      notes: '',
-      audio: null,
-      words: ['\u51b0'],
-      tags: [],
-      hints: [
-        {
-          id: 13509660,
-          locale: 'en',
-          text: 'ice',
-          term: '\u51b0',
-          popularity: 339,
-          is_google_translate: true,
-          flagged: false
-        },
-        {
-          id: 162132687,
-          locale: 'en',
-          text: 'cold',
-          term: '\u51b0',
-          popularity: 10,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u012bng'],
-        hant: ['\u51b0']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u51b0']
-    },
-    {
-      pk: 784784080,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784784080/',
-      term: '\u51b3\u5b9a',
-      fragment:
-        '\u4ed6 \u8fd8\u662f \u51b3\u5b9a \u5f85\u5728 \u5bb6\u91cc \u5b66\u4e60\u3001 \u7701\u94b1\u3002',
-      importance: 3,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T05:33:25.962639',
-      status_changed_date: '2026-03-06T05:33:25.962639',
-      notes: '',
-      audio: null,
-      words: ['\u51b3\u5b9a'],
-      tags: [],
-      hints: [
-        {
-          id: 159511331,
-          locale: 'en',
-          text: 'decided',
-          term: '\u51b3\u5b9a',
-          popularity: 343,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ju\u00e9d\u00ecng'],
-        hant: ['\u6c7a\u5b9a']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u51b3\u5b9a']
-    },
-    {
-      pk: 784784975,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784784975/',
-      term: '\u51b3\u5fc3',
-      fragment:
-        '\u662f\u7684\uff0c \u4ed6 \u51b3\u5fc3 \u5b66 \u6cd5\u8bed\u3001 \u7701\u94b1\u3001 \u6574\u4e2a\u2026',
-      importance: 1,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-09T05:33:35.609308',
-      status_changed_date: '2026-03-06T05:33:35.609308',
-      notes: '',
-      audio: null,
-      words: ['\u51b3\u5fc3'],
-      tags: [],
-      hints: [
-        {
-          id: 13755812,
-          locale: 'en',
-          text: 'determination, resolution',
-          term: '\u51b3\u5fc3',
-          popularity: 290,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ju\u00e9x\u012bn'],
-        hant: ['\u6c7a\u5fc3']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u51b3\u5fc3']
-    },
-    {
-      pk: 777215016,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777215016/',
-      term: '\u51b7',
-      fragment: '\u51b7 \u7684 \u8fd8\u662f \u70ed \u7684\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 1,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-26T03:24:30.143630',
-      status_changed_date: '2026-02-24T03:24:30.143630',
-      notes: '',
-      audio: null,
-      words: ['\u51b7'],
-      tags: [],
-      hints: [
-        {
-          id: 13494816,
-          locale: 'en',
-          text: 'cold',
-          term: '\u51b7',
-          popularity: 1193,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['l\u011bng'],
-        hant: ['\u51b7']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u51b7']
-    },
-    {
-      pk: 777210493,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777210493/',
-      term: '\u51e0',
-      fragment: '\u53bb \u51e0 \u697c',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-31T05:22:29.943902',
-      status_changed_date: '2026-03-02T05:22:29.943902',
-      notes: '',
-      audio: null,
-      words: ['\u51e0'],
-      tags: [],
-      hints: [
-        {
-          id: 13166106,
-          locale: 'en',
-          text: 'how many',
-          term: '\u51e0',
-          popularity: 507,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['j\u012b'],
-        hant: ['\u5e7e']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u51e0']
-    },
-    {
-      pk: 777564108,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777564108/',
-      term: '\u51e0\u53f7',
-      fragment: '\u51e0\u53f7\uff1f',
-      importance: 1,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-31T05:18:26.654402',
-      status_changed_date: '2026-03-02T05:18:26.654402',
-      notes: '',
-      audio: null,
-      words: ['\u51e0\u53f7'],
-      tags: [],
-      hints: [
-        {
-          id: 13511423,
-          locale: 'en',
-          text: 'A few numbers',
-          term: '\u51e0\u53f7',
-          popularity: 36,
-          is_google_translate: true,
-          flagged: false
-        },
-        {
-          id: 16858863,
-          locale: 'en',
-          text: 'what date',
-          term: '\u51e0\u53f7',
-          popularity: 609,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['j\u012b h\u00e0o'],
-        hant: ['\u5e7e\u865f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u51e0\u53f7']
-    },
-    {
-      pk: 795224002,
-      url: 'https://www.lingq.com/api/v3/zh/cards/795224002/',
-      term: '\u51e0\u6b21',
-      fragment: '\u4f60 \u4ee5\u524d \u4e00\u5171 \u6765\u8fc7 \u51e0\u6b21',
-      importance: 1,
-      status: 0,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-13T03:43:38.752000',
-      status_changed_date: '2026-03-12T03:43:38.752000',
-      notes: '',
-      audio: null,
-      words: ['\u51e0\u6b21'],
-      tags: [],
-      hints: [
-        {
-          id: 18832429,
-          locale: 'en',
-          text: 'how many times? / several times',
-          term: '\u51e0\u6b21',
-          popularity: 464,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['j\u01d0c\u00ec'],
-        hant: ['\u5e7e\u6b21']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u51e0\u6b21']
-    },
-    {
-      pk: 783076875,
-      url: 'https://www.lingq.com/api/v3/zh/cards/783076875/',
-      term: '\u51e0\u70b9',
-      fragment: '\u4f60 \u51e0\u70b9 \u4e0a\u73ed\uff1f',
-      importance: 2,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-19T04:19:53.294717',
-      status_changed_date: '2026-03-04T04:19:53.294717',
-      notes: '',
-      audio: null,
-      words: ['\u51e0\u70b9'],
-      tags: [],
-      hints: [
-        {
-          id: 2844553,
-          locale: 'en',
-          text: 'what time',
-          term: '\u51e0\u70b9',
-          popularity: 716,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['j\u01d0di\u01cen'],
-        hant: ['\u5e7e\u9ede']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u51e0\u70b9']
-    },
-    {
-      pk: 781714655,
-      url: 'https://www.lingq.com/api/v3/zh/cards/781714655/',
-      term: '\u51fa\u754c',
-      fragment: '\u5509\uff0c \u51fa\u754c \u4e86\uff01',
-      importance: 0,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T05:41:05.509449',
-      status_changed_date: '2026-03-06T05:41:05.509449',
-      notes: '',
-      audio: null,
-      words: ['\u51fa\u754c'],
-      tags: [],
-      hints: [
-        {
-          id: 13553810,
-          locale: 'en',
-          text: 'Out of bounds',
-          term: '\u51fa\u754c',
-          popularity: 58,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ch\u016bji\u00e8'],
-        hant: ['\u51fa\u754c']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u51fa\u754c']
-    },
-    {
-      pk: 782328263,
-      url: 'https://www.lingq.com/api/v3/zh/cards/782328263/',
-      term: '\u51fa\u79df\u8f66',
-      fragment: '\u4f60 \u597d\uff0c \u6211 \u8981 \u51fa\u79df\u8f66\u3002',
-      importance: 1,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-19T04:19:15.597169',
-      status_changed_date: '2026-03-04T04:19:15.597169',
-      notes: '',
-      audio: null,
-      words: ['\u51fa\u79df\u8f66'],
-      tags: [],
-      hints: [
-        {
-          id: 9890436,
-          locale: 'en',
-          text: 'Taxi',
-          term: '\u51fa\u79df\u8f66',
-          popularity: 22,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ch\u016bz\u016bch\u0113'],
-        hant: ['\u51fa\u79df\u8eca']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u51fa\u79df\u8f66']
-    },
-    {
-      pk: 776514770,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776514770/',
-      term: '\u5200',
-      fragment: '',
-      importance: 2,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-06-02T04:23:34.641611',
-      status_changed_date: '2026-03-04T04:23:34.641611',
-      notes: '',
-      audio: null,
-      words: ['\u5200'],
-      tags: [],
-      hints: [
-        {
-          id: 18704783,
-          locale: 'en',
-          text: 'knife',
-          term: '\u5200',
-          popularity: 212,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['d\u0101o'],
-        hant: ['\u5200']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5200']
-    },
-    {
-      pk: 785461508,
-      url: 'https://www.lingq.com/api/v3/zh/cards/785461508/',
-      term: '\u5218',
-      fragment: '\u6211 \u53eb \u5218 \u4eac \u4eac\u3002',
-      importance: 2,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-07T05:41:41.345798',
-      status_changed_date: '2026-03-06T05:41:41.345798',
-      notes: '',
-      audio: null,
-      words: ['\u5218'],
-      tags: [],
-      hints: [
-        {
-          id: 78822139,
-          locale: 'en',
-          text: 'Liu (name)',
-          term: '\u5218',
-          popularity: 1,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['li\u00fa'],
-        hant: ['\u5289']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5218']
-    },
-    {
-      pk: 776515168,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776515168/',
-      term: '\u521a\u521a',
-      fragment: '',
-      importance: 2,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-09T05:32:58.800624',
-      status_changed_date: '2026-03-06T05:32:58.800624',
-      notes: '',
-      audio: null,
-      words: ['\u521a\u521a'],
-      tags: [],
-      hints: [
-        {
-          id: 226996881,
-          locale: 'en',
-          text: 'just now; a moment ago',
-          term: '\u521a\u521a',
-          popularity: 1,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['g\u0101nggang'],
-        hant: ['\u525b\u525b']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u521a\u521a']
-    },
-    {
-      pk: 775819988,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775819988/',
-      term: '\u522b',
-      fragment: '\u522b \u6dd8\u6c14',
-      importance: 3,
-      status: 3,
-      extended_status: 1,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-04-03T04:23:48.817869',
-      status_changed_date: '2026-03-04T04:23:48.817869',
-      notes: '',
-      audio: null,
-      words: ['\u522b'],
-      tags: [],
-      hints: [
-        {
-          id: 38086716,
-          locale: 'en',
-          text: "don't",
-          term: '\u522b',
-          popularity: 465,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['bi\u00e9'],
-        hant: ['\u5225']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u522b']
-    },
-    {
-      pk: 776889248,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776889248/',
-      term: '\u522b\u6015',
-      fragment: '\u522b\u6015 \uff0c\u6ca1\u4e8b \u7684',
-      importance: 0,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-17T06:02:05.943497',
-      status_changed_date: '2026-02-02T06:02:05.943497',
-      notes: '',
-      audio: null,
-      words: ['\u522b\u6015'],
-      tags: [],
-      hints: [
-        {
-          id: 160575360,
-          locale: 'en',
-          text: "Don't be afraid",
-          term: '\u522b\u6015',
-          popularity: 39,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['bi\u00e9 p\u00e0'],
-        hant: ['\u5225\u6015']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u522b\u6015']
-    },
-    {
-      pk: 775822211,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775822211/',
-      term: '\u5230',
-      fragment: '\u5bc4 \u5230 \u54ea\u91cc',
-      importance: 3,
-      status: 0,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-11T02:09:48.252165',
-      status_changed_date: '2026-03-10T02:09:48.252165',
-      notes: '',
-      audio: null,
-      words: ['\u5230'],
-      tags: [],
-      hints: [
-        {
-          id: 15077498,
-          locale: 'en',
-          text: 'arrive, reach, get to.',
-          term: '\u5230',
-          popularity: 73,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['d\u00e0o'],
-        hant: ['\u5230']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5230']
-    },
-    {
-      pk: 784784493,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784784493/',
-      term: '\u5230\u4e86',
-      fragment:
-        '\u662f\u7684\uff0c \u5bd2\u5047 \u5230\u4e86\uff0c \u8fbe\u65af\u6c40 \u5f88 \u5174\u594b\u3002',
-      importance: 0,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-09T05:23:57.543085',
-      status_changed_date: null,
-      notes: '',
-      audio: null,
-      words: ['\u5230\u4e86'],
-      tags: [],
-      hints: [
-        {
-          id: 182793569,
-          locale: 'en',
-          text: 'has arrived',
-          term: '\u5230\u4e86',
-          popularity: 219,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['d\u00e0oli\u01ceo'],
-        hant: ['\u5230\u4e86']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5230\u4e86']
-    },
-    {
-      pk: 780704904,
-      url: 'https://www.lingq.com/api/v3/zh/cards/780704904/',
-      term: '\u524d\u9762',
-      fragment: '\u5728 \u524d\u9762\u3002',
-      importance: 2,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-09T05:38:12.432232',
-      status_changed_date: '2026-03-06T05:38:12.432232',
-      notes: '',
-      audio: null,
-      words: ['\u524d\u9762'],
-      tags: [],
-      hints: [
-        {
-          id: 13473633,
-          locale: 'en',
-          text: 'front',
-          term: '\u524d\u9762',
-          popularity: 1629,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['qi\u00e1nmi\u00e0n'],
-        hant: ['\u524d\u9762']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u524d\u9762']
-    },
-    {
-      pk: 776888804,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776888804/',
-      term: '\u529e',
-      fragment: '\u90a3 \u600e\u4e48 \u529e \u5462',
-      importance: 2,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-06-04T05:33:25.959036',
-      status_changed_date: '2026-03-06T05:33:25.959036',
-      notes: '',
-      audio: null,
-      words: ['\u529e'],
-      tags: [],
-      hints: [
-        {
-          id: 13514634,
-          locale: 'en',
-          text: 'do',
-          term: '\u529e',
-          popularity: 126,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u00e0n'],
-        hant: ['\u8fa6']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u529e']
-    },
-    {
-      pk: 776514776,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776514776/',
-      term: '\u52fa\u5b50',
-      fragment: '',
-      importance: 1,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-15T04:21:37.825546',
-      status_changed_date: '2026-01-31T04:21:37.825546',
-      notes: '',
-      audio: null,
-      words: ['\u52fa\u5b50'],
-      tags: [],
-      hints: [
-        {
-          id: 4576253,
-          locale: 'en',
-          text: 'spoon',
-          term: '\u52fa\u5b50',
-          popularity: 303,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['sh\u00e1ozi'],
-        hant: ['\u52fa\u5b50']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u52fa\u5b50']
-    },
-    {
-      pk: 776159597,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776159597/',
-      term: '\u5317\u4eac',
-      fragment: '\u4f60 \u662f \u5317\u4eac \u4eba \u5417\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-12T02:00:29.701285',
-      status_changed_date: '2026-01-28T02:00:29.701285',
-      notes: '',
-      audio: null,
-      words: ['\u5317\u4eac'],
-      tags: [],
-      hints: [
-        {
-          id: 47293473,
-          locale: 'en',
-          text: 'Beijing',
-          term: '\u5317\u4eac',
-          popularity: 689,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['b\u011bij\u012bng'],
-        hant: ['\u5317\u4eac']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5317\u4eac']
-    },
-    {
-      pk: 792058379,
-      url: 'https://www.lingq.com/api/v3/zh/cards/792058379/',
-      term: '\u5341\u4e00\u70b9',
-      fragment: '\u8fd9 \u5bb6 \u996d\u9986 \u5341\u4e00\u70b9 \u5173\u95e8\u3002',
-      importance: 0,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-03T05:07:04.736993',
-      status_changed_date: null,
-      notes: '',
-      audio: null,
-      words: ['\u5341\u4e00\u70b9'],
-      tags: [],
-      hints: [
-        {
-          id: 36561630,
-          locale: 'en',
-          text: "eleven o'clock",
-          term: '\u5341\u4e00\u70b9',
-          popularity: 72,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['sh\u00ed y\u012b di\u01cen'],
-        hant: ['\u5341\u4e00\u9ede']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5341\u4e00\u70b9']
-    },
-    {
-      pk: 777564129,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777564129/',
-      term: '\u5341\u4e03',
-      fragment: '\u5341\u4e03 \u53f7\u3002',
-      importance: 0,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-16T03:48:29.945421',
-      status_changed_date: '2026-02-01T03:48:29.945421',
-      notes: '',
-      audio: null,
-      words: ['\u5341\u4e03'],
-      tags: [],
-      hints: [
-        {
-          id: 12936941,
-          locale: 'en',
-          text: 'Seventeen',
-          term: '\u5341\u4e03',
-          popularity: 369,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['sh\u00edq\u012b'],
-        hant: ['\u5341\u4e03']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5341\u4e03']
-    },
-    {
-      pk: 778647663,
-      url: 'https://www.lingq.com/api/v3/zh/cards/778647663/',
-      term: '\u5341\u56db',
-      fragment: '\u5341\u56db \u5757 \u94b1\u3002',
-      importance: 1,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-20T05:09:22.728047',
-      status_changed_date: '2026-02-05T05:09:22.728047',
-      notes: '',
-      audio: null,
-      words: ['\u5341\u56db'],
-      tags: [],
-      hints: [
-        {
-          id: 13746498,
-          locale: 'en',
-          text: 'fourteen',
-          term: '\u5341\u56db',
-          popularity: 144,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['sh\u00eds\u00ec'],
-        hant: ['\u5341\u56db']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5341\u56db']
-    },
-    {
-      pk: 780326563,
-      url: 'https://www.lingq.com/api/v3/zh/cards/780326563/',
-      term: '\u5341\u6708',
-      fragment: '\u5341\u6708 \u5417\uff1f',
-      importance: 0,
-      status: 2,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-08T03:49:03.340439',
-      status_changed_date: '2026-02-01T03:49:03.340439',
-      notes: '',
-      audio: null,
-      words: ['\u5341\u6708'],
-      tags: [],
-      hints: [
-        {
-          id: 13166111,
-          locale: 'en',
-          text: 'October',
-          term: '\u5341\u6708',
-          popularity: 229,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['sh\u00edyu\u00e8'],
-        hant: ['\u5341\u6708']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5341\u6708']
-    },
-    {
-      pk: 775453561,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775453561/',
-      term: '\u5357\u4eac',
-      fragment: '\u5979 \u4f4f \u5728 \u5357\u4eac\u3002',
-      importance: 2,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-23T05:37:45.317617',
-      status_changed_date: '2026-02-08T05:37:45.317617',
-      notes: '',
-      audio: null,
-      words: ['\u5357\u4eac'],
-      tags: [],
-      hints: [
-        {
-          id: 5297065,
-          locale: 'en',
-          text: 'Nanjing',
-          term: '\u5357\u4eac',
-          popularity: 505,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['n\u00e1nj\u012bng'],
-        hant: ['\u5357\u4eac']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5357\u4eac']
-    },
-    {
-      pk: 776888362,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776888362/',
-      term: '\u536b\u751f',
-      fragment: '\u4e0d \u536b\u751f',
-      importance: 1,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-11T05:39:17.415104',
-      status_changed_date: '2026-02-08T05:39:17.415104',
-      notes: '',
-      audio: null,
-      words: ['\u536b\u751f'],
-      tags: [],
-      hints: [
-        {
-          id: 160046313,
-          locale: 'en',
-          text: 'hygienic',
-          term: '\u536b\u751f',
-          popularity: 172,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['w\u00e8ish\u0113ng'],
-        hant: ['\u885b\u751f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u536b\u751f']
-    },
-    {
-      pk: 780705974,
-      url: 'https://www.lingq.com/api/v3/zh/cards/780705974/',
-      term: '\u5371\u9669',
-      fragment: '\u5371\u9669\uff01',
-      importance: 2,
-      status: 0,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-08T04:22:46.433006',
-      status_changed_date: '2026-02-07T04:22:46.433006',
-      notes: '',
-      audio: null,
-      words: ['\u5371\u9669'],
-      tags: [],
-      hints: [
-        {
-          id: 18594259,
-          locale: 'en',
-          text: 'danger',
-          term: '\u5371\u9669',
-          popularity: 150,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['w\u0113ixi\u01cen'],
-        hant: ['\u5371\u96aa']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5371\u9669']
-    },
-    {
-      pk: 775817310,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775817310/',
-      term: '\u53a8\u5e08',
-      fragment: 'a -\u8fc8\u514b \u662f \u4e2a \u53a8\u5e08 ,\u7b2c\u4e00 \u90e8\u5206',
-      importance: 1,
-      status: 2,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-08T03:52:05.885103',
-      status_changed_date: '2026-02-01T03:52:05.885103',
-      notes: '',
-      audio: null,
-      words: ['\u53a8\u5e08'],
-      tags: [],
-      hints: [],
-      transliteration: {
-        pinyin: ['ch\u00fash\u012b'],
-        hant: ['\u5eda\u5e2b']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53a8\u5e08']
-    },
-    {
-      pk: 777214192,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777214192/',
-      term: '\u53bb',
-      fragment: '\u53bb \u51e0 \u697c',
-      importance: 3,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-20T05:10:14.381988',
-      status_changed_date: '2026-02-05T05:10:14.381988',
-      notes: '',
-      audio: null,
-      words: ['\u53bb'],
-      tags: [],
-      hints: [
-        {
-          id: 32444258,
-          locale: 'en',
-          text: 'to go',
-          term: '\u53bb',
-          popularity: 145,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['q\u00f9'],
-        hant: ['\u53bb']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53bb']
-    },
-    {
-      pk: 776514665,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776514665/',
-      term: '\u53c9\u5b50',
-      fragment: '\u670d\u52a1\u5458 \uff0c\u6709 \u53c9\u5b50 \u5417',
-      importance: 0,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-08T05:10:08.281631',
-      status_changed_date: '2026-02-05T05:10:08.281631',
-      notes: '',
-      audio: null,
-      words: ['\u53c9\u5b50'],
-      tags: [],
-      hints: [
-        {
-          id: 13782289,
-          locale: 'en',
-          text: 'fork',
-          term: '\u53c9\u5b50',
-          popularity: 370,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ch\u0101zi'],
-        hant: ['\u53c9\u5b50']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53c9\u5b50']
-    },
-    {
-      pk: 782708661,
-      url: 'https://www.lingq.com/api/v3/zh/cards/782708661/',
-      term: '\u53c9\u70e7',
-      fragment: '\u53c9\u70e7',
-      importance: 0,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-08T05:15:15.115586',
-      status_changed_date: '2026-02-05T05:15:15.115586',
-      notes: '',
-      audio: null,
-      words: ['\u53c9\u70e7'],
-      tags: [],
-      hints: [
-        {
-          id: 21438507,
-          locale: 'en',
-          text: 'barbeque spare ribs',
-          term: '\u53c9\u70e7',
-          popularity: 28,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ch\u0101sh\u0101o'],
-        hant: ['\u53c9\u71d2']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53c9\u70e7']
-    },
-    {
-      pk: 783752868,
-      url: 'https://www.lingq.com/api/v3/zh/cards/783752868/',
-      term: '\u53cb\u597d',
-      fragment: '\u2026\u53ef\u4ee5 \u9047\u5230 \u5f88 \u591a \u53cb\u597d \u7684 \u4eba\u3002',
-      importance: 1,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-10T04:21:17.135912',
-      status_changed_date: '2026-02-07T04:21:17.135912',
-      notes: '',
-      audio: null,
-      words: ['\u53cb\u597d'],
-      tags: [],
-      hints: [
-        {
-          id: 212054629,
-          locale: 'en',
-          text: 'friendly',
-          term: '\u53cb\u597d',
-          popularity: 546,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u01d2uh\u01ceo'],
-        hant: ['\u53cb\u597d']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53cb\u597d']
-    },
-    {
-      pk: 781713472,
-      url: 'https://www.lingq.com/api/v3/zh/cards/781713472/',
-      term: '\u53d1\u7403',
-      fragment: '\u2026\u6253 \u4e0d\u597d\uff0c \u4f60 \u6765 \u53d1\u7403 \u5427\u3002',
-      importance: 0,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-10T04:19:08.750318',
-      status_changed_date: '2026-02-07T04:19:08.750318',
-      notes: '',
-      audio: null,
-      words: ['\u53d1\u7403'],
-      tags: [],
-      hints: [
-        {
-          id: 224154659,
-          locale: 'en',
-          text: 'serve (a ball)',
-          term: '\u53d1\u7403',
-          popularity: 1,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['f\u0101qi\u00fa'],
-        hant: ['\u767c\u7403']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53d1\u7403']
-    },
-    {
-      pk: 795224810,
-      url: 'https://www.lingq.com/api/v3/zh/cards/795224810/',
-      term: '\u53ea',
-      fragment: '\u901a\u5e38 \u6211 \u53ea \u559d \u4e00\u676f \u5564\u9152',
-      importance: 3,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-13T03:49:11.923000',
-      status_changed_date: null,
-      notes: '',
-      audio: null,
-      words: ['\u53ea'],
-      tags: [],
-      hints: [
-        {
-          id: 13618727,
-          locale: 'en',
-          text: 'only',
-          term: '\u53ea',
-          popularity: 174921,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['zh\u01d0'],
-        hant: ['\u53ea']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53ea']
-    },
-    {
-      pk: 775450999,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775450999/',
-      term: '\u53eb',
-      fragment: '\u4f60 \u53eb \u4ec0\u4e48 \u540d\u5b57\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 1,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-11T03:10:17.864730',
-      status_changed_date: '2026-01-12T03:10:17.864730',
-      notes: '',
-      audio: null,
-      words: ['\u53eb'],
-      tags: [],
-      hints: [
-        {
-          id: 5714441,
-          locale: 'en',
-          text: 'called',
-          term: '\u53eb',
-          popularity: 667,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ji\u00e0o'],
-        hant: ['\u53eb']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53eb']
-    },
-    {
-      pk: 781713430,
-      url: 'https://www.lingq.com/api/v3/zh/cards/781713430/',
-      term: '\u53ef',
-      fragment:
-        '\u5475\u5475\uff0c \u7fbd\u6bdb\u7403 \u6211 \u53ef \u6253 \u4e0d\u597d\uff0c \u4f60 \u6765\u2026',
-      importance: 3,
-      status: 2,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-13T03:33:27.311345',
-      status_changed_date: '2026-02-06T03:33:27.311345',
-      notes: '',
-      audio: null,
-      words: ['\u53ef'],
-      tags: [],
-      hints: [
-        {
-          id: 13414868,
-          locale: 'en',
-          text: 'can',
-          term: '\u53ef',
-          popularity: 157,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['k\u011b'],
-        hant: ['\u53ef']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53ef']
-    },
-    {
-      pk: 779979611,
-      url: 'https://www.lingq.com/api/v3/zh/cards/779979611/',
-      term: '\u53ef\u4e50',
-      fragment: '\u6709 \u6ca1\u6709 \u53ef\u4e50\uff1f',
-      importance: 0,
-      status: 2,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-08T03:51:24.474348',
-      status_changed_date: '2026-02-01T03:51:24.474348',
-      notes: '',
-      audio: null,
-      words: ['\u53ef\u4e50'],
-      tags: [],
-      hints: [
-        {
-          id: 19432265,
-          locale: 'en',
-          text: 'Coke, Coca-cola',
-          term: '\u53ef\u4e50',
-          popularity: 41,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['k\u011bl\u00e8'],
-        hant: ['\u53ef\u6a02']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53ef\u4e50']
-    },
-    {
-      pk: 775820288,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775820288/',
-      term: '\u53ef\u4ee5',
-      fragment: '\u9e21\u86cb \u53ef\u4ee5',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-05-02T03:51:59.691622',
-      status_changed_date: '2026-02-01T03:51:59.691622',
-      notes: '',
-      audio: null,
-      words: ['\u53ef\u4ee5'],
-      tags: [],
-      hints: [
-        {
-          id: 15996069,
-          locale: 'en',
-          text: 'can',
-          term: '\u53ef\u4ee5',
-          popularity: 2285,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['k\u011by\u01d0'],
-        hant: ['\u53ef\u4ee5']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53ef\u4ee5']
-    },
-    {
-      pk: 784431370,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784431370/',
-      term: '\u53ef\u662f',
-      fragment: '\u53ef\u662f\uff0c \u4ed6 \u4e0d \u77e5\u9053 \u53bb\u2026',
-      importance: 0,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-08T03:59:05.933626',
-      status_changed_date: null,
-      notes: '',
-      audio: null,
-      words: ['\u53ef\u662f'],
-      tags: [],
-      hints: [
-        {
-          id: 15053463,
-          locale: 'en',
-          text: 'but, however',
-          term: '\u53ef\u662f',
-          popularity: 754156,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['k\u011bsh\u00ec'],
-        hant: ['\u53ef\u662f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53ef\u662f']
-    },
-    {
-      pk: 780705005,
-      url: 'https://www.lingq.com/api/v3/zh/cards/780705005/',
-      term: '\u53f3',
-      fragment: '\u4e00\u76f4 \u8d70\uff0c \u53f3 \u8f6c\u3002',
-      importance: 2,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-09T03:31:31.598053',
-      status_changed_date: '2026-02-06T03:31:31.598053',
-      notes: '',
-      audio: null,
-      words: ['\u53f3'],
-      tags: [],
-      hints: [
-        {
-          id: 72384841,
-          locale: 'en',
-          text: 'the right side; to the right',
-          term: '\u53f3',
-          popularity: 16,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u00f2u'],
-        hant: ['\u53f3']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53f3']
-    },
-    {
-      pk: 791709634,
-      url: 'https://www.lingq.com/api/v3/zh/cards/791709634/',
-      term: '\u53f3\u9762',
-      fragment:
-        '\u5728 \u90a3\u8fb9\uff0c \u53f3\u9762\uff0c \u90a3\u680b \u9ad8\u697c \u9644\u8fd1\u3002',
-      importance: 0,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-02T04:03:44.228490',
-      status_changed_date: null,
-      notes: '',
-      audio: null,
-      words: ['\u53f3\u9762'],
-      tags: [],
-      hints: [
-        {
-          id: 19033396,
-          locale: 'en',
-          text: 'right side',
-          term: '\u53f3\u9762',
-          popularity: 171,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['y\u00f2u mi\u00e0n'],
-        hant: ['\u53f3\u9762']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53f3\u9762']
-    },
-    {
-      pk: 775819419,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775819419/',
-      term: '\u53f7',
-      fragment: '\u662f \u5357\u4eac \u8def \u4e00\u767e\u4e09\u5341\u4e94 \u53f7',
-      importance: 3,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-11T04:41:01.571690',
-      status_changed_date: '2026-01-27T04:41:01.571690',
-      notes: '',
-      audio: null,
-      words: ['\u53f7'],
-      tags: [],
-      hints: [
-        {
-          id: 13502180,
-          locale: 'en',
-          text: 'number',
-          term: '\u53f7',
-          popularity: 602,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['h\u00e0o'],
-        hant: ['\u865f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53f7']
-    },
-    {
-      pk: 777563442,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777563442/',
-      term: '\u53f7\u7801',
-      fragment: '\u4f60 \u7684 \u53f7\u7801 \u662f \u591a\u5c11\uff1f',
-      importance: 1,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-17T06:03:37.175457',
-      status_changed_date: '2026-02-02T06:03:37.175457',
-      notes: '',
-      audio: null,
-      words: ['\u53f7\u7801'],
-      tags: [],
-      hints: [
-        {
-          id: 13489022,
-          locale: 'en',
-          text: 'number',
-          term: '\u53f7\u7801',
-          popularity: 1056,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['h\u00e0om\u01ce'],
-        hant: ['\u865f\u78bc']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u53f7\u7801']
-    },
-    {
-      pk: 775820186,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775820186/',
-      term: '\u5403',
-      fragment: '\u6709 \u4ec0\u4e48 \u4e1c\u897f \u4e0d \u5403 \u5417',
-      importance: 3,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-25T02:09:56.981111',
-      status_changed_date: '2026-03-10T02:09:56.981111',
-      notes: '',
-      audio: null,
-      words: ['\u5403'],
-      tags: [],
-      hints: [
-        {
-          id: 5563911,
-          locale: 'en',
-          text: 'eat',
-          term: '\u5403',
-          popularity: 2416,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ch\u012b'],
-        hant: ['\u5403']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5403']
-    },
-    {
-      pk: 775820234,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775820234/',
-      term: '\u5403\u7d20',
-      fragment: '\u4e0d \u5403 \u8089 \uff0c\u6211 \u5403\u7d20',
-      importance: 1,
-      status: 2,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-09T06:03:16.910922',
-      status_changed_date: '2026-02-02T06:03:16.910922',
-      notes: '',
-      audio: null,
-      words: ['\u5403\u7d20'],
-      tags: [],
-      hints: [
-        {
-          id: 160227013,
-          locale: 'en',
-          text: 'eat vegetarian',
-          term: '\u5403\u7d20',
-          popularity: 45,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ch\u012bs\u00f9'],
-        hant: ['\u5403\u7d20']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5403\u7d20']
-    },
-    {
-      pk: 776512581,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776512581/',
-      term: '\u5403\u8fc7',
-      fragment: '',
-      importance: 0,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-16T03:50:49.764611',
-      status_changed_date: '2026-02-01T03:50:49.764611',
-      notes: '',
-      audio: null,
-      words: ['\u5403\u8fc7'],
-      tags: [],
-      hints: [
-        {
-          id: 99641730,
-          locale: 'en',
-          text: 'have eaten',
-          term: '\u5403\u8fc7',
-          popularity: 54,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ch\u012b gu\u00f2'],
-        hant: ['\u5403\u904e']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5403\u8fc7']
-    },
-    {
-      pk: 795224737,
-      url: 'https://www.lingq.com/api/v3/zh/cards/795224737/',
-      term: '\u5408\u9002',
-      fragment: '\u4e86 \uff0c\u6211 \u73b0\u5728 \u6b63 \u5408\u9002',
-      importance: 2,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-13T03:48:51.687000',
-      status_changed_date: null,
-      notes: '',
-      audio: null,
-      words: ['\u5408\u9002'],
-      tags: [],
-      hints: [
-        {
-          id: 7642259,
-          locale: 'en',
-          text: 'suitable',
-          term: '\u5408\u9002',
-          popularity: 288,
-          is_google_translate: false,
-          flagged: true
-        }
-      ],
-      transliteration: {
-        pinyin: ['h\u00e9sh\u00ec'],
-        hant: ['\u5408\u9069']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5408\u9002']
-    },
-    {
-      pk: 777212970,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777212970/',
-      term: '\u540c',
-      fragment: '\u4e0d\u540c \u7684 \u65b9\u5f0f \u8bb2\u8ff0 \u540c \u4e00 \u4e2a \u6545\u4e8b',
-      importance: 3,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-23T05:39:07.572298',
-      status_changed_date: '2026-02-08T05:39:07.572298',
-      notes: '',
-      audio: null,
-      words: ['\u540c'],
-      tags: [],
-      hints: [
-        {
-          id: 159942798,
-          locale: 'en',
-          text: 'the same',
-          term: '\u540c',
-          popularity: 384,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['t\u00f3ng'],
-        hant: ['\u540c']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u540c']
-    },
-    {
-      pk: 784073044,
-      url: 'https://www.lingq.com/api/v3/zh/cards/784073044/',
-      term: '\u540c\u4e00\u4e2a',
-      fragment:
-        '\u2026\u4e0d \u662f \u6765\u81ea \u4e8e \u540c\u4e00\u4e2a \u56fd\u5bb6\uff0c \u4ed6\u4eec \u6765\u81ea \u5f88\u591a\u2026',
-      importance: 1,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-09T05:37:47.258472',
-      status_changed_date: '2026-02-08T05:37:47.258472',
-      notes: '',
-      audio: null,
-      words: ['\u540c\u4e00\u4e2a'],
-      tags: [],
-      hints: [
-        {
-          id: 2875409,
-          locale: 'en',
-          text: 'one and the same,  the same that',
-          term: '\u540c\u4e00\u4e2a',
-          popularity: 282646,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['t\u00f3ng y\u012b g\u00e8'],
-        hant: ['\u540c\u4e00\u500b']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u540c\u4e00\u4e2a']
-    },
-    {
-      pk: 775451154,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775451154/',
-      term: '\u540d\u5b57',
-      fragment: '\u4f60 \u53eb \u4ec0\u4e48 \u540d\u5b57\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-15T04:25:57.208318',
-      status_changed_date: '2026-01-31T04:25:57.208318',
-      notes: '',
-      audio: null,
-      words: ['\u540d\u5b57'],
-      tags: [],
-      hints: [
-        {
-          id: 10256515,
-          locale: 'en',
-          text: 'name',
-          term: '\u540d\u5b57',
-          popularity: 179453,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['m\u00edngzi'],
-        hant: ['\u540d\u5b57']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u540d\u5b57']
-    },
-    {
-      pk: 791709084,
-      url: 'https://www.lingq.com/api/v3/zh/cards/791709084/',
-      term: '\u5411\u524d',
-      fragment: '\u4e00\u76f4 \u5411\u524d \u8d70\u3002',
-      importance: 1,
-      status: 0,
-      extended_status: null,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-02T04:00:47.329229',
-      status_changed_date: null,
-      notes: '',
-      audio: null,
-      words: ['\u5411\u524d'],
-      tags: [],
-      hints: [
-        {
-          id: 12363759,
-          locale: 'en',
-          text: 'forward',
-          term: '\u5411\u524d',
-          popularity: 384,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['xi\u00e0ngqi\u00e1n'],
-        hant: ['\u5411\u524d']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5411\u524d']
-    },
-    {
-      pk: 775451509,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775451509/',
-      term: '\u5417',
-      fragment: '\u4ed6 \u6709 \u54e5\u54e5 \u5417\uff1f',
-      importance: 3,
-      status: 3,
-      extended_status: 2,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-04-28T01:59:34.462282',
-      status_changed_date: '2026-01-28T01:59:34.462282',
-      notes: '',
-      audio: null,
-      words: ['\u5417'],
-      tags: [],
-      hints: [
-        {
-          id: 172137869,
-          locale: 'en',
-          text: 'question marker',
-          term: '\u5417',
-          popularity: 220928,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ma'],
-        hant: ['\u55ce']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5417']
-    },
-    {
-      pk: 776511081,
-      url: 'https://www.lingq.com/api/v3/zh/cards/776511081/',
-      term: '\u5427',
-      fragment: '\u6765 \uff0c\u5531\u6b4c \u5427',
-      importance: 3,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-03-16T22:38:51.246869',
-      status_changed_date: '2026-03-13T22:38:51.246869',
-      notes: '',
-      audio: null,
-      words: ['\u5427'],
-      tags: [],
-      hints: [
-        {
-          id: 88813511,
-          locale: 'en',
-          text: 'suggestion particle',
-          term: '\u5427',
-          popularity: 128,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ba'],
-        hant: ['\u5427']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5427']
-    },
-    {
-      pk: 782019949,
-      url: 'https://www.lingq.com/api/v3/zh/cards/782019949/',
-      term: '\u542c',
-      fragment: '\u542c \u4e0d \u89c1\uff0c \u6211 \u5728\u2026',
-      importance: 3,
-      status: 2,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-13T03:33:46.563514',
-      status_changed_date: '2026-02-06T03:33:46.563514',
-      notes: '',
-      audio: null,
-      words: ['\u542c'],
-      tags: [],
-      hints: [
-        {
-          id: 38204742,
-          locale: 'en',
-          text: 'hear',
-          term: '\u542c',
+          text: 'hehe',
+          term: '\u563f\u563f',
           popularity: 84,
           is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['t\u00ecng'],
-        hant: ['\u807d']
+        pinyin: ['h\u0113i h\u0113i'],
+        hant: ['\u563f\u563f']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u542c']
+      writings: ['\u563f\u563f']
     },
     {
-      pk: 778647914,
-      url: 'https://www.lingq.com/api/v3/zh/cards/778647914/',
-      term: '\u542c\u9519',
-      fragment: '\u54e6\uff0c \u542c\u9519 \u4e86\uff01',
-      importance: 0,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-23T05:39:10.953499',
-      status_changed_date: '2026-02-08T05:39:10.953499',
-      notes: '',
-      audio: null,
-      words: ['\u542c\u9519'],
-      tags: [],
-      hints: [
-        {
-          id: 91293597,
-          locale: 'en',
-          text: 'misheard',
-          term: '\u542c\u9519',
-          popularity: 33,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['t\u012bngcu\u00f2'],
-        hant: ['\u807d\u932f']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u542c\u9519']
-    },
-    {
-      pk: 778652727,
-      url: 'https://www.lingq.com/api/v3/zh/cards/778652727/',
-      term: '\u5440',
-      fragment:
-        '\u65b0\u5e74 \u597d \u5440\uff0c \u65b0\u5e74 \u597d \u5440\uff0c \u795d\u8d3a\u2026',
-      importance: 3,
-      status: 2,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-08T03:48:23.876589',
-      status_changed_date: '2026-02-01T03:48:23.876589',
-      notes: '',
-      audio: null,
-      words: ['\u5440'],
-      tags: [],
-      hints: [
-        {
-          id: 185836534,
-          locale: 'en',
-          text: 'emphasis marker',
-          term: '\u5440',
-          popularity: 144,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ya'],
-        hant: ['\u5440']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5440']
-    },
-    {
-      pk: 780326595,
-      url: 'https://www.lingq.com/api/v3/zh/cards/780326595/',
-      term: '\u544a\u8bc9',
-      fragment: '\u4e0d \u544a\u8bc9 \u4f60\uff01',
-      importance: 3,
-      status: 2,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-08T03:51:13.470964',
-      status_changed_date: '2026-02-01T03:51:13.470964',
-      notes: '',
-      audio: null,
-      words: ['\u544a\u8bc9'],
-      tags: [],
-      hints: [
-        {
-          id: 7479627,
-          locale: 'en',
-          text: 'tell',
-          term: '\u544a\u8bc9',
-          popularity: 2638,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['g\u00e0osu'],
-        hant: ['\u544a\u8a34']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u544a\u8bc9']
-    },
-    {
-      pk: 779644665,
-      url: 'https://www.lingq.com/api/v3/zh/cards/779644665/',
-      term: '\u545c',
-      fragment: '\u545c \u545c\u545c......',
-      importance: 0,
-      status: 1,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-08T05:14:20.949349',
-      status_changed_date: '2026-02-05T05:14:20.949349',
-      notes: '',
-      audio: null,
-      words: ['\u545c'],
-      tags: [],
-      hints: [
-        {
-          id: 160113745,
-          locale: 'en',
-          text: 'wail',
-          term: '\u545c',
-          popularity: 54,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['w\u016b'],
-        hant: ['\u55da']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u545c']
-    },
-    {
-      pk: 779644674,
-      url: 'https://www.lingq.com/api/v3/zh/cards/779644674/',
-      term: '\u545c\u545c',
-      fragment: '\u545c \u545c\u545c......',
-      importance: 0,
-      status: 2,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-12T05:15:22.758631',
-      status_changed_date: '2026-02-05T05:15:22.758631',
-      notes: '',
-      audio: null,
-      words: ['\u545c\u545c'],
-      tags: [],
-      hints: [
-        {
-          id: 186588699,
-          locale: 'en',
-          text: 'sobbing',
-          term: '\u545c\u545c',
-          popularity: 51,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['w\u016bw\u016b'],
-        hant: ['\u55da\u55da']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u545c\u545c']
-    },
-    {
-      pk: 775450788,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775450788/',
-      term: '\u5462',
-      fragment: '\u4f60 \u5462\uff1f',
-      importance: 3,
-      status: 2,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-08T03:51:21.451345',
-      status_changed_date: '2026-02-01T03:51:21.451345',
-      notes: '',
-      audio: null,
-      words: ['\u5462'],
-      tags: [],
-      hints: [
-        {
-          id: 14354311,
-          locale: 'en',
-          text: 'question particle',
-          term: '\u5462',
-          popularity: 348,
-          is_google_translate: false,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['ne'],
-        hant: ['\u5462']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u5462']
-    },
-    {
-      pk: 781021339,
-      url: 'https://www.lingq.com/api/v3/zh/cards/781021339/',
-      term: '\u5468\u672b',
-      fragment: '\u4f60 \u5468\u672b \u5e72 \u5417\uff1f',
+      pk: 776512989,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776512989/',
+      term: '\u5662',
+      fragment: '\u5662',
       importance: 2,
       status: 2,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-02-13T03:33:29.880262',
-      status_changed_date: '2026-02-06T03:33:29.880262',
+      srs_due_date: '2026-02-09T06:04:15.051437',
+      status_changed_date: '2026-02-02T06:04:15.051437',
       notes: '',
       audio: null,
-      words: ['\u5468\u672b'],
+      words: ['\u5662'],
       tags: [],
       hints: [
         {
-          id: 1897941,
+          id: 13679983,
           locale: 'en',
-          text: 'weekend',
-          term: '\u5468\u672b',
-          popularity: 2253,
+          text: 'Oh',
+          term: '\u5662',
+          popularity: 679,
           is_google_translate: true,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['zh\u014dum\u00f2'],
-        hant: ['\u5468\u672b']
+        pinyin: ['\u014d'],
+        hant: ['\u5662']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u5468\u672b']
+      writings: ['\u5662']
     },
     {
-      pk: 778250696,
-      url: 'https://www.lingq.com/api/v3/zh/cards/778250696/',
-      term: '\u5473\u7cbe',
-      fragment: '\u8bf7 \u4e0d\u8981 \u653e \u5473\u7cbe\u3002',
-      importance: 0,
-      status: 0,
-      extended_status: null,
+      pk: 777563526,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777563526/',
+      term: '\u56db',
+      fragment: '\u2026\u4e8c \u516b \u96f6 \u516b\uff0c \u56db \u56db \u4e03 \u4e5d\u3002',
+      importance: 3,
+      status: 3,
+      extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-02-08T04:19:35.772929',
-      status_changed_date: '2026-02-07T04:19:35.772929',
+      srs_due_date: '2026-02-21T03:31:38.636899',
+      status_changed_date: '2026-02-06T03:31:38.636899',
       notes: '',
       audio: null,
-      words: ['\u5473\u7cbe'],
+      words: ['\u56db'],
       tags: [],
       hints: [
         {
-          id: 20291591,
+          id: 10610716,
           locale: 'en',
-          text: 'monosodium glutamate (MSG)',
-          term: '\u5473\u7cbe',
-          popularity: 48,
+          text: 'four',
+          term: '\u56db',
+          popularity: 776,
           is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['w\u00e8ij\u012bng'],
-        hant: ['\u5473\u7cbe']
+        pinyin: ['s\u00ec'],
+        hant: ['\u56db']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u5473\u7cbe']
+      writings: ['\u56db']
     },
     {
-      pk: 781713398,
-      url: 'https://www.lingq.com/api/v3/zh/cards/781713398/',
-      term: '\u5475\u5475',
-      fragment: '\u5475\u5475\uff0c \u7fbd\u6bdb\u7403 \u6211 \u53ef \u6253\u2026',
+      pk: 778647717,
+      url: 'https://www.lingq.com/api/v3/zh/cards/778647717/',
+      term: '\u56db\u5341',
+      fragment: '\u56db\u5341 \u5757 \u94b1\uff1f',
+      importance: 1,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-20T05:15:38.725323',
+      status_changed_date: '2026-02-05T05:15:38.725323',
+      notes: '',
+      audio: null,
+      words: ['\u56db\u5341'],
+      tags: [],
+      hints: [
+        {
+          id: 10610718,
+          locale: 'en',
+          text: 'forty',
+          term: '\u56db\u5341',
+          popularity: 247,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['s\u00ecsh\u00ed'],
+        hant: ['\u56db\u5341']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u56db\u5341']
+    },
+    {
+      pk: 786157416,
+      url: 'https://www.lingq.com/api/v3/zh/cards/786157416/',
+      term: '\u56de\u5bb6',
+      fragment: '\u6211 \u6b63\u8981 \u56de\u5bb6\u3002',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-13T04:36:05.374679',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u56de\u5bb6'],
+      tags: [],
+      hints: [
+        {
+          id: 73611713,
+          locale: 'en',
+          text: 'go home',
+          term: '\u56de\u5bb6',
+          popularity: 142,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['hu\u00edji\u0101'],
+        hant: ['\u56de\u5bb6']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u56de\u5bb6']
+    },
+    {
+      pk: 780326461,
+      url: 'https://www.lingq.com/api/v3/zh/cards/780326461/',
+      term: '\u56de\u6765',
+      fragment: '\u4ec0\u4e48 \u65f6\u5019 \u56de\u6765\uff1f',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T06:04:11.550880',
+      status_changed_date: '2026-02-02T06:04:11.550880',
+      notes: '',
+      audio: null,
+      words: ['\u56de\u6765'],
+      tags: [],
+      hints: [
+        {
+          id: 8534913,
+          locale: 'en',
+          text: 'return',
+          term: '\u56de\u6765',
+          popularity: 20,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['hu\u00edlai'],
+        hant: ['\u56de\u4f86']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u56de\u6765']
+    },
+    {
+      pk: 779328465,
+      url: 'https://www.lingq.com/api/v3/zh/cards/779328465/',
+      term: '\u56e0\u4e3a',
+      fragment: '\u56e0\u4e3a \u5b83\u4eec \u90fd \u5f88 \u8d35\u3002',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T06:03:33.245589',
+      status_changed_date: '2026-02-02T06:03:33.245589',
+      notes: '',
+      audio: null,
+      words: ['\u56e0\u4e3a'],
+      tags: [],
+      hints: [
+        {
+          id: 13150148,
+          locale: 'en',
+          text: 'because',
+          term: '\u56e0\u4e3a',
+          popularity: 744,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['y\u012bnw\u00e8i'],
+        hant: ['\u56e0\u70ba']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u56e0\u4e3a']
+    },
+    {
+      pk: 783752672,
+      url: 'https://www.lingq.com/api/v3/zh/cards/783752672/',
+      term: '\u56fd\u5bb6',
+      fragment: '\u2026\u987e\u5ba2 \u6765\u81ea \u5f88 \u591a \u56fd\u5bb6\u3002',
+      importance: 3,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T04:19:29.142248',
+      status_changed_date: '2026-02-07T04:19:29.142248',
+      notes: '',
+      audio: null,
+      words: ['\u56fd\u5bb6'],
+      tags: [],
+      hints: [
+        {
+          id: 7479722,
+          locale: 'en',
+          text: 'country',
+          term: '\u56fd\u5bb6',
+          popularity: 259622,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['ji\u0101'],
+        hant: ['\u570b\u5bb6']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u56fd\u5bb6']
+    },
+    {
+      pk: 775453511,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775453511/',
+      term: '\u5728',
+      fragment: '\u5979 \u4f4f \u5728 \u5357\u4eac\u3002',
+      importance: 3,
+      status: 3,
+      extended_status: 2,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-04-28T01:59:42.223504',
+      status_changed_date: '2026-01-28T01:59:42.223504',
+      notes: '',
+      audio: null,
+      words: ['\u5728'],
+      tags: [],
+      hints: [
+        {
+          id: 29642225,
+          locale: 'en',
+          text: 'In / on / at',
+          term: '\u5728',
+          popularity: 163,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['z\u00e0i'],
+        hant: ['\u5728']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5728']
+    },
+    {
+      pk: 775819141,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775819141/',
+      term: '\u5730\u5740',
+      fragment: '\u4f60 \u5bb6 \u91cc \u7684 \u5730\u5740 \u662f \u4ec0\u4e48',
+      importance: 2,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-17T06:03:30.166153',
+      status_changed_date: '2026-02-02T06:03:30.166153',
+      notes: '',
+      audio: null,
+      words: ['\u5730\u5740'],
+      tags: [],
+      hints: [
+        {
+          id: 10672712,
+          locale: 'en',
+          text: 'address',
+          term: '\u5730\u5740',
+          popularity: 2244,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u00eczh\u01d0'],
+        hant: ['\u5730\u5740']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5730\u5740']
+    },
+    {
+      pk: 780327086,
+      url: 'https://www.lingq.com/api/v3/zh/cards/780327086/',
+      term: '\u5750',
+      fragment: '\u8bf7 \u5750\uff01',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T06:01:50.257055',
+      status_changed_date: '2026-02-02T06:01:50.257055',
+      notes: '',
+      audio: null,
+      words: ['\u5750'],
+      tags: [],
+      hints: [
+        {
+          id: 12287898,
+          locale: 'en',
+          text: 'sit',
+          term: '\u5750',
+          popularity: 326,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['zu\u00f2'],
+        hant: ['\u5750']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5750']
+    },
+    {
+      pk: 782329532,
+      url: 'https://www.lingq.com/api/v3/zh/cards/782329532/',
+      term: '\u5750\u4e0b',
+      fragment: '\u5c0f\u767d\uff0c \u5750\u4e0b\u3002',
       importance: 1,
       status: 2,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-02-12T05:14:22.648585',
-      status_changed_date: '2026-02-05T05:14:22.648585',
+      srs_due_date: '2026-02-14T04:22:04.077780',
+      status_changed_date: '2026-02-07T04:22:04.077780',
       notes: '',
       audio: null,
-      words: ['\u5475\u5475'],
+      words: ['\u5750\u4e0b'],
       tags: [],
       hints: [
         {
-          id: 160888583,
+          id: 13507120,
           locale: 'en',
-          text: 'hehe',
-          term: '\u5475\u5475',
-          popularity: 48,
+          text: 'sit down',
+          term: '\u5750\u4e0b',
+          popularity: 767,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['zu\u00f2xia'],
+        hant: ['\u5750\u4e0b']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5750\u4e0b']
+    },
+    {
+      pk: 775822378,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775822378/',
+      term: '\u5757',
+      fragment: '21 \u5757 \u94b1',
+      importance: 3,
+      status: 3,
+      extended_status: 2,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-05-03T06:07:00.904446',
+      status_changed_date: '2026-02-02T06:07:00.904446',
+      notes: '',
+      audio: null,
+      words: ['\u5757'],
+      tags: [],
+      hints: [
+        {
+          id: 14637931,
+          locale: 'en',
+          text: 'measure word for pieces and monetary units',
+          term: '\u5757',
+          popularity: 109,
           is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['h\u0113h\u0113'],
-        hant: ['\u5475\u5475']
+        pinyin: ['ku\u00e0i'],
+        hant: ['\u584a']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u5475\u5475']
+      writings: ['\u5757']
     },
     {
-      pk: 775818544,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775818544/',
-      term: '\u548c',
-      fragment: '\u7279\u522b \u662f \u4e2d\u56fd \u6587\u5316 \u548c \u8bed\u8a00',
+      pk: 778647859,
+      url: 'https://www.lingq.com/api/v3/zh/cards/778647859/',
+      term: '\u5757\u94b1',
+      fragment: '\u4e0d\u5bf9\uff0c \u5341\u56db \u5757\u94b1\u3002',
+      importance: 2,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T06:05:39.436773',
+      status_changed_date: '2026-02-02T06:05:39.436773',
+      notes: '',
+      audio: null,
+      words: ['\u5757\u94b1'],
+      tags: [],
+      hints: [
+        {
+          id: 11743023,
+          locale: 'en',
+          text: 'yuan',
+          term: '\u5757\u94b1',
+          popularity: 241,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['ku\u00e0i qi\u00e1n'],
+        hant: ['\u584a\u9322']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5757\u94b1']
+    },
+    {
+      pk: 778249072,
+      url: 'https://www.lingq.com/api/v3/zh/cards/778249072/',
+      term: '\u591a',
+      fragment: '\u4f60 \u6709 \u591a \u9ad8\uff1f',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-12T05:15:01.550458',
+      status_changed_date: '2026-02-05T05:15:01.550458',
+      notes: '',
+      audio: null,
+      words: ['\u591a'],
+      tags: [],
+      hints: [
+        {
+          id: 15053210,
+          locale: 'en',
+          text: 'many, much,',
+          term: '\u591a',
+          popularity: 923,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['du\u014d'],
+        hant: ['\u591a']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u591a']
+    },
+    {
+      pk: 775823803,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775823803/',
+      term: '\u591a\u5c11',
+      fragment: '\u4f60 \u8981 \u6362 \u591a\u5c11 \u94b1',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T06:05:36.308586',
+      status_changed_date: '2026-02-02T06:05:36.308586',
+      notes: '',
+      audio: null,
+      words: ['\u591a\u5c11'],
+      tags: [],
+      hints: [
+        {
+          id: 6027043,
+          locale: 'en',
+          text: 'how much',
+          term: '\u591a\u5c11',
+          popularity: 491,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['du\u014dshao'],
+        hant: ['\u591a\u5c11']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u591a\u5c11']
+    },
+    {
+      pk: 795223898,
+      url: 'https://www.lingq.com/api/v3/zh/cards/795223898/',
+      term: '\u591a\u957f',
+      fragment: '\u4f60 \u591a\u957f \u65f6\u95f4 \u6765 \u4e00\u6b21',
+      importance: 1,
+      status: 0,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-13T03:42:40.631000',
+      status_changed_date: '2026-03-12T03:42:40.631000',
+      notes: '',
+      audio: null,
+      words: ['\u591a\u957f'],
+      tags: [],
+      hints: [
+        {
+          id: 27000664,
+          locale: 'en',
+          text: 'How often / How long',
+          term: '\u591a\u957f',
+          popularity: 9,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['du\u014d zh\u01ceng'],
+        hant: ['\u591a\u9577']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u591a\u957f']
+    },
+    {
+      pk: 777907896,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777907896/',
+      term: '\u591f',
+      fragment: '\u771f\u7684 \u591f \u4e86\uff0c \u8c22\u8c22\uff01',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-08T04:22:59.951646',
+      status_changed_date: '2026-02-07T04:22:59.951646',
+      notes: '',
+      audio: null,
+      words: ['\u591f'],
+      tags: [],
+      hints: [
+        {
+          id: 13515086,
+          locale: 'en',
+          text: 'enough',
+          term: '\u591f',
+          popularity: 779,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['g\u00f2u'],
+        hant: ['\u5920']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u591f']
+    },
+    {
+      pk: 778980943,
+      url: 'https://www.lingq.com/api/v3/zh/cards/778980943/',
+      term: '\u5927',
+      fragment: '\u5927\u3001 \u91cd\u3001 \u6162',
+      importance: 3,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-20T05:15:03.307444',
+      status_changed_date: '2026-02-05T05:15:03.307444',
+      notes: '',
+      audio: null,
+      words: ['\u5927'],
+      tags: [],
+      hints: [
+        {
+          id: 19208447,
+          locale: 'en',
+          text: 'big',
+          term: '\u5927',
+          popularity: 442,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u00e0'],
+        hant: ['\u5927']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5927']
+    },
+    {
+      pk: 778652790,
+      url: 'https://www.lingq.com/api/v3/zh/cards/778652790/',
+      term: '\u5927\u5bb6',
+      fragment:
+        '\u2026\u65b0\u5e74 \u597d \u5440\uff0c \u795d\u8d3a \u5927\u5bb6 \u65b0\u5e74 \u597d\uff01',
+      importance: 3,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-20T05:14:16.922987',
+      status_changed_date: '2026-02-05T05:14:16.922987',
+      notes: '',
+      audio: null,
+      words: ['\u5927\u5bb6'],
+      tags: [],
+      hints: [
+        {
+          id: 35868850,
+          locale: 'en',
+          text: 'Everybody; all',
+          term: '\u5927\u5bb6',
+          popularity: 999,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u00e0ji\u0101'],
+        hant: ['\u5927\u5bb6']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5927\u5bb6']
+    },
+    {
+      pk: 780704843,
+      url: 'https://www.lingq.com/api/v3/zh/cards/780704843/',
+      term: '\u5929\u5b89\u95e8',
+      fragment: '\u8bf7\u95ee \u5929\u5b89\u95e8 \u5728 \u54ea\u91cc\uff1f',
+      importance: 1,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-13T03:31:52.783756',
+      status_changed_date: '2026-02-06T03:31:52.783756',
+      notes: '',
+      audio: null,
+      words: ['\u5929\u5b89\u95e8'],
+      tags: [],
+      hints: [
+        {
+          id: 159744835,
+          locale: 'en',
+          text: 'Tiananmen',
+          term: '\u5929\u5b89\u95e8',
+          popularity: 212,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['ti\u0101n\u0101nm\u00e9n'],
+        hant: ['\u5929\u5b89\u9580']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5929\u5b89\u95e8']
+    },
+    {
+      pk: 777215292,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777215292/',
+      term: '\u5929\u7a7a',
+      fragment: '\u84dd \u84dd \u7684 \u5929\u7a7a\uff0c',
+      importance: 2,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-13T03:33:33.356268',
+      status_changed_date: '2026-02-06T03:33:33.356268',
+      notes: '',
+      audio: null,
+      words: ['\u5929\u7a7a'],
+      tags: [],
+      hints: [
+        {
+          id: 5943953,
+          locale: 'en',
+          text: 'sky',
+          term: '\u5929\u7a7a',
+          popularity: 219,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['ti\u0101nk\u014dng'],
+        hant: ['\u5929\u7a7a']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5929\u7a7a']
+    },
+    {
+      pk: 778647783,
+      url: 'https://www.lingq.com/api/v3/zh/cards/778647783/',
+      term: '\u592a',
+      fragment: '\u592a \u8d35 \u4e86\uff01',
+      importance: 3,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-20T05:14:06.285077',
+      status_changed_date: '2026-02-05T05:14:06.285077',
+      notes: '',
+      audio: null,
+      words: ['\u592a'],
+      tags: [],
+      hints: [
+        {
+          id: 13502093,
+          locale: 'en',
+          text: 'too',
+          term: '\u592a',
+          popularity: 127632,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['t\u00e0i'],
+        hant: ['\u592a']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u592a']
+    },
+    {
+      pk: 777215505,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777215505/',
+      term: '\u592a\u9633',
+      fragment: '\u7ea2 \u7ea2 \u7684 \u592a\u9633 \u70b9\u5934 \u7b11\u3002',
+      importance: 2,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-13T03:33:12.652223',
+      status_changed_date: '2026-02-06T03:33:12.652223',
+      notes: '',
+      audio: null,
+      words: ['\u592a\u9633'],
+      tags: [],
+      hints: [
+        {
+          id: 13483120,
+          locale: 'en',
+          text: 'sun',
+          term: '\u592a\u9633',
+          popularity: 483,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['t\u00e0iyang'],
+        hant: ['\u592a\u967d']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u592a\u9633']
+    },
+    {
+      pk: 780705504,
+      url: 'https://www.lingq.com/api/v3/zh/cards/780705504/',
+      term: '\u5973\u5b69\u513f',
+      fragment: '\u90a3 \u4e2a \u5973\u5b69\u513f \u662f \u8c01\uff1f',
+      importance: 0,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-13T03:33:21.355723',
+      status_changed_date: '2026-02-06T03:33:21.355723',
+      notes: '',
+      audio: null,
+      words: ['\u5973\u5b69\u513f'],
+      tags: [],
+      hints: [
+        {
+          id: 71461594,
+          locale: 'en',
+          text: 'girl',
+          term: '\u5973\u5b69\u513f',
+          popularity: 163,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['n\u01dah\u00e1ir'],
+        hant: ['\u5973\u5b69\u5152']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5973\u5b69\u513f']
+    },
+    {
+      pk: 780705586,
+      url: 'https://www.lingq.com/api/v3/zh/cards/780705586/',
+      term: '\u5973\u670b\u53cb',
+      fragment: '\u5979 \u662f \u6211 \u5973\u670b\u53cb\u3002',
+      importance: 2,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-13T03:33:24.563100',
+      status_changed_date: '2026-02-06T03:33:24.563100',
+      notes: '',
+      audio: null,
+      words: ['\u5973\u670b\u53cb'],
+      tags: [],
+      hints: [
+        {
+          id: 13548127,
+          locale: 'en',
+          text: 'girlfriend',
+          term: '\u5973\u670b\u53cb',
+          popularity: 1733,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['n\u01dap\u00e9ngyou'],
+        hant: ['\u5973\u670b\u53cb']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5973\u670b\u53cb']
+    },
+    {
+      pk: 775453402,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775453402/',
+      term: '\u5979',
+      fragment: '\u5979 \u4f4f \u5728 \u5357\u4eac\u3002',
       importance: 3,
       status: 3,
       extended_status: 1,
       last_reviewed_correct: null,
-      srs_due_date: '2026-03-03T03:53:56.200350',
-      status_changed_date: '2026-02-01T03:53:56.200350',
+      srs_due_date: '2026-02-27T02:01:54.110149',
+      status_changed_date: '2026-01-28T02:01:54.110149',
       notes: '',
       audio: null,
-      words: ['\u548c'],
+      words: ['\u5979'],
       tags: [],
       hints: [
         {
-          id: 4974100,
+          id: 384366,
           locale: 'en',
-          text: 'and',
-          term: '\u548c',
-          popularity: 536,
+          text: 'she',
+          term: '\u5979',
+          popularity: 167345,
           is_google_translate: true,
           flagged: true
         }
       ],
       transliteration: {
-        pinyin: ['h\u00e9'],
-        hant: ['\u548c']
+        pinyin: ['t\u0101'],
+        hant: ['\u5979']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u548c']
+      writings: ['\u5979']
     },
     {
-      pk: 777213883,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777213883/',
-      term: '\u5496\u5561',
-      fragment: '\u65e9\u996d \u5e76 \u559d \u4e00\u676f \u5496\u5561',
-      importance: 2,
+      pk: 775450766,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775450766/',
+      term: '\u597d',
+      fragment: '\u6211 \u5f88 \u597d\u3002',
+      importance: 3,
       status: 3,
-      extended_status: 0,
+      extended_status: 2,
       last_reviewed_correct: null,
-      srs_due_date: '2026-02-15T04:26:07.654928',
-      status_changed_date: '2026-01-31T04:26:07.654928',
+      srs_due_date: '2026-05-04T06:44:43.086975',
+      status_changed_date: '2026-02-03T06:44:43.086975',
       notes: '',
       audio: null,
-      words: ['\u5496\u5561'],
+      words: ['\u597d'],
       tags: [],
       hints: [
         {
-          id: 14409242,
+          id: 14784720,
           locale: 'en',
-          text: 'coffee',
-          term: '\u5496\u5561',
-          popularity: 353661,
-          is_google_translate: true,
+          text: 'good',
+          term: '\u597d',
+          popularity: 1174,
+          is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['k\u0101f\u0113i'],
-        hant: ['\u5496\u5561']
+        pinyin: ['h\u01ceo'],
+        hant: ['\u597d']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u5496\u5561']
+      writings: ['\u597d']
     },
     {
-      pk: 778249206,
-      url: 'https://www.lingq.com/api/v3/zh/cards/778249206/',
-      term: '\u54c7',
-      fragment: '\u54c7\uff01',
+      pk: 779327985,
+      url: 'https://www.lingq.com/api/v3/zh/cards/779327985/',
+      term: '\u597d\u4e45',
+      fragment: '\u597d\u4e45 \u4e0d\u89c1\uff01',
       importance: 1,
       status: 1,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-02-09T03:31:44.634049',
-      status_changed_date: '2026-02-06T03:31:44.634049',
+      srs_due_date: '2026-02-09T03:31:46.960312',
+      status_changed_date: '2026-02-06T03:31:46.960312',
       notes: '',
       audio: null,
-      words: ['\u54c7'],
+      words: ['\u597d\u4e45'],
       tags: [],
       hints: [
         {
-          id: 13574826,
+          id: 7479638,
           locale: 'en',
-          text: 'Wow',
-          term: '\u54c7',
-          popularity: 477,
+          text: 'long time',
+          term: '\u597d\u4e45',
+          popularity: 116,
           is_google_translate: true,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['w\u0101'],
-        hant: ['\u54c7']
+        pinyin: ['h\u01ceoji\u01d4'],
+        hant: ['\u597d\u4e45']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u54c7']
+      writings: ['\u597d\u4e45']
     },
     {
-      pk: 777564354,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777564354/',
-      term: '\u54cd',
-      fragment: '\u8c01 \u7684 \u624b\u673a \u5728 \u54cd\uff1f',
+      pk: 778976262,
+      url: 'https://www.lingq.com/api/v3/zh/cards/778976262/',
+      term: '\u597d\u4e86',
+      fragment: '\u6211 \u597d\u4e86\u3002',
+      importance: 0,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T06:07:28.348476',
+      status_changed_date: '2026-02-02T06:07:28.348476',
+      notes: '',
+      audio: null,
+      words: ['\u597d\u4e86'],
+      tags: [],
+      hints: [
+        {
+          id: 134590852,
+          locale: 'en',
+          text: "okay; all right; that's enough, that'll do",
+          term: '\u597d\u4e86',
+          popularity: 24,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['h\u01ceo le'],
+        hant: ['\u597d\u4e86']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u597d\u4e86']
+    },
+    {
+      pk: 776157512,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776157512/',
+      term: '\u597d\u5403',
+      fragment: '\u597d\u5403 \u5417\uff1f',
+      importance: 3,
+      status: 3,
+      extended_status: 2,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-05-03T06:07:31.542077',
+      status_changed_date: '2026-02-02T06:07:31.542077',
+      notes: '',
+      audio: null,
+      words: ['\u597d\u5403'],
+      tags: [],
+      hints: [
+        {
+          id: 15067963,
+          locale: 'en',
+          text: 'delicious',
+          term: '\u597d\u5403',
+          popularity: 123912,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['h\u01ceoch\u012b'],
+        hant: ['\u597d\u5403']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u597d\u5403']
+    },
+    {
+      pk: 777210919,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777210919/',
+      term: '\u597d\u5427',
+      fragment: '\u597d\u5427',
       importance: 2,
       status: 2,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-02-12T05:14:08.904219',
-      status_changed_date: '2026-02-05T05:14:08.904219',
+      srs_due_date: '2026-02-10T06:46:15.840151',
+      status_changed_date: '2026-02-03T06:46:15.840151',
       notes: '',
       audio: null,
-      words: ['\u54cd'],
+      words: ['\u597d\u5427'],
       tags: [],
       hints: [
         {
-          id: 13438892,
+          id: 182384978,
           locale: 'en',
-          text: 'ring',
-          term: '\u54cd',
-          popularity: 154,
+          text: 'okay',
+          term: '\u597d\u5427',
+          popularity: 98,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['h\u01ceo ba'],
+        hant: ['\u597d\u5427']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u597d\u5427']
+    },
+    {
+      pk: 795224626,
+      url: 'https://www.lingq.com/api/v3/zh/cards/795224626/',
+      term: '\u597d\u554a',
+      fragment: '\u597d\u554a \uff0c\u6211 \u8981 \u4e00\u676f \u5564\u9152',
+      importance: 1,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-13T03:47:58.431000',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u597d\u554a'],
+      tags: [],
+      hints: [
+        {
+          id: 217152384,
+          locale: 'en',
+          text: 'great',
+          term: '\u597d\u554a',
+          popularity: 18,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['h\u01ceo \u00e1'],
+        hant: ['\u597d\u554a']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u597d\u554a']
+    },
+    {
+      pk: 775822885,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775822885/',
+      term: '\u597d\u7684',
+      fragment: '\u597d\u7684 \uff0c\u6ca1\u95ee\u9898',
+      importance: 0,
+      status: 3,
+      extended_status: 2,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-05-03T06:05:42.817713',
+      status_changed_date: '2026-02-02T06:05:42.817713',
+      notes: '',
+      audio: null,
+      words: ['\u597d\u7684'],
+      tags: [],
+      hints: [
+        {
+          id: 62074937,
+          locale: 'en',
+          text: 'okay',
+          term: '\u597d\u7684',
+          popularity: 120,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['h\u01ceo d\u00ec'],
+        hant: ['\u597d\u7684']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u597d\u7684']
+    },
+    {
+      pk: 775455521,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775455521/',
+      term: '\u597d\u770b',
+      fragment: '\u4ed6 \u5f88 \u597d\u770b\u3002',
+      importance: 2,
+      status: 3,
+      extended_status: 2,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-05-03T06:05:30.631823',
+      status_changed_date: '2026-02-02T06:05:30.631823',
+      notes: '',
+      audio: null,
+      words: ['\u597d\u770b'],
+      tags: [],
+      hints: [
+        {
+          id: 18505706,
+          locale: 'en',
+          text: 'good-looking',
+          term: '\u597d\u770b',
+          popularity: 440,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['h\u01ceok\u00e0n'],
+        hant: ['\u597d\u770b']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u597d\u770b']
+    },
+    {
+      pk: 777907367,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777907367/',
+      term: '\u5988\u5988',
+      fragment:
+        '\u7238\u7238\u3001 \u5988\u5988\u3001 \u54e5\u54e5\u3001 \u5f1f\u5f1f\u3001 \u59d0\u59d0 \u548c\u2026',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T06:07:08.480426',
+      status_changed_date: '2026-02-02T06:07:08.480426',
+      notes: '',
+      audio: null,
+      words: ['\u5988\u5988'],
+      tags: [],
+      hints: [
+        {
+          id: 24187625,
+          locale: 'en',
+          text: 'Mom',
+          term: '\u5988\u5988',
+          popularity: 150,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['m\u0101ma'],
+        hant: ['\u5abd\u5abd']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5988\u5988']
+    },
+    {
+      pk: 775453651,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775453651/',
+      term: '\u59b9\u59b9',
+      fragment: '\u5979 \u6709 \u4e00\u4e2a \u59b9\u59b9\u3002',
+      importance: 2,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-20T05:15:36.618550',
+      status_changed_date: '2026-02-05T05:15:36.618550',
+      notes: '',
+      audio: null,
+      words: ['\u59b9\u59b9'],
+      tags: [],
+      hints: [
+        {
+          id: 11822401,
+          locale: 'en',
+          text: 'younger sister',
+          term: '\u59b9\u59b9',
+          popularity: 2898,
           is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['m\u00e8imei'],
+        hant: ['\u59b9\u59b9']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u59b9\u59b9']
+    },
+    {
+      pk: 777907384,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777907384/',
+      term: '\u59d0\u59d0',
+      fragment:
+        '\u7238\u7238\u3001 \u5988\u5988\u3001 \u54e5\u54e5\u3001 \u5f1f\u5f1f\u3001 \u59d0\u59d0 \u548c \u6211\u3002',
+      importance: 2,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T06:05:19.517634',
+      status_changed_date: '2026-02-02T06:05:19.517634',
+      notes: '',
+      audio: null,
+      words: ['\u59d0\u59d0'],
+      tags: [],
+      hints: [
+        {
+          id: 384564,
+          locale: 'en',
+          text: 'sister',
+          term: '\u59d0\u59d0',
+          popularity: 936,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['ji\u011bjie'],
+        hant: ['\u59d0\u59d0']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u59d0\u59d0']
+    },
+    {
+      pk: 780326930,
+      url: 'https://www.lingq.com/api/v3/zh/cards/780326930/',
+      term: '\u59d3',
+      fragment: '\u2026\u5c0f\u59d0\uff0c \u4f60 \u597d\uff0c \u6211 \u59d3 \u738b\u3002',
+      importance: 2,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T04:23:04.223850',
+      status_changed_date: '2026-02-07T04:23:04.223850',
+      notes: '',
+      audio: null,
+      words: ['\u59d3'],
+      tags: [],
+      hints: [
+        {
+          id: 47925591,
+          locale: 'en',
+          text: 'surname',
+          term: '\u59d3',
+          popularity: 306,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['x\u00ecng'],
+        hant: ['\u59d3']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u59d3']
+    },
+    {
+      pk: 784784949,
+      url: 'https://www.lingq.com/api/v3/zh/cards/784784949/',
+      term: '\u5b66',
+      fragment: '\u8fbe\u65af\u6c40 \u6253\u7b97 \u5b66 \u6cd5\u8bed \u5417\uff1f',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T05:27:12.276553',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u5b66'],
+      tags: [],
+      hints: [
+        {
+          id: 13530847,
+          locale: 'en',
+          text: 'learn',
+          term: '\u5b66',
+          popularity: 139717,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['xu\u00e9'],
+        hant: ['\u5b78']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5b66']
+    },
+    {
+      pk: 781021702,
+      url: 'https://www.lingq.com/api/v3/zh/cards/781021702/',
+      term: '\u5b66\u4e60',
+      fragment: '\u6765 \u5b66\u4e60\uff1f',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-13T03:33:36.587977',
+      status_changed_date: '2026-02-06T03:33:36.587977',
+      notes: '',
+      audio: null,
+      words: ['\u5b66\u4e60'],
+      tags: [],
+      hints: [
+        {
+          id: 3949638,
+          locale: 'en',
+          text: 'study',
+          term: '\u5b66\u4e60',
+          popularity: 968000,
+          is_google_translate: true,
+          flagged: true
+        }
+      ],
+      transliteration: {
+        pinyin: ['xu\u00e9x\u00ed'],
+        hant: ['\u5b78\u7fd2']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5b66\u4e60']
+    },
+    {
+      pk: 779644589,
+      url: 'https://www.lingq.com/api/v3/zh/cards/779644589/',
+      term: '\u5b66\u6821',
+      fragment: '\u6211 \u53bb \u5b66\u6821\u3002',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T06:07:04.588383',
+      status_changed_date: '2026-02-02T06:07:04.588383',
+      notes: '',
+      audio: null,
+      words: ['\u5b66\u6821'],
+      tags: [],
+      hints: [
+        {
+          id: 384789,
+          locale: 'en',
+          text: 'school',
+          term: '\u5b66\u6821',
+          popularity: 157998,
+          is_google_translate: true,
+          flagged: true
+        }
+      ],
+      transliteration: {
+        pinyin: ['xu\u00e9xi\u00e0o'],
+        hant: ['\u5b78\u6821']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5b66\u6821']
+    },
+    {
+      pk: 779327346,
+      url: 'https://www.lingq.com/api/v3/zh/cards/779327346/',
+      term: '\u5b69\u5b50',
+      fragment: '\u7238\u7238\u3001 \u5988\u5988\u3001 \u5b69\u5b50',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T06:46:46.984163',
+      status_changed_date: '2026-02-03T06:46:46.984163',
+      notes: '',
+      audio: null,
+      words: ['\u5b69\u5b50'],
+      tags: [],
+      hints: [
+        {
+          id: 5941808,
+          locale: 'en',
+          text: 'child',
+          term: '\u5b69\u5b50',
+          popularity: 2568,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['h\u00e1izi'],
+        hant: ['\u5b69\u5b50']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5b69\u5b50']
+    },
+    {
+      pk: 778976786,
+      url: 'https://www.lingq.com/api/v3/zh/cards/778976786/',
+      term: '\u5b83',
+      fragment: '\u4ed6\u3001 \u5979\u3001 \u5b83',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T06:05:32.803413',
+      status_changed_date: '2026-02-02T06:05:32.803413',
+      notes: '',
+      audio: null,
+      words: ['\u5b83'],
+      tags: [],
+      hints: [
+        {
+          id: 1347250,
+          locale: 'en',
+          text: 'it',
+          term: '\u5b83',
+          popularity: 190296,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['t\u0101'],
+        hant: ['\u5b83']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5b83']
+    },
+    {
+      pk: 779328477,
+      url: 'https://www.lingq.com/api/v3/zh/cards/779328477/',
+      term: '\u5b83\u4eec',
+      fragment: '\u56e0\u4e3a \u5b83\u4eec \u90fd \u5f88 \u8d35\u3002',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T06:05:28.444879',
+      status_changed_date: '2026-02-02T06:05:28.444879',
+      notes: '',
+      audio: null,
+      words: ['\u5b83\u4eec'],
+      tags: [],
+      hints: [
+        {
+          id: 13150092,
+          locale: 'en',
+          text: 'they',
+          term: '\u5b83\u4eec',
+          popularity: 435,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['t\u0101men'],
+        hant: ['\u5b83\u5011']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5b83\u4eec']
+    },
+    {
+      pk: 786157881,
+      url: 'https://www.lingq.com/api/v3/zh/cards/786157881/',
+      term: '\u5b8c',
+      fragment: '\u2026\u5bb6 \u7684 \u725b\u5976 \u559d \u5b8c \u4e86\u3002',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-13T04:38:41.140295',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u5b8c'],
+      tags: [],
+      hints: [
+        {
+          id: 217169345,
+          locale: 'en',
+          text: 'completion particle',
+          term: '\u5b8c',
+          popularity: 36,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['w\u00e1n'],
+        hant: ['\u5b8c']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5b8c']
+    },
+    {
+      pk: 775819966,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775819966/',
+      term: '\u5b9d\u5b9d',
+      fragment: '\u5b9d\u5b9d \uff0c\u4e56',
+      importance: 1,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T06:47:56.299574',
+      status_changed_date: '2026-02-03T06:47:56.299574',
+      notes: '',
+      audio: null,
+      words: ['\u5b9d\u5b9d'],
+      tags: [],
+      hints: [
+        {
+          id: 13546012,
+          locale: 'en',
+          text: 'baby',
+          term: '\u5b9d\u5b9d',
+          popularity: 860,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['b\u01ceob\u01ceo'],
+        hant: ['\u5bf6\u5bf6']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5b9d\u5b9d']
+    },
+    {
+      pk: 777907783,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777907783/',
+      term: '\u5ba2\u6c14',
+      fragment: '\u4e0d \u8981 \u5ba2\u6c14\uff01',
+      importance: 2,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-14T04:25:19.041345',
+      status_changed_date: '2026-02-07T04:25:19.041345',
+      notes: '',
+      audio: null,
+      words: ['\u5ba2\u6c14'],
+      tags: [],
+      hints: [
+        {
+          id: 165413672,
+          locale: 'en',
+          text: 'be polite',
+          term: '\u5ba2\u6c14',
+          popularity: 37,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['k\u00e8qi'],
+        hant: ['\u5ba2\u6c23']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5ba2\u6c14']
+    },
+    {
+      pk: 775819001,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775819001/',
+      term: '\u5bb6',
+      fragment: '\u4f60 \u5bb6 \u91cc \u7684 \u5730\u5740 \u662f',
+      importance: 3,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-18T06:47:56.304662',
+      status_changed_date: '2026-02-03T06:47:56.304662',
+      notes: '',
+      audio: null,
+      words: ['\u5bb6'],
+      tags: [],
+      hints: [
+        {
+          id: 20539515,
+          locale: 'en',
+          text: 'home',
+          term: '\u5bb6',
+          popularity: 338,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['ji\u0101'],
+        hant: ['\u5bb6']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5bb6']
+    },
+    {
+      pk: 775819227,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775819227/',
+      term: '\u5bb6\u91cc',
+      fragment: '\u6211 \u5bb6\u91cc \u7684 \u5730\u5740 \u662f \u5357\u4eac',
+      importance: 3,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-18T06:45:07.297816',
+      status_changed_date: '2026-02-03T06:45:07.297816',
+      notes: '',
+      audio: null,
+      words: ['\u5bb6\u91cc'],
+      tags: [],
+      hints: [
+        {
+          id: 37771919,
+          locale: 'en',
+          text: 'at home',
+          term: '\u5bb6\u91cc',
+          popularity: 238,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['ji\u0101l\u01d0'],
+        hant: ['\u5bb6\u88cf']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5bb6\u91cc']
+    },
+    {
+      pk: 775822189,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775822189/',
+      term: '\u5bc4',
+      fragment: '\u5bc4 \u5230 \u54ea\u91cc',
+      importance: 2,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T04:27:25.240753',
+      status_changed_date: '2026-02-07T04:27:25.240753',
+      notes: '',
+      audio: null,
+      words: ['\u5bc4'],
+      tags: [],
+      hints: [
+        {
+          id: 13486629,
+          locale: 'en',
+          text: 'send',
+          term: '\u5bc4',
+          popularity: 492,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['j\u00ec'],
+        hant: ['\u5bc4']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5bc4']
+    },
+    {
+      pk: 775822499,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775822499/',
+      term: '\u5bc4\u5230',
+      fragment: '\u5bc4\u5230 \u5fb7\u56fd',
+      importance: 0,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T04:27:19.775716',
+      status_changed_date: '2026-02-07T04:27:19.775716',
+      notes: '',
+      audio: null,
+      words: ['\u5bc4\u5230'],
+      tags: [],
+      hints: [
+        {
+          id: 144018126,
+          locale: 'en',
+          text: 'send to',
+          term: '\u5bc4\u5230',
+          popularity: 187,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['j\u00ec d\u00e0o'],
+        hant: ['\u5bc4\u5230']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5bc4\u5230']
+    },
+    {
+      pk: 784430908,
+      url: 'https://www.lingq.com/api/v3/zh/cards/784430908/',
+      term: '\u5bd2\u5047',
+      fragment: '\u5bd2\u5047 \u5230 \u4e86\uff0c \u8fbe\u65af\u6c40 \u5f88\u2026',
+      importance: 1,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-08T03:56:20.439629',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u5bd2\u5047'],
+      tags: [],
+      hints: [
+        {
+          id: 159715903,
+          locale: 'en',
+          text: 'winter break',
+          term: '\u5bd2\u5047',
+          popularity: 310,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['h\u00e1nji\u00e0'],
+        hant: ['\u5bd2\u5047']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5bd2\u5047']
+    },
+    {
+      pk: 775453290,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775453290/',
+      term: '\u5bf9',
+      fragment: '\u5bf9\uff0c \u6211 \u662f \u4e2d\u56fd\u4eba\u3002',
+      importance: 3,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-18T06:46:22.337293',
+      status_changed_date: '2026-02-03T06:46:22.337293',
+      notes: '',
+      audio: null,
+      words: ['\u5bf9'],
+      tags: [],
+      hints: [
+        {
+          id: 28668920,
+          locale: 'en',
+          text: 'right',
+          term: '\u5bf9',
+          popularity: 137,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['du\u00ec'],
+        hant: ['\u5c0d']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5bf9']
+    },
+    {
+      pk: 776511154,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776511154/',
+      term: '\u5bf9\u4e0d\u8d77',
+      fragment: '\u5bf9\u4e0d\u8d77 \uff0c\u6211 \u4e0d\u4f1a \u5531',
+      importance: 3,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-20T05:13:47.626072',
+      status_changed_date: '2026-02-05T05:13:47.626072',
+      notes: '',
+      audio: null,
+      words: ['\u5bf9\u4e0d\u8d77'],
+      tags: [],
+      hints: [
+        {
+          id: 65214974,
+          locale: 'en',
+          text: 'sorry',
+          term: '\u5bf9\u4e0d\u8d77',
+          popularity: 422,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['du\u00ecbuq\u01d0'],
+        hant: ['\u5c0d\u4e0d\u8d77']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5bf9\u4e0d\u8d77']
+    },
+    {
+      pk: 775819494,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775819494/',
+      term: '\u5bf9\u9762',
+      fragment: '\u5728 \u516c\u56ed \u5bf9\u9762 \u5417',
+      importance: 1,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-18T06:49:18.092523',
+      status_changed_date: '2026-02-03T06:49:18.092523',
+      notes: '',
+      audio: null,
+      words: ['\u5bf9\u9762'],
+      tags: [],
+      hints: [
+        {
+          id: 1542784,
+          locale: 'en',
+          text: 'opposite',
+          term: '\u5bf9\u9762',
+          popularity: 2010,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['du\u00ecmi\u00e0n'],
+        hant: ['\u5c0d\u9762']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5bf9\u9762']
+    },
+    {
+      pk: 778980868,
+      url: 'https://www.lingq.com/api/v3/zh/cards/778980868/',
+      term: '\u5c0f',
+      fragment: '\u597d\u3001 \u5c0f\u3001 \u65e9',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T06:49:16.493001',
+      status_changed_date: '2026-02-03T06:49:16.493001',
+      notes: '',
+      audio: null,
+      words: ['\u5c0f'],
+      tags: [],
+      hints: [
+        {
+          id: 13531194,
+          locale: 'en',
+          text: 'small',
+          term: '\u5c0f',
+          popularity: 2004,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['xi\u01ceo'],
+        hant: ['\u5c0f']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5c0f']
+    },
+    {
+      pk: 775453359,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775453359/',
+      term: '\u5c0f\u59d0',
+      fragment: '\u738b \u5c0f\u59d0 \u662f \u82f1\u56fd\u4eba\u3002',
+      importance: 2,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-18T06:49:36.458073',
+      status_changed_date: '2026-02-03T06:49:36.458073',
+      notes: '',
+      audio: null,
+      words: ['\u5c0f\u59d0'],
+      tags: [],
+      hints: [
+        {
+          id: 8466108,
+          locale: 'en',
+          text: 'Miss',
+          term: '\u5c0f\u59d0',
+          popularity: 457,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['xi\u01ceojie'],
+        hant: ['\u5c0f\u59d0']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5c0f\u59d0']
+    },
+    {
+      pk: 779327681,
+      url: 'https://www.lingq.com/api/v3/zh/cards/779327681/',
+      term: '\u5c0f\u5fc3',
+      fragment: '\u5c0f\u5fc3 \u70eb\uff01',
+      importance: 2,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T06:52:14.425320',
+      status_changed_date: '2026-02-03T06:52:14.425320',
+      notes: '',
+      audio: null,
+      words: ['\u5c0f\u5fc3'],
+      tags: [],
+      hints: [
+        {
+          id: 13553697,
+          locale: 'en',
+          text: 'Be careful',
+          term: '\u5c0f\u5fc3',
+          popularity: 1112,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['xi\u01ceox\u012bn'],
+        hant: ['\u5c0f\u5fc3']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5c0f\u5fc3']
+    },
+    {
+      pk: 775822820,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775822820/',
+      term: '\u5c31',
+      fragment: '\u9760\u8fb9 \u505c \u5c31 \u53ef\u4ee5 \u4e86',
+      importance: 3,
+      status: 0,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-02T04:06:11.792834',
+      status_changed_date: '2026-03-01T04:06:11.792834',
+      notes: '',
+      audio: null,
+      words: ['\u5c31'],
+      tags: [],
+      hints: [
+        {
+          id: 23538211,
+          locale: 'en',
+          text: 'at once, right away, to undertake,  as early as, already',
+          term: '\u5c31',
+          popularity: 143803,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['ji\u00f9'],
+        hant: ['\u5c31']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5c31']
+    },
+    {
+      pk: 790055725,
+      url: 'https://www.lingq.com/api/v3/zh/cards/790055725/',
+      term: '\u5c31\u662f',
+      fragment: '\u662f\u7684 \uff0c\u90a3 \u5c31\u662f \u6211 \u7684 \u4e0a\u8863 \uff0c\u84dd',
+      importance: 0,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-24T06:57:45',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u5c31\u662f'],
+      tags: [],
+      hints: [
+        {
+          id: 15459963,
+          locale: 'en',
+          text: 'exactly, in the same way, just like',
+          term: '\u5c31\u662f',
+          popularity: 820,
+          is_google_translate: false,
+          flagged: true
+        }
+      ],
+      transliteration: {
+        pinyin: ['ji\u00f9sh\u00ec'],
+        hant: ['\u5c31\u662f']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5c31\u662f']
+    },
+    {
+      pk: 781713782,
+      url: 'https://www.lingq.com/api/v3/zh/cards/781713782/',
+      term: '\u5c31\u7b97',
+      fragment:
+        '\u5509\uff0c \u6211 \u8bf4\uff0c \u5c31\u7b97 \u6211 \u83dc\uff0c \u4e5f \u522b\u2026',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T05:39:56.431920',
+      status_changed_date: '2026-02-08T05:39:56.431920',
+      notes: '',
+      audio: null,
+      words: ['\u5c31\u7b97'],
+      tags: [],
+      hints: [
+        {
+          id: 18250438,
+          locale: 'en',
+          text: 'even if',
+          term: '\u5c31\u7b97',
+          popularity: 289,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['ji\u00f9su\u00e0n'],
+        hant: ['\u5c31\u7b97']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5c31\u7b97']
+    },
+    {
+      pk: 794554686,
+      url: 'https://www.lingq.com/api/v3/zh/cards/794554686/',
+      term: '\u5c71\u4e0a',
+      fragment: '\u5f00\u8f66 \u53bb \u9644\u8fd1 \u7684 \u5c71\u4e0a',
+      importance: 1,
+      status: 0,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-11T02:09:06.751157',
+      status_changed_date: '2026-03-10T02:09:06.751157',
+      notes: '',
+      audio: null,
+      words: ['\u5c71\u4e0a'],
+      tags: [],
+      hints: [
+        {
+          id: 1534382,
+          locale: 'en',
+          text: 'mountain top',
+          term: '\u5c71\u4e0a',
+          popularity: 820,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['sh\u0101nsh\u00e0ng'],
+        hant: ['\u5c71\u4e0a']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5c71\u4e0a']
+    },
+    {
+      pk: 781021642,
+      url: 'https://www.lingq.com/api/v3/zh/cards/781021642/',
+      term: '\u5de5\u4f5c',
+      fragment: '\u6765 \u5de5\u4f5c\uff1f',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-14T04:25:21.836638',
+      status_changed_date: '2026-02-07T04:25:21.836638',
+      notes: '',
+      audio: null,
+      words: ['\u5de5\u4f5c'],
+      tags: [],
+      hints: [
+        {
+          id: 1145400,
+          locale: 'en',
+          text: 'work',
+          term: '\u5de5\u4f5c',
+          popularity: 1578,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['g\u014dngzu\u00f2'],
+        hant: ['\u5de5\u4f5c']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5de5\u4f5c']
+    },
+    {
+      pk: 794554798,
+      url: 'https://www.lingq.com/api/v3/zh/cards/794554798/',
+      term: '\u5dee\u4e0d\u591a',
+      fragment: '\u54e6 \uff0c\u5dee\u4e0d\u591a \u5230 \u5403 \u665a\u996d \u7684',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-11T02:09:29.747000',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u5dee\u4e0d\u591a'],
+      tags: [],
+      hints: [
+        {
+          id: 14512882,
+          locale: 'en',
+          text: 'almost, nearly',
+          term: '\u5dee\u4e0d\u591a',
+          popularity: 739,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['ch\u00e0budu\u014d'],
+        hant: ['\u5dee\u4e0d\u591a']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5dee\u4e0d\u591a']
+    },
+    {
+      pk: 775822597,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775822597/',
+      term: '\u5e08\u5085',
+      fragment: '\u5e08\u5085 \uff0c\u5728 \u8fd9\u513f \u505c\u8f66',
+      importance: 2,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T04:27:03.127197',
+      status_changed_date: '2026-02-07T04:27:03.127197',
+      notes: '',
+      audio: null,
+      words: ['\u5e08\u5085'],
+      tags: [],
+      hints: [
+        {
+          id: 13488200,
+          locale: 'en',
+          text: 'master',
+          term: '\u5e08\u5085',
+          popularity: 766,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['sh\u012bfu'],
+        hant: ['\u5e2b\u5085']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5e08\u5085']
+    },
+    {
+      pk: 776888688,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776888688/',
+      term: '\u5e26',
+      fragment: '\u6211 \u6ca1 \u5e26 \u96e8\u4f1e',
+      importance: 3,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T04:25:35.805653',
+      status_changed_date: '2026-02-07T04:25:35.805653',
+      notes: '',
+      audio: null,
+      words: ['\u5e26'],
+      tags: [],
+      hints: [
+        {
+          id: 12794828,
+          locale: 'en',
+          text: 'bring',
+          term: '\u5e26',
+          popularity: 231,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u00e0i'],
+        hant: ['\u5e36']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5e26']
+    },
+    {
+      pk: 776160845,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776160845/',
+      term: '\u5e2e',
+      fragment: '\u80fd \u5e2e \u6211 \u4e00\u4e0b \u5417\uff1f',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T06:49:09.895538',
+      status_changed_date: '2026-02-03T06:49:09.895538',
+      notes: '',
+      audio: null,
+      words: ['\u5e2e'],
+      tags: [],
+      hints: [
+        {
+          id: 386069,
+          locale: 'en',
+          text: 'help',
+          term: '\u5e2e',
+          popularity: 3109,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['b\u0101ng'],
+        hant: ['\u5e6b']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5e2e']
+    },
+    {
+      pk: 790056562,
+      url: 'https://www.lingq.com/api/v3/zh/cards/790056562/',
+      term: '\u5e3d\u5b50',
+      fragment:
+        '\u548c \u6211 \u7684 \u84dd \u5e3d\u5b50 \u642d\u914d \u8d77\u6765 \uff0c\u663e\u5f97 \u5f88',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-24T07:01:20',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u5e3d\u5b50'],
+      tags: [],
+      hints: [
+        {
+          id: 10400187,
+          locale: 'en',
+          text: 'hat',
+          term: '\u5e3d\u5b50',
+          popularity: 2105,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['m\u00e0ozi'],
+        hant: ['\u5e3d\u5b50']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5e3d\u5b50']
+    },
+    {
+      pk: 777563809,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777563809/',
+      term: '\u5e72',
+      fragment: '\u4f60 \u5728 \u5e72 \u5417\uff1f',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T06:51:09.410352',
+      status_changed_date: '2026-02-03T06:51:09.410352',
+      notes: '',
+      audio: null,
+      words: ['\u5e72'],
+      tags: [],
+      hints: [
+        {
+          id: 160047900,
+          locale: 'en',
+          text: 'doing',
+          term: '\u5e72',
+          popularity: 97,
+          is_google_translate: false,
+          flagged: false
+        },
+        {
+          id: 11626991,
+          locale: 'en',
+          text: 'dry',
+          term: '\u5e72',
+          popularity: 86,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['g\u0101n'],
+        hant: ['\u5e79']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5e72']
+    },
+    {
+      pk: 781020279,
+      url: 'https://www.lingq.com/api/v3/zh/cards/781020279/',
+      term: '\u5e72\u676f',
+      fragment: '\u5e72\u676f\uff01',
+      importance: 1,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-14T04:27:01.550994',
+      status_changed_date: '2026-02-07T04:27:01.550994',
+      notes: '',
+      audio: null,
+      words: ['\u5e72\u676f'],
+      tags: [],
+      hints: [
+        {
+          id: 20604435,
+          locale: 'en',
+          text: 'cheers',
+          term: '\u5e72\u676f',
+          popularity: 107,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['g\u0101nb\u0113i'],
+        hant: ['\u5e79\u676f']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5e72\u676f']
+    },
+    {
+      pk: 777214134,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777214134/',
+      term: '\u5e76',
+      fragment: '\u6211 \u5148 \u505a \u65e9\u996d \u5e76 \u559d \u4e00\u676f \u5496\u5561',
+      importance: 3,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T03:31:44.629509',
+      status_changed_date: '2026-02-06T03:31:44.629509',
+      notes: '',
+      audio: null,
+      words: ['\u5e76'],
+      tags: [],
+      hints: [
+        {
+          id: 30809162,
+          locale: 'en',
+          text: 'and',
+          term: '\u5e76',
+          popularity: 1187,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['b\u00ecng'],
+        hant: ['\u4e26']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5e76']
+    },
+    {
+      pk: 782328833,
+      url: 'https://www.lingq.com/api/v3/zh/cards/782328833/',
+      term: '\u5e7a',
+      fragment: '\u5e7a \u4e09 \u516d\u2026\u2026',
+      importance: 0,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-14T04:26:53.874082',
+      status_changed_date: '2026-02-07T04:26:53.874082',
+      notes: '',
+      audio: null,
+      words: ['\u5e7a'],
+      tags: [],
+      hints: [
+        {
+          id: 160405584,
+          locale: 'en',
+          text: 'one',
+          term: '\u5e7a',
+          popularity: 67,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['y\u0101o'],
+        hant: ['\u5e7a']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5e7a']
+    },
+    {
+      pk: 781714459,
+      url: 'https://www.lingq.com/api/v3/zh/cards/781714459/',
+      term: '\u5e94\u8be5',
+      fragment: '\u558f\uff0c \u4f60 \u5e94\u8be5 \u8fd9\u6837 \u63e1 \u7403\u62cd\u3002',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T05:39:30.417674',
+      status_changed_date: '2026-02-08T05:39:30.417674',
+      notes: '',
+      audio: null,
+      words: ['\u5e94\u8be5'],
+      tags: [],
+      hints: [
+        {
+          id: 12396286,
+          locale: 'en',
+          text: 'Should',
+          term: '\u5e94\u8be5',
+          popularity: 2670,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['y\u012bngg\u0101i'],
+        hant: ['\u61c9\u8a72']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5e94\u8be5']
+    },
+    {
+      pk: 776513089,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776513089/',
+      term: '\u5ea6\u5047',
+      fragment: '\u6211 \u53bb \u5ea6\u5047',
+      importance: 1,
+      status: 0,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-08T04:27:19.776269',
+      status_changed_date: '2026-02-07T04:27:19.776269',
+      notes: '',
+      audio: null,
+      words: ['\u5ea6\u5047'],
+      tags: [],
+      hints: [
+        {
+          id: 159047713,
+          locale: 'en',
+          text: 'on vacation',
+          term: '\u5ea6\u5047',
+          popularity: 251,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u00f9ji\u00e0'],
+        hant: ['\u5ea6\u5047']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5ea6\u5047']
+    },
+    {
+      pk: 776514973,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776514973/',
+      term: '\u5f00',
+      fragment: '\u53ef\u4ee5 \u5f00 \u7a7a\u8c03 \u5417',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T06:52:10.925183',
+      status_changed_date: '2026-02-03T06:52:10.925183',
+      notes: '',
+      audio: null,
+      words: ['\u5f00'],
+      tags: [],
+      hints: [
+        {
+          id: 12138884,
+          locale: 'en',
+          text: 'Open',
+          term: '\u5f00',
+          popularity: 343,
+          is_google_translate: false,
+          flagged: false
+        },
+        {
+          id: 162241204,
+          locale: 'en',
+          text: 'turn on',
+          term: '\u5f00',
+          popularity: 47,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['k\u0101i'],
+        hant: ['\u958b']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f00']
+    },
+    {
+      pk: 780705734,
+      url: 'https://www.lingq.com/api/v3/zh/cards/780705734/',
+      term: '\u5f00\u4f1a',
+      fragment: '\u6211\u4eec \u4ec0\u4e48 \u65f6\u5019 \u5f00\u4f1a\uff1f',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-07T03:34:29.091166',
+      status_changed_date: '2026-02-06T03:34:29.091166',
+      notes: '',
+      audio: null,
+      words: ['\u5f00\u4f1a'],
+      tags: [],
+      hints: [
+        {
+          id: 72694111,
+          locale: 'en',
+          text: 'have a meeting',
+          term: '\u5f00\u4f1a',
+          popularity: 216,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['k\u0101ihu\u00ec'],
+        hant: ['\u958b\u6703']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f00\u4f1a']
+    },
+    {
+      pk: 783754485,
+      url: 'https://www.lingq.com/api/v3/zh/cards/783754485/',
+      term: '\u5f00\u59cb',
+      fragment: '\u2026\u65e9\u4e0a \u4e03 \u70b9 \u534a \u5f00\u59cb \u5de5\u4f5c\u3002',
+      importance: 3,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T04:26:49.915771',
+      status_changed_date: '2026-02-07T04:26:49.915771',
+      notes: '',
+      audio: null,
+      words: ['\u5f00\u59cb'],
+      tags: [],
+      hints: [
+        {
+          id: 7479604,
+          locale: 'en',
+          text: 'start',
+          term: '\u5f00\u59cb',
+          popularity: 1061,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['k\u0101ish\u01d0'],
+        hant: ['\u958b\u59cb']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f00\u59cb']
+    },
+    {
+      pk: 776513265,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776513265/',
+      term: '\u5f00\u5fc3',
+      fragment: '\u73a9 \u5f97 \u5f00\u5fc3 \u70b9',
+      importance: 2,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T04:26:53.876129',
+      status_changed_date: '2026-02-07T04:26:53.876129',
+      notes: '',
+      audio: null,
+      words: ['\u5f00\u5fc3'],
+      tags: [],
+      hints: [
+        {
+          id: 18780420,
+          locale: 'en',
+          text: 'happy',
+          term: '\u5f00\u5fc3',
+          popularity: 581,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['k\u0101ix\u012bn'],
+        hant: ['\u958b\u5fc3']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f00\u5fc3']
+    },
+    {
+      pk: 777214180,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777214180/',
+      term: '\u5f00\u8f66',
+      fragment: '\u63a5\u7740 \u5f00\u8f66 \u53bb \u4e0a\u73ed',
+      importance: 2,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T06:51:44.632252',
+      status_changed_date: '2026-02-03T06:51:44.632252',
+      notes: '',
+      audio: null,
+      words: ['\u5f00\u8f66'],
+      tags: [],
+      hints: [
+        {
+          id: 12705088,
+          locale: 'en',
+          text: 'to drive a car',
+          term: '\u5f00\u8f66',
+          popularity: 113,
+          is_google_translate: false,
+          flagged: true
+        },
+        {
+          id: 10483999,
+          locale: 'en',
+          text: 'drive',
+          term: '\u5f00\u8f66',
+          popularity: 2524,
+          is_google_translate: true,
+          flagged: true
+        }
+      ],
+      transliteration: {
+        pinyin: ['k\u0101ich\u0113'],
+        hant: ['\u958b\u8eca']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f00\u8f66']
+    },
+    {
+      pk: 792058225,
+      url: 'https://www.lingq.com/api/v3/zh/cards/792058225/',
+      term: '\u5f00\u95e8',
+      fragment: '\u8fd9 \u5bb6 \u996d\u9986 \u51e0\u70b9 \u5f00\u95e8\uff1f',
+      importance: 1,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-03T05:06:18.498957',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u5f00\u95e8'],
+      tags: [],
+      hints: [
+        {
+          id: 226800191,
+          locale: 'en',
+          text: 'open (plural)',
+          term: '\u5f00\u95e8',
+          popularity: 1,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['k\u0101im\u00e9n'],
+        hant: ['\u958b\u9580']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f00\u95e8']
+    },
+    {
+      pk: 777907379,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777907379/',
+      term: '\u5f1f\u5f1f',
+      fragment:
+        '\u7238\u7238\u3001 \u5988\u5988\u3001 \u54e5\u54e5\u3001 \u5f1f\u5f1f\u3001 \u59d0\u59d0 \u548c \u6211\u3002',
+      importance: 2,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T06:49:11.714963',
+      status_changed_date: '2026-02-03T06:49:11.714963',
+      notes: '',
+      audio: null,
+      words: ['\u5f1f\u5f1f'],
+      tags: [],
+      hints: [
+        {
+          id: 12710257,
+          locale: 'en',
+          text: 'younger brother',
+          term: '\u5f1f\u5f1f',
+          popularity: 501,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u00ecdi'],
+        hant: ['\u5f1f\u5f1f']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f1f\u5f1f']
+    },
+    {
+      pk: 785462486,
+      url: 'https://www.lingq.com/api/v3/zh/cards/785462486/',
+      term: '\u5f20\u57fa',
+      fragment: '\u55e8\uff0c \u6211 \u53eb \u5f20\u57fa\u3002',
+      importance: 0,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-11T04:06:00.985094',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u5f20\u57fa'],
+      tags: [],
+      hints: [
+        {
+          id: 69293346,
+          locale: 'en',
+          text: 'Zhang Ji',
+          term: '\u5f20\u57fa',
+          popularity: 119,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['zh\u0101ng j\u012b'],
+        hant: ['\u5f35\u57fa']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f20\u57fa']
+    },
+    {
+      pk: 785462267,
+      url: 'https://www.lingq.com/api/v3/zh/cards/785462267/',
+      term: '\u5f20\u6d9b',
+      fragment: '\u6253\u6270 \u4e00\u4e0b\uff0c \u4f60 \u662f \u5f20\u6d9b \u5417\uff1f',
+      importance: 0,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-11T04:04:39.062920',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u5f20\u6d9b'],
+      tags: [],
+      hints: [
+        {
+          id: 386685,
+          locale: 'en',
+          text: 'Zhang Tao',
+          term: '\u5f20\u6d9b',
+          popularity: 166,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['zh\u0101ng t\u0101o'],
+        hant: ['\u5f35\u6fe4']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f20\u6d9b']
+    },
+    {
+      pk: 784071319,
+      url: 'https://www.lingq.com/api/v3/zh/cards/784071319/',
+      term: '\u5f53',
+      fragment: '\u6211 \u5728 \u4e00\u5bb6 \u9910\u5385 \u5f53 \u53a8\u5e08\u3002',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-07T03:17:02.462877',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u5f53'],
+      tags: [],
+      hints: [
+        {
+          id: 29668380,
+          locale: 'en',
+          text: 'Work, serve as / When',
+          term: '\u5f53',
+          popularity: 66,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u0101ng'],
+        hant: ['\u7576']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f53']
+    },
+    {
+      pk: 775820042,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775820042/',
+      term: '\u5f53\u5fc3',
+      fragment: '\u5b9d\u5b9d \uff0c\u5f53\u5fc3',
+      importance: 0,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-21T03:33:44.649076',
+      status_changed_date: '2026-02-06T03:33:44.649076',
+      notes: '',
+      audio: null,
+      words: ['\u5f53\u5fc3'],
+      tags: [],
+      hints: [
+        {
+          id: 159988847,
+          locale: 'en',
+          text: 'be careful',
+          term: '\u5f53\u5fc3',
+          popularity: 350,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u0101ngx\u012bn'],
+        hant: ['\u7576\u5fc3']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f53\u5fc3']
+    },
+    {
+      pk: 776157813,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776157813/',
+      term: '\u5f53\u7136',
+      fragment: '\u5f53\u7136\u3002',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T06:49:13.341723',
+      status_changed_date: '2026-02-03T06:49:13.341723',
+      notes: '',
+      audio: null,
+      words: ['\u5f53\u7136'],
+      tags: [],
+      hints: [
+        {
+          id: 2788151,
+          locale: 'en',
+          text: 'of course',
+          term: '\u5f53\u7136',
+          popularity: 397,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u0101ngr\u00e1n'],
+        hant: ['\u7576\u7136']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f53\u7136']
+    },
+    {
+      pk: 784784404,
+      url: 'https://www.lingq.com/api/v3/zh/cards/784784404/',
+      term: '\u5f85',
+      fragment:
+        '\u6211 \u8fd8\u662f \u51b3\u5b9a \u5f85 \u5728 \u5bb6\u91cc \u5b66\u4e60\u3001 \u7701\u94b1\u3002',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T05:23:13.474880',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u5f85'],
+      tags: [],
+      hints: [
+        {
+          id: 34606780,
+          locale: 'en',
+          text: 'wait, stay',
+          term: '\u5f85',
+          popularity: 157,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u0101i'],
+        hant: ['\u5f85']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f85']
+    },
+    {
+      pk: 784784102,
+      url: 'https://www.lingq.com/api/v3/zh/cards/784784102/',
+      term: '\u5f85\u5728',
+      fragment:
+        '\u4ed6 \u8fd8\u662f \u51b3\u5b9a \u5f85\u5728 \u5bb6\u91cc \u5b66\u4e60\u3001 \u7701\u94b1\u3002',
+      importance: 0,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T05:20:50.961777',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u5f85\u5728'],
+      tags: [],
+      hints: [
+        {
+          id: 142495474,
+          locale: 'en',
+          text: 'stay at',
+          term: '\u5f85\u5728',
+          popularity: 645,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u0101i z\u00e0i'],
+        hant: ['\u5f85\u5728']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f85\u5728']
+    },
+    {
+      pk: 775450751,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775450751/',
+      term: '\u5f88',
+      fragment: '\u6211 \u5f88 \u597d\u3002',
+      importance: 3,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-21T03:41:11.225884',
+      status_changed_date: '2026-02-06T03:41:11.225884',
+      notes: '',
+      audio: null,
+      words: ['\u5f88'],
+      tags: [],
+      hints: [
+        {
+          id: 128273258,
+          locale: 'en',
+          text: 'very',
+          term: '\u5f88',
+          popularity: 1698,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['h\u011bn'],
+        hant: ['\u5f88']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f88']
+    },
+    {
+      pk: 784071440,
+      url: 'https://www.lingq.com/api/v3/zh/cards/784071440/',
+      term: '\u5f88\u591a',
+      fragment:
+        '\u8fd9\u4e9b \u987e\u5ba2 \u6765\u81ea \u5f88\u591a \u4e0d\u540c \u7684 \u56fd\u5bb6\u3002',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-07T03:17:43.835676',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u5f88\u591a'],
+      tags: [],
+      hints: [
+        {
+          id: 15068958,
+          locale: 'en',
+          text: 'very many, very much, great (quantity)',
+          term: '\u5f88\u591a',
+          popularity: 155614,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['h\u011bn du\u014d'],
+        hant: ['\u5f88\u591a']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f88\u591a']
+    },
+    {
+      pk: 785461915,
+      url: 'https://www.lingq.com/api/v3/zh/cards/785461915/',
+      term: '\u5f88\u597d',
+      fragment: '\u54e6\uff0c \u5f88\u597d\u3002',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-11T04:02:37.587907',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u5f88\u597d'],
+      tags: [],
+      hints: [
+        {
+          id: 5897643,
+          locale: 'en',
+          text: 'very good',
+          term: '\u5f88\u597d',
+          popularity: 294,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['h\u011bn h\u01ceo'],
+        hant: ['\u5f88\u597d']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f88\u597d']
+    },
+    {
+      pk: 776157676,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776157676/',
+      term: '\u5f97',
+      fragment: '\u4f60 \u53ef\u4ee5 \u8bf4 \u5f97 \u6162 \u4e00\u70b9 \u5417\uff1f',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T06:52:21.213888',
+      status_changed_date: '2026-02-03T06:52:21.213888',
+      notes: '',
+      audio: null,
+      words: ['\u5f97'],
+      tags: [],
+      hints: [
+        {
+          id: 19577583,
+          locale: 'en',
+          text: 'structural particle: used after a verb (or adjective as main verb), linking it to following phrase indicating effect, degree, possibility etc',
+          term: '\u5f97',
+          popularity: 183584,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['de'],
+        hant: ['\u5f97']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5f97']
+    },
+    {
+      pk: 775822332,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775822332/',
+      term: '\u5fb7\u56fd',
+      fragment: '\u5bc4\u5230 \u5fb7\u56fd',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-14T04:28:04.787737',
+      status_changed_date: '2026-02-07T04:28:04.787737',
+      notes: '',
+      audio: null,
+      words: ['\u5fb7\u56fd'],
+      tags: [],
+      hints: [
+        {
+          id: 13483132,
+          locale: 'en',
+          text: 'Germany',
+          term: '\u5fb7\u56fd',
+          popularity: 571,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u00e9gu\u00f3'],
+        hant: ['\u5fb7\u570b']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5fb7\u56fd']
+    },
+    {
+      pk: 775455629,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775455629/',
+      term: '\u5fd9',
+      fragment: '\u4ed6\u4eec \u90fd \u5f88 \u5fd9\u3002',
+      importance: 3,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-21T03:38:31.002502',
+      status_changed_date: '2026-02-06T03:38:31.002502',
+      notes: '',
+      audio: null,
+      words: ['\u5fd9'],
+      tags: [],
+      hints: [
+        {
+          id: 387363,
+          locale: 'en',
+          text: 'busy',
+          term: '\u5fd9',
+          popularity: 3731,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['m\u00e1ng'],
+        hant: ['\u5fd9']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5fd9']
+    },
+    {
+      pk: 777210894,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777210894/',
+      term: '\u5feb',
+      fragment: '\u5feb \u8d77\u5e8a',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T06:51:37.897343',
+      status_changed_date: '2026-02-03T06:51:37.897343',
+      notes: '',
+      audio: null,
+      words: ['\u5feb'],
+      tags: [],
+      hints: [
+        {
+          id: 387430,
+          locale: 'en',
+          text: 'fast',
+          term: '\u5feb',
+          popularity: 1778,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['ku\u00e0i'],
+        hant: ['\u5feb']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u5feb']
+    },
+    {
+      pk: 776888339,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776888339/',
+      term: '\u600e\u4e48',
+      fragment: '',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T06:53:34.707928',
+      status_changed_date: '2026-02-03T06:53:34.707928',
+      notes: '',
+      audio: null,
+      words: ['\u600e\u4e48'],
+      tags: [],
+      hints: [
+        {
+          id: 114588890,
+          locale: 'en',
+          text: 'what',
+          term: '\u600e\u4e48',
+          popularity: 22,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['z\u011bnme'],
+        hant: ['\u600e\u9ebc']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u600e\u4e48']
+    },
+    {
+      pk: 776515122,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776515122/',
+      term: '\u600e\u4e48\u6837',
+      fragment: '',
+      importance: 3,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T03:41:06.946032',
+      status_changed_date: '2026-02-06T03:41:06.946032',
+      notes: '',
+      audio: null,
+      words: ['\u600e\u4e48\u6837'],
+      tags: [],
+      hints: [
+        {
+          id: 12855303,
+          locale: 'en',
+          text: 'how is it',
+          term: '\u600e\u4e48\u6837',
+          popularity: 150,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['z\u011bnmey\u00e0ng'],
+        hant: ['\u600e\u9ebc\u6a23']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u600e\u4e48\u6837']
+    },
+    {
+      pk: 776889517,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776889517/',
+      term: '\u6015',
+      fragment: '\u6211 \u6015 \u9ed1',
+      importance: 2,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T06:53:46.176438',
+      status_changed_date: '2026-02-03T06:53:46.176438',
+      notes: '',
+      audio: null,
+      words: ['\u6015'],
+      tags: [],
+      hints: [
+        {
+          id: 22077170,
+          locale: 'en',
+          text: 'dread, be afraid',
+          term: '\u6015',
+          popularity: 30,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['p\u00e0'],
+        hant: ['\u6015']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6015']
+    },
+    {
+      pk: 792059210,
+      url: 'https://www.lingq.com/api/v3/zh/cards/792059210/',
+      term: '\u6069',
+      fragment: '\u6069\uff0c \u597d \u4e3b\u610f\u3002',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-03T05:11:57.581210',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u6069'],
+      tags: [],
+      hints: [
+        {
+          id: 13540184,
+          locale: 'en',
+          text: 'Yep',
+          term: '\u6069',
+          popularity: 1637,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['\u0113n'],
+        hant: ['\u6069']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6069']
+    },
+    {
+      pk: 775818009,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775818009/',
+      term: '\u60a8',
+      fragment: '\u60a8 \u7b2c\u4e00\u6b21 \u6765 \u4e2d\u56fd \u5417',
+      importance: 3,
+      status: 3,
+      extended_status: 2,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-05-04T06:53:30.644484',
+      status_changed_date: '2026-02-03T06:53:30.644484',
+      notes: '',
+      audio: null,
+      words: ['\u60a8'],
+      tags: [],
+      hints: [
+        {
+          id: 1208710,
+          locale: 'en',
+          text: 'you',
+          term: '\u60a8',
+          popularity: 358,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['n\u00edn'],
+        hant: ['\u60a8']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u60a8']
+    },
+    {
+      pk: 779979826,
+      url: 'https://www.lingq.com/api/v3/zh/cards/779979826/',
+      term: '\u60f3',
+      fragment: '\u5148\u751f\uff0c \u4f60 \u60f3 \u5403 \u4ec0\u4e48\uff1f',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T06:53:19.130309',
+      status_changed_date: '2026-02-03T06:53:19.130309',
+      notes: '',
+      audio: null,
+      words: ['\u60f3'],
+      tags: [],
+      hints: [
+        {
+          id: 19030459,
+          locale: 'en',
+          text: 'want',
+          term: '\u60f3',
+          popularity: 653,
+          is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
         pinyin: ['xi\u01ceng'],
-        hant: ['\u97ff']
+        hant: ['\u60f3']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u54cd']
+      writings: ['\u60f3']
     },
     {
-      pk: 777563877,
-      url: 'https://www.lingq.com/api/v3/zh/cards/777563877/',
-      term: '\u54ce\u5440',
-      fragment: '\u54ce\u5440\uff0c \u6211\u4eec \u8d70 \u5427\uff01',
-      importance: 2,
-      status: 2,
-      extended_status: 0,
+      pk: 792059347,
+      url: 'https://www.lingq.com/api/v3/zh/cards/792059347/',
+      term: '\u60f3\u597d',
+      fragment: '\u55ef\uff0c \u6211 \u4e5f \u6ca1 \u60f3\u597d\u3002',
+      importance: 0,
+      status: 0,
+      extended_status: null,
       last_reviewed_correct: null,
-      srs_due_date: '2026-02-13T03:31:52.785650',
-      status_changed_date: '2026-02-06T03:31:52.785650',
+      srs_due_date: '2026-03-03T05:12:45.515709',
+      status_changed_date: null,
       notes: '',
       audio: null,
-      words: ['\u54ce\u5440'],
+      words: ['\u60f3\u597d'],
       tags: [],
       hints: [
         {
-          id: 174845244,
+          id: 171172133,
           locale: 'en',
-          text: 'oh no',
-          term: '\u54ce\u5440',
-          popularity: 101,
+          text: 'decide',
+          term: '\u60f3\u597d',
+          popularity: 18,
           is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['\u0101iy\u0101'],
-        hant: ['\u54ce\u5440']
+        pinyin: ['xi\u01ceng h\u01ceo'],
+        hant: ['\u60f3\u597d']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u54ce\u5440']
+      writings: ['\u60f3\u597d']
     },
     {
-      pk: 775451486,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775451486/',
-      term: '\u54e5\u54e5',
-      fragment: '\u4ed6 \u6709 \u54e5\u54e5 \u5417\uff1f',
+      pk: 794245350,
+      url: 'https://www.lingq.com/api/v3/zh/cards/794245350/',
+      term: '\u60f3\u8981',
+      fragment: '\u4f60 \u60f3\u8981 \u6765 \u70b9 \u4ec0\u4e48',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-10T03:48:14.836000',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u60f3\u8981'],
+      tags: [],
+      hints: [
+        {
+          id: 387968,
+          locale: 'en',
+          text: 'want',
+          term: '\u60f3\u8981',
+          popularity: 1724,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['xi\u01cengy\u00e0o'],
+        hant: ['\u60f3\u8981']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u60f3\u8981']
+    },
+    {
+      pk: 783753107,
+      url: 'https://www.lingq.com/api/v3/zh/cards/783753107/',
+      term: '\u6109\u5feb',
+      fragment: '\u2026\u804a\u5929\uff0c \u8fc8\u514b \u611f\u5230 \u5f88 \u6109\u5feb\u3002',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-08T04:25:44.837835',
+      status_changed_date: '2026-02-07T04:25:44.837835',
+      notes: '',
+      audio: null,
+      words: ['\u6109\u5feb'],
+      tags: [],
+      hints: [
+        {
+          id: 27236985,
+          locale: 'en',
+          text: 'cheerful / happy / delighted',
+          term: '\u6109\u5feb',
+          popularity: 266276,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['y\u00faku\u00e0i'],
+        hant: ['\u6109\u5feb']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6109\u5feb']
+    },
+    {
+      pk: 783753087,
+      url: 'https://www.lingq.com/api/v3/zh/cards/783753087/',
+      term: '\u611f\u5230',
+      fragment:
+        '\u2026\u8fd9\u4e9b \u987e\u5ba2 \u804a\u5929\uff0c \u8fc8\u514b \u611f\u5230 \u5f88 \u6109\u5feb\u3002',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-08T04:25:09.028320',
+      status_changed_date: '2026-02-07T04:25:09.028320',
+      notes: '',
+      audio: null,
+      words: ['\u611f\u5230'],
+      tags: [],
+      hints: [
+        {
+          id: 29668143,
+          locale: 'en',
+          text: 'feel / sense',
+          term: '\u611f\u5230',
+          popularity: 86,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['g\u01cend\u00e0o'],
+        hant: ['\u611f\u5230']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u611f\u5230']
+    },
+    {
+      pk: 776157746,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776157746/',
+      term: '\u6162',
+      fragment: '\u4f60 \u53ef\u4ee5 \u8bf4 \u5f97 \u6162 \u4e00\u70b9 \u5417\uff1f',
+      importance: 2,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T04:25:06.564759',
+      status_changed_date: '2026-02-07T04:25:06.564759',
+      notes: '',
+      audio: null,
+      words: ['\u6162'],
+      tags: [],
+      hints: [
+        {
+          id: 208345791,
+          locale: 'en',
+          text: 'slow',
+          term: '\u6162',
+          popularity: 197,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['m\u00e0n'],
+        hant: ['\u6162']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6162']
+    },
+    {
+      pk: 782328076,
+      url: 'https://www.lingq.com/api/v3/zh/cards/782328076/',
+      term: '\u61c2',
+      fragment: '\u4f60 \u4e0d \u61c2 \u4e2d\u6587\uff1f',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-08T04:28:17.313728',
+      status_changed_date: '2026-02-07T04:28:17.313728',
+      notes: '',
+      audio: null,
+      words: ['\u61c2'],
+      tags: [],
+      hints: [
+        {
+          id: 13554542,
+          locale: 'en',
+          text: 'understand',
+          term: '\u61c2',
+          popularity: 1076,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u01d2ng'],
+        hant: ['\u61c2']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u61c2']
+    },
+    {
+      pk: 775450734,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775450734/',
+      term: '\u6211',
+      fragment: '\u6211 \u5f88 \u597d\u3002',
       importance: 3,
       status: 3,
       extended_status: 2,
       last_reviewed_correct: null,
-      srs_due_date: '2026-04-28T02:00:19.284234',
-      status_changed_date: '2026-01-28T02:00:19.284234',
+      srs_due_date: '2026-04-28T02:01:33.879472',
+      status_changed_date: '2026-01-28T02:01:33.879472',
       notes: '',
       audio: null,
-      words: ['\u54e5\u54e5'],
+      words: ['\u6211'],
       tags: [],
       hints: [
         {
-          id: 12710255,
+          id: 163083465,
           locale: 'en',
-          text: 'older brother',
-          term: '\u54e5\u54e5',
-          popularity: 393,
+          text: 'I',
+          term: '\u6211',
+          popularity: 2487,
           is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['g\u0113ge'],
-        hant: ['\u54e5\u54e5']
+        pinyin: ['w\u01d2'],
+        hant: ['\u6211']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u54e5\u54e5']
+      writings: ['\u6211']
     },
     {
-      pk: 778647911,
-      url: 'https://www.lingq.com/api/v3/zh/cards/778647911/',
-      term: '\u54e6',
-      fragment: '\u54e6\uff0c \u542c\u9519 \u4e86\uff01',
+      pk: 776514727,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776514727/',
+      term: '\u6211\u4eec',
+      fragment: '',
       importance: 3,
-      status: 2,
-      extended_status: 0,
+      status: 3,
+      extended_status: 3,
       last_reviewed_correct: null,
-      srs_due_date: '2026-02-08T03:53:45.739951',
-      status_changed_date: '2026-02-01T03:53:45.739951',
+      srs_due_date: '2039-10-02T04:38:41.718484',
+      status_changed_date: '2026-01-23T04:38:41.718484',
       notes: '',
       audio: null,
-      words: ['\u54e6'],
+      words: ['\u6211\u4eec'],
       tags: [],
       hints: [
         {
-          id: 7407919,
+          id: 5195261,
           locale: 'en',
-          text: 'oh',
-          term: '\u54e6',
-          popularity: 477,
-          is_google_translate: false,
+          text: 'we',
+          term: '\u6211\u4eec',
+          popularity: 210398,
+          is_google_translate: true,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['\u00f3'],
-        hant: ['\u54e6']
+        pinyin: ['w\u01d2men'],
+        hant: ['\u6211\u5011']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u54e6']
+      writings: ['\u6211\u4eec']
     },
     {
-      pk: 781714708,
-      url: 'https://www.lingq.com/api/v3/zh/cards/781714708/',
-      term: '\u54ea',
-      fragment: '\u54ea \u6709 \u554a\uff0c \u4f60 \u770b\u2026',
+      pk: 782019361,
+      url: 'https://www.lingq.com/api/v3/zh/cards/782019361/',
+      term: '\u624b',
+      fragment: '\u2026\u4e2a \u793c \u5440\uff0c \u63e1\u63e1 \u624b\uff0c',
       importance: 3,
       status: 1,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-02-09T03:34:32.092238',
-      status_changed_date: '2026-02-06T03:34:32.092238',
+      srs_due_date: '2026-02-09T03:38:38.302009',
+      status_changed_date: '2026-02-06T03:38:38.302009',
       notes: '',
       audio: null,
-      words: ['\u54ea'],
+      words: ['\u624b'],
       tags: [],
       hints: [
         {
-          id: 17329940,
+          id: 5941747,
           locale: 'en',
-          text: 'where, which',
-          term: '\u54ea',
-          popularity: 851,
+          text: 'hand',
+          term: '\u624b',
+          popularity: 544,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['sh\u01d2u'],
+        hant: ['\u624b']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u624b']
+    },
+    {
+      pk: 777564344,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777564344/',
+      term: '\u624b\u673a',
+      fragment: '\u8c01 \u7684 \u624b\u673a \u5728 \u54cd\uff1f',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-13T03:40:02.449410',
+      status_changed_date: '2026-02-06T03:40:02.449410',
+      notes: '',
+      audio: null,
+      words: ['\u624b\u673a'],
+      tags: [],
+      hints: [
+        {
+          id: 18308688,
+          locale: 'en',
+          text: 'mobile phone',
+          term: '\u624b\u673a',
+          popularity: 420,
           is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['na'],
-        hant: ['\u54ea']
+        pinyin: ['sh\u01d2uj\u012b'],
+        hant: ['\u624b\u6a5f']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u54ea']
+      writings: ['\u624b\u673a']
     },
     {
-      pk: 779644455,
-      url: 'https://www.lingq.com/api/v3/zh/cards/779644455/',
-      term: '\u54ea\u513f',
-      fragment: '\u4f60 \u597d\uff0c \u4f60 \u53bb \u54ea\u513f\uff1f',
+      pk: 781713444,
+      url: 'https://www.lingq.com/api/v3/zh/cards/781713444/',
+      term: '\u6253',
+      fragment:
+        '\u5475\u5475\uff0c \u7fbd\u6bdb\u7403 \u6211 \u53ef \u6253 \u4e0d\u597d\uff0c \u4f60 \u6765 \u53d1\u7403\u2026',
       importance: 3,
-      status: 3,
+      status: 1,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-02-23T05:39:24.017019',
-      status_changed_date: '2026-02-08T05:39:24.017019',
+      srs_due_date: '2026-02-09T03:38:34.950452',
+      status_changed_date: '2026-02-06T03:38:34.950452',
       notes: '',
       audio: null,
-      words: ['\u54ea\u513f'],
+      words: ['\u6253'],
       tags: [],
       hints: [
         {
-          id: 43279837,
+          id: 224451014,
           locale: 'en',
-          text: 'where?',
-          term: '\u54ea\u513f',
-          popularity: 885,
-          is_google_translate: true,
+          text: 'hit / play (ball)',
+          term: '\u6253',
+          popularity: 1,
+          is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['n\u01cer'],
-        hant: ['\u54ea\u5152']
+        pinyin: ['d\u00e1'],
+        hant: ['\u6253']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u54ea\u513f']
+      writings: ['\u6253']
     },
     {
-      pk: 775822270,
-      url: 'https://www.lingq.com/api/v3/zh/cards/775822270/',
-      term: '\u54ea\u91cc',
-      fragment: '\u5bc4 \u5230 \u54ea\u91cc',
-      importance: 3,
-      status: 3,
-      extended_status: 0,
-      last_reviewed_correct: null,
-      srs_due_date: '2026-02-17T06:02:09.553264',
-      status_changed_date: '2026-02-02T06:02:09.553264',
-      notes: '',
-      audio: null,
-      words: ['\u54ea\u91cc'],
-      tags: [],
-      hints: [
-        {
-          id: 8466111,
-          locale: 'en',
-          text: 'where',
-          term: '\u54ea\u91cc',
-          popularity: 673,
-          is_google_translate: true,
-          flagged: false
-        }
-      ],
-      transliteration: {
-        pinyin: ['n\u01cel\u01d0'],
-        hant: ['\u54ea\u88cf']
-      },
-      gTags: [],
-      wordTags: [],
-      readings: {},
-      writings: ['\u54ea\u91cc']
-    },
-    {
-      pk: 779644876,
-      url: 'https://www.lingq.com/api/v3/zh/cards/779644876/',
-      term: '\u54ed',
-      fragment: '\u522b \u54ed \u4e86\u3002',
+      pk: 782708384,
+      url: 'https://www.lingq.com/api/v3/zh/cards/782708384/',
+      term: '\u6253\u5f00',
+      fragment: '\u6253\u5f00 \u4e66\u3002',
       importance: 2,
-      status: 3,
+      status: 1,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-02-23T05:40:21.203470',
-      status_changed_date: '2026-02-08T05:40:21.203470',
+      srs_due_date: '2026-02-10T04:27:15.384271',
+      status_changed_date: '2026-02-07T04:27:15.384271',
       notes: '',
       audio: null,
-      words: ['\u54ed'],
+      words: ['\u6253\u5f00'],
       tags: [],
       hints: [
         {
-          id: 13573090,
+          id: 21491380,
           locale: 'en',
-          text: 'cry',
-          term: '\u54ed',
-          popularity: 576,
-          is_google_translate: true,
+          text: 'to open',
+          term: '\u6253\u5f00',
+          popularity: 7,
+          is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['k\u016b'],
-        hant: ['\u54ed']
+        pinyin: ['d\u01cek\u0101i'],
+        hant: ['\u6253\u958b']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u54ed']
+      writings: ['\u6253\u5f00']
     },
     {
-      pk: 781713755,
-      url: 'https://www.lingq.com/api/v3/zh/cards/781713755/',
-      term: '\u5509',
-      fragment: '\u5509\uff0c \u6211 \u8bf4\uff0c \u5c31\u7b97 \u6211\u2026',
+      pk: 785462091,
+      url: 'https://www.lingq.com/api/v3/zh/cards/785462091/',
+      term: '\u6253\u6270',
+      fragment: '\u6253\u6270 \u4e00\u4e0b\uff0c \u4f60 \u662f \u6768\u96ea\u2026',
+      importance: 1,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-11T04:03:40.095421',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u6253\u6270'],
+      tags: [],
+      hints: [
+        {
+          id: 187221175,
+          locale: 'en',
+          text: 'to disturb; to bother; to trouble',
+          term: '\u6253\u6270',
+          popularity: 7020,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u01cer\u01ceo'],
+        hant: ['\u6253\u64fe']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6253\u6270']
+    },
+    {
+      pk: 784784936,
+      url: 'https://www.lingq.com/api/v3/zh/cards/784784936/',
+      term: '\u6253\u7b97',
+      fragment: '\u8fbe\u65af\u6c40 \u6253\u7b97 \u5b66 \u6cd5\u8bed \u5417\uff1f',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T05:27:09.041366',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u6253\u7b97'],
+      tags: [],
+      hints: [
+        {
+          id: 15079244,
+          locale: 'en',
+          text: 'plan, intend',
+          term: '\u6253\u7b97',
+          popularity: 275277,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u01cesu\u00e0n'],
+        hant: ['\u6253\u7b97']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6253\u7b97']
+    },
+    {
+      pk: 781713618,
+      url: 'https://www.lingq.com/api/v3/zh/cards/781713618/',
+      term: '\u6263\u7403',
+      fragment: '\u6f02\u4eae \u7684 \u6263\u7403\uff01',
+      importance: 0,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-07T03:40:16.502827',
+      status_changed_date: '2026-02-06T03:40:16.502827',
+      notes: '',
+      audio: null,
+      words: ['\u6263\u7403'],
+      tags: [],
+      hints: [
+        {
+          id: 195673377,
+          locale: 'en',
+          text: 'spike ball',
+          term: '\u6263\u7403',
+          popularity: 27,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['k\u00f2uqi\u00fa'],
+        hant: ['\u6263\u7403']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6263\u7403']
+    },
+    {
+      pk: 782018834,
+      url: 'https://www.lingq.com/api/v3/zh/cards/782018834/',
+      term: '\u627e',
+      fragment: '\u627e\u554a \u627e\u554a \u627e \u670b\u53cb\uff0c',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-14T04:25:33.868625',
+      status_changed_date: '2026-02-07T04:25:33.868625',
+      notes: '',
+      audio: null,
+      words: ['\u627e'],
+      tags: [],
+      hints: [
+        {
+          id: 224552539,
+          locale: 'en',
+          text: 'search / look for',
+          term: '\u627e',
+          popularity: 1,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['zh\u01ceo'],
+        hant: ['\u627e']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u627e']
+    },
+    {
+      pk: 782018857,
+      url: 'https://www.lingq.com/api/v3/zh/cards/782018857/',
+      term: '\u627e\u5230',
+      fragment: '\u627e\u5230 \u4e00 \u4e2a \u597d \u670b\u53cb\uff0c',
+      importance: 3,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T03:40:32.573754',
+      status_changed_date: '2026-02-06T03:40:32.573754',
+      notes: '',
+      audio: null,
+      words: ['\u627e\u5230'],
+      tags: [],
+      hints: [
+        {
+          id: 15067708,
+          locale: 'en',
+          text: 'succeeded in finding',
+          term: '\u627e\u5230',
+          popularity: 2746,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['zh\u01ceod\u00e0o'],
+        hant: ['\u627e\u5230']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u627e\u5230']
+    },
+    {
+      pk: 782018828,
+      url: 'https://www.lingq.com/api/v3/zh/cards/782018828/',
+      term: '\u627e\u554a',
+      fragment: '\u627e\u554a \u627e\u554a \u627e \u670b\u53cb\uff0c',
+      importance: 0,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T03:40:22.373864',
+      status_changed_date: '2026-02-06T03:40:22.373864',
+      notes: '',
+      audio: null,
+      words: ['\u627e\u554a'],
+      tags: [],
+      hints: [
+        {
+          id: 186834364,
+          locale: 'en',
+          text: 'find',
+          term: '\u627e\u554a',
+          popularity: 75,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['zh\u01ceo \u00e1'],
+        hant: ['\u627e\u554a']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u627e\u554a']
+    },
+    {
+      pk: 786158294,
+      url: 'https://www.lingq.com/api/v3/zh/cards/786158294/',
+      term: '\u628a',
+      fragment: '\u8bf7 \u628a \u6211 \u7684 \u4e0a\u8863 \u7ed9\u2026',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-13T04:40:42.858880',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u628a'],
+      tags: [],
+      hints: [
+        {
+          id: 217251774,
+          locale: 'en',
+          text: 'particle for object manipulation',
+          term: '\u628a',
+          popularity: 49,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['b\u00e0'],
+        hant: ['\u628a']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u628a']
+    },
+    {
+      pk: 776511831,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776511831/',
+      term: '\u62a5\u7eb8',
+      fragment: '\u770b \u62a5\u7eb8',
       importance: 2,
       status: 2,
       extended_status: 0,
       last_reviewed_correct: null,
-      srs_due_date: '2026-02-14T04:22:56.768278',
-      status_changed_date: '2026-02-07T04:22:56.768278',
+      srs_due_date: '2026-02-10T06:53:28.465854',
+      status_changed_date: '2026-02-03T06:53:28.465854',
       notes: '',
       audio: null,
-      words: ['\u5509'],
+      words: ['\u62a5\u7eb8'],
       tags: [],
       hints: [
         {
-          id: 160054474,
+          id: 7479801,
           locale: 'en',
-          text: 'sigh',
-          term: '\u5509',
-          popularity: 181,
+          text: 'newspaper',
+          term: '\u62a5\u7eb8',
+          popularity: 464,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['b\u00e0ozh\u01d0'],
+        hant: ['\u5831\u7d19']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u62a5\u7eb8']
+    },
+    {
+      pk: 792383362,
+      url: 'https://www.lingq.com/api/v3/zh/cards/792383362/',
+      term: '\u62dc\u62dc',
+      fragment: '\u597d\u7684\u3002 \u62dc\u62dc\uff0c \u4e00\u4f1a\u89c1\u3002',
+      importance: 0,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-04T05:09:48.988117',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u62dc\u62dc'],
+      tags: [],
+      hints: [
+        {
+          id: 389140,
+          locale: 'en',
+          text: 'bye bye',
+          term: '\u62dc\u62dc',
+          popularity: 471,
           is_google_translate: false,
           flagged: false
         }
       ],
       transliteration: {
-        pinyin: ['\u00e0i'],
-        hant: ['\u5509']
+        pinyin: ['b\u00e1ib\u00e1i'],
+        hant: ['\u62dc\u62dc']
       },
       gTags: [],
       wordTags: [],
       readings: {},
-      writings: ['\u5509']
+      writings: ['\u62dc\u62dc']
+    },
+    {
+      pk: 795224519,
+      url: 'https://www.lingq.com/api/v3/zh/cards/795224519/',
+      term: '\u62ff\u6765',
+      fragment:
+        '\u5728 \u83dc\u5355 \u62ff\u6765 \u4e4b\u524d \uff0c\u4f60\u4eec \u60f3\u8981 \u559d',
+      importance: 0,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-13T03:47:13.976000',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u62ff\u6765'],
+      tags: [],
+      hints: [
+        {
+          id: 20278396,
+          locale: 'en',
+          text: 'to bring / to fetch / to get',
+          term: '\u62ff\u6765',
+          popularity: 634,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['n\u00e1l\u00e1i'],
+        hant: ['\u62ff\u4f86']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u62ff\u6765']
+    },
+    {
+      pk: 775823721,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775823721/',
+      term: '\u6362',
+      fragment: '\u4f60\u597d \uff0c\u53ef\u4ee5 \u6362 \u96f6\u94b1 \u5417',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-13T03:37:34.990576',
+      status_changed_date: '2026-02-06T03:37:34.990576',
+      notes: '',
+      audio: null,
+      words: ['\u6362'],
+      tags: [],
+      hints: [
+        {
+          id: 223339481,
+          locale: 'en',
+          text: 'to exchange, to change (clothes etc)',
+          term: '\u6362',
+          popularity: 1,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['hu\u00e0n'],
+        hant: ['\u63db']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6362']
+    },
+    {
+      pk: 781713975,
+      url: 'https://www.lingq.com/api/v3/zh/cards/781713975/',
+      term: '\u6362\u4e86',
+      fragment: '\u6362\u4e86 \u4f60\uff0c \u4f60 \u4e5f \u63a5\u2026',
+      importance: 0,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T04:25:28.895968',
+      status_changed_date: '2026-02-07T04:25:28.895968',
+      notes: '',
+      audio: null,
+      words: ['\u6362\u4e86'],
+      tags: [],
+      hints: [
+        {
+          id: 182611291,
+          locale: 'en',
+          text: 'changed',
+          term: '\u6362\u4e86',
+          popularity: 148,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['hu\u00e0n le'],
+        hant: ['\u63db\u4e86']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6362\u4e86']
+    },
+    {
+      pk: 777214162,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777214162/',
+      term: '\u63a5\u7740',
+      fragment: '\u63a5\u7740 \u5f00\u8f66 \u53bb \u4e0a\u73ed',
+      importance: 2,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T03:38:11.171905',
+      status_changed_date: '2026-02-06T03:38:11.171905',
+      notes: '',
+      audio: null,
+      words: ['\u63a5\u7740'],
+      tags: [],
+      hints: [
+        {
+          id: 100946278,
+          locale: 'en',
+          text: 'and then; continue, carry on',
+          term: '\u63a5\u7740',
+          popularity: 1641,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['ji\u0113zhe'],
+        hant: ['\u63a5\u8457']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u63a5\u7740']
+    },
+    {
+      pk: 781714505,
+      url: 'https://www.lingq.com/api/v3/zh/cards/781714505/',
+      term: '\u63e1',
+      fragment: '\u558f\uff0c \u4f60 \u5e94\u8be5 \u8fd9\u6837 \u63e1 \u7403\u62cd\u3002',
+      importance: 1,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-07T03:38:38.304233',
+      status_changed_date: '2026-02-06T03:38:38.304233',
+      notes: '',
+      audio: null,
+      words: ['\u63e1'],
+      tags: [],
+      hints: [
+        {
+          id: 31236189,
+          locale: 'en',
+          text: 'grip, hold, grasp',
+          term: '\u63e1',
+          popularity: 40,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['w\u00f2'],
+        hant: ['\u63e1']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u63e1']
+    },
+    {
+      pk: 790056586,
+      url: 'https://www.lingq.com/api/v3/zh/cards/790056586/',
+      term: '\u642d\u914d',
+      fragment:
+        '\u6211 \u7684 \u84dd \u5e3d\u5b50 \u642d\u914d \u8d77\u6765 \uff0c\u663e\u5f97 \u5f88 \u597d\u770b',
+      importance: 1,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-24T07:01:28',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u642d\u914d'],
+      tags: [],
+      hints: [
+        {
+          id: 16856805,
+          locale: 'en',
+          text: 'paired with, matched with',
+          term: '\u642d\u914d',
+          popularity: 932,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u0101p\u00e8i'],
+        hant: ['\u642d\u914d']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u642d\u914d']
+    },
+    {
+      pk: 794246172,
+      url: 'https://www.lingq.com/api/v3/zh/cards/794246172/',
+      term: '\u64ad\u653e',
+      fragment:
+        '\u662f\u554a \uff0c\u7535\u89c6 \u91cc \u6b63\u5728 \u64ad\u653e \u4e00\u573a \u8db3\u7403 \u6bd4\u8d5b',
+      importance: 1,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-10T03:52:29.043000',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u64ad\u653e'],
+      tags: [],
+      hints: [
+        {
+          id: 14605606,
+          locale: 'en',
+          text: 'broadcast, transmit',
+          term: '\u64ad\u653e',
+          popularity: 783,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['b\u014df\u00e0ng'],
+        hant: ['\u64ad\u653e']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u64ad\u653e']
+    },
+    {
+      pk: 778250556,
+      url: 'https://www.lingq.com/api/v3/zh/cards/778250556/',
+      term: '\u653e',
+      fragment: '\u8bf7 \u4e0d\u8981 \u653e \u5473\u7cbe\u3002',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-08T04:28:26.105011',
+      status_changed_date: '2026-02-07T04:28:26.105011',
+      notes: '',
+      audio: null,
+      words: ['\u653e'],
+      tags: [],
+      hints: [
+        {
+          id: 13511637,
+          locale: 'en',
+          text: 'put',
+          term: '\u653e',
+          popularity: 958,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['f\u00e0ng'],
+        hant: ['\u653e']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u653e']
+    },
+    {
+      pk: 781713661,
+      url: 'https://www.lingq.com/api/v3/zh/cards/781713661/',
+      term: '\u653e\u8fc7',
+      fragment: '\u6211 \u5f88 \u83dc\uff0c \u653e\u8fc7 \u6211 \u5427\u3002',
+      importance: 0,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-07T03:40:56.071184',
+      status_changed_date: '2026-02-06T03:40:56.071184',
+      notes: '',
+      audio: null,
+      words: ['\u653e\u8fc7'],
+      tags: [],
+      hints: [
+        {
+          id: 186822130,
+          locale: 'en',
+          text: 'spare',
+          term: '\u653e\u8fc7',
+          popularity: 31,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['f\u00e0nggu\u00f2'],
+        hant: ['\u653e\u904e']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u653e\u8fc7']
+    },
+    {
+      pk: 775817473,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775817473/',
+      term: '\u6545\u4e8b',
+      fragment: '\u6545\u4e8b \u4e00 :\u8fc8\u514b \u662f \u4e2a',
+      importance: 3,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T03:38:15.160784',
+      status_changed_date: '2026-02-06T03:38:15.160784',
+      notes: '',
+      audio: null,
+      words: ['\u6545\u4e8b'],
+      tags: [],
+      hints: [],
+      transliteration: {
+        pinyin: ['g\u00f9shi'],
+        hant: ['\u6545\u4e8b']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6545\u4e8b']
+    },
+    {
+      pk: 782019094,
+      url: 'https://www.lingq.com/api/v3/zh/cards/782019094/',
+      term: '\u656c',
+      fragment: '\u656c \u4e2a \u793c \u5440\uff0c \u63e1\u63e1\u2026',
+      importance: 1,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-07T03:38:21.947261',
+      status_changed_date: '2026-02-06T03:38:21.947261',
+      notes: '',
+      audio: null,
+      words: ['\u656c'],
+      tags: [],
+      hints: [
+        {
+          id: 76644285,
+          locale: 'en',
+          text: 'to revere, respect',
+          term: '\u656c',
+          popularity: 1,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['j\u00ecng'],
+        hant: ['\u656c']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u656c']
+    },
+    {
+      pk: 784785037,
+      url: 'https://www.lingq.com/api/v3/zh/cards/784785037/',
+      term: '\u6574\u4e2a',
+      fragment:
+        '\u2026\u51b3\u5fc3 \u5b66 \u6cd5\u8bed\u3001 \u7701\u94b1\u3001 \u6574\u4e2a \u5047\u671f \u90fd \u5f85 \u5728\u2026',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T05:27:48.564531',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u6574\u4e2a'],
+      tags: [],
+      hints: [
+        {
+          id: 22761465,
+          locale: 'en',
+          text: 'whole, entire, total',
+          term: '\u6574\u4e2a',
+          popularity: 119,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['zh\u011bngg\u00e8'],
+        hant: ['\u6574\u500b']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6574\u4e2a']
+    },
+    {
+      pk: 779979416,
+      url: 'https://www.lingq.com/api/v3/zh/cards/779979416/',
+      term: '\u6587',
+      fragment: '\u82f1 \u6587\uff1f',
+      importance: 2,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-13T03:40:56.065502',
+      status_changed_date: '2026-02-06T03:40:56.065502',
+      notes: '',
+      audio: null,
+      words: ['\u6587'],
+      tags: [],
+      hints: [
+        {
+          id: 224451182,
+          locale: 'en',
+          text: 'language / culture',
+          term: '\u6587',
+          popularity: 1,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['w\u00e9n'],
+        hant: ['\u6587']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6587']
+    },
+    {
+      pk: 775818526,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775818526/',
+      term: '\u6587\u5316',
+      fragment: '\u7279\u522b \u662f \u4e2d\u56fd \u6587\u5316 \u548c \u8bed\u8a00',
+      importance: 3,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-18T06:53:21.910258',
+      status_changed_date: '2026-02-03T06:53:21.910258',
+      notes: '',
+      audio: null,
+      words: ['\u6587\u5316'],
+      tags: [],
+      hints: [
+        {
+          id: 12364012,
+          locale: 'en',
+          text: 'culture',
+          term: '\u6587\u5316',
+          popularity: 647,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['w\u00e9nhu\u00e0'],
+        hant: ['\u6587\u5316']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6587\u5316']
+    },
+    {
+      pk: 778976634,
+      url: 'https://www.lingq.com/api/v3/zh/cards/778976634/',
+      term: '\u65b0',
+      fragment: '\u65b0\u3001 \u8f7b\u3001 \u5e72',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-07T03:37:49.326564',
+      status_changed_date: '2026-02-06T03:37:49.326564',
+      notes: '',
+      audio: null,
+      words: ['\u65b0'],
+      tags: [],
+      hints: [
+        {
+          id: 3191592,
+          locale: 'en',
+          text: 'new',
+          term: '\u65b0',
+          popularity: 265703,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['x\u012bn'],
+        hant: ['\u65b0']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u65b0']
+    },
+    {
+      pk: 778652686,
+      url: 'https://www.lingq.com/api/v3/zh/cards/778652686/',
+      term: '\u65b0\u5e74',
+      fragment: '\u65b0\u5e74 \u597d',
+      importance: 2,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-13T03:40:37.038100',
+      status_changed_date: '2026-02-06T03:40:37.038100',
+      notes: '',
+      audio: null,
+      words: ['\u65b0\u5e74'],
+      tags: [],
+      hints: [
+        {
+          id: 9440860,
+          locale: 'en',
+          text: 'New Year',
+          term: '\u65b0\u5e74',
+          popularity: 183,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['x\u012bnni\u00e1n'],
+        hant: ['\u65b0\u5e74']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u65b0\u5e74']
+    },
+    {
+      pk: 778653033,
+      url: 'https://www.lingq.com/api/v3/zh/cards/778653033/',
+      term: '\u65b9\u4fbf',
+      fragment: '\u4e0a\u5348 \u4e0d \u592a \u65b9\u4fbf\u3002',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-07T03:38:15.162001',
+      status_changed_date: '2026-02-06T03:38:15.162001',
+      notes: '',
+      audio: null,
+      words: ['\u65b9\u4fbf'],
+      tags: [],
+      hints: [
+        {
+          id: 12098943,
+          locale: 'en',
+          text: 'convenient',
+          term: '\u65b9\u4fbf',
+          popularity: 358,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['f\u0101ngbi\u00e0n'],
+        hant: ['\u65b9\u4fbf']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u65b9\u4fbf']
+    },
+    {
+      pk: 777212935,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777212935/',
+      term: '\u65b9\u5f0f',
+      fragment: '',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-08T04:27:06.974012',
+      status_changed_date: '2026-02-07T04:27:06.974012',
+      notes: '',
+      audio: null,
+      words: ['\u65b9\u5f0f'],
+      tags: [],
+      hints: [
+        {
+          id: 12321900,
+          locale: 'en',
+          text: 'way',
+          term: '\u65b9\u5f0f',
+          popularity: 1053,
+          is_google_translate: false,
+          flagged: true
+        }
+      ],
+      transliteration: {
+        pinyin: ['f\u0101ngsh\u00ec'],
+        hant: ['\u65b9\u5f0f']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u65b9\u5f0f']
+    },
+    {
+      pk: 790055254,
+      url: 'https://www.lingq.com/api/v3/zh/cards/790055254/',
+      term: '\u65c1\u8fb9',
+      fragment: '\u5728 \u684c\u5b50 \u65c1\u8fb9 \u7684 \u90a3\u4e2a \u6905\u5b50 \u4e0a',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-24T06:55:52',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u65c1\u8fb9'],
+      tags: [],
+      hints: [
+        {
+          id: 52653142,
+          locale: 'en',
+          text: 'beside',
+          term: '\u65c1\u8fb9',
+          popularity: 229,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['p\u00e1ngbi\u0101n'],
+        hant: ['\u65c1\u908a']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u65c1\u8fb9']
+    },
+    {
+      pk: 778980878,
+      url: 'https://www.lingq.com/api/v3/zh/cards/778980878/',
+      term: '\u65e9',
+      fragment: '\u597d\u3001 \u5c0f\u3001 \u65e9',
+      importance: 3,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-09T03:40:40.015900',
+      status_changed_date: '2026-02-06T03:40:40.015900',
+      notes: '',
+      audio: null,
+      words: ['\u65e9'],
+      tags: [],
+      hints: [
+        {
+          id: 8370485,
+          locale: 'en',
+          text: 'early',
+          term: '\u65e9',
+          popularity: 137415,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['z\u01ceo'],
+        hant: ['\u65e9']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u65e9']
+    },
+    {
+      pk: 775450605,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775450605/',
+      term: '\u65e9\u4e0a\u597d',
+      fragment: '\u65e9\u4e0a\u597d\uff01',
+      importance: 1,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-11T04:42:45.828034',
+      status_changed_date: '2026-01-27T04:42:45.828034',
+      notes: '',
+      audio: null,
+      words: ['\u65e9\u4e0a\u597d'],
+      tags: [],
+      hints: [
+        {
+          id: 31875404,
+          locale: 'en',
+          text: 'Good morning!',
+          term: '\u65e9\u4e0a\u597d',
+          popularity: 2577,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['z\u01ceoshangh\u01ceo'],
+        hant: ['\u65e9\u4e0a\u597d']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u65e9\u4e0a\u597d']
+    },
+    {
+      pk: 775817617,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775817617/',
+      term: '\u65e9\u6668',
+      fragment: '\u8fc8\u514b \u6bcf\u5929 \u65e9\u6668 \u516d\u70b9 \u8d77\u5e8a',
+      importance: 2,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-14T04:25:43.151214',
+      status_changed_date: '2026-02-07T04:25:43.151214',
+      notes: '',
+      audio: null,
+      words: ['\u65e9\u6668'],
+      tags: [],
+      hints: [
+        {
+          id: 390684,
+          locale: 'en',
+          text: 'morning',
+          term: '\u65e9\u6668',
+          popularity: 12150,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['z\u01ceoch\u00e9n'],
+        hant: ['\u65e9\u6668']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u65e9\u6668']
+    },
+    {
+      pk: 783077456,
+      url: 'https://www.lingq.com/api/v3/zh/cards/783077456/',
+      term: '\u65e9\u9910',
+      fragment:
+        '\u4ed6 \u5148 \u505a \u65e9\u9910 \u7136\u540e \u559d \u4e00\u676f \u5496\u5561\u3002',
+      importance: 1,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T04:28:13.129730',
+      status_changed_date: '2026-02-07T04:28:13.129730',
+      notes: '',
+      audio: null,
+      words: ['\u65e9\u9910'],
+      tags: [],
+      hints: [
+        {
+          id: 13527362,
+          locale: 'en',
+          text: 'breakfast',
+          term: '\u65e9\u9910',
+          popularity: 546229,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['z\u01ceoc\u0101n'],
+        hant: ['\u65e9\u9910']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u65e9\u9910']
+    },
+    {
+      pk: 777213244,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777213244/',
+      term: '\u65e9\u996d',
+      fragment: '\u6211 \u5148 \u505a \u65e9\u996d \u5e76 \u559d \u4e00\u676f \u5496\u5561',
+      importance: 1,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T04:28:17.312739',
+      status_changed_date: '2026-02-07T04:28:17.312739',
+      notes: '',
+      audio: null,
+      words: ['\u65e9\u996d'],
+      tags: [],
+      hints: [
+        {
+          id: 13559940,
+          locale: 'en',
+          text: 'breakfast',
+          term: '\u65e9\u996d',
+          popularity: 3391,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['z\u01ceof\u00e0n'],
+        hant: ['\u65e9\u98ef']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u65e9\u996d']
+    },
+    {
+      pk: 780326438,
+      url: 'https://www.lingq.com/api/v3/zh/cards/780326438/',
+      term: '\u65f6\u5019',
+      fragment: '\u4ec0\u4e48 \u65f6\u5019 \u56de\u6765\uff1f',
+      importance: 3,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-10T04:25:28.894112',
+      status_changed_date: '2026-02-07T04:25:28.894112',
+      notes: '',
+      audio: null,
+      words: ['\u65f6\u5019'],
+      tags: [],
+      hints: [
+        {
+          id: 390699,
+          locale: 'en',
+          text: 'time',
+          term: '\u65f6\u5019',
+          popularity: 297701,
+          is_google_translate: false,
+          flagged: false
+        },
+        {
+          id: 16574165,
+          locale: 'en',
+          text: 'moment, a time',
+          term: '\u65f6\u5019',
+          popularity: 19,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['sh\u00edhou'],
+        hant: ['\u6642\u5019']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u65f6\u5019']
+    },
+    {
+      pk: 782018497,
+      url: 'https://www.lingq.com/api/v3/zh/cards/782018497/',
+      term: '\u65f6\u95f4',
+      fragment: '\u8bf7\u95ee \u60a8 \u6709 \u65f6\u95f4 \u5417\uff1f',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-01T03:53:44.970418',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u65f6\u95f4'],
+      tags: [],
+      hints: [
+        {
+          id: 3950128,
+          locale: 'en',
+          text: 'Time',
+          term: '\u65f6\u95f4',
+          popularity: 449,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        hant: ['\u6642\u9593']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u65f6\u95f4']
+    },
+    {
+      pk: 777564051,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777564051/',
+      term: '\u660e\u5929',
+      fragment: '\u660e\u5929 \u662f \u661f\u671f \u51e0\uff1f',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-19T05:00:18.862680',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u660e\u5929'],
+      tags: [],
+      hints: [
+        {
+          id: 5698025,
+          locale: 'en',
+          text: 'tomorrow',
+          term: '\u660e\u5929',
+          popularity: 1243,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['m\u00edngti\u0101n'],
+        hant: ['\u660e\u5929']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u660e\u5929']
+    },
+    {
+      pk: 776512953,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776512953/',
+      term: '\u661f\u671f',
+      fragment: '\u6211 \u4e0b \u661f\u671f \u4e0d \u6765',
+      importance: 3,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-04T02:06:38.013614',
+      status_changed_date: '2026-01-28T02:06:38.013614',
+      notes: '',
+      audio: null,
+      words: ['\u661f\u671f'],
+      tags: [],
+      hints: [
+        {
+          id: 13166104,
+          locale: 'en',
+          text: 'week',
+          term: '\u661f\u671f',
+          popularity: 2521,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['x\u012bngq\u012b'],
+        hant: ['\u661f\u671f']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u661f\u671f']
+    },
+    {
+      pk: 777564079,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777564079/',
+      term: '\u661f\u671f\u4e00',
+      fragment: '\u660e\u5929 \u662f \u661f\u671f\u4e00\u3002',
+      importance: 1,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-19T05:00:27.562292',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u661f\u671f\u4e00'],
+      tags: [],
+      hints: [
+        {
+          id: 13714897,
+          locale: 'en',
+          text: 'Monday',
+          term: '\u661f\u671f\u4e00',
+          popularity: 860,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['x\u012bngq\u012by\u012b'],
+        hant: ['\u661f\u671f\u4e00']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u661f\u671f\u4e00']
+    },
+    {
+      pk: 779980515,
+      url: 'https://www.lingq.com/api/v3/zh/cards/779980515/',
+      term: '\u661f\u671f\u4e09',
+      fragment: '\u661f\u671f\u4e09 \u600e\u4e48\u6837\uff1f',
+      importance: 1,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-31T02:06:47.335081',
+      status_changed_date: '2026-01-28T02:06:47.335081',
+      notes: '',
+      audio: null,
+      words: ['\u661f\u671f\u4e09'],
+      tags: [],
+      hints: [
+        {
+          id: 5698019,
+          locale: 'en',
+          text: 'Wednesday',
+          term: '\u661f\u671f\u4e09',
+          popularity: 618,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['x\u012bngq\u012bs\u0101n'],
+        hant: ['\u661f\u671f\u4e09']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u661f\u671f\u4e09']
+    },
+    {
+      pk: 779980488,
+      url: 'https://www.lingq.com/api/v3/zh/cards/779980488/',
+      term: '\u661f\u671f\u4e8c',
+      fragment: '\u6211 \u661f\u671f\u4e8c \u6709\u7a7a\u3002',
+      importance: 1,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-26T04:18:16.039239',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u661f\u671f\u4e8c'],
+      tags: [],
+      hints: [
+        {
+          id: 5698020,
+          locale: 'en',
+          text: 'Tuesday',
+          term: '\u661f\u671f\u4e8c',
+          popularity: 1138,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['x\u012bngq\u012b\u00e8r'],
+        hant: ['\u661f\u671f\u4e8c']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u661f\u671f\u4e8c']
+    },
+    {
+      pk: 775449969,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775449969/',
+      term: '\u662f',
+      fragment: '1 a-\u8fc8\u514b \u662f \u4e2a \u53a8\u5e08, \u7b2c\u4e00 \u90e8\u5206',
+      importance: 3,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-27T02:50:28.229579',
+      status_changed_date: '2026-01-12T02:50:28.229579',
+      notes: '',
+      audio: null,
+      words: ['\u662f'],
+      tags: [],
+      hints: [
+        {
+          id: 205195210,
+          locale: 'en',
+          text: 'is',
+          term: '\u662f',
+          popularity: 4380,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['sh\u00ec'],
+        hant: ['\u662f']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u662f']
+    },
+    {
+      pk: 776513166,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776513166/',
+      term: '\u662f\u5417',
+      fragment: '\u662f\u5417',
+      importance: 2,
+      status: 0,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-16T02:31:34.152602',
+      status_changed_date: '2026-01-15T02:31:34.152602',
+      notes: '',
+      audio: null,
+      words: ['\u662f\u5417'],
+      tags: [],
+      hints: [
+        {
+          id: 1018966,
+          locale: 'en',
+          text: '... is that so?',
+          term: '\u662f\u5417',
+          popularity: 558,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['sh\u00ec ma'],
+        hant: ['\u662f\u55ce']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u662f\u5417']
+    },
+    {
+      pk: 775819514,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775819514/',
+      term: '\u662f\u7684',
+      fragment: '\u662f\u7684',
+      importance: 0,
+      status: 2,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-04T02:06:34.395494',
+      status_changed_date: '2026-01-28T02:06:34.395494',
+      notes: '',
+      audio: null,
+      words: ['\u662f\u7684'],
+      tags: [],
+      hints: [
+        {
+          id: 73612768,
+          locale: 'en',
+          text: 'yes',
+          term: '\u662f\u7684',
+          popularity: 505,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['sh\u00ecde'],
+        hant: ['\u662f\u7684']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u662f\u7684']
+    },
+    {
+      pk: 790056684,
+      url: 'https://www.lingq.com/api/v3/zh/cards/790056684/',
+      term: '\u663e\u5f97',
+      fragment:
+        '\u84dd \u5e3d\u5b50 \u642d\u914d \u8d77\u6765 \uff0c\u663e\u5f97 \u5f88 \u597d\u770b',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-24T07:02:00',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u663e\u5f97'],
+      tags: [],
+      hints: [
+        {
+          id: 8198671,
+          locale: 'en',
+          text: 'seem; appear to be',
+          term: '\u663e\u5f97',
+          popularity: 826,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['xi\u01cende'],
+        hant: ['\u986f\u5f97']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u663e\u5f97']
+    },
+    {
+      pk: 777210874,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777210874/',
+      term: '\u665a',
+      fragment: '\u5f88 \u665a \u4e86',
+      importance: 3,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-31T02:06:53.880651',
+      status_changed_date: '2026-01-28T02:06:53.880651',
+      notes: '',
+      audio: null,
+      words: ['\u665a'],
+      tags: [],
+      hints: [
+        {
+          id: 5943090,
+          locale: 'en',
+          text: 'night; evening; late',
+          term: '\u665a',
+          popularity: 591,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['w\u01cen'],
+        hant: ['\u665a']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u665a']
+    },
+    {
+      pk: 785461305,
+      url: 'https://www.lingq.com/api/v3/zh/cards/785461305/',
+      term: '\u665a\u4e0a',
+      fragment: '\u665a\u4e0a \u597d\u3002',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-11T03:59:45.548064',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u665a\u4e0a'],
+      tags: [],
+      hints: [
+        {
+          id: 13697570,
+          locale: 'en',
+          text: 'evening',
+          term: '\u665a\u4e0a',
+          popularity: 725,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['w\u01censhang'],
+        hant: ['\u665a\u4e0a']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u665a\u4e0a']
+    },
+    {
+      pk: 794244998,
+      url: 'https://www.lingq.com/api/v3/zh/cards/794244998/',
+      term: '\u665a\u4e0a\u597d',
+      fragment: '\u665a\u4e0a\u597d\u3002',
+      importance: 0,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-10T03:46:25.885183',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u665a\u4e0a\u597d'],
+      tags: [],
+      hints: [
+        {
+          id: 2927381,
+          locale: 'en',
+          text: 'good evening',
+          term: '\u665a\u4e0a\u597d',
+          popularity: 40,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['w\u01censh\u00e0ngh\u01ceo'],
+        hant: ['\u665a\u4e0a\u597d']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u665a\u4e0a\u597d']
+    },
+    {
+      pk: 792059099,
+      url: 'https://www.lingq.com/api/v3/zh/cards/792059099/',
+      term: '\u665a\u4e9b',
+      fragment: '\u6211\u4eec \u53ef\u4ee5 \u665a\u4e9b \u8fc7\u53bb\u3002',
+      importance: 0,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-03T05:11:20.170588',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u665a\u4e9b'],
+      tags: [],
+      hints: [
+        {
+          id: 217145166,
+          locale: 'en',
+          text: 'a bit later',
+          term: '\u665a\u4e9b',
+          popularity: 46,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['w\u01cen xi\u0113'],
+        hant: ['\u665a\u4e9b']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u665a\u4e9b']
+    },
+    {
+      pk: 778648725,
+      url: 'https://www.lingq.com/api/v3/zh/cards/778648725/',
+      term: '\u665a\u5b89',
+      fragment: '\u597d\uff0c \u665a\u5b89\u3002',
+      importance: 0,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-31T02:06:51.380872',
+      status_changed_date: '2026-01-28T02:06:51.380872',
+      notes: '',
+      audio: null,
+      words: ['\u665a\u5b89'],
+      tags: [],
+      hints: [
+        {
+          id: 1175447,
+          locale: 'en',
+          text: 'good night',
+          term: '\u665a\u5b89',
+          popularity: 5242,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['w\u01cen\u0101n'],
+        hant: ['\u665a\u5b89']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u665a\u5b89']
+    },
+    {
+      pk: 794554907,
+      url: 'https://www.lingq.com/api/v3/zh/cards/794554907/',
+      term: '\u665a\u996d',
+      fragment:
+        '\u54e6 \uff0c\u5dee\u4e0d\u591a \u5230 \u5403 \u665a\u996d \u7684 \u65f6\u95f4 \u4e86',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-11T02:10:01.150000',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u665a\u996d'],
+      tags: [],
+      hints: [
+        {
+          id: 19483367,
+          locale: 'en',
+          text: 'dinner',
+          term: '\u665a\u996d',
+          popularity: 427,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['w\u01cenf\u00e0n'],
+        hant: ['\u665a\u98ef']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u665a\u996d']
+    },
+    {
+      pk: 781020339,
+      url: 'https://www.lingq.com/api/v3/zh/cards/781020339/',
+      term: '\u6700\u597d',
+      fragment:
+        '\u2026\u662f \u6211 \u7684 \u670b\u53cb\uff0c \u6700\u597d \u7684 \u670b\u53cb\uff01',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-29T01:35:52.955298',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u6700\u597d'],
+      tags: [],
+      hints: [
+        {
+          id: 18350253,
+          locale: 'en',
+          text: 'best',
+          term: '\u6700\u597d',
+          popularity: 342,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['zu\u00ech\u01ceo'],
+        hant: ['\u6700\u597d']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6700\u597d']
+    },
+    {
+      pk: 779328118,
+      url: 'https://www.lingq.com/api/v3/zh/cards/779328118/',
+      term: '\u6700\u8fd1',
+      fragment: '\u6700\u8fd1 \u600e\u4e48\u6837\uff1f',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-29T02:06:38.018977',
+      status_changed_date: '2026-01-28T02:06:38.018977',
+      notes: '',
+      audio: null,
+      words: ['\u6700\u8fd1'],
+      tags: [],
+      hints: [
+        {
+          id: 7480182,
+          locale: 'en',
+          text: 'recent',
+          term: '\u6700\u8fd1',
+          popularity: 4327,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['zu\u00ecj\u00ecn'],
+        hant: ['\u6700\u8fd1']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6700\u8fd1']
+    },
+    {
+      pk: 775451462,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775451462/',
+      term: '\u6709',
+      fragment: '\u4ed6 \u6709 \u54e5\u54e5 \u5417\uff1f',
+      importance: 3,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-27T02:42:08.947445',
+      status_changed_date: '2026-01-12T02:42:08.947445',
+      notes: '',
+      audio: null,
+      words: ['\u6709'],
+      tags: [],
+      hints: [
+        {
+          id: 43054846,
+          locale: 'en',
+          text: 'have',
+          term: '\u6709',
+          popularity: 773,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['y\u01d2u'],
+        hant: ['\u6709']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6709']
+    },
+    {
+      pk: 792058702,
+      url: 'https://www.lingq.com/api/v3/zh/cards/792058702/',
+      term: '\u6709\u540d',
+      fragment: '\u2026\u662f \u4e00 \u5bb6 \u5f88 \u6709\u540d \u7684 \u996d\u9986\u3002',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-03T05:08:54.730308',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u6709\u540d'],
+      tags: [],
+      hints: [
+        {
+          id: 19446863,
+          locale: 'en',
+          text: 'famous',
+          term: '\u6709\u540d',
+          popularity: 294,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['y\u01d2um\u00edng'],
+        hant: ['\u6709\u540d']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6709\u540d']
+    },
+    {
+      pk: 779980436,
+      url: 'https://www.lingq.com/api/v3/zh/cards/779980436/',
+      term: '\u6709\u7a7a',
+      fragment: '\u4f60 \u661f\u671f\u4e00 \u6709\u7a7a \u5417\uff1f',
+      importance: 1,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-26T04:17:55.585476',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u6709\u7a7a'],
+      tags: [],
+      hints: [
+        {
+          id: 20490759,
+          locale: 'en',
+          text: 'have free time',
+          term: '\u6709\u7a7a',
+          popularity: 288,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['y\u01d2uk\u00f2ng'],
+        hant: ['\u6709\u7a7a']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6709\u7a7a']
+    },
+    {
+      pk: 781020316,
+      url: 'https://www.lingq.com/api/v3/zh/cards/781020316/',
+      term: '\u670b\u53cb',
+      fragment:
+        '\u4f60 \u662f \u6211 \u7684 \u670b\u53cb\uff0c \u6700\u597d \u7684 \u670b\u53cb\uff01',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-29T01:35:48.275748',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u670b\u53cb'],
+      tags: [],
+      hints: [
+        {
+          id: 391512,
+          locale: 'en',
+          text: 'friend',
+          term: '\u670b\u53cb',
+          popularity: 528,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['p\u00e9ngyou'],
+        hant: ['\u670b\u53cb']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u670b\u53cb']
+    },
+    {
+      pk: 776514651,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776514651/',
+      term: '\u670d\u52a1\u5458',
+      fragment: '\u670d\u52a1\u5458 \uff0c\u6709 \u53c9\u5b50 \u5417',
+      importance: 2,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-31T02:07:02.910087',
+      status_changed_date: '2026-01-28T02:07:02.910087',
+      notes: '',
+      audio: null,
+      words: ['\u670d\u52a1\u5458'],
+      tags: [],
+      hints: [
+        {
+          id: 11774478,
+          locale: 'en',
+          text: 'waiter',
+          term: '\u670d\u52a1\u5458',
+          popularity: 381,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['f\u00faw\u00f9yu\u00e1n'],
+        hant: ['\u670d\u52d9\u54e1']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u670d\u52a1\u5458']
+    },
+    {
+      pk: 786156717,
+      url: 'https://www.lingq.com/api/v3/zh/cards/786156717/',
+      term: '\u672c\u6765',
+      fragment: '\u6211 \u672c\u6765 \u4e5f \u8ba4\u4e3a \u8fd9 \u662f\u2026',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-13T04:32:45.598419',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u672c\u6765'],
+      tags: [],
+      hints: [
+        {
+          id: 6725988,
+          locale: 'en',
+          text: 'originally, at first, of course',
+          term: '\u672c\u6765',
+          popularity: 494,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['b\u011bnl\u00e1i'],
+        hant: ['\u672c\u4f86']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u672c\u6765']
+    },
+    {
+      pk: 782328315,
+      url: 'https://www.lingq.com/api/v3/zh/cards/782328315/',
+      term: '\u673a\u573a',
+      fragment: '\u53bb \u673a\u573a\u3002',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-02T03:22:43.830270',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u673a\u573a'],
+      tags: [],
+      hints: [
+        {
+          id: 160055922,
+          locale: 'en',
+          text: 'the airport',
+          term: '\u673a\u573a',
+          popularity: 80,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['j\u012bch\u01ceng'],
+        hant: ['\u6a5f\u5834']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u673a\u573a']
+    },
+    {
+      pk: 780327783,
+      url: 'https://www.lingq.com/api/v3/zh/cards/780327783/',
+      term: '\u674e',
+      fragment: '\u5582\uff0c \u674e \u5148\u751f \u5728 \u5417\uff1f',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-27T02:58:56.343103',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u674e'],
+      tags: [],
+      hints: [
+        {
+          id: 12753928,
+          locale: 'en',
+          text: 'Li (name)',
+          term: '\u674e',
+          popularity: 2,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['l\u01d0'],
+        hant: ['\u674e']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u674e']
+    },
+    {
+      pk: 785462299,
+      url: 'https://www.lingq.com/api/v3/zh/cards/785462299/',
+      term: '\u674e\u6167',
+      fragment: '\u4f60 \u662f \u674e\u6167 \u5417\uff1f',
+      importance: 0,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-11T04:04:48.715981',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u674e\u6167'],
+      tags: [],
+      hints: [
+        {
+          id: 391760,
+          locale: 'en',
+          text: 'Li Hui',
+          term: '\u674e\u6167',
+          popularity: 192,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['l\u01d0 hu\u00ec'],
+        hant: ['\u674e\u6167']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u674e\u6167']
+    },
+    {
+      pk: 786156622,
+      url: 'https://www.lingq.com/api/v3/zh/cards/786156622/',
+      term: '\u675c\u4e3d',
+      fragment: '\u5979 \u53eb \u675c\u4e3d\u3002',
+      importance: 0,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-13T04:32:20.970873',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u675c\u4e3d'],
+      tags: [],
+      hints: [
+        {
+          id: 391791,
+          locale: 'en',
+          text: 'Du Li',
+          term: '\u675c\u4e3d',
+          popularity: 103,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u00f9 l\u00ed'],
+        hant: ['\u675c\u9e97']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u675c\u4e3d']
+    },
+    {
+      pk: 775818053,
+      url: 'https://www.lingq.com/api/v3/zh/cards/775818053/',
+      term: '\u6765',
+      fragment: '\u60a8 \u7b2c\u4e00\u6b21 \u6765 \u4e2d\u56fd \u5417',
+      importance: 3,
+      status: 3,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-28T03:36:01.169951',
+      status_changed_date: '2026-01-13T03:36:01.169951',
+      notes: '',
+      audio: null,
+      words: ['\u6765'],
+      tags: [],
+      hints: [
+        {
+          id: 16340796,
+          locale: 'en',
+          text: 'come',
+          term: '\u6765',
+          popularity: 487,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        hant: ['\u4f86']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6765']
+    },
+    {
+      pk: 783752646,
+      url: 'https://www.lingq.com/api/v3/zh/cards/783752646/',
+      term: '\u6765\u81ea',
+      fragment: '\u8fd9 \u4e9b \u987e\u5ba2 \u6765\u81ea \u5f88 \u591a \u56fd\u5bb6\u3002',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-06T04:36:10.369767',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u6765\u81ea'],
+      tags: [],
+      hints: [
+        {
+          id: 1145393,
+          locale: 'en',
+          text: 'come from',
+          term: '\u6765\u81ea',
+          popularity: 2109,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['l\u00e1iz\u00ec'],
+        hant: ['\u4f86\u81ea']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6765\u81ea']
+    },
+    {
+      pk: 795223841,
+      url: 'https://www.lingq.com/api/v3/zh/cards/795223841/',
+      term: '\u6765\u8fc7',
+      fragment: '\u662f\u7684 \uff0c\u6211 \u4ee5\u524d \u6765\u8fc7',
+      importance: 0,
+      status: 0,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-13T03:42:19.327000',
+      status_changed_date: '2026-03-12T03:42:19.327000',
+      notes: '',
+      audio: null,
+      words: ['\u6765\u8fc7'],
+      tags: [],
+      hints: [
+        {
+          id: 89479716,
+          locale: 'en',
+          text: 'have come',
+          term: '\u6765\u8fc7',
+          popularity: 30,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['l\u00e1i gu\u00f2'],
+        hant: ['\u4f86\u904e']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6765\u8fc7']
+    },
+    {
+      pk: 785462118,
+      url: 'https://www.lingq.com/api/v3/zh/cards/785462118/',
+      term: '\u6768\u96ea',
+      fragment: '\u6253\u6270 \u4e00\u4e0b\uff0c \u4f60 \u662f \u6768\u96ea \u5417\uff1f',
+      importance: 0,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-11T04:03:47.640565',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u6768\u96ea'],
+      tags: [],
+      hints: [
+        {
+          id: 391862,
+          locale: 'en',
+          text: 'Yang Xue',
+          term: '\u6768\u96ea',
+          popularity: 263,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['y\u00e1ng xu\u011b'],
+        hant: ['\u694a\u96ea']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6768\u96ea']
+    },
+    {
+      pk: 781020435,
+      url: 'https://www.lingq.com/api/v3/zh/cards/781020435/',
+      term: '\u676f',
+      fragment: '\u518d\u6765 \u4e00 \u676f\uff01',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-29T01:36:13.666243',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u676f'],
+      tags: [],
+      hints: [
+        {
+          id: 28921635,
+          locale: 'en',
+          text: 'cup',
+          term: '\u676f',
+          popularity: 1553,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['b\u0113i'],
+        hant: ['\u676f']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u676f']
+    },
+    {
+      pk: 776157251,
+      url: 'https://www.lingq.com/api/v3/zh/cards/776157251/',
+      term: '\u676f\u5b50',
+      fragment: '\u8fd9 \u662f \u4f60 \u7684 \u676f\u5b50 \u5417\uff1f',
+      importance: 2,
+      status: 1,
+      extended_status: 0,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-20T04:24:48.342513',
+      status_changed_date: '2026-01-17T04:24:48.342513',
+      notes: '',
+      audio: null,
+      words: ['\u676f\u5b50'],
+      tags: [],
+      hints: [
+        {
+          id: 13507278,
+          locale: 'en',
+          text: 'cup',
+          term: '\u676f\u5b50',
+          popularity: 589,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['b\u0113izi'],
+        hant: ['\u676f\u5b50']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u676f\u5b50']
+    },
+    {
+      pk: 785462017,
+      url: 'https://www.lingq.com/api/v3/zh/cards/785462017/',
+      term: '\u6797\u7ff0',
+      fragment: '\u4f60\u597d\uff0c \u4f60 \u662f \u6797\u7ff0 \u5417\uff1f',
+      importance: 0,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-11T04:03:13.464759',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u6797\u7ff0'],
+      tags: [],
+      hints: [
+        {
+          id: 391921,
+          locale: 'en',
+          text: 'Lin Han',
+          term: '\u6797\u7ff0',
+          popularity: 294,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['l\u00edn h\u00e0n'],
+        hant: ['\u6797\u7ff0']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6797\u7ff0']
+    },
+    {
+      pk: 791709938,
+      url: 'https://www.lingq.com/api/v3/zh/cards/791709938/',
+      term: '\u680b',
+      fragment: '\u2026\u706b\u8f66\u7ad9 \u5bf9\u9762 \u7684 \u90a3 \u680b \u697c \u5417\uff1f',
+      importance: 0,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-02T04:05:35.171352',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u680b'],
+      tags: [],
+      hints: [
+        {
+          id: 16661524,
+          locale: 'en',
+          text: 'classifier for houses or buildings',
+          term: '\u680b',
+          popularity: 2358,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['d\u00f2ng'],
+        hant: ['\u68df']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u680b']
+    },
+    {
+      pk: 790055234,
+      url: 'https://www.lingq.com/api/v3/zh/cards/790055234/',
+      term: '\u684c\u5b50',
+      fragment: '\u5728 \u684c\u5b50 \u65c1\u8fb9 \u7684 \u90a3\u4e2a \u6905\u5b50',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-24T06:55:47',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u684c\u5b50'],
+      tags: [],
+      hints: [
+        {
+          id: 5660848,
+          locale: 'en',
+          text: 'table',
+          term: '\u684c\u5b50',
+          popularity: 461,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['zhu\u014dzi'],
+        hant: ['\u684c\u5b50']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u684c\u5b50']
+    },
+    {
+      pk: 792058587,
+      url: 'https://www.lingq.com/api/v3/zh/cards/792058587/',
+      term: '\u68d2',
+      fragment: '\u2026\u662f \u4e00 \u5bb6 \u5f88 \u68d2 \u7684 \u996d\u9986\u3002',
+      importance: 1,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-03-03T05:08:20.513098',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u68d2'],
+      tags: [],
+      hints: [
+        {
+          id: 226800303,
+          locale: 'en',
+          text: 'good, fine, excellent',
+          term: '\u68d2',
+          popularity: 1,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['b\u00e0ng'],
+        hant: ['\u68d2']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u68d2']
+    },
+    {
+      pk: 790055342,
+      url: 'https://www.lingq.com/api/v3/zh/cards/790055342/',
+      term: '\u6905\u5b50',
+      fragment: '\u684c\u5b50 \u65c1\u8fb9 \u7684 \u90a3\u4e2a \u6905\u5b50 \u4e0a',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-02-24T06:56:12',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u6905\u5b50'],
+      tags: [],
+      hints: [
+        {
+          id: 13549123,
+          locale: 'en',
+          text: 'chair',
+          term: '\u6905\u5b50',
+          popularity: 2633,
+          is_google_translate: true,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['y\u01d0zi'],
+        hant: ['\u6905\u5b50']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6905\u5b50']
+    },
+    {
+      pk: 777210508,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777210508/',
+      term: '\u697c',
+      fragment: '\u53bb \u51e0 \u697c',
+      importance: 2,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-29T02:06:40.675341',
+      status_changed_date: '2026-01-28T02:06:40.675341',
+      notes: '',
+      audio: null,
+      words: ['\u697c'],
+      tags: [],
+      hints: [
+        {
+          id: 13554686,
+          locale: 'en',
+          text: 'floor',
+          term: '\u697c',
+          popularity: 2775,
+          is_google_translate: true,
+          flagged: true
+        }
+      ],
+      transliteration: {
+        pinyin: ['l\u00f3u'],
+        hant: ['\u6a13']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u697c']
+    },
+    {
+      pk: 777563599,
+      url: 'https://www.lingq.com/api/v3/zh/cards/777563599/',
+      term: '\u6b21',
+      fragment: '\u518d \u8bf4 \u4e00 \u6b21\u3002',
+      importance: 3,
+      status: 0,
+      extended_status: null,
+      last_reviewed_correct: null,
+      srs_due_date: '2026-01-19T04:57:08.913203',
+      status_changed_date: null,
+      notes: '',
+      audio: null,
+      words: ['\u6b21'],
+      tags: [],
+      hints: [
+        {
+          id: 131057264,
+          locale: 'en',
+          text: 'time',
+          term: '\u6b21',
+          popularity: 347,
+          is_google_translate: false,
+          flagged: false
+        }
+      ],
+      transliteration: {
+        pinyin: ['c\u00ec'],
+        hant: ['\u6b21']
+      },
+      gTags: [],
+      wordTags: [],
+      readings: {},
+      writings: ['\u6b21']
     }
   ]
 }

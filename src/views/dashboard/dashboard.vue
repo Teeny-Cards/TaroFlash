@@ -71,7 +71,7 @@ async function onCreateDeckClicked() {
     </ui-button>
 
     <h1
-      class="max-md:row-start-2 text-brown-700 dark:text-brown-300 text-4xl self-end relative text-nowrap w-min after:absolute after:-right-2 after:bottom-0 after:-left-2 after:rounded-1.5 after:h-4 after:-z-1 after:bg-brown-300"
+      class="max-md:row-start-2 text-brown-700 dark:text-brown-300 text-4xl self-end relative text-nowrap w-min after:absolute after:-right-2 after:bottom-0 after:-left-2 after:rounded-1.5 after:h-4 after:-z-1 after:bg-brown-300 dark:after:bg-grey-700"
     >
       {{ t('dashboard.all') }}
     </h1>

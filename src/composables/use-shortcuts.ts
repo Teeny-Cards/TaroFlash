@@ -11,19 +11,19 @@ export type ShortcutRegistration = Omit<Shortcut, 'id'>
 
 export function useShortcuts(id: ScopeId, { priority }: { priority?: Priority } = {}) {
   const store = useShortcutStore()
-  const scope_id = store.pushScope(id, priority)
+  store.pushScope(id, priority)
 
   function register(shortcuts: ShortcutRegistration[] | ShortcutRegistration) {
     const _shortcuts = Array.isArray(shortcuts) ? shortcuts : [shortcuts]
     const shortcut_ids: ShortcutId[] = []
 
     for (const shortcut of _shortcuts) {
-      const id = store.register(scope_id, shortcut)
-      if (id) shortcut_ids.push(id)
+      const shortcut_id = store.register(id, shortcut)
+      if (shortcut_id) shortcut_ids.push(shortcut_id)
     }
 
     const unregister = () => {
-      for (const shortcut_id of shortcut_ids) store.unregister(scope_id, shortcut_id)
+      for (const shortcut_id of shortcut_ids) store.unregister(id, shortcut_id)
     }
 
     // unregister when the component is destroyed
@@ -41,11 +41,11 @@ export function useShortcuts(id: ScopeId, { priority }: { priority?: Priority } 
   }
 
   function clearScope() {
-    store.clearScope(scope_id)
+    store.clearScope(id)
   }
 
   function popScope() {
-    store.popScope(scope_id)
+    store.popScope(id)
   }
 
   function dispose() {
@@ -54,7 +54,6 @@ export function useShortcuts(id: ScopeId, { priority }: { priority?: Priority } 
   }
 
   return {
-    scope_id,
     register,
     trapFocus,
     releaseFocus,
