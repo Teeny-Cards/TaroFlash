@@ -7,9 +7,10 @@ import { useShortcuts } from '@/composables/use-shortcuts'
 import { gsap } from 'gsap'
 
 const { modal_stack, pop } = useModal()
-const modal_container = useTemplateRef<{ $el: HTMLElement }>('modal_container')
-const is_mobile = useMediaQuery('coarse')
+const is_desktop_size = useMediaQuery('sm')
 const shortcuts = useShortcuts('modal')
+
+const modal_container = useTemplateRef<{ $el: HTMLElement }>('modal_container')
 
 onMounted(() => {
   shortcuts.register({ combo: 'esc', handler: () => pop() })
@@ -21,7 +22,7 @@ onUnmounted(() => {
 })
 
 watchEffect(() => {
-  if (!modal_container.value?.$el || is_mobile.value) return
+  if (!modal_container.value?.$el) return
 
   if (modal_stack.value.length > 0) {
     disableBodyScroll(modal_container.value.$el, { reserveScrollBarGap: true })
@@ -35,12 +36,33 @@ const show_backdrop = computed(() => {
 })
 
 function onEnter(el: Element, done: () => void) {
-  gsap.fromTo(el, { translateY: '100%' }, { translateY: 0, duration: 0.2, ease: 'expo.out' })
-  done()
+  if (is_desktop_size.value) {
+    gsap.fromTo(
+      el,
+      { translateY: '200px', opacity: 0 },
+      { translateY: 0, opacity: 1, duration: 0.2, ease: 'expo.out', onComplete: done }
+    )
+  } else {
+    gsap.fromTo(
+      el,
+      { translateY: '100%' },
+      { translateY: 0, duration: 0.2, ease: 'expo.out', onComplete: done }
+    )
+  }
 }
 
 function onLeave(el: Element, done: () => void) {
-  gsap.to(el, { translateY: '100%', duration: 0.2, ease: 'expo.out', onComplete: done })
+  if (is_desktop_size.value) {
+    gsap.to(el, {
+      translateY: '200px',
+      opacity: 0,
+      duration: 0.2,
+      ease: 'expo.out',
+      onComplete: done
+    })
+  } else {
+    gsap.to(el, { translateY: '100%', duration: 0.2, ease: 'expo.out', onComplete: done })
+  }
 }
 </script>
 
