@@ -6,7 +6,6 @@ import { defineConfig, coverageConfigDefaults } from 'vite-plus'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import tailwindcss from '@tailwindcss/vite'
-import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
   fmt: {
@@ -55,12 +54,7 @@ export default defineConfig({
         test: {
           name: { label: 'Integration', color: 'green' },
           include: ['tests/integration/**/*.test.js'],
-          environment: 'node',
-          browser: {
-            enabled: true,
-            provider: playwright(),
-            instances: [{ browser: 'chromium' }]
-          }
+          environment: 'jsdom'
         }
       }
     ],

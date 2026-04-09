@@ -105,7 +105,7 @@ function onCardReviewed(item: RecordLogItem) {
         @side-changed="onSideChanged"
         @reviewed="onCardReviewed"
       />
-      <card v-else size="xl" />
+      <card data-testid="study-card-skeleton" v-else size="xl" />
 
       <rating-buttons
         class="z-10 mt-4"

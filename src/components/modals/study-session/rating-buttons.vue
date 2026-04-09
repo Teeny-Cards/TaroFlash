@@ -23,6 +23,7 @@ const emit = defineEmits<{
 }>()
 
 function onRatingClicked(grade: Grade) {
+  if (disabled) return
   emit('rated', grade)
 }
 </script>

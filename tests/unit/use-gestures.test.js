@@ -1,6 +1,10 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vite-plus/test'
 import { useGestures, _resetGestureState } from '@/composables/use-gestures'
 
+vi.mock('@/composables/use-shortcuts', () => ({
+  useShortcuts: vi.fn(() => ({ register: vi.fn(), dispose: vi.fn() }))
+}))
+
 // jsdom doesn't implement PointerEvent — extend MouseEvent with the fields we need
 if (typeof PointerEvent === 'undefined') {
   class PointerEvent extends MouseEvent {
@@ -102,7 +106,8 @@ describe('useGestures', () => {
       swipe(el, 0, 80)
 
       expect(onEnd).toHaveBeenCalledOnce()
-      expect(onEnd.mock.calls[0][0].direction).toBe('down')
+      expect(onEnd.mock.calls[0][0]).toBe(el)
+      expect(onEnd.mock.calls[0][1].direction).toBe('down')
     })
 
     test('does not fire for a swipe that is too short', () => {
@@ -146,7 +151,8 @@ describe('useGestures', () => {
       swipe(el, 0, -80)
 
       expect(onEnd).toHaveBeenCalledOnce()
-      expect(onEnd.mock.calls[0][0].direction).toBe('up')
+      expect(onEnd.mock.calls[0][0]).toBe(el)
+      expect(onEnd.mock.calls[0][1].direction).toBe('up')
     })
 
     test('does not fire when swiping down', () => {
@@ -169,7 +175,8 @@ describe('useGestures', () => {
       swipe(el, -80, 0)
 
       expect(onEnd).toHaveBeenCalledOnce()
-      expect(onEnd.mock.calls[0][0].direction).toBe('left')
+      expect(onEnd.mock.calls[0][0]).toBe(el)
+      expect(onEnd.mock.calls[0][1].direction).toBe('left')
     })
 
     test('does not fire when swiping right', () => {
@@ -192,7 +199,8 @@ describe('useGestures', () => {
       swipe(el, 80, 0)
 
       expect(onEnd).toHaveBeenCalledOnce()
-      expect(onEnd.mock.calls[0][0].direction).toBe('right')
+      expect(onEnd.mock.calls[0][0]).toBe(el)
+      expect(onEnd.mock.calls[0][1].direction).toBe('right')
     })
 
     test('does not fire when swiping left', () => {
@@ -215,7 +223,8 @@ describe('useGestures', () => {
 
     swipe(el, 80, 0)
 
-    const result = onEnd.mock.calls[0][0]
+    expect(onEnd.mock.calls[0][0]).toBe(el)
+    const result = onEnd.mock.calls[0][1]
     expect(result.dx).toBe(80)
     expect(result.dy).toBe(0)
     expect(typeof result.velocity).toBe('number')
@@ -234,7 +243,8 @@ describe('useGestures', () => {
     pointerDown(el, 100, 100)
 
     expect(onStart).toHaveBeenCalledOnce()
-    expect(onStart.mock.calls[0][0]).toEqual({ x: 100, y: 100 })
+    expect(onStart.mock.calls[0][0]).toBe(el)
+    expect(onStart.mock.calls[0][1]).toEqual({ x: 100, y: 100 })
   })
 
   test('onMove fires for every move event during the gesture', () => {
@@ -258,7 +268,8 @@ describe('useGestures', () => {
     pointerDown(el, 100, 100)
     pointerMove(150, 110)
 
-    expect(onMove.mock.calls[0][0]).toEqual({ x: 150, y: 110, dx: 50, dy: 10 })
+    expect(onMove.mock.calls[0][0]).toBe(el)
+    expect(onMove.mock.calls[0][1]).toEqual({ x: 150, y: 110, dx: 50, dy: 10 })
   })
 
   test('onStart does not fire for touches outside the element', () => {
@@ -409,6 +420,7 @@ describe('useGestures', () => {
     pointerUp(105, 100) // too short to be a swipe
 
     expect(onCancel).toHaveBeenCalledOnce()
+    expect(onCancel.mock.calls[0][0]).toBe(el)
     expect(onEnd).not.toHaveBeenCalled()
   })
 
@@ -431,6 +443,7 @@ describe('useGestures', () => {
     pointerCancel()
 
     expect(onCancel).toHaveBeenCalledOnce()
+    expect(onCancel.mock.calls[0][0]).toBe(el)
   })
 
   // ── Pointer cancel ────────────────────────────────────────────────────────
