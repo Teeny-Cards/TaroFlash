@@ -85,11 +85,7 @@ function flingCard(el: HTMLElement, direction: number) {
 
   const rating = direction > 0 ? Rating.Good : Rating.Again
 
-  if (rating === Rating.Good) {
-    emitSfx('ui.music_plink_ok')
-  } else {
-    emitSfx('ui.music_plink_locancel')
-  }
+  emitSfx(rating === Rating.Good ? 'ui.music_plink_ok' : 'ui.music_plink_locancel')
 
   const handleTransitionEnd = () => {
     el.removeEventListener('transitionend', handleTransitionEnd)
