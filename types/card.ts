@@ -33,5 +33,3 @@ declare global {
   type Review = FSRSCard
   type Card = Prettify<CardBase & ImageCard & ReviewCard>
 }
-
-
