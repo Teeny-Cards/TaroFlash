@@ -40,32 +40,15 @@ onMounted(() => {
   // swipe-right holds onStart/onMove since it fires for all horizontal drags,
   // regardless of which direction is ultimately recognised.
   register(el, 'swipe-right', {
-    onStart() {
-      el.style.transition = 'none'
-    },
-    onMove({ dx }) {
-      is_dragging.value = true
-      card_offset.value = dx
-      el.style.transform = `translateX(${dx}px) rotate(${dx / 10}deg)`
-      _updateSwipeZone(dx)
-    },
-    onEnd({ dx }) {
-      if (Math.abs(dx) > SWIPE_DISTANCE_THRESHOLD) flingCard(el, 1)
-      else _snapBack(el)
-    },
-    onCancel() {
-      _snapBack(el)
-    }
+    onStart: (el) => onHorizontalStart(el as HTMLElement),
+    onMove: (el, { dx }) => onMove(el as HTMLElement, dx),
+    onEnd: (el, { dx }) => onHorizontalEnd(el as HTMLElement, dx, 1),
+    onCancel: (el) => snapBack(el as HTMLElement)
   })
 
   register(el, 'swipe-left', {
-    onEnd({ dx }) {
-      if (Math.abs(dx) > SWIPE_DISTANCE_THRESHOLD) flingCard(el, -1)
-      else _snapBack(el)
-    },
-    onCancel() {
-      _snapBack(el)
-    }
+    onEnd: (el, { dx }) => onHorizontalEnd(el as HTMLElement, dx, -1),
+    onCancel: (el) => snapBack(el as HTMLElement)
   })
 })
 
@@ -107,7 +90,23 @@ function reviewCard(grade: Grade) {
   }
 }
 
-function _snapBack(el: HTMLElement) {
+function onHorizontalStart(el: HTMLElement) {
+  el.style.transition = 'none'
+}
+
+function onMove(el: HTMLElement, dx: number) {
+  is_dragging.value = true
+  card_offset.value = dx
+  ;(el as HTMLElement).style.transform = `translateX(${dx}px) rotate(${dx / 10}deg)`
+  _updateSwipeZone(dx)
+}
+
+function onHorizontalEnd(el: HTMLElement, dx: number, direction: 1 | -1) {
+  if (Math.abs(dx) > SWIPE_DISTANCE_THRESHOLD) flingCard(el, direction)
+  else snapBack(el)
+}
+
+function snapBack(el: HTMLElement) {
   el.style.transition = 'transform 0.15s ease-out'
   el.style.transform = ''
   card_offset.value = 0

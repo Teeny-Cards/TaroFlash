@@ -1,6 +1,3 @@
 {
-  "recommendations": [
-    "denoland.vscode-deno",
-    "VoidZero.vite-plus-extension-pack"
-  ]
+  "recommendations": ["denoland.vscode-deno", "VoidZero.vite-plus-extension-pack"]
 }

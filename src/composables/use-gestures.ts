@@ -1,5 +1,7 @@
 import { getCurrentScope, onScopeDispose, unref } from 'vue'
 import type { MaybeRef } from 'vue'
+import { useShortcuts } from '@/composables/use-shortcuts'
+import uid from '@/utils/uid'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -36,13 +38,13 @@ export interface SwipeResult {
 
 export interface GestureCallbacks {
   /** Fires when the pointer/touch first contacts the element. Gesture not yet determined. */
-  onStart?: (coords: GestureStartCoords) => void
+  onStart?: (element: Element, coords: GestureStartCoords) => void
   /** Fires on every move event while the gesture is in progress. */
-  onMove?: (coords: GestureMoveCoords) => void
+  onMove?: (element: Element, coords: GestureMoveCoords) => void
   /** Fires when the pointer/touch is released and the gesture is recognized. */
-  onEnd?: (result: SwipeResult) => void
+  onEnd?: (element: Element, result: SwipeResult) => void
   /** Fires when the pointer/touch is released but no gesture was recognized. */
-  onCancel?: () => void
+  onCancel?: (element: Element) => void
 }
 
 export interface UseGesturesOptions {
@@ -55,6 +57,13 @@ export interface UseGesturesOptions {
 const MIN_SWIPE_DISTANCE = 30
 /** max |perpendicular| / |parallel| ratio to qualify as a directional swipe (~27°) */
 const MAX_SWIPE_ANGLE_RATIO = 0.5
+
+const GESTURE_KEY_MAP: Record<GestureType, KeyCombo> = {
+  'swipe-right': 'arrowright',
+  'swipe-left': 'arrowleft',
+  'swipe-up': 'arrowup',
+  'swipe-down': 'arrowdown'
+}
 
 // ── Module-level state ────────────────────────────────────────────────────────
 // Single shared state so N components share one set of document listeners.
@@ -130,11 +139,11 @@ function onPointerDown(e: PointerEvent): void {
     start_y: e.clientY,
     start_time: Date.now(),
     pointer_id: e.pointerId,
-    active,
+    active
   }
 
   const coords: GestureStartCoords = { x: e.clientX, y: e.clientY }
-  for (const reg of active) reg.callbacks.onStart?.(coords)
+  for (const reg of active) reg.callbacks.onStart?.(reg.element, coords)
 }
 
 function onPointerMove(e: PointerEvent): void {
@@ -144,7 +153,7 @@ function onPointerMove(e: PointerEvent): void {
   const dy = e.clientY - _tracking.start_y
   const coords: GestureMoveCoords = { x: e.clientX, y: e.clientY, dx, dy }
 
-  for (const reg of _tracking.active) reg.callbacks.onMove?.(coords)
+  for (const reg of _tracking.active) reg.callbacks.onMove?.(reg.element, coords)
 }
 
 function onPointerUp(e: PointerEvent): void {
@@ -163,16 +172,27 @@ function onPointerUp(e: PointerEvent): void {
 
   if (gesture !== null) {
     const direction: SwipeResult['direction'] =
-      gesture === 'swipe-down' ? 'down'
-      : gesture === 'swipe-up' ? 'up'
-      : gesture === 'swipe-left' ? 'left'
-      : 'right'
-    const result: SwipeResult = { x: e.clientX, y: e.clientY, dx, dy, velocity, duration, direction }
+      gesture === 'swipe-down'
+        ? 'down'
+        : gesture === 'swipe-up'
+          ? 'up'
+          : gesture === 'swipe-left'
+            ? 'left'
+            : 'right'
+    const result: SwipeResult = {
+      x: e.clientX,
+      y: e.clientY,
+      dx,
+      dy,
+      velocity,
+      duration,
+      direction
+    }
     for (const reg of active) {
-      if (reg.gesture === gesture) reg.callbacks.onEnd?.(result)
+      if (reg.gesture === gesture) reg.callbacks.onEnd?.(reg.element, result)
     }
   } else {
-    for (const reg of active) reg.callbacks.onCancel?.()
+    for (const reg of active) reg.callbacks.onCancel?.(reg.element)
   }
 }
 
@@ -180,7 +200,7 @@ function onPointerCancel(e: PointerEvent): void {
   if (!_tracking || _tracking.pointer_id !== e.pointerId) return
   const active = _tracking.active
   _tracking = null
-  for (const reg of active) reg.callbacks.onCancel?.()
+  for (const reg of active) reg.callbacks.onCancel?.(reg.element)
 }
 
 // ── Listener lifecycle ────────────────────────────────────────────────────────
@@ -234,19 +254,25 @@ export function _resetGestureState(): void {
 export function useGestures(options: UseGesturesOptions = {}) {
   const { input = 'both' } = options
   const owned_ids: number[] = []
+  const shortcuts = useShortcuts(`gestures/${uid()}`)
+
+  if (getCurrentScope()) onScopeDispose(() => shortcuts.dispose())
 
   /**
    * Register a gesture listener on an element.
    * Returns an unregister function. Auto-unregisters when the component scope is disposed.
    *
+   * Keyboard equivalents are registered automatically:
+   * swipe-right → ArrowRight, swipe-left → ArrowLeft, swipe-up → ArrowUp, swipe-down → ArrowDown
+   *
    * @param element - The element (or template ref) to watch. Must be mounted.
    * @param gesture - Which gesture to listen for.
-   * @param callbacks - Lifecycle callbacks for the gesture.
+   * @param callbacks - Lifecycle callbacks for the gesture. Element is passed as the first argument.
    */
   function register(
     element: MaybeRef<Element | null | undefined>,
     gesture: GestureType,
-    callbacks: GestureCallbacks,
+    callbacks: GestureCallbacks
   ): () => void {
     const el = unref(element)
     if (!el) return () => {}
@@ -254,6 +280,25 @@ export function useGestures(options: UseGesturesOptions = {}) {
     const id = _next_id++
     addToRegistry({ id, element: el, gesture, callbacks, input })
     owned_ids.push(id)
+
+    // Register keyboard shortcut equivalent so gestures can also be triggered by keyboard.
+    const direction = gesture.replace('swipe-', '') as SwipeResult['direction']
+    const synthetic_dx = gesture === 'swipe-right' ? 100 : gesture === 'swipe-left' ? -100 : 0
+    const synthetic_dy = gesture === 'swipe-down' ? 100 : gesture === 'swipe-up' ? -100 : 0
+    shortcuts.register({
+      combo: GESTURE_KEY_MAP[gesture],
+      handler: () => {
+        callbacks.onEnd?.(el, {
+          x: 0,
+          y: 0,
+          dx: synthetic_dx,
+          dy: synthetic_dy,
+          velocity: 0,
+          duration: 0,
+          direction
+        })
+      }
+    })
 
     const unregister = () => {
       removeFromRegistry(id)
