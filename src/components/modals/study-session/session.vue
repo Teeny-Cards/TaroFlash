@@ -2,8 +2,8 @@
 import StudyCard from './study-card.vue'
 import RatingButtons from './rating-buttons.vue'
 import { useStudySession } from '@/composables/study-session'
-import { type RecordLogItem } from 'ts-fsrs'
-import { onMounted, ref } from 'vue'
+import { type Grade, type RecordLogItem } from 'ts-fsrs'
+import { onMounted, ref, useTemplateRef } from 'vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import Card from '@/components/card/index.vue'
 import { fetchAllCardsByDeckId } from '@/api/cards'
@@ -26,6 +26,7 @@ const {
   setCards
 } = useStudySession(deck.config)
 
+const study_card_ref = useTemplateRef('study-card')
 const loading = ref(true)
 
 onMounted(async () => {
@@ -47,6 +48,10 @@ function onSideChanged(side: 'front' | 'back') {
   emitSfx(side === 'back' ? 'ui.transition_up' : 'ui.transition_down')
 
   current_card_side.value = side
+}
+
+function onRated(grade: Grade) {
+  study_card_ref.value?.rate(grade)
 }
 
 function onCardReviewed(item: RecordLogItem) {
@@ -92,6 +97,7 @@ function onCardReviewed(item: RecordLogItem) {
 
       <study-card
         v-if="!loading"
+        ref="study-card"
         :key="active_card?.id"
         :card="active_card"
         :side="current_card_side"
@@ -106,7 +112,7 @@ function onCardReviewed(item: RecordLogItem) {
         :options="active_card?.preview"
         :show-options="current_card_side === 'back'"
         :disabled="mode !== 'studying'"
-        @reviewed="onCardReviewed"
+        @rated="onRated"
         @revealed="onSideChanged('back')"
       />
     </div>
