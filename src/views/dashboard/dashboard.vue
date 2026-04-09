@@ -30,7 +30,7 @@ onMounted(async () => {
 })
 
 const due_decks = computed(() => {
-  return decks.value.filter((deck) => deck.due_count ?? 0 > 0)
+  return decks.value.filter((deck) => (deck.due_count ?? 0) > 0)
 })
 
 async function refetchDecks() {
@@ -59,23 +59,26 @@ async function onCreateDeckClicked() {
 <template>
   <div
     data-testid="dashboard"
-    class="grid grid-cols-[345px_1fr] grid-rows-[auto_1fr] gap-x-15.5 gap-y-11.5 h-full pb-12"
+    class="grid grid-cols-[1fr] md:grid-cols-[345px_1fr] md:grid-rows-[auto_1fr] gap-x-15.5 gap-y-6 md:gap-y-11.5 h-full pb-12"
   >
-    <ui-button icon-left="add" class="w-full!" size="xl" @click="onCreateDeckClicked">
+    <ui-button
+      icon-left="add"
+      class="w-full! max-md:row-start-4"
+      size="xl"
+      @click="onCreateDeckClicked"
+    >
       {{ t('dashboard.create-deck') }}
     </ui-button>
 
     <h1
-      class="text-brown-700 dark:text-brown-300 text-4xl self-end relative text-nowrap w-min
-        after:absolute after:-right-2 after:bottom-0 after:-left-2 after:rounded-1.5 after:h-4
-        after:-z-1 after:bg-brown-300"
+      class="max-md:row-start-2 text-brown-700 dark:text-brown-300 text-4xl self-end relative text-nowrap w-min after:absolute after:-right-2 after:bottom-0 after:-left-2 after:rounded-1.5 after:h-4 after:-z-1 after:bg-brown-300"
     >
       {{ t('dashboard.all') }}
     </h1>
 
     <review-inbox :due_decks="due_decks" />
 
-    <div class="flex gap-x-6.5 gap-y-8 flex-wrap col-start-2">
+    <div class="flex gap-x-6.5 gap-y-8 flex-wrap md:col-start-2">
       <Deck
         v-for="(deck, index) in decks"
         :key="index"

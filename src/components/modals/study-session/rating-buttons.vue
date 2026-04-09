@@ -42,6 +42,7 @@ function onRatingClicked(grade: Grade) {
         class="text-brown-700 cursor-pointer rounded-full bg-white px-13 py-4 hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
         :class="{ 'opacity-50': disabled }"
         :disabled="disabled"
+        static_on_mobile
         @click="onRatingClicked(Rating.Again)"
       >
         {{ t('study.nope') }}
@@ -55,6 +56,7 @@ function onRatingClicked(grade: Grade) {
         class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
         :class="{ 'opacity-50': disabled }"
         :disabled="disabled"
+        static_on_mobile
         @click="onRatingClicked(Rating.Good)"
       >
         {{ t('study.got-it') }}

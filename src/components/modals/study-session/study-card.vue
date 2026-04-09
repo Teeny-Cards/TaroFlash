@@ -70,7 +70,10 @@ onMounted(() => {
 
 function toggleSide() {
   if (is_dragging.value) return
-  emit('side-changed', side === 'front' ? 'back' : 'front')
+
+  const next_side = side === 'front' ? 'back' : 'front'
+
+  emit('side-changed', next_side)
 }
 
 function flingCard(el: HTMLElement, direction: number) {
@@ -82,6 +85,12 @@ function flingCard(el: HTMLElement, direction: number) {
 
   const rating = direction > 0 ? Rating.Good : Rating.Again
 
+  if (rating === Rating.Good) {
+    emitSfx('ui.music_plink_ok')
+  } else {
+    emitSfx('ui.music_plink_locancel')
+  }
+
   const handleTransitionEnd = () => {
     el.removeEventListener('transitionend', handleTransitionEnd)
     reviewCard(rating)
@@ -92,7 +101,6 @@ function flingCard(el: HTMLElement, direction: number) {
   }
 
   el.addEventListener('transitionend', handleTransitionEnd)
-  emitSfx('ui.slide_up')
 }
 
 function reviewCard(grade: Grade) {

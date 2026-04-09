@@ -114,13 +114,15 @@ class TextComposer {
    * @returns A function to detach the editor from the element.
    */
   attachEditor(rootEl: HTMLElement, config: EditorConfig = {}) {
+    if (config.disabled) return
+
     this.editors.set(rootEl, { ...config })
     this.setEditorContentCache(config.content ?? '', { rootEl })
 
     const boundFocusIn = this._focusEditor.bind(this, rootEl)
     const boundFocusOut = this._blurEditor.bind(this)
 
-    rootEl.setAttribute('contenteditable', `${!config.disabled}`)
+    rootEl.setAttribute('contenteditable', 'true')
     rootEl.addEventListener('focusin', boundFocusIn)
     rootEl.addEventListener('focusout', boundFocusOut)
 

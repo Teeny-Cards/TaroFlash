@@ -40,7 +40,11 @@ export const AUDIO_CONFIG = createAudioConfig({
     },
     toggle_on: {
       default_volume: 0.3
-    }
+    },
+    transition_down: {},
+    transition_up: {},
+    music_plink_locancel: {},
+    music_plink_ok: {}
   }
 })
 

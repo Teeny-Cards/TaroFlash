@@ -7,6 +7,7 @@ import { onMounted, ref } from 'vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import Card from '@/components/card/index.vue'
 import { fetchAllCardsByDeckId } from '@/api/cards'
+import { emitSfx } from '@/sfx/bus'
 
 const { deck } = defineProps<{ deck: Deck }>()
 const emit = defineEmits<{
@@ -42,12 +43,21 @@ async function setup(deck_id: number) {
   setCards(cards)
 }
 
+function onSideChanged(side: 'front' | 'back') {
+  emitSfx(side === 'back' ? 'ui.transition_up' : 'ui.transition_down')
+
+  current_card_side.value = side
+}
+
 function onCardReviewed(item: RecordLogItem) {
   if (!active_card.value?.id || mode.value !== 'studying') return
 
   reviewCard(item)
 
-  emit('finished', num_correct.value, cards.value.length)
+  // @ts-ignore - stupid error
+  if (mode.value === 'completed') {
+    emit('finished', num_correct.value, cards.value.length)
+  }
 }
 </script>
 
@@ -79,10 +89,11 @@ function onCardReviewed(item: RecordLogItem) {
 
       <study-card
         v-if="!loading"
+        :key="active_card?.id"
         :card="active_card"
         :side="current_card_side"
         :options="active_card?.preview"
-        @side-changed="(side) => (current_card_side = side)"
+        @side-changed="onSideChanged"
         @reviewed="onCardReviewed"
       />
       <card v-else size="xl" />
@@ -93,7 +104,7 @@ function onCardReviewed(item: RecordLogItem) {
         :show-options="current_card_side === 'back'"
         :disabled="mode !== 'studying'"
         @reviewed="onCardReviewed"
-        @revealed="current_card_side = 'back'"
+        @revealed="onSideChanged('back')"
       />
     </div>
   </div>
