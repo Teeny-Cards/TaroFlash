@@ -16,7 +16,7 @@ const { card, side, options } = defineProps<{
 
 const emit = defineEmits<{
   (e: 'side-changed', side: 'front' | 'back'): void
-  (e: 'reviewed', item: RecordLogItem): void
+  (e: 'reviewed', item: RecordLogItem | undefined): void
 }>()
 
 const { getRatingTimeFormat } = useRatingFormat()
@@ -83,8 +83,7 @@ function flingCard(el: HTMLElement, direction: number) {
 
   const onTransitionEnd = () => {
     el.removeEventListener('transitionend', onTransitionEnd)
-    const item = options?.[rating]
-    if (item) emit('reviewed', item)
+    emit('reviewed', options?.[rating])
     card_offset.value = 0
     el.style.transition = 'none'
     el.style.transform = ''
@@ -144,11 +143,11 @@ watch(card_offset, (val, prev) => {
       @mouseup="toggleSide"
     >
       <div class="absolute inset-0 overflow-hidden rounded-(--face-radius)">
-        <div class="review-label bg-pink-400" :class="{ 'review-label--visible': failVisible }">
+        <div data-testid="review-label--fail" class="review-label bg-pink-400" :class="{ 'review-label--visible': failVisible }">
           {{ $t('study.nope') }}
           <p class="text-sm">{{ getRatingTimeFormat(Rating.Again, options) }}</p>
         </div>
-        <div class="review-label bg-green-400" :class="{ 'review-label--visible': passVisible }">
+        <div data-testid="review-label--pass" class="review-label bg-green-400" :class="{ 'review-label--visible': passVisible }">
           {{ $t('study.got-it') }}
           <p class="text-sm">{{ getRatingTimeFormat(Rating.Good, options) }}</p>
         </div>

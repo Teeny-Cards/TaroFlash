@@ -68,20 +68,25 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     }
   }
 
-  function reviewCard(item: RecordLogItem) {
+  function reviewCard(item?: RecordLogItem) {
     if (!active_card.value) return
 
     const card = active_card.value
-    // Capture whether the card was due today before overwriting the review —
-    // _retryCard needs this to decide whether to re-queue the card today.
-    // review.due may be a Date object (from createEmptyCard) or an ISO string (from Supabase).
-    const was_due_today = _isDueToday(card.review?.due)
 
-    card.review = item.card
-    _markCurrentCardStudied(item.log.rating, was_due_today)
+    if (item) {
+      // Capture whether the card was due today before overwriting the review —
+      // _retryCard needs this to decide whether to re-queue the card today.
+      // review.due may be a Date object (from createEmptyCard) or an ISO string (from Supabase).
+      const was_due_today = _isDueToday(card.review?.due)
+      card.review = item.card
+      _markCurrentCardStudied(item.log.rating, was_due_today)
+    } else {
+      card.state = 'passed'
+    }
+
     _pickNextCard()
 
-    if (card.id) {
+    if (card.id && item) {
       return updateReviewByCardId(card.id, item.card)
     }
   }

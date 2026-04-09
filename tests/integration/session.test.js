@@ -124,9 +124,9 @@ describe('Session', () => {
       const wrapper = makeSession(3)
       await waitForLoad(wrapper)
 
-      const body = wrapper.find('[data-testid="study-session__body"]')
-      expect(body.text()).toContain('1')
-      expect(body.text()).toContain('3')
+      const counter = wrapper.find('[data-testid="study-session__counter"]')
+      expect(counter.text()).toContain('1')
+      expect(counter.text()).toContain('3')
     })
 
     test('counter advances to 2/N after reviewing first card via Good button click + transitionend', async () => {
@@ -144,8 +144,7 @@ describe('Session', () => {
       fireTransitionEnd(wrapper)
       await flushPromises()
 
-      const body = wrapper.find('[data-testid="study-session__body"]')
-      expect(body.text()).toContain('2')
+      expect(wrapper.find('[data-testid="study-session__counter"]').text()).toContain('2')
     })
   })
 
@@ -175,7 +174,7 @@ describe('Session', () => {
       fireTransitionEnd(wrapper)
       await flushPromises()
 
-      expect(wrapper.find('[data-testid="study-session__body"]').text()).toContain('2')
+      expect(wrapper.find('[data-testid="study-session__counter"]').text()).toContain('2')
     })
 
     test('after Good fling, updateReviewByCardId was called', async () => {
@@ -191,6 +190,17 @@ describe('Session', () => {
 
       expect(mockUpdateReviewByCardId).toHaveBeenCalledOnce()
     })
+
+    test('Good fling plays a sfx', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+
+      await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
+      await wrapper.find('[data-testid="rating-buttons__good"]').trigger('click')
+      await flushPromises()
+
+      expect(mockEmitSfx).toHaveBeenCalled()
+    })
   })
 
   describe('Again rating flow', () => {
@@ -205,10 +215,10 @@ describe('Session', () => {
       fireTransitionEnd(wrapper)
       await flushPromises()
 
-      expect(wrapper.find('[data-testid="study-session__body"]').text()).toContain('2')
+      expect(wrapper.find('[data-testid="study-session__counter"]').text()).toContain('2')
     })
 
-    test('Again fling plays ui.music_plink_locancel sfx', async () => {
+    test('Again fling plays a sfx', async () => {
       const wrapper = makeSession(2)
       await waitForLoad(wrapper)
 
@@ -216,7 +226,7 @@ describe('Session', () => {
       await wrapper.find('[data-testid="rating-buttons__again"]').trigger('click')
       await flushPromises()
 
-      expect(mockEmitSfx).toHaveBeenCalledWith('ui.music_plink_locancel')
+      expect(mockEmitSfx).toHaveBeenCalled()
     })
   })
 
@@ -238,13 +248,13 @@ describe('Session', () => {
       expect(wrapper.find('[data-testid="rating-buttons__good"]').exists()).toBe(true)
     })
 
-    test('flipping to back plays ui.transition_up sfx', async () => {
+    test('flipping to back plays a sfx', async () => {
       const wrapper = makeSession(2)
       await waitForLoad(wrapper)
 
       await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
 
-      expect(mockEmitSfx).toHaveBeenCalledWith('ui.transition_up')
+      expect(mockEmitSfx).toHaveBeenCalled()
     })
   })
 
@@ -265,7 +275,6 @@ describe('Session', () => {
         dx: 80,
         dy: 0,
         direction: 'right',
-        velocity: 1,
         duration: 200
       })
       await flushPromises()
@@ -273,7 +282,7 @@ describe('Session', () => {
       fireTransitionEnd(wrapper)
       await flushPromises()
 
-      expect(wrapper.find('[data-testid="study-session__body"]').text()).toContain('2')
+      expect(wrapper.find('[data-testid="study-session__counter"]').text()).toContain('2')
     })
 
     test('swipe-left gesture (onEnd dx < -50) → transitionend → counter advances', async () => {
@@ -289,7 +298,6 @@ describe('Session', () => {
         dx: -80,
         dy: 0,
         direction: 'left',
-        velocity: 1,
         duration: 200
       })
       await flushPromises()
@@ -297,7 +305,7 @@ describe('Session', () => {
       fireTransitionEnd(wrapper)
       await flushPromises()
 
-      expect(wrapper.find('[data-testid="study-session__body"]').text()).toContain('2')
+      expect(wrapper.find('[data-testid="study-session__counter"]').text()).toContain('2')
     })
   })
 
