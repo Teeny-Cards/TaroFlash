@@ -33,7 +33,7 @@ function pointerDown(target, x, y, pointer_type = 'touch') {
     clientX: x,
     clientY: y,
     pointerId: ++pointer_id,
-    pointerType: pointer_type,
+    pointerType: pointer_type
   })
   target.dispatchEvent(e)
   return pointer_id
@@ -46,8 +46,8 @@ function pointerMove(x, y, pid = pointer_id, pointer_type = 'touch') {
       clientX: x,
       clientY: y,
       pointerId: pid,
-      pointerType: pointer_type,
-    }),
+      pointerType: pointer_type
+    })
   )
 }
 
@@ -58,15 +58,13 @@ function pointerUp(x, y, pid = pointer_id, pointer_type = 'touch') {
       clientX: x,
       clientY: y,
       pointerId: pid,
-      pointerType: pointer_type,
-    }),
+      pointerType: pointer_type
+    })
   )
 }
 
 function pointerCancel(pid = pointer_id) {
-  document.dispatchEvent(
-    new PointerEvent('pointercancel', { bubbles: true, pointerId: pid }),
-  )
+  document.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, pointerId: pid }))
 }
 
 /** Simulate a complete swipe gesture. */

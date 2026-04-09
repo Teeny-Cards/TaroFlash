@@ -1,7 +1,6 @@
 <template>
   <div
-    class="group relative grid cursor-pointer grid-cols-[165px] grid-rows-[148px_29px_34px_46px] items-start
-      justify-items-center"
+    class="group relative grid cursor-pointer grid-cols-[165px] grid-rows-[148px_29px_34px_46px] items-start justify-items-center"
   >
     <div
       class="rounded-8 group-hover:bg-brown-300 absolute -inset-4 -z-1 transition-colors duration-75"

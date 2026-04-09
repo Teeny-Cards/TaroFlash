@@ -34,4 +34,4 @@ declare global {
   type Card = Prettify<CardBase & ImageCard & ReviewCard>
 }
 
-export {}
+

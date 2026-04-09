@@ -46,8 +46,7 @@ const percentage = computed(() => {
     class="bg-brown-300 rounded-5 -mt-10 h-16 w-full outline-8 outline-brown-300 p-1 flex gap-4 relative"
   >
     <div
-      class="flex h-full p-2 bg-blue-500 outline-4 outline-white rounded-4.5 items-center justify-center
-        text-white"
+      class="flex h-full p-2 bg-blue-500 outline-4 outline-white rounded-4.5 items-center justify-center text-white"
     >
       <div class="flex items-end">
         <p class="text-3xl">

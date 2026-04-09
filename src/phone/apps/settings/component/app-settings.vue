@@ -17,8 +17,7 @@ const rewards_volume = ref(50)
       <section-header>{{ t('settings.app-settings.audio.label') }}</section-header>
 
       <div
-        class="grid grid-cols-[auto_1fr] gap-y-8 gap-x-20 text-brown-700 dark:text-brown-300
-          select-none"
+        class="grid grid-cols-[auto_1fr] gap-y-8 gap-x-20 text-brown-700 dark:text-brown-300 select-none"
       >
         <h3>{{ t('settings.app-settings.audio.interface') }}</h3>
         <ui-slider :label="t('settings.app-settings.audio.interface')" v-model="interface_volume" />

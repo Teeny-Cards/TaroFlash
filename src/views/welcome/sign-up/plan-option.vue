@@ -20,8 +20,7 @@ function onSelect() {
   <div data-testid="plan-option-container" class="flex flex-col items-center gap-2">
     <button
       data-testid="plan-option"
-      class="w-full h-full flex items-center justify-center rounded-11 p-2 cursor-pointer relative
-        transition-colors duration-75"
+      class="w-full h-full flex items-center justify-center rounded-11 p-2 cursor-pointer relative transition-colors duration-75"
       :class="{
         'outline-3 outline-blue-500': selected,
         'outline-2 outline-brown-100 hover:outline-blue-500': !selected
@@ -30,8 +29,7 @@ function onSelect() {
       v-sfx.click="'ui.etc_camera_shutter'"
     >
       <div
-        class="w-full h-full flex gap-4 flex-col items-start bgx-leaf bgx-size-25 rounded-9 px-11
-          py-5 bgx-opacity-10"
+        class="w-full h-full flex gap-4 flex-col items-start bgx-leaf bgx-size-25 rounded-9 px-11 py-5 bgx-opacity-10"
         :class="{
           'bg-brown-100 bgx-color-brown-500': theme === 'brown-100',
           'bg-green-400': theme === 'green-400',

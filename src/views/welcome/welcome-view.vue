@@ -44,8 +44,7 @@ onMounted(async () => {
   </section>
 
   <section
-    class="w-full bg-brown-300 dark:bg-grey-800 bgx-bank-note dark:bgx-color-brown-800
-      dark:bgx-color-brown-300 py-54.5 flex flex-col wave-top-[30px]"
+    class="w-full bg-brown-300 dark:bg-grey-800 bgx-bank-note dark:bgx-color-brown-800 dark:bgx-color-brown-300 py-54.5 flex flex-col wave-top-[30px]"
   >
     <div class="flex gap-21 justify-center items-center">
       <ui-image src="phone-example" class="w-60 z-1" />
