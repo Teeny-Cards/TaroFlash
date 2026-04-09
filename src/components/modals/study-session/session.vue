@@ -54,7 +54,7 @@ function onRated(grade: Grade) {
   study_card_ref.value?.rate(grade)
 }
 
-function onCardReviewed(item: RecordLogItem) {
+function onCardReviewed(item?: RecordLogItem) {
   if (!active_card.value?.id || mode.value !== 'studying') return
 
   reviewCard(item)
@@ -91,7 +91,7 @@ function onCardReviewed(item: RecordLogItem) {
       data-testid="study-session__body"
       class="w-full h-full max-h-130 flex flex-col items-center justify-between gap-2 self-center"
     >
-      <div class="text-brown-700 dark:text-brown-300 text-lg">
+      <div data-testid="study-session__counter" class="text-brown-700 dark:text-brown-300 text-lg">
         {{ current_index + 1 }}<span class="text-sm">/{{ cards.length }}</span>
       </div>
 
