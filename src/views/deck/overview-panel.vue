@@ -3,28 +3,27 @@ import Deck from '@/components/deck.vue'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useModal } from '@/composables/modal'
+import { emitSfx } from '@/sfx/bus'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
-import StudySession from '@/components/modals/study-session/index.vue'
+import { useStudySessionModal } from '@/composables/modals/use-study-session'
 
 const { deck } = defineProps<{ deck: Deck; imageUrl?: string }>()
 const emit = defineEmits<{ (e: 'updated'): void }>()
 
 const { t } = useI18n()
 const modal = useModal()
+const study_session = useStudySessionModal()
 
 const study_disabled = computed(() => {
   return deck.cards?.length === 0
 })
 
 async function onSettingsClicked() {
-  const { response } = modal.open(deckSettings, {
-    props: { deck },
-    backdrop: true,
-    openAudio: 'ui.etc_camera_reel',
-    closeAudio: 'ui.card_drop'
-  })
+  emitSfx('ui.etc_camera_reel')
+  const { response } = modal.open(deckSettings, { props: { deck }, backdrop: true })
+  response.then(() => emitSfx('ui.card_drop'))
 
   if (await response) {
     emit('updated')
@@ -32,22 +31,14 @@ async function onSettingsClicked() {
 }
 
 function onStudyClicked() {
-  modal.open(StudySession, {
-    backdrop: true,
-    props: {
-      deck
-    },
-    openAudio: 'ui.double_pop_up',
-    closeAudio: 'ui.double_pop_down'
-  })
+  study_session.open(deck)
 }
 </script>
 
 <template>
   <div
     data-testid="overview-panel"
-    class="flex w-max flex-col items-center gap-6 md:flex-row md:items-end xl:flex-col
-      xl:items-start"
+    class="flex w-max flex-col items-center gap-6 md:flex-row md:items-end xl:flex-col xl:items-start"
   >
     <deck size="lg" class="relative" :deck="deck"></deck>
 

@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router'
 import { useAlert } from '@/composables/alert'
 
 const { close } = defineProps<{
-  close: (response?: boolean, opts?: any) => void
+  close: (response?: boolean) => void
 }>()
 
 const { t } = useI18n()
@@ -29,7 +29,7 @@ async function onSubmit() {
     })
   }
 
-  close(true, { silent: true })
+  close(true)
 }
 </script>
 
@@ -40,9 +40,7 @@ async function onSubmit() {
   >
     <div
       data-testid="signup__header"
-      class="px-8 py-10 bg-blue-500 dark:bg-blue-650 bgx-leaf bgx-fill-brown-100
-        dark:bgx-fill-brown-300 bgx-opacity-10 bgx-size-25 bg-size-[10%] wave-bottom-[30px] flex
-        items-center justify-center"
+      class="px-8 py-10 bg-blue-500 dark:bg-blue-650 bgx-leaf bgx-fill-brown-100 dark:bgx-fill-brown-300 bgx-opacity-10 bgx-size-25 bg-size-[10%] wave-bottom-[30px] flex items-center justify-center"
     >
       <h1 class="text-5xl text-brown-100">{{ t('signup-dialog.header') }}</h1>
     </div>

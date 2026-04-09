@@ -12,7 +12,10 @@ export type SignupOAuthOptions = {
 
 export type OAuthProvider = 'google'
 
-const AUTH_REDIRECT_URL = import.meta.env.VITE_AUTH_REDIRECT_URL
+const AUTH_REDIRECT_URL =
+  import.meta.env.DEV && typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+    ? `http://${window.location.hostname}:5173/auth/callback`
+    : import.meta.env.VITE_AUTH_REDIRECT_URL
 
 export async function getSession(): Promise<Session | null> {
   const { data, error } = await supabase.auth.getSession()

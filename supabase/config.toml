@@ -289,7 +289,7 @@ s3_access_key = "env(S3_ACCESS_KEY)"
 s3_secret_key = "env(S3_SECRET_KEY)"
 
 [remotes.stage]
-project_id="kjxijaowaogiepqteqjk"
+project_id = "kjxijaowaogiepqteqjk"
 
 [remotes.stage.auth]
 site_url = "https://stage.taro-flash.com"

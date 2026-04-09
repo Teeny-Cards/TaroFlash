@@ -39,8 +39,7 @@ async function onSubmit(): Promise<void> {
 
 <template>
   <div
-    class="w-80 bg-brown-300 rounded-l-6 rounded-br-6 rounded-tr-0.5 p-6 shadow-sm overflow-hidden
-      relative"
+    class="w-80 bg-brown-300 rounded-l-6 rounded-br-6 rounded-tr-0.5 p-6 shadow-sm overflow-hidden relative"
   >
     <div class="flex flex-col items-center gap-6">
       <ui-button

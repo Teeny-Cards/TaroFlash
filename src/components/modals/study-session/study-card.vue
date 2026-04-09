@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import Card from '@/components/card/index.vue'
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
-import { useI18n } from 'vue-i18n'
 import { emitSfx } from '@/sfx/bus'
-import { DateTime } from 'luxon'
+import { useGestures } from '@/composables/use-gestures'
+import { useRatingFormat } from '@/utils/fsrs'
+
+defineExpose({ rate })
 
 const { card, side, options } = defineProps<{
   card?: Card
@@ -14,187 +16,124 @@ const { card, side, options } = defineProps<{
 
 const emit = defineEmits<{
   (e: 'side-changed', side: 'front' | 'back'): void
-  (e: 'reviewed', item: RecordLogItem): void
+  (e: 'reviewed', item: RecordLogItem | undefined): void
 }>()
 
-const { t } = useI18n()
+const { getRatingTimeFormat } = useRatingFormat()
 
-const FLIP_THRESHOLD = 0
 const SWIPE_DISTANCE_THRESHOLD = 50
 const FLING_SPEED = 0.25
 
-const swipe_zone = ref<-1 | 0 | 1>(0)
-const start_pos = ref<{ x: number; y: number } | undefined>()
-const study_card = ref<HTMLElement | null>(null)
+const card_ref = ref<InstanceType<typeof Card> | null>(null)
 const card_offset = ref<number>(0)
-const pointerId = ref<number | null>(null)
 
-const is_dragging = computed(() => Math.abs(card_offset.value) > FLIP_THRESHOLD)
+const is_dragging = ref(false)
 
-const passVisible = computed(() => {
-  if (card_offset.value <= 0) return false
-  return card_offset.value > SWIPE_DISTANCE_THRESHOLD
+const passVisible = computed(() => card_offset.value > SWIPE_DISTANCE_THRESHOLD)
+const failVisible = computed(() => card_offset.value < -SWIPE_DISTANCE_THRESHOLD)
+
+const { register } = useGestures()
+
+onMounted(() => {
+  const el = card_ref.value?.$el as HTMLElement | null
+  if (!el) return
+
+  // swipe-right holds onStart/onMove since it fires for all horizontal drags,
+  // regardless of which direction is ultimately recognised.
+  register(el, 'swipe-right', {
+    onStart: (el) => {
+      ;(el as HTMLElement).style.transition = 'none'
+    },
+    onMove: (el, { dx }) => handleDrag(el as HTMLElement, dx),
+    onEnd: (el, { dx }) => commitSwipe(el as HTMLElement, dx, 1),
+    onCancel: (el) => snapBack(el as HTMLElement)
+  })
+
+  register(el, 'swipe-left', {
+    onEnd: (el, { dx }) => commitSwipe(el as HTMLElement, dx, -1),
+    onCancel: (el) => snapBack(el as HTMLElement)
+  })
 })
 
-const failVisible = computed(() => {
-  if (card_offset.value >= 0) return false
-  return card_offset.value < -SWIPE_DISTANCE_THRESHOLD
-})
-
-onBeforeUnmount(_cleanupListeners)
-
-function getRatingTimeFormat(grade: Grade) {
-  const date = options?.[grade].card.due
-
-  if (!date) return ''
-
-  const time = DateTime.fromJSDate(date)
-  const timeString = time.toRelativeCalendar()
-
-  return t('study.study-again', { time: timeString })
+/** Triggers the fling animation for a given grade. Called by the parent via template ref. */
+function rate(grade: Grade) {
+  const el = card_ref.value?.$el as HTMLElement | null
+  if (!el) return
+  flingCard(el, grade === Rating.Good ? 1 : -1)
 }
 
+/** Flips the card face unless a drag just ended (prevents accidental flips on release). */
 function toggleSide() {
   if (is_dragging.value) return
   emit('side-changed', side === 'front' ? 'back' : 'front')
 }
 
-function onPointerDown(e: PointerEvent) {
-  if (side === 'front' || (e.pointerType === 'mouse' && e.button !== 0)) return // only left click
-
-  pointerId.value = e.pointerId
-  start_pos.value = { x: e.clientX, y: e.clientY }
-  study_card.value = e.currentTarget as HTMLElement
-
-  if (!study_card.value) return
-
-  study_card.value.style.transition = 'none'
-
-  document.addEventListener('pointermove', onPointerMove)
-  document.addEventListener('pointerup', onPointerUp)
-  document.addEventListener('pointercancel', onPointerUp)
-}
-
-function onPointerMove(e: PointerEvent) {
-  if (
-    pointerId.value === null ||
-    e.pointerId !== pointerId.value ||
-    !start_pos.value ||
-    !study_card.value
-  )
-    return
-
-  e.preventDefault()
-  const { x } = start_pos.value
-  const clientX = e.clientX
-
-  card_offset.value = clientX - x
-  const rotation = card_offset.value / 10
-  study_card.value.style.transform = `translateX(${card_offset.value}px) rotate(${rotation}deg)`
-
-  // check the threshold and play audio
-  _updateSwipeZone(card_offset.value)
-}
-
-function onPointerUp(e?: PointerEvent) {
-  if (pointerId.value !== null && e?.pointerId !== pointerId.value) return
-
-  const cardEl = study_card.value
-  _cleanupListeners()
-
-  if (!cardEl) {
-    _resetDragState()
-  } else if (Math.abs(card_offset.value) > SWIPE_DISTANCE_THRESHOLD) {
-    const direction = Math.sign(card_offset.value)
-    flingCard(direction)
-  } else {
-    cardEl.style.transition = 'transform 0.15s ease-out'
-    cardEl.style.transform = ''
-    _resetDragState()
-  }
-}
-
-function flingCard(direction: number) {
-  const cardEl = study_card.value
-  if (!cardEl) {
-    _resetDragState()
-    return
-  }
-
-  const targetX = _getFlingTargetX(cardEl, direction)
-  const rotation = direction * 45
-
-  cardEl.style.transition = `transform ${FLING_SPEED}s ease-out`
-  cardEl.style.transform = `translateX(${targetX}px) rotate(${rotation}deg)`
-
+/**
+ * Animates the card off-screen in the given direction, then emits `reviewed`.
+ * Resets transform state once the CSS transition ends.
+ */
+function flingCard(el: HTMLElement, direction: number) {
+  const targetX = direction * (window.innerWidth + el.getBoundingClientRect().width)
   const rating = direction > 0 ? Rating.Good : Rating.Again
 
-  const handleTransitionEnd = () => {
-    cardEl.removeEventListener('transitionend', handleTransitionEnd)
+  el.style.transition = `transform ${FLING_SPEED}s ease-out`
+  el.style.transform = `translateX(${targetX}px) rotate(${direction * 45}deg)`
 
-    reviewCard(rating)
+  emitSfx(rating === Rating.Good ? 'ui.music_plink_ok' : 'ui.music_plink_locancel')
+
+  const onTransitionEnd = () => {
+    el.removeEventListener('transitionend', onTransitionEnd)
+    emit('reviewed', options?.[rating])
     card_offset.value = 0
-    cardEl.style.transition = 'none'
-    cardEl.style.transform = ''
-    swipe_zone.value = 0
+    el.style.transition = 'none'
+    el.style.transform = ''
   }
 
-  cardEl.addEventListener('transitionend', handleTransitionEnd)
-  emitSfx('ui.slide_up')
+  el.addEventListener('transitionend', onTransitionEnd)
 }
 
-function reviewCard(grade: Grade) {
-  const item = options?.[grade]
-  if (item) {
-    emit('reviewed', item)
-  }
+/** Tracks the card position and tilt while the user is dragging. */
+function handleDrag(el: HTMLElement, dx: number) {
+  is_dragging.value = true
+  card_offset.value = dx
+  el.style.transform = `translateX(${dx}px) rotate(${dx / 10}deg)`
 }
 
-function _updateSwipeZone(offset: number) {
-  const zone: -1 | 0 | 1 =
-    offset > SWIPE_DISTANCE_THRESHOLD ? 1 : offset < -SWIPE_DISTANCE_THRESHOLD ? -1 : 0
-
-  if (zone !== swipe_zone.value) {
-    emitSfx('ui.pop_drip_mid')
-  }
-
-  swipe_zone.value = zone
+/**
+ * Decides whether to fling or snap back at the end of a swipe.
+ * Flings if the drag exceeded the distance threshold, otherwise snaps back.
+ */
+function commitSwipe(el: HTMLElement, dx: number, direction: 1 | -1) {
+  if (Math.abs(dx) > SWIPE_DISTANCE_THRESHOLD) flingCard(el, direction)
+  else snapBack(el)
 }
 
-function _getFlingTargetX(cardEl: HTMLElement, direction: number) {
-  const container = cardEl.closest('[data-testid="study-session"]')
-  const containerRect = container?.getBoundingClientRect() ?? document.body.getBoundingClientRect()
-  const cardRect = cardEl.getBoundingClientRect()
+/** Animates the card back to its resting position and clears drag state. */
+function snapBack(el: HTMLElement) {
+  el.style.transition = 'transform 0.15s ease-out'
+  el.style.transform = ''
+  card_offset.value = 0
 
-  const distanceToEdge =
-    direction > 0
-      ? containerRect.right - cardRect.left // distance to right edge
-      : cardRect.right - containerRect.left // distance to left edge
-
-  const extra = cardRect.width * 1.5
-
-  return direction * (distanceToEdge + extra)
-}
-
-function _resetDragState() {
   setTimeout(() => {
-    start_pos.value = undefined
-    pointerId.value = null
-    card_offset.value = 0
-    swipe_zone.value = 0
-  }, 0)
+    is_dragging.value = false
+  }, 150)
 }
 
-function _cleanupListeners() {
-  document.removeEventListener('pointermove', onPointerMove)
-  document.removeEventListener('pointerup', onPointerUp)
-  document.removeEventListener('pointercancel', onPointerUp)
+/** Maps a drag offset to a swipe zone: 1 (pass), -1 (fail), 0 (neutral). */
+function toSwipeZone(offset: number) {
+  return offset > SWIPE_DISTANCE_THRESHOLD ? 1 : offset < -SWIPE_DISTANCE_THRESHOLD ? -1 : 0
 }
+
+// Play a tick sound whenever the drag crosses into or out of a commit zone.
+watch(card_offset, (val, prev) => {
+  if (toSwipeZone(val) !== toSwipeZone(prev)) emitSfx('ui.music_plink_mid')
+})
 </script>
 
 <template>
   <div class="relative">
     <card
+      ref="card_ref"
       data-testid="study-card"
       class="z-10"
       :class="is_dragging ? 'cursor-grabbing' : 'cursor-grab'"
@@ -202,16 +141,15 @@ function _cleanupListeners() {
       v-bind="card"
       :side="side"
       @mouseup="toggleSide"
-      @pointerdown="onPointerDown"
     >
       <div class="absolute inset-0 overflow-hidden rounded-(--face-radius)">
-        <div class="review-label bg-pink-400" :class="{ 'review-label--visible': failVisible }">
-          {{ t('study.nope') }}
-          <p class="text-sm">{{ getRatingTimeFormat(Rating.Again) }}</p>
+        <div data-testid="review-label--fail" class="review-label bg-pink-400" :class="{ 'review-label--visible': failVisible }">
+          {{ $t('study.nope') }}
+          <p class="text-sm">{{ getRatingTimeFormat(Rating.Again, options) }}</p>
         </div>
-        <div class="review-label bg-green-400" :class="{ 'review-label--visible': passVisible }">
-          {{ t('study.got-it') }}
-          <p class="text-sm">{{ getRatingTimeFormat(Rating.Good) }}</p>
+        <div data-testid="review-label--pass" class="review-label bg-green-400" :class="{ 'review-label--visible': passVisible }">
+          {{ $t('study.got-it') }}
+          <p class="text-sm">{{ getRatingTimeFormat(Rating.Good, options) }}</p>
         </div>
       </div>
     </card>
@@ -238,6 +176,8 @@ function _cleanupListeners() {
   pointer-events: none;
   opacity: 0;
 
+  user-select: none;
+  z-index: 10;
   transform: scale(50%);
   transition:
     transform var(--duration) linear,

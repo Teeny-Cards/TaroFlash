@@ -1,4 +1,5 @@
 import { useModal } from './modal'
+import { emitSfx } from '@/sfx/bus'
 import alert, { type AlertType } from '@/components/ui-kit/alert.vue'
 import { type NamespacedAudioKey } from '@/sfx/config'
 
@@ -8,7 +9,6 @@ type AlertArgs = {
   confirmLabel?: string
   cancelLabel?: string
   backdrop?: boolean
-  global_close?: boolean
   openAudio?: NamespacedAudioKey
   cancelAudio?: NamespacedAudioKey
   confirmAudio?: NamespacedAudioKey
@@ -17,25 +17,22 @@ type AlertArgs = {
 export function useAlert() {
   const modal = useModal()
 
-  function warn(args?: AlertArgs): { response: Promise<any>; close: any } {
+  function warn(args?: AlertArgs) {
     return _openAlert('warn', args)
   }
 
-  function info(args?: AlertArgs): { response: Promise<any>; close: any } {
+  function info(args?: AlertArgs) {
     return _openAlert('info', args)
   }
 
-  function _openAlert(
-    type: AlertType,
-    args?: AlertArgs
-  ): { response: Promise<boolean>; close: any } {
-    const { backdrop, global_close, openAudio, ...props } = args ?? {}
+  function _openAlert(type: AlertType, args?: AlertArgs) {
+    const { backdrop, openAudio, ...props } = args ?? {}
 
-    return modal.open<boolean>(alert, {
+    emitSfx(openAudio ?? 'ui.etc_woodblock_stuck')
+
+    return modal.open(alert, {
       backdrop: backdrop ?? true,
-      global_close,
-      props: { type, ...props },
-      openAudio: openAudio ?? 'ui.etc_woodblock_stuck'
+      props: { type, ...props }
     })
   }
 

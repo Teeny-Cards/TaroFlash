@@ -5,6 +5,7 @@ import { type PhoneApp } from '@/phone/system/types'
 import { type AppSession } from '@/phone/system/runtime'
 import { computed } from 'vue'
 import { type TransitionPreset } from '@/phone/system/phone-navigator'
+import { useMediaQuery } from '@/composables/use-media-query'
 
 const { apps, transition, transitioning, active_session } = defineProps<{
   apps: PhoneApp[]
@@ -16,6 +17,8 @@ const { apps, transition, transitioning, active_session } = defineProps<{
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
+
+const is_mobile = useMediaQuery('coarse')
 
 const app = computed(() => {
   return active_session?.app.type === 'view' ? active_session.app : null
@@ -29,15 +32,14 @@ const controller = computed(() => {
 <template>
   <div
     data-testid="phone"
-    class="absolute top-0 right-0 pointer-events-auto w-60 h-89.5 bg-brown-300 dark:bg-grey-800
-      drop-shadow-sm rounded-16 translate-y-7 group/phone"
+    class="absolute pointer-coarse:border-t pointer-coarse:border-l pointer-coarse:border-brown-100 dark:pointer-coarse:border-grey-900 pointer-coarse:bottom-7 pointer-fine:top-7 right-0 pointer-events-auto pointer-coarse:w-66 w-60 aspect-120/179 bg-brown-300 dark:bg-grey-800 shadow-sm rounded-21 pointer-fine:rounded-16 group/phone z-10"
   >
     <ui-button
-      class="absolute! top-0 left-0 shadow-xs pointer-fine:opacity-0
-        pointer-fine:group-hover/phone:opacity-100 opacity-100 transition-opacity duration-75 z-10"
+      class="absolute! top-2 right-2 pointer-fine:top-0 pointer-fine:left-0 shadow-xs pointer-fine:opacity-0 pointer-fine:group-hover/phone:opacity-100 opacity-100 transition-opacity duration-75 z-10"
       icon-left="close"
       icon-only
       theme="brown-100"
+      :size="is_mobile ? 'lg' : 'base'"
       @click="emit('close')"
     />
 

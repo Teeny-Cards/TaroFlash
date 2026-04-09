@@ -10,10 +10,9 @@ import { useCardBulkEditor } from '@/composables/card-bulk-editor'
 import { useAlert } from '@/composables/alert'
 import { useModal } from '@/composables/modal'
 import { emitSfx } from '@/sfx/bus'
-import UiSplitButton from '@/components/ui-kit/split-button/index.vue'
 import UiScrollBar from '@/components/ui-kit/scroll-bar.vue'
 import { moveCardsToDeck } from '@/api/cards'
-import MoveCardsModal, { type MoveCardsModalResponse } from '@/components/modals/move-cards.vue'
+import MoveCardsModal from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import BulkSelectToolbar from '@/views/deck/bulk-select-toolbar.vue'
@@ -119,15 +118,12 @@ async function onMoveCards(id?: number) {
   editor.selectCard(id)
   const selected_cards = editor.getSelectedCards()
 
-  const { response } = modal.open<MoveCardsModalResponse>(MoveCardsModal, {
+  emitSfx('ui.double_pop_up')
+  const { response } = modal.open(MoveCardsModal, {
     backdrop: true,
-    props: {
-      cards: selected_cards,
-      current_deck_id: Number(deck_id)
-    },
-    openAudio: 'ui.double_pop_up',
-    closeAudio: 'ui.double_pop_down'
+    props: { cards: selected_cards, current_deck_id: Number(deck_id) }
   })
+  response.then(() => emitSfx('ui.double_pop_down'))
 
   const res = await response
 

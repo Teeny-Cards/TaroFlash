@@ -1,8 +1,8 @@
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+from = "/*"
+to = "/index.html"
+status = 200
 
 [build.environment]
-  COREPACK_ENABLE_DOWNLOAD_PROMPT = "0"
-  COREPACK_INTEGRITY_KEYS = "0"
+COREPACK_ENABLE_DOWNLOAD_PROMPT = "0"
+COREPACK_INTEGRITY_KEYS = "0"

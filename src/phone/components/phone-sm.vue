@@ -8,8 +8,7 @@ const emit = defineEmits<{
   <div
     @click="emit('open')"
     data-testid="phone"
-    class="absolute top-0 right-0 w-16.25 h-22 bg-brown-300 rounded-4.5 shadow-xs rotate-6
-      cursor-pointer p-2 pb-1 mt-3 flex flex-col gap-1 items-center scale-75 pointer-events-auto"
+    class="absolute bottom-0 pointer-fine:top-0 right-0 w-16.25 h-22 bg-brown-300 rounded-4.5 shadow-xs rotate-6 cursor-pointer p-2 pb-1 mt-3 flex flex-col gap-1 items-center scale-75 pointer-events-auto"
   >
     <div
       data-testid="notification-badge"

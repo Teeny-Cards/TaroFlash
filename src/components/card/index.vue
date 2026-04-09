@@ -5,6 +5,7 @@ import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { type CardBase, type ImageCard } from '@type/card'
 import { getImageUrl } from '@/api/media'
 import { type SfxOptions } from '@/sfx/directive'
+import { gsap } from 'gsap'
 
 type CardProps = Partial<CardBase> &
   ImageCard & {
@@ -32,6 +33,32 @@ const back_image_url = computed(() => {
   if (!back_image_path) return undefined
   return getImageUrl('cards', back_image_path)
 })
+
+function onEnter(el: Element, done: () => void) {
+  gsap.fromTo(
+    el,
+    { rotateY: -60, translateY: '-12px', scale: 0.95 },
+    {
+      rotateY: 0,
+      translateY: 0,
+      scale: 1,
+      duration: 0.2,
+      ease: 'back.out(2)',
+      onComplete: done
+    }
+  )
+}
+
+function onLeave(el: Element, done: () => void) {
+  gsap.to(el, {
+    rotateY: 60,
+    translateY: '8px',
+    scale: 0.95,
+    duration: 0.12,
+    ease: 'expo.in',
+    onComplete: done
+  })
+}
 </script>
 
 <template>
@@ -43,15 +70,7 @@ const back_image_url = computed(() => {
   >
     <slot></slot>
 
-    <transition
-      mode="out-in"
-      enter-from-class="motion-safe:rotate-y-90 -translate-y-6"
-      enter-to-class="motion-safe:rotate-y-0"
-      enter-active-class="transition-[all] ease-in-out duration-150"
-      leave-from-class="motion-safe:rotate-y-0"
-      leave-to-class="motion-safe:rotate-y-90 -translate-y-6"
-      leave-active-class="motion-safe:transition-[all] ease-in-out duration-150"
-    >
+    <transition mode="out-in" @enter="onEnter" @leave="onLeave">
       <slot name="front" v-if="side === 'front'">
         <card-face
           data-testid="card-face__front"
@@ -85,6 +104,9 @@ const back_image_url = computed(() => {
 
 <style>
 .card-container {
+  perspective: 600px;
+  transform-style: preserve-3d;
+
   --min-element-height: 80px;
   --card-bg-color: var(--color-white);
   --card-text-color: var(--color-brown-700);
