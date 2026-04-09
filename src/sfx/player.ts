@@ -16,7 +16,8 @@ export type PlayOptions = {
 
 const AUDIO_FILES = import.meta.glob('@/assets/audio/**/*.{wav,mp3,ogg}', {
   eager: true,
-  as: 'url'
+  query: '?url',
+  import: 'default'
 }) as Record<string, string>
 
 const DEFAULT_VOLUME = 0.5

@@ -8,7 +8,6 @@ import {
   type RecordLogItem
 } from 'ts-fsrs'
 import { DateTime } from 'luxon'
-import { fetchDueCardsByDeckId, fetchAllCardsByDeckId } from '@/api/cards'
 import { updateReviewByCardId } from '@/api/reviews'
 
 export type StudyMode = 'studying' | 'completed'
@@ -17,15 +16,20 @@ export type StudyCard = Card & { preview?: IPreview; state: ReviewState }
 type ReviewState = 'failed' | 'passed' | 'unreviewed'
 
 const defaultConfig: DeckConfig = {
-  study_all_cards: true,
-  retry_failed_cards: true
+  study_all_cards: false,
+  retry_failed_cards: false
 }
 
 export function useStudySession(config: DeckConfig = defaultConfig) {
-  const _PARAMS = generatorParameters({ enable_fuzz: true })
+  const _PARAMS = generatorParameters({
+    enable_fuzz: true,
+    learning_steps: [],
+    relearning_steps: []
+  })
+
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
   const _cards_in_deck = shallowRef<StudyCard[]>([])
-  const _retry_cards = ref<StudyCard[]>([])
+  const _retry_cards = shallowRef<StudyCard[]>([])
 
   const mode = ref<StudyMode>('studying')
   const current_card_side = ref<'front' | 'back'>('front')
@@ -37,22 +41,25 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     return [..._cards_in_deck.value, ..._retry_cards.value]
   })
 
-  const num_correct = computed(() => {
-    return cards.value.filter((c) => c.state === 'passed').length
+  const num_correct = computed(() => cards.value.filter((c) => c.state === 'passed').length)
+
+  const current_index = computed(() => {
+    if (!active_card.value) return cards.value.length
+    return cards.value.findIndex((c) => c.id === active_card.value!.id)
   })
 
-  async function setup(deck_id: number) {
-    const cardFetch = config.study_all_cards
-      ? fetchAllCardsByDeckId(deck_id)
-      : fetchDueCardsByDeckId(deck_id)
+  function setCards(cards: Card[]) {
+    let filtered = cards
 
-    const cards = await cardFetch
+    if (!config.study_all_cards) {
+      filtered = cards.filter((c) => _isCardDue(c))
+    }
 
-    _cards_in_deck.value = cards.map(_setupCard)
-    pickNextCard()
+    _cards_in_deck.value = filtered.map(_setupCard)
+    _pickNextCard()
   }
 
-  function pickNextCard() {
+  function _pickNextCard() {
     current_card_side.value = 'front'
     active_card.value = cards.value.find((c) => c.state === 'unreviewed')
 
@@ -61,14 +68,26 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     }
   }
 
-  function reviewCard(item: RecordLogItem) {
+  function reviewCard(item?: RecordLogItem) {
     if (!active_card.value) return
 
-    active_card.value.review = item.card
-    _markCurrentCardStudied(item.log.rating)
+    const card = active_card.value
 
-    if (active_card.value?.id) {
-      return updateReviewByCardId(active_card.value.id, item.card)
+    if (item) {
+      // Capture whether the card was due today before overwriting the review —
+      // _retryCard needs this to decide whether to re-queue the card today.
+      // review.due may be a Date object (from createEmptyCard) or an ISO string (from Supabase).
+      const was_due_today = _isDueToday(card.review?.due)
+      card.review = item.card
+      _markCurrentCardStudied(item.log.rating, was_due_today)
+    } else {
+      card.state = 'passed'
+    }
+
+    _pickNextCard()
+
+    if (card.id && item) {
+      return updateReviewByCardId(card.id, item.card)
     }
   }
 
@@ -79,13 +98,13 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     return { state: 'unreviewed', ...card, review, preview }
   }
 
-  function _markCurrentCardStudied(rating?: Rating) {
+  function _markCurrentCardStudied(rating?: Rating, was_due_today = false) {
     const card = active_card.value
-    if (!card || card !== active_card.value || !card.id) return
+    if (!card || !card.id) return
 
     if (rating === Rating.Again) {
       card.state = 'failed'
-      _retryCard(card)
+      if (was_due_today) _retryCard(card)
     } else {
       card.state = 'passed'
     }
@@ -94,11 +113,23 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
   function _retryCard(card: StudyCard) {
     if (!config.retry_failed_cards) return
 
-    const due_today = DateTime.fromISO(card.review?.due as string).hasSame(DateTime.now(), 'day')
-    if (!due_today) return
-
     const retry_card = _setupCard(card)
-    _retry_cards.value.push(retry_card)
+    _retry_cards.value = [..._retry_cards.value, retry_card]
+  }
+
+  function _isDueToday(due: Date | string | number | undefined): boolean {
+    if (!due) return true
+    const dt = due instanceof Date ? DateTime.fromJSDate(due) : DateTime.fromISO(String(due))
+    return dt.toLocal().hasSame(DateTime.local(), 'day')
+  }
+
+  function _isCardDue(card: Card) {
+    if (!card.review?.due) return true
+
+    const due = DateTime.fromISO(card.review?.due as string)
+    const now = DateTime.now()
+
+    return due <= now
   }
 
   return {
@@ -107,8 +138,8 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     active_card,
     cards,
     num_correct,
-    setup,
-    pickNextCard,
+    current_index,
+    setCards,
     reviewCard
   }
 }

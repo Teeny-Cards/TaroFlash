@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useModal } from '@/composables/modal'
+import { emitSfx } from '@/sfx/bus'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
 import UiPopover from '@/components/ui-kit/popover.vue'
 import UiButton from '@/components/ui-kit/button.vue'
@@ -13,12 +14,9 @@ const emit = defineEmits<{ (e: 'study'): void; (e: 'updated'): void }>()
 const show_image = ref(true)
 
 async function onSettingsClicked() {
-  const { response } = modal.open(deckSettings, {
-    props: { deck },
-    backdrop: true,
-    openAudio: 'ui.double_pop_up',
-    closeAudio: 'ui.double_pop_down'
-  })
+  emitSfx('ui.double_pop_up')
+  const { response } = modal.open(deckSettings, { props: { deck }, backdrop: true })
+  response.then(() => emitSfx('ui.double_pop_down'))
 
   if (await response) {
     emit('updated')

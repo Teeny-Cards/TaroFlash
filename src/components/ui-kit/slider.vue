@@ -90,9 +90,7 @@ function setFillWidth(new_percent: number) {
         :text="`${percent}%`"
         :visible="is_dragging"
         element="div"
-        class="absolute -right-6.5 w-5.5 h-5.5 bg-brown-800 dark:bg-brown-300 rounded-full shrink-0
-          cursor-pointer hover:ring-8 hover:ring-brown-800 dark:hover:ring-brown-300 transition-all
-          duration-75 z-10"
+        class="absolute -right-6.5 w-5.5 h-5.5 bg-brown-800 dark:bg-brown-300 rounded-full shrink-0 cursor-pointer hover:ring-8 hover:ring-brown-800 dark:hover:ring-brown-300 transition-all duration-75 z-10"
         @mousedown="onDragStart"
       ></ui-tooltip>
     </div>

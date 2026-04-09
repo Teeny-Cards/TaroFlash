@@ -105,14 +105,12 @@ export const useShortcutStore = defineStore('shortcutStore', () => {
     document.removeEventListener('keydown', _handleKeyEvent)
   })
 
-  function pushScope(id: ScopeId, priority: Priority = 'normal'): ScopeId {
+  function pushScope(id: ScopeId, priority: Priority = 'normal') {
     const existing = stack.find((s) => s.id === id)
-    if (existing) return existing.id
+    if (existing) return
 
     stack.push({ id, priority: PRIORITY[priority], shortcuts: new Map() })
     sortByPriority()
-
-    return id
   }
 
   function popScope(id?: ScopeId) {

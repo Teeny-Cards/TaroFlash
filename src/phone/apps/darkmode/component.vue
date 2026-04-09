@@ -14,13 +14,13 @@ const { cycle, mode } = useTheme()
 
 const modes = computed<{ [key in ThemeMode]: ModeConfig }>(() => ({
   system: { label: 'System', theme: 'purple-500' },
-  light: { label: 'Light', theme: 'orange-600' },
-  dark: { label: 'Dark', theme: 'blue-650' }
+  light: { label: 'Lightmode', theme: 'orange-600' },
+  dark: { label: 'Darkmode', theme: 'blue-650' }
 }))
 
 const active_mode_config = computed(() => modes.value[mode.value])
 const theme = computed(() => active_mode_config.value.theme)
-const title = computed(() => `${active_mode_config.value.label} Theme`)
+const title = computed(() => `${active_mode_config.value.label}`)
 
 function cycleMode() {
   cycle()

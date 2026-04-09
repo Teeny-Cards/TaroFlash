@@ -1,0 +1,337 @@
+import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
+import { Rating } from 'ts-fsrs'
+import { useStudySession } from '@/composables/study-session'
+import { card } from '../fixtures/card'
+
+vi.mock('@/api/reviews', () => ({
+  updateReviewByCardId: vi.fn().mockResolvedValue(undefined)
+}))
+
+import { updateReviewByCardId } from '@/api/reviews'
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+/** Build a card that is due now (no review or a recent due date). */
+function makeDueCard(overrides = {}) {
+  return card.one({ overrides })
+}
+
+/** Build a card with a future due date (not due yet). */
+function makeNotDueCard(overrides = {}) {
+  return card.one({ traits: 'with_not_due_review', overrides })
+}
+
+/** Build a card with a recent (past) due date. */
+function makeDueTodayCard(overrides = {}) {
+  return card.one({ traits: 'with_due_review', overrides })
+}
+
+/** Get the RecordLogItem for the given rating from the active card's preview. */
+function getActiveItem(session, rating) {
+  return session.active_card.value?.preview?.[rating]
+}
+
+// ── Tests ─────────────────────────────────────────────────────────────────────
+
+describe('useStudySession', () => {
+  beforeEach(() => {
+    vi.mocked(updateReviewByCardId).mockClear()
+  })
+
+  // ── setCards filtering ─────────────────────────────────────────────────────
+
+  describe('setCards with study_all_cards: false (default)', () => {
+    test('includes cards that have no review (never studied)', () => {
+      const session = useStudySession({ study_all_cards: false, retry_failed_cards: false })
+      const cards = [makeDueCard({ review: null }), makeDueCard({ review: null })]
+
+      session.setCards(cards)
+
+      expect(session.cards.value).toHaveLength(2)
+    })
+
+    test('includes cards whose due date is in the past', () => {
+      const session = useStudySession({ study_all_cards: false, retry_failed_cards: false })
+      const cards = [makeDueTodayCard()]
+
+      session.setCards(cards)
+
+      expect(session.cards.value).toHaveLength(1)
+    })
+
+    test('excludes cards whose due date is in the future', () => {
+      const session = useStudySession({ study_all_cards: false, retry_failed_cards: false })
+      const cards = [makeNotDueCard(), makeNotDueCard(), makeDueCard({ review: null })]
+
+      session.setCards(cards)
+
+      // Only the card with no review (due immediately) should be included
+      expect(session.cards.value).toHaveLength(1)
+    })
+
+    test('results in an empty deck when all cards are not due', () => {
+      const session = useStudySession({ study_all_cards: false, retry_failed_cards: false })
+      const cards = [makeNotDueCard(), makeNotDueCard()]
+
+      session.setCards(cards)
+
+      expect(session.cards.value).toHaveLength(0)
+    })
+  })
+
+  describe('setCards with study_all_cards: true', () => {
+    test('includes all cards regardless of due date', () => {
+      const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+      const cards = [makeNotDueCard(), makeNotDueCard(), makeDueCard({ review: null })]
+
+      session.setCards(cards)
+
+      expect(session.cards.value).toHaveLength(3)
+    })
+  })
+
+  // ── active_card ────────────────────────────────────────────────────────────
+
+  test('active_card is the first unreviewed card after setCards', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+    const cards = [makeDueCard({ review: null }), makeDueCard({ review: null })]
+
+    session.setCards(cards)
+
+    expect(session.active_card.value).toBeDefined()
+    expect(session.active_card.value?.state).toBe('unreviewed')
+    expect(session.active_card.value?.id).toBe(cards[0].id)
+  })
+
+  test('active_card is undefined when deck is empty', () => {
+    const session = useStudySession({ study_all_cards: false, retry_failed_cards: false })
+
+    session.setCards([])
+
+    expect(session.active_card.value).toBeUndefined()
+  })
+
+  // ── current_index ──────────────────────────────────────────────────────────
+
+  test('current_index is 0 for the first card', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+    const cards = [makeDueCard({ review: null }), makeDueCard({ review: null })]
+
+    session.setCards(cards)
+
+    expect(session.current_index.value).toBe(0)
+  })
+
+  test('current_index advances after reviewing a card', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+    const cards = [makeDueCard({ review: null }), makeDueCard({ review: null })]
+
+    session.setCards(cards)
+
+    const item = getActiveItem(session, Rating.Good)
+    session.reviewCard(item)
+
+    expect(session.current_index.value).toBe(1)
+  })
+
+  test('current_index equals cards.length when no active card', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+
+    session.setCards([])
+
+    expect(session.current_index.value).toBe(0) // cards.length is 0
+    expect(session.active_card.value).toBeUndefined()
+  })
+
+  // ── reviewCard with Rating.Good ────────────────────────────────────────────
+
+  describe('reviewCard with Rating.Good', () => {
+    test('marks the reviewed card as passed', () => {
+      const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+      const cards = [makeDueCard({ review: null }), makeDueCard({ review: null })]
+      session.setCards(cards)
+
+      const reviewed_card = session.active_card.value
+      const item = getActiveItem(session, Rating.Good)
+      session.reviewCard(item)
+
+      const found = session.cards.value.find((c) => c.id === reviewed_card.id)
+      expect(found?.state).toBe('passed')
+    })
+
+    test('advances to the next card', () => {
+      const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+      const cards = [makeDueCard({ review: null }), makeDueCard({ review: null })]
+      session.setCards(cards)
+
+      const first_id = session.active_card.value?.id
+      const item = getActiveItem(session, Rating.Good)
+      session.reviewCard(item)
+
+      expect(session.active_card.value?.id).not.toBe(first_id)
+    })
+
+    test('resets current_card_side to front after review', () => {
+      const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+      const cards = [makeDueCard({ review: null }), makeDueCard({ review: null })]
+      session.setCards(cards)
+
+      session.current_card_side.value = 'back'
+      const item = getActiveItem(session, Rating.Good)
+      session.reviewCard(item)
+
+      expect(session.current_card_side.value).toBe('front')
+    })
+
+    test('calls updateReviewByCardId with the card id and updated review', () => {
+      const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+      const cards = [makeDueCard({ review: null })]
+      session.setCards(cards)
+
+      const card_id = session.active_card.value?.id
+      const item = getActiveItem(session, Rating.Good)
+      session.reviewCard(item)
+
+      expect(updateReviewByCardId).toHaveBeenCalledWith(card_id, item.card)
+    })
+  })
+
+  // ── reviewCard with Rating.Again ───────────────────────────────────────────
+
+  describe('reviewCard with Rating.Again', () => {
+    test('marks the reviewed card as failed', () => {
+      const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+      const cards = [makeDueCard({ review: null }), makeDueCard({ review: null })]
+      session.setCards(cards)
+
+      const reviewed_card = session.active_card.value
+      const item = getActiveItem(session, Rating.Again)
+      session.reviewCard(item)
+
+      const found = session.cards.value.find((c) => c.id === reviewed_card.id)
+      expect(found?.state).toBe('failed')
+    })
+
+    test('advances to the next card', () => {
+      const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+      const cards = [makeDueCard({ review: null }), makeDueCard({ review: null })]
+      session.setCards(cards)
+
+      const first_id = session.active_card.value?.id
+      const item = getActiveItem(session, Rating.Again)
+      session.reviewCard(item)
+
+      expect(session.active_card.value?.id).not.toBe(first_id)
+    })
+  })
+
+  // ── num_correct ────────────────────────────────────────────────────────────
+
+  test('num_correct counts only cards in passed state', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+    const cards = [
+      makeDueCard({ review: null }),
+      makeDueCard({ review: null }),
+      makeDueCard({ review: null })
+    ]
+    session.setCards(cards)
+
+    // Review all cards before reading num_correct — shallowRef mutations are untracked
+    // so num_correct must be read fresh after all reviews are done.
+    session.reviewCard(getActiveItem(session, Rating.Good)) // passed
+    session.reviewCard(getActiveItem(session, Rating.Again)) // failed
+    session.reviewCard(getActiveItem(session, Rating.Good)) // passed
+
+    expect(session.num_correct.value).toBe(2)
+  })
+
+  // ── Mode completion ────────────────────────────────────────────────────────
+
+  test('mode becomes completed when the last card is reviewed', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+    const cards = [makeDueCard({ review: null })]
+    session.setCards(cards)
+
+    expect(session.mode.value).toBe('studying')
+
+    session.reviewCard(getActiveItem(session, Rating.Good))
+
+    expect(session.mode.value).toBe('completed')
+  })
+
+  test('mode stays studying while cards remain unreviewed', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+    const cards = [makeDueCard({ review: null }), makeDueCard({ review: null })]
+    session.setCards(cards)
+
+    session.reviewCard(getActiveItem(session, Rating.Good))
+
+    expect(session.mode.value).toBe('studying')
+  })
+
+  // ── Retry logic ────────────────────────────────────────────────────────────
+
+  describe('retry_failed_cards: true', () => {
+    test('failed card is re-added to the deck when it is due today', () => {
+      const session = useStudySession({ study_all_cards: true, retry_failed_cards: true })
+      // Cards with no review have no due date, so was_due_today is always true —
+      // no risk of faker.date.recent() returning yesterday's date in UTC.
+      const cards = [makeDueCard({ review: null }), makeDueCard({ review: null })]
+      session.setCards(cards)
+
+      const original_length = session.cards.value.length // 2
+      session.reviewCard(getActiveItem(session, Rating.Again))
+
+      // One card was failed and due today — it should be appended as a retry
+      expect(session.cards.value.length).toBeGreaterThan(original_length)
+    })
+
+    test('failed card with a future due date is NOT retried', () => {
+      const session = useStudySession({ study_all_cards: true, retry_failed_cards: true })
+      // Card with a future due date — retry is skipped
+      const cards = [makeNotDueCard(), makeNotDueCard()]
+      session.setCards(cards)
+
+      const original_length = session.cards.value.length
+      session.reviewCard(getActiveItem(session, Rating.Again))
+
+      expect(session.cards.value.length).toBe(original_length)
+    })
+  })
+
+  describe('retry_failed_cards: false', () => {
+    test('failed cards are NOT retried', () => {
+      const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+      const cards = [makeDueTodayCard(), makeDueTodayCard()]
+      session.setCards(cards)
+
+      const original_length = session.cards.value.length
+      session.reviewCard(getActiveItem(session, Rating.Again))
+
+      expect(session.cards.value.length).toBe(original_length)
+    })
+  })
+
+  // ── Edge cases ─────────────────────────────────────────────────────────────
+
+  test('no API call if active card has no id', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+    // Build a card with id explicitly set to undefined/null to simulate missing id
+    const cardData = { ...makeDueCard({ review: null }), id: undefined }
+    session.setCards([cardData])
+
+    const item = getActiveItem(session, Rating.Good)
+    session.reviewCard(item)
+
+    expect(updateReviewByCardId).not.toHaveBeenCalled()
+  })
+
+  test('reviewCard is a no-op when there is no active card', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+    session.setCards([])
+
+    // Should not throw
+    expect(() => session.reviewCard({ card: {}, log: { rating: Rating.Good } })).not.toThrow()
+    expect(updateReviewByCardId).not.toHaveBeenCalled()
+  })
+})

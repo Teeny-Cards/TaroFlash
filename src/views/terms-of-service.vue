@@ -6,8 +6,7 @@ const { t } = useI18n()
 
 <template>
   <div
-    class="p-8 w-full max-w-(--page-width) mx-auto text-brown-700 dark:text-brown-100 flex flex-col
-      gap-8"
+    class="p-8 w-full max-w-(--page-width) mx-auto text-brown-700 dark:text-brown-100 flex flex-col gap-8"
   >
     <div>
       <h1 class="text-5xl">{{ t('terms-of-service.title') }}</h1>
