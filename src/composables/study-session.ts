@@ -72,8 +72,13 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     if (!active_card.value) return
 
     const card = active_card.value
+    // Capture whether the card was due today before overwriting the review —
+    // _retryCard needs this to decide whether to re-queue the card today.
+    // review.due may be a Date object (from createEmptyCard) or an ISO string (from Supabase).
+    const was_due_today = _isDueToday(card.review?.due)
+
     card.review = item.card
-    _markCurrentCardStudied(item.log.rating)
+    _markCurrentCardStudied(item.log.rating, was_due_today)
     _pickNextCard()
 
     if (card.id) {
@@ -88,13 +93,13 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     return { state: 'unreviewed', ...card, review, preview }
   }
 
-  function _markCurrentCardStudied(rating?: Rating) {
+  function _markCurrentCardStudied(rating?: Rating, was_due_today = false) {
     const card = active_card.value
     if (!card || !card.id) return
 
     if (rating === Rating.Again) {
       card.state = 'failed'
-      _retryCard(card)
+      if (was_due_today) _retryCard(card)
     } else {
       card.state = 'passed'
     }
@@ -103,11 +108,14 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
   function _retryCard(card: StudyCard) {
     if (!config.retry_failed_cards) return
 
-    const due_today = DateTime.fromISO(card.review?.due as string).hasSame(DateTime.now(), 'day')
-    if (!due_today) return
-
     const retry_card = _setupCard(card)
-    _retry_cards.value.push(retry_card)
+    _retry_cards.value = [..._retry_cards.value, retry_card]
+  }
+
+  function _isDueToday(due: Date | string | number | undefined): boolean {
+    if (!due) return true
+    const dt = due instanceof Date ? DateTime.fromJSDate(due) : DateTime.fromISO(String(due))
+    return dt.toLocal().hasSame(DateTime.local(), 'day')
   }
 
   function _isCardDue(card: Card) {
