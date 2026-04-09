@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Card from '@/components/card/index.vue'
-import { computed, onMounted, ref } from 'vue'
-import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
+import { computed, onMounted, ref, watch } from 'vue'
+import { Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
 import { emitSfx } from '@/sfx/bus'
 import { useGestures } from '@/composables/use-gestures'
 import { useRatingFormat } from '@/utils/fsrs'
@@ -22,7 +22,6 @@ const { getRatingTimeFormat } = useRatingFormat()
 const SWIPE_DISTANCE_THRESHOLD = 50
 const FLING_SPEED = 0.25
 
-const swipe_zone = ref<-1 | 0 | 1>(0)
 const card_ref = ref<InstanceType<typeof Card> | null>(null)
 const card_offset = ref<number>(0)
 
@@ -40,108 +39,87 @@ onMounted(() => {
   // swipe-right holds onStart/onMove since it fires for all horizontal drags,
   // regardless of which direction is ultimately recognised.
   register(el, 'swipe-right', {
-    onStart: (el) => onHorizontalStart(el as HTMLElement),
-    onMove: (el, { dx }) => onMove(el as HTMLElement, dx),
-    onEnd: (el, { dx }) => onHorizontalEnd(el as HTMLElement, dx, 1),
+    onStart: (el) => {
+      ;(el as HTMLElement).style.transition = 'none'
+    },
+    onMove: (el, { dx }) => handleDrag(el as HTMLElement, dx),
+    onEnd: (el, { dx }) => commitSwipe(el as HTMLElement, dx, 1),
     onCancel: (el) => snapBack(el as HTMLElement)
   })
 
   register(el, 'swipe-left', {
-    onEnd: (el, { dx }) => onHorizontalEnd(el as HTMLElement, dx, -1),
+    onEnd: (el, { dx }) => commitSwipe(el as HTMLElement, dx, -1),
     onCancel: (el) => snapBack(el as HTMLElement)
   })
 })
 
+/** Flips the card face unless a drag just ended (prevents accidental flips on release). */
 function toggleSide() {
   if (is_dragging.value) return
-
-  const next_side = side === 'front' ? 'back' : 'front'
-
-  emit('side-changed', next_side)
+  emit('side-changed', side === 'front' ? 'back' : 'front')
 }
 
+/**
+ * Animates the card off-screen in the given direction, then emits `reviewed`.
+ * Resets transform state once the CSS transition ends.
+ */
 function flingCard(el: HTMLElement, direction: number) {
-  const targetX = _getFlingTargetX(el, direction)
-  const rotation = direction * 45
+  const targetX = direction * (window.innerWidth + el.getBoundingClientRect().width)
+  const rating = direction > 0 ? Rating.Good : Rating.Again
 
   el.style.transition = `transform ${FLING_SPEED}s ease-out`
-  el.style.transform = `translateX(${targetX}px) rotate(${rotation}deg)`
-
-  const rating = direction > 0 ? Rating.Good : Rating.Again
+  el.style.transform = `translateX(${targetX}px) rotate(${direction * 45}deg)`
 
   emitSfx(rating === Rating.Good ? 'ui.music_plink_ok' : 'ui.music_plink_locancel')
 
-  const handleTransitionEnd = () => {
-    el.removeEventListener('transitionend', handleTransitionEnd)
-    reviewCard(rating)
+  const onTransitionEnd = () => {
+    el.removeEventListener('transitionend', onTransitionEnd)
+    const item = options?.[rating]
+    if (item) emit('reviewed', item)
     card_offset.value = 0
     el.style.transition = 'none'
     el.style.transform = ''
-    swipe_zone.value = 0
   }
 
-  el.addEventListener('transitionend', handleTransitionEnd)
+  el.addEventListener('transitionend', onTransitionEnd)
 }
 
-function reviewCard(grade: Grade) {
-  const item = options?.[grade]
-  if (item) {
-    emit('reviewed', item)
-  }
-}
-
-function onHorizontalStart(el: HTMLElement) {
-  el.style.transition = 'none'
-}
-
-function onMove(el: HTMLElement, dx: number) {
+/** Tracks the card position and tilt while the user is dragging. */
+function handleDrag(el: HTMLElement, dx: number) {
   is_dragging.value = true
   card_offset.value = dx
-  ;(el as HTMLElement).style.transform = `translateX(${dx}px) rotate(${dx / 10}deg)`
-  _updateSwipeZone(dx)
+  el.style.transform = `translateX(${dx}px) rotate(${dx / 10}deg)`
 }
 
-function onHorizontalEnd(el: HTMLElement, dx: number, direction: 1 | -1) {
+/**
+ * Decides whether to fling or snap back at the end of a swipe.
+ * Flings if the drag exceeded the distance threshold, otherwise snaps back.
+ */
+function commitSwipe(el: HTMLElement, dx: number, direction: 1 | -1) {
   if (Math.abs(dx) > SWIPE_DISTANCE_THRESHOLD) flingCard(el, direction)
   else snapBack(el)
 }
 
+/** Animates the card back to its resting position and clears drag state. */
 function snapBack(el: HTMLElement) {
   el.style.transition = 'transform 0.15s ease-out'
   el.style.transform = ''
   card_offset.value = 0
-  swipe_zone.value = 0
 
   setTimeout(() => {
     is_dragging.value = false
   }, 150)
 }
 
-function _updateSwipeZone(offset: number) {
-  const zone: -1 | 0 | 1 =
-    offset > SWIPE_DISTANCE_THRESHOLD ? 1 : offset < -SWIPE_DISTANCE_THRESHOLD ? -1 : 0
-
-  if (zone !== swipe_zone.value) {
-    emitSfx('ui.music_plink_mid')
-  }
-
-  swipe_zone.value = zone
+/** Maps a drag offset to a swipe zone: 1 (pass), -1 (fail), 0 (neutral). */
+function toSwipeZone(offset: number) {
+  return offset > SWIPE_DISTANCE_THRESHOLD ? 1 : offset < -SWIPE_DISTANCE_THRESHOLD ? -1 : 0
 }
 
-function _getFlingTargetX(cardEl: HTMLElement, direction: number) {
-  const container = cardEl.closest('[data-testid="study-session"]')
-  const containerRect = container?.getBoundingClientRect() ?? document.body.getBoundingClientRect()
-  const cardRect = cardEl.getBoundingClientRect()
-
-  const distanceToEdge =
-    direction > 0
-      ? containerRect.right - cardRect.left // distance to right edge
-      : cardRect.right - containerRect.left // distance to left edge
-
-  const extra = cardRect.width * 1.5
-
-  return direction * (distanceToEdge + extra)
-}
+// Play a tick sound whenever the drag crosses into or out of a commit zone.
+watch(card_offset, (val, prev) => {
+  if (toSwipeZone(val) !== toSwipeZone(prev)) emitSfx('ui.music_plink_mid')
+})
 </script>
 
 <template>
