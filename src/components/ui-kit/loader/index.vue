@@ -46,7 +46,6 @@ const showLoader = computed(() => phase.value !== 'done')
 let finishTimer: number | null = null
 
 onMounted(() => {
-  document.documentElement.style.setProperty('--burst-dur', `${burstDurationMs}ms`)
   document.documentElement.style.setProperty('--fade-ms', `${fadeMs}ms`)
 })
 
@@ -99,6 +98,7 @@ defineExpose({ phase })
     :size="size"
     :theme="theme"
     :theme-dark="themeDark"
+    :burst-duration-ms="burstDurationMs"
     :phase="phase"
     :is_dark_mode="is_dark"
   >
