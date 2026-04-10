@@ -161,6 +161,50 @@ describe('modal.vue', () => {
     })
   })
 
+  describe('simultaneous modals with different modes', () => {
+    test('renders both modals when two are open', async () => {
+      const { open } = useModal()
+      open(ModalStub, { mode: 'mobile-sheet' })
+      open(ModalStub, { mode: 'popup' })
+
+      const wrapper = mountModal()
+      await nextTick()
+
+      expect(wrapper.findAll('[data-testid="modal-stub"]')).toHaveLength(2)
+    })
+
+    test('each modal wrapper carries its own data-modal-mode', async () => {
+      const { open } = useModal()
+      open(ModalStub, { mode: 'mobile-sheet' })
+      open(ModalStub, { mode: 'popup' })
+
+      const wrapper = mountModal()
+      await nextTick()
+
+      const stubs = wrapper.findAll('[data-testid="modal-stub"]')
+      const modes = stubs.map((s) => s.attributes('data-modal-mode'))
+      expect(modes).toContain('mobile-sheet')
+      expect(modes).toContain('popup')
+    })
+
+    test('closing top modal leaves bottom modal with its own mode', async () => {
+      const { open } = useModal()
+      open(ModalStub, { mode: 'mobile-sheet' })
+      const { close } = open(ModalStub, { mode: 'popup' })
+
+      const wrapper = mountModal()
+      await nextTick()
+
+      close()
+      await nextTick()
+
+      expect(wrapper.findAll('[data-testid="modal-stub"]')).toHaveLength(1)
+      expect(wrapper.find('[data-testid="modal-stub"]').attributes('data-modal-mode')).toBe(
+        'mobile-sheet'
+      )
+    })
+  })
+
   describe('backdrop', () => {
     test('does not render backdrop when no modals are open', async () => {
       const wrapper = mountModal()

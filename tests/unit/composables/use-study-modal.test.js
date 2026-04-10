@@ -1,0 +1,197 @@
+import { describe, test, expect, vi, beforeEach, afterEach } from 'vite-plus/test'
+import { flushPromises } from '@vue/test-utils'
+import { useStudyModal } from '@/composables/modals/use-study-modal'
+import StudySession from '@/components/modals/study-session/index.vue'
+import SessionComplete from '@/components/modals/study-session/session-complete.vue'
+
+// ── Hoisted mocks ─────────────────────────────────────────────────────────────
+
+const { mockEmitSfx } = vi.hoisted(() => ({ mockEmitSfx: vi.fn() }))
+const { mockOpen } = vi.hoisted(() => ({ mockOpen: vi.fn() }))
+
+vi.mock('@/sfx/bus', () => ({ emitSfx: mockEmitSfx }))
+
+vi.mock('@/composables/modal', () => ({
+  useModal: vi.fn(() => ({ open: mockOpen }))
+}))
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+/** Returns a { result, resolve } pair — call resolve(value) to close the modal. */
+function makeModalResult() {
+  let resolve
+  const response = new Promise((res) => {
+    resolve = res
+  })
+  return { result: { response }, resolve }
+}
+
+const DECK = { id: 1, title: 'Test Deck' }
+
+// ── Tests ─────────────────────────────────────────────────────────────────────
+
+describe('useStudyModal', () => {
+  beforeEach(() => {
+    mockEmitSfx.mockClear()
+    mockOpen.mockReset()
+    vi.useFakeTimers({ toFake: ['setTimeout'] })
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  test('plays slide_up sfx immediately when starting', async () => {
+    const { result: sessionResult, resolve: resolveSession } = makeModalResult()
+    mockOpen.mockReturnValueOnce(sessionResult)
+
+    const { start } = useStudyModal()
+    const startPromise = start(DECK)
+
+    // sfx fires synchronously before any await
+    expect(mockEmitSfx).toHaveBeenCalledWith('ui.slide_up')
+
+    resolveSession(undefined)
+    await startPromise
+  })
+
+  test('opens StudySession modal with correct options', async () => {
+    const { result: sessionResult, resolve: resolveSession } = makeModalResult()
+    mockOpen.mockReturnValueOnce(sessionResult)
+
+    const { start } = useStudyModal()
+    const startPromise = start(DECK)
+
+    expect(mockOpen).toHaveBeenCalledWith(StudySession, {
+      backdrop: true,
+      mode: 'mobile-sheet',
+      props: { deck: DECK }
+    })
+
+    resolveSession(undefined)
+    await startPromise
+  })
+
+  test('plays slide_up sfx after session closes', async () => {
+    const { result: sessionResult, resolve: resolveSession } = makeModalResult()
+    mockOpen.mockReturnValueOnce(sessionResult)
+
+    const { start } = useStudyModal()
+    const startPromise = start(DECK)
+
+    resolveSession(undefined)
+    await startPromise
+
+    expect(mockEmitSfx).toHaveBeenCalledWith('ui.slide_up')
+    expect(mockEmitSfx).toHaveBeenCalledTimes(2)
+  })
+
+  test('does not open SessionComplete when session returns no payload', async () => {
+    const { result: sessionResult, resolve: resolveSession } = makeModalResult()
+    mockOpen.mockReturnValueOnce(sessionResult)
+
+    const { start } = useStudyModal()
+    const startPromise = start(DECK)
+
+    resolveSession(undefined)
+    await startPromise
+
+    expect(mockOpen).toHaveBeenCalledTimes(1)
+  })
+
+  test('waits 300ms before opening SessionComplete', async () => {
+    const sessionPayload = { score: 3, total: 5 }
+    const { result: sessionResult, resolve: resolveSession } = makeModalResult()
+    const { result: completeResult, resolve: resolveComplete } = makeModalResult()
+    mockOpen.mockReturnValueOnce(sessionResult).mockReturnValueOnce(completeResult)
+
+    const { start } = useStudyModal()
+    const startPromise = start(DECK)
+
+    resolveSession(sessionPayload)
+    await flushPromises() // let composable reach the setTimeout
+
+    // SessionComplete should not open before 300ms
+    vi.advanceTimersByTime(299)
+    await flushPromises()
+    expect(mockOpen).toHaveBeenCalledTimes(1)
+
+    vi.advanceTimersByTime(1)
+    await flushPromises()
+    expect(mockOpen).toHaveBeenCalledTimes(2)
+
+    resolveComplete(undefined)
+    await startPromise
+  })
+
+  test('opens SessionComplete with score and total from session payload', async () => {
+    const sessionPayload = { score: 3, total: 5 }
+    const { result: sessionResult, resolve: resolveSession } = makeModalResult()
+    const { result: completeResult, resolve: resolveComplete } = makeModalResult()
+    mockOpen.mockReturnValueOnce(sessionResult).mockReturnValueOnce(completeResult)
+
+    const { start } = useStudyModal()
+    const startPromise = start(DECK)
+
+    resolveSession(sessionPayload)
+    await flushPromises()
+    vi.advanceTimersByTime(300)
+    await flushPromises()
+
+    expect(mockOpen).toHaveBeenNthCalledWith(2, SessionComplete, {
+      backdrop: true,
+      mode: 'mobile-sheet',
+      props: { score: 3, total: 5 }
+    })
+
+    resolveComplete(undefined)
+    await startPromise
+  })
+
+  test('plays music_pizz_duo_hi sfx before opening SessionComplete', async () => {
+    const sessionPayload = { score: 4, total: 4 }
+    const { result: sessionResult, resolve: resolveSession } = makeModalResult()
+    const { result: completeResult, resolve: resolveComplete } = makeModalResult()
+    mockOpen.mockReturnValueOnce(sessionResult).mockReturnValueOnce(completeResult)
+
+    const { start } = useStudyModal()
+    const startPromise = start(DECK)
+
+    resolveSession(sessionPayload)
+    await flushPromises()
+    vi.advanceTimersByTime(300)
+    await flushPromises()
+
+    expect(mockEmitSfx).toHaveBeenCalledWith('ui.music_pizz_duo_hi')
+    // music sfx fires before the second modal.open call
+    const sfxCalls = mockEmitSfx.mock.calls.map((c) => c[0])
+    const musicIdx = sfxCalls.lastIndexOf('ui.music_pizz_duo_hi')
+    expect(musicIdx).toBeGreaterThan(-1)
+
+    resolveComplete(undefined)
+    await startPromise
+  })
+
+  test('plays final slide_up sfx after SessionComplete closes', async () => {
+    const sessionPayload = { score: 2, total: 3 }
+    const { result: sessionResult, resolve: resolveSession } = makeModalResult()
+    const { result: completeResult, resolve: resolveComplete } = makeModalResult()
+    mockOpen.mockReturnValueOnce(sessionResult).mockReturnValueOnce(completeResult)
+
+    const { start } = useStudyModal()
+    const startPromise = start(DECK)
+
+    resolveSession(sessionPayload)
+    await flushPromises()
+    vi.advanceTimersByTime(300)
+    await flushPromises()
+
+    const sfxCountBeforeClose = mockEmitSfx.mock.calls.length
+
+    resolveComplete(undefined)
+    await startPromise
+
+    expect(mockEmitSfx.mock.calls.length).toBeGreaterThan(sfxCountBeforeClose)
+    expect(mockEmitSfx.mock.calls.at(-1)[0]).toBe('ui.slide_up')
+  })
+})

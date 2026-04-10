@@ -2,8 +2,10 @@
 import Burst from '@/components/ui-kit/burst.vue'
 import { emitSfx } from '@/sfx/bus'
 import { onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const emit = defineEmits<{ done: [] }>()
+const { t } = useI18n()
 
 onMounted(() => {
   emitSfx('ui.music_pizz_prompt')
@@ -15,7 +17,7 @@ onMounted(() => {
     <p
       class="text-purple-500 text-2xl relative z-10 pointer-events-none select-none session-finish__text"
     >
-      Finished!
+      {{ t('study-session.finish.text') }}
     </p>
     <burst
       size="lg"
