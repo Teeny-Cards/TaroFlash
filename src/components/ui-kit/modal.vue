@@ -82,6 +82,7 @@ function onLeave(el: Element, done: () => void) {
     @enter="onEnter"
     @leave="onLeave"
     data-testid="ui-kit-modal-container"
+    :data-modal-mode="modal_stack.at(-1)?.mode ?? DEFAULT_MODE"
     ref="modal_container"
     tag="div"
     class="pointer-events-none fixed inset-0 z-90 flex justify-center *:pointer-events-auto"
