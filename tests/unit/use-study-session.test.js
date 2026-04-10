@@ -334,4 +334,152 @@ describe('useStudySession', () => {
     expect(() => session.reviewCard({ card: {}, log: { rating: Rating.Good } })).not.toThrow()
     expect(updateReviewByCardId).not.toHaveBeenCalled()
   })
+
+  // ── current_card_side initial state ────────────────────────────────────────
+
+  test('current_card_side starts at "cover" after setCards', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null })])
+
+    expect(session.current_card_side.value).toBe('cover')
+  })
+
+  // ── startSession ───────────────────────────────────────────────────────────
+
+  test('startSession sets current_card_side to "front" by default', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null })])
+
+    session.startSession()
+
+    expect(session.current_card_side.value).toBe('front')
+  })
+
+  test('startSession sets current_card_side to "back" when flip_cards is true', () => {
+    const session = useStudySession({
+      study_all_cards: true,
+      retry_failed_cards: false,
+      flip_cards: true
+    })
+    session.setCards([makeDueCard({ review: null })])
+
+    session.startSession()
+
+    expect(session.current_card_side.value).toBe('back')
+  })
+
+  // ── flipCurrentCard ────────────────────────────────────────────────────────
+
+  test('flipCurrentCard toggles from front to back', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null })])
+    session.startSession() // sets to 'front'
+
+    session.flipCurrentCard()
+
+    expect(session.current_card_side.value).toBe('back')
+  })
+
+  test('flipCurrentCard toggles from back to front', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null })])
+    session.startSession() // sets to 'front'
+    session.flipCurrentCard() // sets to 'back'
+
+    session.flipCurrentCard()
+
+    expect(session.current_card_side.value).toBe('front')
+  })
+
+  // ── is_starting_side ───────────────────────────────────────────────────────
+
+  test('is_starting_side is false when on cover', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null })])
+
+    // After setCards, current_card_side is 'cover', starting_side is 'front'
+    expect(session.is_starting_side.value).toBe(false)
+  })
+
+  test('is_starting_side is true after startSession', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null })])
+
+    session.startSession()
+
+    expect(session.is_starting_side.value).toBe(true)
+  })
+
+  test('is_starting_side is false after flipping away from starting side', () => {
+    const session = useStudySession({ study_all_cards: true, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null })])
+    session.startSession()
+
+    session.flipCurrentCard()
+
+    expect(session.is_starting_side.value).toBe(false)
+  })
+
+  // ── updateConfig ───────────────────────────────────────────────────────────
+
+  test('updateConfig with study_all_cards:true re-includes previously excluded cards', () => {
+    const session = useStudySession({ study_all_cards: false, retry_failed_cards: false })
+    const cards = [makeNotDueCard(), makeNotDueCard(), makeDueCard({ review: null })]
+    session.setCards(cards)
+
+    expect(session.cards.value).toHaveLength(1) // only the due card
+
+    session.updateConfig({ study_all_cards: true })
+
+    expect(session.cards.value).toHaveLength(3) // all cards
+  })
+
+  test('updateConfig does not call _processCards when no cards have been set', () => {
+    const session = useStudySession({ study_all_cards: false, retry_failed_cards: false })
+
+    // No setCards call — updateConfig should be a no-op on card list
+    session.updateConfig({ study_all_cards: true })
+
+    expect(session.cards.value).toHaveLength(0)
+  })
+
+  // ── card_limit ─────────────────────────────────────────────────────────────
+
+  test('card_limit slices the deck to the given count', () => {
+    const cards = Array.from({ length: 5 }, () => makeDueCard({ review: null }))
+    const session = useStudySession({
+      study_all_cards: true,
+      retry_failed_cards: false,
+      card_limit: 3
+    })
+    session.setCards(cards)
+
+    expect(session.cards.value).toHaveLength(3)
+  })
+
+  test('card_limit of null uses all cards', () => {
+    const cards = Array.from({ length: 5 }, () => makeDueCard({ review: null }))
+    const session = useStudySession({
+      study_all_cards: true,
+      retry_failed_cards: false,
+      card_limit: null
+    })
+    session.setCards(cards)
+
+    expect(session.cards.value).toHaveLength(5)
+  })
+
+  // ── shuffle ────────────────────────────────────────────────────────────────
+
+  test('shuffle:true still returns the correct number of cards', () => {
+    const cards = Array.from({ length: 5 }, () => makeDueCard({ review: null }))
+    const session = useStudySession({
+      study_all_cards: true,
+      retry_failed_cards: false,
+      shuffle: true
+    })
+    session.setCards(cards)
+
+    expect(session.cards.value).toHaveLength(5)
+  })
 })
