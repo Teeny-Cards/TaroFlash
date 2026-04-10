@@ -62,4 +62,6 @@ Tests use Vitest with jsdom. `tests/fixtures/` contains MSW handlers and Faker-b
 
 ## Local development
 
-Local Supabase runs on port 54321 (API) and 54322 (PostgreSQL). Start it with `supabase start`.
+- Local Supabase runs on port 54321 (API) and 54322 (PostgreSQL). Start it with `supabase start`.
+- If the locally checked out branch is 'master', checkout a new branch before starting any work.
+- Always use translation strings (e.g., `t('deck.settings-modal.title')`) instead of hardcoded text. If the string is not already in `locales/en-us.json`, add it.

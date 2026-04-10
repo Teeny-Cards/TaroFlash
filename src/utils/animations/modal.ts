@@ -9,7 +9,13 @@ export function slideUpFadeIn(el: Element, done: () => void) {
 }
 
 export function slideDownFadeOut(el: Element, done: () => void) {
-  gsap.to(el, { translateY: '200px', opacity: 0, duration: 0.2, ease: 'expo.out', onComplete: done })
+  gsap.to(el, {
+    translateY: '200px',
+    opacity: 0,
+    duration: 0.2,
+    ease: 'expo.out',
+    onComplete: done
+  })
 }
 
 export function slideUpFromEdge(el: Element, done: () => void) {
@@ -28,7 +34,7 @@ export function springScaleIn(el: Element, done: () => void) {
   gsap.fromTo(
     el,
     { scale: 0.8, opacity: 0 },
-    { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(1.7)', onComplete: done }
+    { scale: 1, opacity: 1, duration: 0.1, ease: 'back.out(1.7)', onComplete: done }
   )
 }
 
