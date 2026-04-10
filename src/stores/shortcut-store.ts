@@ -107,10 +107,11 @@ export const useShortcutStore = defineStore('shortcutStore', () => {
 
   function pushScope(id: ScopeId, priority: Priority = 'normal') {
     const existing = stack.find((s) => s.id === id)
-    if (existing) return
+    if (existing) return id
 
     stack.push({ id, priority: PRIORITY[priority], shortcuts: new Map() })
     sortByPriority()
+    return id
   }
 
   function popScope(id?: ScopeId) {

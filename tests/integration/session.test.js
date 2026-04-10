@@ -1,5 +1,6 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 import { mount, flushPromises } from '@vue/test-utils'
+import { defineComponent, watch } from 'vue'
 import Session from '@/components/modals/study-session/session.vue'
 import { card } from '../fixtures/card'
 import { deck } from '../fixtures/deck'
@@ -35,8 +36,17 @@ vi.mock('@/api/reviews', () => ({
 }))
 
 // ── Card stub ─────────────────────────────────────────────────────────────────
+// Emits `flip-complete` when `side` changes so that session.vue's onNextCardFlipped
+// resolves the animation-wait promise used to sequence card transitions.
 
-const CardStub = { template: '<div v-bind="$attrs"><slot /></div>' }
+const CardStub = defineComponent({
+  props: { side: { type: String } },
+  emits: ['flip-complete'],
+  setup(props, { emit }) {
+    watch(() => props.side, () => emit('flip-complete'))
+  },
+  template: '<div v-bind="$attrs"><slot /></div>'
+})
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -59,6 +69,10 @@ function makeSession(cardCount = 2, deckOverrides = {}) {
 
 async function waitForLoad() {
   await flushPromises()
+}
+
+async function startSession(wrapper) {
+  await wrapper.find('[data-testid="rating-buttons__start"]').trigger('click')
 }
 
 /**
@@ -133,6 +147,8 @@ describe('Session', () => {
       const wrapper = makeSession(3)
       await waitForLoad(wrapper)
 
+      await startSession(wrapper)
+
       // Flip to back to show rating buttons
       await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
 
@@ -155,6 +171,7 @@ describe('Session', () => {
       const wrapper = makeSession(2)
       await waitForLoad(wrapper)
 
+      await startSession(wrapper)
       await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
       await wrapper.find('[data-testid="rating-buttons__good"]').trigger('click')
       await flushPromises()
@@ -167,6 +184,7 @@ describe('Session', () => {
       const wrapper = makeSession(2)
       await waitForLoad(wrapper)
 
+      await startSession(wrapper)
       await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
       await wrapper.find('[data-testid="rating-buttons__good"]').trigger('click')
       await flushPromises()
@@ -181,6 +199,7 @@ describe('Session', () => {
       const wrapper = makeSession(2)
       await waitForLoad(wrapper)
 
+      await startSession(wrapper)
       await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
       await wrapper.find('[data-testid="rating-buttons__good"]').trigger('click')
       await flushPromises()
@@ -195,6 +214,7 @@ describe('Session', () => {
       const wrapper = makeSession(2)
       await waitForLoad(wrapper)
 
+      await startSession(wrapper)
       await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
       await wrapper.find('[data-testid="rating-buttons__good"]').trigger('click')
       await flushPromises()
@@ -208,6 +228,7 @@ describe('Session', () => {
       const wrapper = makeSession(2)
       await waitForLoad(wrapper)
 
+      await startSession(wrapper)
       await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
       await wrapper.find('[data-testid="rating-buttons__again"]').trigger('click')
       await flushPromises()
@@ -222,6 +243,7 @@ describe('Session', () => {
       const wrapper = makeSession(2)
       await waitForLoad(wrapper)
 
+      await startSession(wrapper)
       await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
       await wrapper.find('[data-testid="rating-buttons__again"]').trigger('click')
       await flushPromises()
@@ -237,7 +259,13 @@ describe('Session', () => {
       const wrapper = makeSession(2)
       await waitForLoad(wrapper)
 
-      // Initially showOptions is false → flip button visible
+      // Initially in cover mode — start button visible, flip button not
+      expect(wrapper.find('[data-testid="rating-buttons__start"]').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="rating-buttons__show"]').exists()).toBe(false)
+
+      await startSession(wrapper)
+
+      // After starting — flip button visible, rating buttons not
       expect(wrapper.find('[data-testid="rating-buttons__show"]').exists()).toBe(true)
       expect(wrapper.find('[data-testid="rating-buttons__again"]').exists()).toBe(false)
 
@@ -252,6 +280,7 @@ describe('Session', () => {
       const wrapper = makeSession(2)
       await waitForLoad(wrapper)
 
+      await startSession(wrapper)
       await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
 
       expect(mockEmitSfx).toHaveBeenCalled()
@@ -316,6 +345,7 @@ describe('Session', () => {
       const wrapper = makeSession(1)
       await waitForLoad(wrapper)
 
+      await startSession(wrapper)
       await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
       await wrapper.find('[data-testid="rating-buttons__good"]').trigger('click')
       await flushPromises()
@@ -331,6 +361,7 @@ describe('Session', () => {
       const wrapper = makeSession(1)
       await waitForLoad(wrapper)
 
+      await startSession(wrapper)
       await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
       await wrapper.find('[data-testid="rating-buttons__again"]').trigger('click')
       await flushPromises()
@@ -349,13 +380,14 @@ describe('Session', () => {
       await waitForLoad(wrapper)
 
       // First card: Good
+      await startSession(wrapper)
       await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
       await wrapper.find('[data-testid="rating-buttons__good"]').trigger('click')
       await flushPromises()
       fireTransitionEnd(wrapper)
       await flushPromises()
 
-      // Second card: Again
+      // Second card starts at 'front' after first card review — no start needed
       await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
       await wrapper.find('[data-testid="rating-buttons__again"]').trigger('click')
       await flushPromises()

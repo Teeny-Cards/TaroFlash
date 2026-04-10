@@ -37,14 +37,14 @@ describe('CardRecord', () => {
     })
   })
 
-  describe('static create', () => {
+  describe('static reserve', () => {
     test('calls reserveCard with deck_id and optional neighbour ids', async () => {
-      await CardRecord.create(10, 1, 2)
+      await CardRecord.reserve(10, 1, 2)
       expect(reserveCard).toHaveBeenCalledWith(10, 1, 2)
     })
 
     test('returns a CardRecord with id and rank from reserveCard', async () => {
-      const record = await CardRecord.create(10)
+      const record = await CardRecord.reserve(10)
       expect(record).toBeInstanceOf(CardRecord)
       expect(record.id).toBe(42)
       expect(record.rank).toBe(1)
@@ -101,11 +101,12 @@ describe('CardRecord', () => {
     })
 
     test('keeps null properties in upsert payload', async () => {
-      const record = new CardRecord(card.one({ overrides: { front_delta: null } }))
+      // attributes is null by default in the fixture; CardRecord must preserve it
+      const record = new CardRecord(card.one())
       await record.update({ front_text: 'X' })
       const payload = vi.mocked(upsertCard).mock.calls[0][0]
-      expect('front_delta' in payload).toBe(true)
-      expect(payload.front_delta).toBeNull()
+      expect('attributes' in payload).toBe(true)
+      expect(payload.attributes).toBeNull()
     })
 
     test('payload always includes the record id', async () => {
