@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import StudyCard from './study-card.vue'
 import RatingButtons from './rating-buttons.vue'
+import SessionSettings from './session-settings.vue'
 import { useStudySession } from '@/composables/study-session'
 import { type Grade, type RecordLogItem } from 'ts-fsrs'
-import { onMounted, ref, useTemplateRef } from 'vue'
+import { computed, onMounted, reactive, ref, useTemplateRef } from 'vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import Card from '@/components/card/index.vue'
 import { fetchAllCardsByDeckId } from '@/api/cards'
@@ -15,6 +16,14 @@ const emit = defineEmits<{
   (e: 'finished', score: number, total: number): void
 }>()
 
+const session_config = reactive<Required<DeckConfig>>({
+  study_all_cards: deck.config?.study_all_cards ?? false,
+  retry_failed_cards: deck.config?.retry_failed_cards ?? false,
+  shuffle: false,
+  card_limit: null,
+  flip_cards: false
+})
+
 const {
   mode,
   cards,
@@ -22,12 +31,19 @@ const {
   current_index,
   active_card,
   num_correct,
+  is_starting_side,
   reviewCard,
-  setCards
-} = useStudySession(deck.config)
+  setCards,
+  updateConfig,
+  startSession,
+  flipCurrentCard
+} = useStudySession(session_config)
 
 const study_card_ref = useTemplateRef('study-card')
 const loading = ref(true)
+const raw_cards = ref<Card[]>([])
+
+const is_cover = computed(() => current_card_side.value === 'cover')
 
 onMounted(async () => {
   if (!deck.id) {
@@ -35,26 +51,22 @@ onMounted(async () => {
     return
   }
 
-  await setup(deck.id!)
+  raw_cards.value = await fetchAllCardsByDeckId(deck.id!)
+  setCards(raw_cards.value)
   loading.value = false
 })
 
-async function setup(deck_id: number) {
-  let cards = await fetchAllCardsByDeckId(deck_id)
-  setCards(cards)
-}
-
-function onSideChanged(side: 'front' | 'back') {
-  emitSfx(side === 'back' ? 'ui.transition_up' : 'ui.transition_down')
-
-  current_card_side.value = side
+function onSideChanged() {
+  emitSfx(is_starting_side.value ? 'ui.transition_up' : 'ui.transition_down')
+  flipCurrentCard()
 }
 
 function onStart() {
   emitSfx('ui.music_plink_chordyes')
-  current_card_side.value = 'front'
+  startSession()
 }
 
+/** Triggers the card flip animation on the card component */
 function onRated(grade: Grade) {
   study_card_ref.value?.rate(grade)
 }
@@ -73,7 +85,7 @@ function onCardReviewed(item?: RecordLogItem) {
 
 <template>
   <div
-    class="grid grid-rows-[auto_1fr] grid-cols-1 gap-2 items-center justify-between w-full h-full"
+    class="grid grid-rows-[auto_1fr] grid-cols-1 items-center justify-between w-full h-full"
     :data-mode="mode"
   >
     <div
@@ -94,9 +106,13 @@ function onCardReviewed(item?: RecordLogItem) {
 
     <div
       data-testid="study-session__body"
-      class="w-full h-full max-h-130 flex flex-col items-center justify-between gap-2 self-center"
+      class="w-full h-full pt-2 max-h-130 flex flex-col items-center justify-between gap-2 self-center overflow-y-auto"
     >
-      <div data-testid="study-session__counter" class="text-brown-700 dark:text-brown-300 text-lg">
+      <div
+        data-testid="study-session__counter"
+        class="text-brown-700 dark:text-brown-300 text-lg"
+        :class="{ invisible: is_cover }"
+      >
         {{ current_index + 1 }}<span class="text-sm">/{{ cards.length }}</span>
       </div>
 
@@ -119,8 +135,15 @@ function onCardReviewed(item?: RecordLogItem) {
         :side="current_card_side"
         @started="onStart"
         @rated="onRated"
-        @revealed="onSideChanged('back')"
+        @revealed="onSideChanged"
       />
+
+      <!-- <session-settings
+        v-if="is_cover && !loading"
+        :settings="session_config"
+        :total_cards="raw_cards.length"
+        @change="updateConfig"
+      /> -->
     </div>
   </div>
 </template>

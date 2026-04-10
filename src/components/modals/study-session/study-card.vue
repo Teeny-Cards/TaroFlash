@@ -16,12 +16,13 @@ const { card, side, options } = defineProps<{
 
 const emit = defineEmits<{
   (e: 'started'): void
-  (e: 'side-changed', side: 'front' | 'back'): void
+  (e: 'side-changed'): void
   (e: 'reviewed', item: RecordLogItem | undefined): void
 }>()
 
 const { getRatingTimeFormat } = useRatingFormat()
 
+const FLIP_THRESHOLD = 10
 const SWIPE_DISTANCE_THRESHOLD = 50
 const FLING_SPEED = 0.25
 
@@ -74,7 +75,7 @@ function onCardClick() {
     return
   }
 
-  emit('side-changed', side === 'front' ? 'back' : 'front')
+  emit('side-changed')
 }
 
 /**
@@ -107,7 +108,7 @@ function flingCard(el: HTMLElement, direction: number) {
 function handleDrag(el: HTMLElement, dx: number) {
   if (side === 'cover') return
 
-  is_dragging.value = true
+  is_dragging.value = Math.abs(dx) > FLIP_THRESHOLD // prevents accidental flips on release, but allows for a bit of wiggle room
   card_offset.value = dx
   el.style.transform = `translateX(${dx}px) rotate(${dx / 10}deg)`
 }

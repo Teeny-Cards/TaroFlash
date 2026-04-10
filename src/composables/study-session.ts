@@ -28,12 +28,17 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
   })
 
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
+  const _raw_cards = shallowRef<Card[]>([])
   const _cards_in_deck = shallowRef<StudyCard[]>([])
   const _retry_cards = shallowRef<StudyCard[]>([])
 
   const mode = ref<StudyMode>('studying')
   const current_card_side = ref<'front' | 'back' | 'cover'>('cover')
   const active_card = shallowRef<StudyCard | undefined>(undefined)
+
+  const starting_side = computed<'front' | 'back'>(() => (config.flip_cards ? 'back' : 'front'))
+
+  const is_starting_side = computed(() => current_card_side.value === starting_side.value)
 
   const cards = computed(() => {
     if (!config.retry_failed_cards) return _cards_in_deck.value
@@ -49,18 +54,44 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
   })
 
   function setCards(cards: Card[]) {
-    let filtered = cards
+    _raw_cards.value = cards
+    _processCards()
+  }
+
+  function updateConfig(updates: Partial<DeckConfig>) {
+    Object.assign(config, updates)
+    if (_raw_cards.value.length) _processCards()
+  }
+
+  function _processCards() {
+    let filtered = [..._raw_cards.value]
 
     if (!config.study_all_cards) {
-      filtered = cards.filter((c) => _isCardDue(c))
+      filtered = filtered.filter(_isCardDue)
+    }
+
+    if (config.shuffle) {
+      filtered = filtered.sort(() => Math.random() - 0.5)
+    }
+
+    if (config.card_limit) {
+      filtered = filtered.slice(0, config.card_limit)
     }
 
     _cards_in_deck.value = filtered.map(_setupCard)
     _pickNextCard({ first: true })
   }
 
+  function startSession() {
+    current_card_side.value = starting_side.value
+  }
+
+  function flipCurrentCard() {
+    current_card_side.value = current_card_side.value === 'front' ? 'back' : 'front'
+  }
+
   function _pickNextCard({ first }: { first?: boolean } = {}) {
-    current_card_side.value = first ? 'cover' : 'front'
+    current_card_side.value = first ? 'cover' : starting_side.value
     active_card.value = cards.value.find((c) => c.state === 'unreviewed')
 
     if (!active_card.value) {
@@ -139,7 +170,11 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     cards,
     num_correct,
     current_index,
+    is_starting_side,
     setCards,
+    updateConfig,
+    startSession,
+    flipCurrentCard,
     reviewCard
   }
 }
