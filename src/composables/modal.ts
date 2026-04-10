@@ -1,10 +1,13 @@
 import { ref, markRaw } from 'vue'
 import uid from '@/utils/uid'
 
+export type ModalMode = 'dialog' | 'mobile-sheet' | 'popup'
+
 type ModalEntry = {
   backdrop?: boolean
   component: any
   componentProps?: Record<string, any>
+  mode: ModalMode
   id: string
   resolve: (result?: any) => void
 }
@@ -12,33 +15,35 @@ type ModalEntry = {
 type OpenArgs = {
   props?: Record<string, any>
   backdrop?: boolean
+  mode?: ModalMode
 }
 
-export type ModalCloseFn = (responseValue?: any) => void
+export type ModalCloseFn<T> = (responseValue?: T) => void
 
-export type OpenModalResult = {
-  response: Promise<any>
-  close: ModalCloseFn
+export type OpenModalResult<T = unknown> = {
+  response: Promise<T>
+  close: ModalCloseFn<T>
 }
 
 const modal_stack = ref<ModalEntry[]>([])
 
 export function useModal() {
-  function open(component: any, args?: OpenArgs): OpenModalResult {
-    let resolveFn!: (result: any) => void
+  function open<T>(component: any, args?: OpenArgs): OpenModalResult<T> {
+    let resolveFn!: (result: T) => void
 
     const id = uid()
-    const response = new Promise<any>((resolve) => {
+    const response = new Promise<T>((resolve) => {
       resolveFn = resolve
     })
 
-    const closeFunc: ModalCloseFn = (responseValue?: any) => {
-      resolveFn(responseValue)
+    const closeFunc: ModalCloseFn<T> = (responseValue?: T) => {
+      resolveFn(responseValue as T)
       close(id)
     }
 
     const entry: ModalEntry = {
       backdrop: args?.backdrop ?? false,
+      mode: args?.mode ?? 'dialog',
       id,
       component: markRaw(component),
       componentProps: {

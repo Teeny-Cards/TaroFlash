@@ -31,7 +31,7 @@ async function onSettingsClicked() {
 }
 
 function onStudyClicked() {
-  study_session.open(deck)
+  study_session.start(deck)
 }
 </script>
 

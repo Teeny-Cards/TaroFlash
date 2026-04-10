@@ -51,3 +51,7 @@ If source logic looks wrong, ask the user before writing the test. Once confirme
 vp test                                        # full suite
 vp test tests/unit/use-theme.test.js           # single file
 ```
+
+# Comments
+
+Only leave comments for assertions that are not immediately obvious. Otherwise test names should be descriptive enough.

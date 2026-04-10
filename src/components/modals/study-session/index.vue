@@ -1,22 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import Session from './session.vue'
-import RewardDialog from '../reward-dialog/index.vue'
 
-const { deck, close } = defineProps<{ deck: Deck; close: (response?: any) => void }>()
+export type StudySessionResponse = { score: number; total: number; rewards: Reward[] }
 
-export type StudyStage = 'studying' | 'completed'
+const { deck, close } = defineProps<{
+  deck: Deck
+  close: (response?: StudySessionResponse) => void
+}>()
 
-const stage = ref<StudyStage>('studying')
-const score = ref(0)
-const total = ref(0)
-const rewards = ref<Reward[]>([])
+function onSessionFinished(score: number, total: number) {
+  const rewards: Reward[] = [{ type: 'paperclips', label: 'Paperclips', amount: 20 }]
+  const payload: StudySessionResponse = { score, total, rewards }
 
-function onSessionFinished(_score: number, _total: number) {
-  score.value = _score
-  total.value = _total
-  rewards.value = [{ type: 'paperclips', label: 'Paperclips', amount: 20 }]
-  stage.value = 'completed'
+  close(payload)
 }
 </script>
 
@@ -25,7 +21,6 @@ function onSessionFinished(_score: number, _total: number) {
     data-testid="study-session"
     class="rounded-b-0 sm:rounded-b-8 rounded-t-8 shadow-lg overflow-hidden pb-4 relative bg-brown-300 dark:bg-grey-800 w-full h-full sm:h-auto sm:w-160"
   >
-    <reward-dialog v-if="stage === 'completed'" :rewards="rewards" :score="score" :total="total" />
-    <session v-else :deck="deck" :stage="stage" @closed="close" @finished="onSessionFinished" />
+    <session :deck="deck" @closed="close" @finished="onSessionFinished" />
   </div>
 </template>

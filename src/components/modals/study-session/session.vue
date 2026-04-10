@@ -12,7 +12,7 @@ import { emitSfx } from '@/sfx/bus'
 
 const { deck } = defineProps<{ deck: Deck }>()
 const emit = defineEmits<{
-  (e: 'closed', response?: boolean): void
+  (e: 'closed'): void
   (e: 'finished', score: number, total: number): void
 }>()
 
