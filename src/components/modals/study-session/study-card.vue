@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Card from '@/components/card/index.vue'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
 import { emitSfx } from '@/sfx/bus'
 import { useGestures } from '@/composables/use-gestures'
@@ -95,10 +95,8 @@ function flingCard(el: HTMLElement, direction: number) {
 
   const onTransitionEnd = () => {
     el.removeEventListener('transitionend', onTransitionEnd)
-    emit('reviewed', options?.[rating])
     card_offset.value = 0
-    el.style.transition = 'none'
-    el.style.transform = ''
+    emit('reviewed', options?.[rating])
   }
 
   el.addEventListener('transitionend', onTransitionEnd)
@@ -107,6 +105,8 @@ function flingCard(el: HTMLElement, direction: number) {
 /** Tracks the card position and tilt while the user is dragging. */
 function handleDrag(el: HTMLElement, dx: number) {
   if (side === 'cover') return
+
+  if (toSwipeZone(card_offset.value) !== toSwipeZone(dx)) emitSfx('ui.music_plink_mid')
 
   is_dragging.value = Math.abs(dx) > FLIP_THRESHOLD // prevents accidental flips on release, but allows for a bit of wiggle room
   card_offset.value = dx
@@ -139,11 +139,6 @@ function snapBack(el: HTMLElement) {
 function toSwipeZone(offset: number) {
   return offset > SWIPE_DISTANCE_THRESHOLD ? 1 : offset < -SWIPE_DISTANCE_THRESHOLD ? -1 : 0
 }
-
-// Play a tick sound whenever the drag crosses into or out of a commit zone.
-watch(card_offset, (val, prev) => {
-  if (toSwipeZone(val) !== toSwipeZone(prev)) emitSfx('ui.music_plink_mid')
-})
 </script>
 
 <template>
