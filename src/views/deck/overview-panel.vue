@@ -7,14 +7,14 @@ import { emitSfx } from '@/sfx/bus'
 import deckSettings from '@/components/modals/deck-settings/index.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
-import { useStudySessionModal } from '@/composables/modals/use-study-session'
+import { useStudyModal } from '@/composables/modals/use-study-modal'
 
 const { deck } = defineProps<{ deck: Deck; imageUrl?: string }>()
 const emit = defineEmits<{ (e: 'updated'): void }>()
 
 const { t } = useI18n()
 const modal = useModal()
-const study_session = useStudySessionModal()
+const study_session = useStudyModal()
 
 const study_disabled = computed(() => {
   return deck.cards?.length === 0

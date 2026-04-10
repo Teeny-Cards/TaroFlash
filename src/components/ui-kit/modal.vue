@@ -33,11 +33,6 @@ watchEffect(() => {
 
 const show_backdrop = computed(() => modal_stack.value.some((m) => m.backdrop))
 
-const top_modal_container_class = computed(() => {
-  const mode = modal_stack.value.at(-1)?.mode ?? DEFAULT_MODE
-  return MODAL_MODE_CONFIG[mode].containerClass
-})
-
 function getElementMode(el: Element): ModalMode {
   return ((el as HTMLElement).dataset.modalMode as ModalMode) ?? DEFAULT_MODE
 }
@@ -79,22 +74,28 @@ function onLeave(el: Element, done: () => void) {
   </transition>
 
   <transition-group
+    :css="false"
     @enter="onEnter"
     @leave="onLeave"
     data-testid="ui-kit-modal-container"
     :data-modal-mode="modal_stack.at(-1)?.mode ?? DEFAULT_MODE"
     ref="modal_container"
     tag="div"
-    class="pointer-events-none fixed inset-0 z-90 flex justify-center *:pointer-events-auto"
-    :class="top_modal_container_class"
+    class="pointer-events-none fixed inset-0 z-90"
   >
-    <component
+    <div
       v-for="modal in modal_stack"
       :key="modal.id"
-      :is="modal.component"
-      v-bind="modal.componentProps"
+      class="absolute inset-0 flex justify-center pointer-events-none"
+      :class="MODAL_MODE_CONFIG[modal.mode].containerClass"
       :data-modal-mode="modal.mode"
-      class="absolute"
-    />
+    >
+      <component
+        :is="modal.component"
+        v-bind="modal.componentProps"
+        :data-modal-mode="modal.mode"
+        class="pointer-events-auto"
+      />
+    </div>
   </transition-group>
 </template>

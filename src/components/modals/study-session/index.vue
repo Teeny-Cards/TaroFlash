@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Session from './session.vue'
 
-export type StudySessionResponse = { score: number; total: number; rewards: Reward[] }
+export type StudySessionResponse = { score: number; total: number }
 
 const { deck, close } = defineProps<{
   deck: Deck
@@ -9,10 +9,7 @@ const { deck, close } = defineProps<{
 }>()
 
 function onSessionFinished(score: number, total: number) {
-  const rewards: Reward[] = [{ type: 'paperclips', label: 'Paperclips', amount: 20 }]
-  const payload: StudySessionResponse = { score, total, rewards }
-
-  close(payload)
+  close({ score, total })
 }
 </script>
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import StudyCard from './study-card.vue'
 import RatingButtons from './rating-buttons.vue'
-import SessionSettings from './session-settings.vue'
+import FinishAnimation from './finish-animation.vue'
 import { useStudySession } from '@/composables/study-session'
 import { type Grade, type RecordLogItem } from 'ts-fsrs'
 import { computed, onMounted, reactive, ref, useTemplateRef } from 'vue'
@@ -34,7 +34,6 @@ const {
   is_starting_side,
   reviewCard,
   setCards,
-  updateConfig,
   startSession,
   flipCurrentCard
 } = useStudySession(session_config)
@@ -101,11 +100,6 @@ async function onCardReviewed(item?: RecordLogItem) {
   }
 
   reviewCard(item)
-
-  // @ts-ignore — reviewCard() may have set mode to 'completed'; TypeScript narrows mode.value from the guard above
-  if (mode.value === 'completed') {
-    emit('finished', num_correct.value, cards.value.length)
-  }
 }
 </script>
 
@@ -116,7 +110,7 @@ async function onCardReviewed(item?: RecordLogItem) {
   >
     <div
       data-testid="study-session__header"
-      class="relative flex w-full justify-center bg-purple-500 wave-bottom-[50px] bgx-diagonal-stripes bgx-size-20 bg-center px-13 py-11.5 pb-14 z-10"
+      class="relative flex w-full justify-center bg-purple-500 wave-bottom-[50px] bgx-diagonal-stripes bgx-size-20 px-13 py-11.5 pb-14 z-10"
     >
       <div data-testid="study-session__actions" class="absolute top-0 left-0 p-4">
         <ui-button
@@ -132,7 +126,8 @@ async function onCardReviewed(item?: RecordLogItem) {
 
     <div
       data-testid="study-session__body"
-      class="w-full h-full pt-2 max-h-130 flex flex-col items-center justify-between gap-2 self-center overflow-y-auto"
+      class="w-full h-full pt-2 max-h-130 flex flex-col items-center justify-between gap-2 self-center"
+      :class="{ 'opacity-0 pointer-events-none': mode !== 'studying' }"
     >
       <div
         data-testid="study-session__counter"
@@ -174,13 +169,11 @@ async function onCardReviewed(item?: RecordLogItem) {
         @rated="onRated"
         @revealed="onSideChanged"
       />
-
-      <!-- <session-settings
-        v-if="is_cover && !loading"
-        :settings="session_config"
-        :total_cards="raw_cards.length"
-        @change="updateConfig"
-      /> -->
     </div>
+
+    <finish-animation
+      v-if="mode === 'completed'"
+      @done="emit('finished', num_correct, cards.length)"
+    />
   </div>
 </template>
