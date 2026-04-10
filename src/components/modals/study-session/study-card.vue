@@ -4,6 +4,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
 import { emitSfx } from '@/sfx/bus'
 import { useGestures } from '@/composables/use-gestures'
+import { useShortcuts } from '@/composables/use-shortcuts'
 import { useRatingFormat } from '@/utils/fsrs'
 
 defineExpose({ rate })
@@ -35,26 +36,30 @@ const passVisible = computed(() => card_offset.value > SWIPE_DISTANCE_THRESHOLD)
 const failVisible = computed(() => card_offset.value < -SWIPE_DISTANCE_THRESHOLD)
 
 const { register } = useGestures()
+const shortcuts = useShortcuts('study-card')
 
 onMounted(() => {
   const el = card_ref.value?.$el as HTMLElement | null
   if (!el) return
 
-  // swipe-right holds onStart/onMove since it fires for all horizontal drags,
-  // regardless of which direction is ultimately recognised.
-  register(el, 'swipe-right', {
-    onStart: (el) => {
-      ;(el as HTMLElement).style.transition = 'none'
+  register(el, {
+    onStart: () => {
+      el.style.transition = 'none'
     },
-    onMove: (el, { dx }) => handleDrag(el as HTMLElement, dx),
-    onEnd: (el, { dx }) => commitSwipe(el as HTMLElement, dx, 1),
-    onCancel: (el) => snapBack(el as HTMLElement)
+    onMove: ({ dx }) => handleDrag(el, dx),
+    onEnd: ({ dx }) => commitSwipe(el, dx),
+    onCancel: () => snapBack(el)
   })
 
-  register(el, 'swipe-left', {
-    onEnd: (el, { dx }) => commitSwipe(el as HTMLElement, dx, -1),
-    onCancel: (el) => snapBack(el as HTMLElement)
+  shortcuts.register({
+    combo: 'arrowright',
+    handler: () => commitSwipe(el, SWIPE_DISTANCE_THRESHOLD + 1)
   })
+  shortcuts.register({
+    combo: 'arrowleft',
+    handler: () => commitSwipe(el, -(SWIPE_DISTANCE_THRESHOLD + 1))
+  })
+  shortcuts.register({ combo: 'space', handler: () => triggerCardFlip() })
 })
 
 /** Triggers the fling animation for a given grade. Called by the parent via template ref. */
@@ -67,7 +72,7 @@ function rate(grade: Grade) {
 }
 
 /** Flips the card face unless a drag just ended (prevents accidental flips on release). */
-function onCardClick() {
+function triggerCardFlip() {
   if (is_dragging.value) return
 
   if (side === 'cover') {
@@ -114,13 +119,13 @@ function handleDrag(el: HTMLElement, dx: number) {
 }
 
 /**
- * Decides whether to fling or snap back at the end of a swipe.
+ * Decides whether to fling or snap back at the end of a drag.
  * Flings if the drag exceeded the distance threshold, otherwise snaps back.
  */
-function commitSwipe(el: HTMLElement, dx: number, direction: 1 | -1) {
+function commitSwipe(el: HTMLElement, dx: number) {
   if (side === 'cover') return
 
-  if (Math.abs(dx) > SWIPE_DISTANCE_THRESHOLD) flingCard(el, direction)
+  if (Math.abs(dx) > SWIPE_DISTANCE_THRESHOLD) flingCard(el, Math.sign(dx))
   else snapBack(el)
 }
 
@@ -151,7 +156,7 @@ function toSwipeZone(offset: number) {
       size="xl"
       v-bind="card"
       :side="side"
-      @mouseup="onCardClick"
+      @mouseup="triggerCardFlip"
     >
       <div class="absolute inset-0 overflow-hidden rounded-(--face-radius)">
         <div
