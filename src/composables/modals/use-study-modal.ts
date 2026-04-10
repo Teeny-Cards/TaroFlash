@@ -3,7 +3,7 @@ import { emitSfx } from '@/sfx/bus'
 import StudySession, {
   type StudySessionResponse
 } from '@/components/modals/study-session/index.vue'
-import SessionComplete from '@/components/modals/session-complete.vue'
+import SessionComplete from '@/components/modals/study-session/session-complete.vue'
 
 export function useStudyModal() {
   const modal = useModal()
@@ -14,7 +14,8 @@ export function useStudyModal() {
     emitSfx('ui.slide_up')
 
     if (payload) {
-      _openSessionComplete(payload)
+      await _openSessionComplete(payload)
+      emitSfx('ui.slide_up')
     }
   }
 
@@ -31,14 +32,14 @@ export function useStudyModal() {
   async function _openSessionComplete({ score, total }: StudySessionResponse) {
     await new Promise((resolve) => setTimeout(resolve, 300))
 
-    emitSfx('ui.negative_pop')
+    emitSfx('ui.music_pizz_duo_hi')
     const result = modal.open(SessionComplete, {
       backdrop: true,
-      mode: 'popup',
+      mode: 'mobile-sheet',
       props: { score, total }
     })
 
-    return result
+    return result.response
   }
 
   return { start }

@@ -23,21 +23,24 @@ const heading = computed(() => {
 
 <template>
   <div
-    class="bg-brown-200 dark:bg-grey-800 rounded-8 shadow-2xl overflow-hidden w-64 shadow-sm"
+    class="bg-brown-300 dark:bg-grey-800 rounded-t-8 sm:rounded-b-8 shadow-2xl overflow-hidden w-full sm:max-w-100 h-full max-h-120 shadow-sm flex flex-col items-center justify-between"
     @click.stop
   >
-    <div class="bg-purple-500 wave-bottom-[24px] px-6 pt-5 pb-10 text-center">
-      <p class="text-white/60 text-sm">Session complete</p>
-      <h1 class="text-white text-3xl">{{ heading }}</h1>
+    <div
+      class="w-full bg-purple-500 wave-bottom-[50px] bgx-diagonal-stripes bgx-size-20 px-13 py-11.5 pb-14 text-center"
+    >
+      <h1 class="text-white text-5xl">{{ heading }}</h1>
     </div>
 
-    <div class="flex flex-col items-center gap-5 px-6 pb-6 -mt-2">
+    <div class="h-full w-full flex flex-col items-center justify-center gap-5 px-6 pb-6 -mt-2">
       <p class="text-brown-800 dark:text-brown-100 leading-none">
         <span class="text-7xl">{{ score }}</span
         ><span class="text-brown-500 dark:text-brown-400 text-xl"> / {{ total }}</span>
       </p>
+    </div>
 
-      <ui-button class="w-full" @click="close">Done</ui-button>
+    <div class="w-full p-4 flex justify-center">
+      <ui-button class="max-sm:w-full!" size="xl" @click="close">Done</ui-button>
     </div>
   </div>
 </template>
