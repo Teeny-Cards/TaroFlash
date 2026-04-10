@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import UiButton from '@/components/ui-kit/button.vue'
+import { useI18n } from 'vue-i18n'
 
 const { score, total, close } = defineProps<{
   score: number
@@ -8,16 +9,18 @@ const { score, total, close } = defineProps<{
   close: () => void
 }>()
 
+const { t } = useI18n()
+
 const percentage = computed(() => {
   if (!total) return 0
   return Math.round((score / total) * 100)
 })
 
 const heading = computed(() => {
-  if (percentage.value === 100) return 'Perfect!'
-  if (percentage.value >= 80) return 'Great job!'
-  if (percentage.value >= 60) return 'Nice work!'
-  return 'Keep it up!'
+  if (percentage.value === 100) return t('study-session.complete.perfect')
+  if (percentage.value >= 80) return t('study-session.complete.great-job')
+  if (percentage.value >= 60) return t('study-session.complete.nice-work')
+  return t('study-session.complete.keep-it-up')
 })
 </script>
 
@@ -29,7 +32,7 @@ const heading = computed(() => {
     <div
       class="w-full bg-purple-500 wave-bottom-[50px] bgx-diagonal-stripes bgx-size-20 px-13 py-11.5 pb-14 text-center"
     >
-      <h1 class="text-white text-5xl">{{ heading }}</h1>
+      <h1 data-testid="session-complete__heading" class="text-white text-5xl">{{ heading }}</h1>
     </div>
 
     <div class="h-full w-full flex flex-col items-center justify-center gap-5 px-6 pb-6 -mt-2">
@@ -40,7 +43,7 @@ const heading = computed(() => {
     </div>
 
     <div class="w-full p-4 flex justify-center">
-      <ui-button class="max-sm:w-full!" size="xl" @click="close">Done</ui-button>
+      <ui-button data-testid="session-complete__done" class="max-sm:w-full!" size="xl" @click="close">{{ t('common.done') }}</ui-button>
     </div>
   </div>
 </template>

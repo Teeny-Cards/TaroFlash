@@ -51,6 +51,18 @@ const CardStub = defineComponent({
   template: '<div v-bind="$attrs"><slot /></div>'
 })
 
+// ── FinishAnimation stub ──────────────────────────────────────────────────────
+// Emits `done` immediately on mount so that the `finished` event flows through
+// without relying on CSS animationend (which jsdom never fires).
+
+const FinishAnimationStub = defineComponent({
+  emits: ['done'],
+  mounted() {
+    this.$emit('done')
+  },
+  template: '<div />'
+})
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function makeSession(cardCount = 2, deckOverrides = {}) {
@@ -66,7 +78,7 @@ function makeSession(cardCount = 2, deckOverrides = {}) {
   return mount(Session, {
     props: { deck: deck_data },
     attachTo: document.body,
-    global: { stubs: { Card: CardStub } }
+    global: { stubs: { Card: CardStub, FinishAnimation: FinishAnimationStub } }
   })
 }
 
