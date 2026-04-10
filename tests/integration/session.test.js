@@ -25,6 +25,17 @@ vi.mock('@/composables/use-gestures', () => ({
   useGestures: vi.fn(() => ({ register: mockRegister }))
 }))
 
+vi.mock('@/composables/use-shortcuts', () => ({
+  useShortcuts: vi.fn(() => ({
+    register: vi.fn(),
+    dispose: vi.fn(),
+    clearScope: vi.fn(),
+    popScope: vi.fn(),
+    trapFocus: vi.fn(),
+    releaseFocus: vi.fn()
+  }))
+}))
+
 vi.mock('@/sfx/bus', () => ({ emitSfx: mockEmitSfx }))
 
 vi.mock('@/api/cards', () => ({
@@ -40,7 +51,7 @@ vi.mock('@/api/reviews', () => ({
 // resolves the animation-wait promise used to sequence card transitions.
 
 const CardStub = defineComponent({
-  props: { side: { type: String } },
+  props: { side: { type: String }, attributes: { default: null } },
   emits: ['flip-complete'],
   setup(props, { emit }) {
     watch(
