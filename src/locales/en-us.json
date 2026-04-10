@@ -122,6 +122,11 @@
   "study.start": "Start",
   "study.study-again": "Study again {time}",
   "study-session.title": "Studying {deck}",
+  "study.settings.study-all": "Study all cards",
+  "study.settings.shuffle": "Shuffle",
+  "study.settings.flip": "Flip cards",
+  "study.settings.card-limit": "Card limit",
+  "study.settings.all": "All",
 
   "edit-card-modal.title": "Edit Card",
 

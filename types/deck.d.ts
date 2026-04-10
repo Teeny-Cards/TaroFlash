@@ -18,4 +18,7 @@ type Deck = {
 type DeckConfig = {
   study_all_cards: boolean
   retry_failed_cards: boolean
+  shuffle?: boolean
+  card_limit?: number | null
+  flip_cards?: boolean
 }
