@@ -15,6 +15,10 @@ vi.mock('@/composables/use-gestures', () => ({
   useGestures: vi.fn(() => ({ register: mockRegister }))
 }))
 
+vi.mock('@/composables/use-shortcuts', () => ({
+  useShortcuts: vi.fn(() => ({ register: vi.fn(), dispose: vi.fn(), clearScope: vi.fn() }))
+}))
+
 vi.mock('@/sfx/bus', () => ({ emitSfx: mockEmitSfx }))
 
 // ── Card stub ─────────────────────────────────────────────────────────────────
@@ -40,13 +44,13 @@ function mountStudyCard(props = {}) {
 }
 
 /**
- * Get the callbacks registered for a given gesture type.
- * Returns { el, callbacks } or null if not found.
+ * Get the element and callbacks from the single drag registration.
+ * Returns { el, callbacks } or null if not yet registered.
  */
-function getCallbacks(gesture) {
-  const call = mockRegister.mock.calls.find(([, g]) => g === gesture)
+function getCallbacks() {
+  const call = mockRegister.mock.calls[0]
   if (!call) return null
-  return { el: call[0], callbacks: call[2] }
+  return { el: call[0], callbacks: call[1] }
 }
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
@@ -66,8 +70,8 @@ describe('StudyCard', () => {
     const wrapper = mountStudyCard({ options })
     await flushPromises()
 
-    const { el, callbacks } = getCallbacks('swipe-right')
-    callbacks.onMove(el, { dx: 60, dy: 0 })
+    const { el, callbacks } = getCallbacks()
+    callbacks.onMove({ dx: 60, dy: 0 })
     await flushPromises()
 
     const passLabel = wrapper.find('[data-testid="review-label--pass"]')
@@ -78,9 +82,8 @@ describe('StudyCard', () => {
     const wrapper = mountStudyCard({ options })
     await flushPromises()
 
-    // onMove lives on swipe-right — it handles all horizontal drag tracking
-    const { el, callbacks } = getCallbacks('swipe-right')
-    callbacks.onMove(el, { dx: -60, dy: 0 })
+const { el, callbacks } = getCallbacks()
+    callbacks.onMove({ dx: -60, dy: 0 })
     await flushPromises()
 
     const failLabel = wrapper.find('[data-testid="review-label--fail"]')
@@ -91,8 +94,8 @@ describe('StudyCard', () => {
     const wrapper = mountStudyCard({ options })
     await flushPromises()
 
-    const { el, callbacks } = getCallbacks('swipe-right')
-    callbacks.onMove(el, { dx: 30, dy: 0 })
+    const { el, callbacks } = getCallbacks()
+    callbacks.onMove({ dx: 30, dy: 0 })
     await flushPromises()
 
     const passLabel = wrapper.find('[data-testid="review-label--pass"]')
@@ -103,9 +106,8 @@ describe('StudyCard', () => {
     const wrapper = mountStudyCard({ options })
     await flushPromises()
 
-    // onMove lives on swipe-right — it handles all horizontal drag tracking
-    const { el, callbacks } = getCallbacks('swipe-right')
-    callbacks.onMove(el, { dx: -30, dy: 0 })
+const { el, callbacks } = getCallbacks()
+    callbacks.onMove({ dx: -30, dy: 0 })
     await flushPromises()
 
     const failLabel = wrapper.find('[data-testid="review-label--fail"]')
@@ -137,8 +139,8 @@ describe('StudyCard', () => {
     await flushPromises()
 
     // is_dragging requires Math.abs(dx) > FLIP_THRESHOLD (10), so use dx=20
-    const { el, callbacks } = getCallbacks('swipe-right')
-    callbacks.onMove(el, { dx: 20, dy: 0 })
+    const { el, callbacks } = getCallbacks()
+    callbacks.onMove({ dx: 20, dy: 0 })
     await flushPromises()
 
     await wrapper.find('[data-testid="study-card"]').trigger('mouseup')
@@ -229,10 +231,10 @@ describe('StudyCard', () => {
     mountStudyCard({ options })
     await flushPromises()
 
-    const { el, callbacks } = getCallbacks('swipe-right')
+    const { el, callbacks } = getCallbacks()
 
     // Cross into the pass zone
-    callbacks.onMove(el, { dx: 60, dy: 0 })
+    callbacks.onMove({ dx: 60, dy: 0 })
     await flushPromises()
 
     expect(mockEmitSfx).toHaveBeenCalledWith('ui.music_plink_mid')
@@ -240,7 +242,7 @@ describe('StudyCard', () => {
     expect(call_count).toBe(1)
 
     // Another move within the same zone should NOT trigger the sfx again
-    callbacks.onMove(el, { dx: 80, dy: 0 })
+    callbacks.onMove({ dx: 80, dy: 0 })
     await flushPromises()
 
     const call_count_after = mockEmitSfx.mock.calls.filter(
@@ -253,10 +255,9 @@ describe('StudyCard', () => {
     mountStudyCard({ options })
     await flushPromises()
 
-    // onMove lives on swipe-right — it handles all horizontal drag tracking
-    const { el, callbacks } = getCallbacks('swipe-right')
+const { el, callbacks } = getCallbacks()
 
-    callbacks.onMove(el, { dx: -60, dy: 0 })
+    callbacks.onMove({ dx: -60, dy: 0 })
     await flushPromises()
 
     expect(mockEmitSfx).toHaveBeenCalledWith('ui.music_plink_mid')
@@ -278,8 +279,8 @@ describe('StudyCard', () => {
     mountStudyCard({ side: 'cover', options })
     await flushPromises()
 
-    const { el, callbacks } = getCallbacks('swipe-right')
-    callbacks.onMove(el, { dx: 80, dy: 0 })
+    const { el, callbacks } = getCallbacks()
+    callbacks.onMove({ dx: 80, dy: 0 })
     await flushPromises()
 
     // No transform applied when cover mode ignores drag
@@ -292,14 +293,14 @@ describe('StudyCard', () => {
     mountStudyCard({ options })
     await flushPromises()
 
-    const { el, callbacks } = getCallbacks('swipe-right')
+    const { el, callbacks } = getCallbacks()
 
     // Move to set some transform
-    callbacks.onMove(el, { dx: 40, dy: 0 })
+    callbacks.onMove({ dx: 40, dy: 0 })
     await flushPromises()
 
     // Cancel should snap back
-    callbacks.onCancel(el)
+    callbacks.onCancel()
     await flushPromises()
 
     // After the snap-back transition (which sets style.transform = ''), the element

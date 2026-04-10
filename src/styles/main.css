@@ -189,6 +189,10 @@
     line-height: var(--text-base--line-height);
   }
 
+  body {
+    width: 100%;
+  }
+
   .app-container {
     width: 100%;
     max-width: var(--page-width);

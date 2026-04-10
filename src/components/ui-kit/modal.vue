@@ -23,7 +23,7 @@ watchEffect(() => {
   if (!modal_container.value?.$el) return
 
   if (modal_stack.value.length > 0) {
-    disableBodyScroll(modal_container.value.$el, { reserveScrollBarGap: true })
+    disableBodyScroll(modal_container.value.$el)
     shortcuts.register({ combo: 'esc', handler: () => pop() })
   } else {
     enableBodyScroll(modal_container.value.$el)
