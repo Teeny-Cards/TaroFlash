@@ -42,6 +42,16 @@ const {
 const study_card_ref = useTemplateRef('study-card')
 const loading = ref(true)
 const raw_cards = ref<Card[]>([])
+const next_card_side = ref<'front' | 'back' | 'cover'>('cover')
+
+let resolveFlip: (() => void) | null = null
+
+const starting_side = computed<'front' | 'back'>(() =>
+  session_config.flip_cards ? 'back' : 'front'
+)
+const next_card = computed(() =>
+  cards.value.slice(current_index.value + 1).find((c) => c.state === 'unreviewed')
+)
 
 const is_cover = computed(() => current_card_side.value === 'cover')
 
@@ -71,13 +81,29 @@ function onRated(grade: Grade) {
   study_card_ref.value?.rate(grade)
 }
 
-function onCardReviewed(item?: RecordLogItem) {
+function onNextCardFlipped() {
+  resolveFlip?.()
+  resolveFlip = null
+}
+
+async function onCardReviewed(item?: RecordLogItem) {
   if (!active_card.value?.id || mode.value !== 'studying') return
 
+  // @ts-ignore - stupid error
+  const finished = mode.value === 'completed'
+
+  next_card_side.value = starting_side.value
+
+  if (!finished) emitSfx('ui.slide_up')
+
+  await new Promise<void>((resolve) => {
+    resolveFlip = resolve
+  })
+
+  next_card_side.value = 'cover'
   reviewCard(item)
 
-  // @ts-ignore - stupid error
-  if (mode.value === 'completed') {
+  if (finished) {
     emit('finished', num_correct.value, cards.value.length)
   }
 }
@@ -116,18 +142,29 @@ function onCardReviewed(item?: RecordLogItem) {
         {{ current_index + 1 }}<span class="text-sm">/{{ cards.length }}</span>
       </div>
 
-      <study-card
-        v-if="!loading"
-        ref="study-card"
-        :key="active_card?.id"
-        :card="active_card"
-        :side="current_card_side"
-        :options="active_card?.preview"
-        @started="onStart"
-        @side-changed="onSideChanged"
-        @reviewed="onCardReviewed"
-      />
-      <card data-testid="study-card-skeleton" v-else size="xl" />
+      <div data-testid="study-card__container" class="relative flex items-center justify-center">
+        <card
+          v-if="!loading && next_card"
+          :key="next_card.id"
+          size="xl"
+          :side="next_card_side"
+          v-bind="next_card"
+          class="absolute! pointer-events-none"
+          @flip-complete="onNextCardFlipped"
+        />
+        <study-card
+          v-if="!loading"
+          ref="study-card"
+          :key="active_card?.id"
+          :card="active_card"
+          :side="current_card_side"
+          :options="active_card?.preview"
+          @started="onStart"
+          @side-changed="onSideChanged"
+          @reviewed="onCardReviewed"
+        />
+        <card data-testid="study-card-skeleton" side="cover" v-else size="xl" />
+      </div>
 
       <rating-buttons
         class="z-10 mt-4"
