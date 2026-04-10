@@ -2,6 +2,7 @@
 import StudyCard from './study-card.vue'
 import RatingButtons from './rating-buttons.vue'
 import SessionSettings from './session-settings.vue'
+import SessionFinish from './session-finish.vue'
 import { useStudySession } from '@/composables/study-session'
 import { type Grade, type RecordLogItem } from 'ts-fsrs'
 import { computed, onMounted, reactive, ref, useTemplateRef } from 'vue'
@@ -20,7 +21,7 @@ const session_config = reactive<Required<DeckConfig>>({
   study_all_cards: deck.config?.study_all_cards ?? false,
   retry_failed_cards: deck.config?.retry_failed_cards ?? false,
   shuffle: false,
-  card_limit: null,
+  card_limit: 1,
   flip_cards: false
 })
 
@@ -101,11 +102,6 @@ async function onCardReviewed(item?: RecordLogItem) {
   }
 
   reviewCard(item)
-
-  // @ts-ignore — reviewCard() may have set mode to 'completed'; TypeScript narrows mode.value from the guard above
-  if (mode.value === 'completed') {
-    emit('finished', num_correct.value, cards.value.length)
-  }
 }
 </script>
 
@@ -131,6 +127,7 @@ async function onCardReviewed(item?: RecordLogItem) {
     </div>
 
     <div
+      v-if="mode === 'studying'"
       data-testid="study-session__body"
       class="w-full h-full pt-2 max-h-130 flex flex-col items-center justify-between gap-2 self-center overflow-y-auto"
     >
@@ -175,12 +172,14 @@ async function onCardReviewed(item?: RecordLogItem) {
         @revealed="onSideChanged"
       />
 
-      <!-- <session-settings
+      <session-settings
         v-if="is_cover && !loading"
         :settings="session_config"
         :total_cards="raw_cards.length"
         @change="updateConfig"
-      /> -->
+      />
     </div>
+
+    <session-finish v-else @done="emit('finished', num_correct, cards.length)" />
   </div>
 </template>

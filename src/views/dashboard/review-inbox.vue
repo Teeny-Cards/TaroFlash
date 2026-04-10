@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import ReviewInboxItem from './review-inbox-item.vue'
-import { useStudySessionModal } from '@/composables/modals/use-study-session'
+import { useStudyModal } from '@/composables/modals/use-study-modal'
 
 defineProps<{
   due_decks: Deck[]
 }>()
 
-const study_session = useStudySessionModal()
+const study_session = useStudyModal()
 
 function onItemClicked(deck: Deck) {
   study_session.start(deck)

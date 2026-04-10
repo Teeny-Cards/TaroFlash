@@ -37,14 +37,6 @@ beforeEach(() => {
 
 If no setter exists, fall back to `vi.resetModules()`.
 
-## Mocking
-
-Prefer `vi.mock('@/composables/...')` over mocking browser APIs directly — module mocks are more isolated and avoid cache leaking between tests. Reset return values in `beforeEach` with `vi.mocked(...).mockReturnValue(...)`, then override per-test as needed.
-
-## Suspect source logic
-
-If source logic looks wrong, ask the user before writing the test. Once confirmed correct, add a comment explaining the non-obvious behaviour. If confirmed wrong, wait for the fix before writing.
-
 # Running Tests
 
 ```bash
@@ -52,6 +44,9 @@ vp test                                        # full suite
 vp test tests/unit/use-theme.test.js           # single file
 ```
 
-# Comments
+# Guidelines
 
-Only leave comments for assertions that are not immediately obvious. Otherwise test names should be descriptive enough.
+- Prefer `vi.mock('@/composables/...')` over mocking browser APIs directly — module mocks are more isolated and avoid cache leaking between tests. Reset return values in `beforeEach` with `vi.mocked(...).mockReturnValue(...)`, then override per-test as needed.
+- If source logic looks wrong, ask the user before writing the test. Once confirmed correct, add a comment explaining the non-obvious behaviour. If confirmed wrong, wait for the fix before writing.
+- Only leave comments for assertions that are not immediately obvious. Otherwise test names should be descriptive enough.
+- Don't assert or find elements by class names, always use a `data-testid` attribute. If one does not exist, add one.
