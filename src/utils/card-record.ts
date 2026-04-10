@@ -42,6 +42,7 @@ export default class CardRecord {
     this.id = card.id
     this.front_text = card.front_text
     this.back_text = card.back_text
+    this.attributes = card.attributes
     this.deck_id = card.deck_id
     this.created_at = card.created_at
     this.updated_at = card.updated_at

@@ -89,21 +89,21 @@ function onNextCardFlipped() {
 async function onCardReviewed(item?: RecordLogItem) {
   if (!active_card.value?.id || mode.value !== 'studying') return
 
-  // @ts-ignore - stupid error
-  const finished = mode.value === 'completed'
+  if (next_card.value) {
+    next_card_side.value = starting_side.value
+    emitSfx('ui.slide_up')
 
-  next_card_side.value = starting_side.value
+    await new Promise<void>((resolve) => {
+      resolveFlip = resolve
+    })
 
-  if (!finished) emitSfx('ui.slide_up')
+    next_card_side.value = 'cover'
+  }
 
-  await new Promise<void>((resolve) => {
-    resolveFlip = resolve
-  })
-
-  next_card_side.value = 'cover'
   reviewCard(item)
 
-  if (finished) {
+  // @ts-ignore — reviewCard() may have set mode to 'completed'; TypeScript narrows mode.value from the guard above
+  if (mode.value === 'completed') {
     emit('finished', num_correct.value, cards.value.length)
   }
 }
