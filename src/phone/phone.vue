@@ -11,7 +11,7 @@ import phoneBase from '@/phone/components/phone-base.vue'
 import phoneLg from './components/phone-lg.vue'
 import { useI18n } from 'vue-i18n'
 import { useMediaQuery } from '@/composables/use-media-query'
-import { blurIn, blurOut, blurUp, blurDown } from '@/phone/system/animations'
+import { slideDownBlurIn, slideUpBlurOut, slideUpBlurIn, slideDownBlurOut } from '@/utils/animations/phone'
 
 const nav = usePhoneNavigator()
 const shortcuts = useShortcuts('phone', { priority: 'background' })
@@ -91,21 +91,21 @@ function isInsidePhone(e: Event) {
 }
 
 function onOpenBasePhone(el: Element, done: () => void) {
-  const animation = is_pointer_coarse.value ? blurIn : blurUp
+  const animation = is_pointer_coarse.value ? slideDownBlurIn : slideUpBlurIn
   animation(el, done)
 }
 
 function onCloseBasePhone(el: Element, done: () => void) {
-  const animation = is_pointer_coarse.value ? blurOut : blurDown
+  const animation = is_pointer_coarse.value ? slideUpBlurOut : slideDownBlurOut
   animation(el, done)
 }
 
 function onOpenLgPhone(el: Element, done: () => void) {
-  blurUp(el, done)
+  slideUpBlurIn(el, done)
 }
 
 function onCloseLgPhone(el: Element, done: () => void) {
-  blurDown(el, done)
+  slideDownBlurOut(el, done)
 }
 </script>
 

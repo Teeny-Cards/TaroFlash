@@ -43,7 +43,10 @@ const CardStub = defineComponent({
   props: { side: { type: String } },
   emits: ['flip-complete'],
   setup(props, { emit }) {
-    watch(() => props.side, () => emit('flip-complete'))
+    watch(
+      () => props.side,
+      () => emit('flip-complete')
+    )
   },
   template: '<div v-bind="$attrs"><slot /></div>'
 })
