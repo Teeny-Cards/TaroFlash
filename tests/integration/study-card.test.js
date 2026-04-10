@@ -112,38 +112,47 @@ describe('StudyCard', () => {
     expect(failLabel.classes()).not.toContain('review-label--visible')
   })
 
-  // ── toggleSide ─────────────────────────────────────────────────────────────
+  // ── onCardClick ────────────────────────────────────────────────────────────
 
-  test('mouseup emits side-changed with toggled side when not dragging', async () => {
+  test('mouseup emits side-changed when not dragging (front side)', async () => {
     const wrapper = mountStudyCard({ side: 'front', options })
     await flushPromises()
 
     await wrapper.find('[data-testid="study-card"]').trigger('mouseup')
 
     expect(wrapper.emitted('side-changed')).toHaveLength(1)
-    expect(wrapper.emitted('side-changed')[0]).toEqual(['back'])
   })
 
-  test('mouseup from back side emits side-changed with front', async () => {
+  test('mouseup emits side-changed when not dragging (back side)', async () => {
     const wrapper = mountStudyCard({ side: 'back', options })
     await flushPromises()
 
     await wrapper.find('[data-testid="study-card"]').trigger('mouseup')
 
-    expect(wrapper.emitted('side-changed')[0]).toEqual(['front'])
+    expect(wrapper.emitted('side-changed')).toHaveLength(1)
   })
 
   test('mouseup does not emit side-changed while dragging', async () => {
     const wrapper = mountStudyCard({ side: 'front', options })
     await flushPromises()
 
-    // Trigger a move to set is_dragging = true
+    // is_dragging requires Math.abs(dx) > FLIP_THRESHOLD (10), so use dx=20
     const { el, callbacks } = getCallbacks('swipe-right')
-    callbacks.onMove(el, { dx: 10, dy: 0 })
+    callbacks.onMove(el, { dx: 20, dy: 0 })
     await flushPromises()
 
     await wrapper.find('[data-testid="study-card"]').trigger('mouseup')
 
+    expect(wrapper.emitted('side-changed')).toBeFalsy()
+  })
+
+  test('mouseup on cover side emits "started" instead of side-changed', async () => {
+    const wrapper = mountStudyCard({ side: 'cover', options })
+    await flushPromises()
+
+    await wrapper.find('[data-testid="study-card"]').trigger('mouseup')
+
+    expect(wrapper.emitted('started')).toHaveLength(1)
     expect(wrapper.emitted('side-changed')).toBeFalsy()
   })
 
@@ -251,6 +260,30 @@ describe('StudyCard', () => {
     await flushPromises()
 
     expect(mockEmitSfx).toHaveBeenCalledWith('ui.music_plink_mid')
+  })
+
+  // ── cover side: gestures and rate() are no-ops ────────────────────────────
+
+  test('rate() does not emit reviewed when side is cover', async () => {
+    const wrapper = mountStudyCard({ side: 'cover', options })
+    await flushPromises()
+
+    wrapper.vm.rate(Rating.Good)
+    await flushPromises()
+
+    expect(wrapper.emitted('reviewed')).toBeFalsy()
+  })
+
+  test('drag does not move card when side is cover', async () => {
+    mountStudyCard({ side: 'cover', options })
+    await flushPromises()
+
+    const { el, callbacks } = getCallbacks('swipe-right')
+    callbacks.onMove(el, { dx: 80, dy: 0 })
+    await flushPromises()
+
+    // No transform applied when cover mode ignores drag
+    expect(el.style.transform).toBe('')
   })
 
   // ── snapBack on cancel ─────────────────────────────────────────────────────

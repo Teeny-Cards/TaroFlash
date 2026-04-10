@@ -3,10 +3,6 @@ import { mount } from '@vue/test-utils'
 import { Rating } from 'ts-fsrs'
 import RatingButtons from '@/components/modals/study-session/rating-buttons.vue'
 
-// UiTooltip renders <component :is="element"> and spreads $attrs, so it passes
-// data-testid, disabled, and click listeners through to the rendered element.
-// No stub needed — let it render for real.
-
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function mountRatingButtons(props) {
@@ -16,13 +12,13 @@ function mountRatingButtons(props) {
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 describe('RatingButtons', () => {
-  // ── showOptions: false ─────────────────────────────────────────────────────
+  // ── side: 'front' ──────────────────────────────────────────────────────────
 
-  describe('when showOptions is false', () => {
+  describe('when side is "front"', () => {
     let wrapper
 
     beforeEach(() => {
-      wrapper = mountRatingButtons({ showOptions: false, disabled: false })
+      wrapper = mountRatingButtons({ side: 'front' })
     })
 
     test('shows the flip button', () => {
@@ -37,6 +33,10 @@ describe('RatingButtons', () => {
       expect(wrapper.find('[data-testid="rating-buttons__good"]').exists()).toBe(false)
     })
 
+    test('does not show the start button', () => {
+      expect(wrapper.find('[data-testid="rating-buttons__start"]').exists()).toBe(false)
+    })
+
     test('clicking the flip button emits "revealed"', async () => {
       await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
 
@@ -44,13 +44,13 @@ describe('RatingButtons', () => {
     })
   })
 
-  // ── showOptions: true ──────────────────────────────────────────────────────
+  // ── side: 'back' ───────────────────────────────────────────────────────────
 
-  describe('when showOptions is true', () => {
+  describe('when side is "back"', () => {
     let wrapper
 
     beforeEach(() => {
-      wrapper = mountRatingButtons({ showOptions: true, disabled: false })
+      wrapper = mountRatingButtons({ side: 'back' })
     })
 
     test('shows the Again button', () => {
@@ -63,6 +63,10 @@ describe('RatingButtons', () => {
 
     test('does not show the flip button', () => {
       expect(wrapper.find('[data-testid="rating-buttons__show"]').exists()).toBe(false)
+    })
+
+    test('does not show the start button', () => {
+      expect(wrapper.find('[data-testid="rating-buttons__start"]').exists()).toBe(false)
     })
 
     test('clicking Again emits "rated" with Rating.Again', async () => {
@@ -80,42 +84,42 @@ describe('RatingButtons', () => {
     })
   })
 
-  // ── disabled ───────────────────────────────────────────────────────────────
+  // ── side: 'cover' ──────────────────────────────────────────────────────────
 
-  describe('when disabled is true', () => {
+  describe('when side is "cover"', () => {
     let wrapper
 
     beforeEach(() => {
-      wrapper = mountRatingButtons({ showOptions: true, disabled: true })
+      wrapper = mountRatingButtons({ side: 'cover' })
     })
 
-    test('Again button has the opacity-50 class', () => {
-      expect(wrapper.find('[data-testid="rating-buttons__again"]').classes()).toContain(
-        'opacity-50'
-      )
+    test('shows the start button', () => {
+      expect(wrapper.find('[data-testid="rating-buttons__start"]').exists()).toBe(true)
     })
 
-    test('Good button has the opacity-50 class', () => {
-      expect(wrapper.find('[data-testid="rating-buttons__good"]').classes()).toContain('opacity-50')
+    test('does not show the flip button', () => {
+      expect(wrapper.find('[data-testid="rating-buttons__show"]').exists()).toBe(false)
     })
 
-    test('clicking Again does not emit "rated"', async () => {
-      await wrapper.find('[data-testid="rating-buttons__again"]').trigger('click')
-
-      expect(wrapper.emitted('rated')).toBeFalsy()
+    test('does not show the Again button', () => {
+      expect(wrapper.find('[data-testid="rating-buttons__again"]').exists()).toBe(false)
     })
 
-    test('clicking Good does not emit "rated"', async () => {
-      await wrapper.find('[data-testid="rating-buttons__good"]').trigger('click')
+    test('does not show the Good button', () => {
+      expect(wrapper.find('[data-testid="rating-buttons__good"]').exists()).toBe(false)
+    })
 
-      expect(wrapper.emitted('rated')).toBeFalsy()
+    test('clicking the start button emits "started"', async () => {
+      await wrapper.find('[data-testid="rating-buttons__start"]').trigger('click')
+
+      expect(wrapper.emitted('started')).toHaveLength(1)
     })
   })
 
   // ── options prop ───────────────────────────────────────────────────────────
 
   test('renders without errors when options is undefined', () => {
-    const wrapper = mountRatingButtons({ showOptions: true, disabled: false, options: undefined })
+    const wrapper = mountRatingButtons({ side: 'back', options: undefined })
 
     expect(wrapper.find('[data-testid="rating-buttons__again"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="rating-buttons__good"]').exists()).toBe(true)
