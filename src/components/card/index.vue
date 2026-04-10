@@ -11,10 +11,14 @@ type CardProps = Partial<CardBase> &
   ImageCard & {
     size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
     mode?: CardEditorMode
-    side?: 'front' | 'back'
+    side?: 'front' | 'back' | 'cover'
     face_classes?: string
     sfx?: SfxOptions
   }
+
+const emit = defineEmits<{
+  (e: 'flip-complete'): void
+}>()
 
 const {
   size = 'base',
@@ -44,7 +48,7 @@ function onEnter(el: Element, done: () => void) {
       scale: 1,
       duration: 0.2,
       ease: 'back.out(2)',
-      onComplete: done
+      onComplete: () => { done(); emit('flip-complete') }
     }
   )
 }
@@ -71,7 +75,12 @@ function onLeave(el: Element, done: () => void) {
     <slot></slot>
 
     <transition mode="out-in" @enter="onEnter" @leave="onLeave">
-      <slot name="front" v-if="side === 'front'">
+      <div
+        v-if="side === 'cover'"
+        class="h-full w-full bg-purple-500 rounded-(--face-radius)"
+      ></div>
+
+      <slot name="front" v-else-if="side === 'front'">
         <card-face
           data-testid="card-face__front"
           :class="face_classes"
@@ -85,7 +94,7 @@ function onLeave(el: Element, done: () => void) {
         </card-face>
       </slot>
 
-      <slot name="back" v-else>
+      <slot name="back" v-else-if="side === 'back'">
         <card-face
           data-testid="card-face__back"
           :class="face_classes"

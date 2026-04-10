@@ -7,38 +7,31 @@ import { useRatingFormat } from '@/utils/fsrs'
 const { t } = useI18n()
 const { getRatingTimeFormat } = useRatingFormat()
 
-const {
-  options,
-  showOptions,
-  disabled = false
-} = defineProps<{
+const { options, side } = defineProps<{
   options?: RecordLog
-  showOptions: boolean
-  disabled: boolean
+  side: 'front' | 'back' | 'cover'
 }>()
 
 const emit = defineEmits<{
   (e: 'revealed'): void
+  (e: 'started'): void
   (e: 'rated', grade: Grade): void
 }>()
 
 function onRatingClicked(grade: Grade) {
-  if (disabled) return
   emit('rated', grade)
 }
 </script>
 
 <template>
   <div data-testid="rating-buttons" class="flex justify-center gap-2 text-2xl">
-    <template v-if="showOptions">
+    <template v-if="side === 'back'">
       <ui-tooltip
         :text="getRatingTimeFormat(Rating.Again, options, 'short')"
         element="button"
         :gap="-12"
         data-testid="rating-buttons__again"
         class="text-brown-700 cursor-pointer rounded-full bg-white px-13 py-4 hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
-        :class="{ 'opacity-50': disabled }"
-        :disabled="disabled"
         static_on_mobile
         @click="onRatingClicked(Rating.Again)"
       >
@@ -51,8 +44,6 @@ function onRatingClicked(grade: Grade) {
         :gap="-12"
         data-testid="rating-buttons__good"
         class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
-        :class="{ 'opacity-50': disabled }"
-        :disabled="disabled"
         static_on_mobile
         @click="onRatingClicked(Rating.Good)"
       >
@@ -61,12 +52,21 @@ function onRatingClicked(grade: Grade) {
     </template>
 
     <button
-      v-else
+      v-else-if="side === 'front'"
       data-testid="rating-buttons__show"
       class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
       @click="$emit('revealed')"
     >
       {{ t('study.flip') }}
+    </button>
+
+    <button
+      v-else-if="side === 'cover'"
+      data-testid="rating-buttons__start"
+      class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
+      @click="$emit('started')"
+    >
+      {{ t('study.start') }}
     </button>
   </div>
 </template>

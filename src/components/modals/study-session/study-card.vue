@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Card from '@/components/card/index.vue'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
 import { emitSfx } from '@/sfx/bus'
 import { useGestures } from '@/composables/use-gestures'
@@ -10,17 +10,19 @@ defineExpose({ rate })
 
 const { card, side, options } = defineProps<{
   card?: Card
-  side: 'front' | 'back'
+  side: 'front' | 'back' | 'cover'
   options?: RecordLog
 }>()
 
 const emit = defineEmits<{
-  (e: 'side-changed', side: 'front' | 'back'): void
+  (e: 'started'): void
+  (e: 'side-changed'): void
   (e: 'reviewed', item: RecordLogItem | undefined): void
 }>()
 
 const { getRatingTimeFormat } = useRatingFormat()
 
+const FLIP_THRESHOLD = 10
 const SWIPE_DISTANCE_THRESHOLD = 50
 const FLING_SPEED = 0.25
 
@@ -57,15 +59,23 @@ onMounted(() => {
 
 /** Triggers the fling animation for a given grade. Called by the parent via template ref. */
 function rate(grade: Grade) {
+  if (side === 'cover') return
+
   const el = card_ref.value?.$el as HTMLElement | null
   if (!el) return
   flingCard(el, grade === Rating.Good ? 1 : -1)
 }
 
 /** Flips the card face unless a drag just ended (prevents accidental flips on release). */
-function toggleSide() {
+function onCardClick() {
   if (is_dragging.value) return
-  emit('side-changed', side === 'front' ? 'back' : 'front')
+
+  if (side === 'cover') {
+    emit('started')
+    return
+  }
+
+  emit('side-changed')
 }
 
 /**
@@ -73,6 +83,8 @@ function toggleSide() {
  * Resets transform state once the CSS transition ends.
  */
 function flingCard(el: HTMLElement, direction: number) {
+  if (side === 'cover') return
+
   const targetX = direction * (window.innerWidth + el.getBoundingClientRect().width)
   const rating = direction > 0 ? Rating.Good : Rating.Again
 
@@ -83,10 +95,8 @@ function flingCard(el: HTMLElement, direction: number) {
 
   const onTransitionEnd = () => {
     el.removeEventListener('transitionend', onTransitionEnd)
-    emit('reviewed', options?.[rating])
     card_offset.value = 0
-    el.style.transition = 'none'
-    el.style.transform = ''
+    emit('reviewed', options?.[rating])
   }
 
   el.addEventListener('transitionend', onTransitionEnd)
@@ -94,7 +104,11 @@ function flingCard(el: HTMLElement, direction: number) {
 
 /** Tracks the card position and tilt while the user is dragging. */
 function handleDrag(el: HTMLElement, dx: number) {
-  is_dragging.value = true
+  if (side === 'cover') return
+
+  if (toSwipeZone(card_offset.value) !== toSwipeZone(dx)) emitSfx('ui.music_plink_mid')
+
+  is_dragging.value = Math.abs(dx) > FLIP_THRESHOLD // prevents accidental flips on release, but allows for a bit of wiggle room
   card_offset.value = dx
   el.style.transform = `translateX(${dx}px) rotate(${dx / 10}deg)`
 }
@@ -104,6 +118,8 @@ function handleDrag(el: HTMLElement, dx: number) {
  * Flings if the drag exceeded the distance threshold, otherwise snaps back.
  */
 function commitSwipe(el: HTMLElement, dx: number, direction: 1 | -1) {
+  if (side === 'cover') return
+
   if (Math.abs(dx) > SWIPE_DISTANCE_THRESHOLD) flingCard(el, direction)
   else snapBack(el)
 }
@@ -123,11 +139,6 @@ function snapBack(el: HTMLElement) {
 function toSwipeZone(offset: number) {
   return offset > SWIPE_DISTANCE_THRESHOLD ? 1 : offset < -SWIPE_DISTANCE_THRESHOLD ? -1 : 0
 }
-
-// Play a tick sound whenever the drag crosses into or out of a commit zone.
-watch(card_offset, (val, prev) => {
-  if (toSwipeZone(val) !== toSwipeZone(prev)) emitSfx('ui.music_plink_mid')
-})
 </script>
 
 <template>
@@ -140,14 +151,22 @@ watch(card_offset, (val, prev) => {
       size="xl"
       v-bind="card"
       :side="side"
-      @mouseup="toggleSide"
+      @mouseup="onCardClick"
     >
       <div class="absolute inset-0 overflow-hidden rounded-(--face-radius)">
-        <div data-testid="review-label--fail" class="review-label bg-pink-400" :class="{ 'review-label--visible': failVisible }">
+        <div
+          data-testid="review-label--fail"
+          class="review-label bg-pink-400"
+          :class="{ 'review-label--visible': failVisible }"
+        >
           {{ $t('study.nope') }}
           <p class="text-sm">{{ getRatingTimeFormat(Rating.Again, options) }}</p>
         </div>
-        <div data-testid="review-label--pass" class="review-label bg-green-400" :class="{ 'review-label--visible': passVisible }">
+        <div
+          data-testid="review-label--pass"
+          class="review-label bg-green-400"
+          :class="{ 'review-label--visible': passVisible }"
+        >
           {{ $t('study.got-it') }}
           <p class="text-sm">{{ getRatingTimeFormat(Rating.Good, options) }}</p>
         </div>
