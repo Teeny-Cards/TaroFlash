@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { onUnmounted, watchEffect, computed, onMounted, useTemplateRef } from 'vue'
+import { onUnmounted, watchEffect, computed, useTemplateRef } from 'vue'
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
-import { useModal } from '@/composables/modal'
+import { useModal, type ModalMode } from '@/composables/modal'
 import { useMediaQuery } from '@/composables/use-media-query'
 import { useShortcuts } from '@/composables/use-shortcuts'
-import { gsap } from 'gsap'
+import { MODAL_MODE_CONFIG } from './modal-mode-config'
+
+const DEFAULT_MODE: ModalMode = 'dialog'
 
 const { modal_stack, pop } = useModal()
 const is_desktop_size = useMediaQuery('sm')
@@ -29,38 +31,30 @@ watchEffect(() => {
   }
 })
 
-const show_backdrop = computed(() => {
-  return modal_stack.value.some((m) => m.backdrop)
+const show_backdrop = computed(() => modal_stack.value.some((m) => m.backdrop))
+
+const top_modal_container_class = computed(() => {
+  const mode = modal_stack.value.at(-1)?.mode ?? DEFAULT_MODE
+  return MODAL_MODE_CONFIG[mode].containerClass
 })
 
+function getElementMode(el: Element): ModalMode {
+  return ((el as HTMLElement).dataset.modalMode as ModalMode) ?? DEFAULT_MODE
+}
+
+function getModeConfig(el: Element) {
+  const mode = getElementMode(el)
+  return MODAL_MODE_CONFIG[mode]
+}
+
 function onEnter(el: Element, done: () => void) {
-  if (is_desktop_size.value) {
-    gsap.fromTo(
-      el,
-      { translateY: '200px', opacity: 0 },
-      { translateY: 0, opacity: 1, duration: 0.2, ease: 'expo.out', onComplete: done }
-    )
-  } else {
-    gsap.fromTo(
-      el,
-      { translateY: '100%' },
-      { translateY: 0, duration: 0.2, ease: 'expo.out', onComplete: done }
-    )
-  }
+  const config = getModeConfig(el)
+  config.enter(el, is_desktop_size.value, done)
 }
 
 function onLeave(el: Element, done: () => void) {
-  if (is_desktop_size.value) {
-    gsap.to(el, {
-      translateY: '200px',
-      opacity: 0,
-      duration: 0.2,
-      ease: 'expo.out',
-      onComplete: done
-    })
-  } else {
-    gsap.to(el, { translateY: '100%', duration: 0.2, ease: 'expo.out', onComplete: done })
-  }
+  const config = getModeConfig(el)
+  config.leave(el, is_desktop_size.value, done)
 }
 </script>
 
@@ -90,13 +84,15 @@ function onLeave(el: Element, done: () => void) {
     data-testid="ui-kit-modal-container"
     ref="modal_container"
     tag="div"
-    class="pointer-events-none fixed inset-0 z-90 flex items-end pt-4 sm:pt-0 sm:items-center justify-center *:pointer-events-auto"
+    class="pointer-events-none fixed inset-0 z-90 flex justify-center *:pointer-events-auto"
+    :class="top_modal_container_class"
   >
     <component
       v-for="modal in modal_stack"
       :key="modal.id"
       :is="modal.component"
       v-bind="modal.componentProps"
+      :data-modal-mode="modal.mode"
       class="absolute"
     />
   </transition-group>

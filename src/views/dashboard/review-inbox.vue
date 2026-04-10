@@ -9,7 +9,7 @@ defineProps<{
 const study_session = useStudySessionModal()
 
 function onItemClicked(deck: Deck) {
-  study_session.open(deck)
+  study_session.start(deck)
 }
 </script>
 
