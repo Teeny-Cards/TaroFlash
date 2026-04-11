@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 import { mount, flushPromises } from '@vue/test-utils'
 import { defineComponent, watch } from 'vue'
-import Session from '@/components/modals/study-session/session.vue'
+import Session from '@/components/modals/study-session/session-shell.vue'
 import { card } from '../../../../fixtures/card'
 import { deck } from '../../../../fixtures/deck'
 
@@ -380,7 +380,8 @@ describe('Session', () => {
       await flushPromises()
 
       expect(wrapper.emitted('finished')).toHaveLength(1)
-      expect(wrapper.emitted('finished')[0]).toEqual([1, 1])
+      // [score, total, remaining_due, study_all_used]
+      expect(wrapper.emitted('finished')[0]).toEqual([1, 1, 0, true])
     })
 
     test('Again rating counts as score 0 in finished event', async () => {
