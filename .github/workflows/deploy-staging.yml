@@ -8,13 +8,44 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  deploy:
+  # Posts a "running" comment immediately so the PR shows activity right away.
+  # Outputs the comment ID so the finish job can update it in place.
+  start:
+    name: Post status comment
     if: github.event.label.name == 'deploy:staging'
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    outputs:
+      comment-id: ${{ steps.post.outputs.comment-id }}
 
+    steps:
+      - name: Remove label
+        continue-on-error: true
+        run: gh pr edit ${{ github.event.pull_request.number }} --remove-label "deploy:staging"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Post initial comment
+        id: post
+        run: |
+          SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          COMMENT_ID=$(gh api \
+            repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments \
+            --method POST \
+            --jq '.id' \
+            -f body="⏳ Staging deploy in progress from \`${SHA}\`...")
+          echo "comment-id=$COMMENT_ID" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  migrate:
+    name: DB migrations
+    if: github.event.label.name == 'deploy:staging'
+    runs-on: ubuntu-latest
+    environment: staging
     permissions:
       contents: read
-      pull-requests: write
 
     steps:
       - name: Checkout
@@ -27,27 +58,71 @@ jobs:
 
       - name: Run migrations
         run: |
-          supabase link --project-ref ${{ secrets.STAGE_PROJECT_REF }} --password ${{ secrets.STAGE_DB_PASSWORD }}
+          supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }} --password ${{ secrets.SUPABASE_DB_PASSWORD }}
           supabase migration up --linked
         env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.STAGE_ACCESS_TOKEN }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
-      - name: Remove label
-        if: always()
-        continue-on-error: true
-        run: gh pr edit ${{ github.event.pull_request.number }} --remove-label "deploy:staging"
+  frontend:
+    name: Build & deploy frontend
+    if: github.event.label.name == 'deploy:staging'
+    runs-on: ubuntu-latest
+    environment: staging
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build & deploy
+        run: pnpm dlx netlify-cli deploy --build --prod
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
-      - name: Comment result
+  # Updates the comment posted by `start` with the final result.
+  finish:
+    name: Update status comment
+    if: github.event.label.name == 'deploy:staging'
+    runs-on: ubuntu-latest
+    needs: [start, migrate, frontend]
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Update comment
         if: always()
         run: |
-          if [ "${{ job.status }}" = "success" ]; then
-            gh pr comment ${{ github.event.pull_request.number }} \
-              --body "✅ Staging migrations applied from \`${{ github.sha }}\`."
+          MIGRATE="${{ needs.migrate.result }}"
+          FRONTEND="${{ needs.frontend.result }}"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+
+          if [ "$MIGRATE" = "success" ] && [ "$FRONTEND" = "success" ]; then
+            BODY="✅ Staging deploy complete from \`${SHA}\`."
           else
-            gh pr comment ${{ github.event.pull_request.number }} \
-              --body "❌ Staging migration failed — [view logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
+            BODY="❌ Staging deploy failed from \`${SHA}\` — [view logs](${RUN_URL})."
+            [ "$MIGRATE"  != "success" ] && BODY="${BODY}
+          - DB migrations: ${MIGRATE}"
+            [ "$FRONTEND" != "success" ] && BODY="${BODY}
+          - Frontend: ${FRONTEND}"
           fi
+
+          gh api \
+            repos/${{ github.repository }}/issues/comments/${{ needs.start.outputs.comment-id }} \
+            --method PATCH \
+            -f body="$BODY"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
