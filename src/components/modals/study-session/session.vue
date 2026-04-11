@@ -10,19 +10,20 @@ import Card from '@/components/card/index.vue'
 import { fetchAllCardsByDeckId } from '@/api/cards'
 import { emitSfx } from '@/sfx/bus'
 
-const { deck } = defineProps<{ deck: Deck }>()
+const { deck, config_override } = defineProps<{
+  deck: Deck
+  config_override?: Partial<DeckConfig>
+}>()
 const emit = defineEmits<{
   (e: 'closed'): void
-  (e: 'finished', score: number, total: number): void
+  (
+    e: 'finished',
+    score: number,
+    total: number,
+    remaining_due: number,
+    study_all_used: boolean
+  ): void
 }>()
-
-const session_config = reactive<Required<DeckConfig>>({
-  study_all_cards: deck.config?.study_all_cards ?? false,
-  retry_failed_cards: deck.config?.retry_failed_cards ?? false,
-  shuffle: false,
-  card_limit: null,
-  flip_cards: false
-})
 
 const {
   mode,
@@ -31,12 +32,16 @@ const {
   current_index,
   active_card,
   num_correct,
+  reviewed_count,
+  remaining_due_count,
   is_starting_side,
+  config,
   reviewCard,
   setCards,
   startSession,
-  flipCurrentCard
-} = useStudySession(session_config)
+  flipCurrentCard,
+  updateConfig
+} = useStudySession(deck.config)
 
 const study_card_ref = useTemplateRef('study-card')
 const loading = ref(true)
@@ -45,9 +50,7 @@ const next_card_side = ref<'front' | 'back' | 'cover'>('cover')
 
 let resolveFlip: (() => void) | null = null
 
-const starting_side = computed<'front' | 'back'>(() =>
-  session_config.flip_cards ? 'back' : 'front'
-)
+const starting_side = computed<'front' | 'back'>(() => (config.flip_cards ? 'back' : 'front'))
 const next_card = computed(() =>
   cards.value.slice(current_index.value + 1).find((c) => c.state === 'unreviewed')
 )
@@ -62,12 +65,32 @@ onMounted(async () => {
 
   raw_cards.value = await fetchAllCardsByDeckId(deck.id!)
   setCards(raw_cards.value)
+
+  if (config_override) {
+    updateConfig(config_override)
+  }
+
   loading.value = false
 })
 
 function onSideChanged() {
   emitSfx(is_starting_side.value ? 'ui.transition_up' : 'ui.transition_down')
   flipCurrentCard()
+}
+
+function onClose() {
+  if (is_cover.value || reviewed_count.value === 0) {
+    emit('closed')
+    return
+  }
+
+  emit(
+    'finished',
+    num_correct.value,
+    reviewed_count.value,
+    remaining_due_count.value,
+    config.study_all_cards
+  )
 }
 
 function onStart() {
@@ -118,7 +141,7 @@ async function onCardReviewed(item?: RecordLogItem) {
           theme="purple-500"
           inverted
           icon-only
-          @click="emit('closed')"
+          @click="onClose"
         ></ui-button>
       </div>
       <h1 class="text-5xl text-white">{{ deck?.title }}</h1>
@@ -173,7 +196,9 @@ async function onCardReviewed(item?: RecordLogItem) {
 
     <finish-animation
       v-if="mode === 'completed'"
-      @done="emit('finished', num_correct, cards.length)"
+      @done="
+        emit('finished', num_correct, cards.length, remaining_due_count, config.study_all_cards)
+      "
     />
   </div>
 </template>
