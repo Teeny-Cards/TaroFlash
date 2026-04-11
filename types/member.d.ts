@@ -2,7 +2,6 @@ type Member = {
   id?: string
   display_name?: string
   description?: string
-  theme?: MemberTheme
   created_at?: string
   email?: string
   avatar_url?: string
