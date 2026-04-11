@@ -1,4 +1,4 @@
-import { ref, computed, shallowRef } from 'vue'
+import { ref, computed, shallowRef, reactive } from 'vue'
 import {
   createEmptyCard,
   FSRS,
@@ -15,16 +15,19 @@ export type StudyCard = Card & { preview?: IPreview; state: ReviewState }
 
 type ReviewState = 'failed' | 'passed' | 'unreviewed'
 
-const defaultConfig: DeckConfig = {
-  study_all_cards: false,
-  retry_failed_cards: false
-}
-
-export function useStudySession(config: DeckConfig = defaultConfig) {
+export function useStudySession(_config?: DeckConfig) {
   const _PARAMS = generatorParameters({
     enable_fuzz: true,
     learning_steps: [],
     relearning_steps: []
+  })
+
+  const config = reactive<Required<DeckConfig>>({
+    study_all_cards: _config?.study_all_cards ?? false,
+    retry_failed_cards: _config?.retry_failed_cards ?? false,
+    shuffle: _config?.shuffle ?? false,
+    card_limit: _config?.card_limit ?? null,
+    flip_cards: _config?.flip_cards ?? false
   })
 
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
@@ -47,6 +50,15 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
   })
 
   const num_correct = computed(() => cards.value.filter((c) => c.state === 'passed').length)
+  const reviewed_cards = computed(() => cards.value.filter((c) => c.state !== 'unreviewed'))
+  const reviewed_count = computed(() => reviewed_cards.value.length)
+
+  const remaining_due_count = computed(() => {
+    if (config.study_all_cards) return 0
+    const total_due = _raw_cards.value.filter(_isCardDue).length
+
+    return Math.max(0, total_due - reviewed_count.value)
+  })
 
   const current_index = computed(() => {
     if (!active_card.value) return cards.value.length
@@ -59,7 +71,12 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
   }
 
   function updateConfig(updates: Partial<DeckConfig>) {
-    Object.assign(config, updates)
+    config.study_all_cards = updates.study_all_cards ?? config.study_all_cards
+    config.retry_failed_cards = updates.retry_failed_cards ?? config.retry_failed_cards
+    config.shuffle = updates.shuffle ?? config.shuffle
+    config.card_limit = updates.card_limit ?? config.card_limit
+    config.flip_cards = updates.flip_cards ?? config.flip_cards
+
     if (_raw_cards.value.length) _processCards()
   }
 
@@ -79,10 +96,16 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     }
 
     _cards_in_deck.value = filtered.map(_setupCard)
+
     _pickNextCard({ first: true })
   }
 
   function startSession() {
+    if (_cards_in_deck.value.length === 0) {
+      updateConfig({ study_all_cards: true })
+      _processCards()
+    }
+
     current_card_side.value = starting_side.value
   }
 
@@ -169,8 +192,11 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     active_card,
     cards,
     num_correct,
+    reviewed_count,
+    remaining_due_count,
     current_index,
     is_starting_side,
+    config,
     setCards,
     updateConfig,
     startSession,
