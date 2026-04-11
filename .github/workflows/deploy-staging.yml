@@ -4,6 +4,9 @@ on:
   pull_request:
     types: [labeled]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   deploy:
     if: github.event.label.name == 'deploy:staging'
@@ -24,11 +27,10 @@ jobs:
 
       - name: Run migrations
         run: |
-          supabase migration up \
-            --project-ref ${{ secrets.STAGING_PROJECT_REF }} \
-            --password ${{ secrets.SUPABASE_DB_PASSWORD }}
+          supabase link --project-ref ${{ secrets.STAGE_PROJECT_REF }} --password ${{ secrets.STAGE_DB_PASSWORD }}
+          supabase migration up --linked
         env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.STAGE_ACCESS_TOKEN }}
 
       - name: Remove label
         if: always()
