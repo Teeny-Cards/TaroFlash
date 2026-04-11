@@ -3,7 +3,7 @@ import StudyCard from './study-card.vue'
 import RatingButtons from './rating-buttons.vue'
 import FinishAnimation from './finish-animation.vue'
 import { useFlashcardSession } from '@/composables/study-session/flashcard-session'
-import { type Grade, type RecordLogItem } from 'ts-fsrs'
+import { type Grade } from 'ts-fsrs'
 import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 import Card from '@/components/card/index.vue'
 import { fetchAllCardsByDeckId } from '@/api/cards'
@@ -103,7 +103,7 @@ function onNextCardFlipped() {
   resolveFlip = null
 }
 
-async function onCardReviewed(item?: RecordLogItem) {
+async function onCardReviewed(grade?: Grade) {
   if (!active_card.value?.id || mode.value !== 'studying') return
 
   if (next_card.value) {
@@ -117,7 +117,7 @@ async function onCardReviewed(item?: RecordLogItem) {
     next_card_side.value = 'cover'
   }
 
-  reviewCard(item)
+  reviewCard(grade)
 }
 </script>
 

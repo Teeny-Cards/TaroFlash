@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue'
-import { type RecordLogItem } from 'ts-fsrs'
+import { type Grade } from 'ts-fsrs'
 import { useStudySessionCore } from './study-session-core'
 
 export type { StudyCard } from './study-session-core'
@@ -41,8 +41,8 @@ export function useFlashcardSession(_config?: Partial<DeckConfig>) {
     current_card_side.value = current_card_side.value === 'front' ? 'back' : 'front'
   }
 
-  function reviewCard(item?: RecordLogItem) {
-    const promise = core.reviewCard(item)
+  function reviewCard(grade?: Grade) {
+    const promise = core.reviewCard(grade)
     // Reset to the starting side for the incoming card.
     // core.reviewCard is synchronous up to the API call, so active_card
     // and mode are already updated by the time we read them here.
