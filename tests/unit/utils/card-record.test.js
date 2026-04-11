@@ -14,7 +14,7 @@ vi.mock('@/utils/debounce', () => ({
 import CardRecord from '@/utils/card-record'
 import { upsertCard, reserveCard } from '@/api/cards'
 import { debounce } from '@/utils/debounce'
-import { card } from '../fixtures/card'
+import { card } from '../../fixtures/card'
 
 describe('CardRecord', () => {
   beforeEach(() => {

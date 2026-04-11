@@ -1,6 +1,6 @@
 ---
 title: Configure Pinia Testing with createTestingPinia and setActivePinia
-scope:
+paths:
   - 'tests/**/*'
 ---
 

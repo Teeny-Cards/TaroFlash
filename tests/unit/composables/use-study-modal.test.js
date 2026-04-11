@@ -141,7 +141,7 @@ describe('useStudyModal', () => {
     expect(mockOpen).toHaveBeenNthCalledWith(2, SessionComplete, {
       backdrop: true,
       mode: 'mobile-sheet',
-      props: { score: 3, total: 5 }
+      props: { score: 3, total: 5, secondary_action: 'study-all' }
     })
 
     resolveComplete(undefined)

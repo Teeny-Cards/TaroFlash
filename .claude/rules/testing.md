@@ -51,3 +51,4 @@ vp test tests/unit/use-theme.test.js           # single file
 - Only leave comments for assertions that are not immediately obvious. Otherwise test names should be descriptive enough.
 - Don't find elements by class names, tag names, etc. always use a `data-testid` attribute. If one does not exist, add one.
 - Don't assert audio names, only that audio was played.
+- Tests should math the file structure of the source files. For example, if the source file is in `src/components/foo/bar.vue`, the test file should be in `tests/integration/components/foo/bar.test.js`.

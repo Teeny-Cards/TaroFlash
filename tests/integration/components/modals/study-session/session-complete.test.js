@@ -71,7 +71,7 @@ describe('SessionComplete', () => {
   test('calls close prop when Done button is clicked', async () => {
     const close = vi.fn()
     const wrapper = makeSessionComplete(3, 5, close)
-    await wrapper.find('[data-testid="session-complete__done"]').trigger('click')
+    await wrapper.find('[data-testid="session-complete__close"]').trigger('click')
     expect(close).toHaveBeenCalledOnce()
   })
 })

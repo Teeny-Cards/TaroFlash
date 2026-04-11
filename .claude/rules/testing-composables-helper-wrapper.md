@@ -1,6 +1,6 @@
 ---
 title: Test Complex Composables with Host Component Wrapper
-scope:
+paths:
   - 'tests/**/*'
 ---
 
