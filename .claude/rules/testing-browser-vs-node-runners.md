@@ -1,6 +1,6 @@
 ---
 title: Choose Browser-Based Runner for Style and DOM Event Testing
-scope:
+paths:
   - 'tests/**/*'
 ---
 
