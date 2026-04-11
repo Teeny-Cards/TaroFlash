@@ -1,6 +1,6 @@
 ---
 title: Test Components Using Blackbox Approach - Focus on Behavior Not Implementation
-scope:
+paths:
   - 'tests/**/*'
 ---
 

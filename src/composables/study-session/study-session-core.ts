@@ -1,30 +1,42 @@
-import { ref, computed, shallowRef } from 'vue'
+import { ref, computed, shallowRef, reactive } from 'vue'
 import {
   createEmptyCard,
   FSRS,
   generatorParameters,
   Rating,
-  type IPreview,
+  type RecordLog,
   type RecordLogItem
 } from 'ts-fsrs'
 import { DateTime } from 'luxon'
 import { updateReviewByCardId } from '@/api/reviews'
 
-export type StudyMode = 'studying' | 'completed'
-export type StudyCard = Card & { preview?: IPreview; state: ReviewState }
+export type StudyCard = Card & { preview?: RecordLog; state: ReviewState }
 
 type ReviewState = 'failed' | 'passed' | 'unreviewed'
 
-const defaultConfig: DeckConfig = {
-  study_all_cards: false,
-  retry_failed_cards: false
-}
+export type StudySessionCore = ReturnType<typeof useStudySessionCore>
 
-export function useStudySession(config: DeckConfig = defaultConfig) {
+/**
+ * Mode-agnostic study session core: queue management, FSRS scheduling,
+ * session lifecycle, and stats. Does not know about flashcard sides, flipping,
+ * or any other interaction model — those live in mode-specific composables.
+ *
+ * Future study modes (matching pairs, cloze, etc.) build on top of this core.
+ */
+export function useStudySessionCore(_config?: Partial<DeckConfig>) {
   const _PARAMS = generatorParameters({
     enable_fuzz: true,
     learning_steps: [],
     relearning_steps: []
+  })
+
+  const config = reactive<Required<DeckConfig>>({
+    study_mode: _config?.study_mode ?? 'flashcard',
+    study_all_cards: _config?.study_all_cards ?? false,
+    retry_failed_cards: _config?.retry_failed_cards ?? false,
+    shuffle: _config?.shuffle ?? false,
+    card_limit: _config?.card_limit ?? null,
+    flip_cards: _config?.flip_cards ?? false
   })
 
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
@@ -32,34 +44,41 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
   const _cards_in_deck = shallowRef<StudyCard[]>([])
   const _retry_cards = shallowRef<StudyCard[]>([])
 
-  const mode = ref<StudyMode>('studying')
-  const current_card_side = ref<'front' | 'back' | 'cover'>('cover')
+  const mode = ref<'studying' | 'completed'>('studying')
   const active_card = shallowRef<StudyCard | undefined>(undefined)
-
-  const starting_side = computed<'front' | 'back'>(() => (config.flip_cards ? 'back' : 'front'))
-
-  const is_starting_side = computed(() => current_card_side.value === starting_side.value)
 
   const cards = computed(() => {
     if (!config.retry_failed_cards) return _cards_in_deck.value
-
     return [..._cards_in_deck.value, ..._retry_cards.value]
   })
 
   const num_correct = computed(() => cards.value.filter((c) => c.state === 'passed').length)
+  const reviewed_count = computed(() => cards.value.filter((c) => c.state !== 'unreviewed').length)
+
+  const remaining_due_count = computed(() => {
+    if (config.study_all_cards) return 0
+    const total_due = _raw_cards.value.filter(_isCardDue).length
+    return Math.max(0, total_due - reviewed_count.value)
+  })
 
   const current_index = computed(() => {
     if (!active_card.value) return cards.value.length
     return cards.value.findIndex((c) => c.id === active_card.value!.id)
   })
 
-  function setCards(cards: Card[]) {
-    _raw_cards.value = cards
+  function setCards(raw: Card[]) {
+    _raw_cards.value = raw
     _processCards()
   }
 
   function updateConfig(updates: Partial<DeckConfig>) {
-    Object.assign(config, updates)
+    config.study_mode = updates.study_mode ?? config.study_mode
+    config.study_all_cards = updates.study_all_cards ?? config.study_all_cards
+    config.retry_failed_cards = updates.retry_failed_cards ?? config.retry_failed_cards
+    config.shuffle = updates.shuffle ?? config.shuffle
+    config.card_limit = updates.card_limit ?? config.card_limit
+    config.flip_cards = updates.flip_cards ?? config.flip_cards
+
     if (_raw_cards.value.length) _processCards()
   }
 
@@ -79,19 +98,8 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     }
 
     _cards_in_deck.value = filtered.map(_setupCard)
-    _pickNextCard({ first: true })
-  }
-
-  function startSession() {
-    current_card_side.value = starting_side.value
-  }
-
-  function flipCurrentCard() {
-    current_card_side.value = current_card_side.value === 'front' ? 'back' : 'front'
-  }
-
-  function _pickNextCard({ first }: { first?: boolean } = {}) {
-    current_card_side.value = first ? 'cover' : starting_side.value
+    _retry_cards.value = []
+    mode.value = 'studying'
     active_card.value = cards.value.find((c) => c.state === 'unreviewed')
 
     if (!active_card.value) {
@@ -105,9 +113,9 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
     const card = active_card.value
 
     if (item) {
-      // Capture whether the card was due today before overwriting the review —
-      // _retryCard needs this to decide whether to re-queue the card today.
-      // review.due may be a Date object (from createEmptyCard) or an ISO string (from Supabase).
+      // Capture whether the card was due today *before* overwriting the review —
+      // _retryCard needs this to decide whether to re-queue the card.
+      // review.due may be a Date (from createEmptyCard) or an ISO string (from Supabase).
       const was_due_today = _isDueToday(card.review?.due)
       card.review = item.card
       _markCurrentCardStudied(item.log.rating, was_due_today)
@@ -115,7 +123,11 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
       card.state = 'passed'
     }
 
-    _pickNextCard()
+    active_card.value = cards.value.find((c) => c.state === 'unreviewed')
+
+    if (!active_card.value) {
+      mode.value = 'completed'
+    }
 
     if (card.id && item) {
       return updateReviewByCardId(card.id, item.card)
@@ -125,7 +137,6 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
   function _setupCard(card: Card): StudyCard {
     const review = card.review ?? (createEmptyCard(new Date()) as Review)
     const preview = _FSRS_INSTANCE.repeat(review, new Date())
-
     return { state: 'unreviewed', ...card, review, preview }
   }
 
@@ -143,7 +154,6 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
 
   function _retryCard(card: StudyCard) {
     if (!config.retry_failed_cards) return
-
     const retry_card = _setupCard(card)
     _retry_cards.value = [..._retry_cards.value, retry_card]
   }
@@ -156,25 +166,22 @@ export function useStudySession(config: DeckConfig = defaultConfig) {
 
   function _isCardDue(card: Card) {
     if (!card.review?.due) return true
-
     const due = DateTime.fromISO(card.review?.due as string)
     const now = DateTime.now()
-
     return due <= now
   }
 
   return {
     mode,
-    current_card_side,
     active_card,
     cards,
     num_correct,
+    reviewed_count,
+    remaining_due_count,
     current_index,
-    is_starting_side,
+    config,
     setCards,
     updateConfig,
-    startSession,
-    flipCurrentCard,
     reviewCard
   }
 }

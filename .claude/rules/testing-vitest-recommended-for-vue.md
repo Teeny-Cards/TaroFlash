@@ -1,6 +1,6 @@
 ---
 title: Use Vitest for Vue 3 Testing - Recommended by Vue Team
-scope:
+paths:
   - 'tests/**/*'
 ---
 

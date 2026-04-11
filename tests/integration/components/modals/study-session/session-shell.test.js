@@ -1,9 +1,9 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 import { mount, flushPromises } from '@vue/test-utils'
 import { defineComponent, watch } from 'vue'
-import Session from '@/components/modals/study-session/session.vue'
-import { card } from '../fixtures/card'
-import { deck } from '../fixtures/deck'
+import Session from '@/components/modals/study-session/session-shell.vue'
+import { card } from '../../../../fixtures/card'
+import { deck } from '../../../../fixtures/deck'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
 
@@ -380,7 +380,8 @@ describe('Session', () => {
       await flushPromises()
 
       expect(wrapper.emitted('finished')).toHaveLength(1)
-      expect(wrapper.emitted('finished')[0]).toEqual([1, 1])
+      // [score, total, remaining_due, study_all_used]
+      expect(wrapper.emitted('finished')[0]).toEqual([1, 1, 0, true])
     })
 
     test('Again rating counts as score 0 in finished event', async () => {
@@ -442,5 +443,57 @@ describe('Session', () => {
     await flushPromises()
 
     expect(wrapper.emitted('closed')).toHaveLength(1)
+  })
+
+  // ── Close button behavior ──────────────────────────────────────────────────
+
+  describe('close button behavior', () => {
+    test('clicking close from cover state emits "closed"', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+
+      // Session loaded but not started — still on cover
+      await wrapper
+        .find('[data-testid="study-session__actions"] [data-testid="ui-kit-button"]')
+        .trigger('click')
+
+      expect(wrapper.emitted('closed')).toHaveLength(1)
+      expect(wrapper.emitted('finished')).toBeFalsy()
+    })
+
+    test('clicking close after starting (but before any review) emits "closed"', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+
+      await startSession(wrapper)
+
+      // No cards reviewed yet — reviewed_count is 0
+      await wrapper
+        .find('[data-testid="study-session__actions"] [data-testid="ui-kit-button"]')
+        .trigger('click')
+
+      expect(wrapper.emitted('closed')).toHaveLength(1)
+      expect(wrapper.emitted('finished')).toBeFalsy()
+    })
+
+    test('clicking close after reviewing a card emits "finished" with stats', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+
+      // Complete one review
+      await startSession(wrapper)
+      await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
+      await wrapper.find('[data-testid="rating-buttons__good"]').trigger('click')
+      await flushPromises()
+      fireTransitionEnd(wrapper)
+      await flushPromises()
+
+      await wrapper
+        .find('[data-testid="study-session__actions"] [data-testid="ui-kit-button"]')
+        .trigger('click')
+
+      expect(wrapper.emitted('finished')).toHaveLength(1)
+      expect(wrapper.emitted('closed')).toBeFalsy()
+    })
   })
 })
