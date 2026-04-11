@@ -2,9 +2,7 @@
 import Deck from '@/components/deck.vue'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useModal } from '@/composables/modal'
-import { emitSfx } from '@/sfx/bus'
-import deckSettings from '@/components/modals/deck-settings/index.vue'
+import { useDeckSettingsModal } from '@/composables/modals/use-deck-settings-modal'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import { useStudyModal } from '@/composables/modals/use-study-modal'
@@ -13,7 +11,7 @@ const { deck } = defineProps<{ deck: Deck; imageUrl?: string }>()
 const emit = defineEmits<{ (e: 'updated'): void }>()
 
 const { t } = useI18n()
-const modal = useModal()
+const deck_settings_modal = useDeckSettingsModal()
 const study_session = useStudyModal()
 
 const study_disabled = computed(() => {
@@ -21,9 +19,7 @@ const study_disabled = computed(() => {
 })
 
 async function onSettingsClicked() {
-  emitSfx('ui.etc_camera_reel')
-  const { response } = modal.open(deckSettings, { props: { deck }, backdrop: true })
-  response.then(() => emitSfx('ui.card_drop'))
+  const { response } = deck_settings_modal.open(deck)
 
   if (await response) {
     emit('updated')

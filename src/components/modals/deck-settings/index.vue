@@ -6,6 +6,7 @@ import HeaderConfig from './header-config.vue'
 import { useAlert } from '@/composables/alert'
 import { useDeckEditor } from '@/composables/deck-editor'
 import UiButton from '@/components/ui-kit/button.vue'
+import UiInput from '@/components/ui-kit/input.vue'
 
 export type DeckSettingsResponse = boolean
 
@@ -40,52 +41,53 @@ async function onDeleted() {
 </script>
 
 <template>
-  <div data-testid="deck-settings-container" class="relative">
+  <div data-testid="deck-settings-container" class="relative w-full sm:w-auto">
     <div
       data-testid="deck-settings"
-      class="rounded-10 bg-brown-300 shadow-lg flex flex-col overflow-hidden"
+      class="rounded-t-8 sm:rounded-10 bg-brown-300 shadow-lg flex flex-col overflow-hidden"
     >
       <header-config />
 
-      <section data-testid="deck-settings__body" class="flex gap-9 p-12 pt-8">
+      <section
+        data-testid="deck-settings__body"
+        class="flex flex-col sm:flex-row gap-6 sm:gap-9 p-6 sm:p-12 sm:pt-8"
+      >
         <name-image-config
           v-model:title="settings.title"
           @image-uploaded="uploadImage"
           @image-removed="removeImage"
         />
-        <additional-settings
-          v-model:description="settings.description"
-          v-model:is-public="settings.is_public"
+
+        <ui-input
+          :placeholder="t('deck.description-placeholder')"
+          v-model:value="settings.description"
         />
       </section>
-    </div>
 
-    <div
-      data-testid="deck-settings__actions"
-      class="absolute -bottom-2 flex w-full justify-end gap-3 px-10.5"
-    >
-      <ui-button
-        theme="grey-400"
-        icon-left="close"
-        @click="close(false)"
-        class="ring-brown-300 ring-7"
-      >
-        {{ t('common.cancel') }}
-      </ui-button>
+      <div data-testid="deck-settings__actions" class="flex w-full justify-end gap-3 px-6 pb-6">
+        <ui-button
+          theme="grey-400"
+          icon-left="close"
+          @click="close(false)"
+          class="sm:ring-brown-300 sm:ring-7"
+        >
+          {{ t('common.cancel') }}
+        </ui-button>
 
-      <ui-button
-        v-if="deck"
-        icon-left="check"
-        @click="onDeleted"
-        theme="red-500"
-        class="ring-brown-300 ring-7"
-      >
-        {{ t('common.delete') }}
-      </ui-button>
+        <ui-button
+          v-if="deck"
+          icon-left="check"
+          @click="onDeleted"
+          theme="red-500"
+          class="sm:ring-brown-300 sm:ring-7"
+        >
+          {{ t('common.delete') }}
+        </ui-button>
 
-      <ui-button icon-left="check" @click="onSave" class="ring-brown-300 ring-7">
-        {{ deck ? t('common.save') : t('common.create') }}
-      </ui-button>
+        <ui-button icon-left="check" @click="onSave" class="sm:ring-brown-300 sm:ring-7">
+          {{ deck ? t('common.save') : t('common.create') }}
+        </ui-button>
+      </div>
     </div>
   </div>
 </template>
