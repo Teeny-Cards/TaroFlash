@@ -1,7 +1,7 @@
 ---
 title: Study Session Architecture
 paths:
-  - 'src/composables/study-session.ts'
+  - 'src/composables/study-session/**'
   - 'src/composables/modals/use-study-modal.ts'
   - 'src/components/modals/study-session/**'
 ---
@@ -24,59 +24,76 @@ paths:
 
 ## Modal components
 
-`src/components/modals/study-session/index.vue` — thin wrapper. Accepts `deck`, `config_override?`, and `close`. Exports `StudySessionResponse { score, total, remaining_due, study_all_used }`. Passes `config_override` to `session.vue`.
+`src/components/modals/study-session/index.vue` — thin wrapper. Accepts `deck`, `config_override?`, and `close`. Exports `StudySessionResponse { score, total, remaining_due, study_all_used }`. Passes props to `session-shell.vue`.
 
-`src/components/modals/study-session/session.vue` — the active study UI. Fetches cards via `fetchAllCardsByDeckId`, calls `setCards`, then applies `config_override` via `updateConfig`. Emits:
+`src/components/modals/study-session/session-shell.vue` — layout shell. Renders the header (deck title, close button). The close button calls `requestClose()` on the active mode component via template ref. Renders the mode component (`<session-flashcard>` for now; swap to `<component :is>` when additional modes are added). Re-emits:
+
+- `'closed'` — no cards studied (decision made by the mode component)
+- `'finished'(score, total, remaining_due, study_all_used)` — session ended
+
+`src/components/modals/study-session/session-flashcard.vue` — flashcard mode body. Fetches cards via `fetchAllCardsByDeckId`, merges `deck.config + config_override` at construction (single `_processCards` pass). Exposes `requestClose()` — decides whether to emit `'closed'` or `'finished'` based on session state. Emits:
 
 - `'closed'` — user closed before studying any card (cover not dismissed, or 0 reviewed)
-- `'finished'(score, total, remaining_due, study_all_used)` — session completed naturally (via `finish-animation` `@done`) OR user closed early after ≥1 reviewed card. Early-close passes `reviewed_count` as `total` and `remaining_due_count` as `remaining_due`.
+- `'finished'(score, total, remaining_due, study_all_used)` — session completed naturally (via `finish-animation @done`) OR user closed early after ≥1 reviewed card. Early-close passes `reviewed_count` as `total`.
 
-`src/components/modals/study-session/session-complete.vue` — score summary. Accepts `score`, `total`, `secondary_action: SecondaryAction`, and `close(action?: SecondaryAction)`. Always shows two buttons: outline Close (calls `close()`) and solid secondary (calls `close(secondary_action)`).
+`src/components/modals/study-session/session-complete.vue` — score summary. Accepts `score`, `total`, `secondary_action: SecondaryAction`, and `close(action?: SecondaryAction)`. Shows two buttons: Close (`close()`) and secondary (`close(secondary_action)`).
 
-## Core composable
+## Composable layer
 
-`src/composables/study-session.ts` — `useStudySession(config?)`. Config is internalized as a `reactive<Required<DeckConfig>>`.
+The study-session composables live in `src/composables/study-session/` and are split into two layers:
 
-Key state:
+### Core (`study-session-core.ts`) — mode-agnostic
 
-- `_raw_cards` — all cards as fetched (never mutated after `setCards`)
-- `_cards_in_deck` — filtered/shuffled/limited slice used in this session
-- `_retry_cards` — cards re-queued after `Rating.Again` (only when `retry_failed_cards`)
-- `cards` — computed union of `_cards_in_deck + _retry_cards`
-- `mode: 'studying' | 'completed'`
-- `active_card` — current unreviewed card; set to `undefined` → triggers `mode = 'completed'`
+`useStudySessionCore(config?)` owns everything that is the same regardless of how the user interacts with cards:
 
-Key computed:
+- Queue management: `_raw_cards`, `_cards_in_deck`, `_retry_cards`
+- Session lifecycle: `mode: 'studying' | 'completed'`, `active_card`
+- FSRS scheduling: `_FSRS_INSTANCE`, `_setupCard`, per-card `preview` (all four rating outcomes)
+- Stats: `num_correct`, `reviewed_count`, `remaining_due_count`, `current_index`
+- Persistence: `reviewCard` → `updateReviewByCardId` API
+- Config: `setCards`, `updateConfig`
 
-- `num_correct` — cards with `state === 'passed'`
-- `reviewed_cards` / `reviewed_count` — cards with `state !== 'unreviewed'`
-- `remaining_due_count` — `max(0, total_due_in_raw - reviewed_count)`, always 0 when `study_all_cards`. Uses `_isCardDue` against `_raw_cards`. Recalculates as cards are reviewed.
-- `current_index` — index of `active_card` in `cards`, or `cards.length` when done
+`_processCards()` — called by `setCards` and `updateConfig`. Applies due filter → shuffle → `card_limit`, maps to `StudyCard` (adds FSRS `preview`), resets retry queue, resets `mode` to `'studying'`, picks first card.
 
-`_processCards()` — called by `setCards` and `updateConfig`. Applies due filter → shuffle → card_limit, then maps to `StudyCard` (adds FSRS `preview`). Resets deck and picks first card.
+`reviewCard(item?)` — updates card state (passed/failed), optionally retries, advances `active_card`, sets `mode = 'completed'` when none remain, fires `updateReviewByCardId`.
 
-`startSession()` — if `_cards_in_deck` is empty, force-sets `study_all_cards: true` and reprocesses. Sets `current_card_side` to `starting_side` (cover → front/back).
+### Flashcard mode (`flashcard-session.ts`)
 
-`reviewCard(item?)` — updates card state (passed/failed), optionally retries, picks next card, calls `updateReviewByCardId` API.
+`useFlashcardSession(config?)` builds on top of the core by adding the concept of card sides:
+
+- `current_card_side: 'front' | 'back' | 'cover'` — drives what face the active card shows
+- `is_starting_side` — true when on the configured starting face
+- `next_card` — the next unreviewed card (used by the preview animation)
+- `is_cover` — true when still on the cover screen
+- `startSession()` — sets `current_card_side` to `starting_side` (cover → front/back)
+- `flipCurrentCard()` — toggles front ↔ back
+- `reviewCard(item?)` — wraps core's `reviewCard`, then resets `current_card_side` to `starting_side` for the incoming card
+
+**Adding a new mode:** create `<mode>-session.ts` that calls `useStudySessionCore` and adds its own interaction state (e.g. `matched_ids` for matching-pairs). Create `session-<mode>.vue` as the body component with `defineExpose({ requestClose })`. Register it in `session-shell.vue`.
 
 ## DeckConfig
 
 ```ts
+type DeckStudyMode = 'flashcard' // extend as new modes are added
+
 type DeckConfig = {
-  study_all_cards?: boolean // bypass due filter
-  retry_failed_cards?: boolean // re-queue Again-rated due cards
+  study_mode?: DeckStudyMode    // which interaction model to use
+  study_all_cards: boolean      // bypass due filter
+  retry_failed_cards: boolean   // re-queue Again-rated due cards
   shuffle?: boolean
-  card_limit?: number | null // slice after filter; null = no limit; default hardcoded to 1 in session.vue
-  flip_cards?: boolean // swap front/back starting side
+  card_limit?: number | null    // slice after filter; null = no limit
+  flip_cards?: boolean          // swap front/back starting side (flashcard mode)
 }
 ```
 
-`config_override` passed from `use-study-modal` is merged at `session.vue` init time via `updateConfig`, overriding `deck.config` values.
+`config_override` is merged into the initial config object passed to `useFlashcardSession` at construction — no second `_processCards` pass.
 
-## Card flow in session.vue
+## Card flow in session-flashcard.vue
 
-Cover card shown on mount → user clicks Start → `startSession()` → `current_card_side` flips to `starting_side` → user reveals back → `onRated(grade)` triggers card flip animation on `study-card` ref → `onCardReviewed(item)` waits for next-card pre-flip animation, then calls `reviewCard(item)` → composable picks next card or sets `mode = 'completed'` → `finish-animation` plays → `@done` fires `emit('finished', ...)`.
+Cover card shown on mount → user clicks Start → `startSession()` → `current_card_side` flips to `starting_side` → user reveals back → `onRated(grade)` triggers the fling animation on the `study-card` ref → `onCardReviewed(item)` pre-flips the preview card (awaits `flip-complete`), then calls `reviewCard(item)` → composable advances `active_card` or sets `mode = 'completed'` → `finish-animation` plays → `@done` fires `emit('finished', ...)`.
+
+The preview-card animation uses a `resolveFlip` one-shot promise resolver. `onUnmounted` resolves it as a safety fallback so the promise never leaks if the component tears down mid-animation.
 
 ## FSRS
 
-`ts-fsrs` used for scheduling. Parameters: `enable_fuzz: true`, no learning/relearning steps. Each card gets a `preview` (all four rating outcomes pre-computed via `FSRS.repeat`). `reviewCard` writes the chosen `RecordLogItem` back to the card and persists via `updateReviewByCardId`. Due date check: `review.due <= now` (ISO string from Supabase or `Date` from `createEmptyCard`).
+`ts-fsrs` used for scheduling. Parameters: `enable_fuzz: true`, no learning/relearning steps. Each card gets a `preview: RecordLog` (all four rating outcomes pre-computed via `FSRS.repeat`). `reviewCard` writes the chosen `RecordLogItem` back to the card and persists via `updateReviewByCardId`. Due date check: `review.due <= now` (ISO string from Supabase or `Date` from `createEmptyCard`).
