@@ -43,7 +43,13 @@ const heading = computed(() => {
     </div>
 
     <div class="w-full p-4 flex justify-center">
-      <ui-button data-testid="session-complete__done" class="max-sm:w-full!" size="xl" @click="close">{{ t('common.done') }}</ui-button>
+      <ui-button
+        data-testid="session-complete__done"
+        class="max-sm:w-full!"
+        size="xl"
+        @click="close"
+        >{{ t('common.done') }}</ui-button
+      >
     </div>
   </div>
 </template>

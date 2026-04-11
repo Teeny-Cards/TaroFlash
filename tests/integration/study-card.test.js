@@ -82,7 +82,7 @@ describe('StudyCard', () => {
     const wrapper = mountStudyCard({ options })
     await flushPromises()
 
-const { el, callbacks } = getCallbacks()
+    const { el, callbacks } = getCallbacks()
     callbacks.onMove({ dx: -60, dy: 0 })
     await flushPromises()
 
@@ -106,7 +106,7 @@ const { el, callbacks } = getCallbacks()
     const wrapper = mountStudyCard({ options })
     await flushPromises()
 
-const { el, callbacks } = getCallbacks()
+    const { el, callbacks } = getCallbacks()
     callbacks.onMove({ dx: -30, dy: 0 })
     await flushPromises()
 
@@ -255,7 +255,7 @@ const { el, callbacks } = getCallbacks()
     mountStudyCard({ options })
     await flushPromises()
 
-const { el, callbacks } = getCallbacks()
+    const { el, callbacks } = getCallbacks()
 
     callbacks.onMove({ dx: -60, dy: 0 })
     await flushPromises()
