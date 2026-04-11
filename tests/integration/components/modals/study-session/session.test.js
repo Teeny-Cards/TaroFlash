@@ -2,8 +2,8 @@ import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 import { mount, flushPromises } from '@vue/test-utils'
 import { defineComponent, watch } from 'vue'
 import Session from '@/components/modals/study-session/session.vue'
-import { card } from '../fixtures/card'
-import { deck } from '../fixtures/deck'
+import { card } from '../../../../fixtures/card'
+import { deck } from '../../../../fixtures/deck'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
 
