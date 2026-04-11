@@ -1,6 +1,6 @@
 ---
 title: Properly Handle Async Updates with nextTick and flushPromises
-scope:
+paths:
   - 'tests/**/*'
 ---
 

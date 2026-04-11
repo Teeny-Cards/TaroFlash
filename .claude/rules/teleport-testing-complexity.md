@@ -1,6 +1,6 @@
 ---
 title: Teleported Content Requires Special Testing Approach
-scope:
+paths:
   - 'tests/**/*'
 ---
 
