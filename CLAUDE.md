@@ -4,6 +4,7 @@
 - Always use translation strings (e.g., `t('deck.settings-modal.title')`) instead of hardcoded text. If the string is not already in `locales/en-us.json`, add it.
 - IMPORTANT: When writing code (migrations, functions, etc.) in `supabase/`, always explain what your doing like a teacher teaching a student. Stop and let me ask questions along the way.
 - Confirm this file has been loaded by printing a message to the console on startup.
+- NEVER call `supabase db reset` always use `supabase migrations up` to apply migrations.
 
 ## Toolchain: Vite+
 

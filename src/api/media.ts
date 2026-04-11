@@ -70,3 +70,40 @@ export async function deleteMedia(id: string): Promise<void> {
     throw error
   }
 }
+
+// Hard-deletes a specific media record by card + storage path.
+// Used to roll back an insertMedia when a subsequent upload fails.
+export async function deleteMediaByPath(card_id: number, path: string): Promise<void> {
+  const { error } = await supabase
+    .from('media')
+    .delete()
+    .eq('card_id', card_id)
+    .eq('path', path)
+
+  if (error) {
+    console.error('Failed to delete media by path:', error)
+    throw error
+  }
+}
+
+// Soft-deletes all active media records for a given card slot except the one
+// at keep_path. Prevents the card_with_images view from joining multiple active
+// rows for the same slot and returning duplicate cards.
+export async function deduplicateSlotMedia(
+  card_id: number,
+  slot: string,
+  keep_path: string
+): Promise<void> {
+  const { error } = await supabase
+    .from('media')
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('card_id', card_id)
+    .eq('slot', slot)
+    .neq('path', keep_path)
+    .is('deleted_at', null)
+
+  if (error) {
+    console.error('Failed to dedup slot media:', error)
+    throw error
+  }
+}
