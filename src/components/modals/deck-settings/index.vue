@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import NameImageConfig from './name-image-config.vue'
-import AdditionalSettings from './additional-settings.vue'
-import HeaderConfig from './header-config.vue'
+import HeaderConfig, { type DeckSettingsTab } from './header-config.vue'
+import TabGeneral from './tab-general.vue'
+import TabCover from './tab-cover.vue'
+import TabStudy from './tab-study.vue'
 import { useAlert } from '@/composables/alert'
 import { useDeckEditor } from '@/composables/deck-editor'
 import UiButton from '@/components/ui-kit/button.vue'
-import UiInput from '@/components/ui-kit/input.vue'
 
 export type DeckSettingsResponse = boolean
 
@@ -17,7 +18,10 @@ const { deck, close } = defineProps<{
 
 const { t } = useI18n()
 const alert = useAlert()
-const { settings, saveDeck, deleteDeck, uploadImage, removeImage } = useDeckEditor(deck)
+const { settings, config, cover, saveDeck, deleteDeck, uploadImage, removeImage } =
+  useDeckEditor(deck)
+
+const tab = ref<DeckSettingsTab>('general')
 
 async function onSave() {
   await saveDeck()
@@ -44,23 +48,37 @@ async function onDeleted() {
   <div data-testid="deck-settings-container" class="relative w-full sm:w-auto">
     <div
       data-testid="deck-settings"
-      class="rounded-t-8 sm:rounded-10 bg-brown-300 shadow-lg flex flex-col overflow-hidden"
+      class="bg-brown-300 shadow-lg flex flex-col overflow-hidden rounded-t-8 sm:rounded-10"
     >
-      <header-config />
+      <header-config :selected-tab="tab" @change-tab="tab = $event" />
 
-      <section
-        data-testid="deck-settings__body"
-        class="flex flex-col sm:flex-row gap-6 sm:gap-9 p-6 sm:p-12 sm:pt-8"
-      >
-        <name-image-config
+      <section data-testid="deck-settings__body" class="p-6 sm:p-12 sm:pt-8">
+        <tab-general
+          v-if="tab === 'general'"
+          :image-url="undefined"
           v-model:title="settings.title"
+          v-model:description="settings.description"
+          v-model:is-public="settings.is_public"
           @image-uploaded="uploadImage"
           @image-removed="removeImage"
         />
 
-        <ui-input
-          :placeholder="t('deck.description-placeholder')"
-          v-model:value="settings.description"
+        <tab-cover
+          v-else-if="tab === 'cover'"
+          v-model:bg_color="cover.bg_color"
+          v-model:border_color="cover.border_color"
+          v-model:pattern="cover.pattern"
+          v-model:pattern_color="cover.pattern_color"
+        />
+
+        <tab-study
+          v-else-if="tab === 'study'"
+          v-model:shuffle="config.shuffle"
+          v-model:flip_cards="config.flip_cards"
+          v-model:retry_failed_cards="config.retry_failed_cards"
+          v-model:is_spaced="config.is_spaced"
+          v-model:auto_play="config.auto_play"
+          v-model:card_limit="config.card_limit"
         />
       </section>
 
@@ -68,23 +86,23 @@ async function onDeleted() {
         <ui-button
           theme="grey-400"
           icon-left="close"
-          @click="close(false)"
           class="sm:ring-brown-300 sm:ring-7"
+          @click="close(false)"
         >
           {{ t('common.cancel') }}
         </ui-button>
 
         <ui-button
           v-if="deck"
-          icon-left="check"
-          @click="onDeleted"
+          icon-left="delete"
           theme="red-500"
           class="sm:ring-brown-300 sm:ring-7"
+          @click="onDeleted"
         >
           {{ t('common.delete') }}
         </ui-button>
 
-        <ui-button icon-left="check" @click="onSave" class="sm:ring-brown-300 sm:ring-7">
+        <ui-button icon-left="check" class="sm:ring-brown-300 sm:ring-7" @click="onSave">
           {{ deck ? t('common.save') : t('common.create') }}
         </ui-button>
       </div>

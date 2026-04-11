@@ -1,30 +1,29 @@
-import { reactive, ref, computed } from 'vue'
+import { reactive, ref } from 'vue'
 import { deleteDeck as upstreamDeleteDeck, upsertDeck } from '@/api/decks'
-import { uploadImage, deleteImage, getImageUrl } from '@/api/media'
 
 export function useDeckEditor(deck?: Deck) {
-  const settings = reactive<Deck>({
-    id: deck?.id,
+  const settings = reactive<Omit<Deck, 'config' | 'cover'>>({
+    id: deck?.id as number,
     title: deck?.title,
     description: deck?.description,
     is_public: deck?.is_public ?? true,
     updated_at: deck?.updated_at
   })
 
+  const config = reactive<DeckConfig>(
+    deck?.config ?? {
+      study_all_cards: false,
+      retry_failed_cards: true
+    }
+  )
+
+  const cover = reactive<DeckCover>(deck?.cover ?? {})
+
   const uploaded_image = ref<File | undefined>()
   const image_removed = ref<boolean>(false)
 
-  // const image_url = computed(() => {
-  //   if (!deck?.has_image) return undefined
-
-  //   const url = deck?.id ? getDeckImageUrl(deck.id) : undefined
-  //   return url ? `${url}?t=${settings?.updated_at}` : undefined
-  // })
-
   async function saveDeck() {
-    // await _maybeDeleteOldImage()
-    // await _maybeUploadImage()
-    await upsertDeck(settings)
+    await upsertDeck({ ...settings, config: { ...config }, cover: { ...cover } })
   }
 
   async function deleteDeck() {
@@ -45,28 +44,10 @@ export function useDeckEditor(deck?: Deck) {
     image_removed.value = true
   }
 
-  // async function _maybeDeleteOldImage() {
-  //   if (image_removed.value && !uploaded_image.value && deck?.id) {
-  //     try {
-  //       await deleteImage(deck.id)
-  //     } catch (e: any) {
-  //       console.error(e)
-  //     }
-  //   }
-  // }
-
-  // async function _maybeUploadImage() {
-  //   if (uploaded_image.value && deck?.id) {
-  //     try {
-  //       await uploadImage(uploaded_image.value)
-  //     } catch (e: any) {
-  //       console.error(e)
-  //     }
-  //   }
-  // }
-
   return {
     settings,
+    config,
+    cover,
     saveDeck,
     deleteDeck,
     uploadImage,

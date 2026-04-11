@@ -36,7 +36,9 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
     retry_failed_cards: _config?.retry_failed_cards ?? false,
     shuffle: _config?.shuffle ?? false,
     card_limit: _config?.card_limit ?? null,
-    flip_cards: _config?.flip_cards ?? false
+    flip_cards: _config?.flip_cards ?? false,
+    is_spaced: _config?.is_spaced ?? true,
+    auto_play: _config?.auto_play ?? false
   })
 
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
