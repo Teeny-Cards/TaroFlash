@@ -32,7 +32,7 @@ function onImageRemoved() {
 </script>
 
 <template>
-  <div class="relative flex flex-col items-center pb-6">
+  <div class="w-min relative flex flex-col items-center pb-6">
     <card face_classes="border-brown-100!" :front_image_url="preview_image">
       <image-uploader v-slot="{ trigger, loading, dragging }" @image-uploaded="onImageUploaded">
         <div
@@ -63,7 +63,7 @@ function onImageRemoved() {
       :placeholder="t('deck.title-placeholder')"
       text-align="center"
       size="lg"
-      class="absolute bottom-0"
+      class="absolute bottom-0 left-0 right-0"
       v-model:value="title"
     />
   </div>

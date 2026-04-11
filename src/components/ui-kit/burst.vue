@@ -1,7 +1,11 @@
 <script setup lang="ts">
 export type BurstSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl'
 
-const { size = 'base', duration = 500, color = 'white' } = defineProps<{
+const {
+  size = 'base',
+  duration = 500,
+  color = 'white'
+} = defineProps<{
   size?: BurstSize
   duration?: number
   color?: string
@@ -62,11 +66,26 @@ const emit = defineEmits<{ done: [] }>()
   height: calc(var(--radius) * 2);
 }
 
-.burst--xs  { --radius-start: 10px; --radius-end:  20px; }
-.burst--sm  { --radius-start: 20px; --radius-end:  40px; }
-.burst--base{ --radius-start: 30px; --radius-end:  50px; }
-.burst--lg  { --radius-start: 40px; --radius-end:  80px; }
-.burst--xl  { --radius-start: 80px; --radius-end: 160px; }
+.burst--xs {
+  --radius-start: 10px;
+  --radius-end: 20px;
+}
+.burst--sm {
+  --radius-start: 20px;
+  --radius-end: 40px;
+}
+.burst--base {
+  --radius-start: 30px;
+  --radius-end: 50px;
+}
+.burst--lg {
+  --radius-start: 40px;
+  --radius-end: 80px;
+}
+.burst--xl {
+  --radius-start: 80px;
+  --radius-end: 160px;
+}
 
 .burst .spoke {
   position: absolute;
@@ -92,8 +111,14 @@ const emit = defineEmits<{ done: [] }>()
 }
 
 @keyframes burstProgress {
-  0%  { --p: 0; }
-  50% { --p: 1; }
-  100%{ --p: 1; }
+  0% {
+    --p: 0;
+  }
+  50% {
+    --p: 1;
+  }
+  100% {
+    --p: 1;
+  }
 }
 </style>

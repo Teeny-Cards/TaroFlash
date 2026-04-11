@@ -131,10 +131,7 @@ describe('modal animations', () => {
     test('scales out to 0.8 with fade', () => {
       scaleFadeOut(el, done)
 
-      expect(mockTo).toHaveBeenCalledWith(
-        el,
-        expect.objectContaining({ scale: 0.8, opacity: 0 })
-      )
+      expect(mockTo).toHaveBeenCalledWith(el, expect.objectContaining({ scale: 0.8, opacity: 0 }))
     })
 
     test('calls done via onComplete', () => {

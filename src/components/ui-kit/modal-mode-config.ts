@@ -5,7 +5,7 @@ import {
   slideUpFromEdge,
   slideDownToEdge,
   springScaleIn,
-  scaleFadeOut,
+  scaleFadeOut
 } from '@/utils/animations/modal'
 
 type ModeConfig = {
@@ -18,7 +18,7 @@ export const MODAL_MODE_CONFIG: Record<ModalMode, ModeConfig> = {
   dialog: {
     containerClass: 'items-center',
     enter: (el, _, done) => slideUpFadeIn(el, done),
-    leave: (el, _, done) => slideDownFadeOut(el, done),
+    leave: (el, _, done) => slideDownFadeOut(el, done)
   },
 
   'mobile-sheet': {
@@ -26,12 +26,12 @@ export const MODAL_MODE_CONFIG: Record<ModalMode, ModeConfig> = {
     enter: (el, isDesktop, done) =>
       isDesktop ? slideUpFadeIn(el, done) : slideUpFromEdge(el, done),
     leave: (el, isDesktop, done) =>
-      isDesktop ? slideDownFadeOut(el, done) : slideDownToEdge(el, done),
+      isDesktop ? slideDownFadeOut(el, done) : slideDownToEdge(el, done)
   },
 
   popup: {
     containerClass: 'items-center',
     enter: (el, _, done) => springScaleIn(el, done),
-    leave: (el, _, done) => scaleFadeOut(el, done),
-  },
+    leave: (el, _, done) => scaleFadeOut(el, done)
+  }
 }
