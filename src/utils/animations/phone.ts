@@ -7,7 +7,14 @@ export function slideDownBlurIn(el: Element, done: () => void) {
   gsap.fromTo(
     el,
     { translateY: `-${TRANSLATE_AMOUNT}px`, opacity: 0, filter: `blur(${BLUR_AMOUNT}px)` },
-    { translateY: 0, opacity: 1, filter: 'blur(0)', duration: 0.1, ease: 'expo.out', onComplete: done }
+    {
+      translateY: 0,
+      opacity: 1,
+      filter: 'blur(0)',
+      duration: 0.1,
+      ease: 'expo.out',
+      onComplete: done
+    }
   )
 }
 
@@ -26,7 +33,14 @@ export function slideUpBlurIn(el: Element, done: () => void) {
   gsap.fromTo(
     el,
     { translateY: `${TRANSLATE_AMOUNT}px`, opacity: 0, filter: `blur(${BLUR_AMOUNT}px)` },
-    { translateY: 0, opacity: 1, filter: 'blur(0)', duration: 0.1, ease: 'expo.out', onComplete: done }
+    {
+      translateY: 0,
+      opacity: 1,
+      filter: 'blur(0)',
+      duration: 0.1,
+      ease: 'expo.out',
+      onComplete: done
+    }
   )
 }
 

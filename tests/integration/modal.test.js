@@ -155,9 +155,7 @@ describe('modal.vue', () => {
       const wrapper = mountModal()
       await nextTick()
 
-      expect(wrapper.find('[data-testid="modal-stub"]').attributes('data-modal-mode')).toBe(
-        'popup'
-      )
+      expect(wrapper.find('[data-testid="modal-stub"]').attributes('data-modal-mode')).toBe('popup')
     })
   })
 
