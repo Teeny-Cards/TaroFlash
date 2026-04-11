@@ -107,11 +107,16 @@ you add a `deploy:staging` label to a PR. It needs three secrets in the GitHub r
 
 **Settings → Secrets and variables → Actions → New repository secret**
 
-| Secret name          | Where to find it |
-|----------------------|------------------|
-| `STAGE_ACCESS_TOKEN` | [supabase.com/dashboard/account/tokens](https://supabase.com/dashboard/account/tokens) → Generate new token |
-| `STAGE_PROJECT_REF`  | Staging project URL: `https://supabase.com/dashboard/project/`**`<this part>`** |
-| `STAGE_DB_PASSWORD`  | Staging dashboard → **Settings → Database → Database password** (or reset it there) |
+| Secret name                | Where to find it |
+|----------------------------|------------------|
+| `SUPABASE_ACCESS_TOKEN`    | [supabase.com/dashboard/account/tokens](https://supabase.com/dashboard/account/tokens) → Generate new token |
+| `SUPABASE_PROJECT_REF`     | Staging project URL: `https://supabase.com/dashboard/project/`**`<this part>`** |
+| `SUPABASE_DB_PASSWORD`     | Staging dashboard → **Settings → Database → Database password** (or reset it there) |
+| `NETLIFY_AUTH_TOKEN`       | Netlify → User settings → OAuth applications → Personal access tokens |
+| `NETLIFY_SITE_ID`          | Netlify staging site → Site configuration → Site ID |
+
+These secrets live under the **staging** GitHub Environment (Settings → Environments → staging).
+The same secret names with different values should be added to a **production** environment when you set that up.
 
 Once secrets are set, add the `deploy:staging` label to any PR to push its migrations
 to staging. The label is removed automatically after the run and a comment is posted
