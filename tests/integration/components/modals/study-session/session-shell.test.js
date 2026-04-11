@@ -444,4 +444,56 @@ describe('Session', () => {
 
     expect(wrapper.emitted('closed')).toHaveLength(1)
   })
+
+  // ── Close button behavior ──────────────────────────────────────────────────
+
+  describe('close button behavior', () => {
+    test('clicking close from cover state emits "closed"', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+
+      // Session loaded but not started — still on cover
+      await wrapper
+        .find('[data-testid="study-session__actions"] [data-testid="ui-kit-button"]')
+        .trigger('click')
+
+      expect(wrapper.emitted('closed')).toHaveLength(1)
+      expect(wrapper.emitted('finished')).toBeFalsy()
+    })
+
+    test('clicking close after starting (but before any review) emits "closed"', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+
+      await startSession(wrapper)
+
+      // No cards reviewed yet — reviewed_count is 0
+      await wrapper
+        .find('[data-testid="study-session__actions"] [data-testid="ui-kit-button"]')
+        .trigger('click')
+
+      expect(wrapper.emitted('closed')).toHaveLength(1)
+      expect(wrapper.emitted('finished')).toBeFalsy()
+    })
+
+    test('clicking close after reviewing a card emits "finished" with stats', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+
+      // Complete one review
+      await startSession(wrapper)
+      await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
+      await wrapper.find('[data-testid="rating-buttons__good"]').trigger('click')
+      await flushPromises()
+      fireTransitionEnd(wrapper)
+      await flushPromises()
+
+      await wrapper
+        .find('[data-testid="study-session__actions"] [data-testid="ui-kit-button"]')
+        .trigger('click')
+
+      expect(wrapper.emitted('finished')).toHaveLength(1)
+      expect(wrapper.emitted('closed')).toBeFalsy()
+    })
+  })
 })
