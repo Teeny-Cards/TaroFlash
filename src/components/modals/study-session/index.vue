@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Session from './session.vue'
+import SessionShell from './session-shell.vue'
 
 export type StudySessionResponse = {
   score: number
@@ -29,7 +29,7 @@ function onSessionFinished(
     data-testid="study-session"
     class="rounded-b-0 sm:rounded-b-8 rounded-t-8 shadow-lg overflow-hidden pb-4 relative bg-brown-300 dark:bg-grey-800 w-full h-full sm:h-auto sm:w-160"
   >
-    <session
+    <session-shell
       :deck="deck"
       :config_override="config_override"
       @closed="close"
