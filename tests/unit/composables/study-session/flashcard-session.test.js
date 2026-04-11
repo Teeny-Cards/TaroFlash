@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 import { Rating } from 'ts-fsrs'
 import { useFlashcardSession } from '@/composables/study-session/flashcard-session'
-import { card } from '../../fixtures/card'
+import { card } from '../../../fixtures/card'
 
 vi.mock('@/api/reviews', () => ({
   updateReviewByCardId: vi.fn().mockResolvedValue(undefined)
@@ -481,5 +481,116 @@ describe('useFlashcardSession', () => {
     session.setCards(cards)
 
     expect(session.cards.value).toHaveLength(5)
+  })
+
+  // ── reviewed_count ─────────────────────────────────────────────────────────
+
+  test('reviewed_count is 0 before any card is reviewed', () => {
+    const session = useFlashcardSession({ study_all_cards: true, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null }), makeDueCard({ review: null })])
+
+    expect(session.reviewed_count.value).toBe(0)
+  })
+
+  test('reviewed_count increments after a Good review', () => {
+    const session = useFlashcardSession({ study_all_cards: true, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null }), makeDueCard({ review: null })])
+
+    session.reviewCard(getActiveItem(session, Rating.Good))
+
+    expect(session.reviewed_count.value).toBe(1)
+  })
+
+  test('reviewed_count counts both passed and failed cards', () => {
+    const session = useFlashcardSession({ study_all_cards: true, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null }), makeDueCard({ review: null })])
+
+    session.reviewCard(getActiveItem(session, Rating.Good))
+    session.reviewCard(getActiveItem(session, Rating.Again))
+
+    expect(session.reviewed_count.value).toBe(2)
+  })
+
+  // ── remaining_due_count ────────────────────────────────────────────────────
+
+  test('remaining_due_count is 0 when study_all_cards is true', () => {
+    const session = useFlashcardSession({ study_all_cards: true, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null }), makeDueCard({ review: null })])
+
+    expect(session.remaining_due_count.value).toBe(0)
+  })
+
+  test('remaining_due_count equals number of due cards when nothing reviewed yet', () => {
+    const session = useFlashcardSession({ study_all_cards: false, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null }), makeDueCard({ review: null })])
+
+    expect(session.remaining_due_count.value).toBe(2)
+  })
+
+  test('remaining_due_count decreases after reviewing a due card', () => {
+    const session = useFlashcardSession({ study_all_cards: false, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null }), makeDueCard({ review: null })])
+
+    session.reviewCard(getActiveItem(session, Rating.Good))
+
+    expect(session.remaining_due_count.value).toBe(1)
+  })
+
+  test('remaining_due_count excludes cards with a future due date', () => {
+    const session = useFlashcardSession({ study_all_cards: false, retry_failed_cards: false })
+    // Only 1 of the 2 raw cards is actually due
+    session.setCards([makeDueCard({ review: null }), makeNotDueCard()])
+
+    expect(session.remaining_due_count.value).toBe(1)
+  })
+
+  // ── next_card ──────────────────────────────────────────────────────────────
+
+  test('next_card is the second card when two unreviewed cards exist', () => {
+    const session = useFlashcardSession({ study_all_cards: true, retry_failed_cards: false })
+    const cards = [makeDueCard({ review: null }), makeDueCard({ review: null })]
+    session.setCards(cards)
+
+    expect(session.next_card.value?.id).toBe(cards[1].id)
+  })
+
+  test('next_card is undefined when only one card in the deck', () => {
+    const session = useFlashcardSession({ study_all_cards: true, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null })])
+
+    expect(session.next_card.value).toBeUndefined()
+  })
+
+  test('next_card skips already-reviewed cards', () => {
+    const session = useFlashcardSession({ study_all_cards: true, retry_failed_cards: false })
+    const cards = [
+      makeDueCard({ review: null }),
+      makeDueCard({ review: null }),
+      makeDueCard({ review: null })
+    ]
+    session.setCards(cards)
+
+    // Review first card — now on second card; next should be third
+    session.reviewCard(getActiveItem(session, Rating.Good))
+
+    expect(session.next_card.value?.id).toBe(cards[2].id)
+  })
+
+  // ── is_cover ───────────────────────────────────────────────────────────────
+
+  test('is_cover is true before startSession', () => {
+    const session = useFlashcardSession({ study_all_cards: true, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null })])
+
+    expect(session.is_cover.value).toBe(true)
+  })
+
+  test('is_cover is false after startSession', () => {
+    const session = useFlashcardSession({ study_all_cards: true, retry_failed_cards: false })
+    session.setCards([makeDueCard({ review: null })])
+
+    session.startSession()
+
+    expect(session.is_cover.value).toBe(false)
   })
 })
