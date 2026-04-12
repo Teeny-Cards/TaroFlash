@@ -47,6 +47,7 @@ For each source file:
 2. Read the file to understand the full context of the changed code. Watch for module-level `ref`/`reactive` state in Vue composables — these values persist across `useXxx()` calls and across tests, and need an explicit reset in `beforeEach`.
 3. Check whether an existing test file already covers this source file (look under `tests/` mirroring the source path, e.g. `src/components/foo/bar.vue` → `tests/integration/components/foo/bar.test.js`, or `src/composables/foo.ts` → `tests/unit/composables/foo.test.js`).
 4. If a test file exists, read it to understand what is already covered before writing new tests.
+5. **If no test file exists at all**, treat this as an opportunity to write full coverage for the entire file — not just the changed lines. Cover the public API, all meaningful branches, and edge cases. Note this in the Step 8 report as "new test file (full coverage)".
 
 ### Step 3 — Determine test type (in priority order)
 

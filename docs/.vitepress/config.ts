@@ -3,16 +3,19 @@ import svgLoader from 'vite-svg-loader'
 
 const devSidebar = [
   {
-    text: 'Components',
+    text: 'UI Kit',
+    collapsed: true,
     items: [
-      { text: 'Button', link: '/components/ui-kit-button' },
-      { text: 'Button Menu', link: '/components/teeny-button-menu' },
-      { text: 'Card', link: '/components/teeny-card' },
-      { text: 'Icon', link: '/components/teeny-icon' }
+      { text: 'Button', link: '/components/button' },
+      { text: 'Button Menu', link: '/components/button-menu' },
+      { text: 'Card', link: '/components/card' },
+      { text: 'Icon', link: '/components/icon' },
+      { text: 'Modal', link: '/components/modal' }
     ]
   },
   {
-    text: 'Modal',
+    text: 'Modal System',
+    collapsed: true,
     items: [
       { text: 'Overview', link: '/modal/index' },
       { text: 'Modes & Backdrop', link: '/modal/modes' },
@@ -25,6 +28,7 @@ const devSidebar = [
   },
   {
     text: 'TaroPhone',
+    collapsed: true,
     items: [
       { text: 'Overview', link: '/phone/index' },
       { text: 'App Types', link: '/phone/app-types' },
@@ -42,7 +46,7 @@ export default defineConfig({
   description: 'Documentation for TaroFlash',
   themeConfig: {
     nav: [
-      { text: 'Developer Docs', link: '/components/ui-kit-button' },
+      { text: 'Developer Docs', link: '/components/button' },
       { text: 'Design System', link: '/design-system/index' }
     ],
 
