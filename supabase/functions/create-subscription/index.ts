@@ -1,4 +1,5 @@
 import Stripe from 'npm:stripe@20'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const stripe = Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
   apiVersion: '2024-06-20'
@@ -22,6 +23,27 @@ Deno.serve(async (req) => {
       status: 405,
       headers: corsHeaders
     })
+  }
+
+  // Verify the caller is a logged-in Supabase user.
+  // The frontend sends the session JWT as "Authorization: Bearer <token>".
+  // We create a Supabase client scoped to that token and call getUser(),
+  // which validates the JWT server-side. If it fails, we stop here.
+  const authHeader = req.headers.get('Authorization')
+  if (!authHeader) {
+    return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+  }
+
+  const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, {
+    global: { headers: { Authorization: authHeader } }
+  })
+
+  const {
+    data: { user },
+    error: authError
+  } = await supabase.auth.getUser()
+  if (authError || !user) {
+    return new Response('Unauthorized', { status: 401, headers: corsHeaders })
   }
 
   try {

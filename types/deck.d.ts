@@ -11,6 +11,7 @@ type Deck = {
   tags?: string[]
   due_count?: number
   config?: DeckConfig
+  cover?: DeckCover
   has_image?: boolean
   card_count?: number
 }
@@ -24,4 +25,15 @@ type DeckConfig = {
   shuffle?: boolean
   card_limit?: number | null
   flip_cards?: boolean
+  is_spaced?: boolean
+  auto_play?: boolean
+}
+
+type DeckCoverPattern = 'dots' | 'grid' | 'diagonal' | 'crosshatch'
+
+type DeckCover = {
+  bg_color?: MemberTheme
+  border_color?: MemberTheme
+  pattern?: DeckCoverPattern
+  pattern_color?: MemberTheme
 }

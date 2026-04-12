@@ -1,7 +1,7 @@
 import { supabase } from '@/supabase-client'
 import logger from '@/utils/logger'
 import { DateTime } from 'luxon'
-import { uploadImage, insertMedia, deleteImage } from '@/api/media'
+import { uploadImage, insertMedia, deleteMediaByPath, deduplicateSlotMedia } from '@/api/media'
 import uid from '@/utils/uid'
 import { type CardBase } from '@type/card'
 
@@ -77,13 +77,30 @@ export async function moveCardsToDeck(cards: CardBase[], deck_id: number): Promi
 
 export async function setCardImage(card_id: number, file: File, side: 'front' | 'back') {
   const bucket = 'cards'
+  const slot = `card_${side}` as const
   const path = `${card_id}/${side}/${uid()}.${file.type.split('/')[1]}`
+
+  // Insert the DB record first. If the upload then fails we can easily delete
+  // this row — it's safer than orphaning a storage file with no DB record.
+  await insertMedia({ bucket, path, card_id, slot })
 
   try {
     await uploadImage(bucket, path, file)
-    await insertMedia({ bucket, path, card_id, slot: `card_${side}` })
   } catch (e) {
-    await deleteImage(bucket, path)
+    // Upload failed — roll back the DB record. Log if the rollback itself fails
+    // so the dangling row is visible in logs.
+    deleteMediaByPath(card_id, path).catch((rollbackErr) =>
+      logger.error(
+        `Failed to rollback media record after upload failure — path: ${path}`,
+        rollbackErr
+      )
+    )
     throw e
   }
+
+  // Soft-delete previous records for this slot so card_with_images doesn't
+  // return duplicate rows when joining on (card_id, slot, deleted_at IS NULL).
+  await deduplicateSlotMedia(card_id, slot, path).catch((err) =>
+    logger.error('Failed to dedup slot media after upload:', err)
+  )
 }

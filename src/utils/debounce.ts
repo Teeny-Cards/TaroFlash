@@ -1,4 +1,4 @@
-type DebounceCallback = (...args: any[]) => any | Promise<any>
+type DebounceCallback = (...args: any[]) => unknown
 
 const debounceMap = new Map<
   DebounceCallback | string,

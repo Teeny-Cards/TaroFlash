@@ -4,11 +4,11 @@ import {
   FSRS,
   generatorParameters,
   Rating,
-  type RecordLog,
-  type RecordLogItem
+  type Grade,
+  type RecordLog
 } from 'ts-fsrs'
 import { DateTime } from 'luxon'
-import { updateReviewByCardId } from '@/api/reviews'
+import { saveReview } from '@/api/reviews'
 
 export type StudyCard = Card & { preview?: RecordLog; state: ReviewState }
 
@@ -36,7 +36,9 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
     retry_failed_cards: _config?.retry_failed_cards ?? false,
     shuffle: _config?.shuffle ?? false,
     card_limit: _config?.card_limit ?? null,
-    flip_cards: _config?.flip_cards ?? false
+    flip_cards: _config?.flip_cards ?? false,
+    is_spaced: _config?.is_spaced ?? true,
+    auto_play: _config?.auto_play ?? false
   })
 
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
@@ -107,30 +109,32 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
     }
   }
 
-  function reviewCard(item?: RecordLogItem) {
+  function reviewCard(grade?: Grade) {
     if (!active_card.value) return
 
     const card = active_card.value
 
-    if (item) {
-      // Capture whether the card was due today *before* overwriting the review —
-      // _retryCard needs this to decide whether to re-queue the card.
-      // review.due may be a Date (from createEmptyCard) or an ISO string (from Supabase).
+    if (grade !== undefined) {
+      // Compute scheduling at the moment the user rates, not at session start.
+      // _FSRS_INSTANCE.next() is the single-grade version of repeat() — it
+      // returns a fresh RecordLogItem with item.log.review = now and
+      // item.card.due calculated from this exact moment.
+      const review = card.review ?? (createEmptyCard(new Date()) as Review)
+      const item = _FSRS_INSTANCE.next(review, new Date(), grade)
+
+      // Capture due-today status before overwriting review state.
       const was_due_today = _isDueToday(card.review?.due)
       card.review = item.card
-      _markCurrentCardStudied(item.log.rating, was_due_today)
+      _markCurrentCardStudied(grade, was_due_today)
+
+      active_card.value = cards.value.find((c) => c.state === 'unreviewed')
+      if (!active_card.value) mode.value = 'completed'
+
+      if (card.id) return saveReview(card.id, item.card, item.log)
     } else {
       card.state = 'passed'
-    }
-
-    active_card.value = cards.value.find((c) => c.state === 'unreviewed')
-
-    if (!active_card.value) {
-      mode.value = 'completed'
-    }
-
-    if (card.id && item) {
-      return updateReviewByCardId(card.id, item.card)
+      active_card.value = cards.value.find((c) => c.state === 'unreviewed')
+      if (!active_card.value) mode.value = 'completed'
     }
   }
 
@@ -140,11 +144,11 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
     return { state: 'unreviewed', ...card, review, preview }
   }
 
-  function _markCurrentCardStudied(rating?: Rating, was_due_today = false) {
+  function _markCurrentCardStudied(grade: Grade, was_due_today = false) {
     const card = active_card.value
     if (!card || !card.id) return
 
-    if (rating === Rating.Again) {
+    if (grade === Rating.Again) {
       card.state = 'failed'
       if (was_due_today) _retryCard(card)
     } else {
@@ -166,9 +170,9 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
 
   function _isCardDue(card: Card) {
     if (!card.review?.due) return true
-    const due = DateTime.fromISO(card.review?.due as string)
-    const now = DateTime.now()
-    return due <= now
+    const raw = card.review.due
+    const due = raw instanceof Date ? DateTime.fromJSDate(raw) : DateTime.fromISO(String(raw))
+    return due <= DateTime.now()
   }
 
   return {

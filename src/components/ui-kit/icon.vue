@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { type Component, computed } from 'vue'
+import logger from '@/utils/logger'
 
 const { src } = defineProps<{
   src: string
@@ -13,7 +14,7 @@ const icons: Record<string, Component> = import.meta.glob('../../assets/icons/*.
 
 const iconComponent = computed(() => {
   const icon = icons[`../../assets/icons/${src}.svg`]
-  if (!icon) console.warn(`Missing icon: ${src}`)
+  if (!icon) logger.warn(`Missing icon: ${src}`)
 
   return icon
 })
