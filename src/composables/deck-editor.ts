@@ -2,7 +2,7 @@ import { reactive, ref } from 'vue'
 import { deleteDeck as upstreamDeleteDeck, upsertDeck } from '@/api/decks'
 
 export function useDeckEditor(deck?: Deck) {
-  const settings = reactive<Omit<Deck, 'config' | 'cover'>>({
+  const settings = reactive<Omit<Deck, 'study_config' | 'cover_config'>>({
     id: deck?.id as number,
     title: deck?.title,
     description: deck?.description,
@@ -11,19 +11,19 @@ export function useDeckEditor(deck?: Deck) {
   })
 
   const config = reactive<DeckConfig>(
-    deck?.config ?? {
+    deck?.study_config ?? {
       study_all_cards: false,
       retry_failed_cards: true
     }
   )
 
-  const cover = reactive<DeckCover>(deck?.cover ?? {})
+  const cover = reactive<DeckCover>(deck?.cover_config ?? {})
 
   const uploaded_image = ref<File | undefined>()
   const image_removed = ref<boolean>(false)
 
   async function saveDeck() {
-    await upsertDeck({ ...settings, config: { ...config }, cover: { ...cover } })
+    await upsertDeck({ ...settings, study_config: { ...config }, cover_config: { ...cover } })
   }
 
   async function deleteDeck() {

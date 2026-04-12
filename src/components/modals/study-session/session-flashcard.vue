@@ -42,7 +42,7 @@ const {
   setCards,
   startSession,
   flipCurrentCard
-} = useFlashcardSession({ ...deck.config, ...config_override })
+} = useFlashcardSession({ ...deck.study_config, ...config_override })
 
 const study_card_ref = useTemplateRef('study-card')
 const loading = ref(true)

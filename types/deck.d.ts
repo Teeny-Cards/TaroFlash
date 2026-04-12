@@ -10,8 +10,8 @@ type Deck = {
   cards?: Card[]
   tags?: string[]
   due_count?: number
-  config?: DeckConfig
-  cover?: DeckCover
+  study_config?: DeckConfig
+  cover_config?: DeckCover
   has_image?: boolean
   card_count?: number
 }

@@ -20,7 +20,7 @@ const emit = defineEmits<{
 }>()
 
 // When additional study modes are added, swap this for a computed that
-// maps deck.config?.study_mode to the appropriate mode component.
+// maps deck.study_config?.study_mode to the appropriate mode component.
 const mode_ref = useTemplateRef<InstanceType<typeof SessionFlashcard>>('mode')
 
 function onCloseButtonClicked() {
