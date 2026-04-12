@@ -90,7 +90,10 @@ export async function setCardImage(card_id: number, file: File, side: 'front' | 
     // Upload failed — roll back the DB record. Log if the rollback itself fails
     // so the dangling row is visible in logs.
     deleteMediaByPath(card_id, path).catch((rollbackErr) =>
-      logger.error(`Failed to rollback media record after upload failure — path: ${path}`, rollbackErr)
+      logger.error(
+        `Failed to rollback media record after upload failure — path: ${path}`,
+        rollbackErr
+      )
     )
     throw e
   }

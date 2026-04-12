@@ -17,8 +17,8 @@ const { mockFetchAllCardsByDeckId } = vi.hoisted(() => ({
   mockFetchAllCardsByDeckId: vi.fn()
 }))
 
-const { mockUpdateReviewByCardId } = vi.hoisted(() => ({
-  mockUpdateReviewByCardId: vi.fn().mockResolvedValue(undefined)
+const { mockSaveReview } = vi.hoisted(() => ({
+  mockSaveReview: vi.fn().mockResolvedValue(undefined)
 }))
 
 vi.mock('@/composables/use-gestures', () => ({
@@ -43,7 +43,7 @@ vi.mock('@/api/cards', () => ({
 }))
 
 vi.mock('@/api/reviews', () => ({
-  updateReviewByCardId: mockUpdateReviewByCardId
+  saveReview: mockSaveReview
 }))
 
 // ── Card stub ─────────────────────────────────────────────────────────────────
@@ -126,7 +126,7 @@ describe('Session', () => {
     mockRegister.mockClear()
     mockEmitSfx.mockClear()
     mockFetchAllCardsByDeckId.mockClear()
-    mockUpdateReviewByCardId.mockClear()
+    mockSaveReview.mockClear()
   })
 
   // ── Loading behavior ───────────────────────────────────────────────────────
@@ -233,7 +233,7 @@ describe('Session', () => {
       fireTransitionEnd(wrapper)
       await flushPromises()
 
-      expect(mockUpdateReviewByCardId).toHaveBeenCalledOnce()
+      expect(mockSaveReview).toHaveBeenCalledOnce()
     })
 
     test('Good fling plays a sfx', async () => {

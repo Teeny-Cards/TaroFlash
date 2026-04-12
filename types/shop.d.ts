@@ -14,6 +14,6 @@ declare type Purchase = {
   quantity: number
 }
 
-declare type PurchaseItem = purchase & {
+declare type PurchaseItem = Purchase & {
   shop_item: ShopItem
 }

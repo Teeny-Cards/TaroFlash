@@ -4,10 +4,10 @@ import { useFlashcardSession } from '@/composables/study-session/flashcard-sessi
 import { card } from '../../../fixtures/card'
 
 vi.mock('@/api/reviews', () => ({
-  updateReviewByCardId: vi.fn().mockResolvedValue(undefined)
+  saveReview: vi.fn().mockResolvedValue(undefined)
 }))
 
-import { updateReviewByCardId } from '@/api/reviews'
+import { saveReview } from '@/api/reviews'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -26,16 +26,11 @@ function makeDueTodayCard(overrides = {}) {
   return card.one({ traits: 'with_due_review', overrides })
 }
 
-/** Get the RecordLogItem for the given rating from the active card's preview. */
-function getActiveItem(session, rating) {
-  return session.active_card.value?.preview?.[rating]
-}
-
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 describe('useFlashcardSession', () => {
   beforeEach(() => {
-    vi.mocked(updateReviewByCardId).mockClear()
+    vi.mocked(saveReview).mockClear()
   })
 
   // ── setCards filtering ─────────────────────────────────────────────────────
@@ -128,7 +123,7 @@ describe('useFlashcardSession', () => {
 
     session.setCards(cards)
 
-    const item = getActiveItem(session, Rating.Good)
+    const item = Rating.Good
     session.reviewCard(item)
 
     expect(session.current_index.value).toBe(1)
@@ -152,8 +147,7 @@ describe('useFlashcardSession', () => {
       session.setCards(cards)
 
       const reviewed_card = session.active_card.value
-      const item = getActiveItem(session, Rating.Good)
-      session.reviewCard(item)
+      session.reviewCard(Rating.Good)
 
       const found = session.cards.value.find((c) => c.id === reviewed_card.id)
       expect(found?.state).toBe('passed')
@@ -165,8 +159,7 @@ describe('useFlashcardSession', () => {
       session.setCards(cards)
 
       const first_id = session.active_card.value?.id
-      const item = getActiveItem(session, Rating.Good)
-      session.reviewCard(item)
+      session.reviewCard(Rating.Good)
 
       expect(session.active_card.value?.id).not.toBe(first_id)
     })
@@ -177,22 +170,20 @@ describe('useFlashcardSession', () => {
       session.setCards(cards)
 
       session.current_card_side.value = 'back'
-      const item = getActiveItem(session, Rating.Good)
-      session.reviewCard(item)
+      session.reviewCard(Rating.Good)
 
       expect(session.current_card_side.value).toBe('front')
     })
 
-    test('calls updateReviewByCardId with the card id and updated review', () => {
+    test('calls saveReview with the card id and updated review', () => {
       const session = useFlashcardSession({ study_all_cards: true, retry_failed_cards: false })
       const cards = [makeDueCard({ review: null })]
       session.setCards(cards)
 
       const card_id = session.active_card.value?.id
-      const item = getActiveItem(session, Rating.Good)
-      session.reviewCard(item)
+      session.reviewCard(Rating.Good)
 
-      expect(updateReviewByCardId).toHaveBeenCalledWith(card_id, item.card)
+      expect(saveReview).toHaveBeenCalledWith(card_id, expect.any(Object), expect.any(Object))
     })
   })
 
@@ -205,8 +196,7 @@ describe('useFlashcardSession', () => {
       session.setCards(cards)
 
       const reviewed_card = session.active_card.value
-      const item = getActiveItem(session, Rating.Again)
-      session.reviewCard(item)
+      session.reviewCard(Rating.Again)
 
       const found = session.cards.value.find((c) => c.id === reviewed_card.id)
       expect(found?.state).toBe('failed')
@@ -218,8 +208,7 @@ describe('useFlashcardSession', () => {
       session.setCards(cards)
 
       const first_id = session.active_card.value?.id
-      const item = getActiveItem(session, Rating.Again)
-      session.reviewCard(item)
+      session.reviewCard(Rating.Again)
 
       expect(session.active_card.value?.id).not.toBe(first_id)
     })
@@ -238,9 +227,9 @@ describe('useFlashcardSession', () => {
 
     // Review all cards before reading num_correct — shallowRef mutations are untracked
     // so num_correct must be read fresh after all reviews are done.
-    session.reviewCard(getActiveItem(session, Rating.Good)) // passed
-    session.reviewCard(getActiveItem(session, Rating.Again)) // failed
-    session.reviewCard(getActiveItem(session, Rating.Good)) // passed
+    session.reviewCard(Rating.Good) // passed
+    session.reviewCard(Rating.Again) // failed
+    session.reviewCard(Rating.Good) // passed
 
     expect(session.num_correct.value).toBe(2)
   })
@@ -254,7 +243,7 @@ describe('useFlashcardSession', () => {
 
     expect(session.mode.value).toBe('studying')
 
-    session.reviewCard(getActiveItem(session, Rating.Good))
+    session.reviewCard(Rating.Good)
 
     expect(session.mode.value).toBe('completed')
   })
@@ -264,7 +253,7 @@ describe('useFlashcardSession', () => {
     const cards = [makeDueCard({ review: null }), makeDueCard({ review: null })]
     session.setCards(cards)
 
-    session.reviewCard(getActiveItem(session, Rating.Good))
+    session.reviewCard(Rating.Good)
 
     expect(session.mode.value).toBe('studying')
   })
@@ -280,7 +269,7 @@ describe('useFlashcardSession', () => {
       session.setCards(cards)
 
       const original_length = session.cards.value.length // 2
-      session.reviewCard(getActiveItem(session, Rating.Again))
+      session.reviewCard(Rating.Again)
 
       // One card was failed and due today — it should be appended as a retry
       expect(session.cards.value.length).toBeGreaterThan(original_length)
@@ -293,7 +282,7 @@ describe('useFlashcardSession', () => {
       session.setCards(cards)
 
       const original_length = session.cards.value.length
-      session.reviewCard(getActiveItem(session, Rating.Again))
+      session.reviewCard(Rating.Again)
 
       expect(session.cards.value.length).toBe(original_length)
     })
@@ -306,7 +295,7 @@ describe('useFlashcardSession', () => {
       session.setCards(cards)
 
       const original_length = session.cards.value.length
-      session.reviewCard(getActiveItem(session, Rating.Again))
+      session.reviewCard(Rating.Again)
 
       expect(session.cards.value.length).toBe(original_length)
     })
@@ -320,10 +309,9 @@ describe('useFlashcardSession', () => {
     const cardData = { ...makeDueCard({ review: null }), id: undefined }
     session.setCards([cardData])
 
-    const item = getActiveItem(session, Rating.Good)
-    session.reviewCard(item)
+    session.reviewCard(Rating.Good)
 
-    expect(updateReviewByCardId).not.toHaveBeenCalled()
+    expect(saveReview).not.toHaveBeenCalled()
   })
 
   test('reviewCard is a no-op when there is no active card', () => {
@@ -331,8 +319,8 @@ describe('useFlashcardSession', () => {
     session.setCards([])
 
     // Should not throw
-    expect(() => session.reviewCard({ card: {}, log: { rating: Rating.Good } })).not.toThrow()
-    expect(updateReviewByCardId).not.toHaveBeenCalled()
+    expect(() => session.reviewCard(Rating.Good)).not.toThrow()
+    expect(saveReview).not.toHaveBeenCalled()
   })
 
   // ── current_card_side initial state ────────────────────────────────────────
@@ -496,7 +484,7 @@ describe('useFlashcardSession', () => {
     const session = useFlashcardSession({ study_all_cards: true, retry_failed_cards: false })
     session.setCards([makeDueCard({ review: null }), makeDueCard({ review: null })])
 
-    session.reviewCard(getActiveItem(session, Rating.Good))
+    session.reviewCard(Rating.Good)
 
     expect(session.reviewed_count.value).toBe(1)
   })
@@ -505,8 +493,8 @@ describe('useFlashcardSession', () => {
     const session = useFlashcardSession({ study_all_cards: true, retry_failed_cards: false })
     session.setCards([makeDueCard({ review: null }), makeDueCard({ review: null })])
 
-    session.reviewCard(getActiveItem(session, Rating.Good))
-    session.reviewCard(getActiveItem(session, Rating.Again))
+    session.reviewCard(Rating.Good)
+    session.reviewCard(Rating.Again)
 
     expect(session.reviewed_count.value).toBe(2)
   })
@@ -531,7 +519,7 @@ describe('useFlashcardSession', () => {
     const session = useFlashcardSession({ study_all_cards: false, retry_failed_cards: false })
     session.setCards([makeDueCard({ review: null }), makeDueCard({ review: null })])
 
-    session.reviewCard(getActiveItem(session, Rating.Good))
+    session.reviewCard(Rating.Good)
 
     expect(session.remaining_due_count.value).toBe(1)
   })
@@ -571,7 +559,7 @@ describe('useFlashcardSession', () => {
     session.setCards(cards)
 
     // Review first card — now on second card; next should be third
-    session.reviewCard(getActiveItem(session, Rating.Good))
+    session.reviewCard(Rating.Good)
 
     expect(session.next_card.value?.id).toBe(cards[2].id)
   })
