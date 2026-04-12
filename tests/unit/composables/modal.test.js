@@ -1,13 +1,20 @@
-import { describe, test, expect, beforeEach } from 'vite-plus/test'
-import { defineComponent } from 'vue'
-import { useModal } from '@/composables/modal'
+import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
+import { defineComponent, h } from 'vue'
+import { mount } from '@vue/test-utils'
+import {
+  useModal,
+  useModalRequestClose,
+  request_close_handlers,
+  MODAL_ID_KEY
+} from '@/composables/modal'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-// Module-level modal_stack persists across tests — drain it before each one.
+// Module-level state persists across tests — reset both structures before each one.
 beforeEach(() => {
   const { modal_stack, pop } = useModal()
   while (modal_stack.value.length > 0) pop()
+  request_close_handlers.clear()
 })
 
 const FakeComponent = defineComponent({ template: '<div />' })
@@ -166,5 +173,47 @@ describe('useModal', () => {
       expect(() => pop()).not.toThrow()
       expect(modal_stack.value).toHaveLength(0)
     })
+  })
+})
+
+// ── useModalRequestClose ──────────────────────────────────────────────────────
+
+describe('useModalRequestClose', () => {
+  function mountWithHandler(handler, id = 'test-modal-id') {
+    return mount(
+      defineComponent({
+        setup() {
+          useModalRequestClose(handler)
+        },
+        render: () => h('div')
+      }),
+      { global: { provide: { [MODAL_ID_KEY]: id } } }
+    )
+  }
+
+  test('registers the handler under the injected modal id', () => {
+    const handler = vi.fn()
+
+    const wrapper = mountWithHandler(handler, 'my-modal')
+
+    expect(request_close_handlers.get('my-modal')).toBe(handler)
+    wrapper.unmount()
+  })
+
+  test('does nothing when MODAL_ID_KEY is not provided', () => {
+    const handler = vi.fn()
+
+    mount(defineComponent({ setup() { useModalRequestClose(handler) }, render: () => h('div') }))
+
+    expect(request_close_handlers.size).toBe(0)
+  })
+
+  test('removes the handler from the map when the component unmounts', () => {
+    const handler = vi.fn()
+    const wrapper = mountWithHandler(handler, 'my-modal')
+
+    wrapper.unmount()
+
+    expect(request_close_handlers.has('my-modal')).toBe(false)
   })
 })
