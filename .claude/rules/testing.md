@@ -50,5 +50,7 @@ vp test tests/unit/use-theme.test.js           # single file
 - If source logic looks wrong, ask the user before writing the test. Once confirmed correct, add a comment explaining the non-obvious behaviour. If confirmed wrong, wait for the fix before writing.
 - Only leave comments for assertions that are not immediately obvious. Otherwise test names should be descriptive enough.
 - Don't find elements by class names, tag names, etc. always use a `data-testid` attribute. If one does not exist, add one.
+- Never use class names to find elements in the DOM — always use `data-testid`.
+- Never assert against Tailwind utility classes — they are implementation details that change freely. If a semantic/BEM class name is the most direct signal of component state, asserting it is acceptable.
 - Don't assert audio names, only that audio was played.
 - Tests should math the file structure of the source files. For example, if the source file is in `src/components/foo/bar.vue`, the test file should be in `tests/integration/components/foo/bar.test.js`.

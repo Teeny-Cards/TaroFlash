@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { provide } from 'vue'
-import { MODAL_ID_KEY } from '@/composables/modal'
+import { MODAL_ID_KEY, type ModalContext } from '@/composables/modal'
 
-const { id } = defineProps<{ id: string }>()
+type ModalSlotProps = {
+  id: string
+  context?: ModalContext
+}
+
+const { id, context } = defineProps<ModalSlotProps>()
+
 provide(MODAL_ID_KEY, id)
+if (context !== undefined) {
+  provide(context.key, context.value)
+}
 </script>
 
 <template>

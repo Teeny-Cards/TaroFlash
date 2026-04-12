@@ -1,7 +1,7 @@
-import { defineApp } from '@/phone/system/install-apps'
+import type { TriggerApp } from '@/phone/system/types'
 import { createLogoutController } from './controller'
 
-export default defineApp({
+export default {
   title: 'Logout',
   type: 'trigger',
   controller: createLogoutController,
@@ -10,4 +10,4 @@ export default defineApp({
     hover_icon_src: 'logout-hover',
     theme: 'red-400'
   }
-})
+} satisfies Omit<TriggerApp, 'id'>

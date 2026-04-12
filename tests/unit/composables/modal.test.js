@@ -22,6 +22,25 @@ const FakeComponent = defineComponent({ template: '<div />' })
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 describe('useModal', () => {
+  describe('open – context', () => {
+    test('stores context on the entry when provided', () => {
+      const { open, modal_stack } = useModal()
+      const ctx = { key: 'my-key', value: { foo: 'bar' } }
+
+      open(FakeComponent, { context: ctx })
+
+      expect(modal_stack.value[0].context).toEqual(ctx)
+    })
+
+    test('context is undefined when not provided', () => {
+      const { open, modal_stack } = useModal()
+
+      open(FakeComponent)
+
+      expect(modal_stack.value[0].context).toBeUndefined()
+    })
+  })
+
   describe('open', () => {
     test('pushes an entry onto modal_stack', () => {
       const { open, modal_stack } = useModal()
@@ -203,7 +222,14 @@ describe('useModalRequestClose', () => {
   test('does nothing when MODAL_ID_KEY is not provided', () => {
     const handler = vi.fn()
 
-    mount(defineComponent({ setup() { useModalRequestClose(handler) }, render: () => h('div') }))
+    mount(
+      defineComponent({
+        setup() {
+          useModalRequestClose(handler)
+        },
+        render: () => h('div')
+      })
+    )
 
     expect(request_close_handlers.size).toBe(0)
   })

@@ -8,6 +8,7 @@ import TabStudy from './tab-study.vue'
 import { useAlert } from '@/composables/alert'
 import { useDeckEditor } from '@/composables/deck-editor'
 import UiButton from '@/components/ui-kit/button.vue'
+import MobileSheet from '@/components/layout-kit/modal/mobile-sheet.vue'
 
 export type DeckSettingsResponse = boolean
 
@@ -21,7 +22,7 @@ const alert = useAlert()
 const { settings, config, cover, saveDeck, deleteDeck, uploadImage, removeImage } =
   useDeckEditor(deck)
 
-const tab = ref<DeckSettingsTab>('general')
+const tab = ref<DeckSettingsTab>('cover')
 
 async function onSave() {
   await saveDeck()
@@ -45,45 +46,45 @@ async function onDeleted() {
 </script>
 
 <template>
-  <div data-testid="deck-settings-container" class="relative w-full h-full sm:w-auto">
-    <div
-      data-testid="deck-settings"
-      class="bg-brown-300 shadow-lg flex flex-col justify-between overflow-hidden rounded-t-8 sm:rounded-b-10 h-full"
-    >
-      <header-config :selected-tab="tab" @change-tab="tab = $event" />
+  <mobile-sheet
+    data-testid="deck-settings-container"
+    fill-height
+    title="Deck Settings"
+    @close="close(false)"
+  >
+    <template #body>
+      <tab-general
+        v-if="tab === 'general'"
+        :deck="deck"
+        :image-url="undefined"
+        v-model:title="settings.title"
+        v-model:description="settings.description"
+        v-model:is-public="settings.is_public"
+        @image-uploaded="uploadImage"
+        @image-removed="removeImage"
+      />
 
-      <section data-testid="deck-settings__body" class="p-6 sm:p-12 sm:pt-8 h-full">
-        <tab-general
-          v-if="tab === 'general'"
-          :deck="deck"
-          :image-url="undefined"
-          v-model:title="settings.title"
-          v-model:description="settings.description"
-          v-model:is-public="settings.is_public"
-          @image-uploaded="uploadImage"
-          @image-removed="removeImage"
-        />
+      <tab-cover
+        v-else-if="tab === 'cover'"
+        v-model:bg_color="cover.bg_color"
+        v-model:border_color="cover.border_color"
+        v-model:pattern="cover.pattern"
+        v-model:pattern_color="cover.pattern_color"
+      />
 
-        <tab-cover
-          v-else-if="tab === 'cover'"
-          v-model:bg_color="cover.bg_color"
-          v-model:border_color="cover.border_color"
-          v-model:pattern="cover.pattern"
-          v-model:pattern_color="cover.pattern_color"
-        />
+      <tab-study
+        v-else-if="tab === 'study'"
+        v-model:shuffle="config.shuffle"
+        v-model:flip_cards="config.flip_cards"
+        v-model:retry_failed_cards="config.retry_failed_cards"
+        v-model:is_spaced="config.is_spaced"
+        v-model:auto_play="config.auto_play"
+        v-model:card_limit="config.card_limit"
+      />
+    </template>
 
-        <tab-study
-          v-else-if="tab === 'study'"
-          v-model:shuffle="config.shuffle"
-          v-model:flip_cards="config.flip_cards"
-          v-model:retry_failed_cards="config.retry_failed_cards"
-          v-model:is_spaced="config.is_spaced"
-          v-model:auto_play="config.auto_play"
-          v-model:card_limit="config.card_limit"
-        />
-      </section>
-
-      <div data-testid="deck-settings__actions" class="flex w-full justify-end gap-3 px-6 pb-6">
+    <template #footer>
+      <div class="flex gap-2">
         <ui-button
           v-if="deck"
           icon-left="delete"
@@ -106,6 +107,6 @@ async function onDeleted() {
           {{ deck ? t('common.save') : t('common.create') }}
         </ui-button>
       </div>
-    </div>
-  </div>
+    </template>
+  </mobile-sheet>
 </template>
