@@ -58,7 +58,7 @@ jobs:
 
       - name: Run migrations
         run: |
-          supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }} --password ${{ secrets.SUPABASE_DB_PASSWORD }}
+          supabase link --project-ref ${{ vars.SUPABASE_PROJECT_REF }} --password ${{ secrets.SUPABASE_DB_PASSWORD }}
           supabase migration up --linked
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
@@ -89,16 +89,16 @@ jobs:
       - name: Build
         run: pnpm run build
         env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_API_KEY: ${{ secrets.VITE_SUPABASE_API_KEY }}
-          VITE_STRIPE_PUBLIC_KEY: ${{ secrets.VITE_STRIPE_PUBLIC_KEY }}
-          VITE_MEMBERSHIP_PRICE_ID: ${{ secrets.VITE_MEMBERSHIP_PRICE_ID }}
+          VITE_STRIPE_PUBLIC_KEY: ${{ vars.VITE_STRIPE_PUBLIC_KEY }}
+          VITE_MEMBERSHIP_PRICE_ID: ${{ vars.VITE_MEMBERSHIP_PRICE_ID }}
 
       - name: Deploy to Netlify
         run: pnpm --package=netlify-cli dlx netlify deploy --dir=dist --alias=stage
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
 
   # Updates the comment posted by `start` with the final result.
   # always() ensures this runs even when migrate or frontend fail —
