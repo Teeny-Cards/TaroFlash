@@ -5,9 +5,8 @@ import { type PhoneApp, type PhoneContext } from '@/phone/system/types'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { emitHoverSfx, emitSfx } from '@/sfx/bus'
 
-const { apps, transitioning } = defineProps<{
+const { apps } = defineProps<{
   apps: PhoneApp[]
-  transitioning: boolean
 }>()
 
 const emit = defineEmits<{
@@ -94,9 +93,7 @@ function onHoverApp(app: PhoneApp) {
 }
 
 function _playHoverSfx() {
-  if (!transitioning) {
-    emitHoverSfx('ui.pop_drip_mid')
-  }
+  emitHoverSfx('ui.pop_drip_mid')
 }
 
 function _getActiveApp() {

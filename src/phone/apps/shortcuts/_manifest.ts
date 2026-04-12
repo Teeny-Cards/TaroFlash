@@ -1,7 +1,7 @@
-import { defineApp } from '@/phone/system/install-apps'
+import type { ViewApp } from '@/phone/system/types'
 import component from './component.vue'
 
-export default defineApp({
+export default {
   title: 'Shortcuts',
   type: 'view',
   display: 'panel',
@@ -11,4 +11,4 @@ export default defineApp({
     hover_icon_src: 'shortcuts-hover',
     theme: 'orange-500'
   }
-})
+} satisfies Omit<ViewApp, 'id'>

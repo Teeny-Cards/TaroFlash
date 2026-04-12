@@ -1,18 +1,24 @@
 import { ref, shallowRef } from 'vue'
-import type { AppController, PhoneApp, PhoneContext } from './types'
-import type { PhoneNavigator, NavigateEvent, TransitionPreset } from './phone-navigator'
+import type { AppController, PhoneApp, PhoneContext, TransitionPreset, ViewApp } from './types'
 
 export type AppSession = {
   app: PhoneApp
   controller: AppController | undefined
 }
 
-export function createPhoneRuntime({ nav }: { nav: PhoneNavigator }) {
+const reverse_transition: Record<TransitionPreset, TransitionPreset> = {
+  'slide-left': 'slide-right',
+  'slide-right': 'slide-left',
+  'pop-up': 'pop-down',
+  'pop-down': 'pop-up',
+  none: 'none'
+}
+
+export function createPhoneRuntime({ openFullApp }: { openFullApp: (app: ViewApp) => void }) {
   const active_session = shallowRef<AppSession | null>(null)
-  const loading = ref(false)
+  const transition = ref<TransitionPreset>('slide-left')
 
   const _registry: Record<string, AppSession> = {}
-  let _token = 0
 
   function init(apps: PhoneApp[], ctx: PhoneContext) {
     for (const app of apps) {
@@ -27,62 +33,43 @@ export function createPhoneRuntime({ nav }: { nav: PhoneNavigator }) {
     }
   }
 
-  async function open(id: string, transition: TransitionPreset = 'slide-left') {
+  async function open(id: string, t: TransitionPreset = 'slide-left') {
     const { app, controller } = _registry[id]
 
-    // handle action-only apps
     if (app.type === 'trigger') {
       await controller?.run?.()
       return
     }
 
-    const e = nav.push({ id, transition })
-    _syncSession(e)
-    await _loadApp(id)
-  }
-
-  function close() {
-    const e = nav.pop()
-    _syncSession(e)
-  }
-
-  function clear() {
-    const e = nav.reset()
-    _syncSession(e)
-  }
-
-  function _syncSession(e: NavigateEvent) {
-    if (!e.to) {
-      active_session.value = null
+    if (app.type === 'view' && app.display === 'full') {
+      await controller?.setup?.()
+      openFullApp(app)
       return
     }
 
-    active_session.value = _registry[e.to.id]
+    transition.value = t
+    active_session.value = _registry[id]
+    await controller?.setup?.()
   }
 
-  async function _loadApp(id: string) {
-    const { controller } = _registry[id]
-    const setupFn = controller?.setup
-    if (!setupFn) return
+  function close() {
+    transition.value = reverse_transition[transition.value]
+    active_session.value = null
+  }
 
-    const my_token = ++_token
-    loading.value = true
-
-    try {
-      await setupFn()
-    } finally {
-      if (my_token === _token) loading.value = false
-    }
+  function clear() {
+    transition.value = reverse_transition[transition.value]
+    active_session.value = null
   }
 
   return {
     init,
     active_session,
+    transition,
     phoneOS: {
       open,
       close,
-      clear,
-      loading
+      clear
     }
   }
 }
