@@ -82,7 +82,7 @@ function makeSession(cardCount = 2, deckOverrides = {}) {
   const deck_data = deck.one({
     overrides: {
       id: 1,
-      config: { study_all_cards: true, retry_failed_cards: false },
+      study_config: { study_all_cards: true, retry_failed_cards: false },
       ...deckOverrides
     }
   })
@@ -136,7 +136,7 @@ describe('Session', () => {
       // Delay the API response so we can inspect the loading state
       mockFetchAllCardsByDeckId.mockReturnValue(new Promise(() => {}))
       const deck_data = deck.one({
-        overrides: { id: 1, config: { study_all_cards: true, retry_failed_cards: false } }
+        overrides: { id: 1, study_config: { study_all_cards: true, retry_failed_cards: false } }
       })
       const wrapper = mount(Session, {
         props: { deck: deck_data },
@@ -432,7 +432,7 @@ describe('Session', () => {
 
   test('emits closed immediately if deck has no id', async () => {
     const deck_data = deck.one({
-      overrides: { id: null, config: { study_all_cards: true, retry_failed_cards: false } }
+      overrides: { id: null, study_config: { study_all_cards: true, retry_failed_cards: false } }
     })
     const wrapper = mount(Session, {
       props: { deck: deck_data },
