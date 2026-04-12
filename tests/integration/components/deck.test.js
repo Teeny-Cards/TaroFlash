@@ -62,4 +62,21 @@ describe('Deck', () => {
     const wrapper = makeDeck({ title: 'My Deck' }, { hide_title: true })
     expect(wrapper.text()).not.toContain('My Deck')
   })
+
+  // ── Optional deck prop ────────────────────────────────────────────────────────
+
+  test('renders without crashing when deck prop is not provided', () => {
+    const wrapper = shallowMount(Deck, { props: {} })
+    expect(wrapper.find('[data-testid="deck"]').exists()).toBe(true)
+  })
+
+  test('passes undefined cover_config to Card when deck is not provided', () => {
+    const wrapper = shallowMount(Deck, { props: {} })
+    expect(wrapper.findComponent({ name: 'Card' }).props('cover_config')).toBeUndefined()
+  })
+
+  test('shows empty title when deck is not provided', () => {
+    const wrapper = shallowMount(Deck, { props: {} })
+    expect(wrapper.text()).toBe('')
+  })
 })
