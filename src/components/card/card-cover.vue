@@ -13,13 +13,22 @@ const coverStyle = computed((): Record<string, string> => {
     backgroundColor: cover?.bg_color ? `var(--color-${cover.bg_color})` : 'var(--color-purple-500)'
   }
 
+  if (cover?.bg_image) {
+    style.backgroundImage = `url('${cover.bg_image}')`
+    style.backgroundSize = 'cover'
+    style.backgroundPosition = 'center'
+  }
+
   if (cover?.border_color) {
     style.border = `var(--face-border-width) solid var(--color-${cover.border_color})`
   }
 
   if (cover?.pattern) {
     style['--bgx-fill'] = `var(--color-${cover.pattern_color ?? 'grey-900'})`
-    style['--bgx-opacity'] = '0.4'
+    style['--bgx-opacity'] = String(cover.pattern_opacity ?? 0.4)
+    if (cover.pattern_size) {
+      style['--bgx-size'] = `${cover.pattern_size}px`
+    }
   }
 
   return style

@@ -20,6 +20,7 @@ Run the following two commands to capture all changes, whether committed or not:
 Combine both lists, deduplicating as needed. This is necessary because branches sometimes have only uncommitted/staged changes with no commits yet.
 
 Filter out:
+
 - Test files (`tests/`)
 - Config and fixture files (`*.config.*`)
 - Non-source files (`*.md`, `*.json`, `*.lock`, `*.css`) — unless a `.md` is in `docs/`
@@ -63,18 +64,24 @@ For each source file:
 **Do not write any documentation yet.** First, present a structured review to the user:
 
 #### 4a. Changes with clear doc impact
+
 List each change that obviously needs a doc update, with one line describing what needs to change. For example:
+
 - `use-modal.ts`: new `persistent` option is undocumented — needs a section in `modal/reference.md`
 - `modal.vue`: `@close` event renamed to `@dismiss` — update all examples in `modal/index.md`
 
 #### 4b. Ambiguities and questions
+
 List anything that is unclear and needs a decision before you can write accurate docs:
+
 - "The `size` prop was removed but there's no migration path — should the docs note a breaking change?"
 - "I see a `debug` option in the source but it looks internal — should this be documented publicly?"
 - "The composable now returns a `status` field. What does it represent? I couldn't tell from the code alone."
 
 #### 4c. Potential bugs or inconsistencies
+
 Call out anything in the diff that looks like a possible bug, a mismatch between code and existing docs, or a risky change:
+
 - "The default for `closeOnBackdrop` was `true` and is now `false` — the existing docs still say `true`."
 - "The new `onBeforeClose` hook is typed as `() => void` but the code appears to await it — the return type looks wrong."
 - "The README example uses the old API signature — this will break for anyone copying from docs."

@@ -1,24 +1,29 @@
 <script setup lang="ts">
 import UiIcon from '@/components/ui-kit/icon.vue'
 
-const { checked } = defineProps<{
+const { checked, theme = 'blue-500' } = defineProps<{
   checked: boolean
   intermediate?: boolean
+  theme?: MemberTheme
+  inverted?: boolean
 }>()
 </script>
 
 <template>
   <div
     data-testid="ui-kit-radio"
-    class="relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-white transition-all duration-50"
+    :data-theme="theme"
+    class="relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-all duration-50"
     :class="{
-      'border-none bg-blue-500 outline-4 outline-white hover:scale-110': checked,
-      'border-2 border-blue-500 bg-white hover:border-4 hover:border-white hover:bg-blue-500':
-        !checked
+      'border-none bg-(--theme-primary) outline-4 outline-white hover:scale-110': inverted,
+      'border-2 border-(--theme-primary) bg-white hover:border-4 hover:border-white hover:bg-(--theme-primary)':
+        !inverted,
+      'bg-(--theme-primary) outline-4': checked && inverted,
+      'border-4 border-white bg-(--theme-primary)!': checked && !inverted
     }"
-    v-sfx.hover="'ui.click_07'"
+    v-sfx="{ hover: 'ui.click_07', click: 'ui.select' }"
   >
-    <ui-icon v-if="checked" src="check" />
+    <ui-icon v-if="checked" class="text-white" src="check" />
     <ui-icon v-if="intermediate" src="minus" />
   </div>
 </template>
