@@ -2,13 +2,13 @@
 layout: home
 
 hero:
-  name: 'Teeny Docs'
-  text: 'Documentation for TeenyCards'
-  tagline: Teeny but Mighty
+  name: 'TaroFlash Docs'
+  text: 'Documentation for TaroFlash'
+  tagline: Build fast, study faster
   actions:
     - theme: brand
-      text: Components
-      link: /components/teeny-button
+      text: Developer Docs
+      link: /components/ui-kit-button
     - theme: alt
       text: Design System
       link: /design-system/index

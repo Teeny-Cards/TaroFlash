@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import AppLauncher from '@/phone/components/app-launcher.vue'
 import UiButton from '@/components/ui-kit/button.vue'
-import { type PhoneApp } from '@/phone/system/types'
+import { type PhoneApp, type TransitionPreset } from '@/phone/system/types'
 import { type AppSession } from '@/phone/system/runtime'
 import { computed } from 'vue'
-import { type TransitionPreset } from '@/phone/system/phone-navigator'
 import { useMediaQuery } from '@/composables/use-media-query'
 
-const { apps, transition, transitioning, active_session } = defineProps<{
+const { apps, transition, active_session } = defineProps<{
   apps: PhoneApp[]
   transition: TransitionPreset
-  transitioning: boolean
   active_session: AppSession | null
 }>()
 
@@ -22,10 +20,6 @@ const is_mobile = useMediaQuery('coarse')
 
 const app = computed(() => {
   return active_session?.app.type === 'view' ? active_session.app : null
-})
-
-const controller = computed(() => {
-  return active_session?.controller
 })
 </script>
 
@@ -43,7 +37,7 @@ const controller = computed(() => {
       @click="emit('close')"
     />
 
-    <app-launcher v-if="!app" :apps="apps" :transitioning="transitioning" @close="emit('close')" />
+    <app-launcher v-if="!app" :apps="apps" @close="emit('close')" />
 
     <div
       data-testid="app-viewport"
@@ -56,12 +50,7 @@ const controller = computed(() => {
           data-testid="app-frame"
           class="rounded-[inherit] overflow-hidden h-full w-full"
         >
-          <component
-            :is="app.component"
-            :display="app.display"
-            @controller="controller"
-            @close="emit('close')"
-          />
+          <component :is="app.component" :display="app.display" @close="emit('close')" />
         </div>
       </transition>
     </div>

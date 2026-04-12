@@ -2,12 +2,34 @@ import type { Component } from 'vue'
 import { createPhoneRuntime } from './runtime'
 import { useI18n } from 'vue-i18n'
 
+export type TransitionPreset = 'slide-left' | 'slide-right' | 'pop-up' | 'pop-down' | 'none'
 export type PhoneAppDisplay = 'full' | 'panel'
 export type MountPolicy = 'immediate' | 'lazy'
 
+// Internal type — passed to controller factories and used by the runtime
 export type PhoneContext = PhoneOS & {
   t: ReturnType<typeof useI18n>['t']
 }
+
+export type NotifyPayload = {
+  count?: number
+}
+
+export type PhoneNotification = NotifyPayload & {
+  app_id: string
+}
+
+export type AppContext = PhoneContext & {
+  notify: (payload: NotifyPayload) => void
+  clearNotification: () => void
+}
+
+// The shape injected via APP_CTX_KEY — available to all phone descendants
+export type AppContextInjection = PhoneContext & {
+  controller: AppController | undefined
+}
+
+export const APP_CTX_KEY = 'app-context'
 
 type LauncherConfig = {
   icon_src: string
@@ -19,7 +41,8 @@ type BaseApp<TController extends AppController = AppController> = {
   id: string
   title: string
   mount_policy?: MountPolicy
-  controller?: (ctx: PhoneContext) => TController
+  clear_notifications_on_open?: boolean
+  controller?: (ctx: AppContext) => TController
 }
 
 export type ViewApp = BaseApp & {
@@ -40,13 +63,11 @@ export type TriggerApp = BaseApp & {
 }
 
 export type AppController = {
-  setup?: () => void | Promise<void>
-  destroy?: () => void | Promise<void>
-  run?: () => void | Promise<void>
+  onOpen?: () => void | Promise<void>
+  onTrigger?: () => void | Promise<void>
 }
 
 export type PhoneApp = ViewApp | WidgetApp | TriggerApp
-export type Manifest = Omit<ViewApp, 'id'> | Omit<WidgetApp, 'id'> | Omit<TriggerApp, 'id'>
 export type PhoneRuntime = ReturnType<typeof createPhoneRuntime>
 export type PhoneOS = PhoneRuntime['phoneOS']
 

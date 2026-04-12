@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from 'vue'
 import ViewApp from '@/phone/components/view-app.vue'
-import { type PhoneApp, type PhoneContext } from '@/phone/system/types'
+import { type PhoneApp, type AppContextInjection, APP_CTX_KEY } from '@/phone/system/types'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { emitHoverSfx, emitSfx } from '@/sfx/bus'
 
-const { apps, transitioning } = defineProps<{
+const { apps } = defineProps<{
   apps: PhoneApp[]
-  transitioning: boolean
 }>()
 
 const emit = defineEmits<{
@@ -16,7 +15,7 @@ const emit = defineEmits<{
 
 const shortcuts = useShortcuts('phone/app-launcher')
 
-const phone = inject<PhoneContext>('phone-context')!
+const phone = inject<AppContextInjection>(APP_CTX_KEY)!
 const active_app = ref(-1)
 
 shortcuts.register([
@@ -94,9 +93,7 @@ function onHoverApp(app: PhoneApp) {
 }
 
 function _playHoverSfx() {
-  if (!transitioning) {
-    emitHoverSfx('ui.pop_drip_mid')
-  }
+  emitHoverSfx('ui.pop_drip_mid')
 }
 
 function _getActiveApp() {

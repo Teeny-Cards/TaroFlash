@@ -19,6 +19,7 @@
     "vue-pinia-best-practices@vue-skills": true,
     "vue-testing-best-practices@vue-skills": true,
     "create-adaptable-composable@vue-skills": true,
-    "vue-debug-guides@vue-skills": true
+    "vue-debug-guides@vue-skills": true,
+    "frontend-design@claude-plugins-official": true
   }
 }

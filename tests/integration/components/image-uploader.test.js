@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 import { mount, flushPromises } from '@vue/test-utils'
-import { h, nextTick } from 'vue'
+import { h } from 'vue'
 import ImageUploader from '@/components/image-uploader.vue'
 
 // ── FileReader mock ───────────────────────────────────────────────────────────
@@ -139,7 +139,8 @@ describe('ImageUploader', () => {
     test('is false initially', () => {
       const wrapper = mount(ImageUploader, {
         slots: {
-          default: ({ loading }) => h('div', { 'data-testid': 'slot', 'data-loading': String(loading) })
+          default: ({ loading }) =>
+            h('div', { 'data-testid': 'slot', 'data-loading': String(loading) })
         }
       })
 

@@ -1,25 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { BGX_PATTERN_CLASS } from '@/utils/bgx'
 
 const { cover } = defineProps<{
   cover?: DeckCover
 }>()
 
-// Static map — ensures all bgx-* class names are present as literals so the
-// build scanner includes them in the CSS output.
-const PATTERN_CLASS: Record<DeckCoverPattern, string> = {
-  'diagonal-stripes': 'bgx-diagonal-stripes',
-  saw: 'bgx-saw',
-  wave: 'bgx-wave',
-  'bank-note': 'bgx-bank-note',
-  aztec: 'bgx-aztec',
-  'endless-clouds': 'bgx-endless-clouds',
-  stars: 'bgx-stars',
-  leaf: 'bgx-leaf',
-  'dot-grid': 'bgx-dot-grid'
-}
-
-const patternClass = computed(() => (cover?.pattern ? PATTERN_CLASS[cover.pattern] : undefined))
+const patternClass = computed(() => (cover?.pattern ? BGX_PATTERN_CLASS[cover.pattern] : undefined))
 
 const coverStyle = computed((): Record<string, string> => {
   const style: Record<string, string> = {
