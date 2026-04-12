@@ -8,7 +8,7 @@ hero:
   actions:
     - theme: brand
       text: Developer Docs
-      link: /components/ui-kit-button
+      link: /components/button
     - theme: alt
       text: Design System
       link: /design-system/index
@@ -20,4 +20,3 @@ features:
     details: Feature rich, robust, and easy to use
   - title: Cute and Consistent
     details: Conforms to a strict design system
----

@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 import svgLoader from 'vite-svg-loader'
 
-const devSidebar = [
+const frontendSidebar = [
   {
     text: 'UI Kit',
     collapsed: true,
@@ -40,20 +40,44 @@ const devSidebar = [
   }
 ]
 
+const backendSidebar = [
+  {
+    text: 'Supabase',
+    items: [
+      { text: 'Setup & Migrations', link: '/supabase/index' },
+      { text: 'Vault Secrets', link: '/supabase/vault' },
+      { text: 'Edge Functions', link: '/supabase/edge-functions' }
+    ]
+  }
+]
+
+const devopsSidebar = [
+  {
+    text: 'DevOps',
+    items: [
+      { text: 'Deployments', link: '/devops/index' }
+    ]
+  }
+]
+
 export default defineConfig({
   srcDir: 'src',
   title: 'TaroFlash Docs',
   description: 'Documentation for TaroFlash',
   themeConfig: {
     nav: [
-      { text: 'Developer Docs', link: '/components/button' },
+      { text: 'Frontend Docs', link: '/components/button' },
+      { text: 'Backend Docs', link: '/supabase/index' },
+      { text: 'DevOps', link: '/devops/index' },
       { text: 'Design System', link: '/design-system/index' }
     ],
 
     sidebar: {
-      '/components/': devSidebar,
-      '/modal/': devSidebar,
-      '/phone/': devSidebar,
+      '/components/': frontendSidebar,
+      '/modal/': frontendSidebar,
+      '/phone/': frontendSidebar,
+      '/supabase/': backendSidebar,
+      '/devops/': devopsSidebar,
       '/design-system/': [
         {
           text: 'Design System',

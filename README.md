@@ -1,6 +1,15 @@
 # TaroFlash
 
-A spaced repetition flashcard app built with Vue 3 and Supabase.
+A spaced repetition flashcard app built with Vue 3 and Supabase. Uses the FSRS algorithm (`ts-fsrs`) to schedule reviews, Stripe for subscriptions, and Netlify for hosting.
+
+---
+
+## Stack
+
+- **Frontend** — Vue 3, Pinia, TailwindCSS 4, Vite+
+- **Backend** — Supabase (Postgres + RLS + Edge Functions)
+- **Payments** — Stripe
+- **Hosting** — Netlify
 
 ---
 
@@ -14,54 +23,72 @@ vp test          # run tests with coverage
 vp check         # format + lint + type-check
 ```
 
----
-
-## Deploying to staging
-
-Add the `deploy:staging` label to any PR. The workflow will:
-
-1. Run pending DB migrations against the staging Supabase project
-2. Build the frontend and deploy it to the staging Netlify alias
-3. Post a comment on the PR with the result
-
-The label is removed automatically so you can re-trigger by adding it again.
+Local Supabase runs on port 54321 (API) and 54322 (Postgres). Start it with `supabase start`.
 
 ---
 
-## GitHub environment secrets
+## Project structure
 
-The staging deploy workflow requires secrets stored under the **staging** GitHub Environment
-(**Settings → Environments → staging → Add secret**).
+<details>
+<summary><strong>src/</strong> — Frontend application</summary>
 
-When you set up a production deploy, create a **production** environment with the same secret
-names pointing at production values.
+| Path | Purpose |
+| ---- | ------- |
+| `src/api/` | Supabase client calls — RPC functions and table operations, organized by entity |
+| `src/components/` | Vue components |
+| `src/components/ui-kit/` | Base UI primitives — [docs](docs/src/components/button.md) |
+| `src/components/modals/` | Modal content components — [docs](docs/src/modal/index.md) |
+| `src/components/text-editor/` | Lexical-based rich text editor with markdown support |
+| `src/composables/` | Reusable composition functions (modal, toast, shortcuts, theme, etc.) |
+| `src/phone/` | TaroPhone system — apps, components, and core logic — [docs](docs/src/phone/index.md) |
+| `src/stores/` | Pinia stores: `session.ts` (auth), `member.ts` (profile), `shortcut-store.ts` |
+| `src/views/` | Routed page components; `authenticated.vue` is the layout wrapper |
+| `src/styles/` | Global CSS and TailwindCSS 4 config; `palettes.css` defines color tokens — [design system](docs/src/design-system/index.md) |
+| `src/utils/` | Utilities — animations, text composition helpers |
+| `src/locales/` | i18n translation strings |
 
-### Secrets
+</details>
 
-Encrypted and masked in logs. Set under **Environments → staging → Secrets**.
+<details>
+<summary><strong>supabase/</strong> — Backend</summary>
 
-| Secret                  | What it's for                                              | Where to find it                                                                                            |
-| ----------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | Authenticates the Supabase CLI to link and run migrations  | [supabase.com/dashboard/account/tokens](https://supabase.com/dashboard/account/tokens) → Generate new token |
-| `SUPABASE_DB_PASSWORD`  | Required by `supabase link` to connect to the database     | Supabase dashboard → **Settings → Database → Database password**                                            |
-| `NETLIFY_AUTH_TOKEN`    | Authenticates the Netlify CLI to deploy                    | Netlify → User settings → OAuth → Personal access tokens                                                    |
-| `VITE_SUPABASE_API_KEY` | Supabase anon key for client-side queries (subject to RLS) | Supabase dashboard → **Settings → API → anon public**                                                       |
+| Path | Purpose |
+| ---- | ------- |
+| `supabase/migrations/` | SQL migrations applied via `supabase migrations up` — [setup guide](docs/src/supabase/index.md) |
+| `supabase/functions/create-subscription/` | Stripe subscription edge function — [edge function secrets](docs/src/supabase/edge-functions.md) |
+| `supabase/functions/cleanup-media/` | Orphaned media cleanup edge function — [vault secrets](docs/src/supabase/vault.md) |
 
-### Variables
+</details>
 
-Plaintext, visible in logs. Set under **Environments → staging → Variables**.
+<details>
+<summary><strong>docs/</strong> — VitePress documentation site</summary>
 
-| Variable                   | What it's for                                                     | Where to find it                                                |
-| -------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------- |
-| `SUPABASE_PROJECT_REF`     | Identifies which Supabase project to migrate                      | Project URL: `supabase.com/dashboard/project/`**`<this part>`** |
-| `NETLIFY_SITE_ID`          | Identifies which Netlify site to deploy to                        | Netlify → TaroFlash site → **Site configuration → Site ID**     |
-| `VITE_SUPABASE_URL`        | Supabase project URL used by the browser client                   | Supabase dashboard → **Settings → API → Project URL**           |
-| `VITE_STRIPE_PUBLIC_KEY`   | Stripe publishable key used by the payment UI (safe to be public) | Stripe dashboard → test/live publishable key                    |
-| `VITE_MEMBERSHIP_PRICE_ID` | Stripe price ID for the membership product                        | Stripe dashboard → product → price ID                           |
+| Path | Purpose |
+| ---- | ------- |
+| `docs/src/components/` | Frontend component docs |
+| `docs/src/modal/` | Modal system docs |
+| `docs/src/phone/` | TaroPhone system docs |
+| `docs/src/supabase/` | Backend setup docs |
+| `docs/src/devops/` | Deployment and environment config |
+| `docs/src/design-system/` | Design system reference |
+
+</details>
+
+<details>
+<summary><strong>tests/</strong> — Test suite</summary>
+
+| Path | Purpose |
+| ---- | ------- |
+| `tests/unit/` | Unit tests — pure functions, composables, store logic |
+| `tests/integration/` | Component integration tests via `shallowMount`/`mount` |
+| `tests/fixtures/` | MSW handlers and Faker-based test fixtures |
+
+</details>
 
 ---
 
-## Further setup
+## Further reading
 
-For Supabase-specific setup (Vault secrets, edge function secrets, applying migrations manually)
-see [`supabase/SETUP.md`](supabase/SETUP.md).
+- **[Frontend docs](docs/src/components/button.md)** — UI kit, modal system, phone system
+- **[Backend docs](docs/src/supabase/index.md)** — Supabase setup, vault secrets, edge functions
+- **[DevOps](docs/src/devops/index.md)** — deployments, GitHub environment config
