@@ -1,5 +1,7 @@
 import { reactive, ref } from 'vue'
 import { deleteDeck as upstreamDeleteDeck, upsertDeck } from '@/api/decks'
+import { uploadImage as uploadImageToStorage } from '@/api/media'
+import type { ImageUploadPayload } from '@/components/image-uploader.vue'
 
 export function useDeckEditor(deck?: Deck) {
   const settings = reactive<Omit<Deck, 'study_config' | 'cover_config'>>({
@@ -21,6 +23,9 @@ export function useDeckEditor(deck?: Deck) {
 
   const uploaded_image = ref<File | undefined>()
   const image_removed = ref<boolean>(false)
+
+  const cover_image_preview = ref<string | undefined>(deck?.cover_config?.bg_image)
+  const cover_image_loading = ref(false)
 
   async function saveDeck() {
     await upsertDeck({ ...settings, study_config: { ...config }, cover_config: { ...cover } })
@@ -44,13 +49,36 @@ export function useDeckEditor(deck?: Deck) {
     image_removed.value = true
   }
 
+  async function setCoverImage(payload: ImageUploadPayload) {
+    cover_image_preview.value = payload.preview
+    cover_image_loading.value = true
+    try {
+      const deck_id = settings.id
+      const path = deck_id ? `covers/${deck_id}` : `covers/draft-${crypto.randomUUID()}`
+      const url = await uploadImageToStorage('decks', path, payload.file)
+      cover.bg_image = url
+      cover_image_preview.value = url
+    } finally {
+      cover_image_loading.value = false
+    }
+  }
+
+  function removeCoverImage() {
+    cover_image_preview.value = undefined
+    cover.bg_image = undefined
+  }
+
   return {
     settings,
     config,
     cover,
+    cover_image_preview,
+    cover_image_loading,
     saveDeck,
     deleteDeck,
     uploadImage,
-    removeImage
+    removeImage,
+    setCoverImage,
+    removeCoverImage
   }
 }

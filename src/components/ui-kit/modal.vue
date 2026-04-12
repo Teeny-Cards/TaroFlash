@@ -36,7 +36,9 @@ watchEffect(() => {
   if (!modal_container.value?.$el) return
 
   if (modal_stack.value.length > 0) {
-    disableBodyScroll(modal_container.value.$el)
+    disableBodyScroll(modal_container.value.$el, {
+      allowTouchMove: (el) => modal_container.value!.$el.contains(el as Node)
+    })
     shortcuts.register({ combo: 'esc', handler: requestClose })
   } else {
     enableBodyScroll(modal_container.value.$el)
@@ -99,9 +101,11 @@ function onLeave(el: Element, done: () => void) {
     <div
       v-for="modal in modal_stack"
       :key="modal.id"
+      data-testid="ui-kit-modal"
       class="absolute inset-0 flex justify-center pointer-events-none"
       :class="MODAL_MODE_CONFIG[modal.mode].containerClass"
       :data-modal-mode="modal.mode"
+      @click.self="requestClose"
     >
       <modal-slot :id="modal.id" :context="modal.context">
         <component

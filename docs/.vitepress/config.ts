@@ -54,9 +54,7 @@ const backendSidebar = [
 const devopsSidebar = [
   {
     text: 'DevOps',
-    items: [
-      { text: 'Deployments', link: '/devops/index' }
-    ]
+    items: [{ text: 'Deployments', link: '/devops/index' }]
   }
 ]
 

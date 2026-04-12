@@ -45,4 +45,7 @@ type DeckCover = {
   border_color?: MemberTheme
   pattern?: DeckCoverPattern
   pattern_color?: MemberTheme
+  pattern_size?: number
+  pattern_opacity?: number
+  bg_image?: string
 }
