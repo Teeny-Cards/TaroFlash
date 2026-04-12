@@ -1,30 +1,3 @@
-<script setup>
-import TeenyButtonMenu from '@/components/TeenyButtonMenu.vue'
-import TeenyButton from '@/components/TeenyButton.vue'
-
-const moreMenuActions = [
-  {
-    label: 'Select',
-    action: () => console.log('Edit'),
-    inverted: true,
-    iconLeft: 'check'
-  },
-  {
-    label: 'Move',
-    action: () => console.log('Delete'),
-    inverted: true,
-    iconLeft: 'arrow-forward'
-  },
-  {
-    label: 'Delete',
-    action: () => console.log('Delete'),
-    variant: 'danger',
-    inverted: true,
-    iconLeft: 'delete'
-  }
-]
-</script>
-
 # Teeny Button Menu
 
 The `TeenyButtonMenu` component is a simple dropdown that can be used to display a list of buttons. It is a very basic dropdown that does not support any advanced features such as multi-select, search, or grouping.
@@ -52,8 +25,6 @@ interface Action {
 :::
 
 example:
-
-<ui-kit:button-menu trigger-label="Menu" :actions="moreMenuActions" />
 
 ```vue
 <ui-kit:button-menu trigger-label="Menu" :actions="moreMenuActions" />
@@ -91,8 +62,6 @@ The trigger button can be customized using the `variant` and `inverted` props. T
 
 example:
 
-<ui-kit:button-menu trigger-label="Menu" :actions="moreMenuActions" variant="danger" />
-
 ```vue
 <ui-kit:button-menu trigger-label="Menu" :actions="moreMenuActions" variant="danger" />
 ```
@@ -103,18 +72,12 @@ You can also use a custom trigger by using the `trigger` slot. The slot receives
 
 example:
 
-<ui-kit:button-menu :actions="moreMenuActions">
-<template #trigger="{ toggleDropdown, open }">
-<ui-kit:button @click="toggleDropdown" :icon-left="open ? 'expand-less' : 'expand-more'" icon-only></TeenyButton>
-</template>
-</TeenyButtonMenu>
-
 ```vue
 <ui-kit:button-menu :actions="moreMenuActions">
   <template #trigger="{ toggleDropdown, open }">
-    <ui-kit:button @click="toggleDropdown" :icon-left="open ? 'expand-less' : 'expand-more'" icon-only></TeenyButton>
+    <ui-kit:button @click="toggleDropdown" :icon-left="open ? 'expand-less' : 'expand-more'" icon-only />
   </template>
-</TeenyButtonMenu>
+</ui-kit:button-menu>
 ```
 
 ## Custom Dropdown Content
@@ -123,15 +86,16 @@ You can also use a custom dropdown content by using the `dropdown` slot. The slo
 
 example:
 
+```vue
 <ui-kit:button-menu trigger-label="Menu" :actions="moreMenuActions">
-<template #dropdown="{ closeDropdown }">
-
-<div class="bg-parchment p-4 rounded-[10px] w-max">
-<p>Custom dropdown content</p>
-<ui-kit:button @click="closeDropdown">Close</TeenyButton>
-</div>
-</template>
-</TeenyButtonMenu>
+  <template #dropdown="{ closeDropdown }">
+    <div class="bg-parchment p-4 rounded-[10px] w-max">
+      <p>Custom dropdown content</p>
+      <ui-kit:button @click="closeDropdown">Close</ui-kit:button>
+    </div>
+  </template>
+</ui-kit:button-menu>
+```
 
 ## Detailed Prop Specifications
 

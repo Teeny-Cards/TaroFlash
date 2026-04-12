@@ -7,7 +7,7 @@ export function createLogoutController(ctx: PhoneContext) {
   const session = useSessionStore()
   const { t } = ctx
 
-  function run() {
+  function onTrigger() {
     const { response } = alert.warn({
       title: t('phone.apps.logout.title'),
       message: t('phone.apps.logout.description'),
@@ -23,5 +23,5 @@ export function createLogoutController(ctx: PhoneContext) {
     })
   }
 
-  return { run }
+  return { onTrigger }
 }

@@ -1,7 +1,3 @@
-<script setup>
-import Card from '@/components/Card.vue'
-</script>
-
 # Teeny Card
 
 The TeenyCard component is a simple data wrapper
@@ -12,12 +8,8 @@ In its most simple form the TeenyCard allows the passing in of a component as a 
 
 example:
 
-<div class="p-4 bg-parchment rounded-[20px] flex justify-center gap-2">
-  <Card>Example</TeenyCard>
-</div>
-
 ```vue
-<Card>Example</TeenyCard>
+<Card>Example</Card>
 ```
 
 ## Sizes
@@ -26,17 +18,10 @@ The TeenyCard component supports a `size` prop which allows you to adjust the si
 
 example:
 
-<div class="flex flex-col gap-6">
-  <div class="p-4 bg-parchment rounded-[20px] flex flex-wrap justify-center items-center gap-2">
-    <Card size="large">Large</TeenyCard>
-    <Card size="base">Base</TeenyCard>
-    <Card size="small">Small</TeenyCard>
-  </div>
-
-  <div class="p-4 bg-parchment rounded-[20px] flex flex-wrap justify-center items-center gap-2">
-    <span>xs</span>
-    <Card size="xs"></TeenyCard>
-    <Card size="teeny"></TeenyCard>
-    <span>Teeny</span>
-  </div>
-</div>
+```vue
+<Card size="large">Large</Card>
+<Card size="base">Base</Card>
+<Card size="small">Small</Card>
+<Card size="xs" />
+<Card size="teeny" />
+```

@@ -3,7 +3,12 @@ import { onMounted, ref, provide } from 'vue'
 import { emitSfx } from '@/sfx/bus'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { installApps } from '@/phone/system/install-apps'
-import { type PhoneApp, type PhoneContext, APP_CTX_KEY } from '@/phone/system/types'
+import {
+  type PhoneApp,
+  type PhoneContext,
+  type AppContextInjection,
+  APP_CTX_KEY
+} from '@/phone/system/types'
 import { createPhoneRuntime } from '@/phone/system/runtime'
 import { useModal } from '@/composables/modal'
 import phoneSm from '@/phone/components/phone-sm.vue'
@@ -25,26 +30,28 @@ const loading = ref(false)
 const open = ref(false)
 let apps: PhoneApp[] = []
 
+const { t } = useI18n()
+
 const runtime = createPhoneRuntime({
   openFullApp: (app, controller) => {
+    const injection: AppContextInjection = { ...ctx, controller }
     openModal(app.component, {
       backdrop: true,
       mode: 'dialog',
       props: { onClose: () => popModal() },
-      context: { key: APP_CTX_KEY, value: { controller } }
+      context: { key: APP_CTX_KEY, value: injection }
     })
   }
 })
 
-provide(APP_CTX_KEY, {
+const ctx: PhoneContext = { ...runtime.phoneOS, t }
+
+provide<AppContextInjection>(APP_CTX_KEY, {
+  ...ctx,
   get controller() {
     return runtime.active_session.value?.controller
   }
 })
-
-const ctx: PhoneContext = { ...runtime.phoneOS, t: useI18n().t }
-
-provide('phone-context', ctx)
 
 shortcuts.register({
   combo: 'esc',
