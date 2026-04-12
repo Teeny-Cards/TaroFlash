@@ -1,4 +1,9 @@
 import { ref, markRaw, inject, onUnmounted, type InjectionKey } from 'vue'
+
+export type ModalContext = {
+  key: InjectionKey<unknown> | string
+  value: unknown
+}
 import uid from '@/utils/uid'
 
 /** Provided by modal-slot.vue so any descendant can identify which modal it lives in. */
@@ -32,12 +37,14 @@ type ModalEntry = {
   mode: ModalMode
   id: string
   resolve: (result?: any) => void
+  context?: ModalContext
 }
 
 type OpenArgs = {
   props?: Record<string, any>
   backdrop?: boolean
   mode?: ModalMode
+  context?: ModalContext
 }
 
 export type ModalCloseFn<T> = (responseValue?: T) => void
@@ -72,7 +79,8 @@ export function useModal() {
         ...args?.props,
         close: closeFunc
       },
-      resolve: resolveFn
+      resolve: resolveFn,
+      context: args?.context
     }
 
     modal_stack.value.push(entry)

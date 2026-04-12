@@ -21,10 +21,6 @@ const is_mobile = useMediaQuery('coarse')
 const app = computed(() => {
   return active_session?.app.type === 'view' ? active_session.app : null
 })
-
-const controller = computed(() => {
-  return active_session?.controller
-})
 </script>
 
 <template>
@@ -54,12 +50,7 @@ const controller = computed(() => {
           data-testid="app-frame"
           class="rounded-[inherit] overflow-hidden h-full w-full"
         >
-          <component
-            :is="app.component"
-            :display="app.display"
-            @controller="controller"
-            @close="emit('close')"
-          />
+          <component :is="app.component" :display="app.display" @close="emit('close')" />
         </div>
       </transition>
     </div>
