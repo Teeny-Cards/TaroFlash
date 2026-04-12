@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Remove label
         continue-on-error: true
-        run: gh pr edit ${{ github.event.pull_request.number }} --remove-label "deploy:staging"
+        run: gh pr edit ${{ github.event.pull_request.number }} --remove-label "deploy:staging" --repo ${{ github.repository }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
