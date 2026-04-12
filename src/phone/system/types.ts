@@ -1,4 +1,4 @@
-import type { Component, InjectionKey } from 'vue'
+import type { Component } from 'vue'
 import { createPhoneRuntime } from './runtime'
 import { useI18n } from 'vue-i18n'
 
@@ -6,6 +6,7 @@ export type TransitionPreset = 'slide-left' | 'slide-right' | 'pop-up' | 'pop-do
 export type PhoneAppDisplay = 'full' | 'panel'
 export type MountPolicy = 'immediate' | 'lazy'
 
+// Internal type — passed to controller factories and used by the runtime
 export type PhoneContext = PhoneOS & {
   t: ReturnType<typeof useI18n>['t']
 }
@@ -23,6 +24,13 @@ export type AppContext = PhoneContext & {
   clearNotification: () => void
 }
 
+// The shape injected via APP_CTX_KEY — available to all phone descendants
+export type AppContextInjection = PhoneContext & {
+  controller: AppController | undefined
+}
+
+export const APP_CTX_KEY = 'app-context'
+
 type LauncherConfig = {
   icon_src: string
   hover_icon_src?: string
@@ -33,6 +41,7 @@ type BaseApp<TController extends AppController = AppController> = {
   id: string
   title: string
   mount_policy?: MountPolicy
+  clear_notifications_on_open?: boolean
   controller?: (ctx: AppContext) => TController
 }
 
@@ -54,16 +63,13 @@ export type TriggerApp = BaseApp & {
 }
 
 export type AppController = {
-  setup?: () => void | Promise<void>
-  run?: () => void | Promise<void>
+  onOpen?: () => void | Promise<void>
+  onTrigger?: () => void | Promise<void>
 }
 
 export type PhoneApp = ViewApp | WidgetApp | TriggerApp
 export type PhoneRuntime = ReturnType<typeof createPhoneRuntime>
 export type PhoneOS = PhoneRuntime['phoneOS']
-
-export const APP_CTX_KEY: InjectionKey<{ controller: AppController | undefined }> =
-  Symbol('app-ctx')
 
 export type AppProps = {
   close: () => void

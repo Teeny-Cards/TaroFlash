@@ -15,7 +15,7 @@ const { theme = 'green-400', count = 0, label } = defineProps<MyComponentProps>(
 // Incorrect — do not use withDefaults
 const props = withDefaults(defineProps<MyComponentProps>(), {
   theme: 'green-400',
-  count: 0,
+  count: 0
 })
 ```
 

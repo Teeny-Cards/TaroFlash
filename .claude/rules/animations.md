@@ -4,10 +4,10 @@ Never use `setTimeout(resolve, N)` to wait for an animation to finish. Instead, 
 
 ```ts
 // Bad
-await new Promise(resolve => setTimeout(resolve, 400))
+await new Promise((resolve) => setTimeout(resolve, 400))
 
 // Good
-await new Promise(resolve => {
+await new Promise((resolve) => {
   gsap.to(el, { duration: 0.4, opacity: 0, onComplete: resolve })
 })
 
@@ -21,3 +21,7 @@ gsap.to(el, {
 If a duration must be referenced in more than one place, extract it as a named constant rather than repeating the magic number.
 
 **Why:** Hardcoded durations drift out of sync when animations change. Event-driven callbacks are inherently correct regardless of timing.
+
+# File Structure
+
+All animation functions should be in `src/utils/animations/` and should be named after the element or effect they animate, e.g. `modal.ts`, `phone.ts`, `blur.ts`, etc.
