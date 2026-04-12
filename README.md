@@ -36,14 +36,14 @@ Local Supabase runs on port 54321 (API) and 54322 (Postgres). Start it with `sup
 | ---- | ------- |
 | `src/api/` | Supabase client calls — RPC functions and table operations, organized by entity |
 | `src/components/` | Vue components |
-| `src/components/ui-kit/` | Base UI primitives (button, icon, card, etc.) |
-| `src/components/modals/` | Modal content components |
+| `src/components/ui-kit/` | Base UI primitives — [docs](docs/src/components/button.md) |
+| `src/components/modals/` | Modal content components — [docs](docs/src/modal/index.md) |
 | `src/components/text-editor/` | Lexical-based rich text editor with markdown support |
 | `src/composables/` | Reusable composition functions (modal, toast, shortcuts, theme, etc.) |
-| `src/phone/` | TaroPhone system — apps, components, and core logic |
+| `src/phone/` | TaroPhone system — apps, components, and core logic — [docs](docs/src/phone/index.md) |
 | `src/stores/` | Pinia stores: `session.ts` (auth), `member.ts` (profile), `shortcut-store.ts` |
 | `src/views/` | Routed page components; `authenticated.vue` is the layout wrapper |
-| `src/styles/` | Global CSS and TailwindCSS 4 config; `palettes.css` defines color tokens |
+| `src/styles/` | Global CSS and TailwindCSS 4 config; `palettes.css` defines color tokens — [design system](docs/src/design-system/index.md) |
 | `src/utils/` | Utilities — animations, text composition helpers |
 | `src/locales/` | i18n translation strings |
 
@@ -54,9 +54,9 @@ Local Supabase runs on port 54321 (API) and 54322 (Postgres). Start it with `sup
 
 | Path | Purpose |
 | ---- | ------- |
-| `supabase/migrations/` | SQL migrations applied via `supabase migrations up` |
-| `supabase/functions/create-subscription/` | Stripe subscription edge function |
-| `supabase/functions/cleanup-media/` | Orphaned media cleanup edge function |
+| `supabase/migrations/` | SQL migrations applied via `supabase migrations up` — [setup guide](docs/src/supabase/index.md) |
+| `supabase/functions/create-subscription/` | Stripe subscription edge function — [edge function secrets](docs/src/supabase/edge-functions.md) |
+| `supabase/functions/cleanup-media/` | Orphaned media cleanup edge function — [vault secrets](docs/src/supabase/vault.md) |
 
 </details>
 
