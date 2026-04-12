@@ -51,7 +51,6 @@ async function onImageUpload(side: 'front' | 'back', file: File) {
 }
 
 async function onImageDelete(side: 'front' | 'back') {
-  throw "Doesn't work, need to re-implement"
   if (!card.id) return
 
   try {

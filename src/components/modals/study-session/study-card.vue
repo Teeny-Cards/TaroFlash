@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Card from '@/components/card/index.vue'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import { type Grade, Rating, type RecordLog, type RecordLogItem } from 'ts-fsrs'
+import { type Grade, Rating, type RecordLog } from 'ts-fsrs'
 import { emitSfx } from '@/sfx/bus'
 import { useGestures } from '@/composables/use-gestures'
 import { useShortcuts } from '@/composables/use-shortcuts'
@@ -18,7 +18,7 @@ const { card, side, options } = defineProps<{
 const emit = defineEmits<{
   (e: 'started'): void
   (e: 'side-changed'): void
-  (e: 'reviewed', item: RecordLogItem | undefined): void
+  (e: 'reviewed', grade: Grade | undefined): void
 }>()
 
 const { getRatingTimeFormat } = useRatingFormat()
@@ -101,7 +101,7 @@ function flingCard(el: HTMLElement, direction: number) {
   const onTransitionEnd = () => {
     el.removeEventListener('transitionend', onTransitionEnd)
     card_offset.value = 0
-    emit('reviewed', options?.[rating])
+    emit('reviewed', rating)
   }
 
   el.addEventListener('transitionend', onTransitionEnd)

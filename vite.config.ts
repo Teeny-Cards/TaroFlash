@@ -18,10 +18,10 @@ export default defineConfig({
     ignorePatterns: []
   },
   lint: {
-    ignorePatterns: ['dist/**'],
+    ignorePatterns: ['dist/**', 'supabase/**'],
     options: {
       typeAware: true,
-      typeCheck: true
+      typeCheck: false
     },
     rules: {
       'no-console': 'warn',

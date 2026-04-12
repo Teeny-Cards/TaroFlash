@@ -117,7 +117,7 @@ class AudioPlayer {
         preload: cfg.preload ?? true,
         volume,
         onload: () => resolve(sound),
-        onloaderror: (_, err) => reject(new Error(`Failed to load audio "${key}": ${err}`))
+        onloaderror: (_, err) => reject(new Error(`Failed to load audio "${key}": ${String(err)}`))
       })
 
       this._registerUnlock(sound)
