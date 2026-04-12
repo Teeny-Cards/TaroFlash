@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import Card from '@/components/card/index.vue'
+import Deck from '@/components/deck.vue'
 import ImageUploader from '@/components/image-uploader.vue'
 import { type ImageUploadPayload } from '@/components/image-uploader.vue'
 import UiButton from '@/components/ui-kit/button.vue'
@@ -10,7 +10,7 @@ import UiToggle from '@/components/ui-kit/toggle.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 
 const { t } = useI18n()
-const { imageUrl } = defineProps<{ imageUrl?: string }>()
+const { imageUrl, deck } = defineProps<{ imageUrl?: string; deck?: Deck }>()
 
 const emit = defineEmits<{
   (e: 'image-uploaded', file: File): void
@@ -35,14 +35,20 @@ function onImageRemoved() {
 </script>
 
 <template>
-  <div class="flex flex-col gap-6 sm:flex-row sm:gap-9">
+  <div class="w-full flex flex-col items-center gap-6 sm:flex-row sm:gap-9">
     <div class="relative flex w-min flex-col items-center pb-6">
-      <card face_classes="border-brown-100!" :front_image_url="preview_image">
-        <image-uploader v-slot="{ trigger, dragging }" @image-uploaded="onImageUploaded">
+      <div class="relative">
+        <deck :deck="deck" hide_title />
+
+        <image-uploader
+          class="absolute inset-0"
+          v-slot="{ trigger, dragging }"
+          @image-uploaded="onImageUploaded"
+        >
           <div
             v-if="dragging"
             class="absolute -inset-1.5 rounded-[inherit] border-6 border-blue-400"
-          />
+          ></div>
           <ui-button
             v-if="!preview_image"
             theme="brown-100"
@@ -60,7 +66,7 @@ function onImageRemoved() {
             @click="onImageRemoved"
           />
         </image-uploader>
-      </card>
+      </div>
 
       <ui-input
         :placeholder="t('deck.title-placeholder')"
@@ -71,7 +77,7 @@ function onImageRemoved() {
       />
     </div>
 
-    <div class="flex flex-1 flex-col gap-5">
+    <div class="w-full flex flex-1 flex-col gap-5">
       <ui-input :placeholder="t('deck.description-placeholder')" v-model:value="description" />
 
       <ui-toggle v-model:checked="isPublic">
