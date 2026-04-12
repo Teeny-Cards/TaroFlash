@@ -98,6 +98,8 @@ Once the user has reviewed the concerns in Step 4 and given the go-ahead:
 
 4. Do not document internal implementation details that are not part of the public API.
 
+5. **Check whether `README.md` needs updating.** After updating the docs, consider whether anything in the root `README.md` is affected — for example, a renamed directory, a new major system that belongs in the project structure map, or a link that now points to the wrong place. If so, update it as part of this step. Keep README changes minimal and "book cover" level — deep detail belongs in the docs, not the README.
+
 ### Step 6 — Report
 
 Output a short summary:
