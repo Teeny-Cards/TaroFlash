@@ -1,47 +1,25 @@
-# Teeny Button Menu
+# Button Menu
 
-The `TeenyButtonMenu` component is a simple dropdown that can be used to display a list of buttons. It is a very basic dropdown that does not support any advanced features such as multi-select, search, or grouping.
+`ui-button-menu` is a dropdown that renders a trigger button and a list of action buttons. It does not support multi-select, search, or grouping.
 
-## Usage
+## Basic Usage
 
-In it's basic form the ButtonMenu renders a trigger that, when clicked, displays a list of buttons. The component accepts a `trigger-label` prop which is the label for the trigger button.
-
-::: details Note on Actions
-The buttons are defined using the `actions` prop. The actions prop is of type `Action[]` where `Action` is defined as:
-
-```typescript
-interface Action {
-  label: string
-  action: () => void
-  variant?: string
-  inverted?: boolean
-  iconLeft?: string
-  iconRight?: string
-  iconOnly?: boolean
-  size?: string
-}
-```
-
-:::
-
-example:
+The `actions` prop defines the buttons shown in the dropdown. `trigger-label` sets the label of the trigger button.
 
 ```vue
 <ui-kit:button-menu trigger-label="Menu" :actions="moreMenuActions" />
 
 <script setup>
-import TeenyButtonMenu from '@/components/TeenyButtonMenu.vue'
-
 const moreMenuActions = [
   {
     label: 'Select',
-    action: () => console.log('Edit'),
+    action: () => console.log('Select'),
     inverted: true,
     iconLeft: 'check'
   },
   {
     label: 'Move',
-    action: () => console.log('Delete'),
+    action: () => console.log('Move'),
     inverted: true,
     iconLeft: 'arrow-forward'
   },
@@ -56,11 +34,26 @@ const moreMenuActions = [
 </script>
 ```
 
+::: details Action type
+
+```ts
+interface Action {
+  label: string
+  action: () => void
+  variant?: string
+  inverted?: boolean
+  iconLeft?: string
+  iconRight?: string
+  iconOnly?: boolean
+  size?: string
+}
+```
+
+:::
+
 ## Trigger Variants
 
-The trigger button can be customized using the `variant` and `inverted` props. The `variant` prop can be set to `primary`, `muted`, or `danger`. The `inverted` prop can be set to `true` to invert the colors of the button.
-
-example:
+Customize the trigger button's appearance with `variant` and `inverted`:
 
 ```vue
 <ui-kit:button-menu trigger-label="Menu" :actions="moreMenuActions" variant="danger" />
@@ -68,51 +61,43 @@ example:
 
 ## Custom Trigger
 
-You can also use a custom trigger by using the `trigger` slot. The slot receives a `toggleDropdown` function that can be used to open and close the menu, as well as an `open` boolean that can be used to conditionally render the open state of the menu.
-
-example:
+Use the `trigger` slot to replace the default trigger button entirely. The slot provides `toggleDropdown` and `open`:
 
 ```vue
 <ui-kit:button-menu :actions="moreMenuActions">
   <template #trigger="{ toggleDropdown, open }">
-    <ui-kit:button @click="toggleDropdown" :icon-left="open ? 'expand-less' : 'expand-more'" icon-only />
+    <ui-button @click="toggleDropdown" :icon-left="open ? 'expand-less' : 'expand-more'" icon-only />
   </template>
 </ui-kit:button-menu>
 ```
 
 ## Custom Dropdown Content
 
-You can also use a custom dropdown content by using the `dropdown` slot. The slot receives a `closeDropdown` function that can be used to close the menu.
-
-example:
+Use the `dropdown` slot to replace the default action list. The slot provides `closeDropdown`:
 
 ```vue
 <ui-kit:button-menu trigger-label="Menu" :actions="moreMenuActions">
   <template #dropdown="{ closeDropdown }">
     <div class="bg-parchment p-4 rounded-[10px] w-max">
       <p>Custom dropdown content</p>
-      <ui-kit:button @click="closeDropdown">Close</ui-kit:button>
+      <ui-button @click="closeDropdown">Close</ui-button>
     </div>
   </template>
 </ui-kit:button-menu>
 ```
 
-## Detailed Prop Specifications
+## Props
 
-Below is a table delineating the available props, their expected data types, default values, and a brief description:
+| Prop            | Type       | Default     | Description                                   |
+| --------------- | ---------- | ----------- | --------------------------------------------- |
+| `trigger-label` | String     | `undefined` | Label for the trigger button                  |
+| `actions`       | `Action[]` | `[]`        | List of actions to display in the dropdown    |
+| `variant`       | String     | `primary`   | Variant of the trigger button                 |
+| `inverted`      | Boolean    | `false`     | Whether the trigger button should be inverted |
 
-| Prop           | Type     | Default     | Description                                    |
-| -------------- | -------- | ----------- | ---------------------------------------------- |
-| `triggerLabel` | String   | `undefined` | The label for the trigger button               |
-| `actions`      | Action[] | `[]`        | The list of actions to display in the dropdown |
-| `variant`      | String   | `primary`   | The variant of the trigger button              |
-| `inverted`     | Boolean  | `false`     | Whether the trigger button should be inverted  |
+## Slots
 
-## Detailed Slot Specifications
-
-Below is a table delineating the available slots and their expected data:
-
-| Slot       | Props                                         | Description          |
-| ---------- | --------------------------------------------- | -------------------- |
-| `trigger`  | `toggleDropdown: () => void`, `open: boolean` | The trigger button   |
-| `dropdown` | `closeDropdown: () => void`                   | The dropdown content |
+| Slot       | Props                                         | Description                         |
+| ---------- | --------------------------------------------- | ----------------------------------- |
+| `trigger`  | `toggleDropdown: () => void`, `open: boolean` | Replaces the default trigger button |
+| `dropdown` | `closeDropdown: () => void`                   | Replaces the default action list    |

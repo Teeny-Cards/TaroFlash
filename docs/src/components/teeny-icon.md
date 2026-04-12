@@ -1,53 +1,33 @@
-# Teeny Icon
+# Icon
 
-The Teeny Icon component, under the hood, is a simple SVG wrapper that accepts a filename corresponding to the desired icon located in `src/icons/svgs`. This component is designed to be used in conjunction with other components, such as buttons, to enhance the visual appeal of your application.
+`ui-icon` is a simple SVG wrapper. It accepts a filename from `src/assets/svgs` and renders the corresponding icon.
 
-## Usage
-
-To use the Teeny Icon component, simply import it into your component file and include it in your template:
+## Basic Usage
 
 ```vue
-<template>
-  <ui-kit:icon src="close" />
-</template>
-
-<script setup>
-import TeenyIcon from '@/components/TeenyComponents/TeenyIcon.vue'
-</script>
+<ui-icon src="close" />
 ```
 
-The `src` prop accepts a string corresponding to the SVG icon's filename located in `src/assets/svgs`.
-
-Example of a basic icon:
+## Sizes
 
 ```vue
-<ui-kit:icon src="close" />
-```
-
-## Size
-
-The Teeny Icon component also accepts an optional `size` prop, which allows you to adjust the icon's dimensions. Available options include `large`, `base`, `small`, or `teeny`, enabling you to maintain design consistency across different sections of your application.
-
-Example of different sizes:
-
-```vue
-<ui-kit:icon src="delete" size="large" />
-<ui-kit:icon src="delete" size="base" />
-<ui-kit:icon src="delete" size="small" />
-<ui-kit:icon src="delete" size="teeny" />
+<ui-icon src="delete" size="large" />
+<ui-icon src="delete" size="base" />
+<ui-icon src="delete" size="small" />
+<ui-icon src="delete" size="xs" />
 ```
 
 ## Styling
 
-Since the icon component, under the hood, is a simple SVG wrapper, you can easily apply color to the icon by adding a text color class to the component.
+Apply color by adding a text color class — the SVG inherits `currentColor`:
 
 ```vue
-<ui-kit:icon src="delete" class="text-red" />
+<ui-icon src="delete" class="text-red" />
 ```
 
 ## Available Icons
 
-The Teeny Icon component can render any svg in the `src/assets/svgs` directory. The following icons are currently available:
+`ui-icon` can render any SVG in `src/assets/svgs`. Currently available:
 
 - `arrow-back`
 - `arrow-forward`
