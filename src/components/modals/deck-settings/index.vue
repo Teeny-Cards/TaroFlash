@@ -45,16 +45,17 @@ async function onDeleted() {
 </script>
 
 <template>
-  <div data-testid="deck-settings-container" class="relative w-full sm:w-auto">
+  <div data-testid="deck-settings-container" class="relative w-full h-full sm:w-auto">
     <div
       data-testid="deck-settings"
-      class="bg-brown-300 shadow-lg flex flex-col overflow-hidden rounded-t-8 sm:rounded-10"
+      class="bg-brown-300 shadow-lg flex flex-col justify-between overflow-hidden rounded-t-8 sm:rounded-b-10 h-full"
     >
       <header-config :selected-tab="tab" @change-tab="tab = $event" />
 
-      <section data-testid="deck-settings__body" class="p-6 sm:p-12 sm:pt-8">
+      <section data-testid="deck-settings__body" class="p-6 sm:p-12 sm:pt-8 h-full">
         <tab-general
           v-if="tab === 'general'"
+          :deck="deck"
           :image-url="undefined"
           v-model:title="settings.title"
           v-model:description="settings.description"
@@ -84,25 +85,24 @@ async function onDeleted() {
 
       <div data-testid="deck-settings__actions" class="flex w-full justify-end gap-3 px-6 pb-6">
         <ui-button
-          theme="grey-400"
-          icon-left="close"
-          class="sm:ring-brown-300 sm:ring-7"
-          @click="close(false)"
-        >
-          {{ t('common.cancel') }}
-        </ui-button>
-
-        <ui-button
           v-if="deck"
           icon-left="delete"
           theme="red-500"
+          size="xl"
           class="sm:ring-brown-300 sm:ring-7"
           @click="onDeleted"
+          full-width
         >
           {{ t('common.delete') }}
         </ui-button>
 
-        <ui-button icon-left="check" class="sm:ring-brown-300 sm:ring-7" @click="onSave">
+        <ui-button
+          icon-left="check"
+          class="sm:ring-brown-300 sm:ring-7"
+          size="xl"
+          @click="onSave"
+          full-width
+        >
           {{ deck ? t('common.save') : t('common.create') }}
         </ui-button>
       </div>

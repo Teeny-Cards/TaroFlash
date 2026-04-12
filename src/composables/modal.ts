@@ -1,5 +1,27 @@
-import { ref, markRaw } from 'vue'
+import { ref, markRaw, inject, onUnmounted, type InjectionKey } from 'vue'
 import uid from '@/utils/uid'
+
+/** Provided by modal-slot.vue so any descendant can identify which modal it lives in. */
+export const MODAL_ID_KEY: InjectionKey<string> = Symbol('modalId')
+
+/** Handlers registered via useModalRequestClose, keyed by modal id. */
+const request_close_handlers = new Map<string, () => void>()
+
+/**
+ * Call this inside any component that lives inside a modal to register a handler
+ * that runs when the backdrop is clicked or esc is pressed.
+ * The handler is responsible for deciding whether/how to actually close by calling
+ * the close function passed as a prop.
+ */
+export function useModalRequestClose(handler: () => void) {
+  const id = inject(MODAL_ID_KEY)
+  if (!id) return
+
+  request_close_handlers.set(id, handler)
+  onUnmounted(() => request_close_handlers.delete(id))
+}
+
+export { request_close_handlers }
 
 export type ModalMode = 'dialog' | 'mobile-sheet' | 'popup'
 

@@ -15,6 +15,7 @@ export type ButtonProps = {
   fancyHover?: boolean
   loading?: boolean
   sfx?: SfxOptions
+  fullWidth?: boolean
 }
 
 const {
@@ -25,7 +26,8 @@ const {
   iconRight,
   iconLeft,
   fancyHover = true,
-  sfx = {}
+  sfx = {},
+  fullWidth = false
 } = defineProps<ButtonProps>()
 
 const merged_sfx = computed(() => {
@@ -48,7 +50,8 @@ const merged_sfx = computed(() => {
       {
         'ui-kit-btn--icon-only': iconOnly,
         'ui-kit-btn--inverted': inverted,
-        'rounded-full!': roundedFull
+        'rounded-full!': roundedFull,
+        'w-full!': fullWidth
       }
     ]"
   >

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
 import logger from '@/utils/logger'
 
 export type ImageUploadPayload = {
@@ -7,44 +7,56 @@ export type ImageUploadPayload = {
   file: File
 }
 
-const { allow_drop = true } = defineProps<{
-  allow_drop?: boolean
-}>()
+defineProps<{ allow_drop?: boolean }>()
 
 const emit = defineEmits<{
   (e: 'image-uploaded', event: ImageUploadPayload): void
 }>()
 
-const selectedFile = ref<File>()
 const loading = ref(false)
-const dragging = ref(false)
+const drag_counter = ref(0)
+const dragging = computed(() => drag_counter.value > 0)
 
 const fileInput = useTemplateRef<HTMLInputElement>('fileInput')
+const dropZone = useTemplateRef<HTMLDivElement>('dropZone')
 
 onMounted(() => {
-  if (!allow_drop) return
-
-  document.addEventListener('dragover', startDrag)
-  document.addEventListener('drop', endDrag)
-  document.addEventListener('dragleave', endDrag)
+  const el = dropZone.value
+  if (!el) return
+  el.addEventListener('dragenter', onDragEnter)
+  el.addEventListener('dragleave', onDragLeave)
+  el.addEventListener('dragover', onDragOver)
+  el.addEventListener('drop', onDrop)
 })
 
 onBeforeUnmount(() => {
-  if (!allow_drop) return
-
-  document.removeEventListener('dragover', startDrag)
-  document.removeEventListener('drop', endDrag)
-  document.removeEventListener('dragleave', endDrag)
+  const el = dropZone.value
+  if (!el) return
+  el.removeEventListener('dragenter', onDragEnter)
+  el.removeEventListener('dragleave', onDragLeave)
+  el.removeEventListener('dragover', onDragOver)
+  el.removeEventListener('drop', onDrop)
 })
 
-function startDrag(e: DragEvent) {
+function onDragEnter(e: DragEvent) {
   e.preventDefault()
-  dragging.value = true
+  drag_counter.value++
 }
 
-function endDrag(e: DragEvent) {
+function onDragLeave(e: DragEvent) {
   e.preventDefault()
-  dragging.value = false
+  drag_counter.value--
+}
+
+function onDragOver(e: DragEvent) {
+  e.preventDefault()
+}
+
+function onDrop(e: DragEvent) {
+  e.preventDefault()
+  drag_counter.value = 0
+  const file = e.dataTransfer?.files[0]
+  if (file) processFile(file)
 }
 
 function triggerDialog() {
@@ -53,52 +65,45 @@ function triggerDialog() {
 
 async function handleFileChange(event: Event): Promise<void> {
   const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (file) processFile(file)
+  // Reset so the same file can be re-selected
+  input.value = ''
+}
 
-  if (input.files) {
-    const file = input.files[0]
+async function processFile(file: File): Promise<void> {
+  if (!file.type.startsWith('image/')) return
 
-    if (file && file.type.startsWith('image/')) {
-      selectedFile.value = file
-
-      try {
-        const preview = await getImagePreview(file)
-        emit('image-uploaded', { preview, file: selectedFile.value })
-      } catch (err) {
-        // TODO: Show error toast
-        logger.error((err as Error).message)
-        throw err
-      }
-    }
+  loading.value = true
+  try {
+    const preview = await getImagePreview(file)
+    emit('image-uploaded', { preview, file })
+  } catch (err) {
+    logger.error((err as Error).message)
+  } finally {
+    loading.value = false
   }
 }
 
 function getImagePreview(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const fr = new FileReader()
-
-    fr.onerror = (err) => reject(err)
-    fr.onload = (e: ProgressEvent<FileReader>) => {
-      if (e.target) {
-        resolve(e.target.result as string)
-      }
-    }
-
+    fr.onerror = reject
+    fr.onload = (e) => resolve(e.target!.result as string)
     fr.readAsDataURL(file)
   })
 }
 </script>
 
 <template>
-  <div class="relative">
+  <div ref="dropZone">
     <slot :trigger="triggerDialog" :loading="loading" :dragging="dragging" />
-
     <input
-      type="file"
       ref="fileInput"
-      @change="handleFileChange"
+      type="file"
       accept="image/*"
-      class="absolute inset-0 cursor-pointer opacity-0"
-      :class="{ 'pointer-events-none': !allow_drop }"
+      class="sr-only"
+      @change="handleFileChange"
     />
   </div>
 </template>
