@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
-import { mount, flushPromises } from '@vue/test-utils'
+import { mount, shallowMount, flushPromises } from '@vue/test-utils'
 import { FSRS, generatorParameters, createEmptyCard, Rating } from 'ts-fsrs'
 import StudyCard from '@/components/modals/study-session/study-card.vue'
 
@@ -273,6 +273,21 @@ describe('StudyCard', () => {
     await flushPromises()
 
     expect(wrapper.emitted('reviewed')).toBeFalsy()
+  })
+
+  // ── cover_config forwarding ────────────────────────────────────────────────
+
+  test('forwards cover_config prop to the Card component', () => {
+    const cover_config = { bg_color: 'blue-500', pattern: 'stars' }
+    const wrapper = shallowMount(StudyCard, {
+      props: { side: 'front', cover_config }
+    })
+    expect(wrapper.findComponent({ name: 'Card' }).props('cover_config')).toEqual(cover_config)
+  })
+
+  test('forwards undefined when cover_config is not provided', () => {
+    const wrapper = shallowMount(StudyCard, { props: { side: 'front' } })
+    expect(wrapper.findComponent({ name: 'Card' }).props('cover_config')).toBeUndefined()
   })
 
   test('drag does not move card when side is cover', async () => {
