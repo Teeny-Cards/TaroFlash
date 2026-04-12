@@ -1,41 +1,34 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import UiIcon from '@/components/ui-kit/icon.vue'
 import UiPopover from '@/components/ui-kit/popover.vue'
 import UiButton from '@/components/ui-kit/button.vue'
-import UiRadio from '@/components/ui-kit/radio.vue'
 
 type CoverColorPickerProps = {
-  supported_themes: MemberTheme[]
-  selected_theme?: MemberTheme
   label: string
-  allowNone?: boolean
   icon?: string
 }
 
-const { supported_themes, selected_theme } = defineProps<CoverColorPickerProps>()
+defineProps<CoverColorPickerProps>()
 
 const emit = defineEmits<{
   (e: 'select', theme: MemberTheme | undefined): void
 }>()
 
-const { t } = useI18n()
-const open = ref(false)
+const slots = defineSlots<{
+  default(): any
+}>()
 
-function select(theme: MemberTheme | undefined) {
-  emit('select', theme)
-}
+const open = ref(false)
 </script>
 
 <template>
   <ui-popover
     data-testid="cover-designer-popover-container"
-    position="left"
-    :gap="24"
-    :use_arrow="false"
+    position="top"
+    :gap="12"
     :open="open"
     :fallback_placements="['top']"
+    shadow
     @close="open = false"
   >
     <template #trigger>
@@ -48,24 +41,17 @@ function select(theme: MemberTheme | undefined) {
           icon-only
           theme="brown-100"
           size="lg"
+          :mobile-tooltip="false"
         >
           {{ label }}
         </ui-button>
       </div>
     </template>
 
-    <div
-      data-testid="cover-designer-popover"
-      class="rounded-4 shadow-sm bg-brown-100 p-4 shadow-xl grid grid-cols-2 gap-3"
-    >
-      <ui-radio
-        v-for="theme in supported_themes"
-        :key="theme"
-        :theme="theme"
-        :checked="selected_theme === theme"
-        inverted
-        @click="select(theme)"
-      />
-    </div>
+    <template #arrow>
+      <div class="size-full rotate-45 rounded-br-1 bg-brown-100" />
+    </template>
+
+    <slot></slot>
   </ui-popover>
 </template>

@@ -76,25 +76,23 @@ onUnmounted(() => {
   }
 })
 
-const isSide = (side: string) => placement.value.startsWith(side)
+const side = computed(() => placement.value.split('-')[0] as 'top' | 'right' | 'bottom' | 'left')
 
-const arrowLeft = computed(() => {
-  if (isSide('left')) return `calc(100% - ${ARROW_SIZE}px)` // arrow on right edge
-  if (isSide('right')) return `-${ARROW_SIZE}px` // arrow on left edge
+const staticSideMap = { top: 'bottom', right: 'left', bottom: 'top', left: 'right' } as const
 
-  const x = middlewareData.value.arrow?.x
-  return x ? `${x}px` : ''
+const arrowStyle = computed(() => {
+  const { x, y } = middlewareData.value.arrow ?? {}
+  const staticSide = staticSideMap[side.value]
+
+  return {
+    position: 'absolute' as const,
+    left: x != null ? `${x}px` : '',
+    top: y != null ? `${y}px` : '',
+    right: '',
+    bottom: '',
+    [staticSide]: `-${ARROW_SIZE}px`,
+  }
 })
-
-const arrowTop = computed(() => {
-  if (isSide('top')) return `calc(100% - ${ARROW_SIZE}px)` // arrow on bottom edge
-  if (isSide('bottom')) return `-${ARROW_SIZE}px` // arrow on top edge
-
-  const y = middlewareData.value.arrow?.y
-  return y ? `${y}px` : ''
-})
-
-const side = computed(() => placement.value.split('-')[0])
 
 function onPageClick(e: Event): void {
   const target = e.target as HTMLElement
@@ -152,12 +150,12 @@ watch(
           ref="arrowRef"
           data-testid="ui-kit-popover__arrow"
           class="ui-kit-popover__arrow"
-          :style="{
-            position: 'absolute',
-            left: arrowLeft,
-            top: arrowTop
-          }"
-        />
+          :style="arrowStyle"
+        >
+          <slot name="arrow" :side="side">
+            <div class="ui-kit-popover__arrow-default" />
+          </slot>
+        </div>
       </div>
     </Transition>
   </div>
@@ -183,12 +181,16 @@ watch(
 }
 
 .ui-kit-popover__arrow {
-  background-color: var(--color-brown-300);
-  border-radius: var(--radius-1);
-  z-index: -10;
-
   width: 20px;
   height: 20px;
+  z-index: -10;
+}
+
+.ui-kit-popover__arrow-default {
+  width: 100%;
+  height: 100%;
+  background-color: var(--popover-arrow-color, var(--color-brown-300));
+  border-radius: var(--radius-1);
   rotate: 45deg;
 }
 

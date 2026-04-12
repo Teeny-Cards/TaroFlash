@@ -31,6 +31,7 @@ async function onSave() {
     data-testid="deck-settings-container"
     fill-height
     title="Deck Settings"
+    class="bg-brown-300 rounded-t-8 sm:rounded-b-8"
     @close="close(false)"
   >
     <template #after-header>
@@ -38,14 +39,18 @@ async function onSave() {
     </template>
 
     <template #body>
-      <tab-general v-if="tab === 'general'" :deck="deck" />
-      <tab-study v-else-if="tab === 'study'" />
+      <div data-testid="deck-settings__body" class="px-4">
+        <tab-general v-if="tab === 'general'" :deck="deck" />
+        <tab-study v-else-if="tab === 'study'" />
+      </div>
     </template>
 
     <template #footer>
-      <ui-button class="sm:ring-brown-300 sm:ring-7" size="xl" @click="onSave" full-width>
-        {{ deck ? t('common.save') : t('common.create') }}
-      </ui-button>
+      <div data-testid="deck-settings__footer" class="px-4 pb-4">
+        <ui-button size="xl" @click="onSave" full-width>
+          {{ deck ? t('common.save') : t('common.create') }}
+        </ui-button>
+      </div>
     </template>
   </mobile-sheet>
 </template>

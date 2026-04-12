@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import Card from '@/components/card/index.vue'
-import coverDesignerColorPicker from './cover-designer-color-picker.vue'
+import CoverDesignerPopover from './cover-designer-popover.vue'
 import type { ImageUploadPayload } from '@/components/image-uploader.vue'
+import CoverDesignerBgColorPicker from './cover-designer-bg-color-picker.vue'
 
 type CoverDesignerProps = {
   coverConfig?: DeckCover
@@ -25,10 +26,6 @@ const supported_themes: MemberTheme[] = [
   'red-500',
   'orange-500'
 ]
-
-function onBgColorChange(theme: MemberTheme | undefined) {
-  config.bg_color = theme
-}
 </script>
 
 <template>
@@ -38,24 +35,25 @@ function onBgColorChange(theme: MemberTheme | undefined) {
     </div>
 
     <div data-testid="tab-cover__settings" class="grid max-sm:grid-cols-4 sm:grid-rows-4 gap-4">
-      <cover-designer-color-picker
-        label="BG Color"
-        icon="paint-brush"
-        :supported_themes="supported_themes"
-        :selected_theme="config.bg_color"
-        @select="onBgColorChange"
-      />
-      <cover-designer-color-picker
+      <CoverDesignerPopover label="BG Color" icon="paint-brush">
+        <CoverDesignerBgColorPicker
+          :supported_themes="supported_themes"
+          :bg_color="config.bg_color"
+          @select="config.bg_color = $event"
+        />
+      </CoverDesignerPopover>
+
+      <CoverDesignerPopover
         label="Border Color"
         icon="border-outer"
         :supported_themes="supported_themes"
       />
-      <cover-designer-color-picker
+      <CoverDesignerPopover
         label="Pattern"
         icon="texture-add"
         :supported_themes="supported_themes"
       />
-      <cover-designer-color-picker
+      <CoverDesignerPopover
         label="Pattern Color"
         icon="stroke-full"
         :supported_themes="supported_themes"
