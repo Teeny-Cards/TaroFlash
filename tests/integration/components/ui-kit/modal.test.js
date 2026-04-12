@@ -1,8 +1,8 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 import { mount } from '@vue/test-utils'
-import { defineComponent, nextTick } from 'vue'
+import { defineComponent, h, nextTick } from 'vue'
 import ModalUiKit from '@/components/ui-kit/modal.vue'
-import { useModal } from '@/composables/modal'
+import { useModal, useModalRequestClose, request_close_handlers } from '@/composables/modal'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
 
@@ -39,10 +39,11 @@ vi.mock('@/composables/use-media-query', () => ({
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-// Module-level modal_stack persists across tests — drain it before each one.
+// Module-level state persists across tests — reset both structures before each one.
 beforeEach(() => {
   const { modal_stack, pop } = useModal()
   while (modal_stack.value.length > 0) pop()
+  request_close_handlers.clear()
 })
 
 const ModalStub = defineComponent({
@@ -229,6 +230,103 @@ describe('modal.vue', () => {
 
       // Element renders but without the blur/tint modifier — presence is sufficient to assert
       expect(wrapper.find('[data-testid="ui-kit-modal-backdrop"]').exists()).toBe(true)
+    })
+  })
+})
+
+// ── backdrop click / ESC requestClose dispatch ────────────────────────────────
+
+describe('requestClose dispatch', () => {
+  // Clear shortcut mock call history before each test so we can find the ESC handler reliably
+  beforeEach(() => {
+    mockRegister.mockClear()
+  })
+
+  function makeHandlerComponent(requestClose) {
+    return defineComponent({
+      setup() {
+        useModalRequestClose(requestClose)
+      },
+      render: () => h('div', { 'data-testid': 'handler-component' })
+    })
+  }
+
+  describe('backdrop click', () => {
+    test('calls the registered requestClose handler when one is registered', async () => {
+      const requestClose = vi.fn()
+      const { open, modal_stack } = useModal()
+      open(makeHandlerComponent(requestClose))
+
+      const wrapper = mountModal()
+      await nextTick()
+
+      await wrapper.find('[data-testid="ui-kit-modal-backdrop"]').trigger('click')
+
+      expect(requestClose).toHaveBeenCalledOnce()
+      // Handler is responsible for closing — modal should still be open
+      expect(modal_stack.value).toHaveLength(1)
+    })
+
+    test('pops the top modal when no requestClose handler is registered', async () => {
+      const { open, modal_stack } = useModal()
+      open(ModalStub)
+
+      const wrapper = mountModal()
+      await nextTick()
+
+      await wrapper.find('[data-testid="ui-kit-modal-backdrop"]').trigger('click')
+
+      expect(modal_stack.value).toHaveLength(0)
+    })
+
+    test('calls the handler for the top modal only when multiple are stacked', async () => {
+      const bottomHandler = vi.fn()
+      const topHandler = vi.fn()
+      const { open, modal_stack } = useModal()
+      open(makeHandlerComponent(bottomHandler))
+      open(makeHandlerComponent(topHandler))
+
+      const wrapper = mountModal()
+      await nextTick()
+
+      await wrapper.find('[data-testid="ui-kit-modal-backdrop"]').trigger('click')
+
+      expect(topHandler).toHaveBeenCalledOnce()
+      expect(bottomHandler).not.toHaveBeenCalled()
+      expect(modal_stack.value).toHaveLength(2)
+    })
+  })
+
+  describe('ESC key', () => {
+    function invokeEscHandler() {
+      const escCall = mockRegister.mock.calls.find((c) => c[0]?.combo === 'esc')
+      escCall[0].handler()
+    }
+
+    test('calls the registered requestClose handler on ESC', async () => {
+      const requestClose = vi.fn()
+      const { open, modal_stack } = useModal()
+      open(makeHandlerComponent(requestClose))
+
+      mountModal()
+      await nextTick()
+
+      invokeEscHandler()
+
+      expect(requestClose).toHaveBeenCalledOnce()
+      expect(modal_stack.value).toHaveLength(1)
+    })
+
+    test('pops the top modal on ESC when no handler is registered', async () => {
+      const { open, modal_stack } = useModal()
+      open(ModalStub)
+
+      mountModal()
+      await nextTick()
+
+      invokeEscHandler()
+
+      expect(modal_stack.value).toHaveLength(0)
     })
   })
 })

@@ -3,6 +3,7 @@ import StudyCard from './study-card.vue'
 import RatingButtons from './rating-buttons.vue'
 import FinishAnimation from './finish-animation.vue'
 import { useFlashcardSession } from '@/composables/study-session/flashcard-session'
+import { useModalRequestClose } from '@/composables/modal'
 import { type Grade } from 'ts-fsrs'
 import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 import Card from '@/components/card/index.vue'
@@ -24,6 +25,9 @@ const emit = defineEmits<{
     study_all_used: boolean
   ): void
 }>()
+
+defineExpose({ requestClose })
+useModalRequestClose(requestClose)
 
 const {
   mode,
@@ -70,7 +74,7 @@ function onSideChanged() {
   flipCurrentCard()
 }
 
-/** Called by the shell's close button via the exposed requestClose(). */
+/** Called by the shell's close button and by the modal backdrop / esc handler. */
 function requestClose() {
   if (is_cover.value || reviewed_count.value === 0) {
     emit('closed')
@@ -85,8 +89,6 @@ function requestClose() {
     config.study_all_cards
   )
 }
-
-defineExpose({ requestClose })
 
 function onStart() {
   emitSfx('ui.music_plink_chordyes')
