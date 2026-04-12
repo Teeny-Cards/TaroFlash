@@ -142,6 +142,7 @@ async function onCardReviewed(grade?: Grade) {
         size="xl"
         :side="next_card_side"
         v-bind="next_card"
+        :cover_config="deck.cover_config"
         class="absolute! pointer-events-none"
         @flip-complete="onNextCardFlipped"
       />
@@ -152,11 +153,18 @@ async function onCardReviewed(grade?: Grade) {
         :card="active_card"
         :side="current_card_side"
         :options="active_card?.preview"
+        :cover_config="deck.cover_config"
         @started="onStart"
         @side-changed="onSideChanged"
         @reviewed="onCardReviewed"
       />
-      <card data-testid="study-card-skeleton" side="cover" v-else size="xl" />
+      <card
+        data-testid="study-card-skeleton"
+        side="cover"
+        :cover_config="deck.cover_config"
+        v-else
+        size="xl"
+      />
     </div>
 
     <rating-buttons
