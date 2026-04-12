@@ -2,6 +2,7 @@ import type { Component } from 'vue'
 import { createPhoneRuntime } from './runtime'
 import { useI18n } from 'vue-i18n'
 
+export type TransitionPreset = 'slide-left' | 'slide-right' | 'pop-up' | 'pop-down' | 'none'
 export type PhoneAppDisplay = 'full' | 'panel'
 export type MountPolicy = 'immediate' | 'lazy'
 
@@ -41,12 +42,10 @@ export type TriggerApp = BaseApp & {
 
 export type AppController = {
   setup?: () => void | Promise<void>
-  destroy?: () => void | Promise<void>
   run?: () => void | Promise<void>
 }
 
 export type PhoneApp = ViewApp | WidgetApp | TriggerApp
-export type Manifest = Omit<ViewApp, 'id'> | Omit<WidgetApp, 'id'> | Omit<TriggerApp, 'id'>
 export type PhoneRuntime = ReturnType<typeof createPhoneRuntime>
 export type PhoneOS = PhoneRuntime['phoneOS']
 

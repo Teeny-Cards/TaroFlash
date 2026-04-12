@@ -203,7 +203,14 @@ describe('useModalRequestClose', () => {
   test('does nothing when MODAL_ID_KEY is not provided', () => {
     const handler = vi.fn()
 
-    mount(defineComponent({ setup() { useModalRequestClose(handler) }, render: () => h('div') }))
+    mount(
+      defineComponent({
+        setup() {
+          useModalRequestClose(handler)
+        },
+        render: () => h('div')
+      })
+    )
 
     expect(request_close_handlers.size).toBe(0)
   })

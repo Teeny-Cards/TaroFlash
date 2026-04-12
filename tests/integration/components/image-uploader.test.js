@@ -139,7 +139,8 @@ describe('ImageUploader', () => {
     test('is false initially', () => {
       const wrapper = mount(ImageUploader, {
         slots: {
-          default: ({ loading }) => h('div', { 'data-testid': 'slot', 'data-loading': String(loading) })
+          default: ({ loading }) =>
+            h('div', { 'data-testid': 'slot', 'data-loading': String(loading) })
         }
       })
 

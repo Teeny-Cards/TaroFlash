@@ -1,6 +1,6 @@
-import { defineApp } from '@/phone/system/install-apps'
+import type { TriggerApp } from '@/phone/system/types'
 
-export default defineApp({
+export default {
   title: 'Inventory',
   type: 'trigger',
   launcher: {
@@ -8,4 +8,4 @@ export default defineApp({
     hover_icon_src: 'inventory-hover',
     theme: 'blue-400'
   }
-})
+} satisfies Omit<TriggerApp, 'id'>

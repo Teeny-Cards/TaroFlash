@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import AppLauncher from '@/phone/components/app-launcher.vue'
 import UiButton from '@/components/ui-kit/button.vue'
-import { type PhoneApp } from '@/phone/system/types'
+import { type PhoneApp, type TransitionPreset } from '@/phone/system/types'
 import { type AppSession } from '@/phone/system/runtime'
 import { computed } from 'vue'
-import { type TransitionPreset } from '@/phone/system/phone-navigator'
 import { useMediaQuery } from '@/composables/use-media-query'
 
-const { apps, transition, transitioning, active_session } = defineProps<{
+const { apps, transition, active_session } = defineProps<{
   apps: PhoneApp[]
   transition: TransitionPreset
-  transitioning: boolean
   active_session: AppSession | null
 }>()
 
@@ -43,7 +41,7 @@ const controller = computed(() => {
       @click="emit('close')"
     />
 
-    <app-launcher v-if="!app" :apps="apps" :transitioning="transitioning" @close="emit('close')" />
+    <app-launcher v-if="!app" :apps="apps" @close="emit('close')" />
 
     <div
       data-testid="app-viewport"

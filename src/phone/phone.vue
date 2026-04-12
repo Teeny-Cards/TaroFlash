@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { usePhoneNavigator } from '@/phone/system/phone-navigator'
-import { onMounted, ref, provide, computed } from 'vue'
+import { onMounted, ref, provide } from 'vue'
 import { emitSfx } from '@/sfx/bus'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { installApps } from '@/phone/system/install-apps'
 import { type PhoneApp, type PhoneContext } from '@/phone/system/types'
 import { createPhoneRuntime } from '@/phone/system/runtime'
+import { useModal } from '@/composables/modal'
 import phoneSm from '@/phone/components/phone-sm.vue'
 import phoneBase from '@/phone/components/phone-base.vue'
-import phoneLg from './components/phone-lg.vue'
 import { useI18n } from 'vue-i18n'
 import { useMediaQuery } from '@/composables/use-media-query'
 import {
@@ -18,16 +17,25 @@ import {
   slideDownBlurOut
 } from '@/utils/animations/phone'
 
-const nav = usePhoneNavigator()
 const shortcuts = useShortcuts('phone', { priority: 'background' })
-const runtime = createPhoneRuntime({ nav })
+const { open: openModal, pop: popModal, modal_stack } = useModal()
 const is_pointer_coarse = useMediaQuery('coarse')
 
-const transitioning = ref(false)
 const loading = ref(false)
 const open = ref(false)
-const ctx: PhoneContext = { ...runtime.phoneOS, t: useI18n().t }
 let apps: PhoneApp[] = []
+
+const runtime = createPhoneRuntime({
+  openFullApp: (app) => {
+    openModal(app.component, {
+      backdrop: true,
+      mode: 'dialog',
+      props: { onClose: () => popModal() }
+    })
+  }
+})
+
+const ctx: PhoneContext = { ...runtime.phoneOS, t: useI18n().t }
 
 provide('phone-context', ctx)
 
@@ -43,11 +51,6 @@ onMounted(async () => {
   runtime.init(apps, ctx)
 
   loading.value = false
-})
-
-const fullscreen = computed(() => {
-  const { app } = runtime.active_session.value ?? {}
-  return app?.type === 'view' && app.display === 'full'
 })
 
 function togglePhone() {
@@ -85,7 +88,7 @@ function closePhone(force = false) {
 }
 
 function onPageClick(e: Event) {
-  if (!isInsidePhone(e)) {
+  if (!isInsidePhone(e) && modal_stack.value.length === 0) {
     closePhone(true)
   }
 }
@@ -105,11 +108,11 @@ function onCloseBasePhone(el: Element, done: () => void) {
   animation(el, done)
 }
 
-function onOpenLgPhone(el: Element, done: () => void) {
+function onOpenPhoneSm(el: Element, done: () => void) {
   slideUpBlurIn(el, done)
 }
 
-function onCloseLgPhone(el: Element, done: () => void) {
+function onClosePhoneSm(el: Element, done: () => void) {
   slideDownBlurOut(el, done)
 }
 </script>
@@ -125,38 +128,17 @@ function onCloseLgPhone(el: Element, done: () => void) {
     >
       <transition @enter="onOpenBasePhone" @leave="onCloseBasePhone">
         <phone-base
-          v-if="open && !fullscreen"
+          v-if="open"
           :apps="apps"
-          :transition="nav.transition.value"
-          :transitioning="transitioning"
+          :transition="runtime.transition.value"
           :active_session="runtime.active_session.value"
           class="z-10"
           @close="closePhone"
-        ></phone-base>
+        />
       </transition>
 
-      <transition
-        @enter="onOpenLgPhone"
-        @leave="onCloseLgPhone"
-        @before-enter="transitioning = true"
-        @after-leave="transitioning = false"
-      >
-        <phone-lg
-          v-if="open && fullscreen"
-          :active_session="runtime.active_session.value"
-          @close="closePhone"
-          class="z-10"
-        ></phone-lg>
-
-        <phone-sm v-else-if="!open" @open="openPhone"></phone-sm>
-      </transition>
-
-      <transition name="phone-backdrop">
-        <div
-          v-if="open && fullscreen"
-          data-testid="phone-backdrop"
-          class="pointer-events-auto fixed inset-0 flex items-center justify-center px-4 py-7 backdrop-blur-4 sm:bg-black/10 -z-1"
-        ></div>
+      <transition @enter="onOpenPhoneSm" @leave="onClosePhoneSm">
+        <phone-sm v-if="!open" @open="openPhone" />
       </transition>
     </div>
   </div>
@@ -165,17 +147,5 @@ function onCloseLgPhone(el: Element, done: () => void) {
 <style>
 [data-testid='phone-stage'] {
   --phone-duration: 100ms;
-}
-
-/* Backdrop */
-.phone-backdrop-enter-from,
-.phone-backdrop-leave-to {
-  opacity: 0;
-}
-.phone-backdrop-enter-active,
-.phone-backdrop-leave-active {
-  transition-property: opacity;
-  transition-timing-function: ease-in-out;
-  transition-duration: var(--phone-duration);
 }
 </style>
