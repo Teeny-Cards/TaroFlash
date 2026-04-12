@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UiIcon from '@/components/ui-kit/icon.vue'
+import Card from '@/components/card/index.vue'
 
 const { t } = useI18n()
 
@@ -20,7 +21,7 @@ const THEMES: MemberTheme[] = [
   'blue-650',
   'blue-800',
   'green-400',
-  'purple-400',
+  'purple-700',
   'purple-500',
   'pink-400',
   'red-400',
@@ -29,64 +30,50 @@ const THEMES: MemberTheme[] = [
   'orange-600'
 ]
 
-type PatternDef = { key: DeckCoverPattern; label: string; bg: string }
+type PatternDef = { key: DeckCoverPattern; label: string }
 
 const PATTERNS: PatternDef[] = [
-  {
-    key: 'dots',
-    label: 'Dots',
-    bg: 'radial-gradient(circle, PATTERN_COLOR 1.5px, transparent 1.5px)'
-  },
-  {
-    key: 'grid',
-    label: 'Grid',
-    bg: 'linear-gradient(PATTERN_COLOR 1px, transparent 1px), linear-gradient(90deg, PATTERN_COLOR 1px, transparent 1px)'
-  },
-  {
-    key: 'diagonal',
-    label: 'Lines',
-    bg: 'repeating-linear-gradient(45deg, PATTERN_COLOR, PATTERN_COLOR 1px, transparent 1px, transparent 8px)'
-  },
-  {
-    key: 'crosshatch',
-    label: 'Crosshatch',
-    bg: 'repeating-linear-gradient(45deg, PATTERN_COLOR, PATTERN_COLOR 1px, transparent 1px, transparent 8px), repeating-linear-gradient(-45deg, PATTERN_COLOR, PATTERN_COLOR 1px, transparent 1px, transparent 8px)'
-  }
+  { key: 'diagonal-stripes', label: 'Lines' },
+  { key: 'dot-grid', label: 'Dots' },
+  { key: 'wave', label: 'Wave' },
+  { key: 'saw', label: 'Saw' },
+  { key: 'bank-note', label: 'Bank Note' },
+  { key: 'aztec', label: 'Aztec' },
+  { key: 'endless-clouds', label: 'Clouds' },
+  { key: 'stars', label: 'Stars' },
+  { key: 'leaf', label: 'Leaf' }
 ]
 
-function themeVar(theme?: MemberTheme): string {
-  return theme ? `var(--color-${theme})` : 'transparent'
+// Static map — ensures all bgx-* class names appear as literals for the build scanner.
+const PATTERN_CLASS: Record<DeckCoverPattern, string> = {
+  'diagonal-stripes': 'bgx-diagonal-stripes',
+  saw: 'bgx-saw',
+  wave: 'bgx-wave',
+  'bank-note': 'bgx-bank-note',
+  aztec: 'bgx-aztec',
+  'endless-clouds': 'bgx-endless-clouds',
+  stars: 'bgx-stars',
+  leaf: 'bgx-leaf',
+  'dot-grid': 'bgx-dot-grid'
 }
 
-function patternSwatchStyle(pat: PatternDef): Record<string, string> {
-  const c = themeVar(pattern_color.value || 'grey-400')
+function patternSwatchStyle(): Record<string, string> {
   return {
-    backgroundImage: pat.bg.replaceAll('PATTERN_COLOR', c),
-    backgroundSize: '8px 8px',
-    backgroundColor: themeVar(bg_color.value || 'white')
+    backgroundColor: bg_color.value ? `var(--color-${bg_color.value})` : 'var(--color-white)',
+    '--bgx-fill': `var(--color-${pattern_color.value ?? 'grey-900'})`,
+    '--bgx-opacity': '0.5',
+    '--bgx-size': '8px'
   }
 }
 
-const previewStyle = computed((): Record<string, string> => {
-  const bgVar = themeVar(bg_color.value || 'white')
-  const borderVal = border_color.value
-    ? `4px solid ${themeVar(border_color.value)}`
-    : '4px solid transparent'
-  const base: Record<string, string> = {
-    backgroundColor: bgVar,
-    border: borderVal,
-    borderRadius: '28px'
-  }
-  if (!pattern.value) return base
-
-  const pat = PATTERNS.find((p) => p.key === pattern.value)
-  if (!pat) return base
-
-  const c = themeVar(pattern_color.value || 'grey-400')
-  base.backgroundImage = pat.bg.replaceAll('PATTERN_COLOR', c)
-  base.backgroundSize = '12px 12px'
-  return base
-})
+const previewCover = computed(
+  (): DeckCover => ({
+    bg_color: bg_color.value,
+    border_color: border_color.value,
+    pattern: pattern.value,
+    pattern_color: pattern_color.value
+  })
+)
 </script>
 
 <template>
@@ -159,7 +146,7 @@ const previewStyle = computed((): Record<string, string> => {
         <span class="text-sm font-medium text-brown-700">
           {{ t('deck.settings-modal.cover.pattern') }}
         </span>
-        <div class="flex gap-2">
+        <div class="flex flex-wrap gap-2">
           <button
             :title="t('common.none')"
             class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-2 border-2 border-brown-300 bg-brown-100 transition-all duration-75"
@@ -173,12 +160,13 @@ const previewStyle = computed((): Record<string, string> => {
             :key="pat.key"
             :title="pat.label"
             class="h-10 w-10 cursor-pointer rounded-2 border-2 transition-all duration-75"
-            :class="
+            :class="[
               pattern === pat.key
                 ? 'scale-110 border-brown-700 ring-3 ring-brown-700'
-                : 'border-brown-300 hover:scale-105'
-            "
-            :style="patternSwatchStyle(pat)"
+                : 'border-brown-300 hover:scale-105',
+              PATTERN_CLASS[pat.key]
+            ]"
+            :style="patternSwatchStyle()"
             @click="pattern = pat.key"
           />
         </div>
@@ -211,12 +199,7 @@ const previewStyle = computed((): Record<string, string> => {
     <!-- Live preview -->
     <div class="flex flex-col items-center gap-2">
       <span class="text-sm text-brown-500">{{ t('deck.settings-modal.cover.preview') }}</span>
-      <div
-        data-testid="cover-preview"
-        class="relative overflow-hidden"
-        style="width: 112px; height: 149px"
-        :style="previewStyle"
-      />
+      <card data-testid="cover-preview" size="sm" side="cover" :cover_config="previewCover" />
     </div>
   </div>
 </template>

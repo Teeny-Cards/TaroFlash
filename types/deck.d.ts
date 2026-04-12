@@ -29,7 +29,16 @@ type DeckConfig = {
   auto_play?: boolean
 }
 
-type DeckCoverPattern = 'dots' | 'grid' | 'diagonal' | 'crosshatch'
+type DeckCoverPattern =
+  | 'diagonal-stripes'
+  | 'saw'
+  | 'wave'
+  | 'bank-note'
+  | 'aztec'
+  | 'endless-clouds'
+  | 'stars'
+  | 'leaf'
+  | 'dot-grid'
 
 type DeckCover = {
   bg_color?: MemberTheme

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import CardFace from './card-face.vue'
+import CardCover from './card-cover.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
 import { type CardBase, type ImageCard } from '@type/card'
 import { getImageUrl } from '@/api/media'
@@ -12,6 +13,7 @@ type CardProps = Partial<CardBase> &
     size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
     mode?: CardEditorMode
     side?: 'front' | 'back' | 'cover'
+    cover_config?: DeckCover
     face_classes?: string
     sfx?: SfxOptions
   }
@@ -24,6 +26,7 @@ const {
   size = 'base',
   side = 'front',
   mode = 'view',
+  cover_config,
   front_image_path,
   back_image_path
 } = defineProps<CardProps>()
@@ -78,10 +81,7 @@ function onLeave(el: Element, done: () => void) {
     <slot></slot>
 
     <transition mode="out-in" @enter="onEnter" @leave="onLeave">
-      <div
-        v-if="side === 'cover'"
-        class="h-full w-full bg-purple-500 rounded-(--face-radius)"
-      ></div>
+      <card-cover v-if="side === 'cover'" :cover="cover_config" />
 
       <slot name="front" v-else-if="side === 'front'">
         <card-face
