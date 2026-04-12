@@ -103,7 +103,7 @@ function onLeave(el: Element, done: () => void) {
       :class="MODAL_MODE_CONFIG[modal.mode].containerClass"
       :data-modal-mode="modal.mode"
     >
-      <modal-slot :id="modal.id">
+      <modal-slot :id="modal.id" :context="modal.context">
         <component
           :is="modal.component"
           v-bind="modal.componentProps"

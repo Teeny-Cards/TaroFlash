@@ -3,7 +3,7 @@ import { onMounted, ref, provide } from 'vue'
 import { emitSfx } from '@/sfx/bus'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { installApps } from '@/phone/system/install-apps'
-import { type PhoneApp, type PhoneContext } from '@/phone/system/types'
+import { type PhoneApp, type PhoneContext, APP_CTX_KEY } from '@/phone/system/types'
 import { createPhoneRuntime } from '@/phone/system/runtime'
 import { useModal } from '@/composables/modal'
 import phoneSm from '@/phone/components/phone-sm.vue'
@@ -26,12 +26,19 @@ const open = ref(false)
 let apps: PhoneApp[] = []
 
 const runtime = createPhoneRuntime({
-  openFullApp: (app) => {
+  openFullApp: (app, controller) => {
     openModal(app.component, {
       backdrop: true,
       mode: 'dialog',
-      props: { onClose: () => popModal() }
+      props: { onClose: () => popModal() },
+      context: { key: APP_CTX_KEY, value: { controller } }
     })
+  }
+})
+
+provide(APP_CTX_KEY, {
+  get controller() {
+    return runtime.active_session.value?.controller
   }
 })
 
@@ -138,7 +145,13 @@ function onClosePhoneSm(el: Element, done: () => void) {
       </transition>
 
       <transition @enter="onOpenPhoneSm" @leave="onClosePhoneSm">
-        <phone-sm v-if="!open" @open="openPhone" />
+        <phone-sm
+          v-if="!open"
+          :notification_count="
+            runtime.notifications.value.reduce((sum, n) => sum + (n.count ?? 1), 0)
+          "
+          @open="openPhone"
+        />
       </transition>
     </div>
   </div>

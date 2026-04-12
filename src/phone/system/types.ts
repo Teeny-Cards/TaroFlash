@@ -1,4 +1,4 @@
-import type { Component } from 'vue'
+import type { Component, InjectionKey } from 'vue'
 import { createPhoneRuntime } from './runtime'
 import { useI18n } from 'vue-i18n'
 
@@ -8,6 +8,19 @@ export type MountPolicy = 'immediate' | 'lazy'
 
 export type PhoneContext = PhoneOS & {
   t: ReturnType<typeof useI18n>['t']
+}
+
+export type NotifyPayload = {
+  count?: number
+}
+
+export type PhoneNotification = NotifyPayload & {
+  app_id: string
+}
+
+export type AppContext = PhoneContext & {
+  notify: (payload: NotifyPayload) => void
+  clearNotification: () => void
 }
 
 type LauncherConfig = {
@@ -20,7 +33,7 @@ type BaseApp<TController extends AppController = AppController> = {
   id: string
   title: string
   mount_policy?: MountPolicy
-  controller?: (ctx: PhoneContext) => TController
+  controller?: (ctx: AppContext) => TController
 }
 
 export type ViewApp = BaseApp & {
@@ -48,6 +61,9 @@ export type AppController = {
 export type PhoneApp = ViewApp | WidgetApp | TriggerApp
 export type PhoneRuntime = ReturnType<typeof createPhoneRuntime>
 export type PhoneOS = PhoneRuntime['phoneOS']
+
+export const APP_CTX_KEY: InjectionKey<{ controller: AppController | undefined }> =
+  Symbol('app-ctx')
 
 export type AppProps = {
   close: () => void
