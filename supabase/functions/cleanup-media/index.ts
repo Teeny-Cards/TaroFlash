@@ -47,7 +47,10 @@ serve(async (_req: any) => {
   // for each member. Storage paths are scoped under the member's folder:
   // {member_id}/{path}
   type GroupKey = string // `${bucket}::${member_id}`
-  const groups = new Map<GroupKey, { bucket: string; memberId: string; paths: string[]; ids: number[] }>()
+  const groups = new Map<
+    GroupKey,
+    { bucket: string; memberId: string; paths: string[]; ids: number[] }
+  >()
 
   for (const row of mediaRows) {
     const key: GroupKey = `${row.bucket}::${row.member_id}`
@@ -69,9 +72,14 @@ serve(async (_req: any) => {
     const fullPaths = paths.map((p) => `${memberId}/${p}`)
 
     try {
-      await withRetry(() => supabase.storage.from(bucket).remove(fullPaths).then(({ error }) => {
-        if (error) throw error
-      }))
+      await withRetry(() =>
+        supabase.storage
+          .from(bucket)
+          .remove(fullPaths)
+          .then(({ error }) => {
+            if (error) throw error
+          })
+      )
       successfulIds.push(...ids)
     } catch (err: any) {
       const msg = `bucket=${bucket} member=${memberId}: ${err?.message ?? err}`
@@ -83,10 +91,7 @@ serve(async (_req: any) => {
 
   // Delete DB records only for files that were confirmed removed from storage.
   if (successfulIds.length > 0) {
-    const { error: deleteError } = await supabase
-      .from('media')
-      .delete()
-      .in('id', successfulIds)
+    const { error: deleteError } = await supabase.from('media').delete().in('id', successfulIds)
 
     if (deleteError) {
       console.error('Error deleting media rows:', deleteError)

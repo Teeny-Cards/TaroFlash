@@ -68,7 +68,7 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
     )
 
     if (clean) {
-      return selected_cards.map(({ review, ...rest }) => rest)
+      return selected_cards.map(({ review: _review, ...rest }) => rest)
     }
 
     return selected_cards
@@ -126,7 +126,7 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
 
     try {
       await upstreamDeleteCards(cards)
-    } catch (e: any) {
+    } catch {
       // TODO
     } finally {
       clearSelectedCards()

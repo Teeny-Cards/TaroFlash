@@ -7,6 +7,7 @@ One-time steps required when provisioning a new environment (local, staging, pro
 ## 1. Start / connect to the project
 
 **Local**
+
 ```bash
 supabase start
 ```
@@ -20,6 +21,7 @@ No local command needed — you'll run SQL directly in the Supabase dashboard fo
 ## 2. Apply migrations
 
 **Local**
+
 ```bash
 supabase migrations up
 ```
@@ -27,6 +29,7 @@ supabase migrations up
 **Staging / Production**
 
 Link your CLI to the project, then push:
+
 ```bash
 supabase link --project-ref <project-ref>
 supabase migration up
@@ -43,9 +46,9 @@ stored in the Supabase Vault so it can call the edge function on a schedule.
 
 Open the Supabase dashboard for the target project and go to **Settings → API**:
 
-| Secret name        | Where to find it                              |
-|--------------------|-----------------------------------------------|
-| `supabase_url`     | **Project URL** field                         |
+| Secret name        | Where to find it                                   |
+| ------------------ | -------------------------------------------------- |
+| `supabase_url`     | **Project URL** field                              |
 | `service_role_key` | **Project API keys → service_role** (click Reveal) |
 
 For local dev, run `supabase status` — both values are printed in the output.
@@ -60,6 +63,7 @@ SELECT vault.create_secret('<service-role-key>', 'service_role_key');
 ```
 
 Example for local dev:
+
 ```sql
 SELECT vault.create_secret('http://127.0.0.1:54321', 'supabase_url');
 SELECT vault.create_secret('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...', 'service_role_key');
@@ -68,6 +72,7 @@ SELECT vault.create_secret('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...', 'service_r
 ### Updating an existing secret
 
 If the values change (e.g. you rotate the service role key):
+
 ```sql
 UPDATE vault.secrets SET secret = '<new-value>' WHERE name = 'service_role_key';
 UPDATE vault.secrets SET secret = '<new-value>' WHERE name = 'supabase_url';
@@ -91,6 +96,7 @@ SELECT public.invoke_cleanup_media();
 ```
 
 Then check the response:
+
 ```sql
 SELECT status, response_status, error_msg
 FROM net._http_response
@@ -107,6 +113,7 @@ The edge functions read secrets from environment variables at runtime.
 **Local** — set in `supabase/functions/.env` (gitignored; copy from a teammate or 1Password).
 
 **Staging / Production** — push via the CLI:
+
 ```bash
 supabase secrets set \
   STRIPE_SECRET_KEY=sk_live_... \
@@ -115,6 +122,7 @@ supabase secrets set \
 ```
 
 View currently set secrets (names only, not values):
+
 ```bash
 supabase secrets list --project-ref <project-ref>
 ```

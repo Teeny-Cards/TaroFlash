@@ -70,7 +70,7 @@ describe('StudyCard', () => {
     const wrapper = mountStudyCard({ options })
     await flushPromises()
 
-    const { el, callbacks } = getCallbacks()
+    const { callbacks } = getCallbacks()
     callbacks.onMove({ dx: 60, dy: 0 })
     await flushPromises()
 
@@ -82,7 +82,7 @@ describe('StudyCard', () => {
     const wrapper = mountStudyCard({ options })
     await flushPromises()
 
-    const { el, callbacks } = getCallbacks()
+    const { callbacks } = getCallbacks()
     callbacks.onMove({ dx: -60, dy: 0 })
     await flushPromises()
 
@@ -94,7 +94,7 @@ describe('StudyCard', () => {
     const wrapper = mountStudyCard({ options })
     await flushPromises()
 
-    const { el, callbacks } = getCallbacks()
+    const { callbacks } = getCallbacks()
     callbacks.onMove({ dx: 30, dy: 0 })
     await flushPromises()
 
@@ -106,7 +106,7 @@ describe('StudyCard', () => {
     const wrapper = mountStudyCard({ options })
     await flushPromises()
 
-    const { el, callbacks } = getCallbacks()
+    const { callbacks } = getCallbacks()
     callbacks.onMove({ dx: -30, dy: 0 })
     await flushPromises()
 
@@ -139,7 +139,7 @@ describe('StudyCard', () => {
     await flushPromises()
 
     // is_dragging requires Math.abs(dx) > FLIP_THRESHOLD (10), so use dx=20
-    const { el, callbacks } = getCallbacks()
+    const { callbacks } = getCallbacks()
     callbacks.onMove({ dx: 20, dy: 0 })
     await flushPromises()
 
@@ -180,7 +180,7 @@ describe('StudyCard', () => {
     expect(mockEmitSfx).toHaveBeenCalled()
   })
 
-  test('rate(Good) emits reviewed with the Good RecordLogItem after transitionend', async () => {
+  test('rate(Good) emits reviewed with Rating.Good after transitionend', async () => {
     const wrapper = mountStudyCard({ side: 'back', options })
     await flushPromises()
 
@@ -192,10 +192,10 @@ describe('StudyCard', () => {
     await flushPromises()
 
     expect(wrapper.emitted('reviewed')).toHaveLength(1)
-    expect(wrapper.emitted('reviewed')[0][0]).toEqual(options[Rating.Good])
+    expect(wrapper.emitted('reviewed')[0][0]).toBe(Rating.Good)
   })
 
-  test('rate(Again) emits reviewed with the Again RecordLogItem after transitionend', async () => {
+  test('rate(Again) emits reviewed with Rating.Again after transitionend', async () => {
     const wrapper = mountStudyCard({ side: 'back', options })
     await flushPromises()
 
@@ -207,10 +207,10 @@ describe('StudyCard', () => {
     await flushPromises()
 
     expect(wrapper.emitted('reviewed')).toHaveLength(1)
-    expect(wrapper.emitted('reviewed')[0][0]).toEqual(options[Rating.Again])
+    expect(wrapper.emitted('reviewed')[0][0]).toBe(Rating.Again)
   })
 
-  test('reviewed is emitted even when options prop is not passed', async () => {
+  test('reviewed is emitted with Rating.Good when options prop is not passed', async () => {
     const wrapper = mountStudyCard({ side: 'back' })
     await flushPromises()
 
@@ -222,7 +222,7 @@ describe('StudyCard', () => {
     await flushPromises()
 
     expect(wrapper.emitted('reviewed')).toHaveLength(1)
-    expect(wrapper.emitted('reviewed')[0][0]).toBeUndefined()
+    expect(wrapper.emitted('reviewed')[0][0]).toBe(Rating.Good)
   })
 
   // ── Zone sfx (card_offset crossing ±50) ───────────────────────────────────
@@ -231,7 +231,7 @@ describe('StudyCard', () => {
     mountStudyCard({ options })
     await flushPromises()
 
-    const { el, callbacks } = getCallbacks()
+    const { callbacks } = getCallbacks()
 
     // Cross into the pass zone
     callbacks.onMove({ dx: 60, dy: 0 })
@@ -255,7 +255,7 @@ describe('StudyCard', () => {
     mountStudyCard({ options })
     await flushPromises()
 
-    const { el, callbacks } = getCallbacks()
+    const { callbacks } = getCallbacks()
 
     callbacks.onMove({ dx: -60, dy: 0 })
     await flushPromises()

@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
+import { describe, test, expect, beforeEach } from 'vite-plus/test'
 import { defineComponent } from 'vue'
 import { useModal } from '@/composables/modal'
 

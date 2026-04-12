@@ -31,8 +31,8 @@ export function useDeckEditor(deck?: Deck) {
 
     try {
       await upstreamDeleteDeck(deck.id)
-    } catch (e: any) {
-      console.error(e)
+    } catch {
+      // TODO
     }
   }
 

@@ -1,4 +1,4 @@
-import { upsertCard, deleteCards as upstreamDeleteCards, reserveCard } from '@/api/cards'
+import { upsertCard, reserveCard } from '@/api/cards'
 import { debounce } from '@/utils/debounce'
 
 export default class CardRecord {

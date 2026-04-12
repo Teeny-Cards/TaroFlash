@@ -57,7 +57,7 @@ export async function insertMedia(params: Media): Promise<void> {
   const { error } = await supabase.from('media').insert(params)
 
   if (error) {
-    console.error('Failed to insert media:', error)
+    logger.error(`Failed to insert media: ${error}`)
     throw error
   }
 }
@@ -66,7 +66,7 @@ export async function deleteMedia(id: string): Promise<void> {
   const { error } = await supabase.from('media').update({ deleted_at: new Date() }).eq('id', id)
 
   if (error) {
-    console.error('Failed to delete media:', error)
+    logger.error(`Failed to delete media: ${error}`)
     throw error
   }
 }
@@ -74,14 +74,10 @@ export async function deleteMedia(id: string): Promise<void> {
 // Hard-deletes a specific media record by card + storage path.
 // Used to roll back an insertMedia when a subsequent upload fails.
 export async function deleteMediaByPath(card_id: number, path: string): Promise<void> {
-  const { error } = await supabase
-    .from('media')
-    .delete()
-    .eq('card_id', card_id)
-    .eq('path', path)
+  const { error } = await supabase.from('media').delete().eq('card_id', card_id).eq('path', path)
 
   if (error) {
-    console.error('Failed to delete media by path:', error)
+    logger.error(`Failed to delete media by path: ${error}`)
     throw error
   }
 }
@@ -103,7 +99,7 @@ export async function deduplicateSlotMedia(
     .is('deleted_at', null)
 
   if (error) {
-    console.error('Failed to dedup slot media:', error)
+    logger.error(`Failed to dedup slot media: ${error}`)
     throw error
   }
 }

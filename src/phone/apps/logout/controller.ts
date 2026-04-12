@@ -16,7 +16,7 @@ export function createLogoutController(ctx: PhoneContext) {
       confirmAudio: 'ui.toggle_off'
     })
 
-    response.then((result: boolean) => {
+    response.then((result) => {
       if (result) {
         session.logout()
       }

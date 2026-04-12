@@ -5,7 +5,7 @@ import {
   generatorParameters,
   Rating,
   type Grade,
-  type RecordLog,
+  type RecordLog
 } from 'ts-fsrs'
 import { DateTime } from 'luxon'
 import { saveReview } from '@/api/reviews'
