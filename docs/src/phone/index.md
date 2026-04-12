@@ -57,7 +57,7 @@ export function createMyAppController(ctx: AppContext): AppController {
   const toast = useToast()
 
   return {
-    run() {
+    onTrigger() {
       toast.success(ctx.t('my-app.hello'))
     }
   }
