@@ -3,6 +3,7 @@ import NavBar from '@/components/nav-bar.vue'
 import Phone from '@/phone/phone.vue'
 import UiLoader from '@/components/ui-kit/loader/index.vue'
 import { useSessionStore } from '@/stores/session'
+import { clearStaticLoader } from '@/utils/static-loader'
 
 const session = useSessionStore()
 </script>
@@ -16,6 +17,7 @@ const session = useSessionStore()
     theme="blue-500"
     theme-dark="grey-900"
     class="absolute inset-0 text-white"
+    @finish="clearStaticLoader"
   >
     <nav-bar />
     <phone />

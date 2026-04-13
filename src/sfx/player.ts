@@ -14,9 +14,11 @@ export type PlayOptions = {
   debounce?: number
 }
 
+// Audio files are inlined as base64 data URIs at build time.
+// Howler decodes them directly — no network requests needed.
 const AUDIO_FILES = import.meta.glob('@/assets/audio/**/*.{wav,mp3,ogg}', {
   eager: true,
-  query: '?url',
+  query: '?datauri',
   import: 'default'
 }) as Record<string, string>
 

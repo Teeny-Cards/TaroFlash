@@ -54,12 +54,14 @@ Use `icon-only` to render just the icon with no label. The button adjusts its pa
 
 ## Props
 
-| Prop         | Type   | Default     | Description                           |
-| ------------ | ------ | ----------- | ------------------------------------- |
-| `size`       | String | `base`      | `large`, `base`, `small`, or `xs`     |
-| `variant`    | String | `primary`   | `interaction`, `muted`, or `danger`   |
-| `inverted`   | Bool   | `false`     | Inverts the button's color scheme     |
-| `icon-only`  | Bool   | `false`     | Renders only the icon, no label       |
-| `icon-left`      | String  | `undefined` | SVG filename for a left-aligned icon                                   |
-| `icon-right`     | String  | `undefined` | SVG filename for a right-aligned icon                                  |
-| `mobile-tooltip` | Boolean | `true`      | When `false`, hides the icon-only tooltip on mobile (still shows on desktop) |
+| Prop             | Type          | Default     | Description                                                              |
+| ---------------- | ------------- | ----------- | ------------------------------------------------------------------------ |
+| `theme`          | `MemberTheme` | `blue-500`  | Theme palette applied via `data-theme`                                   |
+| `theme-dark`     | `MemberTheme` | `theme`     | Dark-mode override applied via `data-theme-dark`; falls back to `theme`  |
+| `size`           | String        | `base`      | `xl`, `lg`, `base`, `sm`, or `xs`                                        |
+| `variant`        | String        | `solid`     | `solid` or `outline`                                                     |
+| `inverted`       | Bool          | `false`     | Inverts the button's color scheme                                        |
+| `icon-only`      | Bool          | `false`     | Renders only the icon, no label                                          |
+| `icon-left`      | String        | `undefined` | SVG filename for a left-aligned icon                                     |
+| `icon-right`     | String        | `undefined` | SVG filename for a right-aligned icon                                    |
+| `mobile-tooltip` | Boolean       | `true`      | When `false`, hides the icon-only tooltip on mobile (still shows on desktop) |

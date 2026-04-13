@@ -1,6 +1,7 @@
 import { fileURLToPath, URL } from 'node:url'
 import { resolve, dirname } from 'node:path'
 import svgLoader from 'vite-svg-loader'
+import dataUriPlugin from './src/plugins/vite-datauri'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import { defineConfig, coverageConfigDefaults } from 'vite-plus'
 import vue from '@vitejs/plugin-vue'
@@ -32,6 +33,7 @@ export default defineConfig({
     vue(),
     vueJsx(),
     svgLoader(),
+    dataUriPlugin(),
     tailwindcss(),
     VueI18nPlugin({
       include: resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/**'),
