@@ -4,7 +4,7 @@ import SessionComplete from '@/components/modals/study-session/session-complete.
 
 function makeSessionComplete(score, total, close = () => {}) {
   return mount(SessionComplete, {
-    props: { score, total, close }
+    props: { score, total, secondary_action: 'study-again', close }
   })
 }
 

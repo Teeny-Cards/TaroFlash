@@ -4,6 +4,7 @@ import svgLoader from 'vite-svg-loader'
 import dataUriPlugin from './src/plugins/vite-datauri'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import { defineConfig, coverageConfigDefaults } from 'vite-plus'
+import { playwright } from '@vitest/browser-playwright'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import tailwindcss from '@tailwindcss/vite'
@@ -41,22 +42,30 @@ export default defineConfig({
     })
   ],
   test: {
-    setupFiles: ['./tests/setup.js'],
     projects: [
       {
         extends: true,
         test: {
           name: { label: 'Unit', color: 'blue' },
           include: ['tests/unit/**/*.test.js'],
-          environment: 'jsdom'
+          environment: 'jsdom',
+          setupFiles: ['./tests/setup.js']
         }
       },
       {
         extends: true,
+        optimizeDeps: {
+          exclude: ['vite-plus/test']
+        },
         test: {
           name: { label: 'Integration', color: 'green' },
           include: ['tests/integration/**/*.test.js'],
-          environment: 'jsdom'
+          setupFiles: ['./tests/setup-browser.js'],
+          browser: {
+            enabled: true,
+            provider: playwright(),
+            instances: [{ browser: 'chromium' }]
+          }
         }
       }
     ],

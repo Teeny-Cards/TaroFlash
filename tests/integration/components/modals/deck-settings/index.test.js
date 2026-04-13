@@ -1,5 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
 import { shallowMount, flushPromises } from '@vue/test-utils'
+import { defineComponent, h } from 'vue'
 import DeckSettings from '@/components/modals/deck-settings/index.vue'
 
 // ── Hoisted mocks ──────────────────────────────────────────────────────────────
@@ -16,23 +17,25 @@ vi.mock('@/composables/deck-editor', () => ({
 
 // shallowMount stubs don't render named slots by default. Use a minimal stub
 // that surfaces the body and footer slot content so we can assert on them.
-const MobileSheetStub = {
+// Stubs use render functions (not template strings) because the Vue runtime
+// compiler is not available in browser mode.
+const MobileSheetStub = defineComponent({
   name: 'MobileSheet',
   emits: ['close'],
-  template: `
-    <div data-testid="mobile-sheet-stub">
-      <slot name="body" />
-      <slot name="footer" />
-    </div>
-  `
-}
+  setup(_props, { slots }) {
+    return () =>
+      h('div', { 'data-testid': 'mobile-sheet-stub' }, [slots.body?.(), slots.footer?.()])
+  }
+})
 
 // Auto-generated shallowMount stubs do not forward slot content. Provide a
 // custom stub that renders the default slot so we can assert on the button label.
-const UiButtonStub = {
+const UiButtonStub = defineComponent({
   name: 'UiButton',
-  template: '<button data-testid="ui-button-stub"><slot /></button>'
-}
+  setup(_props, { slots }) {
+    return () => h('button', { 'data-testid': 'ui-button-stub' }, slots.default?.())
+  }
+})
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 

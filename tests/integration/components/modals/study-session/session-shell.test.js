@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 import { mount, flushPromises } from '@vue/test-utils'
-import { defineComponent, watch } from 'vue'
+import { defineComponent, watch, h, useAttrs, onMounted, getCurrentInstance } from 'vue'
 import Session from '@/components/modals/study-session/session-shell.vue'
 import { card } from '../../../../fixtures/card'
 import { deck } from '../../../../fixtures/deck'
@@ -53,13 +53,15 @@ vi.mock('@/api/reviews', () => ({
 const CardStub = defineComponent({
   props: { side: { type: String }, attributes: { default: null } },
   emits: ['flip-complete'],
-  setup(props, { emit }) {
+  inheritAttrs: false,
+  setup(props, { emit, slots }) {
+    const attrs = useAttrs()
     watch(
       () => props.side,
       () => emit('flip-complete')
     )
-  },
-  template: '<div v-bind="$attrs"><slot /></div>'
+    return () => h('div', attrs, slots.default?.())
+  }
 })
 
 // ── FinishAnimation stub ──────────────────────────────────────────────────────
@@ -68,10 +70,10 @@ const CardStub = defineComponent({
 
 const FinishAnimationStub = defineComponent({
   emits: ['done'],
-  mounted() {
-    this.$emit('done')
-  },
-  template: '<div />'
+  setup(_props, { emit }) {
+    onMounted(() => emit('done'))
+    return () => h('div')
+  }
 })
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -102,12 +104,13 @@ async function startSession(wrapper) {
 }
 
 /**
- * Get the gesture callbacks registered by study-card's onMounted for a given
- * gesture type. Returns { el, callbacks } or null.
+ * Get the drag callbacks registered by study-card's onMounted.
+ * useGestures().register(el, callbacks) — two arguments.
  */
-function getGestureCallbacks(gesture) {
-  const call = mockRegister.mock.calls.find(([, g]) => g === gesture)
-  return call ? { el: call[0], callbacks: call[2] } : null
+function getDragCallbacks() {
+  const call = mockRegister.mock.calls[0]
+  if (!call) return null
+  return { el: call[0], callbacks: call[1] }
 }
 
 /**
@@ -320,18 +323,12 @@ describe('Session', () => {
       const wrapper = makeSession(2)
       await waitForLoad(wrapper)
 
-      const gestureData = getGestureCallbacks('swipe-right')
-      if (!gestureData) {
-        // Gesture not registered yet — skip (study-card not mounted yet)
-        return
-      }
+      await startSession(wrapper)
 
-      gestureData.callbacks.onEnd(gestureData.el, {
-        dx: 80,
-        dy: 0,
-        direction: 'right',
-        duration: 200
-      })
+      const drag = getDragCallbacks()
+      expect(drag).not.toBeNull()
+
+      drag.callbacks.onEnd({ dx: 80, dy: 0, x: 0, y: 0, velocity: 0.4, duration: 200 })
       await flushPromises()
 
       fireTransitionEnd(wrapper)
@@ -344,17 +341,12 @@ describe('Session', () => {
       const wrapper = makeSession(2)
       await waitForLoad(wrapper)
 
-      const gestureData = getGestureCallbacks('swipe-left')
-      if (!gestureData) {
-        return
-      }
+      await startSession(wrapper)
 
-      gestureData.callbacks.onEnd(gestureData.el, {
-        dx: -80,
-        dy: 0,
-        direction: 'left',
-        duration: 200
-      })
+      const drag = getDragCallbacks()
+      expect(drag).not.toBeNull()
+
+      drag.callbacks.onEnd({ dx: -80, dy: 0, x: 0, y: 0, velocity: 0.4, duration: 200 })
       await flushPromises()
 
       fireTransitionEnd(wrapper)
