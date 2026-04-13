@@ -74,9 +74,7 @@ describe('MobileSheet', () => {
 
   test('close button emits close event when clicked', async () => {
     const wrapper = mountSheet({ title: 'My Sheet' })
-    // shallowMount stubs child components — find the stub by its icon-only attribute
-    // and trigger click on the wrapper's native element containing the handler
-    const closeBtn = wrapper.find('ui-button-stub')
+    const closeBtn = wrapper.findComponent({ name: 'UiButton' })
     expect(closeBtn.exists()).toBe(true)
     await closeBtn.trigger('click')
     expect(wrapper.emitted('close')).toHaveLength(1)

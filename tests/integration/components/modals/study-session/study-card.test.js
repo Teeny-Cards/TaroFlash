@@ -1,5 +1,6 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 import { mount, shallowMount, flushPromises } from '@vue/test-utils'
+import { defineComponent, h, useAttrs } from 'vue'
 import { FSRS, generatorParameters, createEmptyCard, Rating } from 'ts-fsrs'
 import StudyCard from '@/components/modals/study-session/study-card.vue'
 
@@ -23,8 +24,16 @@ vi.mock('@/sfx/bus', () => ({ emitSfx: mockEmitSfx }))
 
 // ── Card stub ─────────────────────────────────────────────────────────────────
 // Passes through $attrs so data-testid="study-card" lands on the root element.
+// Uses a render function (not template) because the Vue runtime compiler is
+// not available in browser mode.
 
-const CardStub = { template: '<div v-bind="$attrs"><slot /></div>' }
+const CardStub = defineComponent({
+  inheritAttrs: false,
+  setup(_props, { slots }) {
+    const attrs = useAttrs()
+    return () => h('div', attrs, slots.default?.())
+  }
+})
 
 // ── FSRS options fixture ───────────────────────────────────────────────────────
 
