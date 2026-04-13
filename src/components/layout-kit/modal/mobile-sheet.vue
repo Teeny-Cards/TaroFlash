@@ -40,19 +40,18 @@ const showHeader = computed(() => {
     <slot v-if="showHeader" name="header">
       <div
         data-testid="mobile-sheet__header"
-        class="w-full grid grid-cols-[40px_1fr_40px] grid-rows-[auto_auto] items-center place-items-center p-5 pb-20 gap-6 wave-bottom-[50px] bg-(--theme-primary) text-(--theme-on-primary)"
+        class="w-full flex justify-center items-center place-items-center px-13 pt-11.5 pb-14 gap-6 wave-bottom-[50px] bg-(--theme-primary) text-(--theme-on-primary) relative"
         :class="headerBgxClass"
       >
-        <slot name="header-content">
-          <slot name="header-left">
+        <slot name="header-left">
+          <div class="absolute top-0 left-0 p-4">
             <ui-button icon-left="close" icon-only :theme="theme" inverted @click="emit('close')" />
-          </slot>
+          </div>
+        </slot>
 
+        <slot name="header-content">
           <h1 class="text-5xl text-white">{{ title }}</h1>
         </slot>
-        <div class="row-start-2 col-span-3">
-          <slot name="after-header"> </slot>
-        </div>
       </div>
     </slot>
 

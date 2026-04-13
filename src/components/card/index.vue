@@ -188,55 +188,9 @@ function onLeave(el: Element, done: () => void) {
   --face-padding: 1px;
 }
 
-.card-container--green {
-  --card-bg-color: var(--color-green-400);
-}
-.card-container--blue {
-  --card-bg-color: var(--color-blue-400);
-}
-.card-container--purple {
-  --card-bg-color: var(--color-purple-400);
-}
-.card-container--pink {
-  --card-bg-color: var(--color-pink-400);
-}
-.card-container--red {
-  --card-bg-color: var(--color-red-400);
-}
-.card-container--orange {
-  --card-bg-color: var(--color-orange-400);
-}
-.card-container--brown {
+[data-theme='dark'] .card-container {
   --card-bg-color: var(--color-brown-300);
-}
-
-@media (prefers-color-scheme: dark) {
-  .card-container {
-    --card-bg-color: var(--color-brown-300);
-    --card-text-color: var(--color-brown-800);
-    --card-text-color--placeholder: var(--color-brown-500);
-  }
-
-  .card-container--green {
-    --card-bg-color: var(--color-green-400);
-  }
-  .card-container--blue {
-    --card-bg-color: var(--color-blue-400);
-  }
-  .card-container--purple {
-    --card-bg-color: var(--color-purple-400);
-  }
-  .card-container--pink {
-    --card-bg-color: var(--color-pink-400);
-  }
-  .card-container--red {
-    --card-bg-color: var(--color-red-400);
-  }
-  .card-container--orange {
-    --card-bg-color: var(--color-orange-400);
-  }
-  .card-container--brown {
-    --card-bg-color: var(--color-brown-300);
-  }
+  --card-text-color: var(--color-brown-800);
+  --card-text-color--placeholder: var(--color-brown-500);
 }
 </style>
