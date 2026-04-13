@@ -57,7 +57,7 @@ For each changed unit of code, choose the **lowest-cost test type** that can mea
 | Priority | Type            | When to use                                                                                                                                                                       |
 | -------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1        | **Unit**        | Pure functions, utilities, composables with no rendering, store logic that can be called directly                                                                                 |
-| 2        | **Integration** | Vue components — anything that renders HTML or interacts with stores/composables via `shallowMount`/`mount`                                                                       |
+| 2        | **Integration** | Vue components — anything that renders HTML (runs in Chromium via browser mode)                                                                                                    |
 | 3        | **E2E**         | **Last resort only.** Use only when the behaviour cannot be covered without full navigation or multi-step flow interaction. Always justify why integration is insufficient first. |
 
 **Default to integration tests for components.** Use `shallowMount` for isolated component tests (stub child components) and `mount` only when child component behaviour is directly under test.
@@ -87,7 +87,14 @@ vp test --no-coverage tests/integration/components/ui-kit/toggle.test.js
 
 Target **~90% line coverage of the changed lines** (higher if achievable without test bloat).
 
-Use **vue-testing-best-practices@vue-skills** to guide you in writing the tests.
+Integration tests run in **Chromium browser mode** — not jsdom. This means:
+
+- Test stubs must use **render functions** (`h()`), not `template` strings (no runtime compiler in Vite's runtime-only Vue build)
+- GSAP mocks must call `onComplete` so `transition-group` JS hooks complete
+- Don't find elements by auto-generated stub tag names (`ui-icon-stub`) — use `findComponent({ name: '...' })`
+- `global` is not available — the browser setup file (`tests/setup-browser.js`) handles i18n only
+
+See `testing.md` "Browser mode constraints" for full details and examples.
 
 ### Step 6 — Validate all tests pass
 
@@ -107,7 +114,7 @@ Do not proceed to the next file until the current file's tests are passing.
 
 ### Step 7 — Review and quality check
 
-Once all tests are written and passing, review the full set of new tests for quality using `test-quality-checklist.md` in the `skills` directory.
+Once all tests are written and passing, review the full set of new tests for quality using the test quality checklist (in `.claude/rules/testing-quality-checklist.md` — auto-loaded when working on test files).
 
 **Fix any critical issues** — specifically anything that would cause intermittent CI failures or mask real regressions. Call out non-critical issues (low severity style/practice notes) in the report but do not auto-fix them.
 

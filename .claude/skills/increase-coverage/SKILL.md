@@ -19,6 +19,7 @@ Steps:
 # Write tests
 
 - Write up to a maximum of **200 lines**. If you hit the limit mid-test, finish or drop the current test then stop.
+- Integration tests run in **Chromium browser mode** — test stubs must use render functions (`h()`), not `template` strings. See `testing.md` "Browser mode constraints" for details.
 - Run tests to validate all tests pass and coverage is increased.
 - If any tests fail, fix them.
 - If the failure reveals a real source bug, surface it explicitly and ask for confirmation before touching any source files.
@@ -26,7 +27,7 @@ Steps:
 
 # Review
 
-- Review new tests against `test-quality-checklist.md`.
+- Review new tests against the test quality checklist (in `.claude/rules/testing-quality-checklist.md` — auto-loaded when working on test files).
 - Fix critical issues (flakiness, masked regressions)
 - Note non-critical issues in the report — don't auto-fix them.
 

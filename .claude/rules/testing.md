@@ -18,6 +18,67 @@ paths:
 
 **Use browser mode (integration) when** the component depends on real browser APIs (layout, focus, clipboard, media queries) or jsdom would require so many mocks the test stops reflecting real behaviour. Otherwise prefer jsdom — browser tests are slower.
 
+## Browser mode constraints
+
+Integration tests run in real Chromium via `@vitest/browser-playwright`. This surfaces real browser behaviour but introduces constraints that don't apply to jsdom:
+
+### No runtime template compiler
+
+Vite ships the runtime-only Vue build. `defineComponent({ template: '<div />' })` silently renders nothing. **Always use render functions for test stubs:**
+
+```js
+// Bad — template string requires runtime compiler
+const Stub = { template: '<div data-testid="stub"><slot /></div>' }
+
+// Good — render function works everywhere
+const Stub = defineComponent({
+  setup(_props, { slots }) {
+    return () => h('div', { 'data-testid': 'stub' }, slots.default?.())
+  }
+})
+```
+
+For stubs that forward `$attrs`, use `useAttrs()` with `inheritAttrs: false`:
+
+```js
+const CardStub = defineComponent({
+  inheritAttrs: false,
+  setup(_props, { slots }) {
+    const attrs = useAttrs()
+    return () => h('div', attrs, slots.default?.())
+  }
+})
+```
+
+### GSAP mocks must call `onComplete`
+
+Vue's `<transition-group :css="false">` JS hooks pass a `done` callback. The modal animations thread it through `gsap`'s `onComplete`. If the mock doesn't call it, the transition never finishes and child content stays hidden:
+
+```js
+// Bad — done() never fires, transition-group hangs
+vi.mock('gsap', () => ({ gsap: { fromTo: vi.fn(), to: vi.fn() } }))
+
+// Good — onComplete fires synchronously
+vi.mock('gsap', () => ({
+  gsap: {
+    fromTo: vi.fn((_el, _from, to) => to?.onComplete?.()),
+    to: vi.fn((_el, opts) => opts?.onComplete?.())
+  }
+}))
+```
+
+### Don't find elements by stub tag names
+
+`shallowMount` generates tag names like `ui-icon-stub`. These are internal to `@vue/test-utils` and may change. Use `findComponent` instead:
+
+```js
+// Bad
+wrapper.find('ui-icon-stub[src="check"]')
+
+// Good
+wrapper.findAllComponents({ name: 'UiIcon' }).some(c => c.props('src') === 'check')
+```
+
 ## Fixtures and test data
 
 Use `mimicry-js` + `faker-js` factory builders for test data, in a separate `fixtures.js` file.

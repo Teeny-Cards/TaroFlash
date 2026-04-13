@@ -30,30 +30,34 @@ describe('UiRadio', () => {
 
   test('renders check icon when checked=true', () => {
     const wrapper = mountRadio({ checked: true })
-    // UiIcon stub renders as ui-icon
-    expect(wrapper.find('ui-icon-stub[src="check"]').exists()).toBe(true)
+    const icons = wrapper.findAllComponents({ name: 'UiIcon' })
+    expect(icons.some((c) => c.props('src') === 'check')).toBe(true)
   })
 
   test('does not render check icon when checked=false', () => {
     const wrapper = mountRadio({ checked: false })
-    expect(wrapper.find('ui-icon-stub[src="check"]').exists()).toBe(false)
+    const icons = wrapper.findAllComponents({ name: 'UiIcon' })
+    expect(icons.some((c) => c.props('src') === 'check')).toBe(false)
   })
 
   // ── intermediate state ─────────────────────────────────────────────────────
 
   test('renders minus icon when intermediate=true', () => {
     const wrapper = mountRadio({ checked: false, intermediate: true })
-    expect(wrapper.find('ui-icon-stub[src="minus"]').exists()).toBe(true)
+    const icons = wrapper.findAllComponents({ name: 'UiIcon' })
+    expect(icons.some((c) => c.props('src') === 'minus')).toBe(true)
   })
 
   test('does not render minus icon when intermediate is not set', () => {
     const wrapper = mountRadio({ checked: false })
-    expect(wrapper.find('ui-icon-stub[src="minus"]').exists()).toBe(false)
+    const icons = wrapper.findAllComponents({ name: 'UiIcon' })
+    expect(icons.some((c) => c.props('src') === 'minus')).toBe(false)
   })
 
   test('can show both check and minus icons simultaneously', () => {
     const wrapper = mountRadio({ checked: true, intermediate: true })
-    expect(wrapper.find('ui-icon-stub[src="check"]').exists()).toBe(true)
-    expect(wrapper.find('ui-icon-stub[src="minus"]').exists()).toBe(true)
+    const icons = wrapper.findAllComponents({ name: 'UiIcon' })
+    expect(icons.some((c) => c.props('src') === 'check')).toBe(true)
+    expect(icons.some((c) => c.props('src') === 'minus')).toBe(true)
   })
 })

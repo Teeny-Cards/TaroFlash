@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
 import { mount, flushPromises } from '@vue/test-utils'
-import { defineComponent } from 'vue'
+import { defineComponent, h, onMounted } from 'vue'
 import FinishAnimation from '@/components/modals/study-session/finish-animation.vue'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
@@ -14,10 +14,10 @@ vi.mock('@/sfx/bus', () => ({ emitSfx: mockEmitSfx }))
 
 const BurstStub = defineComponent({
   emits: ['done'],
-  mounted() {
-    this.$emit('done')
-  },
-  template: '<div data-testid="burst-stub" />'
+  setup(_props, { emit }) {
+    onMounted(() => emit('done'))
+    return () => h('div', { 'data-testid': 'burst-stub' })
+  }
 })
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
