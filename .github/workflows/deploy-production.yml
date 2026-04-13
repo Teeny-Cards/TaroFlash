@@ -127,7 +127,7 @@ jobs:
           VITE_AUTH_REDIRECT_URL: ${{ vars.VITE_AUTH_REDIRECT_URL }}
 
       - name: Deploy to Netlify
-        run: pnpm --package=netlify-cli dlx netlify deploy --dir=dist --prod
+        run: pnpm --package=netlify-cli dlx netlify deploy --dir=dist --prod --no-build
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
