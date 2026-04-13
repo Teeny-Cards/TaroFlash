@@ -36,6 +36,7 @@
     "howler": "^2.2.4",
     "lexical": "^0.41.0",
     "luxon": "^3.7.2",
+    "oxc-minify": "^0.125.0",
     "pinia": "^3.0.4",
     "ts-fsrs": "^5.3.2",
     "vue": "^3.5.31",
@@ -76,7 +77,7 @@
     "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.15",
     "vite-plus": "latest",
     "vite-svg-loader": "^5.1.1",
-    "vitepress": "^1.6.4",
+    "vitepress": "2.0.0-alpha.17",
     "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.15",
     "vue-tsc": "^2.2.12"
   },

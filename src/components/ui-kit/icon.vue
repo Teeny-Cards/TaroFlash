@@ -1,22 +1,43 @@
 <script setup lang="ts">
-import { type Component, computed } from 'vue'
+import { type Component, ref, watchEffect } from 'vue'
 import logger from '@/utils/logger'
 
 const { src } = defineProps<{
   src: string
 }>()
 
-// Import all icons
-const icons: Record<string, Component> = import.meta.glob('../../assets/icons/*.svg', {
+// All icons are currently eager (bundled into the main chunk).
+// To make a subset lazy, replace the eager glob with an explicit file list
+// and let the rest fall through to the lazy glob below.
+const eagerIcons: Record<string, Component> = import.meta.glob('../../assets/icons/*.svg', {
   eager: true,
   import: 'default'
 })
 
-const iconComponent = computed(() => {
-  const icon = icons[`../../assets/icons/${src}.svg`]
-  if (!icon) logger.warn(`Missing icon: ${src}`)
+const lazyIcons: Record<string, () => Promise<Component>> = import.meta.glob('../../assets/icons/*.svg', {
+  eager: false,
+  import: 'default'
+})
 
-  return icon
+const iconComponent = ref<Component | undefined>()
+
+watchEffect(async () => {
+  const key = `../../assets/icons/${src}.svg`
+  const eager = eagerIcons[key]
+
+  if (eager) {
+    iconComponent.value = eager
+    return
+  }
+
+  const loader = lazyIcons[key]
+  if (loader) {
+    iconComponent.value = await loader()
+    return
+  }
+
+  logger.warn(`Missing icon: ${src}`)
+  iconComponent.value = undefined
 })
 </script>
 

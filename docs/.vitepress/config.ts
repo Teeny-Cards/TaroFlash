@@ -1,5 +1,9 @@
+import { fileURLToPath, URL } from 'node:url'
+import { resolve, dirname } from 'node:path'
 import { defineConfig } from 'vitepress'
+import tailwindcss from '@tailwindcss/vite'
 import svgLoader from 'vite-svg-loader'
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 
 const frontendSidebar = [
   {
@@ -10,6 +14,7 @@ const frontendSidebar = [
       { text: 'Button Menu', link: '/components/button-menu' },
       { text: 'Card', link: '/components/card' },
       { text: 'Icon', link: '/components/icon' },
+      { text: 'Image', link: '/components/image' },
       { text: 'Modal', link: '/components/modal' },
       { text: 'Popover', link: '/components/popover' },
       { text: 'Radio', link: '/components/radio' },
@@ -62,7 +67,10 @@ const backendSidebar = [
 const devopsSidebar = [
   {
     text: 'DevOps',
-    items: [{ text: 'Deployments', link: '/devops/index' }]
+    items: [
+      { text: 'Deployments', link: '/devops/index' },
+      { text: 'Vite Plugins', link: '/devops/vite-plugins' }
+    ]
   }
 ]
 
@@ -99,11 +107,24 @@ export default defineConfig({
     socialLinks: [{ icon: 'github', link: 'https://github.com/Teeny-Cards/TaroFlash' }]
   },
   vite: {
-    plugins: [svgLoader()],
+    plugins: [
+      tailwindcss(),
+      svgLoader(),
+      VueI18nPlugin({
+        include: resolve(dirname(fileURLToPath(import.meta.url)), '../../src/locales/**'),
+        strictMessage: false
+      })
+    ],
+    define: {
+      __VUE_PROD_DEVTOOLS__: false
+    },
+    ssr: {
+      noExternal: ['vue-i18n']
+    },
     resolve: {
       alias: {
-        '@': '../../../src',
-        '@base': '../../..'
+        '@': resolve(dirname(fileURLToPath(import.meta.url)), '../../src'),
+        '@base': resolve(dirname(fileURLToPath(import.meta.url)), '../..')
       }
     }
   }

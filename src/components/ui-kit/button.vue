@@ -5,6 +5,7 @@ import type { SfxOptions } from '@/sfx/directive'
 
 export type ButtonProps = {
   theme?: MemberTheme
+  themeDark?: MemberTheme
   size?: 'xl' | 'lg' | 'base' | 'sm' | 'xs'
   variant?: 'solid' | 'outline'
   inverted?: boolean
@@ -44,6 +45,7 @@ const merged_sfx = computed(() => {
   <button
     data-testid="ui-kit-button"
     :data-theme="theme"
+    :data-theme-dark="themeDark ?? theme"
     class="ui-kit-btn group/btn"
     v-sfx="merged_sfx"
     :class="[
