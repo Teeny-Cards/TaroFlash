@@ -234,6 +234,48 @@ describe('modal.vue', () => {
   })
 })
 
+// ── modal wrapper click.self dispatch ────────────────────────────────────────
+
+describe('modal wrapper click.self', () => {
+  beforeEach(() => {
+    const { modal_stack, pop } = useModal()
+    while (modal_stack.value.length > 0) pop()
+    request_close_handlers.clear()
+  })
+
+  test('clicking the wrapper itself (not its content) closes the top modal', async () => {
+    const { open, modal_stack } = useModal()
+    open(ModalStub)
+
+    const wrapper = mountModal()
+    await nextTick()
+
+    await wrapper.find('[data-testid="ui-kit-modal"]').trigger('click')
+
+    expect(modal_stack.value).toHaveLength(0)
+  })
+
+  test('clicking the wrapper calls requestClose handler when one is registered', async () => {
+    const requestClose = vi.fn()
+    const HandlerComponent = defineComponent({
+      setup() {
+        useModalRequestClose(requestClose)
+      },
+      render: () => h('div', { 'data-testid': 'handler-component' })
+    })
+    const { open, modal_stack } = useModal()
+    open(HandlerComponent)
+
+    const wrapper = mountModal()
+    await nextTick()
+
+    await wrapper.find('[data-testid="ui-kit-modal"]').trigger('click')
+
+    expect(requestClose).toHaveBeenCalledOnce()
+    expect(modal_stack.value).toHaveLength(1)
+  })
+})
+
 // ── backdrop click / ESC requestClose dispatch ────────────────────────────────
 
 describe('requestClose dispatch', () => {

@@ -60,5 +60,6 @@ Use `icon-only` to render just the icon with no label. The button adjusts its pa
 | `variant`    | String | `primary`   | `interaction`, `muted`, or `danger`   |
 | `inverted`   | Bool   | `false`     | Inverts the button's color scheme     |
 | `icon-only`  | Bool   | `false`     | Renders only the icon, no label       |
-| `icon-left`  | String | `undefined` | SVG filename for a left-aligned icon  |
-| `icon-right` | String | `undefined` | SVG filename for a right-aligned icon |
+| `icon-left`      | String  | `undefined` | SVG filename for a left-aligned icon                                   |
+| `icon-right`     | String  | `undefined` | SVG filename for a right-aligned icon                                  |
+| `mobile-tooltip` | Boolean | `true`      | When `false`, hides the icon-only tooltip on mobile (still shows on desktop) |

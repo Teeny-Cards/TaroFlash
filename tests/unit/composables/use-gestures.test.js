@@ -310,4 +310,68 @@ describe('useGestures', () => {
     expect(remove_spy).toHaveBeenCalled()
     remove_spy.mockRestore()
   })
+
+  // ── touchAction management ────────────────────────────────────────────────
+
+  test('register sets touchAction to none on the element', () => {
+    const { register } = useGestures()
+    register(el, {})
+
+    expect(el.style.touchAction).toBe('none')
+  })
+
+  test('unregister restores the previous touchAction value', () => {
+    el.style.touchAction = 'pan-y'
+    const { register } = useGestures()
+    const unregister = register(el, {})
+
+    unregister()
+
+    expect(el.style.touchAction).toBe('pan-y')
+  })
+
+  test('unregister restores to empty/unset when touchAction was not set', () => {
+    const { register } = useGestures()
+    const unregister = register(el, {})
+
+    unregister()
+
+    // jsdom may return undefined or '' for a never-set property — either means "unset"
+    expect(el.style.touchAction || '').toBe('')
+  })
+
+  // ── Click suppression after drag ──────────────────────────────────────────
+
+  test('suppresses click event that fires immediately after a drag > 4px', () => {
+    const onClick = vi.fn()
+    // Register AFTER the gesture system so the capture-phase suppressClick fires first
+    document.addEventListener('click', onClick)
+
+    const { register } = useGestures()
+    register(el, {})
+
+    pointerDown(el, 100, 100)
+    pointerUp(110, 100) // 10px drag — above threshold
+
+    document.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+    expect(onClick).not.toHaveBeenCalled()
+    document.removeEventListener('click', onClick)
+  })
+
+  test('does not suppress click after a drag of 4px or less', () => {
+    const onClick = vi.fn()
+    document.addEventListener('click', onClick)
+
+    const { register } = useGestures()
+    register(el, {})
+
+    pointerDown(el, 100, 100)
+    pointerUp(104, 100) // exactly 4px — at threshold, not above
+
+    document.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+    expect(onClick).toHaveBeenCalledOnce()
+    document.removeEventListener('click', onClick)
+  })
 })

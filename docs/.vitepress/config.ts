@@ -10,7 +10,11 @@ const frontendSidebar = [
       { text: 'Button Menu', link: '/components/button-menu' },
       { text: 'Card', link: '/components/card' },
       { text: 'Icon', link: '/components/icon' },
-      { text: 'Modal', link: '/components/modal' }
+      { text: 'Modal', link: '/components/modal' },
+      { text: 'Mobile Sheet', link: '/components/mobile-sheet' },
+      { text: 'Popover', link: '/components/popover' },
+      { text: 'Radio', link: '/components/radio' },
+      { text: 'Slider', link: '/components/slider' }
     ]
   },
   {
@@ -54,9 +58,7 @@ const backendSidebar = [
 const devopsSidebar = [
   {
     text: 'DevOps',
-    items: [
-      { text: 'Deployments', link: '/devops/index' }
-    ]
+    items: [{ text: 'Deployments', link: '/devops/index' }]
   }
 ]
 
