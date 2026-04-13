@@ -16,6 +16,7 @@ export type ButtonProps = {
   loading?: boolean
   sfx?: SfxOptions
   fullWidth?: boolean
+  mobileTooltip?: boolean
 }
 
 const {
@@ -27,7 +28,8 @@ const {
   iconLeft,
   fancyHover = true,
   sfx = {},
-  fullWidth = false
+  fullWidth = false,
+  mobileTooltip = true
 } = defineProps<ButtonProps>()
 
 const merged_sfx = computed(() => {
@@ -61,7 +63,7 @@ const merged_sfx = computed(() => {
     </div>
     <ui-icon v-if="iconRight" class="btn-icon btn-icon--right" :src="iconRight" />
 
-    <div v-if="iconOnly && $slots.default" class="ui-kit-btn__tooltip">
+    <div v-if="iconOnly && $slots.default" class="ui-kit-btn__tooltip" :class="{ 'max-sm:hidden!': !mobileTooltip }">
       <slot></slot>
     </div>
 

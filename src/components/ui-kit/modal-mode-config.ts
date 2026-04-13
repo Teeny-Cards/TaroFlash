@@ -23,7 +23,7 @@ export const MODAL_MODE_CONFIG: Record<ModalMode, ModeConfig> = {
 
   'mobile-sheet': {
     containerClass:
-      'max-sm:flex-col max-sm:overflow-y-auto max-sm:justify-start sm:items-center max-sm:pt-4',
+      'max-sm:flex-col max-sm:overflow-y-auto max-sm:overscroll-y-contain max-sm:justify-start max-sm:pt-4 max-sm:pointer-events-auto sm:items-center',
     enter: (el, isDesktop, done) =>
       isDesktop ? slideUpFadeIn(el, done) : slideUpFromEdge(el, done),
     leave: (el, isDesktop, done) =>
