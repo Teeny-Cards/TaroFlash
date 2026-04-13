@@ -11,11 +11,15 @@ const frontendSidebar = [
       { text: 'Card', link: '/components/card' },
       { text: 'Icon', link: '/components/icon' },
       { text: 'Modal', link: '/components/modal' },
-      { text: 'Mobile Sheet', link: '/components/mobile-sheet' },
       { text: 'Popover', link: '/components/popover' },
       { text: 'Radio', link: '/components/radio' },
       { text: 'Slider', link: '/components/slider' }
     ]
+  },
+  {
+    text: 'Layout Kit',
+    collapsed: true,
+    items: [{ text: 'Mobile Sheet', link: '/components/mobile-sheet' }]
   },
   {
     text: 'Modal System',
@@ -83,7 +87,11 @@ export default defineConfig({
       '/design-system/': [
         {
           text: 'Design System',
-          items: [{ text: 'Overview', link: '/design-system/index' }]
+          items: [
+            { text: 'Overview', link: '/design-system/index' },
+            { text: 'Theming', link: '/design-system/theming' },
+            { text: 'Colors & Palette', link: '/design-system/colors' }
+          ]
         }
       ]
     },
