@@ -53,11 +53,6 @@ describe('MobileSheet', () => {
     expect(wrapper.find('[data-testid="mobile-sheet__header"]').exists()).toBe(true)
   })
 
-  test('shows header when header-left slot is provided', () => {
-    const wrapper = mountSheet({}, { 'header-left': '<span>left</span>' })
-    expect(wrapper.find('[data-testid="mobile-sheet__header"]').exists()).toBe(true)
-  })
-
   test('custom header slot replaces the default header entirely', () => {
     const wrapper = mountSheet(
       { title: 'My Title' },

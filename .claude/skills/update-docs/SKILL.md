@@ -1,6 +1,7 @@
 ---
 name: update-docs
 description: Analyse branch changes in `src/` and update docs in `docs/` to reflect them — surfacing concerns, questions, and inconsistencies before writing
+allowed-tools: Read, Edit, Write, Bash, Glob, Grep
 ---
 
 ## Workflow

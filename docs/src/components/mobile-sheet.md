@@ -14,32 +14,26 @@
 
 ## Header
 
-The header renders automatically when any of `title`, `header-content`, `header-left`, or `header` slots are provided. If none of these are present, the header section is omitted entirely.
+The header renders automatically when any of `title`, `header-content`, or `header` slots are provided. If none of these are present, the header section is omitted entirely.
 
 ### Default header layout
 
-The default header is a two-row grid:
-
-- **Row 1**: `header-left` (default: close button) · title · _(empty right cell)_
-- **Row 2**: `after-header` slot spanning all columns
+The default header is a flex row that centers its content. A close button is always rendered in the top-left corner (absolutely positioned). The title sits centered in the remaining space.
 
 ```html
 <mobile-sheet title="Edit Deck" @close="close()">
-  <template #after-header>
-    <tab-bar v-model="activeTab" />
-  </template>
   <template #body>...</template>
 </mobile-sheet>
 ```
 
-### Custom close button
+### Custom header content
 
-Replace just the left cell of the header (default close button) with `header-left`:
+Replace the centered title area with `header-content`. The close button remains fixed in the top-left:
 
 ```html
-<mobile-sheet title="Edit Deck" @close="close()">
-  <template #header-left>
-    <ui-button icon-left="arrow-back" icon-only inverted @click="goBack()" />
+<mobile-sheet @close="close()">
+  <template #header-content>
+    <my-custom-title />
   </template>
   <template #body>...</template>
 </mobile-sheet>
@@ -47,18 +41,7 @@ Replace just the left cell of the header (default close button) with `header-lef
 
 ### Full header replacement
 
-Replace the entire header row content (title + left cell) with `header-content`:
-
-```html
-<mobile-sheet @close="close()">
-  <template #header-content>
-    <my-custom-header />
-  </template>
-  <template #body>...</template>
-</mobile-sheet>
-```
-
-Or replace the entire header element (including the wave and background) with `header`:
+Replace the entire header element (including the wave, background, and close button) with `header`:
 
 ```html
 <mobile-sheet @close="close()">
@@ -89,15 +72,13 @@ Pass a `BgxConfig` to `bgx` to apply a background pattern to the header area:
 
 | Event   | Payload | Description                              |
 | ------- | ------- | ---------------------------------------- |
-| `close` | —       | Emitted when the default close button is clicked |
+| `close` | —       | Emitted when the close button is clicked |
 
 ## Slots
 
-| Slot             | Description                                                                 |
-| ---------------- | --------------------------------------------------------------------------- |
-| `header`         | Replaces the entire header element                                          |
-| `header-content` | Replaces the title + left cell within the default header                   |
-| `header-left`    | Replaces only the left cell of the default header (default: close button)  |
-| `after-header`   | Rendered in row 2 of the default header, spanning all columns              |
-| `body`           | Main content area                                                           |
-| `footer`         | Bottom section (no padding applied — control spacing from content)          |
+| Slot             | Description                                                               |
+| ---------------- | ------------------------------------------------------------------------- |
+| `header`         | Replaces the entire header element                                        |
+| `header-content` | Replaces the centered title within the default header                     |
+| `body`           | Main content area                                                         |
+| `footer`         | Bottom section (no padding applied — control spacing from content)        |
