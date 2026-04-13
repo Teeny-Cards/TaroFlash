@@ -62,32 +62,15 @@ For each source file:
 
 ### Step 4 — Surface concerns before writing
 
-**Do not write any documentation yet.** First, present a structured review to the user:
+**Do not write any documentation yet.** Present a brief checkpoint to the user. Keep it short — only flag items that genuinely need input.
 
-#### 4a. Changes with clear doc impact
+1. **Plan** — One bullet per doc change you intend to make (`file → what`). No elaboration needed for straightforward updates.
 
-List each change that obviously needs a doc update, with one line describing what needs to change. For example:
+2. **Blockers** (only if any) — Questions you *cannot resolve from the code alone*. Max 3. Skip this section entirely if there are none. Don't ask about things you can infer.
 
-- `use-modal.ts`: new `persistent` option is undocumented — needs a section in `modal/reference.md`
-- `modal.vue`: `@close` event renamed to `@dismiss` — update all examples in `modal/index.md`
+3. **Heads-up** (only if any) — Possible bugs or doc/code mismatches worth mentioning. One line each.
 
-#### 4b. Ambiguities and questions
-
-List anything that is unclear and needs a decision before you can write accurate docs:
-
-- "The `size` prop was removed but there's no migration path — should the docs note a breaking change?"
-- "I see a `debug` option in the source but it looks internal — should this be documented publicly?"
-- "The composable now returns a `status` field. What does it represent? I couldn't tell from the code alone."
-
-#### 4c. Potential bugs or inconsistencies
-
-Call out anything in the diff that looks like a possible bug, a mismatch between code and existing docs, or a risky change:
-
-- "The default for `closeOnBackdrop` was `true` and is now `false` — the existing docs still say `true`."
-- "The new `onBeforeClose` hook is typed as `() => void` but the code appears to await it — the return type looks wrong."
-- "The README example uses the old API signature — this will break for anyone copying from docs."
-
-**Wait for the user to respond** before proceeding to Step 5. Ask any questions, flag any concerns, and get confirmation on ambiguities.
+**Wait for the user to respond** before proceeding to Step 5.
 
 ### Step 5 — Write the documentation
 

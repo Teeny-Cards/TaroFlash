@@ -6,10 +6,10 @@ Colors are applied via the `data-theme` attribute, which scopes a set of semanti
 
 1. A `theme` prop accepts a `MemberTheme` value (e.g. `'blue-500'`, `'green-400'`).
 2. That value is bound to `data-theme` on the root element of the component.
-3. `palettes.css` maps each theme value to a set of `--theme-*` variables using `:is()` selectors that cover two activation conditions:
-   - `[data-theme='X']` — always active (light or dark mode)
-   - `[data-theme='dark'] [data-theme-dark='X']` — active when the root is dark and the element carries the matching `data-theme-dark`
-   The descendant form `(0,2,0)` has higher specificity than the plain attribute form `(0,1,0)`, so `data-theme-dark` always wins in dark mode.
+3. `palettes.css` maps each theme value to a set of `--theme-*` variables using a comma selector that covers two activation conditions:
+   - `[data-theme='X']` — `(0,1,0)` always active (light or dark mode)
+   - `[data-theme='dark'] [data-theme-dark='X']` — `(0,2,0)` active when the root is dark
+   Because each selector in a comma list carries its own specificity (unlike `:is()`, which elevates all arms to the highest), the descendant form genuinely beats the plain form in dark mode.
 4. Available tokens: `--theme-primary` / `--theme-on-primary`, `--theme-secondary` / `--theme-on-secondary`, `--theme-accent` / `--theme-on-accent`, `--theme-neutral` / `--theme-on-neutral`.
 5. Child elements reference those variables via Tailwind's arbitrary-property syntax or plain CSS.
 

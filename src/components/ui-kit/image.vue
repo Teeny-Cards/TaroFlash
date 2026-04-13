@@ -9,33 +9,60 @@ const { src, size = 'unset' } = defineProps<{
 
 const imageUrl = ref<string | null>(null)
 
-const raster = import.meta.glob('../../assets/images/*.{png,jpg,jpeg}', {
+// Images listed in the eager globs are bundled into the main chunk.
+// All others are code-split and fetched on first use.
+const eagerImages: Record<string, string> = {
+  ...import.meta.glob(
+    [
+      '../../assets/images/shortcuts.svg',
+      '../../assets/images/shortcuts-hover.svg',
+      '../../assets/images/inventory.svg',
+      '../../assets/images/inventory-hover.svg',
+      '../../assets/images/logout.svg',
+      '../../assets/images/logout-hover.svg',
+      '../../assets/images/settings.svg',
+      '../../assets/images/settings-hover.svg',
+      '../../assets/images/feedback.svg',
+      '../../assets/images/feedback-hover.svg',
+      '../../assets/images/darkmode-system.svg',
+      '../../assets/images/darkmode-light.svg',
+      '../../assets/images/darkmode-dark.svg'
+    ],
+    { eager: true, query: '?url', import: 'default' }
+  )
+}
+
+const lazyRaster = import.meta.glob('../../assets/images/*.{png,jpg,jpeg}', {
   import: 'default'
 })
 
-const svgs = import.meta.glob('../../assets/images/*.svg', {
+const lazySvgs = import.meta.glob('../../assets/images/*.svg', {
   query: '?url',
   import: 'default'
 })
 
-const modules = { ...raster, ...svgs }
+const lazyModules = { ...lazyRaster, ...lazySvgs }
+
+function findKey(mods: Record<string, any>, name: string) {
+  const re = new RegExp(`/${name}\\.(png|jpe?g|svg)$`, 'i')
+  return Object.keys(mods).find((k) => re.test(k))
+}
 
 onMounted(async () => {
-  const matchingKey = findExact(modules, src)
+  const eagerKey = findKey(eagerImages, src)
+  if (eagerKey) {
+    imageUrl.value = eagerImages[eagerKey] as string
+    return
+  }
 
-  if (!matchingKey) {
+  const lazyKey = findKey(lazyModules, src)
+  if (!lazyKey) {
     logger.warn(`No image found for: ${src}`)
     return
   }
 
-  const image = await modules[matchingKey]() // lazy load!
-  imageUrl.value = image as string
+  imageUrl.value = (await lazyModules[lazyKey]()) as string
 })
-
-function findExact(mods: Record<string, any>, name: string) {
-  const re = new RegExp(`/(?:^|)${name}\\.(png|jpe?g|svg)$`, 'i')
-  return Object.keys(mods).find((k) => re.test(k))
-}
 </script>
 
 <template>
