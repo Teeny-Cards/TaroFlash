@@ -43,7 +43,7 @@ function onSelect() {
         </div>
       </div>
 
-      <ui-radio :checked="selected" class="absolute! -top-1 -left-1" />
+      <ui-radio :checked="selected ?? false" class="absolute! -top-1 -left-1" />
     </button>
 
     <h2
