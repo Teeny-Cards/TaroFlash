@@ -15,7 +15,7 @@ const { cancelLabel, confirmLabel, close, cancelAudio, confirmAudio } = definePr
   type?: AlertType
   cancelAudio?: NamespacedAudioKey
   confirmAudio?: NamespacedAudioKey
-  close: ModalCloseFn
+  close: ModalCloseFn<boolean>
 }>()
 
 const { t } = useI18n()

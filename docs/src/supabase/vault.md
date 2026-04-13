@@ -67,7 +67,7 @@ SELECT public.invoke_cleanup_media();
 Then check the response:
 
 ```sql
-SELECT status, response_status, error_msg
+SELECT status_code, content, error_msg
 FROM net._http_response
 ORDER BY created DESC
 LIMIT 5;
