@@ -15,30 +15,34 @@ describe('UiButton', () => {
         { iconOnly: true, mobileTooltip: true },
         { default: 'Close' }
       )
-      expect(wrapper.find('.ui-kit-btn__tooltip').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="ui-kit-btn__tooltip"]').exists()).toBe(true)
     })
 
-    test('tooltip is hidden when mobileTooltip=false even with iconOnly and slot content', () => {
+    // mobileTooltip=false adds a CSS utility class to hide the tooltip on mobile
+    // but the element still exists in the DOM. data-mobile-tooltip encodes the state.
+    test('tooltip is mobile-hidden when mobileTooltip=false even with iconOnly and slot content', () => {
       const wrapper = mountButton(
         { iconOnly: true, mobileTooltip: false },
         { default: 'Close' }
       )
-      expect(wrapper.find('.ui-kit-btn__tooltip').exists()).toBe(false)
+      const tooltip = wrapper.find('[data-testid="ui-kit-btn__tooltip"]')
+      expect(tooltip.exists()).toBe(true)
+      expect(tooltip.attributes('data-mobile-tooltip')).toBe('false')
     })
 
     test('tooltip defaults to visible (mobileTooltip defaults to true)', () => {
       const wrapper = mountButton({ iconOnly: true }, { default: 'Close' })
-      expect(wrapper.find('.ui-kit-btn__tooltip').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="ui-kit-btn__tooltip"]').exists()).toBe(true)
     })
 
     test('tooltip is absent when there is no slot content, regardless of mobileTooltip', () => {
       const wrapper = mountButton({ iconOnly: true, mobileTooltip: true })
-      expect(wrapper.find('.ui-kit-btn__tooltip').exists()).toBe(false)
+      expect(wrapper.find('[data-testid="ui-kit-btn__tooltip"]').exists()).toBe(false)
     })
 
     test('tooltip is absent when iconOnly=false', () => {
       const wrapper = mountButton({ iconOnly: false, mobileTooltip: true }, { default: 'Label' })
-      expect(wrapper.find('.ui-kit-btn__tooltip').exists()).toBe(false)
+      expect(wrapper.find('[data-testid="ui-kit-btn__tooltip"]').exists()).toBe(false)
     })
   })
 
