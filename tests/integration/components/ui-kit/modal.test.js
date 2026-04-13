@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 import { mount } from '@vue/test-utils'
-import { defineComponent, h, nextTick } from 'vue'
+import { defineComponent, h, nextTick, withAttrs } from 'vue'
 import ModalUiKit from '@/components/ui-kit/modal.vue'
 import { useModal, useModalRequestClose, request_close_handlers } from '@/composables/modal'
 
@@ -30,8 +30,14 @@ vi.mock('@/composables/use-shortcuts', () => ({
   }))
 }))
 
-// gsap is imported transitively via modal-mode-config → animations/modal
-vi.mock('gsap', () => ({ gsap: { fromTo: vi.fn(), to: vi.fn() } }))
+// gsap is imported transitively via modal-mode-config → animations/modal.
+// The mock must call onComplete so transition-group JS hooks finish in browser mode.
+vi.mock('gsap', () => ({
+  gsap: {
+    fromTo: vi.fn((_el, _from, to) => to?.onComplete?.()),
+    to: vi.fn((_el, opts) => opts?.onComplete?.())
+  }
+}))
 
 vi.mock('@/composables/use-media-query', () => ({
   useMediaQuery: vi.fn(() => ({ value: true }))
@@ -47,7 +53,9 @@ beforeEach(() => {
 })
 
 const ModalStub = defineComponent({
-  template: '<div data-testid="modal-stub" />'
+  render() {
+    return h('div', { 'data-testid': 'modal-stub' })
+  }
 })
 
 function mountModal() {

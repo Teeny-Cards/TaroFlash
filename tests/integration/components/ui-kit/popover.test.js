@@ -1,5 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
+import { nextTick } from 'vue'
 import UiPopover from '@/components/ui-kit/popover.vue'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
@@ -126,7 +127,7 @@ describe('UiPopover', () => {
     floatingState.placement.value = 'top'
     floatingState.middlewareData.value = { arrow: { x: 30 } }
     const wrapper = mountPopover({ open: true })
-    await wrapper.vm.$nextTick()
+    await nextTick()
     const arrowEl = wrapper.find('[data-testid="ui-kit-popover__arrow"]')
     expect(arrowEl.attributes('style')).toContain('left: 30px')
   })
@@ -135,7 +136,7 @@ describe('UiPopover', () => {
     floatingState.placement.value = 'right'
     floatingState.middlewareData.value = { arrow: { y: 15 } }
     const wrapper = mountPopover({ open: true })
-    await wrapper.vm.$nextTick()
+    await nextTick()
     const arrowEl = wrapper.find('[data-testid="ui-kit-popover__arrow"]')
     expect(arrowEl.attributes('style')).toContain('top: 15px')
   })
@@ -152,7 +153,7 @@ describe('UiPopover', () => {
     const outside = document.createElement('div')
     document.body.appendChild(outside)
     outside.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-    await wrapper.vm.$nextTick()
+    await nextTick()
 
     outside.remove()
 
