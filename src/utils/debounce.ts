@@ -27,7 +27,7 @@ export function debounce<T extends DebounceCallback>(
 
       try {
         const result = await fn()
-        resolve(result)
+        resolve(result as Awaited<ReturnType<T>>)
       } catch (err) {
         reject(err)
       }

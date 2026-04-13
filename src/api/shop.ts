@@ -34,5 +34,8 @@ export async function fetchPurchaseItems(): Promise<PurchaseItem[]> {
     throw new Error(error.message)
   }
 
-  return data
+  return data.map((row) => ({
+    ...row,
+    shop_item: row.shop_item[0]
+  }))
 }

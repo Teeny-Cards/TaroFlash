@@ -1,6 +1,6 @@
 ---
 name: update-docs
-description: Analyse branch changes in `src/` and update docs in `docs/` to reflect them — surfacing concerns, questions, and inconsistencies before writing
+description: Analyse branch changes in `src/` and `supabase/` and update docs in `docs/` to reflect them — surfacing concerns, questions, and inconsistencies before writing
 allowed-tools: Read, Edit, Write, Bash, Glob, Grep
 ---
 
@@ -13,10 +13,10 @@ Before running the following commands, make sure the master branch is up to date
 Run the following two commands to capture all changes, whether committed or not:
 
 1. **Committed changes** (branch commits vs master):
-   `git diff master...HEAD --name-only -- src/`
+   `git diff master...HEAD --name-only -- src/ supabase/`
 
 2. **Uncommitted changes** (staged or unstaged working tree changes):
-   `git status --short -- src/`
+   `git status --short -- src/ supabase/`
 
 Combine both lists, deduplicating as needed. This is necessary because branches sometimes have only uncommitted/staged changes with no commits yet.
 
@@ -47,6 +47,8 @@ For each source file:
    - Removed or deprecated functionality
    - Changes to default values
    - Meaningful internal restructuring that users might reason about
+   - New or changed database tables, columns, RLS policies, RPC functions, or triggers
+   - New or changed edge functions
 
 ### Step 3 — Locate existing docs
 

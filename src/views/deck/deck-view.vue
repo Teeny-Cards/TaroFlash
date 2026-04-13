@@ -119,7 +119,7 @@ async function onMoveCards(id?: number) {
   const selected_cards = editor.getSelectedCards()
 
   emitSfx('ui.double_pop_up')
-  const { response } = modal.open(MoveCardsModal, {
+  const { response } = modal.open<{ deck_id: number }>(MoveCardsModal, {
     backdrop: true,
     props: { cards: selected_cards, current_deck_id: Number(deck_id) }
   })

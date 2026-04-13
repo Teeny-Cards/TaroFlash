@@ -1,6 +1,6 @@
 ---
 name: update-tests
-description: Analyse branch changes in `src/` and write tests to reach ~90% coverage of changed lines
+description: Analyse branch changes in `src/` and `supabase/` and write tests to reach ~90% coverage of changed lines
 allowed-tools: Read, Edit, Write, Bash, Glob, Grep
 ---
 
@@ -13,10 +13,10 @@ Before running the following commands, make sure the master branch is up to date
 Run the following two commands to capture all changes, whether committed or not:
 
 1. **Committed changes** (branch commits vs master):
-   git diff master...HEAD --name-only -- src/
+   git diff master...HEAD --name-only -- src/ supabase/
 
 2. **Uncommitted changes** (staged or unstaged working tree changes):
-   git status --short -- src/
+   git status --short -- src/ supabase/
 
 Combine both lists, deduplicating as needed. This is necessary because branches sometimes have only uncommitted/staged changes
 with no commits yet.
@@ -49,6 +49,22 @@ For each source file:
 3. Check whether an existing test file already covers this source file (look under `tests/` mirroring the source path, e.g. `src/components/foo/bar.vue` → `tests/integration/components/foo/bar.test.js`, or `src/composables/foo.ts` → `tests/unit/composables/foo.test.js`).
 4. If a test file exists, read it to understand what is already covered before writing new tests.
 5. **If no test file exists at all**, treat this as an opportunity to write full coverage for the entire file — not just the changed lines. Cover the public API, all meaningful branches, and edge cases. Note this in the Step 8 report as "new test file (full coverage)".
+
+### Step 2b — Backend changes (`supabase/`)
+
+If the changed files include `supabase/migrations/*.sql` or `supabase/functions/**`:
+
+1. Read the migration or function to understand what changed (new tables, RLS policies, triggers, RPC functions, etc.).
+2. Check if existing tests in `supabase/tests/` already cover the changed functionality.
+3. Write pgTAP tests in `supabase/tests/` following the conventions in the existing test files:
+   - Use `tests.create_user()` and `tests.set_claims()` helpers for setup
+   - Use inline `SET LOCAL role = 'authenticated'` / `SET LOCAL role = 'postgres'` for role switching
+   - Wrap in `BEGIN` / `ROLLBACK` for isolation
+   - Name files with a numeric prefix for ordering (e.g. `00007_new_feature.sql`)
+4. Run with `supabase test db` to validate.
+5. Prioritise testing: RLS policies (security) > RPC functions (business logic) > triggers (data integrity).
+
+Skip to Step 8 for these files — Steps 3–7 are frontend-specific.
 
 ### Step 3 — Determine test type (in priority order)
 

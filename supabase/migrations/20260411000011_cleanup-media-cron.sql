@@ -113,7 +113,7 @@ $$;
 --      View all jobs:       SELECT * FROM cron.job;
 --      Remove this job:     SELECT cron.unschedule('cleanup-media-hourly');
 --      Run immediately:     SELECT public.invoke_cleanup_media();
---      Inspect responses:   SELECT * FROM net._http_response ORDER BY created DESC LIMIT 5;
+--      Inspect responses:   SELECT status_code, content, error_msg FROM net._http_response ORDER BY created DESC LIMIT 5;
 -- -----------------------------------------------------------------------------
 
 -- Unschedule first so the migration is idempotent (safe to re-run)
