@@ -8,8 +8,6 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  # Posts a "running" comment immediately so the PR shows activity right away.
-  # Outputs the comment ID so the finish job can update it in place.
   start:
     name: Post status comment
     if: github.event.label.name == 'deploy:staging'
@@ -63,8 +61,45 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
+  functions:
+    name: Deploy edge functions
+    needs: [migrate]
+    if: github.event.label.name == 'deploy:staging'
+    runs-on: ubuntu-latest
+    environment: staging
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Link project
+        run: supabase link --project-ref ${{ vars.SUPABASE_PROJECT_REF }} --password ${{ secrets.SUPABASE_DB_PASSWORD }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Set edge function secrets
+        run: |
+          supabase secrets set \
+            STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }} \
+            --project-ref ${{ vars.SUPABASE_PROJECT_REF }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Deploy functions
+        run: supabase functions deploy --project-ref ${{ vars.SUPABASE_PROJECT_REF }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
   frontend:
     name: Build & deploy frontend
+    needs: [migrate, functions]
     if: github.event.label.name == 'deploy:staging'
     runs-on: ubuntu-latest
     environment: staging
@@ -93,6 +128,7 @@ jobs:
           VITE_SUPABASE_API_KEY: ${{ secrets.VITE_SUPABASE_API_KEY }}
           VITE_STRIPE_PUBLIC_KEY: ${{ vars.VITE_STRIPE_PUBLIC_KEY }}
           VITE_MEMBERSHIP_PRICE_ID: ${{ vars.VITE_MEMBERSHIP_PRICE_ID }}
+          VITE_AUTH_REDIRECT_URL: ${{ vars.VITE_AUTH_REDIRECT_URL }}
 
       - name: Deploy to Netlify
         run: pnpm --package=netlify-cli dlx netlify deploy --dir=dist --alias=stage
@@ -100,14 +136,11 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
 
-  # Updates the comment posted by `start` with the final result.
-  # always() ensures this runs even when migrate or frontend fail —
-  # without it GitHub skips dependent jobs on failure by default.
   finish:
     name: Update status comment
     if: always() && github.event.label.name == 'deploy:staging'
     runs-on: ubuntu-latest
-    needs: [start, migrate, frontend]
+    needs: [start, migrate, functions, frontend]
     permissions:
       pull-requests: write
 
@@ -116,17 +149,20 @@ jobs:
         if: always()
         run: |
           MIGRATE="${{ needs.migrate.result }}"
+          FUNCTIONS="${{ needs.functions.result }}"
           FRONTEND="${{ needs.frontend.result }}"
           RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           SHA=$(echo "${{ github.sha }}" | cut -c1-7)
 
-          if [ "$MIGRATE" = "success" ] && [ "$FRONTEND" = "success" ]; then
+          if [ "$MIGRATE" = "success" ] && [ "$FUNCTIONS" = "success" ] && [ "$FRONTEND" = "success" ]; then
             BODY="✅ Staging deploy complete from \`${SHA}\`."
           else
             BODY="❌ Staging deploy failed from \`${SHA}\` — [view logs](${RUN_URL})."
-            [ "$MIGRATE"  != "success" ] && BODY="${BODY}
+            [ "$MIGRATE"   != "success" ] && BODY="${BODY}
           - DB migrations: ${MIGRATE}"
-            [ "$FRONTEND" != "success" ] && BODY="${BODY}
+            [ "$FUNCTIONS" != "success" ] && BODY="${BODY}
+          - Edge functions: ${FUNCTIONS}"
+            [ "$FRONTEND"  != "success" ] && BODY="${BODY}
           - Frontend: ${FRONTEND}"
           fi
 

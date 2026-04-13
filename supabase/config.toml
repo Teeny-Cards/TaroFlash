@@ -294,3 +294,10 @@ project_id = "kjxijaowaogiepqteqjk"
 [remotes.stage.auth]
 site_url = "https://stage.taro-flash.com"
 additional_redirect_urls = ["https://stage.taro-flash.com"]
+
+[remotes.prod]
+project_id = "pwdqswbdiyahmftergyk"
+
+[remotes.prod.auth]
+site_url = "https://taro-flash.com"
+additional_redirect_urls = ["https://taro-flash.com"]
