@@ -20,7 +20,7 @@ onMounted(async () => {
   const res = await supabase.functions.invoke<SubscriptionData>('create-subscription', {
     body: {
       priceId: import.meta.env.VITE_MEMBERSHIP_PRICE_ID,
-      email: session.user_email
+      email: session.user?.email
     }
   })
 

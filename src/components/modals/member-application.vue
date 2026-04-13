@@ -33,7 +33,7 @@ const themes: MemberTheme[] = [
   'green-400',
   'blue-500',
   'purple-500',
-  'pink-500',
+  'pink-400',
   'red-500',
   'orange-500'
 ]
