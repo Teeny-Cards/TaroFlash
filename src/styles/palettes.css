@@ -93,6 +93,10 @@
 
 [data-theme='green-400'] {
   --theme-primary: var(--color-green-400);
+  --theme-on-primary: var(--color-brown-100);
+
+  --theme-accent: var(--color-brown-500);
+  --theme-on-accent: var(--color-brown-100);
 }
 
 [data-theme='purple-500'] {

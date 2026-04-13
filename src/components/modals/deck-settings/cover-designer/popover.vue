@@ -16,6 +16,7 @@ const emit = defineEmits<{
 
 const slots = defineSlots<{
   default(): any
+  extra?(): any
 }>()
 
 const open = ref(false)
@@ -24,10 +25,10 @@ const open = ref(false)
 <template>
   <ui-popover
     data-testid="cover-designer-popover-container"
-    position="top"
+    position="right"
     :gap="12"
     :open="open"
-    :fallback_placements="['top']"
+    :fallback_placements="['bottom', 'top']"
     shadow
     @close="open = false"
   >
@@ -52,6 +53,18 @@ const open = ref(false)
       <div class="size-full rotate-45 rounded-br-1 bg-brown-100" />
     </template>
 
-    <slot></slot>
+    <div
+      data-testid="cover-designer-popover__content"
+      class="rounded-6 bg-brown-100 p-4 flex flex-col gap-4 w-80"
+    >
+      <h3 class="text-brown-700 text-xl text-center">{{ label }}</h3>
+      <div
+        data-testid="cover-designer-popover__grid"
+        class="grid grid-cols-[1fr_1fr_1fr_1fr] gap-1"
+      >
+        <slot></slot>
+      </div>
+      <slot name="extra"></slot>
+    </div>
   </ui-popover>
 </template>

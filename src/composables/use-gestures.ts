@@ -72,6 +72,8 @@ function onPointerDown(e: PointerEvent): void {
 function onPointerMove(e: PointerEvent): void {
   if (!_tracking || _tracking.pointer_id !== e.pointerId) return
 
+  e.preventDefault()
+
   const dx = e.clientX - _tracking.start_x
   const dy = e.clientY - _tracking.start_y
   const coords: DragCoords = { x: e.clientX, y: e.clientY, dx, dy }
@@ -92,6 +94,14 @@ function onPointerUp(e: PointerEvent): void {
 
   const result: DragResult = { x: e.clientX, y: e.clientY, dx, dy, velocity, duration }
   for (const r of active) r.callbacks.onEnd?.(result)
+
+  if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+    document.addEventListener('click', suppressClick, { capture: true, once: true })
+  }
+}
+
+function suppressClick(e: Event): void {
+  e.stopPropagation()
 }
 
 function onPointerCancel(e: PointerEvent): void {
@@ -105,7 +115,7 @@ function onPointerCancel(e: PointerEvent): void {
 
 function attachListeners(): void {
   document.addEventListener('pointerdown', onPointerDown)
-  document.addEventListener('pointermove', onPointerMove, { passive: true })
+  document.addEventListener('pointermove', onPointerMove, { passive: false })
   document.addEventListener('pointerup', onPointerUp)
   document.addEventListener('pointercancel', onPointerCancel)
 }
@@ -140,6 +150,10 @@ export function useGestures() {
    * scope is disposed.
    */
   function register(element: Element, callbacks: DragCallbacks): () => void {
+    const el = element as HTMLElement
+    const prev_touch_action = el.style.touchAction
+    el.style.touchAction = 'none'
+
     const id = _next_id++
     _registry.set(id, { id, element, callbacks })
     _listener_count++
@@ -147,6 +161,7 @@ export function useGestures() {
 
     function unregister() {
       if (!_registry.has(id)) return
+      el.style.touchAction = prev_touch_action
       _registry.delete(id)
       if (_tracking) {
         _tracking.active = _tracking.active.filter((r) => r.id !== id)

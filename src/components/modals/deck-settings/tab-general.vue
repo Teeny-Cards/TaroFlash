@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import UiInput from '@/components/ui-kit/input.vue'
 import UiToggle from '@/components/ui-kit/toggle.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
-import coverDesigner from './cover-designer.vue'
+import coverDesigner from './cover-designer/index.vue'
 
 const { t } = useI18n()
 const { deck } = defineProps<{ imageUrl?: string; deck?: Deck }>()

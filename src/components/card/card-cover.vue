@@ -20,11 +20,11 @@ const coverStyle = computed((): Record<string, string> => {
   }
 
   if (cover?.border_color) {
-    style.border = `var(--face-border-width) solid var(--color-${cover.border_color})`
+    const width = cover.border_size ? `${cover.border_size}px` : 'var(--face-border-width)'
+    style.border = `${width} solid var(--color-${cover.border_color})`
   }
 
   if (cover?.pattern) {
-    style['--bgx-fill'] = `var(--color-${cover.pattern_color ?? 'grey-900'})`
     style['--bgx-opacity'] = String(cover.pattern_opacity ?? 0.4)
     if (cover.pattern_size) {
       style['--bgx-size'] = `${cover.pattern_size}px`
@@ -36,7 +36,13 @@ const coverStyle = computed((): Record<string, string> => {
 </script>
 
 <template>
-  <div data-testid="card-cover" class="card-cover" :class="patternClass" :style="coverStyle" />
+  <div
+    data-testid="card-cover"
+    :data-theme="cover?.bg_color"
+    class="card-cover bgx-(--theme-neutral)"
+    :class="patternClass"
+    :style="coverStyle"
+  />
 </template>
 
 <style>
