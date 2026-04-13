@@ -1,215 +1,56 @@
 ---
-title: Choose Browser-Based Runner for Style and DOM Event Testing
+title: Browser Mode vs jsdom
 paths:
   - 'tests/**/*'
+  - 'vite.config.ts'
 ---
 
-# Choose Browser-Based Runner for Style and DOM Event Testing
+# Browser Mode vs jsdom
 
-**Impact: MEDIUM** - Node-based test runners (Vitest with jsdom/happy-dom) simulate the DOM but cannot test real CSS rendering, native browser events, cookies, computed styles, or cross-browser behavior. Use browser-based runners when these matter.
+Integration tests run in real Chromium via Vitest browser mode (`@vitest/browser-playwright`). Unit tests run in jsdom. The split is configured as two Vitest projects in `vite.config.ts`.
 
-Use Vitest for most component tests (fast), but use Vitest Browser Mode when testing visual/DOM-dependent features.
-
-## Task Checklist
-
-- [ ] Use Vitest (node) for logic-focused component tests
-- [ ] Use Vitest Browser Mode for style-dependent tests
-- [ ] Use Vitest Browser Mode for native events (focus, drag, resize)
-- [ ] Use Vitest Browser Mode for cookies and computed CSS styles
-- [ ] Accept slower speed tradeoff for browser accuracy
-
-## When to Use Each Approach
-
-### Node-Based Runner (Vitest + happy-dom/jsdom)
-
-Best for:
-
-- Pure logic testing
-- State management
-- Event emission
-- Props/slots behavior
-- Most component interactions
-- Fast CI/CD pipelines
-
-```javascript
-// vitest.config.js
-export default defineConfig({
-  test: {
-    environment: 'happy-dom' // or 'jsdom'
-  }
-})
-```
-
-```javascript
-// Fast but limited - fine for most tests
-test('button emits click event', async () => {
-  const wrapper = mount(Button)
-  await wrapper.trigger('click')
-  expect(wrapper.emitted('click')).toBeTruthy()
-})
-```
-
-### Vitest Browser Mode
-
-Required for:
-
-- CSS computed styles verification
-- CSS transitions/animations
-- Real focus/blur behavior
-- Drag and drop
-- Cookie operations
-- Viewport-dependent behavior
-- Cross-browser validation
-
-## Vitest Browser Mode Setup
-
-```bash
-npm install -D @vitest/browser playwright
-```
-
-```javascript
-// vitest.config.js
-import { defineConfig } from 'vitest/config'
-
-export default defineConfig({
-  test: {
-    browser: {
-      enabled: true,
-      name: 'chromium',
-      provider: 'playwright'
-    }
-  }
-})
-```
-
-```javascript
-// Button.browser.test.js
-import { render } from 'vitest-browser-vue'
-import Button from './Button.vue'
-
-test('has correct hover styling', async () => {
-  const { getByRole } = render(Button, { props: { label: 'Click me' } })
-
-  const button = getByRole('button')
-
-  // Check initial style
-  await expect.element(button).toHaveStyle({
-    backgroundColor: 'rgb(59, 130, 246)' // blue
-  })
-})
-
-test('maintains focus after click', async () => {
-  const { getByRole } = render(Button)
-
-  const button = getByRole('button')
-  await button.click()
-
-  await expect.element(button).toHaveFocus()
-})
-```
-
-## Examples: What Each Runner Can/Cannot Test
-
-### Styles - Browser Required
-
-```javascript
-// Node runner: CANNOT verify actual CSS
-test('danger button has red background', () => {
-  const wrapper = mount(Button, { props: { variant: 'danger' } })
-  // This only checks class exists, not actual color
-  expect(wrapper.classes()).toContain('bg-red-500')
-})
-
-// Vitest Browser Mode: CAN verify computed styles
-test('danger button renders red', async () => {
-  const { getByRole } = render(Button, { props: { variant: 'danger' } })
-  await expect.element(getByRole('button')).toHaveStyle({
-    backgroundColor: 'rgb(239, 68, 68)'
-  })
-})
-```
-
-### Computed CSS Styles - Browser Required
-
-```javascript
-// Node runner: CANNOT get real computed styles
-test('button has correct padding', () => {
-  const wrapper = mount(Button)
-  // getComputedStyle returns empty/default values in jsdom
-  const style = window.getComputedStyle(wrapper.element)
-  // style.padding will be empty string, not actual computed value
-})
-
-// Vitest Browser Mode: Real computed styles
-test('button has correct padding', async () => {
-  const { getByRole } = render(Button)
-  const button = getByRole('button')
-
-  await expect.element(button).toHaveStyle({
-    padding: '12px 24px'
-  })
-})
-```
-
-### Native Events - Browser Required
-
-```javascript
-// Node runner: Synthetic events only
-test('handles drag and drop', async () => {
-  const wrapper = mount(DraggableList)
-  // trigger('dragstart') is synthetic - may not work as expected
-  await wrapper.find('.item').trigger('dragstart')
-})
-
-// Vitest Browser Mode: Real native events via userEvent
-import { userEvent } from '@vitest/browser/context'
-
-test('reorders items on drag', async () => {
-  const { getByTestId } = render(DraggableList)
-
-  const item = getByTestId('item-1')
-  const target = getByTestId('item-3')
-
-  await userEvent.dragAndDrop(item, target)
-
-  // Assert reordering
-})
-```
-
-## Recommended Testing Strategy
-
-```javascript
-// vitest.config.js - Separate test configurations
-
-export default defineConfig({
-  test: {
-    // Default: Node environment for speed
-    environment: 'happy-dom',
-
-    // Browser tests in separate directory
-    include: ['src/**/*.test.{js,ts}']
-  }
-})
-
-// Run browser tests separately
-// npx vitest --browser.enabled
-```
-
-### Directory Structure
+## Project configuration
 
 ```
 tests/
-├── unit/              # Fast node-based tests
-│   ├── Button.test.js
-│   └── useCounter.test.js
-├── component/         # Slower browser-based tests
-│   ├── Button.browser.test.js
-│   └── DragDrop.browser.test.js
-└── e2e/               # Full E2E tests (Playwright)
-    └── user-flow.spec.ts
+├── setup.js              # Unit setup — i18n + matchMedia mock
+├── setup-browser.js      # Integration setup — i18n only (real browser has matchMedia)
+├── unit/                 # jsdom (Node)
+└── integration/          # Chromium (browser)
 ```
 
-## Reference
+The Integration project needs `optimizeDeps.exclude: ['vite-plus/test']` so that the test API module isn't pre-bundled by Vite — without this, vitest's browser runner can't intercept it and `describe`/`test` fail at collection time.
 
-- [Vue.js Testing - Component Testing](https://vuejs.org/guide/scaling-up/testing#component-testing)
-- [Vitest Browser Mode](https://vitest.dev/guide/browser.html)
+## When to use which
+
+| jsdom (unit) | Chromium (integration) |
+|---|---|
+| Pure functions, utilities | Vue components that render HTML |
+| Composables with no rendering | Components using real browser APIs |
+| Pinia store logic | Layout, focus, clipboard, media queries |
+| Fast — no browser startup | Slower — real browser overhead |
+
+**Default to jsdom** for anything that doesn't render. **Default to Chromium** for anything that does.
+
+## What browser mode gives you
+
+- Real `matchMedia`, `getBoundingClientRect`, `getComputedStyle`
+- Real CSS rendering (transitions, computed styles, media queries)
+- Real event propagation (pointer events, focus/blur, transitionend)
+- No need to mock `window.matchMedia`, `ResizeObserver`, etc.
+
+## What browser mode costs
+
+- ~15-20s startup for the Chromium process
+- No runtime template compiler — test stubs must use render functions (see `testing.md`)
+- GSAP mocks must call `onComplete` for transition-group JS hooks to complete
+- `global` is not defined — browser setup files cannot use `global.__matchMedia` or similar Node globals
+
+## Running tests
+
+```bash
+vp test                                           # full suite (both projects)
+vp test --project Unit                            # unit tests only
+vp test --project Integration                     # integration tests only
+vp test tests/integration/components/deck.test.js # single file
+```
