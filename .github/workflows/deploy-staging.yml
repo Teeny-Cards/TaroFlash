@@ -65,7 +65,7 @@ jobs:
 
       - name: Run migrations
         run: |
-          supabase link --project-ref ${{ vars.SUPABASE_PROJECT_REF }} --password ${{ secrets.SUPABASE_DB_PASSWORD }}
+          supabase link --project-ref ${{ vars.SUPABASE_PROJECT_REF }} --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
           supabase migration up --linked
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
@@ -89,7 +89,7 @@ jobs:
           version: latest
 
       - name: Link project
-        run: supabase link --project-ref ${{ vars.SUPABASE_PROJECT_REF }} --password ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: supabase link --project-ref ${{ vars.SUPABASE_PROJECT_REF }} --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
