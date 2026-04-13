@@ -216,25 +216,12 @@
   &:where([data-theme='dark'], [data-theme='dark'] *) {
     --shadow-color: rgba(0, 0, 0, 1);
   }
-  @media (prefers-color-scheme: dark) {
-    &:where(:not([data-theme] *)) {
-      --shadow-color: rgba(0, 0, 0, 1);
-    }
-  }
 }
 
-/* Dark Mode Tailwind Variant Override */
+/* Dark Mode Tailwind Variant */
 @custom-variant dark {
-  /* Explicit dark mode wins */
   &:where([data-theme='dark'], [data-theme='dark'] *) {
     @slot;
-  }
-
-  /* System dark mode fallback ONLY when no explicit theme is set anywhere */
-  @media (prefers-color-scheme: dark) {
-    &:where(:not([data-theme] *)) {
-      @slot;
-    }
   }
 }
 

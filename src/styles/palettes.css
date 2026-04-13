@@ -1,5 +1,15 @@
-/* base: if no theme provided, defaults to blue-500 */
-[data-theme='blue-500'] {
+/* Each block uses :is() to cover two activation conditions:
+ *   1. [data-theme='X']                          — always active (light or dark)
+ *   2. [data-theme='dark'] [data-theme-dark='X'] — active when the root is dark
+ *
+ * Specificity: the descendant form (0,2,0) beats the plain attribute form (0,1,0),
+ * so the data-theme-dark value always wins over data-theme in dark mode.
+ *
+ * No @media fallback needed — use-theme.ts always writes an explicit 'light'|'dark'
+ * value to data-theme on the root, even when the user's preference is 'system'.
+ */
+
+:is([data-theme='blue-500'], [data-theme='dark'] [data-theme-dark='blue-500']) {
   --theme-primary: var(--color-blue-500);
   --theme-on-primary: var(--color-brown-100);
 
@@ -13,7 +23,7 @@
   --theme-on-neutral: var(--color-grey-900);
 }
 
-[data-theme='blue-800'] {
+:is([data-theme='blue-800'], [data-theme='dark'] [data-theme-dark='blue-800']) {
   --theme-primary: var(--color-blue-800);
   --theme-on-primary: var(--color-brown-100);
 
@@ -27,17 +37,17 @@
   --theme-on-neutral: var(--color-brown-500);
 }
 
-[data-theme='blue-650'] {
+:is([data-theme='blue-650'], [data-theme='dark'] [data-theme-dark='blue-650']) {
   --theme-primary: var(--color-blue-650);
   --theme-on-primary: var(--color-white);
 }
 
-[data-theme='blue-400'] {
+:is([data-theme='blue-400'], [data-theme='dark'] [data-theme-dark='blue-400']) {
   --theme-primary: var(--color-blue-400);
   --theme-on-primary: var(--color-brown-100);
 }
 
-[data-theme='grey-400'] {
+:is([data-theme='grey-400'], [data-theme='dark'] [data-theme-dark='grey-400']) {
   --theme-primary: var(--color-grey-400);
   --theme-on-primary: var(--color-white);
 
@@ -48,11 +58,11 @@
   --theme-on-accent: var(--color-grey-900);
 }
 
-[data-theme='grey-900'] {
+:is([data-theme='grey-900'], [data-theme='dark'] [data-theme-dark='grey-900']) {
   --theme-primary: var(--color-grey-900);
 }
 
-[data-theme='brown-300'] {
+:is([data-theme='brown-300'], [data-theme='dark'] [data-theme-dark='brown-300']) {
   --theme-primary: var(--color-brown-300);
   --theme-on-primary: var(--color-brown-700);
 
@@ -63,7 +73,7 @@
   --theme-on-neutral: var(--color-brown-700);
 }
 
-[data-theme='brown-100'] {
+:is([data-theme='brown-100'], [data-theme='dark'] [data-theme-dark='brown-100']) {
   --theme-primary: var(--color-brown-100);
   --theme-on-primary: var(--color-brown-700);
 
@@ -77,7 +87,7 @@
   --theme-on-neutral: var(--color-brown-700);
 }
 
-[data-theme='pink-400'] {
+:is([data-theme='pink-400'], [data-theme='dark'] [data-theme-dark='pink-400']) {
   --theme-primary: var(--color-pink-400);
   --theme-on-primary: var(--color-brown-100);
 
@@ -91,7 +101,7 @@
   --theme-on-neutral: var(--color-brown-500);
 }
 
-[data-theme='green-400'] {
+:is([data-theme='green-400'], [data-theme='dark'] [data-theme-dark='green-400']) {
   --theme-primary: var(--color-green-400);
   --theme-on-primary: var(--color-brown-100);
 
@@ -99,13 +109,13 @@
   --theme-on-accent: var(--color-brown-100);
 }
 
-[data-theme='purple-500'] {
+:is([data-theme='purple-500'], [data-theme='dark'] [data-theme-dark='purple-500']) {
   --theme-primary: var(--color-purple-500);
   --theme-accent: var(--color-purple-400);
   --theme-on-neutral: var(--color-purple-400);
 }
 
-[data-theme='purple-400'] {
+:is([data-theme='purple-400'], [data-theme='dark'] [data-theme-dark='purple-400']) {
   --theme-primary: var(--color-purple-400);
   --theme-on-primary: var(--color-brown-100);
 
@@ -113,15 +123,15 @@
   --theme-on-secondary: var(--color-brown-100);
 }
 
-[data-theme='purple-700'] {
+:is([data-theme='purple-700'], [data-theme='dark'] [data-theme-dark='purple-700']) {
   --theme-primary: var(--color-purple-700);
 }
 
-[data-theme='red-400'] {
+:is([data-theme='red-400'], [data-theme='dark'] [data-theme-dark='red-400']) {
   --theme-primary: var(--color-red-400);
 }
 
-[data-theme='red-500'] {
+:is([data-theme='red-500'], [data-theme='dark'] [data-theme-dark='red-500']) {
   --theme-primary: var(--color-red-500);
   --theme-on-primary: var(--color-white);
 
@@ -129,14 +139,14 @@
   --theme-on-accent: var(--color-white);
 }
 
-[data-theme='orange-500'] {
+:is([data-theme='orange-500'], [data-theme='dark'] [data-theme-dark='orange-500']) {
   --theme-primary: var(--color-orange-500);
 
   --theme-accent: var(--color-orange-400);
   --theme-on-accent: var(--color-brown-100);
 }
 
-[data-theme='orange-600'] {
+:is([data-theme='orange-600'], [data-theme='dark'] [data-theme-dark='orange-600']) {
   --theme-primary: var(--color-orange-600);
   --theme-on-primary: var(--color-white);
 
@@ -144,7 +154,8 @@
   --theme-on-accent: var(--color-brown-100);
 }
 
-[data-theme='white'] {
+:is([data-theme='white'], [data-theme='dark'] [data-theme-dark='white']) {
   --theme-primary: var(--color-white);
   --theme-on-primary: var(--color-grey-900);
 }
+
