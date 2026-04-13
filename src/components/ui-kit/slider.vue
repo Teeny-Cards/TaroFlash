@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import UiTooltip from '@/components/ui-kit/tooltip.vue'
-import { onMounted, ref, useTemplateRef } from 'vue'
+import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
+import { useGestures } from '@/composables/use-gestures'
 
+const { theme = 'brown-800' } = defineProps<{
+  theme?: MemberTheme
+}>()
 const percent = defineModel<number>()
 
 const container = useTemplateRef('container')
@@ -10,48 +14,53 @@ const fill = useTemplateRef('fill')
 const is_dragging = ref(false)
 
 let gap = 0
-let thumb_offset = 0
 let thumb: HTMLElement | null
+let drag_container_left = 0
+let drag_container_width = 0
+let drag_thumb_half = 0
+
+const { register } = useGestures()
+
+let resize_observer: ResizeObserver | null = null
 
 onMounted(() => {
-  if (!percent.value || !container.value) return
+  thumb = container.value!.querySelector('[data-testid="ui-kit-slider__thumb"]')
 
-  thumb = container.value.querySelector('[data-testid="ui-kit-slider__thumb"]')
-  gap = parseInt(getComputedStyle(container.value).gap)
+  resize_observer = new ResizeObserver(([entry]) => {
+    if (entry.contentRect.width === 0) return
+    gap = parseInt(getComputedStyle(container.value!).columnGap) || 0
+    if (percent.value !== undefined) setFillWidth(percent.value)
+  })
+  resize_observer.observe(container.value!)
 
-  setFillWidth(percent.value)
+  register(container.value!, {
+    onStart() {
+      const rect = container.value!.getBoundingClientRect()
+      drag_container_left = rect.left
+      drag_container_width = rect.width
+      drag_thumb_half = thumb!.clientWidth / 2
+      is_dragging.value = true
+    },
+    onMove({ x }) {
+      applyX(x)
+    },
+    onEnd({ x }) {
+      applyX(x)
+      is_dragging.value = false
+    },
+    onCancel() {
+      is_dragging.value = false
+    }
+  })
 })
 
-function onDragStart(e: MouseEvent) {
-  if (!container.value || !thumb) return
+onUnmounted(() => {
+  resize_observer?.disconnect()
+})
 
-  const { clientX } = e
-  const { left } = thumb.getBoundingClientRect()
-
-  thumb_offset = clientX - left
-
-  is_dragging.value = true
-  document.addEventListener('mousemove', onDrag)
-  document.addEventListener('mouseup', onDragEnd)
-}
-
-function onDragEnd() {
-  document.removeEventListener('mousemove', onDrag)
-  document.removeEventListener('mouseup', onDragEnd)
-
-  is_dragging.value = false
-  setFillWidth(percent.value!)
-}
-
-async function onDrag(e: MouseEvent) {
-  if (!container.value || !thumb) return
-
-  const { left, width } = container.value.getBoundingClientRect()
-  const { clientX } = e
-
-  const padding = thumb.clientWidth / 2
-  const pos = clientX - left - padding
-  let ratio = pos / width
+function applyX(clientX: number) {
+  const pos = clientX - drag_container_left - drag_thumb_half
+  let ratio = pos / (drag_container_width - drag_thumb_half)
   ratio = Math.min(Math.max(ratio, 0), 1)
 
   const new_percent = ratio * 100
@@ -77,27 +86,27 @@ function setFillWidth(new_percent: number) {
 <template>
   <div
     ref="container"
+    :data-theme="theme"
     data-testid="ui-kit-slider"
     class="grid grid-cols-[auto_1fr] items-center gap-7.5"
   >
     <div
       ref="fill"
       data-testid="ui-kit-slider__fill"
-      class="h-2.5 bg-brown-800 dark:bg-brown-300 rounded-full relative flex items-center"
+      class="h-2.5 bg-(--theme-primary) rounded-full relative flex items-center"
     >
       <ui-tooltip
         data-testid="ui-kit-slider__thumb"
         :text="`${percent}%`"
         :visible="is_dragging"
         element="div"
-        class="absolute -right-6.5 w-5.5 h-5.5 bg-brown-800 dark:bg-brown-300 rounded-full shrink-0 cursor-pointer hover:ring-8 hover:ring-brown-800 dark:hover:ring-brown-300 transition-all duration-75 z-10"
-        @mousedown="onDragStart"
+        class="absolute -right-6.5 w-5.5 h-5.5 bg-(--theme-accent) rounded-full shrink-0 cursor-pointer hover:ring-4 hover:ring-(--theme-accent) transition-all duration-75 z-10"
       ></ui-tooltip>
     </div>
 
     <div
       data-testid="ui-kit-slider__track"
-      class="h-2.5 w-full bg-brown-100 dark:bg-grey-900 rounded-full shrink"
+      class="h-2.5 bg-brown-100 dark:bg-grey-900 rounded-full"
     ></div>
 
     <!-- <div data-testid="ui-kit-slider__spinbox">

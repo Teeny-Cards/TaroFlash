@@ -90,7 +90,7 @@ const arrowStyle = computed(() => {
     top: y != null ? `${y}px` : '',
     right: '',
     bottom: '',
-    [staticSide]: `-${ARROW_SIZE}px`,
+    [staticSide]: `-${ARROW_SIZE}px`
   }
 })
 
