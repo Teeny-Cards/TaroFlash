@@ -8,10 +8,21 @@ import { useSessionStore } from '@/stores/session'
 import { onMounted } from 'vue'
 import logger from '@/utils/logger'
 import { useTheme } from '@/composables/use-theme'
+import { useRouter } from 'vue-router'
+import { clearStaticLoader } from '@/utils/static-loader'
 
 const { toasts } = useToast()
 const session = useSessionStore()
 const theme = useTheme()
+const router = useRouter()
+
+const removeGuard = router.afterEach((to) => {
+  const isAuthenticated = to.matched.some((r) => r.name === 'authenticated')
+  if (!isAuthenticated) {
+    clearStaticLoader()
+    removeGuard()
+  }
+})
 
 onMounted(async () => {
   try {

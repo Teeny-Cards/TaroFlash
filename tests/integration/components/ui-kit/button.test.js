@@ -64,4 +64,29 @@ describe('UiButton', () => {
     const wrapper = mountButton()
     expect(wrapper.find('[data-testid="ui-kit-button"]').attributes('data-theme')).toBe('blue-500')
   })
+
+  // ── data-theme-dark ──────────────────────────────────────────────────────
+
+  describe('data-theme-dark', () => {
+    test('sets data-theme-dark to the themeDark prop', () => {
+      const wrapper = mountButton({ theme: 'green-400', themeDark: 'grey-900' })
+      expect(wrapper.find('[data-testid="ui-kit-button"]').attributes('data-theme-dark')).toBe(
+        'grey-900'
+      )
+    })
+
+    test('falls back to theme when themeDark is not provided', () => {
+      const wrapper = mountButton({ theme: 'green-400' })
+      expect(wrapper.find('[data-testid="ui-kit-button"]').attributes('data-theme-dark')).toBe(
+        'green-400'
+      )
+    })
+
+    test('falls back to default theme (blue-500) when neither prop is set', () => {
+      const wrapper = mountButton()
+      expect(wrapper.find('[data-testid="ui-kit-button"]').attributes('data-theme-dark')).toBe(
+        'blue-500'
+      )
+    })
+  })
 })

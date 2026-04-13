@@ -41,6 +41,7 @@ const open = ref(false)
           :icon-left="icon"
           icon-only
           theme="brown-100"
+          theme-dark="blue-800"
           size="lg"
           :mobile-tooltip="false"
         >
@@ -50,7 +51,7 @@ const open = ref(false)
     </template>
 
     <template #arrow>
-      <div class="size-full rotate-45 rounded-br-1 bg-brown-100" />
+      <div class="size-full rotate-45 rounded-br-1 bg-brown-100"></div>
     </template>
 
     <div
