@@ -14,8 +14,6 @@ const { theme = 'green-400', bgx, title } = defineProps<MobileSheetProps>()
 const slots = defineSlots<{
   header(): any
   'header-content'(): any
-  'header-left'(): any
-  'after-header'(): any
   body(): any
   footer(): any
 }>()
@@ -27,7 +25,7 @@ const emit = defineEmits<{
 const headerBgxClass = computed(() => bgxClasses(bgx))
 
 const showHeader = computed(() => {
-  return slots.header || slots['header-content'] || slots['header-left'] || title
+  return slots.header || slots['header-content'] || title
 })
 </script>
 
@@ -43,11 +41,9 @@ const showHeader = computed(() => {
         class="w-full flex justify-center items-center place-items-center px-13 pt-11.5 pb-14 gap-6 wave-bottom-[50px] bg-(--theme-primary) text-(--theme-on-primary) relative"
         :class="headerBgxClass"
       >
-        <slot name="header-left">
-          <div class="absolute top-0 left-0 p-4">
-            <ui-button icon-left="close" icon-only :theme="theme" inverted @click="emit('close')" />
-          </div>
-        </slot>
+        <div class="absolute top-0 left-0 p-4">
+          <ui-button icon-left="close" icon-only :theme="theme" inverted @click="emit('close')" />
+        </div>
 
         <slot name="header-content">
           <h1 class="text-5xl text-white">{{ title }}</h1>

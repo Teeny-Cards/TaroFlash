@@ -1,6 +1,7 @@
 ---
 name: update-tests
 description: Analyse branch changes in `src/` and write tests to reach ~90% coverage of changed lines
+allowed-tools: Read, Edit, Write, Bash, Glob, Grep
 ---
 
 ## Workflow
