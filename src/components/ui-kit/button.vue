@@ -63,7 +63,7 @@ const merged_sfx = computed(() => {
     </div>
     <ui-icon v-if="iconRight" class="btn-icon btn-icon--right" :src="iconRight" />
 
-    <div v-if="iconOnly && $slots.default && mobileTooltip" class="ui-kit-btn__tooltip">
+    <div v-if="iconOnly && $slots.default" class="ui-kit-btn__tooltip" :class="{ 'max-sm:hidden!': !mobileTooltip }">
       <slot></slot>
     </div>
 
