@@ -6,7 +6,7 @@ const { disabled, content } = defineProps<{
   disabled?: boolean
   content?: string
   placeholder?: string
-  attributes?: Card['attributes']
+  attributes?: TextEditorAttributes
 }>()
 
 const emit = defineEmits<{
@@ -35,9 +35,9 @@ defineExpose({ focus })
       ref="text-editor"
       class="text-editor"
       :class="[
-        `text-editor--${attributes?.text_size ?? '4xl'}`,
-        `text-editor--${attributes?.horizontal_alignment ?? 'center'}`,
-        `text-editor--${attributes?.vertical_alignment ?? 'middle'}`
+        `text-editor--size-${attributes?.text_size ?? 'large'}`,
+        `text-editor--h-${attributes?.horizontal_alignment ?? 'center'}`,
+        `text-editor--v-${attributes?.vertical_alignment ?? 'center'}`
       ]"
     ></div>
     <span v-if="!has_content && !disabled" class="text-editor__placeholder">
@@ -54,14 +54,36 @@ defineExpose({ focus })
   color: var(--color-brown-700);
 }
 
-.text-editor--center {
+/* Horizontal alignment */
+.text-editor--h-left {
+  text-align: left;
+}
+
+.text-editor--h-center {
   text-align: center;
+}
+
+.text-editor--h-right {
+  text-align: right;
+}
+
+/* Vertical alignment */
+.text-editor--v-top {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.text-editor--v-center {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
 }
 
-.text-editor--middle {
+.text-editor--v-bottom {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .text-editor__placeholder {
@@ -75,28 +97,92 @@ defineExpose({ focus })
   color: var(--color-brown-300);
 }
 
+/* Size scale — each tier sets custom properties for p, h3, h2, h1 */
+.text-editor--size-small {
+  --editor-p: var(--text-lg);
+  --editor-p-lh: var(--text-lg--line-height);
+  --editor-h3: var(--text-lg);
+  --editor-h3-lh: var(--text-lg--line-height);
+  --editor-h2: var(--text-xl);
+  --editor-h2-lh: var(--text-xl--line-height);
+  --editor-h1: var(--text-2xl);
+  --editor-h1-lh: var(--text-2xl--line-height);
+}
+
+.text-editor--size-medium {
+  --editor-p: var(--text-2xl);
+  --editor-p-lh: var(--text-2xl--line-height);
+  --editor-h3: var(--text-xl);
+  --editor-h3-lh: var(--text-xl--line-height);
+  --editor-h2: var(--text-2xl);
+  --editor-h2-lh: var(--text-2xl--line-height);
+  --editor-h1: var(--text-3xl);
+  --editor-h1-lh: var(--text-3xl--line-height);
+}
+
+.text-editor--size-large {
+  --editor-p: var(--text-4xl);
+  --editor-p-lh: var(--text-4xl--line-height);
+  --editor-h3: var(--text-2xl);
+  --editor-h3-lh: var(--text-2xl--line-height);
+  --editor-h2: var(--text-3xl);
+  --editor-h2-lh: var(--text-3xl--line-height);
+  --editor-h1: var(--text-4xl);
+  --editor-h1-lh: var(--text-4xl--line-height);
+}
+
+.text-editor--size-x-large {
+  --editor-p: var(--text-5xl);
+  --editor-p-lh: var(--text-5xl--line-height);
+  --editor-h3: var(--text-3xl);
+  --editor-h3-lh: var(--text-3xl--line-height);
+  --editor-h2: var(--text-4xl);
+  --editor-h2-lh: var(--text-4xl--line-height);
+  --editor-h1: var(--text-5xl);
+  --editor-h1-lh: var(--text-5xl--line-height);
+}
+
+.text-editor--size-huge {
+  --editor-p: var(--text-6xl);
+  --editor-p-lh: var(--text-6xl--line-height);
+  --editor-h3: var(--text-4xl);
+  --editor-h3-lh: var(--text-4xl--line-height);
+  --editor-h2: var(--text-5xl);
+  --editor-h2-lh: var(--text-5xl--line-height);
+  --editor-h1: var(--text-6xl);
+  --editor-h1-lh: var(--text-6xl--line-height);
+}
+
+.text-editor--size-ginormous {
+  --editor-p: var(--text-7xl);
+  --editor-p-lh: var(--text-7xl--line-height);
+  --editor-h3: var(--text-5xl);
+  --editor-h3-lh: var(--text-5xl--line-height);
+  --editor-h2: var(--text-6xl);
+  --editor-h2-lh: var(--text-6xl--line-height);
+  --editor-h1: var(--text-7xl);
+  --editor-h1-lh: var(--text-7xl--line-height);
+}
+
+/* Element rules read from the custom properties */
+.text-editor p {
+  font-size: var(--editor-p);
+  line-height: var(--editor-p-lh);
+}
+
 .text-editor h1 {
-  font-size: var(--text-6xl);
-  line-height: var(--text-6xl--line-height);
+  font-size: var(--editor-h1);
+  line-height: var(--editor-h1-lh);
 }
 
 .text-editor h2 {
-  font-size: var(--text-5xl);
-  line-height: var(--text-5xl--line-height);
+  font-size: var(--editor-h2);
+  line-height: var(--editor-h2-lh);
 }
 
 .text-editor h3 {
-  font-size: var(--text-4xl);
-  line-height: var(--text-4xl--line-height);
-}
-
-.text-editor p {
-  font-size: var(--text-base);
-  line-height: var(--text-base--line-height);
-}
-.text-editor--4xl p {
-  font-size: var(--text-4xl);
-  line-height: var(--text-4xl--line-height);
+  font-size: var(--editor-h3);
+  line-height: var(--editor-h3-lh);
 }
 
 .text-editor ul {
@@ -105,8 +191,8 @@ defineExpose({ focus })
 }
 
 .text-editor li {
-  font-size: var(--text-base);
-  line-height: var(--text-base--line-height);
+  font-size: var(--editor-p);
+  line-height: var(--editor-p-lh);
 }
 
 .text-editor li span {

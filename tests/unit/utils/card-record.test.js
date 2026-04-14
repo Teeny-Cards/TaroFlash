@@ -93,20 +93,18 @@ describe('CardRecord', () => {
     })
 
     test('excludes undefined properties from upsert payload', async () => {
-      // attributes is undefined (not set on card)
-      const record = new CardRecord(card.one({ overrides: { attributes: undefined } }))
+      const record = new CardRecord(card.one({ overrides: { member_id: undefined } }))
       await record.update({ front_text: 'X' })
       const payload = vi.mocked(upsertCard).mock.calls[0][0]
-      expect('attributes' in payload).toBe(false)
+      expect('member_id' in payload).toBe(false)
     })
 
     test('keeps null properties in upsert payload', async () => {
-      // attributes is null by default in the fixture; CardRecord must preserve it
-      const record = new CardRecord(card.one())
+      const record = new CardRecord(card.one({ overrides: { back_text: null } }))
       await record.update({ front_text: 'X' })
       const payload = vi.mocked(upsertCard).mock.calls[0][0]
-      expect('attributes' in payload).toBe(true)
-      expect(payload.attributes).toBeNull()
+      expect('back_text' in payload).toBe(true)
+      expect(payload.back_text).toBeNull()
     })
 
     test('payload always includes the record id', async () => {

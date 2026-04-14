@@ -25,6 +25,7 @@ const focused = ref(false)
 const focusOutPromise = ref<Promise<void> | null>(null)
 
 const { mode, updateCard } = inject<CardBulkEditor>('card-editor')!
+const card_defaults = inject<DeckCardDefaults>('card-defaults')!
 
 function onUpdate(side: 'front' | 'back', text: string) {
   const update: Partial<Card> = {
@@ -114,6 +115,7 @@ defineExpose({ focusEditor, hasFocusWithin })
         <text-editor
           ref="front-input"
           :content="card.front_text"
+          :attributes="card_defaults"
           :placeholder="t('common.front')"
           class="w-full h-full"
           @update="onUpdate('front', $event)"
@@ -145,6 +147,7 @@ defineExpose({ focusEditor, hasFocusWithin })
         <text-editor
           ref="back-input"
           :content="card.back_text"
+          :attributes="card_defaults"
           :placeholder="t('common.back')"
           class="w-full h-full"
           @update="onUpdate('back', $event)"

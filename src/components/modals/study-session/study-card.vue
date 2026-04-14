@@ -9,11 +9,12 @@ import { useRatingFormat } from '@/utils/fsrs'
 
 defineExpose({ rate })
 
-const { card, side, options, cover_config } = defineProps<{
+const { card, side, options, cover_config, card_defaults } = defineProps<{
   card?: Card
   side: 'front' | 'back' | 'cover'
   options?: RecordLog
   cover_config?: DeckCover
+  card_defaults?: TextEditorAttributes
 }>()
 
 const emit = defineEmits<{
@@ -158,6 +159,7 @@ function toSwipeZone(offset: number) {
       v-bind="card"
       :side="side"
       :cover_config="cover_config"
+      :card_defaults="card_defaults"
       @mouseup="triggerCardFlip"
     >
       <div class="absolute inset-0 overflow-hidden rounded-(--face-radius)">

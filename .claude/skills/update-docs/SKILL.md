@@ -68,7 +68,7 @@ For each source file:
 
 1. **Plan** — One bullet per doc change you intend to make (`file → what`). No elaboration needed for straightforward updates.
 
-2. **Blockers** (only if any) — Questions you *cannot resolve from the code alone*. Max 3. Skip this section entirely if there are none. Don't ask about things you can infer.
+2. **Blockers** (only if any) — Questions you _cannot resolve from the code alone_. Max 3. Skip this section entirely if there are none. Don't ask about things you can infer.
 
 3. **Heads-up** (only if any) — Possible bugs or doc/code mismatches worth mentioning. One line each.
 

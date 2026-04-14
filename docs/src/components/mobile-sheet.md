@@ -62,11 +62,11 @@ Pass a `BgxConfig` to `bgx` to apply a background pattern to the header area:
 
 ## Props
 
-| Prop    | Type          | Default       | Description                                         |
-| ------- | ------------- | ------------- | --------------------------------------------------- |
-| `theme` | `MemberTheme` | `'green-400'` | Color theme applied to the header and close button  |
-| `title` | String        | `undefined`   | Title text rendered in the header                   |
-| `bgx`   | `BgxConfig`   | `undefined`   | Background texture config for the header area       |
+| Prop    | Type          | Default       | Description                                        |
+| ------- | ------------- | ------------- | -------------------------------------------------- |
+| `theme` | `MemberTheme` | `'green-400'` | Color theme applied to the header and close button |
+| `title` | String        | `undefined`   | Title text rendered in the header                  |
+| `bgx`   | `BgxConfig`   | `undefined`   | Background texture config for the header area      |
 
 ## Emits
 
@@ -76,9 +76,9 @@ Pass a `BgxConfig` to `bgx` to apply a background pattern to the header area:
 
 ## Slots
 
-| Slot             | Description                                                               |
-| ---------------- | ------------------------------------------------------------------------- |
-| `header`         | Replaces the entire header element                                        |
-| `header-content` | Replaces the centered title within the default header                     |
-| `body`           | Main content area                                                         |
-| `footer`         | Bottom section (no padding applied — control spacing from content)        |
+| Slot             | Description                                                        |
+| ---------------- | ------------------------------------------------------------------ |
+| `header`         | Replaces the entire header element                                 |
+| `header-content` | Replaces the centered title within the default header              |
+| `body`           | Main content area                                                  |
+| `footer`         | Bottom section (no padding applied — control spacing from content) |

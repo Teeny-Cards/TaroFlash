@@ -38,9 +38,9 @@ The `intermediate` prop renders a minus icon inside the circle — for use in "s
 
 ## Props
 
-| Prop           | Type          | Default      | Description                                              |
-| -------------- | ------------- | ------------ | -------------------------------------------------------- |
-| `checked`      | Boolean       | —            | Required. Whether the radio appears selected             |
-| `theme`        | `MemberTheme` | `'blue-500'` | Color theme                                              |
+| Prop           | Type          | Default      | Description                                               |
+| -------------- | ------------- | ------------ | --------------------------------------------------------- |
+| `checked`      | Boolean       | —            | Required. Whether the radio appears selected              |
+| `theme`        | `MemberTheme` | `'blue-500'` | Color theme                                               |
 | `inverted`     | Boolean       | `false`      | Filled background at rest; outline highlight when checked |
-| `intermediate` | Boolean       | `false`      | Shows a minus icon (for indeterminate / partial state)   |
+| `intermediate` | Boolean       | `false`      | Shows a minus icon (for indeterminate / partial state)    |

@@ -73,7 +73,7 @@ For each changed unit of code, choose the **lowest-cost test type** that can mea
 | Priority | Type            | When to use                                                                                                                                                                       |
 | -------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1        | **Unit**        | Pure functions, utilities, composables with no rendering, store logic that can be called directly                                                                                 |
-| 2        | **Integration** | Vue components — anything that renders HTML (runs in Chromium via browser mode)                                                                                                    |
+| 2        | **Integration** | Vue components — anything that renders HTML (runs in Chromium via browser mode)                                                                                                   |
 | 3        | **E2E**         | **Last resort only.** Use only when the behaviour cannot be covered without full navigation or multi-step flow interaction. Always justify why integration is insufficient first. |
 
 **Default to integration tests for components.** Use `shallowMount` for isolated component tests (stub child components) and `mount` only when child component behaviour is directly under test.
