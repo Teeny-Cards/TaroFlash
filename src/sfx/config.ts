@@ -24,9 +24,7 @@ export const AUDIO_CONFIG = createAudioConfig({
     pop_window: {
       default_volume: 0.3
     },
-    slide_up: {
-      default_volume: 0.3
-    },
+    slide_up: {},
     trash_crumple_short: {},
     negative_pop: {
       ext: 'mp3',

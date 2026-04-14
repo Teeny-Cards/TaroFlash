@@ -51,7 +51,11 @@ vi.mock('@/api/reviews', () => ({
 // resolves the animation-wait promise used to sequence card transitions.
 
 const CardStub = defineComponent({
-  props: { side: { type: String }, card_defaults: { default: null } },
+  props: {
+    side: { type: String },
+    front_attributes: { default: null },
+    back_attributes: { default: null }
+  },
   emits: ['flip-complete'],
   inheritAttrs: false,
   setup(props, { emit, slots }) {

@@ -1,4 +1,13 @@
-type DeckCardDefaults = TextEditorAttributes
+type CardAttributes = {
+  horizontal_alignment?: 'left' | 'center' | 'right'
+  vertical_alignment?: 'top' | 'center' | 'bottom'
+  text_size?: 'small' | 'medium' | 'large' | 'x-large' | 'huge' | 'ginormous'
+}
+
+type DeckCardAttributes = {
+  front: CardAttributes
+  back: CardAttributes
+}
 
 type Deck = {
   id: number
@@ -14,7 +23,7 @@ type Deck = {
   due_count?: number
   study_config?: DeckConfig
   cover_config?: DeckCover
-  card_defaults?: DeckCardDefaults
+  card_attributes?: DeckCardAttributes
   has_image?: boolean
   card_count?: number
 }

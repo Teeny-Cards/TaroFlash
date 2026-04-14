@@ -145,7 +145,8 @@ async function onCardReviewed(grade?: Grade) {
         :side="next_card_side"
         v-bind="next_card"
         :cover_config="deck.cover_config"
-        :card_defaults="deck.card_defaults"
+        :front_attributes="deck.card_attributes?.front"
+        :back_attributes="deck.card_attributes?.back"
         class="absolute! pointer-events-none"
         @flip-complete="onNextCardFlipped"
       />
@@ -157,7 +158,8 @@ async function onCardReviewed(grade?: Grade) {
         :side="current_card_side"
         :options="active_card?.preview"
         :cover_config="deck.cover_config"
-        :card_defaults="deck.card_defaults"
+        :front_attributes="deck.card_attributes?.front"
+        :back_attributes="deck.card_attributes?.back"
         @started="onStart"
         @side-changed="onSideChanged"
         @reviewed="onCardReviewed"
@@ -166,7 +168,8 @@ async function onCardReviewed(grade?: Grade) {
         data-testid="study-card-skeleton"
         side="cover"
         :cover_config="deck.cover_config"
-        :card_defaults="deck.card_defaults"
+        :front_attributes="deck.card_attributes?.front"
+        :back_attributes="deck.card_attributes?.back"
         v-else
         size="xl"
       />

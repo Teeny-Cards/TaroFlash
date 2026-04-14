@@ -20,7 +20,10 @@ export function useDeckEditor(deck?: Deck) {
   )
 
   const cover = reactive<DeckCover>(deck?.cover_config ?? {})
-  const card_defaults = reactive<DeckCardDefaults>(deck?.card_defaults ?? {})
+  const card_attributes = reactive<DeckCardAttributes>({
+    front: deck?.card_attributes?.front ?? {},
+    back: deck?.card_attributes?.back ?? {}
+  })
 
   const uploaded_image = ref<File | undefined>()
   const image_removed = ref<boolean>(false)
@@ -33,7 +36,10 @@ export function useDeckEditor(deck?: Deck) {
       ...settings,
       study_config: { ...config },
       cover_config: { ...cover },
-      card_defaults: { ...card_defaults }
+      card_attributes: {
+        front: { ...card_attributes.front },
+        back: { ...card_attributes.back }
+      }
     })
   }
 
@@ -78,7 +84,7 @@ export function useDeckEditor(deck?: Deck) {
     settings,
     config,
     cover,
-    card_defaults,
+    card_attributes,
     cover_image_preview,
     cover_image_loading,
     saveDeck,

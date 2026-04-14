@@ -6,7 +6,7 @@ const { disabled, content } = defineProps<{
   disabled?: boolean
   content?: string
   placeholder?: string
-  attributes?: TextEditorAttributes
+  attributes?: CardAttributes
 }>()
 
 const emit = defineEmits<{

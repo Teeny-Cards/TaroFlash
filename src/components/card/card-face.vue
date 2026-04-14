@@ -6,7 +6,7 @@ const { image, text } = defineProps<{
   image?: string
   text?: string
   mode?: CardEditorMode
-  card_defaults?: TextEditorAttributes
+  attributes?: CardAttributes
 }>()
 </script>
 
@@ -15,7 +15,7 @@ const { image, text } = defineProps<{
     <img v-if="image" :src="image" class="h-full w-full object-cover" />
 
     <slot name="editor" v-else>
-      <text-editor :content="text" :attributes="card_defaults" disabled class="w-full h-full" />
+      <text-editor :content="text" :attributes="attributes" disabled class="w-full h-full" />
     </slot>
   </div>
 </template>
