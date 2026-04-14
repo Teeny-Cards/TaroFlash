@@ -24,14 +24,14 @@ The `size` prop applies a fixed dimension class:
 <ui-image src="settings" size="xs" />
 ```
 
-| Size    | Dimensions |
-| ------- | ---------- |
-| `full`  | 100% x 100% |
-| `xl`    | 128px      |
-| `lg`    | 96px       |
-| `base`  | 64px       |
-| `sm`    | 48px       |
-| `xs`    | 32px       |
+| Size    | Dimensions              |
+| ------- | ----------------------- |
+| `full`  | 100% x 100%             |
+| `xl`    | 128px                   |
+| `lg`    | 96px                    |
+| `base`  | 64px                    |
+| `sm`    | 48px                    |
+| `xs`    | 32px                    |
 | `unset` | No fixed size (default) |
 
 ## Loading Strategy
@@ -47,7 +47,7 @@ To make an image eager, add its path to the explicit glob list in the component'
 
 ## Props
 
-| Prop   | Type   | Default | Description                                             |
-| ------ | ------ | ------- | ------------------------------------------------------- |
-| `src`  | String | —       | Filename (without extension) from `src/assets/images/`  |
-| `size` | String | `unset` | `full`, `xl`, `lg`, `base`, `sm`, `xs`, or `unset`      |
+| Prop   | Type   | Default | Description                                            |
+| ------ | ------ | ------- | ------------------------------------------------------ |
+| `src`  | String | —       | Filename (without extension) from `src/assets/images/` |
+| `size` | String | `unset` | `full`, `xl`, `lg`, `base`, `sm`, `xs`, or `unset`     |

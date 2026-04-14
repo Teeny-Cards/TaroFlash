@@ -76,7 +76,7 @@ vi.mock('gsap', () => ({
 wrapper.find('ui-icon-stub[src="check"]')
 
 // Good
-wrapper.findAllComponents({ name: 'UiIcon' }).some(c => c.props('src') === 'check')
+wrapper.findAllComponents({ name: 'UiIcon' }).some((c) => c.props('src') === 'check')
 ```
 
 ## Fixtures and test data

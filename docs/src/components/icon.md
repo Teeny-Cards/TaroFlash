@@ -36,6 +36,6 @@ To move an icon from eager to lazy, narrow the eager glob to an explicit file li
 
 ## Props
 
-| Prop  | Type   | Required | Description                                       |
-| ----- | ------ | -------- | ------------------------------------------------- |
+| Prop  | Type   | Required | Description                                          |
+| ----- | ------ | -------- | ---------------------------------------------------- |
 | `src` | String | Yes      | Filename (without extension) from `src/assets/icons` |
