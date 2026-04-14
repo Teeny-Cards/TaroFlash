@@ -1,7 +1,7 @@
 import { fileURLToPath, URL } from 'node:url'
 import { resolve, dirname } from 'node:path'
 import svgLoader from 'vite-svg-loader'
-import dataUriPlugin from './src/plugins/vite-datauri'
+import dataUriPlugin from './src/plugins/vite-datauri.ts'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import { defineConfig, coverageConfigDefaults } from 'vite-plus'
 import { playwright } from '@vitest/browser-playwright'

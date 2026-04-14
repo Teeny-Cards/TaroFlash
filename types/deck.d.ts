@@ -1,3 +1,5 @@
+type DeckCardDefaults = TextEditorAttributes
+
 type Deck = {
   id: number
   created_at?: string
@@ -12,6 +14,7 @@ type Deck = {
   due_count?: number
   study_config?: DeckConfig
   cover_config?: DeckCover
+  card_defaults?: DeckCardDefaults
   has_image?: boolean
   card_count?: number
 }

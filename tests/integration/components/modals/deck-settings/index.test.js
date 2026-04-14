@@ -9,9 +9,12 @@ const { mockSaveDeck } = vi.hoisted(() => ({
   mockSaveDeck: vi.fn().mockResolvedValue(undefined)
 }))
 
-vi.mock('@/composables/deck-editor', () => ({
-  useDeckEditor: () => ({ saveDeck: mockSaveDeck })
-}))
+vi.mock('@/composables/deck-editor', async () => {
+  const { reactive } = await import('vue')
+  return {
+    useDeckEditor: () => ({ saveDeck: mockSaveDeck, card_defaults: reactive({}) })
+  }
+})
 
 // ── Stubs ──────────────────────────────────────────────────────────────────────
 
@@ -119,7 +122,9 @@ describe('DeckSettings', () => {
   test('save button calls saveDeck and closes with true', async () => {
     const close = vi.fn()
     const wrapper = makeDeckSettings({ deck: makeDeck(), close })
-    await wrapper.find('[data-testid="deck-settings__footer"] [data-testid="ui-button-stub"]').trigger('click')
+    await wrapper
+      .find('[data-testid="deck-settings__footer"] [data-testid="ui-button-stub"]')
+      .trigger('click')
     await flushPromises()
     expect(mockSaveDeck).toHaveBeenCalledOnce()
     expect(close).toHaveBeenCalledWith(true)
@@ -132,6 +137,13 @@ describe('DeckSettings', () => {
     const wrapper = makeDeckSettings({ close })
     await wrapper.findComponent(MobileSheetStub).vm.$emit('close')
     expect(close).toHaveBeenCalledWith(false)
+  })
+
+  // ── Card defaults toolbar ───────────────────────────────────────────────────
+
+  test('renders the card defaults toolbar', () => {
+    const wrapper = makeDeckSettings({ deck: makeDeck() })
+    expect(wrapper.findComponent({ name: 'CardDefaultsToolbar' }).exists()).toBe(true)
   })
 
   // ── Save button label ──────────────────────────────────────────────────────

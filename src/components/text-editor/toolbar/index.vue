@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import FontSizeSelector from './font-size-selector.vue'
-import AlignSelector from './align-selector.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import { useTextComposerToolbar } from '@/composables/use-text-composer-toolbar'
 import { type SfxOptions } from '@/sfx/directive'
@@ -42,38 +41,6 @@ const submenu_sfx: SfxOptions = { hover: 'ui.click_07', click: 'ui.toggle_on' }
     >
       <ui-icon src="list" />
     </div>
-
-    <align-selector
-      class="toolbar-option toolbar-option--icon-only"
-      :sfx="sfx"
-      trigger-icon="horizontal-align"
-    >
-      <div class="toolbar-option toolbar-option--icon-only" v-sfx="submenu_sfx" @mousedown.prevent>
-        <ui-icon src="align-left" />
-      </div>
-      <div class="toolbar-option toolbar-option--icon-only" v-sfx="submenu_sfx" @mousedown.prevent>
-        <ui-icon src="align-center" />
-      </div>
-      <div class="toolbar-option toolbar-option--icon-only" v-sfx="submenu_sfx" @mousedown.prevent>
-        <ui-icon src="align-right" />
-      </div>
-    </align-selector>
-
-    <align-selector
-      class="toolbar-option toolbar-option--icon-only"
-      :sfx="sfx"
-      trigger-icon="vertical-align"
-    >
-      <div class="toolbar-option toolbar-option--icon-only" v-sfx="submenu_sfx" @mousedown.prevent>
-        <ui-icon src="align-left" />
-      </div>
-      <div class="toolbar-option toolbar-option--icon-only" v-sfx="submenu_sfx" @mousedown.prevent>
-        <ui-icon src="align-center" />
-      </div>
-      <div class="toolbar-option toolbar-option--icon-only" v-sfx="submenu_sfx" @mousedown.prevent>
-        <ui-icon src="align-right" />
-      </div>
-    </align-selector>
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import OverviewPanel from '@/views/deck/overview-panel.vue'
-import { onMounted, ref, provide } from 'vue'
+import { onMounted, ref, reactive, provide } from 'vue'
 import { fetchDeck } from '@/api/decks'
 import CardEditor from './card-editor/index.vue'
 import CardGrid from './card-grid/index.vue'
@@ -30,10 +30,12 @@ const is_md = useMediaQuery('md')
 const image_url = ref<string | undefined>()
 const deck = ref<Deck>()
 const active_tab = ref(0)
+const card_defaults = reactive<DeckCardDefaults>({})
 
 const editor = useCardBulkEditor(deck.value?.cards ?? [], Number(deck_id))
 
 provide('card-editor', editor)
+provide('card-defaults', card_defaults)
 provide('on-delete-card', onDeleteCards)
 provide('on-move-card', onMoveCards)
 provide('on-select-card', onSelectCard)
@@ -79,6 +81,8 @@ async function refetchDeck() {
     if (deck.value.cards) {
       editor.resetCards(deck.value.cards)
     }
+
+    Object.assign(card_defaults, deck.value.card_defaults ?? {})
   } catch (e: any) {
     // TODO
   }

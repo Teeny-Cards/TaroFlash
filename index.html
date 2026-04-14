@@ -16,12 +16,11 @@
          localStorage to pick the right color. Cleaned up by clearStaticLoader()
          in src/utils/static-loader.ts -->
     <script id="static-loader-script">
-      (function () {
-        var t = localStorage.getItem("app-theme");
-        var d =
-          t === "dark" || (t !== "light" && matchMedia("(prefers-color-scheme:dark)").matches);
-        document.body.style.background = d ? "#1c1c1c" : "#11b7d4";
-      })();
+      ;(function () {
+        var t = localStorage.getItem('app-theme')
+        var d = t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme:dark)').matches)
+        document.body.style.background = d ? '#1c1c1c' : '#11b7d4'
+      })()
     </script>
 
     <div id="app" class="flex flex-col md:items-center"></div>

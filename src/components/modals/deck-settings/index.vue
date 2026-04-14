@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import coverDesigner from './cover-designer/index.vue'
+import CardDefaultsToolbar from './card-defaults-toolbar.vue'
 import { useDeckEditor } from '@/composables/deck-editor'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiInput from '@/components/ui-kit/input.vue'
@@ -17,7 +18,7 @@ const { deck, close } = defineProps<{
 }>()
 
 const { t } = useI18n()
-const { saveDeck } = useDeckEditor(deck)
+const { saveDeck, card_defaults } = useDeckEditor(deck)
 
 const title = ref(deck?.title ?? '')
 const description = ref(deck?.description ?? '')
@@ -61,6 +62,8 @@ async function onSave() {
               {{ t('deck.settings-modal.is-public') }}
             </div>
           </ui-toggle>
+
+          <card-defaults-toolbar :card_defaults="card_defaults" />
         </div>
       </div>
     </template>

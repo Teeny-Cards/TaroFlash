@@ -9,7 +9,7 @@ Colors are applied via the `data-theme` attribute, which scopes a set of semanti
 3. `palettes.css` maps each theme value to a set of `--theme-*` variables using a comma selector that covers two activation conditions:
    - `[data-theme='X']` — `(0,1,0)` always active (light or dark mode)
    - `[data-theme='dark'] [data-theme-dark='X']` — `(0,2,0)` active when the root is dark
-   Because each selector in a comma list carries its own specificity (unlike `:is()`, which elevates all arms to the highest), the descendant form genuinely beats the plain form in dark mode.
+     Because each selector in a comma list carries its own specificity (unlike `:is()`, which elevates all arms to the highest), the descendant form genuinely beats the plain form in dark mode.
 4. Available tokens: `--theme-primary` / `--theme-on-primary`, `--theme-secondary` / `--theme-on-secondary`, `--theme-accent` / `--theme-on-accent`, `--theme-neutral` / `--theme-on-neutral`.
 5. Child elements reference those variables via Tailwind's arbitrary-property syntax or plain CSS.
 
@@ -52,13 +52,13 @@ When `themeDark` is omitted it falls back to `theme`, so the element remains cor
 
 Key modifiers:
 
-| Utility | What it does |
-|---|---|
-| `bgx-<name>` | Sets the mask image (e.g. `bgx-diagonal-stripes`) |
-| `bgx-color-[<value>]` | Sets the fill color of the mask layer |
-| `bgx-opacity-<n>` | Sets opacity as a percentage (e.g. `bgx-opacity-20` → 20%) |
-| `bgx-size-<n>` | Sets mask-size via spacing scale or length |
-| `bgx-slide` | Animates the mask position (infinite loop) |
+| Utility               | What it does                                               |
+| --------------------- | ---------------------------------------------------------- |
+| `bgx-<name>`          | Sets the mask image (e.g. `bgx-diagonal-stripes`)          |
+| `bgx-color-[<value>]` | Sets the fill color of the mask layer                      |
+| `bgx-opacity-<n>`     | Sets opacity as a percentage (e.g. `bgx-opacity-20` → 20%) |
+| `bgx-size-<n>`        | Sets mask-size via spacing scale or length                 |
+| `bgx-slide`           | Animates the mask position (infinite loop)                 |
 
 To make the texture color follow the active theme token, pass the token through the arbitrary-value bracket:
 

@@ -1,73 +1,75 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import CardFace from "./card-face.vue";
-import CardCover from "./card-cover.vue";
-import { type CardEditorMode } from "@/composables/card-bulk-editor";
-import { type CardBase, type ImageCard } from "@type/card";
-import { getImageUrl } from "@/api/media";
-import { type SfxOptions } from "@/sfx/directive";
-import { gsap } from "gsap";
+import { computed } from 'vue'
+import CardFace from './card-face.vue'
+import CardCover from './card-cover.vue'
+import { type CardEditorMode } from '@/composables/card-bulk-editor'
+import { type CardBase, type ImageCard } from '@type/card'
+import { getImageUrl } from '@/api/media'
+import { type SfxOptions } from '@/sfx/directive'
+import { gsap } from 'gsap'
 
 type CardProps = Partial<CardBase> &
   ImageCard & {
-    size?: "2xl" | "xl" | "lg" | "base" | "sm" | "xs" | "2xs" | "3xs";
-    mode?: CardEditorMode;
-    side?: "front" | "back" | "cover";
-    cover_config?: DeckCover;
-    face_classes?: string;
-    sfx?: SfxOptions;
-  };
+    size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
+    mode?: CardEditorMode
+    side?: 'front' | 'back' | 'cover'
+    cover_config?: DeckCover
+    card_defaults?: TextEditorAttributes
+    face_classes?: string
+    sfx?: SfxOptions
+  }
 
 const emit = defineEmits<{
-  (e: "flip-complete"): void;
-}>();
+  (e: 'flip-complete'): void
+}>()
 
 const {
-  size = "base",
-  side = "front",
-  mode = "view",
+  size = 'base',
+  side = 'front',
+  mode = 'view',
   cover_config,
+  card_defaults,
   front_image_path,
-  back_image_path,
-} = defineProps<CardProps>();
+  back_image_path
+} = defineProps<CardProps>()
 
 const front_image_url = computed(() => {
-  if (!front_image_path) return undefined;
-  return getImageUrl("cards", front_image_path);
-});
+  if (!front_image_path) return undefined
+  return getImageUrl('cards', front_image_path)
+})
 
 const back_image_url = computed(() => {
-  if (!back_image_path) return undefined;
-  return getImageUrl("cards", back_image_path);
-});
+  if (!back_image_path) return undefined
+  return getImageUrl('cards', back_image_path)
+})
 
 function onEnter(el: Element, done: () => void) {
   gsap.fromTo(
     el,
-    { rotateY: -60, translateY: "-12px", scale: 0.95 },
+    { rotateY: -60, translateY: '-12px', scale: 0.95 },
     {
       rotateY: 0,
       translateY: 0,
       scale: 1,
       duration: 0.2,
-      ease: "back.out(2)",
+      ease: 'back.out(2)',
       onComplete: () => {
-        done();
-        emit("flip-complete");
-      },
-    },
-  );
+        done()
+        emit('flip-complete')
+      }
+    }
+  )
 }
 
 function onLeave(el: Element, done: () => void) {
   gsap.to(el, {
     rotateY: 60,
-    translateY: "8px",
+    translateY: '8px',
     scale: 0.95,
     duration: 0.12,
-    ease: "expo.in",
-    onComplete: done,
-  });
+    ease: 'expo.in',
+    onComplete: done
+  })
 }
 </script>
 
@@ -91,6 +93,7 @@ function onLeave(el: Element, done: () => void) {
           :image="front_image_url"
           :text="front_text"
           :mode="mode"
+          :card_defaults="card_defaults"
         >
           <template #editor>
             <slot name="editor"></slot>
@@ -105,6 +108,7 @@ function onLeave(el: Element, done: () => void) {
           :image="back_image_url"
           :text="back_text"
           :mode="mode"
+          :card_defaults="card_defaults"
         >
           <template #editor>
             <slot name="editor"></slot>
@@ -189,7 +193,7 @@ function onLeave(el: Element, done: () => void) {
   --face-padding: 1px;
 }
 
-[data-theme="dark"] .card-container {
+[data-theme='dark'] .card-container {
   --card-bg-color: var(--color-brown-300);
   --card-text-color: var(--color-brown-800);
   --card-text-color--placeholder: var(--color-brown-500);

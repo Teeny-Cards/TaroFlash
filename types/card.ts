@@ -9,7 +9,6 @@ export type CardBase = {
   updated_at?: string
   rank?: number
   member_id?: string
-  attributes?: CardAttributes
 }
 
 export type Review = FSRSCard
@@ -21,12 +20,6 @@ export type ImageCard = {
 
 export type ReviewCard = {
   review?: Review
-}
-
-type CardAttributes = {
-  horizontal_alignment?: 'left' | 'center' | 'right'
-  vertical_alignment?: 'top' | 'center' | 'bottom'
-  text_size?: 'sm' | 'base' | 'lg' | 'xl' | '2xl'
 }
 
 declare global {
