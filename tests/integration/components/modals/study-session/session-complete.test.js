@@ -74,4 +74,46 @@ describe('SessionComplete', () => {
     await wrapper.find('[data-testid="session-complete__close"]').trigger('click')
     expect(close).toHaveBeenCalledOnce()
   })
+
+  test('Done button calls close with no secondary_action', async () => {
+    const close = vi.fn()
+    const wrapper = makeSessionComplete(3, 5, close)
+    await wrapper.find('[data-testid="session-complete__close"]').trigger('click')
+    expect(close).toHaveBeenCalledWith()
+  })
+
+  // ── Secondary button ──────────────────────────────────────────────────────────
+
+  describe('secondary button', () => {
+    test('calls close with the secondary_action when clicked', async () => {
+      const close = vi.fn()
+      const wrapper = mount(SessionComplete, {
+        props: { score: 3, total: 5, secondary_action: 'study-more', close }
+      })
+      await wrapper.find('[data-testid="session-complete__secondary"]').trigger('click')
+      expect(close).toHaveBeenCalledOnce()
+      expect(close).toHaveBeenCalledWith('study-more')
+    })
+
+    test('label reflects the "study-again" secondary action', () => {
+      const wrapper = mount(SessionComplete, {
+        props: { score: 3, total: 5, secondary_action: 'study-again', close: () => {} }
+      })
+      expect(wrapper.find('[data-testid="session-complete__secondary"]').text()).toBe('Study again')
+    })
+
+    test('label reflects the "study-more" secondary action', () => {
+      const wrapper = mount(SessionComplete, {
+        props: { score: 3, total: 5, secondary_action: 'study-more', close: () => {} }
+      })
+      expect(wrapper.find('[data-testid="session-complete__secondary"]').text()).toBe('Study more')
+    })
+
+    test('label reflects the "study-all" secondary action', () => {
+      const wrapper = mount(SessionComplete, {
+        props: { score: 3, total: 5, secondary_action: 'study-all', close: () => {} }
+      })
+      expect(wrapper.find('[data-testid="session-complete__secondary"]').text()).toBe('Study all')
+    })
+  })
 })
