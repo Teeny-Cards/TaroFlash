@@ -9,9 +9,12 @@ const { mockSaveDeck } = vi.hoisted(() => ({
   mockSaveDeck: vi.fn().mockResolvedValue(undefined)
 }))
 
-vi.mock('@/composables/deck-editor', () => ({
-  useDeckEditor: () => ({ saveDeck: mockSaveDeck })
-}))
+vi.mock('@/composables/deck-editor', async () => {
+  const { reactive } = await import('vue')
+  return {
+    useDeckEditor: () => ({ saveDeck: mockSaveDeck, card_defaults: reactive({}) })
+  }
+})
 
 // ── Stubs ──────────────────────────────────────────────────────────────────────
 
@@ -134,6 +137,13 @@ describe('DeckSettings', () => {
     const wrapper = makeDeckSettings({ close })
     await wrapper.findComponent(MobileSheetStub).vm.$emit('close')
     expect(close).toHaveBeenCalledWith(false)
+  })
+
+  // ── Card defaults toolbar ───────────────────────────────────────────────────
+
+  test('renders the card defaults toolbar', () => {
+    const wrapper = makeDeckSettings({ deck: makeDeck() })
+    expect(wrapper.findComponent({ name: 'CardDefaultsToolbar' }).exists()).toBe(true)
   })
 
   // ── Save button label ──────────────────────────────────────────────────────

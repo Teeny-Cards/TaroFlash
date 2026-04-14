@@ -158,6 +158,62 @@ describe('useDeckEditor', () => {
     })
   })
 
+  // ── card_defaults ──────────────────────────────────────────────────────────
+
+  describe('card_defaults', () => {
+    test('initializes card_defaults from deck.card_defaults', () => {
+      const deck = makeDeck({
+        card_defaults: { text_size: 'huge', horizontal_alignment: 'left' }
+      })
+      const { card_defaults } = useDeckEditor(deck)
+
+      expect(card_defaults.text_size).toBe('huge')
+      expect(card_defaults.horizontal_alignment).toBe('left')
+    })
+
+    test('initializes card_defaults as empty object when deck has no card_defaults', () => {
+      const deck = makeDeck({ card_defaults: undefined })
+      const { card_defaults } = useDeckEditor(deck)
+
+      expect(card_defaults).toEqual({})
+    })
+
+    test('initializes card_defaults as empty object with no deck argument', () => {
+      const { card_defaults } = useDeckEditor()
+
+      expect(card_defaults).toEqual({})
+    })
+
+    test('saveDeck includes card_defaults in payload', async () => {
+      const deck = makeDeck({
+        card_defaults: { text_size: 'ginormous', vertical_alignment: 'bottom' }
+      })
+      const { saveDeck } = useDeckEditor(deck)
+
+      await saveDeck()
+
+      const [arg] = mockUpsertDeck.mock.calls[0]
+      expect(arg.card_defaults).toEqual({
+        text_size: 'ginormous',
+        vertical_alignment: 'bottom'
+      })
+    })
+
+    test('reactive card_defaults changes are reflected in saveDeck payload', async () => {
+      const deck = makeDeck({ card_defaults: { text_size: 'small' } })
+      const { card_defaults, saveDeck } = useDeckEditor(deck)
+
+      card_defaults.text_size = 'x-large'
+      card_defaults.horizontal_alignment = 'right'
+
+      await saveDeck()
+
+      const [arg] = mockUpsertDeck.mock.calls[0]
+      expect(arg.card_defaults.text_size).toBe('x-large')
+      expect(arg.card_defaults.horizontal_alignment).toBe('right')
+    })
+  })
+
   // ── deleteDeck ─────────────────────────────────────────────────────────────
 
   describe('deleteDeck', () => {
