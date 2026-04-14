@@ -99,8 +99,8 @@ defineExpose({ focus })
 
 /* Size scale — each tier sets custom properties for p, h3, h2, h1 */
 .text-editor--size-small {
-  --editor-p: var(--text-base);
-  --editor-p-lh: var(--text-base--line-height);
+  --editor-p: var(--text-lg);
+  --editor-p-lh: var(--text-lg--line-height);
   --editor-h3: var(--text-lg);
   --editor-h3-lh: var(--text-lg--line-height);
   --editor-h2: var(--text-xl);
@@ -110,8 +110,8 @@ defineExpose({ focus })
 }
 
 .text-editor--size-medium {
-  --editor-p: var(--text-lg);
-  --editor-p-lh: var(--text-lg--line-height);
+  --editor-p: var(--text-2xl);
+  --editor-p-lh: var(--text-2xl--line-height);
   --editor-h3: var(--text-xl);
   --editor-h3-lh: var(--text-xl--line-height);
   --editor-h2: var(--text-2xl);
@@ -121,8 +121,8 @@ defineExpose({ focus })
 }
 
 .text-editor--size-large {
-  --editor-p: var(--text-xl);
-  --editor-p-lh: var(--text-xl--line-height);
+  --editor-p: var(--text-4xl);
+  --editor-p-lh: var(--text-4xl--line-height);
   --editor-h3: var(--text-2xl);
   --editor-h3-lh: var(--text-2xl--line-height);
   --editor-h2: var(--text-3xl);
@@ -132,8 +132,8 @@ defineExpose({ focus })
 }
 
 .text-editor--size-x-large {
-  --editor-p: var(--text-2xl);
-  --editor-p-lh: var(--text-2xl--line-height);
+  --editor-p: var(--text-5xl);
+  --editor-p-lh: var(--text-5xl--line-height);
   --editor-h3: var(--text-3xl);
   --editor-h3-lh: var(--text-3xl--line-height);
   --editor-h2: var(--text-4xl);
@@ -143,8 +143,8 @@ defineExpose({ focus })
 }
 
 .text-editor--size-huge {
-  --editor-p: var(--text-3xl);
-  --editor-p-lh: var(--text-3xl--line-height);
+  --editor-p: var(--text-6xl);
+  --editor-p-lh: var(--text-6xl--line-height);
   --editor-h3: var(--text-4xl);
   --editor-h3-lh: var(--text-4xl--line-height);
   --editor-h2: var(--text-5xl);
@@ -154,8 +154,8 @@ defineExpose({ focus })
 }
 
 .text-editor--size-ginormous {
-  --editor-p: var(--text-4xl);
-  --editor-p-lh: var(--text-4xl--line-height);
+  --editor-p: var(--text-7xl);
+  --editor-p-lh: var(--text-7xl--line-height);
   --editor-h3: var(--text-5xl);
   --editor-h3-lh: var(--text-5xl--line-height);
   --editor-h2: var(--text-6xl);
