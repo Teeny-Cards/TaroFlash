@@ -158,59 +158,70 @@ describe('useDeckEditor', () => {
     })
   })
 
-  // ── card_defaults ──────────────────────────────────────────────────────────
+  // ── card_attributes ────────────────────────────────────────────────────────
 
-  describe('card_defaults', () => {
-    test('initializes card_defaults from deck.card_defaults', () => {
+  describe('card_attributes', () => {
+    test('initializes card_attributes from deck.card_attributes', () => {
       const deck = makeDeck({
-        card_defaults: { text_size: 'huge', horizontal_alignment: 'left' }
+        card_attributes: {
+          front: { text_size: 'huge', horizontal_alignment: 'left' },
+          back: { text_size: 'small' }
+        }
       })
-      const { card_defaults } = useDeckEditor(deck)
+      const { card_attributes } = useDeckEditor(deck)
 
-      expect(card_defaults.text_size).toBe('huge')
-      expect(card_defaults.horizontal_alignment).toBe('left')
+      expect(card_attributes.front.text_size).toBe('huge')
+      expect(card_attributes.front.horizontal_alignment).toBe('left')
+      expect(card_attributes.back.text_size).toBe('small')
     })
 
-    test('initializes card_defaults as empty object when deck has no card_defaults', () => {
-      const deck = makeDeck({ card_defaults: undefined })
-      const { card_defaults } = useDeckEditor(deck)
+    test('initializes card_attributes with empty sides when deck has no card_attributes', () => {
+      const deck = makeDeck({ card_attributes: undefined })
+      const { card_attributes } = useDeckEditor(deck)
 
-      expect(card_defaults).toEqual({})
+      expect(card_attributes).toEqual({ front: {}, back: {} })
     })
 
-    test('initializes card_defaults as empty object with no deck argument', () => {
-      const { card_defaults } = useDeckEditor()
+    test('initializes card_attributes with empty sides with no deck argument', () => {
+      const { card_attributes } = useDeckEditor()
 
-      expect(card_defaults).toEqual({})
+      expect(card_attributes).toEqual({ front: {}, back: {} })
     })
 
-    test('saveDeck includes card_defaults in payload', async () => {
+    test('saveDeck includes card_attributes in payload', async () => {
       const deck = makeDeck({
-        card_defaults: { text_size: 'ginormous', vertical_alignment: 'bottom' }
+        card_attributes: {
+          front: { text_size: 'ginormous', vertical_alignment: 'bottom' },
+          back: { text_size: 'medium' }
+        }
       })
       const { saveDeck } = useDeckEditor(deck)
 
       await saveDeck()
 
       const [arg] = mockUpsertDeck.mock.calls[0]
-      expect(arg.card_defaults).toEqual({
-        text_size: 'ginormous',
-        vertical_alignment: 'bottom'
+      expect(arg.card_attributes).toEqual({
+        front: { text_size: 'ginormous', vertical_alignment: 'bottom' },
+        back: { text_size: 'medium' }
       })
     })
 
-    test('reactive card_defaults changes are reflected in saveDeck payload', async () => {
-      const deck = makeDeck({ card_defaults: { text_size: 'small' } })
-      const { card_defaults, saveDeck } = useDeckEditor(deck)
+    test('reactive card_attributes changes are reflected in saveDeck payload', async () => {
+      const deck = makeDeck({
+        card_attributes: { front: { text_size: 'small' }, back: {} }
+      })
+      const { card_attributes, saveDeck } = useDeckEditor(deck)
 
-      card_defaults.text_size = 'x-large'
-      card_defaults.horizontal_alignment = 'right'
+      card_attributes.front.text_size = 'x-large'
+      card_attributes.front.horizontal_alignment = 'right'
+      card_attributes.back.vertical_alignment = 'top'
 
       await saveDeck()
 
       const [arg] = mockUpsertDeck.mock.calls[0]
-      expect(arg.card_defaults.text_size).toBe('x-large')
-      expect(arg.card_defaults.horizontal_alignment).toBe('right')
+      expect(arg.card_attributes.front.text_size).toBe('x-large')
+      expect(arg.card_attributes.front.horizontal_alignment).toBe('right')
+      expect(arg.card_attributes.back.vertical_alignment).toBe('top')
     })
   })
 
