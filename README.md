@@ -27,6 +27,28 @@ Local Supabase runs on port 54321 (API) and 54322 (Postgres). Start it with `sup
 
 ---
 
+## Deploy
+
+### Staging
+
+Add the `deploy:staging` label to an open PR. Every subsequent push to that PR auto-redeploys. Remove the label to stop.
+
+Staging is served at `stage.taro-flash.com`.
+
+### Production
+
+Publish a GitHub Release targeting `master`:
+
+```sh
+gh release create v0.1.0 --title "v0.1.0" --notes "Release notes"
+```
+
+Or use the GitHub UI: **Releases > Draft a new release > Publish**.
+
+See [DevOps docs](docs/src/devops/index.md) for full details and environment setup.
+
+---
+
 ## Project structure
 
 <details>

@@ -104,7 +104,7 @@ export default defineConfig({
       ]
     },
 
-    socialLinks: [{ icon: 'github', link: 'https://github.com/Teeny-Cards/TaroFlash' }]
+    socialLinks: [{ icon: 'github', link: 'https://github.com/TaroSprout/TaroFlash' }]
   },
   vite: {
     plugins: [
