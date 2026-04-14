@@ -9,7 +9,6 @@ export default class CardRecord {
   deck_id?: Card['deck_id']
   front_text?: Card['front_text']
   back_text?: Card['back_text']
-  attributes?: Card['attributes']
   created_at?: Card['created_at']
   updated_at?: Card['updated_at']
   rank?: Card['rank']
@@ -42,7 +41,6 @@ export default class CardRecord {
     this.id = card.id
     this.front_text = card.front_text
     this.back_text = card.back_text
-    this.attributes = card.attributes
     this.deck_id = card.deck_id
     this.created_at = card.created_at
     this.updated_at = card.updated_at
@@ -81,7 +79,6 @@ export default class CardRecord {
       deck_id: this.deck_id,
       front_text: this.front_text,
       back_text: this.back_text,
-      attributes: this.attributes,
       created_at: this.created_at,
       updated_at: this.updated_at,
       rank: this.rank,

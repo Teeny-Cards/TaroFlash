@@ -35,7 +35,6 @@ export const card = build({
     back_text: () => faker.word.words({ count: { min: 5, max: 10 } }),
     front_delta: null,
     back_delta: null,
-    attributes: null,
     deck_id: sequence(),
     created_at: () => faker.date.past().toISOString(),
     updated_at: () => faker.date.past().toISOString(),

@@ -20,6 +20,7 @@ export function useDeckEditor(deck?: Deck) {
   )
 
   const cover = reactive<DeckCover>(deck?.cover_config ?? {})
+  const card_defaults = reactive<DeckCardDefaults>(deck?.card_defaults ?? {})
 
   const uploaded_image = ref<File | undefined>()
   const image_removed = ref<boolean>(false)
@@ -28,7 +29,12 @@ export function useDeckEditor(deck?: Deck) {
   const cover_image_loading = ref(false)
 
   async function saveDeck() {
-    await upsertDeck({ ...settings, study_config: { ...config }, cover_config: { ...cover } })
+    await upsertDeck({
+      ...settings,
+      study_config: { ...config },
+      cover_config: { ...cover },
+      card_defaults: { ...card_defaults }
+    })
   }
 
   async function deleteDeck() {
@@ -72,6 +78,7 @@ export function useDeckEditor(deck?: Deck) {
     settings,
     config,
     cover,
+    card_defaults,
     cover_image_preview,
     cover_image_loading,
     saveDeck,
