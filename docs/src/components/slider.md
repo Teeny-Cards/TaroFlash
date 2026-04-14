@@ -28,12 +28,12 @@ The fill track uses `--theme-primary`; the thumb uses `--theme-accent`.
 
 ## Props
 
-| Prop    | Type          | Default       | Description            |
-| ------- | ------------- | ------------- | ---------------------- |
-| `theme` | `MemberTheme` | `'brown-800'` | Color theme            |
+| Prop    | Type          | Default       | Description |
+| ------- | ------------- | ------------- | ----------- |
+| `theme` | `MemberTheme` | `'brown-800'` | Color theme |
 
 ## Model
 
-| Model     | Type     | Description                      |
-| --------- | -------- | -------------------------------- |
-| `v-model` | `number` | Current value, clamped to 0–100  |
+| Model     | Type     | Description                     |
+| --------- | -------- | ------------------------------- |
+| `v-model` | `number` | Current value, clamped to 0–100 |

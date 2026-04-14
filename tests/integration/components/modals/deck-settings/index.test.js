@@ -119,7 +119,9 @@ describe('DeckSettings', () => {
   test('save button calls saveDeck and closes with true', async () => {
     const close = vi.fn()
     const wrapper = makeDeckSettings({ deck: makeDeck(), close })
-    await wrapper.find('[data-testid="deck-settings__footer"] [data-testid="ui-button-stub"]').trigger('click')
+    await wrapper
+      .find('[data-testid="deck-settings__footer"] [data-testid="ui-button-stub"]')
+      .trigger('click')
     await flushPromises()
     expect(mockSaveDeck).toHaveBeenCalledOnce()
     expect(close).toHaveBeenCalledWith(true)

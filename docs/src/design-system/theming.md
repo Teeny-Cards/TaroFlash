@@ -15,7 +15,7 @@ const { mode, is_dark, setMode, cycle, load } = useTheme()
 load()
 
 // Set a specific mode
-setMode('dark')   // 'light' | 'dark' | 'system'
+setMode('dark') // 'light' | 'dark' | 'system'
 
 // Cycle through modes in order
 cycle()
@@ -23,13 +23,13 @@ cycle()
 
 ### API
 
-| Return value | Type                                      | Description                                             |
-| ------------ | ----------------------------------------- | ------------------------------------------------------- |
-| `mode`       | `Ref<ThemeMode>`                          | Current mode: `'light'`, `'dark'`, or `'system'`        |
-| `is_dark`    | `ComputedRef<boolean>`                    | `true` when the effective theme is dark                 |
-| `setMode`    | `(next: ThemeMode) => void`               | Set mode and persist to storage                         |
-| `cycle`      | `() => void`                              | Step through `light → system → dark` (or `light → dark → system` when OS is dark) |
-| `load`       | `() => void`                              | Load and apply the persisted preference (call once on app init) |
+| Return value | Type                        | Description                                                                       |
+| ------------ | --------------------------- | --------------------------------------------------------------------------------- |
+| `mode`       | `Ref<ThemeMode>`            | Current mode: `'light'`, `'dark'`, or `'system'`                                  |
+| `is_dark`    | `ComputedRef<boolean>`      | `true` when the effective theme is dark                                           |
+| `setMode`    | `(next: ThemeMode) => void` | Set mode and persist to storage                                                   |
+| `cycle`      | `() => void`                | Step through `light → system → dark` (or `light → dark → system` when OS is dark) |
+| `load`       | `() => void`                | Load and apply the persisted preference (call once on app init)                   |
 
 When `mode` is `'system'`, the composable resolves the OS preference at runtime and writes `'light'` or `'dark'` to the DOM. A `MediaQueryList` listener keeps the attribute in sync if the OS preference changes while the app is running.
 
@@ -67,7 +67,7 @@ The descendant selector `(0,2,0)` has higher specificity than the plain attribut
 **Always bind both attributes together**, with `themeDark` falling back to `theme`:
 
 ```html
-<div :data-theme="theme" :data-theme-dark="themeDark ?? theme">
+<div :data-theme="theme" :data-theme-dark="themeDark ?? theme"></div>
 ```
 
 This ensures the element stays correctly themed even when no explicit dark override is provided.
@@ -76,16 +76,16 @@ This ensures the element stays correctly themed even when no explicit dark overr
 
 Each theme value in `palettes.css` defines a subset of these CSS variables:
 
-| Token                  | Typical use                                              |
-| ---------------------- | -------------------------------------------------------- |
-| `--theme-primary`      | Main background, buttons, headers                        |
-| `--theme-on-primary`   | Text / icons on `--theme-primary`                        |
-| `--theme-secondary`    | Supplementary backgrounds                                |
-| `--theme-on-secondary` | Text / icons on `--theme-secondary`                      |
-| `--theme-accent`       | Highlights, badges                                       |
-| `--theme-on-accent`    | Text / icons on `--theme-accent`                         |
-| `--theme-neutral`      | Neutral surfaces (cards, panels)                         |
-| `--theme-on-neutral`   | Text / icons on `--theme-neutral`                        |
+| Token                  | Typical use                         |
+| ---------------------- | ----------------------------------- |
+| `--theme-primary`      | Main background, buttons, headers   |
+| `--theme-on-primary`   | Text / icons on `--theme-primary`   |
+| `--theme-secondary`    | Supplementary backgrounds           |
+| `--theme-on-secondary` | Text / icons on `--theme-secondary` |
+| `--theme-accent`       | Highlights, badges                  |
+| `--theme-on-accent`    | Text / icons on `--theme-accent`    |
+| `--theme-neutral`      | Neutral surfaces (cards, panels)    |
+| `--theme-on-neutral`   | Text / icons on `--theme-neutral`   |
 
 Not every theme defines all tokens — check `src/styles/palettes.css` for what each theme provides.
 

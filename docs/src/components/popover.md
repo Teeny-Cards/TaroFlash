@@ -47,9 +47,7 @@ Set `mode="hover"` — the popover shows on hover, no open state needed.
 The `position` prop accepts any [Floating UI placement](https://floating-ui.com/docs/computePosition#placement) value. The popover automatically flips if there is not enough room.
 
 ```html
-<ui-popover position="bottom-start" :open="open" @close="open = false">
-  ...
-</ui-popover>
+<ui-popover position="bottom-start" :open="open" @close="open = false"> ... </ui-popover>
 ```
 
 ## Arrow
@@ -78,31 +76,31 @@ To change just the arrow color without replacing the slot, set the `--popover-ar
 
 ## Props
 
-| Prop                  | Type        | Default                              | Description                                                                     |
-| --------------------- | ----------- | ------------------------------------ | ------------------------------------------------------------------------------- |
-| `mode`                | String      | `'click'`                            | `'click'` or `'hover'`                                                          |
-| `open`                | Boolean     | `false`                              | Controls visibility (click mode)                                                |
-| `position`            | `Placement` | `'top'`                              | Preferred placement relative to the trigger                                     |
-| `gap`                 | Number      | `14`                                 | Space between the trigger and the popover (px), in addition to arrow size       |
-| `strategy`            | String      | `'fixed'`                            | Floating UI positioning strategy: `'fixed'` or `'absolute'`                    |
-| `transition_duration` | Number      | `100`                                | Fade transition duration (ms)                                                   |
-| `padding`             | Number      | `24`                                 | Viewport padding used by the `shift` middleware                                 |
-| `clip_margin`         | Number      | `0`                                  | Padding used by the `hide` middleware (reference-hidden clipping)               |
-| `fallback_placements` | Array       | `['right', 'left', 'top', 'bottom']` | Ordered list of placements to try if the preferred one doesn't fit              |
-| `shadow`              | Boolean     | `false`                              | Adds a drop shadow to the popover                                               |
-| `use_arrow`           | Boolean     | `true`                               | Renders the directional arrow                                                   |
-| `clip`                | Boolean     | `true`                               | Hides the popover when the trigger scrolls out of view                          |
+| Prop                  | Type        | Default                              | Description                                                               |
+| --------------------- | ----------- | ------------------------------------ | ------------------------------------------------------------------------- |
+| `mode`                | String      | `'click'`                            | `'click'` or `'hover'`                                                    |
+| `open`                | Boolean     | `false`                              | Controls visibility (click mode)                                          |
+| `position`            | `Placement` | `'top'`                              | Preferred placement relative to the trigger                               |
+| `gap`                 | Number      | `14`                                 | Space between the trigger and the popover (px), in addition to arrow size |
+| `strategy`            | String      | `'fixed'`                            | Floating UI positioning strategy: `'fixed'` or `'absolute'`               |
+| `transition_duration` | Number      | `100`                                | Fade transition duration (ms)                                             |
+| `padding`             | Number      | `24`                                 | Viewport padding used by the `shift` middleware                           |
+| `clip_margin`         | Number      | `0`                                  | Padding used by the `hide` middleware (reference-hidden clipping)         |
+| `fallback_placements` | Array       | `['right', 'left', 'top', 'bottom']` | Ordered list of placements to try if the preferred one doesn't fit        |
+| `shadow`              | Boolean     | `false`                              | Adds a drop shadow to the popover                                         |
+| `use_arrow`           | Boolean     | `true`                               | Renders the directional arrow                                             |
+| `clip`                | Boolean     | `true`                               | Hides the popover when the trigger scrolls out of view                    |
 
 ## Emits
 
-| Event   | Payload | Description                                              |
-| ------- | ------- | -------------------------------------------------------- |
-| `close` | —       | Emitted when the user clicks outside (click mode only)   |
+| Event   | Payload | Description                                            |
+| ------- | ------- | ------------------------------------------------------ |
+| `close` | —       | Emitted when the user clicks outside (click mode only) |
 
 ## Slots
 
-| Slot      | Scoped props  | Description                                                     |
-| --------- | ------------- | --------------------------------------------------------------- |
-| `trigger` | —             | The element the popover is anchored to                          |
-| default   | —             | Popover body content                                            |
-| `arrow`   | `{ side }`    | Custom arrow element. `side` is the resolved popover side.      |
+| Slot      | Scoped props | Description                                                |
+| --------- | ------------ | ---------------------------------------------------------- |
+| `trigger` | —            | The element the popover is anchored to                     |
+| default   | —            | Popover body content                                       |
+| `arrow`   | `{ side }`   | Custom arrow element. `side` is the resolved popover side. |

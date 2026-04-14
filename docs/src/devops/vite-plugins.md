@@ -29,15 +29,15 @@ const sounds = import.meta.glob('@/assets/audio/**/*.wav', {
 
 ### Supported file types
 
-| Extension          | MIME type         |
-| ------------------ | ----------------- |
-| `.wav`             | `audio/wav`       |
-| `.mp3`             | `audio/mpeg`      |
-| `.ogg`             | `audio/ogg`       |
-| `.png`             | `image/png`       |
-| `.jpg` / `.jpeg`   | `image/jpeg`      |
-| `.svg`             | `image/svg+xml`   |
-| `.webp`            | `image/webp`      |
+| Extension        | MIME type       |
+| ---------------- | --------------- |
+| `.wav`           | `audio/wav`     |
+| `.mp3`           | `audio/mpeg`    |
+| `.ogg`           | `audio/ogg`     |
+| `.png`           | `image/png`     |
+| `.jpg` / `.jpeg` | `image/jpeg`    |
+| `.svg`           | `image/svg+xml` |
+| `.webp`          | `image/webp`    |
 
 ### How it works
 

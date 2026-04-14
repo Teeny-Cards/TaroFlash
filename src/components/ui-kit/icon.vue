@@ -14,10 +14,13 @@ const eagerIcons: Record<string, Component> = import.meta.glob('../../assets/ico
   import: 'default'
 })
 
-const lazyIcons: Record<string, () => Promise<Component>> = import.meta.glob('../../assets/icons/*.svg', {
-  eager: false,
-  import: 'default'
-})
+const lazyIcons: Record<string, () => Promise<Component>> = import.meta.glob(
+  '../../assets/icons/*.svg',
+  {
+    eager: false,
+    import: 'default'
+  }
+)
 
 const iconComponent = ref<Component | undefined>()
 

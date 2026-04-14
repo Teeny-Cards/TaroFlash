@@ -23,12 +23,12 @@ The Integration project needs `optimizeDeps.exclude: ['vite-plus/test']` so that
 
 ## When to use which
 
-| jsdom (unit) | Chromium (integration) |
-|---|---|
-| Pure functions, utilities | Vue components that render HTML |
-| Composables with no rendering | Components using real browser APIs |
-| Pinia store logic | Layout, focus, clipboard, media queries |
-| Fast — no browser startup | Slower — real browser overhead |
+| jsdom (unit)                  | Chromium (integration)                  |
+| ----------------------------- | --------------------------------------- |
+| Pure functions, utilities     | Vue components that render HTML         |
+| Composables with no rendering | Components using real browser APIs      |
+| Pinia store logic             | Layout, focus, clipboard, media queries |
+| Fast — no browser startup     | Slower — real browser overhead          |
 
 **Default to jsdom** for anything that doesn't render. **Default to Chromium** for anything that does.
 

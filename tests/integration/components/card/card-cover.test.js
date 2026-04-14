@@ -66,8 +66,15 @@ describe('CardCover', () => {
     // Only checks that no specific pattern class is present — the bgx-(--theme-neutral)
     // utility is always applied for pattern fill colour and is not a pattern selector.
     const patternClasses = [
-      'bgx-diagonal-stripes', 'bgx-dot-grid', 'bgx-wave', 'bgx-saw',
-      'bgx-bank-note', 'bgx-aztec', 'bgx-endless-clouds', 'bgx-stars', 'bgx-leaf'
+      'bgx-diagonal-stripes',
+      'bgx-dot-grid',
+      'bgx-wave',
+      'bgx-saw',
+      'bgx-bank-note',
+      'bgx-aztec',
+      'bgx-endless-clouds',
+      'bgx-stars',
+      'bgx-leaf'
     ]
     expect(classes.some((c) => patternClasses.includes(c))).toBe(false)
   })
@@ -121,7 +128,9 @@ describe('CardCover', () => {
 
   test('does not set --bgx-size when pattern_size is not provided', () => {
     const wrapper = mountCover({ pattern: 'dot-grid' })
-    expect(wrapper.find('[data-testid="card-cover"]').attributes('style')).not.toContain('--bgx-size')
+    expect(wrapper.find('[data-testid="card-cover"]').attributes('style')).not.toContain(
+      '--bgx-size'
+    )
   })
 
   // ── Background image ──────────────────────────────────────────────────────────

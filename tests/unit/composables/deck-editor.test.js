@@ -242,7 +242,11 @@ describe('useDeckEditor', () => {
 
     test('sets cover_image_preview to payload.preview immediately (before upload)', async () => {
       let resolveUpload
-      mockUploadImage.mockReturnValueOnce(new Promise((r) => { resolveUpload = r }))
+      mockUploadImage.mockReturnValueOnce(
+        new Promise((r) => {
+          resolveUpload = r
+        })
+      )
 
       const { setCoverImage, cover_image_preview } = useDeckEditor()
       const payload = makePayload()
@@ -257,7 +261,11 @@ describe('useDeckEditor', () => {
 
     test('sets cover_image_loading to true during upload', async () => {
       let resolveUpload
-      mockUploadImage.mockReturnValueOnce(new Promise((r) => { resolveUpload = r }))
+      mockUploadImage.mockReturnValueOnce(
+        new Promise((r) => {
+          resolveUpload = r
+        })
+      )
 
       const { setCoverImage, cover_image_loading } = useDeckEditor()
 

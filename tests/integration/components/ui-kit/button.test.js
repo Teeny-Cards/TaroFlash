@@ -11,20 +11,14 @@ describe('UiButton', () => {
 
   describe('mobileTooltip prop', () => {
     test('renders tooltip when iconOnly=true, slot content exists, and mobileTooltip=true', () => {
-      const wrapper = mountButton(
-        { iconOnly: true, mobileTooltip: true },
-        { default: 'Close' }
-      )
+      const wrapper = mountButton({ iconOnly: true, mobileTooltip: true }, { default: 'Close' })
       expect(wrapper.find('[data-testid="ui-kit-btn__tooltip"]').exists()).toBe(true)
     })
 
     // mobileTooltip=false adds a CSS utility class to hide the tooltip on mobile
     // but the element still exists in the DOM. data-mobile-tooltip encodes the state.
     test('tooltip is mobile-hidden when mobileTooltip=false even with iconOnly and slot content', () => {
-      const wrapper = mountButton(
-        { iconOnly: true, mobileTooltip: false },
-        { default: 'Close' }
-      )
+      const wrapper = mountButton({ iconOnly: true, mobileTooltip: false }, { default: 'Close' })
       const tooltip = wrapper.find('[data-testid="ui-kit-btn__tooltip"]')
       expect(tooltip.exists()).toBe(true)
       expect(tooltip.attributes('data-mobile-tooltip')).toBe('false')
