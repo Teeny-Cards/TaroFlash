@@ -8,6 +8,7 @@ const { card, side, mode } = defineProps<{
   mode: CardEditorMode
   side: 'front' | 'back'
   selected: boolean
+  card_defaults?: DeckCardDefaults
 }>()
 
 const emit = defineEmits<{
@@ -25,6 +26,7 @@ const emit = defineEmits<{
       class="grid-item__card"
       size="xl"
       :side="side"
+      :card_defaults="card_defaults"
     >
       <div v-if="mode === 'select'" class="absolute top-0 right-0">
         <ui-radio :checked="selected" @click.stop="emit('card-selected')" />
