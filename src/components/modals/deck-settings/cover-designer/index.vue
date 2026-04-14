@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
-import Card from '@/components/card/index.vue'
 import Popover from './popover.vue'
 import type { ImageUploadPayload } from '@/components/image-uploader.vue'
 import BgColorPicker from './bg-color-picker.vue'
@@ -9,18 +7,16 @@ import BorderSliders from './border-sliders.vue'
 import PatternPicker from './pattern-picker.vue'
 import PatternSliders from './pattern-sliders.vue'
 
-type CoverDesignerProps = {
-  coverConfig?: DeckCover
+type CoverDesignerToolbarProps = {
+  config: DeckCover
 }
 
-const { coverConfig } = defineProps<CoverDesignerProps>()
+const { config } = defineProps<CoverDesignerToolbarProps>()
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'cover-image-change', payload: ImageUploadPayload): void
   (e: 'cover-image-remove'): void
 }>()
-
-const config = reactive<DeckCover>(coverConfig ?? {})
 
 const supported_themes: MemberTheme[] = [
   'blue-500',
@@ -33,12 +29,8 @@ const supported_themes: MemberTheme[] = [
 </script>
 
 <template>
-  <div data-testid="tab-cover" class="flex flex-col sm:flex-row justify-center items-center gap-6">
-    <div data-testid="tab-cover__preview" class="flex flex-col items-center w-min gap-3 relative">
-      <card size="xl" side="cover" :cover_config="config" />
-    </div>
-
-    <div data-testid="tab-cover__settings" class="flex sm:flex-col gap-4">
+  <div data-testid="cover-designer-toolbar">
+    <div data-testid="cover-designer-toolbar__controls" class="flex sm:flex-col gap-4">
       <popover label="BG Color" icon="paint-brush">
         <bg-color-picker
           :supported_themes="supported_themes"

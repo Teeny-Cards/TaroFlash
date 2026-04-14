@@ -30,12 +30,12 @@ const is_md = useMediaQuery('md')
 const image_url = ref<string | undefined>()
 const deck = ref<Deck>()
 const active_tab = ref(0)
-const card_defaults = reactive<DeckCardDefaults>({})
+const card_attributes = reactive<DeckCardAttributes>({ front: {}, back: {} })
 
 const editor = useCardBulkEditor(deck.value?.cards ?? [], Number(deck_id))
 
 provide('card-editor', editor)
-provide('card-defaults', card_defaults)
+provide('card-attributes', card_attributes)
 provide('on-delete-card', onDeleteCards)
 provide('on-move-card', onMoveCards)
 provide('on-select-card', onSelectCard)
@@ -82,7 +82,9 @@ async function refetchDeck() {
       editor.resetCards(deck.value.cards)
     }
 
-    Object.assign(card_defaults, deck.value.card_defaults ?? {})
+    const incoming = deck.value.card_attributes
+    card_attributes.front = incoming?.front ?? {}
+    card_attributes.back = incoming?.back ?? {}
   } catch (e: any) {
     // TODO
   }

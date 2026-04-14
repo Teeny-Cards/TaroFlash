@@ -12,7 +12,11 @@ const { mockSaveDeck } = vi.hoisted(() => ({
 vi.mock('@/composables/deck-editor', async () => {
   const { reactive } = await import('vue')
   return {
-    useDeckEditor: () => ({ saveDeck: mockSaveDeck, card_defaults: reactive({}) })
+    useDeckEditor: () => ({
+      saveDeck: mockSaveDeck,
+      cover: reactive({}),
+      card_attributes: reactive({ front: {}, back: {} })
+    })
   }
 })
 
@@ -139,11 +143,11 @@ describe('DeckSettings', () => {
     expect(close).toHaveBeenCalledWith(false)
   })
 
-  // ── Card defaults toolbar ───────────────────────────────────────────────────
+  // ── Card designer toolbar ───────────────────────────────────────────────────
 
-  test('renders the card defaults toolbar', () => {
+  test('renders the cover designer toolbar by default', () => {
     const wrapper = makeDeckSettings({ deck: makeDeck() })
-    expect(wrapper.findComponent({ name: 'CardDefaultsToolbar' }).exists()).toBe(true)
+    expect(wrapper.findComponent({ name: 'CoverDesignerToolbar' }).exists()).toBe(true)
   })
 
   // ── Save button label ──────────────────────────────────────────────────────
