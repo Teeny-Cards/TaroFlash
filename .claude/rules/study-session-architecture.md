@@ -24,19 +24,14 @@ paths:
 
 ## Modal components
 
-`src/components/modals/study-session/index.vue` — thin wrapper. Accepts `deck`, `config_override?`, and `close`. Exports `StudySessionResponse { score, total, remaining_due, study_all_used }`. Passes props to `session-shell.vue`.
+`src/components/modals/study-session/index.vue` — wrapper. Accepts `deck`, `config_override?`, and `close`. Exports `StudySessionResponse { score, total, remaining_due, study_all_used }`. Renders a `mobile-sheet` with the deck title in the `header-content` slot and the mode component (`<session-flashcard>` for now; swap to `<component :is>` when additional modes are added) in the `body` slot. The mobile-sheet's built-in close button emits `@close`, which calls `requestClose()` on the active mode component via template ref — falling back to `close()` if the mode hasn't exposed one. Wires the mode's events to the `close` prop: `'closed'` → `close()`, `'finished'(score, total, remaining_due, study_all_used)` → `close({ score, total, remaining_due, study_all_used })`.
 
-`src/components/modals/study-session/session-shell.vue` — layout shell. Renders the header (deck title, close button). The close button calls `requestClose()` on the active mode component via template ref. Renders the mode component (`<session-flashcard>` for now; swap to `<component :is>` when additional modes are added). Re-emits:
-
-- `'closed'` — no cards studied (decision made by the mode component)
-- `'finished'(score, total, remaining_due, study_all_used)` — session ended
-
-`src/components/modals/study-session/session-flashcard.vue` — flashcard mode body. Fetches cards via `fetchAllCardsByDeckId`, merges `deck.config + config_override` at construction (single `_processCards` pass). Exposes `requestClose()` — decides whether to emit `'closed'` or `'finished'` based on session state. Emits:
+`src/components/modals/study-session/session-flashcard.vue` — flashcard mode body. Fetches cards via `fetchAllCardsByDeckId`, merges `deck.config + config_override` at construction (single `_processCards` pass). Exposes `requestClose()` via `defineExpose` and registers it with `useModalRequestClose` so backdrop/Esc also routes through it. `requestClose` decides whether to emit `'closed'` or `'finished'` based on session state. Emits:
 
 - `'closed'` — user closed before studying any card (cover not dismissed, or 0 reviewed)
 - `'finished'(score, total, remaining_due, study_all_used)` — session completed naturally (via `finish-animation @done`) OR user closed early after ≥1 reviewed card. Early-close passes `reviewed_count` as `total`.
 
-`src/components/modals/study-session/session-complete.vue` — score summary. Accepts `score`, `total`, `secondary_action: SecondaryAction`, and `close(action?: SecondaryAction)`. Shows two buttons: Close (`close()`) and secondary (`close(secondary_action)`).
+`src/components/modals/study-session/session-complete.vue` — score summary. Accepts `score`, `total`, `secondary_action: SecondaryAction`, and `close(action?: SecondaryAction)`. Renders inside a `mobile-sheet` with the dynamic heading ("Perfect!" / "Great job!" / "Nice work!" / "Keep it up!") in the `header-content` slot, the score display in `body`, and two buttons in `footer`: Close (`close()`) and secondary (`close(secondary_action)`).
 
 ## Composable layer
 
@@ -69,7 +64,7 @@ The study-session composables live in `src/composables/study-session/` and are s
 - `flipCurrentCard()` — toggles front ↔ back
 - `reviewCard(item?)` — wraps core's `reviewCard`, then resets `current_card_side` to `starting_side` for the incoming card
 
-**Adding a new mode:** create `<mode>-session.ts` that calls `useStudySessionCore` and adds its own interaction state (e.g. `matched_ids` for matching-pairs). Create `session-<mode>.vue` as the body component with `defineExpose({ requestClose })`. Register it in `session-shell.vue`.
+**Adding a new mode:** create `<mode>-session.ts` that calls `useStudySessionCore` and adds its own interaction state (e.g. `matched_ids` for matching-pairs). Create `session-<mode>.vue` as the body component with `defineExpose({ requestClose })` and `useModalRequestClose(requestClose)`. Wire it into `index.vue`'s body slot (swap the hard-coded `<session-flashcard>` for a `<component :is>` driven by `deck.study_config?.study_mode`).
 
 ## DeckConfig
 
