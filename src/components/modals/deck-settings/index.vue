@@ -51,6 +51,12 @@ function onTabChange(tab: DesignerTab) {
   active_tab.value = tab
 }
 
+function cycleTab() {
+  const index = tabs.value.findIndex((tab) => tab.value === active_tab.value)
+  const next = (index + 1) % tabs.value.length
+  onTabChange(tabs.value[next].value)
+}
+
 async function onSave() {
   await saveDeck()
   close(true)
@@ -85,6 +91,7 @@ async function onSave() {
               :cover_config="cover"
               :front_attributes="card_attributes.front"
               :back_attributes="card_attributes.back"
+              @click="cycleTab"
             />
           </div>
 

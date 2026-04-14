@@ -44,13 +44,33 @@ const UiButtonStub = defineComponent({
   }
 })
 
+// Auto-stubs try to forward component props as DOM attributes, which fails for
+// reserved names like `attributes`. Provide render-function stubs that don't
+// propagate props to the underlying element.
+const CardDesignerToolbarStub = defineComponent({
+  name: 'CardDesignerToolbar',
+  props: ['attributes'],
+  setup: () => () => h('div', { 'data-testid': 'card-designer-toolbar-stub' })
+})
+
+const CoverDesignerToolbarStub = defineComponent({
+  name: 'CoverDesignerToolbar',
+  props: ['config'],
+  setup: () => () => h('div', { 'data-testid': 'cover-designer-toolbar-stub' })
+})
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function makeDeckSettings(props = {}) {
   return shallowMount(DeckSettings, {
     props: { close: vi.fn(), ...props },
     global: {
-      stubs: { MobileSheet: MobileSheetStub, UiButton: UiButtonStub }
+      stubs: {
+        MobileSheet: MobileSheetStub,
+        UiButton: UiButtonStub,
+        CardDesignerToolbar: CardDesignerToolbarStub,
+        CoverDesignerToolbar: CoverDesignerToolbarStub
+      }
     }
   })
 }
@@ -148,6 +168,61 @@ describe('DeckSettings', () => {
   test('renders the cover designer toolbar by default', () => {
     const wrapper = makeDeckSettings({ deck: makeDeck() })
     expect(wrapper.findComponent({ name: 'CoverDesignerToolbar' }).exists()).toBe(true)
+  })
+
+  test('does not render the card designer toolbar on the cover tab', () => {
+    const wrapper = makeDeckSettings({ deck: makeDeck() })
+    expect(wrapper.findComponent({ name: 'CardDesignerToolbar' }).exists()).toBe(false)
+  })
+
+  // ── Tab switching ──────────────────────────────────────────────────────────
+
+  test('renders the card designer toolbar with front attributes when front tab is active', async () => {
+    const wrapper = makeDeckSettings({ deck: makeDeck() })
+    const tabBar = wrapper.findComponent({ name: 'TabBar' })
+    await tabBar.vm.$emit('update:active', 'front')
+    const cardToolbar = wrapper.findComponent({ name: 'CardDesignerToolbar' })
+    expect(cardToolbar.exists()).toBe(true)
+    expect(wrapper.findComponent({ name: 'CoverDesignerToolbar' }).exists()).toBe(false)
+  })
+
+  test('renders the card designer toolbar for the back tab', async () => {
+    const wrapper = makeDeckSettings({ deck: makeDeck() })
+    const tabBar = wrapper.findComponent({ name: 'TabBar' })
+    await tabBar.vm.$emit('update:active', 'back')
+    expect(wrapper.findComponent({ name: 'CardDesignerToolbar' }).exists()).toBe(true)
+    expect(wrapper.findComponent({ name: 'CoverDesignerToolbar' }).exists()).toBe(false)
+  })
+
+  test('updates the card preview side to match active tab', async () => {
+    const wrapper = makeDeckSettings({ deck: makeDeck() })
+    const card = wrapper.findComponent({ name: 'Card' })
+    expect(card.props('side')).toBe('cover')
+
+    await wrapper.findComponent({ name: 'TabBar' }).vm.$emit('update:active', 'front')
+    expect(wrapper.findComponent({ name: 'Card' }).props('side')).toBe('front')
+
+    await wrapper.findComponent({ name: 'TabBar' }).vm.$emit('update:active', 'back')
+    expect(wrapper.findComponent({ name: 'Card' }).props('side')).toBe('back')
+  })
+
+  test('no-ops when the active tab is re-selected', async () => {
+    const wrapper = makeDeckSettings({ deck: makeDeck() })
+    await wrapper.findComponent({ name: 'TabBar' }).vm.$emit('update:active', 'cover')
+    expect(wrapper.findComponent({ name: 'Card' }).props('side')).toBe('cover')
+    expect(wrapper.findComponent({ name: 'CoverDesignerToolbar' }).exists()).toBe(true)
+  })
+
+  test('clicking the card cycles to the next tab', async () => {
+    const wrapper = makeDeckSettings({ deck: makeDeck() })
+    await wrapper.findComponent({ name: 'Card' }).vm.$emit('click')
+    expect(wrapper.findComponent({ name: 'Card' }).props('side')).toBe('front')
+
+    await wrapper.findComponent({ name: 'Card' }).vm.$emit('click')
+    expect(wrapper.findComponent({ name: 'Card' }).props('side')).toBe('back')
+
+    await wrapper.findComponent({ name: 'Card' }).vm.$emit('click')
+    expect(wrapper.findComponent({ name: 'Card' }).props('side')).toBe('cover')
   })
 
   // ── Save button label ──────────────────────────────────────────────────────
