@@ -118,8 +118,6 @@ jobs:
       contents: read
 
     steps:
-      - uses: pnpm/action-setup@v4
-
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
@@ -127,7 +125,7 @@ jobs:
           path: dist
 
       - name: Deploy to Netlify
-        run: pnpm --package=netlify-cli dlx netlify deploy --dir=dist --prod --no-build
+        run: npx --yes netlify-cli deploy --dir=dist --prod --no-build
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
