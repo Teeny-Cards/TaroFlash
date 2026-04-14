@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import SessionShell from './session-shell.vue'
+import SessionFlashcard from './session-flashcard.vue'
+import { useTemplateRef } from 'vue'
+import mobileSheet from '@/components/layout-kit/modal/mobile-sheet.vue'
 
 export type StudySessionResponse = {
   score: number
@@ -14,6 +16,20 @@ const { deck, close, config_override } = defineProps<{
   config_override?: Partial<DeckConfig>
 }>()
 
+// When additional study modes are added, swap this for a computed that
+// maps deck.study_config?.study_mode to the appropriate mode component.
+const mode_ref = useTemplateRef<InstanceType<typeof SessionFlashcard>>('mode')
+
+function onCloseButtonClicked() {
+  if (mode_ref.value?.requestClose) {
+    // The mode component will decide how to handle the close request.
+    mode_ref.value.requestClose()
+    return
+  }
+
+  close()
+}
+
 function onSessionFinished(
   score: number,
   total: number,
@@ -25,15 +41,23 @@ function onSessionFinished(
 </script>
 
 <template>
-  <div
+  <mobile-sheet
     data-testid="study-session"
-    class="rounded-b-0 sm:rounded-b-8 rounded-t-8 shadow-lg overflow-hidden pb-4 relative bg-brown-300 dark:bg-grey-800 w-full h-full sm:h-auto sm:w-160"
+    class="bg-brown-300 dark:bg-grey-800 rounded-t-8 sm:rounded-b-8"
+    theme="purple-500"
+    @close="onCloseButtonClicked"
   >
-    <session-shell
-      :deck="deck"
-      :config_override="config_override"
-      @closed="close"
-      @finished="onSessionFinished"
-    />
-  </div>
+    <template #header-content>
+      <h1 class="text-5xl text-white">{{ deck?.title }}</h1>
+    </template>
+    <template #body>
+      <session-flashcard
+        ref="mode"
+        :deck="deck"
+        :config_override="config_override"
+        @closed="close"
+        @finished="onSessionFinished"
+      />
+    </template>
+  </mobile-sheet>
 </template>

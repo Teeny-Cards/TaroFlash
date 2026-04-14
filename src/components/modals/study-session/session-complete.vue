@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import { useI18n } from 'vue-i18n'
 import type { SecondaryAction } from '@/composables/modals/use-study-modal'
+import mobileSheet from '@/components/layout-kit/modal/mobile-sheet.vue'
 
 const { score, total, secondary_action, close } = defineProps<{
   score: number
@@ -31,39 +32,38 @@ const secondary_label = computed(() => t(`study-session.complete.${secondary_act
 </script>
 
 <template>
-  <div
-    class="bg-brown-300 dark:bg-grey-800 rounded-t-8 rounded-b-8 shadow-2xl overflow-hidden w-full sm:max-w-100 h-full max-h-120 shadow-sm flex flex-col items-center justify-between mx-2 mb-2"
-    @click.stop
+  <mobile-sheet
+    class="bg-brown-300 dark:bg-grey-800 rounded-t-8 sm:rounded-b-8"
+    theme="purple-500"
+    @close="close()"
   >
-    <div
-      class="w-full bg-purple-500 wave-bottom-[50px] bgx-diagonal-stripes bgx-size-20 px-13 py-11.5 pb-14 text-center"
-    >
-      <h1 data-testid="session-complete__heading" class="text-white text-5xl">{{ heading }}</h1>
-    </div>
+    <template #header-content>
+      <h1 data-testid="session-complete__heading" class="text-5xl text-white">{{ heading }}</h1>
+    </template>
 
-    <div class="h-full w-full flex flex-col items-center justify-center gap-5 px-6 pb-6 -mt-2">
-      <p class="text-brown-700 dark:text-brown-300 text-lg text-center">{{ message }}</p>
-      <p class="text-brown-700 dark:text-brown-300 leading-none">
-        <span class="text-7xl">{{ score }}</span
-        ><span class="text-brown-500 dark:text-brown-400 text-xl"> / {{ total }}</span>
-      </p>
-    </div>
+    <template #body>
+      <div class="h-full w-full flex flex-col items-center justify-center gap-5 p-6 -mt-2">
+        <p class="text-brown-700 dark:text-brown-300 text-lg text-center">{{ message }}</p>
+        <p class="text-brown-700 dark:text-brown-300 leading-none">
+          <span class="text-7xl">{{ score }}</span
+          ><span class="text-brown-500 dark:text-brown-400 text-xl"> / {{ total }}</span>
+        </p>
+      </div>
+    </template>
 
-    <div class="w-full p-4 flex gap-2 justify-center">
-      <ui-button
-        data-testid="session-complete__close"
-        class="max-sm:flex-1!"
-        size="xl"
-        @click="close()"
-        >{{ t('common.close') }}</ui-button
-      >
-      <ui-button
-        data-testid="session-complete__secondary"
-        class="max-sm:flex-1!"
-        size="xl"
-        @click="close(secondary_action)"
-        >{{ secondary_label }}</ui-button
-      >
-    </div>
-  </div>
+    <template #footer>
+      <div class="w-full p-4 flex gap-2 items-center">
+        <ui-button data-testid="session-complete__close" full-width size="xl" @click="close()">{{
+          t('common.close')
+        }}</ui-button>
+        <ui-button
+          data-testid="session-complete__secondary"
+          full-width
+          size="xl"
+          @click="close(secondary_action)"
+          >{{ secondary_label }}</ui-button
+        >
+      </div>
+    </template>
+  </mobile-sheet>
 </template>
