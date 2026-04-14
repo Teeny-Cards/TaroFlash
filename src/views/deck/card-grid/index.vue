@@ -4,7 +4,7 @@ import { type CardBulkEditor } from '@/composables/card-bulk-editor'
 import { inject, ref } from 'vue'
 
 const { all_cards, mode, selected_card_ids } = inject<CardBulkEditor>('card-editor')!
-const card_defaults = inject<DeckCardDefaults>('card-defaults')
+const card_attributes = inject<DeckCardAttributes>('card-attributes')
 
 const side = ref<'front' | 'back'>('front')
 
@@ -24,7 +24,8 @@ const emit = defineEmits<{
       :card="card"
       :mode="mode"
       :side="side"
-      :card_defaults="card_defaults"
+      :front_attributes="card_attributes?.front"
+      :back_attributes="card_attributes?.back"
       :selected="selected_card_ids?.includes(card.id!) ?? false"
       @card-selected="emit('card-selected', card.id!)"
     ></grid-item>
