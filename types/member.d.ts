@@ -6,7 +6,12 @@ type Member = {
   email?: string
   avatar_url?: string
   updated_at?: string
+  role?: MemberRole
+  plan?: MemberPlan
 }
+
+declare type MemberRole = 'user' | 'moderator' | 'admin'
+declare type MemberPlan = 'free' | 'paid'
 
 type MemberTheme =
   | 'blue-500'
@@ -31,5 +36,3 @@ type MemberTheme =
   | 'grey-900'
   | 'grey-400'
   | 'white'
-
-declare type MemberType = 'free' | 'paid'
