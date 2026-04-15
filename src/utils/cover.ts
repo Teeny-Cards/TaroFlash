@@ -4,6 +4,32 @@ export type CoverBindings = {
   style: Record<string, string>
 }
 
+export const PATTERN_SIZE_SCALE: Record<DeckCoverPattern, number> = {
+  'diagonal-stripes': 1.15,
+  saw: 1,
+  wave: 2,
+  'bank-note': 2.3,
+  aztec: 1,
+  'endless-clouds': 2
+}
+
+export function patternSize(pattern: DeckCoverPattern, size: number): string {
+  return `${size * PATTERN_SIZE_SCALE[pattern]}px`
+}
+
+export const PATTERN_OPACITY_SCALE: Record<DeckCoverPattern, number> = {
+  'diagonal-stripes': 1,
+  saw: 1,
+  wave: 3.5,
+  'bank-note': 1.2,
+  aztec: 1,
+  'endless-clouds': 3
+}
+
+export function patternOpacity(pattern: DeckCoverPattern, baseline: number): string {
+  return String(baseline * PATTERN_OPACITY_SCALE[pattern])
+}
+
 export type CoverBindingsOptions = {
   fallbackTheme?: MemberTheme
   pattern?: boolean
@@ -22,13 +48,9 @@ export function coverBindings(
 
   if (pattern && config?.pattern) {
     classes.push(`bgx-${config.pattern}`)
-    if (config.pattern_size) classes.push(`bgx-size-[${config.pattern_size}px]`)
-    if (config.pattern_opacity !== undefined) {
-      classes.push(`bgx-opacity-${Math.round(config.pattern_opacity * 100)}`)
-    }
-    if (config.pattern_color) {
-      classes.push(`bgx-color-[var(--color-${config.pattern_color})]`)
-    }
+    style['--bgx-fill'] = 'var(--theme-neutral)'
+    style['--bgx-opacity'] = patternOpacity(config.pattern, 0.2)
+    if (config.pattern_size) style['--bgx-size'] = patternSize(config.pattern, config.pattern_size)
   }
 
   if (border && config?.border_size) {

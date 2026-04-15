@@ -43,7 +43,7 @@ function onRatingClicked(grade: Grade) {
         element="button"
         :gap="-12"
         data-testid="rating-buttons__good"
-        class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
+        class="cursor-pointer rounded-full bg-(--theme-primary) px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
         static_on_mobile
         @click="onRatingClicked(Rating.Good)"
       >
@@ -54,7 +54,7 @@ function onRatingClicked(grade: Grade) {
     <button
       v-else-if="side === 'front'"
       data-testid="rating-buttons__show"
-      class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
+      class="cursor-pointer rounded-full bg-(--theme-primary) px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
       @click="$emit('revealed')"
     >
       {{ t('study.flip') }}
@@ -63,7 +63,7 @@ function onRatingClicked(grade: Grade) {
     <button
       v-else-if="side === 'cover'"
       data-testid="rating-buttons__start"
-      class="cursor-pointer rounded-full bg-purple-500 px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
+      class="cursor-pointer rounded-full bg-(--theme-primary) px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
       @click="$emit('started')"
     >
       {{ t('study.start') }}

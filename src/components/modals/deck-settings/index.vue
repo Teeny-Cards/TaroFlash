@@ -68,7 +68,6 @@ async function onSave() {
     data-testid="deck-settings-container"
     class="sm:max-w-200! sm:max-h-190"
     title="Deck Settings"
-    :cover_config="cover"
     @close="close(false)"
   >
     <template #body>

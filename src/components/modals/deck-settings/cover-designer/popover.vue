@@ -15,7 +15,7 @@ const emit = defineEmits<{
 }>()
 
 const slots = defineSlots<{
-  default(): any
+  default(props: { close: () => void }): any
   extra?(): any
 }>()
 
@@ -63,7 +63,7 @@ const open = ref(false)
         data-testid="cover-designer-popover__grid"
         class="grid grid-cols-[1fr_1fr_1fr_1fr] gap-1"
       >
-        <slot></slot>
+        <slot :close="() => (open = false)"></slot>
       </div>
       <slot name="extra"></slot>
     </div>

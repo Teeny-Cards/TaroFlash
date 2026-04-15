@@ -25,32 +25,31 @@ describe('coverBindings', () => {
     expect(result.class).toContain('bgx-wave')
   })
 
-  test('emits pattern_size class as arbitrary px length', () => {
-    const result = coverBindings({ pattern: 'wave', pattern_size: 20 })
-    expect(result.class).toContain('bgx-size-[20px]')
+  test('always sets fixed --bgx-fill and --bgx-opacity when pattern is set', () => {
+    const result = coverBindings({ pattern: 'wave' })
+    expect(result.style['--bgx-fill']).toBe('var(--theme-neutral)')
+    expect(result.style['--bgx-opacity']).toBe('0.2')
   })
 
-  test('translates 0-1 pattern_opacity to 0-100 scale', () => {
-    const result = coverBindings({ pattern: 'wave', pattern_opacity: 0.4 })
-    expect(result.class).toContain('bgx-opacity-40')
+  test('sets --bgx-size style from pattern_size (scaled per pattern)', () => {
+    const result = coverBindings({ pattern: 'saw', pattern_size: 20 })
+    expect(result.style['--bgx-size']).toBe('20px')
   })
 
-  test('emits pattern_color as arbitrary --color-* var', () => {
-    const result = coverBindings({ pattern: 'wave', pattern_color: 'brown-500' })
-    expect(result.class).toContain('bgx-color-[var(--color-brown-500)]')
-  })
-
-  test('omits pattern classes when no pattern is set', () => {
-    const result = coverBindings({ pattern_size: 20, pattern_color: 'brown-500' })
+  test('omits pattern bindings when no pattern is set', () => {
+    const result = coverBindings({ pattern_size: 20 })
     expect(result.class).toEqual([])
+    expect(result.style['--bgx-size']).toBeUndefined()
+    expect(result.style['--bgx-fill']).toBeUndefined()
+    expect(result.style['--bgx-opacity']).toBeUndefined()
   })
 
-  test('omits pattern classes when pattern option is disabled', () => {
-    const result = coverBindings(
-      { pattern: 'wave', pattern_color: 'brown-500' },
-      { pattern: false }
-    )
+  test('omits pattern bindings when pattern option is disabled', () => {
+    const result = coverBindings({ pattern: 'wave', pattern_size: 20 }, { pattern: false })
     expect(result.class).toEqual([])
+    expect(result.style['--bgx-fill']).toBeUndefined()
+    expect(result.style['--bgx-opacity']).toBeUndefined()
+    expect(result.style['--bgx-size']).toBeUndefined()
   })
 
   test('emits themed border style when border_size is set', () => {
@@ -85,18 +84,15 @@ describe('coverBindings', () => {
       bg_color: 'purple-500',
       pattern: 'aztec',
       pattern_size: 15,
-      pattern_opacity: 0.2,
-      pattern_color: 'brown-100',
       border_size: 2
     })
 
     expect(result['data-theme']).toBe('purple-500')
-    expect(result.class).toEqual([
-      'bgx-aztec',
-      'bgx-size-[15px]',
-      'bgx-opacity-20',
-      'bgx-color-[var(--color-brown-100)]'
-    ])
+    expect(result.class).toEqual(['bgx-aztec'])
+    // aztec has scale 1 in PATTERN_SIZE_SCALE
+    expect(result.style['--bgx-size']).toBe('15px')
+    expect(result.style['--bgx-opacity']).toBe('0.2')
+    expect(result.style['--bgx-fill']).toBe('var(--theme-neutral)')
     expect(result.style.border).toBe('2px solid var(--theme-primary)')
   })
 })

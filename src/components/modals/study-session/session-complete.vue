@@ -9,6 +9,7 @@ const { score, total, secondary_action, close } = defineProps<{
   score: number
   total: number
   secondary_action: SecondaryAction
+  theme: MemberTheme
   close: (action?: SecondaryAction) => void
 }>()
 
@@ -32,12 +33,7 @@ const secondary_label = computed(() => t(`study-session.complete.${secondary_act
 </script>
 
 <template>
-  <mobile-sheet
-    theme="purple-500"
-    class="sm:max-w-110!"
-    :cover_config="{ pattern: 'diagonal-stripes', pattern_size: 20 }"
-    @close="close()"
-  >
+  <mobile-sheet :theme="theme ?? 'purple-500'" class="sm:max-w-110!" @close="close()">
     <template #header-content>
       <h1 data-testid="session-complete__heading" class="text-5xl text-white">{{ heading }}</h1>
     </template>
