@@ -7,7 +7,6 @@ const { t } = useI18n()
 
 const shuffle = defineModel<boolean | undefined>('shuffle')
 const flip_cards = defineModel<boolean | undefined>('flip_cards')
-const retry_failed_cards = defineModel<boolean>('retry_failed_cards')
 const is_spaced = defineModel<boolean | undefined>('is_spaced')
 const auto_play = defineModel<boolean | undefined>('auto_play')
 const card_limit = defineModel<number | null | undefined>('card_limit')
@@ -41,13 +40,6 @@ const CARD_LIMIT_PRESETS: Array<{ label: string; value: number | null }> = [
       <div class="flex items-center gap-2.5">
         <ui-icon src="horizontal-align" />
         {{ t('deck.settings-modal.study.flip-cards') }}
-      </div>
-    </ui-toggle>
-
-    <ui-toggle v-model:checked="retry_failed_cards">
-      <div class="flex items-center gap-2.5">
-        <ui-icon src="arrow-back" />
-        {{ t('deck.settings-modal.study.retry-failed') }}
       </div>
     </ui-toggle>
 

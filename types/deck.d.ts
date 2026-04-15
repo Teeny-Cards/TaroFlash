@@ -33,7 +33,6 @@ type DeckStudyMode = 'flashcard'
 type DeckConfig = {
   study_mode?: DeckStudyMode
   study_all_cards: boolean
-  retry_failed_cards: boolean
   shuffle?: boolean
   card_limit?: number | null
   flip_cards?: boolean
