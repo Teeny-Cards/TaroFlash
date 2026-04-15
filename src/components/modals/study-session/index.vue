@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import SessionFlashcard from './session-flashcard.vue'
-import { useTemplateRef } from 'vue'
+import { computed, useTemplateRef } from 'vue'
 import mobileSheet from '@/components/layout-kit/modal/mobile-sheet.vue'
+import { provideDeckContext } from './deck-context'
 
 export type StudySessionResponse = {
   score: number
@@ -15,6 +16,13 @@ const { deck, close, config_override } = defineProps<{
   close: (response?: StudySessionResponse) => void
   config_override?: Partial<DeckConfig>
 }>()
+
+provideDeckContext(
+  computed(() => ({
+    cover_config: deck.cover_config,
+    card_attributes: deck.card_attributes
+  }))
+)
 
 // When additional study modes are added, swap this for a computed that
 // maps deck.study_config?.study_mode to the appropriate mode component.

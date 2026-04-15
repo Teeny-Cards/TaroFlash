@@ -84,8 +84,7 @@ async function onSave() {
               :front_text="active_tab === 'front' ? preview_text : undefined"
               :back_text="active_tab === 'back' ? preview_text : undefined"
               :cover_config="cover"
-              :front_attributes="card_attributes.front"
-              :back_attributes="card_attributes.back"
+              :card_attributes="card_attributes"
               class="cursor-pointer"
               @click="cycleTab"
             />

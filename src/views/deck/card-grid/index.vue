@@ -24,8 +24,7 @@ const emit = defineEmits<{
       :card="card"
       :mode="mode"
       :side="side"
-      :front_attributes="card_attributes?.front"
-      :back_attributes="card_attributes?.back"
+      :card_attributes="card_attributes"
       :selected="selected_card_ids?.includes(card.id!) ?? false"
       @card-selected="emit('card-selected', card.id!)"
     ></grid-item>

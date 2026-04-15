@@ -14,8 +14,7 @@ type CardProps = Partial<CardBase> &
     mode?: CardEditorMode
     side?: 'front' | 'back' | 'cover'
     cover_config?: DeckCover
-    front_attributes?: CardAttributes
-    back_attributes?: CardAttributes
+    card_attributes?: DeckCardAttributes
     face_classes?: string
     sfx?: SfxOptions
   }
@@ -29,8 +28,7 @@ const {
   side = 'front',
   mode = 'view',
   cover_config,
-  front_attributes,
-  back_attributes,
+  card_attributes,
   front_image_path,
   back_image_path
 } = defineProps<CardProps>()
@@ -95,7 +93,7 @@ function onLeave(el: Element, done: () => void) {
           :image="front_image_url"
           :text="front_text"
           :mode="mode"
-          :attributes="front_attributes"
+          :attributes="card_attributes?.front"
         >
           <template #editor>
             <slot name="editor"></slot>
@@ -110,7 +108,7 @@ function onLeave(el: Element, done: () => void) {
           :image="back_image_url"
           :text="back_text"
           :mode="mode"
-          :attributes="back_attributes"
+          :attributes="card_attributes?.back"
         >
           <template #editor>
             <slot name="editor"></slot>
