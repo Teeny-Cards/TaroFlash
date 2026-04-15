@@ -23,11 +23,7 @@ const { deck, close } = defineProps<{
 }>()
 
 const { t } = useI18n()
-const { saveDeck, cover, card_attributes } = useDeckEditor(deck)
-
-const title = ref(deck?.title ?? '')
-const description = ref(deck?.description ?? '')
-const isPublic = ref(deck?.is_public ?? true)
+const { saveDeck, settings, cover, card_attributes } = useDeckEditor(deck)
 
 const active_tab = ref<DesignerTab>('cover')
 
@@ -110,11 +106,14 @@ async function onSave() {
             :placeholder="t('deck.title-placeholder')"
             text-align="center"
             size="lg"
-            v-model:value="title"
+            v-model:value="settings.title"
           />
-          <ui-input :placeholder="t('deck.description-placeholder')" v-model:value="description" />
+          <ui-input
+            :placeholder="t('deck.description-placeholder')"
+            v-model:value="settings.description"
+          />
 
-          <ui-toggle v-model:checked="isPublic">
+          <ui-toggle v-model:checked="settings.is_public">
             <div class="flex items-center gap-2.5">
               <ui-icon src="public" />
               {{ t('deck.settings-modal.is-public') }}
