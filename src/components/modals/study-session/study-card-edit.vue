@@ -2,21 +2,26 @@
 import Card from '@/components/card/index.vue'
 import TextEditor from '@/components/text-editor/text-editor.vue'
 import { computed } from 'vue'
+import { useDeckContext } from './deck-context'
 
 type CardSide = 'front' | 'back'
 
-const { card, side, front_attributes, back_attributes } = defineProps<{
+const { card, side } = defineProps<{
   card?: Card
   side: CardSide
-  front_attributes?: CardAttributes
-  back_attributes?: CardAttributes
 }>()
 
 const emit = defineEmits<{
   (e: 'update', side: CardSide, text: string): void
 }>()
 
-const attributes = computed(() => (side === 'front' ? front_attributes : back_attributes))
+const deck_context = useDeckContext()
+
+const attributes = computed(() =>
+  side === 'front'
+    ? deck_context.value.card_attributes?.front
+    : deck_context.value.card_attributes?.back
+)
 
 const text = computed(() => (side === 'front' ? card?.front_text : card?.back_text))
 </script>
@@ -28,8 +33,7 @@ const text = computed(() => (side === 'front' ? card?.front_text : card?.back_te
     mode="edit"
     :side="side"
     v-bind="card"
-    :front_attributes="front_attributes"
-    :back_attributes="back_attributes"
+    :card_attributes="deck_context.card_attributes"
   >
     <template #editor>
       <text-editor

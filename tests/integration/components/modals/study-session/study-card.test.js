@@ -2,7 +2,9 @@ import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 import { mount, shallowMount, flushPromises } from '@vue/test-utils'
 import { defineComponent, h, useAttrs } from 'vue'
 import { FSRS, generatorParameters, createEmptyCard, Rating } from 'ts-fsrs'
+import { ref } from 'vue'
 import StudyCard from '@/components/modals/study-session/study-card.vue'
+import { DeckContextKey } from '@/components/modals/study-session/deck-context'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
 
@@ -286,15 +288,16 @@ describe('StudyCard', () => {
 
   // ── cover_config forwarding ────────────────────────────────────────────────
 
-  test('forwards cover_config prop to the Card component', () => {
+  test('forwards injected cover_config to the Card component', () => {
     const cover_config = { bg_color: 'blue-500', pattern: 'stars' }
     const wrapper = shallowMount(StudyCard, {
-      props: { side: 'front', cover_config }
+      props: { side: 'front' },
+      global: { provide: { [DeckContextKey]: ref({ cover_config }) } }
     })
     expect(wrapper.findComponent({ name: 'Card' }).props('cover_config')).toEqual(cover_config)
   })
 
-  test('forwards undefined when cover_config is not provided', () => {
+  test('forwards undefined when no deck context is provided', () => {
     const wrapper = shallowMount(StudyCard, { props: { side: 'front' } })
     expect(wrapper.findComponent({ name: 'Card' }).props('cover_config')).toBeUndefined()
   })

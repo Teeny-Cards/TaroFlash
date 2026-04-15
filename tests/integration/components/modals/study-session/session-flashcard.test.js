@@ -55,8 +55,7 @@ vi.mock('@/api/reviews', () => ({
 const CardStub = defineComponent({
   props: {
     side: { type: String },
-    front_attributes: { default: null },
-    back_attributes: { default: null }
+    card_attributes: { default: null }
   },
   emits: ['flip-complete'],
   inheritAttrs: false,
