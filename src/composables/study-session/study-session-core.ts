@@ -9,9 +9,8 @@ import {
 } from 'ts-fsrs'
 import { DateTime } from 'luxon'
 import { saveReview } from '@/api/reviews'
-import CardRecord from '@/utils/card-record'
 
-export type StudyCard = CardRecord & { preview?: RecordLog; state: ReviewState }
+export type StudyCard = Card & { preview?: RecordLog; state: ReviewState }
 
 type ReviewState = 'failed' | 'passed' | 'unreviewed'
 
@@ -135,10 +134,7 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
   function _setupCard(card: Card): StudyCard {
     const review = card.review ?? (createEmptyCard(new Date()) as Review)
     const preview = _FSRS_INSTANCE.repeat(review, new Date())
-    const record = new CardRecord({ ...card, review }) as StudyCard
-    record.state = 'unreviewed'
-    record.preview = preview
-    return record
+    return { ...card, review, preview, state: 'unreviewed' }
   }
 
   function _markCurrentCardStudied(grade: Grade) {

@@ -41,7 +41,8 @@ vi.mock('@/sfx/bus', () => ({ emitSfx: mockEmitSfx }))
 vi.mock('@/api/cards', () => ({
   fetchAllCardsByDeckId: mockFetchAllCardsByDeckId,
   upsertCard: vi.fn().mockResolvedValue(undefined),
-  reserveCard: vi.fn().mockResolvedValue({ out_id: 1, out_rank: 1 })
+  reserveCard: vi.fn().mockResolvedValue({ out_id: 1, out_rank: 1 }),
+  saveCard: vi.fn().mockResolvedValue(undefined)
 }))
 
 vi.mock('@/api/reviews', () => ({

@@ -1,10 +1,11 @@
 import { ref, watch, type Ref } from 'vue'
+import { saveCard } from '@/api/cards'
 import type { StudyCard } from './study-session-core'
 
 /**
- * Owns the editing/saving state for the active study card. Mutates the
- * CardRecord in place via its debounced `update()` so the FSRS queue and
- * rendered card stay in sync without a second data-path.
+ * Owns the editing/saving state for the active study card. Mutates the card
+ * in place via the debounced saveCard API so the FSRS queue and rendered
+ * card stay in sync without a second data path.
  */
 export function useCardEdit(active_card: Ref<StudyCard | undefined>) {
   const editing = ref(false)
@@ -30,7 +31,7 @@ export function useCardEdit(active_card: Ref<StudyCard | undefined>) {
     const card = active_card.value
     if (!card) return
     saving.value = true
-    await card.update({ [`${side}_text`]: text })
+    await saveCard(card, { [`${side}_text`]: text })
     saving.value = false
   }
 
