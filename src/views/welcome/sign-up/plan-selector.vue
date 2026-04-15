@@ -4,11 +4,11 @@ import { useI18n } from 'vue-i18n'
 import PlanOption from './plan-option.vue'
 
 defineProps<{
-  selected_plan: MemberType
+  selected_plan: MemberPlan
 }>()
 
 const emit = defineEmits<{
-  (e: 'select', plan: MemberType): void
+  (e: 'select', plan: MemberPlan): void
 }>()
 
 const { t } = useI18n()

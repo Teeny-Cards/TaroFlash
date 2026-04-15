@@ -10,6 +10,8 @@ export const useMemberStore = defineStore('member', () => {
   const id = ref<Member['id']>()
   const avatar_url = ref<Member['avatar_url']>()
   const updated_at = ref<Member['updated_at']>()
+  const role = ref<Member['role']>()
+  const plan = ref<Member['plan']>()
 
   async function fetchMember(user_id: string): Promise<void> {
     const fetched_member = await fetchMemberById(user_id)
@@ -22,6 +24,8 @@ export const useMemberStore = defineStore('member', () => {
     id.value = fetched_member.id
     avatar_url.value = fetched_member.avatar_url
     updated_at.value = fetched_member.updated_at
+    role.value = fetched_member.role
+    plan.value = fetched_member.plan
   }
 
   const has_member = computed(() => Boolean(id.value))
@@ -35,6 +39,8 @@ export const useMemberStore = defineStore('member', () => {
     created_at,
     id,
     avatar_url,
-    updated_at
+    updated_at,
+    role,
+    plan
   }
 })
