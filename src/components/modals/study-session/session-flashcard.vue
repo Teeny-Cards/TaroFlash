@@ -5,7 +5,7 @@ import FinishAnimation from './finish-animation.vue'
 import { useFlashcardSession } from '@/composables/study-session/flashcard-session'
 import { useModalRequestClose } from '@/composables/modal'
 import { type Grade } from 'ts-fsrs'
-import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
+import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
 import Card from '@/components/card/index.vue'
 import { fetchAllCardsByDeckId } from '@/api/cards'
 import { emitSfx } from '@/sfx/bus'
@@ -51,6 +51,29 @@ const {
 const study_card_ref = useTemplateRef('study-card')
 const loading = ref(true)
 const next_card_side = ref<'front' | 'back' | 'cover'>('cover')
+const preview_progress = ref(0)
+const preview_transition_duration = ref(0)
+
+const preview_style = computed(() => ({
+  opacity: preview_progress.value,
+  transform: `scale(${0.9 + 0.1 * preview_progress.value})`,
+  transition: preview_transition_duration.value
+    ? `opacity ${preview_transition_duration.value}s ease-out, transform ${preview_transition_duration.value}s ease-out`
+    : 'none'
+}))
+
+watch(
+  () => next_card.value?.id,
+  () => {
+    preview_progress.value = 0
+    preview_transition_duration.value = 0
+  }
+)
+
+function onDragProgress(progress: number, duration: number) {
+  preview_transition_duration.value = duration
+  preview_progress.value = progress
+}
 
 // One-shot promise resolver for the preview-card pre-flip animation.
 // Resolved either by the flip-complete event or by onUnmounted as a safety
@@ -139,18 +162,23 @@ async function onCardReviewed(grade?: Grade) {
     </div>
 
     <div data-testid="study-card__container" class="relative flex items-center justify-center">
-      <card
+      <div
         v-if="!loading && next_card"
-        :key="next_card.id"
-        size="xl"
-        :side="next_card_side"
-        v-bind="next_card"
-        :cover_config="deck.cover_config"
-        :front_attributes="deck.card_attributes?.front"
-        :back_attributes="deck.card_attributes?.back"
-        class="absolute! pointer-events-none"
-        @flip-complete="onNextCardFlipped"
-      />
+        data-testid="study-card__preview"
+        class="absolute pointer-events-none"
+        :style="preview_style"
+      >
+        <card
+          :key="next_card.id"
+          size="xl"
+          :side="next_card_side"
+          v-bind="next_card"
+          :cover_config="deck.cover_config"
+          :front_attributes="deck.card_attributes?.front"
+          :back_attributes="deck.card_attributes?.back"
+          @flip-complete="onNextCardFlipped"
+        />
+      </div>
       <study-card
         v-if="!loading"
         ref="study-card"
@@ -164,6 +192,7 @@ async function onCardReviewed(grade?: Grade) {
         @started="onStart"
         @side-changed="onSideChanged"
         @reviewed="onCardReviewed"
+        @drag-progress="onDragProgress"
       />
       <card
         data-testid="study-card-skeleton"
