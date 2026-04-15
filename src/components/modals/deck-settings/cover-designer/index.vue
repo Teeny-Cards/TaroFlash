@@ -2,7 +2,6 @@
 import Popover from './popover.vue'
 import type { ImageUploadPayload } from '@/components/image-uploader.vue'
 import BgColorPicker from './bg-color-picker.vue'
-import Border from './border.vue'
 import BorderSliders from './border-sliders.vue'
 import PatternPicker from './pattern-picker.vue'
 import PatternSliders from './pattern-sliders.vue'
@@ -30,25 +29,15 @@ const supported_themes: MemberTheme[] = [
 
 <template>
   <div data-testid="cover-designer-toolbar">
-    <div data-testid="cover-designer-toolbar__controls" class="flex sm:flex-col gap-4">
+    <div data-testid="cover-designer-toolbar__controls" class="flex gap-4">
       <popover label="BG Color" icon="paint-brush">
         <bg-color-picker
           :supported_themes="supported_themes"
           :bg_color="config.bg_color"
           @select="config.bg_color = $event"
         />
-      </popover>
 
-      <popover label="Border" icon="border-outer">
-        <border
-          :supported_themes="supported_themes"
-          :border_color="config.border_color"
-          :border_size="config.border_size"
-          :bg_color="config.bg_color"
-          @select="config.border_color = $event"
-        />
-
-        <template v-if="config.border_color" #extra>
+        <template #extra>
           <border-sliders
             :border_size="config.border_size"
             @update:size="config.border_size = $event"

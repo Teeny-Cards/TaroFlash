@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { emitSfx } from '@/sfx/bus'
-import { BGX_PATTERN_CLASS } from '@/utils/bgx'
 
 type PatternPickerProps = {
   pattern: DeckCoverPattern | undefined
@@ -50,7 +49,7 @@ function onPatternSelect(p: DeckCoverPattern | undefined) {
     :data-testid="`pattern-picker__option-${p}`"
     :data-theme="bg_color ?? 'purple-500'"
     :data-selected="p === pattern || undefined"
-    :class="BGX_PATTERN_CLASS[p]"
+    :class="`bgx-${p}`"
     :style="{ ...swatchStyle }"
     class="w-full aspect-square rounded-2 cursor-pointer bg-(--theme-primary)"
     @click="onPatternSelect(p)"

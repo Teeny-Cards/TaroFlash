@@ -66,7 +66,7 @@ function onSelectVAlign(value: VAlign) {
 </script>
 
 <template>
-  <div data-testid="card-designer-toolbar" class="flex sm:flex-col gap-4">
+  <div data-testid="card-designer-toolbar" class="flex gap-4">
     <popover :label="t('deck-view.card-attributes.text-size')" icon="text-field">
       <div
         data-testid="card-designer-toolbar__text-size-options"

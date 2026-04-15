@@ -33,8 +33,9 @@ const secondary_label = computed(() => t(`study-session.complete.${secondary_act
 
 <template>
   <mobile-sheet
-    class="bg-brown-300 dark:bg-grey-800 rounded-t-8 sm:rounded-b-8"
     theme="purple-500"
+    class="sm:max-w-110!"
+    :cover_config="{ pattern: 'diagonal-stripes', pattern_size: 20 }"
     @close="close()"
   >
     <template #header-content>
