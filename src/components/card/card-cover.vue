@@ -14,7 +14,7 @@ const bindings = computed(() => coverBindings(cover, { fallbackTheme: 'purple-50
   <div
     data-testid="card-cover"
     v-bind="bindings"
-    :data-theme="cover?.bg_color"
+    :data-theme="cover?.bg_color ?? 'purple-500'"
     class="card-cover bg-(--theme-primary) flex items-center justify-center text-(--theme-on-primary)"
   >
     <div
