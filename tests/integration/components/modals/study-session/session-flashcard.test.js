@@ -39,7 +39,9 @@ vi.mock('@/composables/use-shortcuts', () => ({
 vi.mock('@/sfx/bus', () => ({ emitSfx: mockEmitSfx }))
 
 vi.mock('@/api/cards', () => ({
-  fetchAllCardsByDeckId: mockFetchAllCardsByDeckId
+  fetchAllCardsByDeckId: mockFetchAllCardsByDeckId,
+  upsertCard: vi.fn().mockResolvedValue(undefined),
+  reserveCard: vi.fn().mockResolvedValue({ out_id: 1, out_rank: 1 })
 }))
 
 vi.mock('@/api/reviews', () => ({

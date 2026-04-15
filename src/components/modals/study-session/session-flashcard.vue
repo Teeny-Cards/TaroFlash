@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import StudyCard from './study-card.vue'
+import StudyCardEdit from './study-card-edit.vue'
 import RatingButtons from './rating-buttons.vue'
 import FinishAnimation from './finish-animation.vue'
+import UiButton from '@/components/ui-kit/button.vue'
+import UiIcon from '@/components/ui-kit/icon.vue'
 import { useFlashcardSession } from '@/composables/study-session/flashcard-session'
 import { useModalRequestClose } from '@/composables/modal'
 import { type Grade } from 'ts-fsrs'
@@ -53,6 +56,29 @@ const loading = ref(true)
 const next_card_side = ref<'front' | 'back' | 'cover'>('cover')
 const preview_progress = ref(0)
 const preview_transition_duration = ref(0)
+const editing = ref(false)
+const saving = ref(false)
+
+watch(
+  () => active_card.value?.id,
+  () => {
+    editing.value = false
+  }
+)
+
+async function onEditUpdate(side: 'front' | 'back', text: string) {
+  const card = active_card.value
+  if (!card) return
+
+  saving.value = true
+  await card.update({ [`${side}_text`]: text })
+  saving.value = false
+}
+
+function onEditStart() {
+  if (current_card_side.value === 'cover' || !active_card.value) return
+  editing.value = true
+}
 
 const preview_style = computed(() => ({
   opacity: preview_progress.value,
@@ -155,10 +181,18 @@ async function onCardReviewed(grade?: Grade) {
   >
     <div
       data-testid="study-session__counter"
-      class="text-brown-700 dark:text-brown-300 text-lg"
+      class="text-brown-700 dark:text-brown-300 text-lg flex items-center gap-1"
       :class="{ invisible: is_cover }"
     >
-      {{ current_index + 1 }}<span class="text-sm">/{{ cards.length }}</span>
+      <template v-if="editing">
+        <ui-icon :src="saving ? 'loading-dots' : 'check'" class="h-5 w-5" />
+        <span data-testid="study-session__save-status" class="text-sm">
+          {{ saving ? $t('common.saving') : $t('common.saved') }}
+        </span>
+      </template>
+      <template v-else>
+        {{ current_index + 1 }}<span class="text-sm">/{{ cards.length }}</span>
+      </template>
     </div>
 
     <div data-testid="study-card__container" class="relative flex items-center justify-center">
@@ -180,7 +214,7 @@ async function onCardReviewed(grade?: Grade) {
         />
       </div>
       <study-card
-        v-if="!loading"
+        v-if="!loading && !editing"
         ref="study-card"
         :key="active_card?.id"
         :card="active_card"
@@ -194,6 +228,14 @@ async function onCardReviewed(grade?: Grade) {
         @reviewed="onCardReviewed"
         @drag-progress="onDragProgress"
       />
+      <study-card-edit
+        v-else-if="!loading && editing && active_card"
+        :card="active_card"
+        :side="current_card_side === 'back' ? 'back' : 'front'"
+        :front_attributes="deck.card_attributes?.front"
+        :back_attributes="deck.card_attributes?.back"
+        @update="onEditUpdate"
+      />
       <card
         data-testid="study-card-skeleton"
         side="cover"
@@ -203,9 +245,25 @@ async function onCardReviewed(grade?: Grade) {
         v-else
         size="xl"
       />
+
+      <ui-button
+        v-if="!loading && !editing && !is_cover"
+        data-testid="study-session__edit"
+        class="absolute! -top-2 -right-2 z-20"
+        icon-only
+        rounded-full
+        size="lg"
+        inverted
+        icon-left="edit"
+        :sfx="{ click: 'ui.pop_window' }"
+        @click="onEditStart"
+      >
+        {{ $t('study-session.edit.open') }}
+      </ui-button>
     </div>
 
     <rating-buttons
+      v-if="!editing"
       class="z-10 mt-4"
       :options="active_card?.preview"
       :side="current_card_side"
@@ -213,6 +271,29 @@ async function onCardReviewed(grade?: Grade) {
       @rated="onRated"
       @revealed="onSideChanged"
     />
+
+    <div
+      v-if="editing"
+      data-testid="study-card-edit__actions"
+      class="z-10 mt-4 flex justify-center gap-2 text-2xl"
+    >
+      <button
+        data-testid="study-card-edit__flip"
+        v-sfx="{ click: is_starting_side ? 'ui.transition_up' : 'ui.transition_down' }"
+        class="text-brown-700 cursor-pointer rounded-full bg-white px-13 py-4 hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
+        @click="flipCurrentCard"
+      >
+        {{ $t('study.flip') }}
+      </button>
+      <button
+        data-testid="study-card-edit__done"
+        v-sfx="{ click: 'ui.music_plink_ok' }"
+        class="cursor-pointer rounded-full bg-(--theme-primary) px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
+        @click="editing = false"
+      >
+        {{ $t('common.done') }}
+      </button>
+    </div>
   </div>
 
   <finish-animation
