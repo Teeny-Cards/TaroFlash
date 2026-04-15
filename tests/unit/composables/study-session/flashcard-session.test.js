@@ -258,47 +258,17 @@ describe('useFlashcardSession', () => {
     expect(session.mode.value).toBe('studying')
   })
 
-  // ── Retry logic ────────────────────────────────────────────────────────────
+  // ── Retry logic (removed — failed cards are never retried) ────────────────
 
-  describe('retry_failed_cards: true', () => {
-    test('failed card is re-added to the deck when it is due today', () => {
-      const session = useFlashcardSession({ study_all_cards: true, retry_failed_cards: true })
-      // Cards with no review have no due date, so was_due_today is always true —
-      // no risk of faker.date.recent() returning yesterday's date in UTC.
-      const cards = [makeDueCard({ review: null }), makeDueCard({ review: null })]
-      session.setCards(cards)
+  test('failed cards are NOT retried regardless of due date', () => {
+    const session = useFlashcardSession({ study_all_cards: true })
+    const cards = [makeDueTodayCard(), makeDueTodayCard()]
+    session.setCards(cards)
 
-      const original_length = session.cards.value.length // 2
-      session.reviewCard(Rating.Again)
+    const original_length = session.cards.value.length
+    session.reviewCard(Rating.Again)
 
-      // One card was failed and due today — it should be appended as a retry
-      expect(session.cards.value.length).toBeGreaterThan(original_length)
-    })
-
-    test('failed card with a future due date is NOT retried', () => {
-      const session = useFlashcardSession({ study_all_cards: true, retry_failed_cards: true })
-      // Card with a future due date — retry is skipped
-      const cards = [makeNotDueCard(), makeNotDueCard()]
-      session.setCards(cards)
-
-      const original_length = session.cards.value.length
-      session.reviewCard(Rating.Again)
-
-      expect(session.cards.value.length).toBe(original_length)
-    })
-  })
-
-  describe('retry_failed_cards: false', () => {
-    test('failed cards are NOT retried', () => {
-      const session = useFlashcardSession({ study_all_cards: true, retry_failed_cards: false })
-      const cards = [makeDueTodayCard(), makeDueTodayCard()]
-      session.setCards(cards)
-
-      const original_length = session.cards.value.length
-      session.reviewCard(Rating.Again)
-
-      expect(session.cards.value.length).toBe(original_length)
-    })
+    expect(session.cards.value.length).toBe(original_length)
   })
 
   // ── Edge cases ─────────────────────────────────────────────────────────────

@@ -43,8 +43,8 @@ function onSessionFinished(
 <template>
   <mobile-sheet
     data-testid="study-session"
-    class="bg-brown-300 dark:bg-grey-800 rounded-t-8 sm:rounded-b-8"
-    theme="purple-500"
+    class="sm:max-w-170!"
+    :theme="deck?.cover_config?.bg_color ?? 'purple-500'"
     @close="onCloseButtonClicked"
   >
     <template #header-content>

@@ -5,8 +5,8 @@
   --bgx-fill: var(--color-brown-100);
   --bgx-opacity: 0.2;
 
-  --bgx-x: 0px;
-  --bgx-y: 0px;
+  --bgx-x: 50%;
+  --bgx-y: 50%;
 
   position: relative;
   isolation: isolate;

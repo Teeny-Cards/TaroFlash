@@ -74,7 +74,6 @@ type DeckStudyMode = 'flashcard' // extend as new modes are added
 type DeckConfig = {
   study_mode?: DeckStudyMode // which interaction model to use
   study_all_cards: boolean // bypass due filter
-  retry_failed_cards: boolean // re-queue Again-rated due cards
   shuffle?: boolean
   card_limit?: number | null // slice after filter; null = no limit
   flip_cards?: boolean // swap front/back starting side (flashcard mode)

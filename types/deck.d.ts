@@ -33,7 +33,6 @@ type DeckStudyMode = 'flashcard'
 type DeckConfig = {
   study_mode?: DeckStudyMode
   study_all_cards: boolean
-  retry_failed_cards: boolean
   shuffle?: boolean
   card_limit?: number | null
   flip_cards?: boolean
@@ -48,17 +47,12 @@ type DeckCoverPattern =
   | 'bank-note'
   | 'aztec'
   | 'endless-clouds'
-  | 'stars'
-  | 'leaf'
-  | 'dot-grid'
 
 type DeckCover = {
   bg_color?: MemberTheme
-  border_color?: MemberTheme
   border_size?: number
   pattern?: DeckCoverPattern
-  pattern_color?: MemberTheme
   pattern_size?: number
-  pattern_opacity?: number
   bg_image?: string
+  icon?: string
 }
