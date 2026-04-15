@@ -39,7 +39,10 @@ vi.mock('@/composables/use-shortcuts', () => ({
 vi.mock('@/sfx/bus', () => ({ emitSfx: mockEmitSfx }))
 
 vi.mock('@/api/cards', () => ({
-  fetchAllCardsByDeckId: mockFetchAllCardsByDeckId
+  fetchAllCardsByDeckId: mockFetchAllCardsByDeckId,
+  upsertCard: vi.fn().mockResolvedValue(undefined),
+  reserveCard: vi.fn().mockResolvedValue({ out_id: 1, out_rank: 1 }),
+  saveCard: vi.fn().mockResolvedValue(undefined)
 }))
 
 vi.mock('@/api/reviews', () => ({
@@ -53,8 +56,7 @@ vi.mock('@/api/reviews', () => ({
 const CardStub = defineComponent({
   props: {
     side: { type: String },
-    front_attributes: { default: null },
-    back_attributes: { default: null }
+    card_attributes: { default: null }
   },
   emits: ['flip-complete'],
   inheritAttrs: false,
