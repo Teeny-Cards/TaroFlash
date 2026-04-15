@@ -313,6 +313,99 @@ describe('StudyCard', () => {
 
   // ── snapBack on cancel ─────────────────────────────────────────────────────
 
+  // ── drag-progress event ────────────────────────────────────────────────────
+
+  test('onMove emits drag-progress with normalized |dx|/150 and duration 0', async () => {
+    const wrapper = mountStudyCard({ options })
+    await flushPromises()
+
+    const { callbacks } = getCallbacks()
+    callbacks.onMove({ dx: 75, dy: 0 })
+    await flushPromises()
+
+    const events = wrapper.emitted('drag-progress')
+    expect(events).toBeTruthy()
+    const last = events[events.length - 1]
+    expect(last[0]).toBeCloseTo(0.5, 5)
+    expect(last[1]).toBe(0)
+  })
+
+  test('onMove with |dx| beyond reveal distance caps progress at 1', async () => {
+    const wrapper = mountStudyCard({ options })
+    await flushPromises()
+
+    const { callbacks } = getCallbacks()
+    callbacks.onMove({ dx: 400, dy: 0 })
+    await flushPromises()
+
+    const events = wrapper.emitted('drag-progress')
+    const last = events[events.length - 1]
+    expect(last[0]).toBe(1)
+  })
+
+  test('onMove left drag emits progress based on absolute value', async () => {
+    const wrapper = mountStudyCard({ options })
+    await flushPromises()
+
+    const { callbacks } = getCallbacks()
+    callbacks.onMove({ dx: -75, dy: 0 })
+    await flushPromises()
+
+    const last = wrapper.emitted('drag-progress').at(-1)
+    expect(last[0]).toBeCloseTo(0.5, 5)
+  })
+
+  test('onCancel emits drag-progress with 0 and snap-back duration', async () => {
+    const wrapper = mountStudyCard({ options })
+    await flushPromises()
+
+    const { callbacks } = getCallbacks()
+    callbacks.onMove({ dx: 40, dy: 0 })
+    callbacks.onCancel()
+    await flushPromises()
+
+    const last = wrapper.emitted('drag-progress').at(-1)
+    expect(last[0]).toBe(0)
+    expect(last[1]).toBeGreaterThan(0)
+  })
+
+  test('rate() fling emits drag-progress with progress 1 and fling duration', async () => {
+    const wrapper = mountStudyCard({ side: 'back', options })
+    await flushPromises()
+
+    wrapper.vm.rate(Rating.Good)
+    await flushPromises()
+
+    const last = wrapper.emitted('drag-progress').at(-1)
+    expect(last[0]).toBe(1)
+    expect(last[1]).toBeGreaterThan(0)
+  })
+
+  test('onEnd below threshold (snap back) emits drag-progress 0', async () => {
+    const wrapper = mountStudyCard({ options })
+    await flushPromises()
+
+    const { callbacks } = getCallbacks()
+    callbacks.onMove({ dx: 20, dy: 0 })
+    callbacks.onEnd({ dx: 20, dy: 0 })
+    await flushPromises()
+
+    const last = wrapper.emitted('drag-progress').at(-1)
+    expect(last[0]).toBe(0)
+  })
+
+  test('onEnd above threshold (fling) emits drag-progress 1', async () => {
+    const wrapper = mountStudyCard({ side: 'back', options })
+    await flushPromises()
+
+    const { callbacks } = getCallbacks()
+    callbacks.onEnd({ dx: 80, dy: 0 })
+    await flushPromises()
+
+    const last = wrapper.emitted('drag-progress').at(-1)
+    expect(last[0]).toBe(1)
+  })
+
   test('onCancel resets card transform to empty string', async () => {
     mountStudyCard({ options })
     await flushPromises()
