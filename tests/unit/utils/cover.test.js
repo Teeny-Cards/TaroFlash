@@ -25,9 +25,10 @@ describe('coverBindings', () => {
     expect(result.class).toContain('bgx-wave')
   })
 
-  test('always sets fixed --bgx-fill and --bgx-opacity when pattern is set', () => {
-    const result = coverBindings({ pattern: 'wave' })
+  test('sets --bgx-fill and pattern-scaled --bgx-opacity when pattern is set', () => {
+    const result = coverBindings({ pattern: 'aztec' })
     expect(result.style['--bgx-fill']).toBe('var(--theme-neutral)')
+    // aztec has opacity scale 1 → baseline 0.2 * 1 = 0.2
     expect(result.style['--bgx-opacity']).toBe('0.2')
   })
 
