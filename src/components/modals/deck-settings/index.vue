@@ -91,6 +91,7 @@ async function onSave() {
               :cover_config="cover"
               :front_attributes="card_attributes.front"
               :back_attributes="card_attributes.back"
+              class="cursor-pointer"
               @click="cycleTab"
             />
           </div>

@@ -14,8 +14,7 @@ export function useDeckEditor(deck?: Deck) {
 
   const config = reactive<DeckConfig>(
     deck?.study_config ?? {
-      study_all_cards: false,
-      retry_failed_cards: true
+      study_all_cards: false
     }
   )
 
