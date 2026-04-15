@@ -12,8 +12,14 @@ const { mockSaveDeck } = vi.hoisted(() => ({
 vi.mock('@/composables/deck-editor', async () => {
   const { reactive } = await import('vue')
   return {
-    useDeckEditor: () => ({
+    useDeckEditor: (deck) => ({
       saveDeck: mockSaveDeck,
+      settings: reactive({
+        id: deck?.id,
+        title: deck?.title ?? '',
+        description: deck?.description ?? '',
+        is_public: deck?.is_public ?? true
+      }),
       cover: reactive({}),
       card_attributes: reactive({ front: {}, back: {} })
     })
