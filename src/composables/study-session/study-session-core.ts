@@ -134,7 +134,7 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
   function _setupCard(card: Card): StudyCard {
     const review = card.review ?? (createEmptyCard(new Date()) as Review)
     const preview = _FSRS_INSTANCE.repeat(review, new Date())
-    return { state: 'unreviewed', ...card, review, preview }
+    return { ...card, review, preview, state: 'unreviewed' }
   }
 
   function _markCurrentCardStudied(grade: Grade) {

@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import StudyCard from './study-card.vue'
+import StudyCardEdit from './study-card-edit.vue'
+import StudyCardSkeleton from './study-card-skeleton.vue'
+import StudyEditFooter from './study-edit-footer.vue'
 import RatingButtons from './rating-buttons.vue'
 import FinishAnimation from './finish-animation.vue'
+import UiButton from '@/components/ui-kit/button.vue'
+import UiIcon from '@/components/ui-kit/icon.vue'
 import { useFlashcardSession } from '@/composables/study-session/flashcard-session'
+import { useCardPreview } from '@/composables/study-session/card-preview'
+import { useCardEdit } from '@/composables/study-session/card-edit'
 import { useModalRequestClose } from '@/composables/modal'
 import { type Grade } from 'ts-fsrs'
-import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
+import { computed, onMounted, ref, useTemplateRef } from 'vue'
 import Card from '@/components/card/index.vue'
 import { fetchAllCardsByDeckId } from '@/api/cards'
 import { emitSfx } from '@/sfx/bus'
@@ -48,39 +55,25 @@ const {
   flipCurrentCard
 } = useFlashcardSession({ ...deck.study_config, ...config_override })
 
+const { next_card_side, preview_style, onDragProgress, onNextCardFlipped, awaitFlip } =
+  useCardPreview(next_card)
+
+const {
+  editing,
+  saving,
+  start: startEdit,
+  stop: stopEdit,
+  update: onEditUpdate
+} = useCardEdit(active_card)
+
 const study_card_ref = useTemplateRef('study-card')
 const loading = ref(true)
-const next_card_side = ref<'front' | 'back' | 'cover'>('cover')
-const preview_progress = ref(0)
-const preview_transition_duration = ref(0)
 
-const preview_style = computed(() => ({
-  opacity: preview_progress.value,
-  transform: `scale(${0.9 + 0.1 * preview_progress.value})`,
-  transition: preview_transition_duration.value
-    ? `opacity ${preview_transition_duration.value}s ease-out, transform ${preview_transition_duration.value}s ease-out`
-    : 'none'
-}))
-
-watch(
-  () => next_card.value?.id,
-  () => {
-    preview_progress.value = 0
-    preview_transition_duration.value = 0
-  }
-)
-
-function onDragProgress(progress: number, duration: number) {
-  preview_transition_duration.value = duration
-  preview_progress.value = progress
-}
-
-// One-shot promise resolver for the preview-card pre-flip animation.
-// Resolved either by the flip-complete event or by onUnmounted as a safety
-// fallback so the promise never leaks if the component is torn down mid-animation.
-let resolveFlip: (() => void) | null = null
-
-onUnmounted(() => resolveFlip?.())
+const card_view = computed<'skeleton' | 'edit' | 'read'>(() => {
+  if (loading.value) return 'skeleton'
+  if (editing.value) return 'edit'
+  return 'read'
+})
 
 onMounted(async () => {
   if (!deck.id) {
@@ -123,23 +116,12 @@ function onRated(grade: Grade) {
   study_card_ref.value?.rate(grade)
 }
 
-function onNextCardFlipped() {
-  resolveFlip?.()
-  resolveFlip = null
-}
-
 async function onCardReviewed(grade?: Grade) {
   if (!active_card.value?.id || mode.value !== 'studying') return
 
   if (next_card.value) {
-    next_card_side.value = config.flip_cards ? 'back' : 'front'
     emitSfx('ui.slide_up')
-
-    await new Promise<void>((resolve) => {
-      resolveFlip = resolve
-    })
-
-    next_card_side.value = 'cover'
+    await awaitFlip(config.flip_cards ? 'back' : 'front')
   }
 
   reviewCard(grade)
@@ -155,10 +137,18 @@ async function onCardReviewed(grade?: Grade) {
   >
     <div
       data-testid="study-session__counter"
-      class="text-brown-700 dark:text-brown-300 text-lg"
+      class="text-brown-700 dark:text-brown-300 text-lg flex items-center gap-1"
       :class="{ invisible: is_cover }"
     >
-      {{ current_index + 1 }}<span class="text-sm">/{{ cards.length }}</span>
+      <template v-if="editing">
+        <ui-icon :src="saving ? 'loading-dots' : 'check'" class="h-5 w-5" />
+        <span data-testid="study-session__save-status" class="text-sm">
+          {{ saving ? $t('common.saving') : $t('common.saved') }}
+        </span>
+      </template>
+      <template v-else>
+        {{ current_index + 1 }}<span class="text-sm">/{{ cards.length }}</span>
+      </template>
     </div>
 
     <div data-testid="study-card__container" class="relative flex items-center justify-center">
@@ -174,44 +164,62 @@ async function onCardReviewed(grade?: Grade) {
           :side="next_card_side"
           v-bind="next_card"
           :cover_config="deck.cover_config"
-          :front_attributes="deck.card_attributes?.front"
-          :back_attributes="deck.card_attributes?.back"
+          :card_attributes="deck.card_attributes"
           @flip-complete="onNextCardFlipped"
         />
       </div>
+
       <study-card
-        v-if="!loading"
+        v-if="card_view === 'read'"
         ref="study-card"
         :key="active_card?.id"
         :card="active_card"
         :side="current_card_side"
         :options="active_card?.preview"
-        :cover_config="deck.cover_config"
-        :front_attributes="deck.card_attributes?.front"
-        :back_attributes="deck.card_attributes?.back"
         @started="onStart"
         @side-changed="onSideChanged"
         @reviewed="onCardReviewed"
         @drag-progress="onDragProgress"
       />
-      <card
-        data-testid="study-card-skeleton"
-        side="cover"
-        :cover_config="deck.cover_config"
-        :front_attributes="deck.card_attributes?.front"
-        :back_attributes="deck.card_attributes?.back"
-        v-else
-        size="xl"
+      <study-card-edit
+        v-else-if="card_view === 'edit' && active_card"
+        :card="active_card"
+        :side="current_card_side === 'back' ? 'back' : 'front'"
+        @update="onEditUpdate"
       />
+      <study-card-skeleton v-else />
+
+      <ui-button
+        v-if="card_view === 'read' && !is_cover"
+        data-testid="study-session__edit"
+        class="absolute! -top-2 -right-2 z-20"
+        icon-only
+        rounded-full
+        size="lg"
+        inverted
+        icon-left="edit"
+        :sfx="{ click: 'ui.pop_window' }"
+        @click="startEdit"
+      >
+        {{ $t('study-session.edit.open') }}
+      </ui-button>
     </div>
 
     <rating-buttons
+      v-if="!editing"
       class="z-10 mt-4"
       :options="active_card?.preview"
       :side="current_card_side"
       @started="onStart"
       @rated="onRated"
       @revealed="onSideChanged"
+    />
+
+    <study-edit-footer
+      v-else
+      :is_starting_side="is_starting_side"
+      @flip="flipCurrentCard"
+      @done="stopEdit"
     />
   </div>
 

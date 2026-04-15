@@ -6,17 +6,17 @@ import { emitSfx } from '@/sfx/bus'
 import { useGestures } from '@/composables/use-gestures'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { useRatingFormat } from '@/utils/fsrs'
+import { useDeckContext } from './deck-context'
 
 defineExpose({ rate })
 
-const { card, side, options, cover_config, front_attributes, back_attributes } = defineProps<{
+const { card, side, options } = defineProps<{
   card?: Card
   side: 'front' | 'back' | 'cover'
   options?: RecordLog
-  cover_config?: DeckCover
-  front_attributes?: CardAttributes
-  back_attributes?: CardAttributes
 }>()
+
+const deck_context = useDeckContext()
 
 const emit = defineEmits<{
   (e: 'started'): void
@@ -165,9 +165,8 @@ function toSwipeZone(offset: number) {
       size="xl"
       v-bind="card"
       :side="side"
-      :cover_config="cover_config"
-      :front_attributes="front_attributes"
-      :back_attributes="back_attributes"
+      :cover_config="deck_context.cover_config"
+      :card_attributes="deck_context.card_attributes"
       @mouseup="triggerCardFlip"
     >
       <div class="absolute inset-0 overflow-hidden rounded-(--face-radius)">
