@@ -16,7 +16,7 @@ export function useStudyModal() {
     emitSfx('ui.slide_up')
 
     if (payload) {
-      const action = await _openSessionComplete(payload)
+      const action = await _openSessionComplete(payload, deck.cover_config?.bg_color)
       emitSfx('ui.slide_up')
 
       if (action === 'study-more') {
@@ -37,12 +37,10 @@ export function useStudyModal() {
     return result.response
   }
 
-  async function _openSessionComplete({
-    score,
-    total,
-    remaining_due,
-    study_all_used
-  }: StudySessionResponse) {
+  async function _openSessionComplete(
+    { score, total, remaining_due, study_all_used }: StudySessionResponse,
+    theme?: MemberTheme
+  ) {
     await new Promise((resolve) => setTimeout(resolve, 300))
 
     const secondary_action: SecondaryAction = study_all_used
@@ -55,7 +53,7 @@ export function useStudyModal() {
     const result = modal.open<SecondaryAction | undefined>(SessionComplete, {
       backdrop: true,
       mode: 'mobile-sheet',
-      props: { score, total, secondary_action }
+      props: { score, total, secondary_action, theme }
     })
 
     return result.response

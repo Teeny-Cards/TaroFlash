@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { emitSfx } from '@/sfx/bus'
+import { patternOpacity, patternSize } from '@/utils/cover'
 
 type PatternPickerProps = {
   pattern: DeckCoverPattern | undefined
   pattern_size: number | undefined
-  pattern_opacity: number | undefined
   bg_color: MemberTheme | undefined
 }
 
-const { pattern, pattern_size, pattern_opacity, bg_color } = defineProps<PatternPickerProps>()
+const { pattern, pattern_size, bg_color } = defineProps<PatternPickerProps>()
 
 const emit = defineEmits<{
   (e: 'select', pattern: DeckCoverPattern | undefined): void
@@ -20,16 +19,16 @@ const patterns: DeckCoverPattern[] = [
   'wave',
   'bank-note',
   'aztec',
-  'endless-clouds',
-  'leaf',
-  'dot-grid'
+  'endless-clouds'
 ]
 
-const swatchStyle = computed(() => ({
-  '--bgx-fill': 'var(--theme-neutral)',
-  '--bgx-opacity': String(pattern_opacity ?? 0.4),
-  ...(pattern_size ? { '--bgx-size': `${pattern_size}px` } : {})
-}))
+function swatchStyle(p: DeckCoverPattern): Record<string, string> {
+  return {
+    '--bgx-fill': 'var(--theme-neutral)',
+    '--bgx-opacity': patternOpacity(p, 1),
+    ...(pattern_size ? { '--bgx-size': patternSize(p, pattern_size) } : {})
+  }
+}
 
 function onPatternSelect(p: DeckCoverPattern | undefined) {
   if (p === pattern) {
@@ -50,7 +49,7 @@ function onPatternSelect(p: DeckCoverPattern | undefined) {
     :data-theme="bg_color ?? 'purple-500'"
     :data-selected="p === pattern || undefined"
     :class="`bgx-${p}`"
-    :style="{ ...swatchStyle }"
+    :style="swatchStyle(p)"
     class="w-full aspect-square rounded-2 cursor-pointer bg-(--theme-primary)"
     @click="onPatternSelect(p)"
   />

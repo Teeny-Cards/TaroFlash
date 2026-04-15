@@ -54,7 +54,7 @@ describe('CardCover', () => {
   test('applies no pattern class when pattern is unset', () => {
     const wrapper = mountCover({ bg_color: 'blue-500' })
     const classes = wrapper.find('[data-testid="card-cover"]').classes()
-    expect(classes.some((c) => c.startsWith('bgx-') && c !== 'bgx-(--theme-neutral)')).toBe(false)
+    expect(classes.some((c) => c.startsWith('bgx-'))).toBe(false)
   })
 
   test('applies bg_image as background-image style', () => {

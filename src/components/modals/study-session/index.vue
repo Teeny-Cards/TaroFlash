@@ -44,8 +44,7 @@ function onSessionFinished(
   <mobile-sheet
     data-testid="study-session"
     class="sm:max-w-170!"
-    theme="purple-500"
-    :cover_config="{ pattern: 'diagonal-stripes', pattern_size: 10 }"
+    :theme="deck?.cover_config?.bg_color ?? 'purple-500'"
     @close="onCloseButtonClicked"
   >
     <template #header-content>
