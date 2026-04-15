@@ -70,9 +70,14 @@ gh auth status
 Block and surface a warning if any of these are true:
 
 - Current branch is `master` or `main`.
-- `git status` shows uncommitted changes — ask the user to commit or stash first.
-- `master..HEAD` is empty. Nothing to prepare.
+- `master..HEAD` is empty **and** there are no staged changes. Nothing to prepare.
 - `gh` is not authenticated. The final step needs it; either authenticate now or agree to skip the auto-open at the end.
+
+**Handling uncommitted changes.** Inspect `git status --short`:
+
+- **Staged changes present** (`A`/`M`/`D`/`R` in column 1): commit them before continuing. Read the staged diff (`git diff --cached`), group by concern if multiple are mixed, and propose Conventional Commits messages. Wait for approval, then commit. Treat the new commits as part of the branch for the rest of the workflow.
+- **Unstaged changes present** (column 2 only — `M`/`D`/`?`): leave them alone. Do not `git add` them, do not stash, do not mention them as a blocker. They sit out of the PR by design.
+- **Mixed**: handle staged as above; ignore unstaged.
 
 Note the current upstream (`git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null`) so the push step can decide flags.
 
