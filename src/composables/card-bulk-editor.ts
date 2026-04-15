@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue'
 import { deleteCards as upstreamDeleteCards } from '@/api/cards'
-import CardRecord from '@/utils/card-record'
+import { reserveCard } from '@/api/cards'
+import { saveCard } from '@/api/cards'
 
 // TODO: Add error handling for all async functions
 
@@ -8,7 +9,7 @@ export type CardEditorMode = 'view' | 'select' | 'edit'
 export type CardBulkEditor = ReturnType<typeof useCardBulkEditor>
 
 export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
-  const all_cards = ref<CardRecord[]>(initial_cards.map((card) => new CardRecord(card)))
+  const all_cards = ref<Card[]>([...initial_cards])
   const deck_id = ref<number | undefined>(_deck_id)
   const selected_card_ids = ref<number[]>([])
   const mode = ref<CardEditorMode>('view')
@@ -19,10 +20,11 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
   })
 
   async function updateCard(id: number, values: Partial<Card>) {
-    const record = all_cards.value.find((card) => card.id === id)
+    const card = all_cards.value.find((c) => c.id === id)
+    if (!card) return
 
     saving.value = true
-    await record?.update(values)
+    await saveCard(card, values)
     saving.value = false
   }
 
@@ -68,14 +70,14 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
     )
 
     if (clean) {
-      return selected_cards.map(({ review: _review, ...rest }) => rest)
+      return selected_cards.map(({ review: _review, ...rest }) => rest as Card)
     }
 
     return selected_cards
   }
 
   function resetCards(cards: Card[], _deck_id?: number) {
-    all_cards.value = cards.map((card) => new CardRecord(card))
+    all_cards.value = [...cards]
     deck_id.value = _deck_id ?? deck_id.value
   }
 
@@ -109,14 +111,15 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
       left_card_id = last_card?.id
     }
 
-    const record = await CardRecord.reserve(deck_id.value!, left_card_id, right_card_id)
+    const { out_id, out_rank } = await reserveCard(deck_id.value!, left_card_id, right_card_id)
+    const new_card: Card = { id: out_id, rank: out_rank, deck_id: deck_id.value }
 
-    let index = all_cards.value.findIndex((card) => card.rank! > record.rank!)
+    let index = all_cards.value.findIndex((card) => card.rank! > new_card.rank!)
     if (index === -1) {
       index = all_cards.value.length // append at end
     }
 
-    all_cards.value.splice(index, 0, record)
+    all_cards.value.splice(index, 0, new_card)
   }
 
   async function deleteCards() {
