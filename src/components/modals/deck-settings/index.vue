@@ -66,9 +66,8 @@ async function onSave() {
 <template>
   <mobile-sheet
     data-testid="deck-settings-container"
-    fill-height
+    class="sm:max-w-200! sm:max-h-190"
     title="Deck Settings"
-    class="bg-brown-300 dark:bg-grey-800 rounded-t-8 sm:rounded-b-8"
     @close="close(false)"
   >
     <template #body>
@@ -91,6 +90,7 @@ async function onSave() {
               :cover_config="cover"
               :front_attributes="card_attributes.front"
               :back_attributes="card_attributes.back"
+              class="cursor-pointer"
               @click="cycleTab"
             />
           </div>

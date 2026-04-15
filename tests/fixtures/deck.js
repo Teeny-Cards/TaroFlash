@@ -19,8 +19,7 @@ export const deck = build({
     image_path: () => faker.image.url(),
     due_cards: () => [],
     study_config: () => ({
-      study_all_cards: false,
-      retry_failed_cards: true
+      study_all_cards: false
     })
   },
   traits: {

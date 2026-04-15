@@ -22,6 +22,7 @@ const emit = defineEmits<{
   (e: 'started'): void
   (e: 'side-changed'): void
   (e: 'reviewed', grade: Grade | undefined): void
+  (e: 'drag-progress', progress: number, duration: number): void
 }>()
 
 const { getRatingTimeFormat } = useRatingFormat()
@@ -29,6 +30,8 @@ const { getRatingTimeFormat } = useRatingFormat()
 const FLIP_THRESHOLD = 10
 const SWIPE_DISTANCE_THRESHOLD = 50
 const FLING_SPEED = 0.25
+const SNAP_BACK_SPEED = 0.15
+const FULL_REVEAL_DISTANCE = 150
 
 const card_ref = ref<InstanceType<typeof Card> | null>(null)
 const card_offset = ref<number>(0)
@@ -98,6 +101,7 @@ function flingCard(el: HTMLElement, direction: number) {
 
   el.style.transition = `transform ${FLING_SPEED}s ease-out`
   el.style.transform = `translateX(${targetX}px) rotate(${direction * 45}deg)`
+  emit('drag-progress', 1, FLING_SPEED)
 
   emitSfx(rating === Rating.Good ? 'ui.music_plink_ok' : 'ui.music_plink_locancel')
 
@@ -119,6 +123,7 @@ function handleDrag(el: HTMLElement, dx: number) {
   is_dragging.value = Math.abs(dx) > FLIP_THRESHOLD // prevents accidental flips on release, but allows for a bit of wiggle room
   card_offset.value = dx
   el.style.transform = `translateX(${dx}px) rotate(${dx / 10}deg)`
+  emit('drag-progress', Math.min(Math.abs(dx) / FULL_REVEAL_DISTANCE, 1), 0)
 }
 
 /**
@@ -134,13 +139,14 @@ function commitSwipe(el: HTMLElement, dx: number) {
 
 /** Animates the card back to its resting position and clears drag state. */
 function snapBack(el: HTMLElement) {
-  el.style.transition = 'transform 0.15s ease-out'
+  el.style.transition = `transform ${SNAP_BACK_SPEED}s ease-out`
   el.style.transform = ''
   card_offset.value = 0
+  emit('drag-progress', 0, SNAP_BACK_SPEED)
 
   setTimeout(() => {
     is_dragging.value = false
-  }, 150)
+  }, SNAP_BACK_SPEED * 1000)
 }
 
 /** Maps a drag offset to a swipe zone: 1 (pass), -1 (fail), 0 (neutral). */

@@ -64,12 +64,11 @@ describe('useDeckEditor', () => {
 
     test('initializes config from deck.study_config', () => {
       const deck = makeDeck({
-        study_config: { study_all_cards: true, retry_failed_cards: false }
+        study_config: { study_all_cards: true }
       })
       const { config } = useDeckEditor(deck)
 
       expect(config.study_all_cards).toBe(true)
-      expect(config.retry_failed_cards).toBe(false)
     })
 
     test('initializes config with defaults when deck has no study_config', () => {
@@ -77,7 +76,6 @@ describe('useDeckEditor', () => {
       const { config } = useDeckEditor(deck)
 
       expect(config.study_all_cards).toBe(false)
-      expect(config.retry_failed_cards).toBe(true)
     })
 
     test('initializes cover from deck.cover_config', () => {
@@ -100,7 +98,6 @@ describe('useDeckEditor', () => {
       expect(settings.id).toBeUndefined()
       expect(settings.title).toBeUndefined()
       expect(config.study_all_cards).toBe(false)
-      expect(config.retry_failed_cards).toBe(true)
       expect(cover).toEqual({})
     })
   })

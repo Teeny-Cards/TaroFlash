@@ -84,6 +84,7 @@ export function useModal() {
     }
 
     modal_stack.value.push(entry)
+    ;(document.activeElement as HTMLElement | null)?.blur()
 
     return {
       response,

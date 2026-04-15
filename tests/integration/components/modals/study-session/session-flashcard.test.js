@@ -424,6 +424,97 @@ describe('Session', () => {
     })
   })
 
+  // ── Preview card drag-driven animation ────────────────────────────────────
+
+  describe('preview card drag animation', () => {
+    test('preview wrapper starts hidden (opacity 0, scaled down) before drag', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+      await startSession(wrapper)
+
+      const preview = wrapper.find('[data-testid="study-card__preview"]')
+      expect(preview.exists()).toBe(true)
+      expect(preview.element.style.opacity).toBe('0')
+      expect(preview.element.style.transform).toContain('scale(0.9)')
+    })
+
+    test('dragging the active card increases preview opacity and scale', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+      await startSession(wrapper)
+
+      const drag = getDragCallbacks()
+      drag.callbacks.onMove({ dx: 75, dy: 0 })
+      await flushPromises()
+
+      const preview = wrapper.find('[data-testid="study-card__preview"]')
+      const opacity = parseFloat(preview.element.style.opacity)
+      expect(opacity).toBeGreaterThan(0)
+      expect(opacity).toBeLessThanOrEqual(1)
+      expect(preview.element.style.transform).toMatch(/scale\(/)
+    })
+
+    test('dragging fully (|dx| past reveal distance) reveals preview at full opacity and scale 1', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+      await startSession(wrapper)
+
+      const drag = getDragCallbacks()
+      drag.callbacks.onMove({ dx: 400, dy: 0 })
+      await flushPromises()
+
+      const preview = wrapper.find('[data-testid="study-card__preview"]')
+      expect(preview.element.style.opacity).toBe('1')
+      expect(preview.element.style.transform).toContain('scale(1)')
+    })
+
+    test('cancelling a drag (snap back) resets preview to hidden with a transition', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+      await startSession(wrapper)
+
+      const drag = getDragCallbacks()
+      drag.callbacks.onMove({ dx: 80, dy: 0 })
+      await flushPromises()
+      drag.callbacks.onCancel()
+      await flushPromises()
+
+      const preview = wrapper.find('[data-testid="study-card__preview"]')
+      expect(preview.element.style.opacity).toBe('0')
+      expect(preview.element.style.transition).toMatch(/opacity/)
+    })
+
+    test('active-drag updates apply no transition so preview follows the gesture 1:1', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+      await startSession(wrapper)
+
+      const drag = getDragCallbacks()
+      drag.callbacks.onMove({ dx: 50, dy: 0 })
+      await flushPromises()
+
+      const preview = wrapper.find('[data-testid="study-card__preview"]')
+      expect(preview.element.style.transition).toBe('none')
+    })
+
+    test('after a fling completes and the next card advances, preview resets to hidden', async () => {
+      const wrapper = makeSession(3)
+      await waitForLoad(wrapper)
+      await startSession(wrapper)
+
+      await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
+      await wrapper.find('[data-testid="rating-buttons__good"]').trigger('click')
+      await flushPromises()
+      fireTransitionEnd(wrapper)
+      await flushPromises()
+
+      const preview = wrapper.find('[data-testid="study-card__preview"]')
+      expect(preview.exists()).toBe(true)
+      expect(preview.element.style.opacity).toBe('0')
+      expect(preview.element.style.transform).toContain('scale(0.9)')
+    })
+  })
+
   // ── No deck id ─────────────────────────────────────────────────────────────
 
   test('emits closed immediately if deck has no id', async () => {

@@ -33,7 +33,6 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
   const config = reactive<Required<DeckConfig>>({
     study_mode: _config?.study_mode ?? 'flashcard',
     study_all_cards: _config?.study_all_cards ?? false,
-    retry_failed_cards: _config?.retry_failed_cards ?? false,
     shuffle: _config?.shuffle ?? false,
     card_limit: _config?.card_limit ?? null,
     flip_cards: _config?.flip_cards ?? false,
@@ -44,14 +43,12 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
   const _raw_cards = shallowRef<Card[]>([])
   const _cards_in_deck = shallowRef<StudyCard[]>([])
-  const _retry_cards = shallowRef<StudyCard[]>([])
 
   const mode = ref<'studying' | 'completed'>('studying')
   const active_card = shallowRef<StudyCard | undefined>(undefined)
 
   const cards = computed(() => {
-    if (!config.retry_failed_cards) return _cards_in_deck.value
-    return [..._cards_in_deck.value, ..._retry_cards.value]
+    return _cards_in_deck.value
   })
 
   const num_correct = computed(() => cards.value.filter((c) => c.state === 'passed').length)
@@ -76,7 +73,6 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
   function updateConfig(updates: Partial<DeckConfig>) {
     config.study_mode = updates.study_mode ?? config.study_mode
     config.study_all_cards = updates.study_all_cards ?? config.study_all_cards
-    config.retry_failed_cards = updates.retry_failed_cards ?? config.retry_failed_cards
     config.shuffle = updates.shuffle ?? config.shuffle
     config.card_limit = updates.card_limit ?? config.card_limit
     config.flip_cards = updates.flip_cards ?? config.flip_cards
@@ -100,7 +96,6 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
     }
 
     _cards_in_deck.value = filtered.map(_setupCard)
-    _retry_cards.value = []
     mode.value = 'studying'
     active_card.value = cards.value.find((c) => c.state === 'unreviewed')
 
@@ -122,10 +117,8 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
       const review = card.review ?? (createEmptyCard(new Date()) as Review)
       const item = _FSRS_INSTANCE.next(review, new Date(), grade)
 
-      // Capture due-today status before overwriting review state.
-      const was_due_today = _isDueToday(card.review?.due)
       card.review = item.card
-      _markCurrentCardStudied(grade, was_due_today)
+      _markCurrentCardStudied(grade)
 
       active_card.value = cards.value.find((c) => c.state === 'unreviewed')
       if (!active_card.value) mode.value = 'completed'
@@ -144,28 +137,11 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
     return { state: 'unreviewed', ...card, review, preview }
   }
 
-  function _markCurrentCardStudied(grade: Grade, was_due_today = false) {
+  function _markCurrentCardStudied(grade: Grade) {
     const card = active_card.value
     if (!card || !card.id) return
 
-    if (grade === Rating.Again) {
-      card.state = 'failed'
-      if (was_due_today) _retryCard(card)
-    } else {
-      card.state = 'passed'
-    }
-  }
-
-  function _retryCard(card: StudyCard) {
-    if (!config.retry_failed_cards) return
-    const retry_card = _setupCard(card)
-    _retry_cards.value = [..._retry_cards.value, retry_card]
-  }
-
-  function _isDueToday(due: Date | string | number | undefined): boolean {
-    if (!due) return true
-    const dt = due instanceof Date ? DateTime.fromJSDate(due) : DateTime.fromISO(String(due))
-    return dt.toLocal().hasSame(DateTime.local(), 'day')
+    card.state = grade === Rating.Again ? 'failed' : 'passed'
   }
 
   function _isCardDue(card: Card) {
