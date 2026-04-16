@@ -33,6 +33,20 @@ export async function fetchDeck(id: number): Promise<Deck> {
   return data
 }
 
+export async function fetchMemberDeckCount(): Promise<number> {
+  const { count, error } = await supabase
+    .from('decks')
+    .select('*', { count: 'exact', head: true })
+    .eq('member_id', useMemberStore().id)
+
+  if (error) {
+    logger.error(error.message)
+    throw error
+  }
+
+  return count ?? 0
+}
+
 export async function upsertDeck(deck: Deck): Promise<void> {
   deck.updated_at = DateTime.now().toISO()
   const { error } = await supabase.from('decks').upsert(deck, { onConflict: 'id' })
