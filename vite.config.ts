@@ -80,7 +80,6 @@ export default defineConfig({
         '**/main.ts',
         '**/supabase-client.ts',
         '**/router/**',
-        '**/src/api/**',
         '**/src/components/ui-kit/_index.ts',
         '**/types/**',
         '**/src/utils/logger.ts',

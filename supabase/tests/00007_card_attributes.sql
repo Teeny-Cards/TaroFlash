@@ -1,10 +1,10 @@
 -- =============================================================================
--- Tests for the card_defaults → card_attributes rename and the RPC projection
--- that exposes it to the dashboard.
+-- Tests for the card_defaults → card_attributes rename and the view
+-- projection that exposes it to the dashboard.
 --
 -- Covers:
 --   1. The column was renamed (old name gone, new name present).
---   2. get_member_decks_with_due_count returns card_attributes.
+--   2. decks_with_stats returns card_attributes.
 --   3. The projection survives round-tripping a nested {front,back} shape.
 -- =============================================================================
 
@@ -25,7 +25,7 @@ SELECT has_column(
 );
 
 
--- ── RPC: includes card_attributes in projection ───────────────────────────────
+-- ── View: includes card_attributes in projection ──────────────────────────────
 
 SELECT tests.create_user('33333333-3333-3333-3333-333333333333'::uuid, 'charlie_attrs');
 SELECT tests.set_claims('33333333-3333-3333-3333-333333333333'::uuid);
@@ -46,7 +46,7 @@ SET LOCAL role = 'authenticated';
 SELECT results_eq(
   $$
     SELECT card_attributes
-    FROM public.get_member_decks_with_due_count('33333333-3333-3333-3333-333333333333'::uuid)
+    FROM public.decks_with_stats
     WHERE id = 900
   $$,
   $$
@@ -57,7 +57,7 @@ SELECT results_eq(
       )
     )
   $$,
-  'get_member_decks_with_due_count returns the nested {front,back} card_attributes shape'
+  'decks_with_stats returns the nested {front,back} card_attributes shape'
 );
 
 -- Null card_attributes should surface as null (not crash the projection)
@@ -66,16 +66,17 @@ SET LOCAL role = 'postgres';
 INSERT INTO public.decks (id, title, is_public, card_attributes)
 VALUES (901, 'No Attrs', false, NULL);
 
+SELECT tests.set_claims('33333333-3333-3333-3333-333333333333'::uuid);
 SET LOCAL role = 'authenticated';
 
 SELECT results_eq(
   $$
     SELECT card_attributes IS NULL
-    FROM public.get_member_decks_with_due_count('33333333-3333-3333-3333-333333333333'::uuid)
+    FROM public.decks_with_stats
     WHERE id = 901
   $$,
   $$ VALUES (true) $$,
-  'RPC returns NULL card_attributes when the column is NULL'
+  'decks_with_stats returns NULL card_attributes when the column is NULL'
 );
 
 
