@@ -2,6 +2,7 @@ import { reactive, ref } from 'vue'
 import { deleteDeck as upstreamDeleteDeck } from '@/api/decks'
 import { uploadImage as uploadImageToStorage } from '@/api/media'
 import { useDeckActions } from '@/composables/deck/use-deck-actions'
+import { useMemberStore } from '@/stores/member'
 import type { ImageUploadPayload } from '@/components/image-uploader.vue'
 
 export function useDeckEditor(deck?: Deck) {
@@ -70,8 +71,11 @@ export function useDeckEditor(deck?: Deck) {
     cover_image_preview.value = payload.preview
     cover_image_loading.value = true
     try {
+      const member_id = useMemberStore().id
+      if (!member_id) throw new Error('Not authenticated')
       const deck_id = settings.id
-      const path = deck_id ? `covers/${deck_id}` : `covers/draft-${crypto.randomUUID()}`
+      const leaf = deck_id ? `covers/${deck_id}` : `covers/draft-${crypto.randomUUID()}`
+      const path = `${member_id}/${leaf}`
       const url = await uploadImageToStorage('decks', path, payload.file)
       cover.bg_image = url
       cover_image_preview.value = url
