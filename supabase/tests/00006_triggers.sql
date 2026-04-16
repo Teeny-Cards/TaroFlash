@@ -1,5 +1,5 @@
 -- =============================================================================
--- Trigger tests: set_member_id
+-- Trigger tests: set_member_id, dedupe_media_slot_on_insert
 --
 -- The update_deck_card_count trigger + decks.card_count column were removed
 -- in 20260416000002_drop-deck-card-count-column.sql — per-deck counts are
@@ -8,7 +8,7 @@
 
 BEGIN;
 
-SELECT plan(2);
+SELECT plan(5);
 
 -- ── Setup ─────────────────────────────────────────────────────────────────────
 
@@ -40,6 +40,72 @@ SELECT is(
   '11111111-1111-1111-1111-111111111111'::uuid,
   'set_member_id trigger stamps auth.uid() on card insert'
 );
+
+
+-- ── dedupe_media_slot_on_insert trigger ───────────────────────────────────────
+
+-- Setup: insert two media rows for the same (card_id, slot) back-to-back
+-- as the authenticated user (the set_member_id_on_media trigger needs
+-- auth.uid() to stamp member_id). The first should be soft-deleted by the
+-- dedupe trigger when the second row lands.
+SELECT tests.set_claims('11111111-1111-1111-1111-111111111111'::uuid);
+SET LOCAL role = 'authenticated';
+
+INSERT INTO public.media (card_id, slot, bucket, path)
+VALUES (1000, 'card_front'::public.media_slot, 'cards', 'first.png');
+
+INSERT INTO public.media (card_id, slot, bucket, path)
+VALUES (1000, 'card_front'::public.media_slot, 'cards', 'second.png');
+
+SET LOCAL role = 'postgres';
+
+-- Test 3: Exactly one active row remains per (card_id, slot)
+SELECT is(
+  (SELECT count(*) FROM public.media
+   WHERE card_id = 1000
+     AND slot = 'card_front'::public.media_slot
+     AND deleted_at IS NULL)::int,
+  1,
+  'exactly one active media row remains after second insert on same (card_id, slot)'
+);
+
+-- Test 4: Different slots are independent — inserting card_back doesn't
+-- touch card_front.
+SELECT tests.set_claims('11111111-1111-1111-1111-111111111111'::uuid);
+SET LOCAL role = 'authenticated';
+
+INSERT INTO public.media (card_id, slot, bucket, path)
+VALUES (1000, 'card_back'::public.media_slot, 'cards', 'back.png');
+
+SET LOCAL role = 'postgres';
+
+SELECT is(
+  (SELECT count(*) FROM public.media
+   WHERE card_id = 1000 AND deleted_at IS NULL)::int,
+  2,
+  'card_front and card_back are independent — no cross-slot dedupe'
+);
+
+-- Test 5: If the trigger is bypassed, the unique partial index catches the
+-- duplicate. Disable the trigger, then try to insert a second active row
+-- for the same (card_id, slot) — expect a unique-violation error (SQLSTATE 23505).
+ALTER TABLE public.media DISABLE TRIGGER trg_media_dedupe_slot;
+
+SELECT tests.set_claims('11111111-1111-1111-1111-111111111111'::uuid);
+SET LOCAL role = 'authenticated';
+
+SELECT throws_ok(
+  $$
+    INSERT INTO public.media (card_id, slot, bucket, path)
+    VALUES (1000, 'card_front'::public.media_slot, 'cards', 'bypass.png')
+  $$,
+  '23505',
+  NULL,
+  'unique partial index blocks a duplicate active row when the trigger is bypassed'
+);
+
+SET LOCAL role = 'postgres';
+ALTER TABLE public.media ENABLE TRIGGER trg_media_dedupe_slot;
 
 
 SELECT * FROM finish();

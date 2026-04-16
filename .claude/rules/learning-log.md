@@ -30,3 +30,44 @@ After each backend teaching session, list the key concepts covered as touchpoint
 | Nullable ADD COLUMN (zero-downtime)   | 7     |
 | View column snapshotting / recreation | 7     |
 | security_invoker vs security_definer  | 4     |
+
+### 2026-04-16 — decks_with_stats view, cards_with_images retrofit
+
+| Concept                                    | Score |
+| ------------------------------------------ | ----- |
+| Views as a unified read shape              | 3     |
+| security_invoker on views                  | 9     |
+| Correlated subqueries                      | 4     |
+| Views replacing trigger-maintained columns | 8     |
+| View column snapshotting (second exposure) | 8     |
+
+### 2026-04-16 — insert_card RPC, plpgsql, advisory locks
+
+| Concept                                     | Score |
+| ------------------------------------------- | ----- |
+| Plpgsql syntax fundamentals                 | 6     |
+| Function return types as part of signatures | 7     |
+| RETURNING ... INTO                          | 6     |
+| Variable/column disambiguation              | 3     |
+| Advisory locks                              | 6     |
+| Fractional ranks + BE-owned rank            | 3     |
+
+### 2026-04-16 — media slot-dedupe trigger + unique partial index
+
+| Concept                                      | Score |
+| -------------------------------------------- | ----- |
+| Trigger function vs trigger (two-part split) | 8     |
+| NEW / OLD / TG_OP record variables           | 8     |
+| BEFORE vs AFTER triggers                     | 8     |
+| SECURITY INVOKER on trigger functions        | 9     |
+| Partial unique indexes                       | 6     |
+| Trigger (behavior) vs index (invariant)      | 7     |
+
+### 2026-04-16 — storage bucket + storage.objects RLS
+
+| Concept                                               | Score |
+| ----------------------------------------------------- | ----- |
+| storage.buckets declarative config (config.toml)      | 5     |
+| storage.objects RLS with owner column                 | 9     |
+| UPSERT requires SELECT policy (ON CONFLICT DO UPDATE) | 2     |
+| storage.foldername + path-based member isolation      | 8     |
