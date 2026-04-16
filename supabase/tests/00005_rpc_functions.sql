@@ -1,10 +1,10 @@
 -- =============================================================================
--- RPC function tests: save_review, reserve_card, reorder_card
+-- RPC function tests: save_review, reserve_card, reorder_card, insert_card
 -- =============================================================================
 
 BEGIN;
 
-SELECT plan(8);
+SELECT plan(12);
 
 -- ── Setup ─────────────────────────────────────────────────────────────────────
 
@@ -121,6 +121,50 @@ SELECT throws_ok(
   $$,
   'Card not found or not owned by user',
   'Alice cannot reorder Bob''s card'
+);
+
+
+-- ── insert_card ───────────────────────────────────────────────────────────────
+-- Alice's deck 100 has cards at ranks 1000 and 2000 (ids 1000 and 1001).
+
+-- Test 9: Alice can insert a card bisecting two existing cards and gets
+-- a rank strictly between them.
+SELECT tests.set_claims('11111111-1111-1111-1111-111111111111'::uuid);
+SET LOCAL role = 'authenticated';
+
+SELECT public.insert_card(100, 1000, 1001, 'Bisect Q', 'Bisect A');
+
+SELECT ok(
+  (SELECT rank > 1000 AND rank < 2000 FROM public.cards WHERE front_text = 'Bisect Q'),
+  'insert_card bisects: rank is between the left and right neighbors'
+);
+
+-- Test 10: Appending with right_card_id = NULL gives a rank greater than
+-- the deck's current max.
+SELECT public.insert_card(100, 1001, NULL, 'Append Q', 'Append A');
+
+SELECT ok(
+  (SELECT rank > 2000 FROM public.cards WHERE front_text = 'Append Q'),
+  'insert_card appends when right neighbor is NULL: rank > max existing'
+);
+
+-- Test 11: Alice cannot insert a card into Bob's deck.
+SELECT throws_ok(
+  $$
+    SELECT public.insert_card(200, NULL, NULL, 'Sneaky Q', 'Sneaky A')
+  $$,
+  'Deck not found or not owned by user',
+  'Alice cannot insert a card into Bob''s deck'
+);
+
+-- Test 12: NULL front_text is coerced to empty string (COALESCE in function).
+SELECT public.insert_card(100, 1001, NULL, NULL, 'Only back');
+
+SET LOCAL role = 'postgres';
+SELECT is(
+  (SELECT front_text FROM public.cards WHERE back_text = 'Only back'),
+  '',
+  'insert_card coerces NULL front_text to empty string'
 );
 
 
