@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-13T21:03:32-07:00
+---
+
 # Theming Convention
 
 Colors are applied via the `data-theme` attribute, which scopes a set of semantic CSS variables defined in `src/styles/palettes.css`. Never use raw hex values or hardcoded color utilities — always go through the theme token layer.

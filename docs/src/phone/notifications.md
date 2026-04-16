@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T11:56:41-07:00
+---
+
 # Notifications
 
 TaroPhone has a lightweight badge notification system. Any app can push a count to the phone icon — the small red dot visible when the phone is closed.

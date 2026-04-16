@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T11:56:41-07:00
+---
+
 # Context & Injection
 
 TaroPhone exposes a single Vue injection key — `'app-context'` — that gives any component inside the phone access to navigation, translation, and the current app's controller, without threading props through the component tree.

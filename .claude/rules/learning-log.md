@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-16T15:26:08-07:00
+---
+
 # Backend Learning Log
 
 After each backend teaching session, list the key concepts covered as touchpoints (e.g., "RLS policies", "transactions", "JWT claims") so the user has prompts to react to rather than recalling from scratch. Let them reflect on what clicked and what didn't, and note any follow-up questions they ask — those are strong signals of understanding depth. Based on their reflection, their questions throughout the session, and your knowledge of the topic's actual depth, estimate their understanding of each concept on a scale of 1-100.

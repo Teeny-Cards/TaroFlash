@@ -1,4 +1,8 @@
 ---
+lastUpdated: 2026-04-11T11:26:28-07:00
+---
+
+---
 title: Properly Handle Async Updates with nextTick and flushPromises
 paths:
   - 'tests/**/*'

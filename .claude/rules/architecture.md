@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-15T10:47:25-07:00
+---
+
 # Architecture Conventions
 
 ## Component composition over code merging

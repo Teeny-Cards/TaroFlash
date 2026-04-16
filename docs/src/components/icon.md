@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-13T21:03:32-07:00
+---
+
 # Icon
 
 `ui-icon` is an SVG wrapper. It accepts a filename from `src/assets/icons` and renders the corresponding icon as an inline Vue component.

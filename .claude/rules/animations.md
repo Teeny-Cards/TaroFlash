@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T11:56:41-07:00
+---
+
 # Animation Sequencing
 
 Never use `setTimeout(resolve, N)` to wait for an animation to finish. Instead, emit an event from the animation's completion callback and resolve the promise from that handler.

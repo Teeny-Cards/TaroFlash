@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T12:16:07-07:00
+---
+
 # Stacking
 
 Multiple modals can be open at the same time. Each `open()` call pushes a new entry onto the stack and renders it on top of everything below it.

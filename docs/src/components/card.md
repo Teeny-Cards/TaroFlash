@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T12:40:50-07:00
+---
+
 # Card
 
 `ui-card` is a simple content wrapper with a fixed aspect ratio and border radius.

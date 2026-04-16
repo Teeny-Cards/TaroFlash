@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T12:16:07-07:00
+---
+
 # Context Injection
 
 Pass arbitrary data into a modal's Vue subtree using the `context` option. Any component rendered inside the modal — at any depth — can inject it.

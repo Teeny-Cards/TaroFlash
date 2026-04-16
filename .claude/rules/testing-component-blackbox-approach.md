@@ -1,4 +1,8 @@
 ---
+lastUpdated: 2026-04-11T11:26:28-07:00
+---
+
+---
 title: Test Components Using Blackbox Approach - Focus on Behavior Not Implementation
 paths:
   - 'tests/**/*'
