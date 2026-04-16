@@ -1,4 +1,5 @@
 ---
+lastUpdated: 2026-04-16T23:13:06Z
 paths:
   - 'supabase/**/*'
   - 'src/api/**/*'

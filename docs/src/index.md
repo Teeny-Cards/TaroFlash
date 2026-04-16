@@ -1,5 +1,6 @@
 ---
 layout: home
+lastUpdated: 2026-04-12T21:18:55-07:00
 
 hero:
   name: 'TaroFlash Docs'

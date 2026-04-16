@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T12:40:50-07:00
+---
+
 # Modal System
 
 The modal system is a composable-first, stack-based overlay layer. Any component in the app can open a modal, receive a typed response when it closes, and stack multiple modals on top of each other — all without managing visibility state manually.

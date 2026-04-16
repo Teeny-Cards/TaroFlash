@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-13T21:03:32-07:00
+---
+
 # Image
 
 `ui-image` resolves and renders an image from `src/assets/images/` by filename. It supports both raster (PNG, JPEG) and SVG formats, and uses an eager/lazy loading strategy to balance bundle size with perceived performance.

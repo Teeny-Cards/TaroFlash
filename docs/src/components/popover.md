@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-13T21:03:32-07:00
+---
+
 # Popover
 
 `ui-popover` positions floating content relative to a trigger element using [Floating UI](https://floating-ui.com/). It supports click and hover modes, a smart arrow, and a customisable arrow slot.

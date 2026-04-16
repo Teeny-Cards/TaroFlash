@@ -1,106 +1,146 @@
 ---
 name: update-docs
-description: Analyse branch changes in `src/` and `supabase/` and update docs in `docs/` to reflect them — surfacing concerns, questions, and inconsistencies before writing
+description: Bring `docs/` up to date with all code changes since the last docs sync — driven by `docs/.last-updated.json`, not branch diffs
 allowed-tools: Read, Edit, Write, Bash, Glob, Grep
+lastUpdated: 2026-04-16T23:13:06Z
 ---
+
+## Model
+
+`docs/.last-updated.json` holds a single ISO timestamp representing **when the docs were last brought in sync with code**. Every run of this skill does three things:
+
+1. Finds every `src/` and `supabase/` change since that timestamp.
+2. Updates whichever doc pages need it.
+3. Advances the timestamp (and the `lastUpdated` frontmatter on each edited page) to the current time.
+
+This is a continuous catch-up model — not a per-branch one. Run it on master, or on a branch about to merge.
 
 ## Workflow
 
-### Step 1 — Identify changed source files
+### Step 1 — Load the sync anchor
 
-Before running the following commands, make sure the master branch is up to date (don't checkout master, just fetch updates): `git fetch origin master`
+```sh
+git fetch origin master
+TS=$(jq -r .lastUpdated docs/.last-updated.json)
+echo "Last sync: $TS"
+```
 
-Run the following two commands to capture all changes, whether committed or not:
+If `docs/.last-updated.json` is missing, stop and ask the user — don't silently recreate it.
 
-1. **Committed changes** (branch commits vs master):
-   `git diff master...HEAD --name-only -- src/ supabase/`
+### Step 2 — Enumerate changed source files
 
-2. **Uncommitted changes** (staged or unstaged working tree changes):
-   `git status --short -- src/ supabase/`
+Committed changes since the anchor:
 
-Combine both lists, deduplicating as needed. This is necessary because branches sometimes have only uncommitted/staged changes with no commits yet.
+```sh
+git log --since="$TS" --name-only --pretty=format: -- src/ supabase/ | sort -u | sed '/^$/d'
+```
 
-Filter out:
+Uncommitted working-tree changes (so in-progress work is covered too):
 
-- Test files (`tests/`)
-- Config and fixture files (`*.config.*`)
-- Non-source files (`*.md`, `*.json`, `*.lock`, `*.css`) — unless a `.md` is in `docs/`
+```sh
+git status --short -- src/ supabase/
+```
 
-You are left with the **source files to analyse**.
+Combine both lists and filter out:
 
-### Step 2 — Understand each change
+- Test files (`tests/`, `*.test.*`, `*.spec.*`)
+- Config / fixture files (`*.config.*`, `*.json`, `*.lock`)
+- Non-source assets (`*.css`, images, fonts) — unless the change is genuinely user-visible
+- `.md` files outside `docs/`
 
-For each source file:
+What remains is the **source set to analyse**. If it's empty, report "docs are already in sync since `$TS`" and stop — do not bump the timestamp.
 
-1. Diff it to understand exactly what changed:
-   - Committed: `git diff master...HEAD -- <file>`
-   - Uncommitted staged: `git diff HEAD -- <file>`
-   - Uncommitted unstaged: `git diff -- <file>`
-   - If nothing is returned (newly untracked file), read it directly.
+### Step 3 — Understand each change
+
+For each file in the source set:
+
+1. Diff from just before the anchor to HEAD, plus any working-tree changes:
+   - Find the commit that introduced the oldest in-window change: `git log --since="$TS" --reverse --pretty=format:%H -- <file> | head -1`
+   - Diff from its parent to HEAD: `git diff <that-sha>^..HEAD -- <file>`
+   - Plus uncommitted: `git diff HEAD -- <file>` and `git diff -- <file>`
+   - For a brand-new, never-committed file, just read it.
 
 2. Read the full file for context.
 
-3. Identify what changed that has documentation implications:
-   - New props, emits, slots, or composable parameters added or removed
-   - Renamed APIs or changed signatures
-   - New behaviours or modes
-   - Removed or deprecated functionality
-   - Changes to default values
-   - Meaningful internal restructuring that users might reason about
-   - New or changed database tables, columns, RLS policies, RPC functions, or triggers
+3. Identify what changed with documentation implications:
+   - New / removed / renamed props, emits, slots, composable parameters, return values
+   - Changed function signatures or default values
+   - New behaviours, modes, or public surface
+   - Database: new tables, columns, RLS policies, RPC functions, triggers
    - New or changed edge functions
 
-### Step 3 — Locate existing docs
+### Step 4 — Locate existing docs
 
-1. Check `docs/src/` for documentation files related to the changed source. Common mappings:
-   - `src/components/foo/bar.vue` → `docs/src/components/bar.md` or `docs/src/components/foo/bar.md`
-   - `src/composables/use-foo.ts` → may be documented in a system overview page under `docs/src/`
+1. Map source to docs under `docs/src/`. Common patterns:
+   - `src/components/foo/bar.vue` → `docs/src/components/bar.md` (or `.../foo/bar.md`)
+   - `src/composables/use-foo.ts` → usually part of a system overview page
+   - `supabase/migrations/*` → typically reflected in `docs/src/supabase/*`
 
-2. Read the existing docs so you understand what's already written.
+2. Read the existing docs so you understand the current baseline.
 
-3. Check `docs/.vitepress/config.ts` to understand the sidebar structure and whether a new page needs to be registered.
+3. Check `docs/.vitepress/config.ts` for sidebar structure and whether a new page needs registering.
 
-4. **If no doc file exists at all** for a changed source file, treat this as an opportunity to write a full documentation entry for it — not just the changed surface area. Cover the overview, all public props/emits/slots/return values, usage examples, and any notable behaviours. Note this in the Step 6 report as "new doc page (full coverage)".
+4. **No doc page exists?** Treat it as an opportunity to write full coverage — overview, all public API, usage examples, notable behaviours. Flag this as `new doc page (full coverage)` in Step 5.
 
-### Step 4 — Surface concerns before writing
+### Step 5 — Surface concerns before writing
 
-**Do not write any documentation yet.** Present a brief checkpoint to the user. Keep it short — only flag items that genuinely need input.
+**Do not write any documentation yet.** Present a short checkpoint to the user:
 
-1. **Plan** — One bullet per doc change you intend to make (`file → what`). No elaboration needed for straightforward updates.
+1. **Plan** — One bullet per doc change (`file → what`). No elaboration for straightforward updates.
+2. **Blockers** (only if any) — Questions you cannot resolve from the code alone. Max 3. Omit section if none.
+3. **Heads-up** (only if any) — Possible doc/code mismatches or suspected bugs. One line each.
 
-2. **Blockers** (only if any) — Questions you _cannot resolve from the code alone_. Max 3. Skip this section entirely if there are none. Don't ask about things you can infer.
+**Wait for the user** before proceeding.
 
-3. **Heads-up** (only if any) — Possible bugs or doc/code mismatches worth mentioning. One line each.
+### Step 6 — Write the documentation
 
-**Wait for the user to respond** before proceeding to Step 5.
+Once the user gives the go-ahead:
 
-### Step 5 — Write the documentation
+1. Edit the relevant `.md` files in `docs/src/`:
+   - Match the existing style, tone, and section structure
+   - Short, realistic code examples; no filler
+   - Document public behaviour, not internal implementation
 
-Once the user has reviewed the concerns in Step 4 and given the go-ahead:
-
-1. For each change that needs a doc update:
-   - Edit the relevant `.md` file(s) in `docs/src/`
-   - Match the existing style, tone, and structure of the surrounding docs
-   - Use code examples where appropriate — prefer short, realistic snippets
-
-2. If a new page is needed:
-   - Create the file at the appropriate path under `docs/src/`
+2. For any new page:
+   - Create it under `docs/src/` at the appropriate path
+   - Include the `lastUpdated:` frontmatter field (Step 7 will set it)
    - Register it in the sidebar in `docs/.vitepress/config.ts`
 
-3. Do not add filler, padding, or sections that aren't backed by actual source behaviour. Document what exists, not what might exist.
+3. **Check `README.md`** — if a rename, new major system, or broken link is now visible from the top level, update it. Keep it "book cover" level; detail belongs in `docs/`.
 
-4. Do not document internal implementation details that are not part of the public API.
+### Step 7 — Stamp timestamps
 
-5. **Check whether `README.md` needs updating.** After updating the docs, consider whether anything in the root `README.md` is affected — for example, a renamed directory, a new major system that belongs in the project structure map, or a link that now points to the wrong place. If so, update it as part of this step. Keep README changes minimal and "book cover" level — deep detail belongs in the docs, not the README.
+Compute the new timestamp once:
 
-### Step 6 — Report
+```sh
+NEW_TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+```
 
-Output a short summary:
+For **each doc page edited or created**, set frontmatter `lastUpdated: $NEW_TS`.
+
+- If the file already has frontmatter, update the `lastUpdated:` line.
+- If it has no frontmatter, prepend:
+
+  ```
+  ---
+  lastUpdated: <NEW_TS>
+  ---
+  ```
+
+Then write the same value to the global file:
+
+```sh
+printf '{\n  "lastUpdated": "%s"\n}\n' "$NEW_TS" > docs/.last-updated.json
+```
+
+Only bump the global if at least one doc page was actually edited or created in Step 6. A run that produces no doc changes must not advance the anchor.
+
+### Step 8 — Report
 
 | Source file changed | Doc file updated | What changed |
 | ------------------- | ---------------- | ------------ |
 | ...                 | ...              | ...          |
 
-If any changed source file was skipped (no public API changed, already accurately documented, or out of scope), explain why in one line.
-
-Include a **Deferred items** section for anything raised in Step 4 that was not resolved, so it's not forgotten.
+- One line per skipped source file (and why) — "no public API changed", "already accurately documented", "out of scope".
+- **Deferred items** section for anything raised in Step 5 that wasn't resolved, so it's not lost.
+- State the new anchor: `docs synced up to <NEW_TS>`.

@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-13T21:03:32-07:00
+---
+
 # Slider
 
 `ui-slider` is a horizontal drag slider that exposes a 0–100 percentage value via `v-model`. It works with both mouse and touch input.

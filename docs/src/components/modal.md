@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T12:40:50-07:00
+---
+
 # Modal
 
 Open any component as a modal and get a typed response back — no visibility state needed.

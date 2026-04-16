@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T11:56:41-07:00
+---
+
 # Vue Props Convention
 
 Define props with a named type alias and destructure defaults inline — never use `withDefaults`.
