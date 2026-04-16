@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useStorage } from '@/composables/use-storage'
+import storage from '@/utils/storage'
 import { onMounted } from 'vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiTooltip from '@/components/ui-kit/tooltip.vue'
@@ -20,7 +20,6 @@ const emit = defineEmits<{
 }>()
 
 const active_tab = defineModel<number>('activeTab')
-const storage = useStorage()
 
 onMounted(() => {
   if (!storageKey) return

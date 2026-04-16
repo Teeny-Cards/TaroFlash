@@ -83,7 +83,7 @@ wrapper.findAllComponents({ name: 'UiIcon' }).some((c) => c.props('src') === 'ch
 
 Use `mimicry-js` + `faker-js` factory builders for test data, in a separate `fixtures.js` file.
 
-- **Single test file** → colocate `fixtures.js` in a subdirectory named after the subject (e.g. `tests/unit/use-theme/fixtures.js`)
+- **Single test file** → colocate `fixtures.js` in a subdirectory named after the subject (e.g. `tests/unit/stores/theme/fixtures.js`)
 - **Shared across tests** → add to `tests/fixtures/[subject].js`
 
 ## Composable singleton state
@@ -92,17 +92,17 @@ Some composables hold `ref`/`reactive` at **module scope** — these persist bet
 
 ```js
 beforeEach(() => {
-  useTheme().setMode('system') // resets module-level ref
+  useToast().clear() // resets module-level ref
 })
 ```
 
-If no setter exists, fall back to `vi.resetModules()`.
+If no setter exists, fall back to `vi.resetModules()`. For Pinia stores, call `setActivePinia(createPinia())` in `beforeEach` to get a fresh store instance instead.
 
 # Running Tests
 
 ```bash
 vp test                                        # full suite
-vp test tests/unit/use-theme.test.js           # single file
+vp test tests/unit/stores/theme.test.js        # single file
 ```
 
 # Guidelines
