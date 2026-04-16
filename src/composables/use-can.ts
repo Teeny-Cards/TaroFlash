@@ -1,4 +1,5 @@
 import { useMemberStore } from '@/stores/member'
+import { PLANS } from '@/config/plans'
 
 /**
  * Capability checks for the current member.
@@ -28,6 +29,10 @@ export function useCan() {
   const _isAdmin = () => member.role === 'admin'
 
   return {
-    useProFeature: isPaid // this is an example
+    useProFeature: isPaid, // this is an example
+    createDeck: (currentDeckCount: number) => {
+      const limit = PLANS[member.plan ?? 'free'].deckLimit
+      return limit === null || currentDeckCount < limit
+    }
   }
 }
