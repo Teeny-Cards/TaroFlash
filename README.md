@@ -23,7 +23,7 @@ vp test          # run tests with coverage
 vp check         # format + lint + type-check
 ```
 
-Local Supabase runs on port 54321 (API) and 54322 (Postgres). Start it with `supabase start`, then seed storage buckets with `supabase seed buckets --local`. See [Supabase setup](docs/src/supabase/index.md) for details.
+Local Supabase runs on port 54321 (API) and 54322 (Postgres). Start it with `supabase start` and apply migrations with `supabase migration up`. See [Supabase setup](docs/src/supabase/index.md) for details.
 
 ---
 
