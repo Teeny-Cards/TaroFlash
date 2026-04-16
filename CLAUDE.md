@@ -2,7 +2,7 @@
 
 - If the locally checked out branch is 'master', checkout a new branch before starting any work.
 - Always use translation strings (e.g., `t('deck.settings-modal.title')`) instead of hardcoded text. If the string is not already in `locales/en-us.json`, add it.
-- IMPORTANT: When writing code (migrations, functions, etc.) in `supabase/`, always explain what you're doing like a teacher teaching a student. Keep explanations concise and simple but with necessary context. Use frontend analogies where possible (e.g., "triggers are like watch/useEffect", "RLS is like route guards but at the data layer"). Stop and let me ask questions along the way.
+- IMPORTANT: When writing code (migrations, functions, etc.) in `supabase/`, always explain what you're doing like a teacher teaching a student. Keep explanations concise and simple but with necessary context. Stop and let me ask questions along the way.
 - After a backend teaching session, ask the user to rate their understanding of the main concepts covered on a scale of 1-10. Record the results in `.claude/rules/learning-log.md`.
 - Confirm this file has been loaded by printing a message to the console on startup.
 - NEVER call `supabase db reset` always use `supabase migrations up` to apply migrations.
