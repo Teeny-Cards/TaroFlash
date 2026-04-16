@@ -150,6 +150,9 @@
   "dashboard.all": "All Decks",
   "dashboard.create-deck": "Make a New Deck",
 
+  "errors.deck-limit-reached.title": "Deck limit reached",
+  "errors.deck-limit-reached.message": "You've reached your plan's deck limit. Upgrade to create more.",
+
   "deck.description-placeholder": "Add a short description to your deck.",
   "deck.title-placeholder": "Deck Name",
   "deck.settings-modal.title": "Deck Configuration",

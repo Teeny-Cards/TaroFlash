@@ -1,6 +1,7 @@
 import { reactive, ref } from 'vue'
-import { deleteDeck as upstreamDeleteDeck, upsertDeck } from '@/api/decks'
+import { deleteDeck as upstreamDeleteDeck } from '@/api/decks'
 import { uploadImage as uploadImageToStorage } from '@/api/media'
+import { useDeckActions } from '@/composables/deck/use-deck-actions'
 import type { ImageUploadPayload } from '@/components/image-uploader.vue'
 
 export function useDeckEditor(deck?: Deck) {
@@ -30,8 +31,10 @@ export function useDeckEditor(deck?: Deck) {
   const cover_image_preview = ref<string | undefined>(deck?.cover_config?.bg_image)
   const cover_image_loading = ref(false)
 
-  async function saveDeck() {
-    await upsertDeck({
+  const deck_actions = useDeckActions()
+
+  async function saveDeck(): Promise<boolean> {
+    const payload: Deck = {
       ...settings,
       study_config: { ...config },
       cover_config: { ...cover },
@@ -39,7 +42,10 @@ export function useDeckEditor(deck?: Deck) {
         front: { ...card_attributes.front },
         back: { ...card_attributes.back }
       }
-    })
+    }
+    return settings.id
+      ? await deck_actions.updateDeck(payload)
+      : await deck_actions.createDeck(payload)
   }
 
   async function deleteDeck() {

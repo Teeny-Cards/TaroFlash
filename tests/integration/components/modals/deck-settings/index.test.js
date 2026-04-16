@@ -6,7 +6,7 @@ import DeckSettings from '@/components/modals/deck-settings/index.vue'
 // ── Hoisted mocks ──────────────────────────────────────────────────────────────
 
 const { mockSaveDeck } = vi.hoisted(() => ({
-  mockSaveDeck: vi.fn().mockResolvedValue(undefined)
+  mockSaveDeck: vi.fn().mockResolvedValue(true)
 }))
 
 vi.mock('@/composables/deck-editor', async () => {
@@ -97,7 +97,7 @@ function makeDeck(overrides = {}) {
 describe('DeckSettings', () => {
   beforeEach(() => {
     mockSaveDeck.mockClear()
-    mockSaveDeck.mockResolvedValue(undefined)
+    mockSaveDeck.mockResolvedValue(true)
   })
 
   // ── Structure ──────────────────────────────────────────────────────────────
@@ -158,6 +158,18 @@ describe('DeckSettings', () => {
     await flushPromises()
     expect(mockSaveDeck).toHaveBeenCalledOnce()
     expect(close).toHaveBeenCalledWith(true)
+  })
+
+  test('save button does not close the modal when saveDeck returns false', async () => {
+    mockSaveDeck.mockResolvedValueOnce(false)
+    const close = vi.fn()
+    const wrapper = makeDeckSettings({ deck: makeDeck(), close })
+    await wrapper
+      .find('[data-testid="deck-settings__footer"] [data-testid="ui-button-stub"]')
+      .trigger('click')
+    await flushPromises()
+    expect(mockSaveDeck).toHaveBeenCalledOnce()
+    expect(close).not.toHaveBeenCalled()
   })
 
   // ── Close behaviour ────────────────────────────────────────────────────────

@@ -54,8 +54,8 @@ function cycleTab() {
 }
 
 async function onSave() {
-  await saveDeck()
-  close(true)
+  const saved = await saveDeck()
+  if (saved) close(true)
 }
 </script>
 
