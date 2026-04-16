@@ -1,13 +1,11 @@
+import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { useStorage } from '@/composables/use-storage'
 import { useMediaQuery } from '@/composables/use-media-query'
+import storage from '@/utils/storage'
 
 export type ThemeMode = 'light' | 'dark' | 'system'
 const STORAGE_KEY = 'app-theme'
-const mode = ref<ThemeMode>('system')
 
-// Module-level MQL so we can resolve 'system' → 'dark'|'light' without component context.
-// data-theme is always kept explicitly set on the root — CSS never needs a media-query fallback.
 const system_mql = window.matchMedia('(prefers-color-scheme: dark)')
 
 function applyToDOM(next: ThemeMode) {
@@ -15,13 +13,13 @@ function applyToDOM(next: ThemeMode) {
   document.documentElement.setAttribute('data-theme', resolved)
 }
 
-// When the OS preference flips while the app is in system mode, keep the attribute in sync.
 system_mql.addEventListener('change', () => {
-  if (mode.value === 'system') applyToDOM('system')
+  const store = useThemeStore()
+  if (store.mode === 'system') applyToDOM('system')
 })
 
-export function useTheme() {
-  const storage = useStorage()
+export const useThemeStore = defineStore('theme', () => {
+  const mode = ref<ThemeMode>('system')
   const is_system_dark = useMediaQuery('dark')
 
   const is_dark = computed(() => {
@@ -48,4 +46,4 @@ export function useTheme() {
   }
 
   return { mode, is_dark, setMode, cycle, load }
-}
+})

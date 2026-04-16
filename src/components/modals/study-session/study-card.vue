@@ -5,7 +5,7 @@ import { type Grade, Rating, type RecordLog } from 'ts-fsrs'
 import { emitSfx } from '@/sfx/bus'
 import { useGestures } from '@/composables/use-gestures'
 import { useShortcuts } from '@/composables/use-shortcuts'
-import { useRatingFormat } from '@/utils/fsrs'
+import { useRatingFormat } from '@/composables/use-fsrs'
 import { useDeckContext } from './deck-context'
 
 defineExpose({ rate })

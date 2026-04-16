@@ -2,7 +2,8 @@
 import Loader from './loader.vue'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { emitSfx } from '@/sfx/bus'
-import { useTheme } from '@/composables/use-theme'
+import { useThemeStore } from '@/stores/theme'
+import { storeToRefs } from 'pinia'
 
 type LoaderSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl'
 export type LoaderPhase = 'loading' | 'finishing' | 'done'
@@ -38,7 +39,7 @@ const emit = defineEmits<{
   (e: 'finish'): void
 }>()
 
-const { is_dark } = useTheme()
+const { is_dark } = storeToRefs(useThemeStore())
 
 const phase = ref<LoaderPhase>(!loading && immediate ? 'done' : 'loading')
 

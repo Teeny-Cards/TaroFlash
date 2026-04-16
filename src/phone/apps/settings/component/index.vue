@@ -5,7 +5,7 @@ import MemberSettings from './member-settings.vue'
 import { ref, onMounted } from 'vue'
 import SettingsHeader from './settings-header.vue'
 import type { AppProps, AppEmits } from '@/phone/system/types'
-import { useStorage } from '@/composables/use-storage'
+import storage from '@/utils/storage'
 
 export type SettingsTab = 'app-settings' | 'member-settings' | 'notification-settings'
 
@@ -13,8 +13,6 @@ const STORAGE_KEY = 'settings-tab'
 
 defineProps<AppProps>()
 const emit = defineEmits<AppEmits>()
-
-const storage = useStorage()
 
 const tab = ref<SettingsTab>('app-settings')
 
