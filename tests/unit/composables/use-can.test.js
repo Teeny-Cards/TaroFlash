@@ -39,4 +39,36 @@ describe('useCan', () => {
       expect(can.useProFeature()).toBe(true)
     })
   })
+
+  describe('createDeck', () => {
+    test('allows free user under the limit', () => {
+      const member = useMemberStore()
+      member.plan = 'free'
+      const can = useCan()
+      expect(can.createDeck(0)).toBe(true)
+      expect(can.createDeck(4)).toBe(true)
+    })
+
+    test('blocks free user at the limit', () => {
+      const member = useMemberStore()
+      member.plan = 'free'
+      const can = useCan()
+      expect(can.createDeck(5)).toBe(false)
+      expect(can.createDeck(99)).toBe(false)
+    })
+
+    test('allows paid user regardless of count', () => {
+      const member = useMemberStore()
+      member.plan = 'paid'
+      const can = useCan()
+      expect(can.createDeck(0)).toBe(true)
+      expect(can.createDeck(1_000_000)).toBe(true)
+    })
+
+    test('treats unset plan as free', () => {
+      const can = useCan()
+      expect(can.createDeck(4)).toBe(true)
+      expect(can.createDeck(5)).toBe(false)
+    })
+  })
 })

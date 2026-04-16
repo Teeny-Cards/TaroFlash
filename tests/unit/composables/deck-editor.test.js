@@ -3,8 +3,9 @@ import { useDeckEditor } from '@/composables/deck-editor'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
 
-const { mockUpsertDeck } = vi.hoisted(() => ({
-  mockUpsertDeck: vi.fn().mockResolvedValue(undefined)
+const { mockCreateDeck, mockUpdateDeck } = vi.hoisted(() => ({
+  mockCreateDeck: vi.fn().mockResolvedValue(true),
+  mockUpdateDeck: vi.fn().mockResolvedValue(true)
 }))
 
 const { mockDeleteDeck } = vi.hoisted(() => ({
@@ -16,8 +17,14 @@ const { mockUploadImage } = vi.hoisted(() => ({
 }))
 
 vi.mock('@/api/decks', () => ({
-  upsertDeck: mockUpsertDeck,
   deleteDeck: mockDeleteDeck
+}))
+
+vi.mock('@/composables/deck/use-deck-actions', () => ({
+  useDeckActions: () => ({
+    createDeck: mockCreateDeck,
+    updateDeck: mockUpdateDeck
+  })
 }))
 
 vi.mock('@/api/media', () => ({
@@ -43,7 +50,10 @@ function makeDeck(overrides = {}) {
 
 describe('useDeckEditor', () => {
   beforeEach(() => {
-    mockUpsertDeck.mockClear()
+    mockCreateDeck.mockClear()
+    mockCreateDeck.mockResolvedValue(true)
+    mockUpdateDeck.mockClear()
+    mockUpdateDeck.mockResolvedValue(true)
     mockDeleteDeck.mockClear()
     mockUploadImage.mockClear()
     mockUploadImage.mockResolvedValue('https://cdn.example.com/cover.jpg')
@@ -113,8 +123,8 @@ describe('useDeckEditor', () => {
 
       await saveDeck()
 
-      expect(mockUpsertDeck).toHaveBeenCalledOnce()
-      const [arg] = mockUpsertDeck.mock.calls[0]
+      expect(mockUpdateDeck).toHaveBeenCalledOnce()
+      const [arg] = mockUpdateDeck.mock.calls[0]
       expect(arg.study_config).toEqual({ study_all_cards: true, retry_failed_cards: false })
     })
 
@@ -124,8 +134,8 @@ describe('useDeckEditor', () => {
 
       await saveDeck()
 
-      expect(mockUpsertDeck).toHaveBeenCalledOnce()
-      const [arg] = mockUpsertDeck.mock.calls[0]
+      expect(mockUpdateDeck).toHaveBeenCalledOnce()
+      const [arg] = mockUpdateDeck.mock.calls[0]
       expect(arg.cover_config).toEqual({ color: '#ff0000' })
     })
 
@@ -135,7 +145,7 @@ describe('useDeckEditor', () => {
 
       await saveDeck()
 
-      const [arg] = mockUpsertDeck.mock.calls[0]
+      const [arg] = mockUpdateDeck.mock.calls[0]
       expect(arg.title).toBe('Updated Title')
       expect(arg.is_public).toBe(false)
     })
@@ -150,8 +160,39 @@ describe('useDeckEditor', () => {
 
       await saveDeck()
 
-      const [arg] = mockUpsertDeck.mock.calls[0]
+      const [arg] = mockUpdateDeck.mock.calls[0]
       expect(arg.study_config.study_all_cards).toBe(true)
+    })
+
+    test('routes to createDeck when the deck has no id', async () => {
+      const { saveDeck } = useDeckEditor()
+
+      await saveDeck()
+
+      expect(mockCreateDeck).toHaveBeenCalledOnce()
+      expect(mockUpdateDeck).not.toHaveBeenCalled()
+    })
+
+    test('routes to updateDeck when the deck has an id', async () => {
+      const { saveDeck } = useDeckEditor(makeDeck({ id: 42 }))
+
+      await saveDeck()
+
+      expect(mockUpdateDeck).toHaveBeenCalledOnce()
+      expect(mockCreateDeck).not.toHaveBeenCalled()
+    })
+
+    test('returns the boolean result from the action', async () => {
+      mockCreateDeck.mockResolvedValueOnce(false)
+      const { saveDeck } = useDeckEditor()
+
+      await expect(saveDeck()).resolves.toBe(false)
+    })
+
+    test('returns true from updateDeck by default', async () => {
+      const { saveDeck } = useDeckEditor(makeDeck({ id: 1 }))
+
+      await expect(saveDeck()).resolves.toBe(true)
     })
   })
 
@@ -196,7 +237,7 @@ describe('useDeckEditor', () => {
 
       await saveDeck()
 
-      const [arg] = mockUpsertDeck.mock.calls[0]
+      const [arg] = mockUpdateDeck.mock.calls[0]
       expect(arg.card_attributes).toEqual({
         front: { text_size: 'ginormous', vertical_alignment: 'bottom' },
         back: { text_size: 'medium' }
@@ -215,7 +256,7 @@ describe('useDeckEditor', () => {
 
       await saveDeck()
 
-      const [arg] = mockUpsertDeck.mock.calls[0]
+      const [arg] = mockUpdateDeck.mock.calls[0]
       expect(arg.card_attributes.front.text_size).toBe('x-large')
       expect(arg.card_attributes.front.horizontal_alignment).toBe('right')
       expect(arg.card_attributes.back.vertical_alignment).toBe('top')
