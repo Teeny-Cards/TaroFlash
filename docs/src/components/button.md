@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-13T21:03:32-07:00
+---
+
 # Button
 
 `ui-button` is a versatile and customizable button component. It supports icons, sizes, variants, and an inverted color scheme.

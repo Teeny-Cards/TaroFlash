@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T12:16:07-07:00
+---
+
 # Response & Close
 
 Every `open()` call returns `{ response, close }`. `response` is a `Promise<T>` that resolves when the modal closes. This lets you treat a modal like an async function call — open it, wait for a result, act on it.

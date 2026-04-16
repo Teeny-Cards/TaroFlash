@@ -78,6 +78,7 @@ export default defineConfig({
   srcDir: 'src',
   title: 'TaroFlash Docs',
   description: 'Documentation for TaroFlash',
+  lastUpdated: true,
   themeConfig: {
     nav: [
       { text: 'Frontend Docs', link: '/components/button' },

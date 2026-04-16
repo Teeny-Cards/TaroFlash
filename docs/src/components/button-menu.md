@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T12:40:50-07:00
+---
+
 # Button Menu
 
 `ui-button-menu` is a dropdown that renders a trigger button and a list of action buttons. It does not support multi-select, search, or grouping.

@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T10:02:26-07:00
+---
+
 # Vue Template Conventions
 
 ## data-testid attributes

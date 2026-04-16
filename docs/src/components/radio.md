@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-13T21:03:32-07:00
+---
+
 # Radio
 
 `ui-radio` is a circular toggle that represents a selected or unselected state. It supports themes, an intermediate state, and an inverted style for use on coloured backgrounds.

@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-13T21:03:32-07:00
+---
+
 # Mobile Sheet
 
 `mobile-sheet` is a themed panel used as the content container inside a mobile-sheet modal. It provides a structured header (with a wave decoration, close button, and optional background texture), a body, and a footer.

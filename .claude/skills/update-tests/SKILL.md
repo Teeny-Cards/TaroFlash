@@ -2,6 +2,7 @@
 name: update-tests
 description: Analyse branch changes in `src/` and `supabase/` and write tests to reach ~90% coverage of changed lines
 allowed-tools: Read, Edit, Write, Bash, Glob, Grep
+lastUpdated: 2026-04-13T21:03:32-07:00
 ---
 
 ## Workflow

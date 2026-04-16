@@ -1,4 +1,8 @@
 ---
+lastUpdated: 2026-04-14T18:37:07-07:00
+---
+
+---
 title: Study Session Architecture
 paths:
   - 'src/composables/study-session/**'

@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T11:56:41-07:00
+---
+
 # App Types
 
 Every TaroPhone app is one of three types. The type you choose determines how the app appears in the launcher, how it's rendered, and what lifecycle hooks are available to it.

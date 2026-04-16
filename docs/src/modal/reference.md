@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T12:16:07-07:00
+---
+
 # API Reference
 
 All types and values exported from `@/composables/modal`.

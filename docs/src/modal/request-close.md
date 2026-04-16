@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T12:16:07-07:00
+---
+
 # Intercepting Close
 
 By default, clicking the backdrop or pressing `Esc` calls `pop()` and immediately removes the topmost modal. Use `useModalRequestClose` inside a modal component to intercept that request and decide what to do instead.

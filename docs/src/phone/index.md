@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T12:16:07-07:00
+---
+
 # TaroPhone
 
 TaroPhone is a virtual phone UI embedded in the application that gives users access to settings, tools, and system controls without leaving their current view. Visually it lives as a small phone icon in the corner of the page; tapping it opens a phone shell containing a grid of apps.
