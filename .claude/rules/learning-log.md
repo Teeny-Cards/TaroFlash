@@ -22,3 +22,11 @@ After each backend teaching session, list the key concepts covered as touchpoint
 | SECURITY DEFINER vs INVOKER | 5     |
 | JWT claims & auth.uid()     | 3     |
 | pgTAP testing               | 2     |
+
+### 2026-04-15 — card.note migration: nullable ADD COLUMN, view snapshots, security_invoker
+
+| Concept                               | Score |
+| ------------------------------------- | ----- |
+| Nullable ADD COLUMN (zero-downtime)   | 7     |
+| View column snapshotting / recreation | 7     |
+| security_invoker vs security_definer  | 4     |
