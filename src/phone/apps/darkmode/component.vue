@@ -2,7 +2,8 @@
 import UiImage from '@/components/ui-kit/image.vue'
 import Widget from '@/phone/components/widget.vue'
 import { computed } from 'vue'
-import { useTheme, type ThemeMode } from '@/composables/use-theme'
+import { useThemeStore, type ThemeMode } from '@/stores/theme'
+import { storeToRefs } from 'pinia'
 import { emitSfx } from '@/sfx/bus'
 
 type ModeConfig = {
@@ -10,7 +11,9 @@ type ModeConfig = {
   theme: MemberTheme
 }
 
-const { cycle, mode } = useTheme()
+const theme_store = useThemeStore()
+const { mode } = storeToRefs(theme_store)
+const { cycle } = theme_store
 
 const modes = computed<{ [key in ThemeMode]: ModeConfig }>(() => ({
   system: { label: 'System', theme: 'purple-500' },
