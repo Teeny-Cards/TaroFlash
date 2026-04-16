@@ -4,10 +4,10 @@ import logger from '@/utils/logger'
 import { DateTime } from 'luxon'
 
 export async function fetchMemberDecks(): Promise<Deck[]> {
-  const { data, error } = await supabase.rpc('get_member_decks_with_due_count', {
-    p_member_id: useMemberStore().id,
-    p_now: DateTime.now().toISO()
-  })
+  const { data, error } = await supabase
+    .from('decks_with_stats')
+    .select('*')
+    .eq('member_id', useMemberStore().id)
 
   if (error) {
     logger.error(error.message)
@@ -19,7 +19,7 @@ export async function fetchMemberDecks(): Promise<Deck[]> {
 
 export async function fetchDeck(id: number): Promise<Deck> {
   const { data, error } = await supabase
-    .from('decks')
+    .from('decks_with_stats')
     .select('*, cards:cards_with_images(*, review:reviews(*)), member:members(display_name)')
     .eq('id', id)
     .order('rank', { ascending: true, referencedTable: 'cards_with_images' })
