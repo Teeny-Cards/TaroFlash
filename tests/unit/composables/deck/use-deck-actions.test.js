@@ -1,13 +1,14 @@
 import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
 import { useDeckActions } from '@/composables/deck/use-deck-actions'
 
-const { mockFetchMemberDeckCount, mockUpsertDeck, mockCreateDeckCapability, mockWarn } =
-  vi.hoisted(() => ({
+const { mockFetchMemberDeckCount, mockUpsertDeck, mockCreateDeckCapability, mockWarn } = vi.hoisted(
+  () => ({
     mockFetchMemberDeckCount: vi.fn(),
     mockUpsertDeck: vi.fn().mockResolvedValue(undefined),
     mockCreateDeckCapability: vi.fn(),
     mockWarn: vi.fn()
-  }))
+  })
+)
 
 vi.mock('@/api/decks', () => ({
   fetchMemberDeckCount: mockFetchMemberDeckCount,

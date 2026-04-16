@@ -7,13 +7,13 @@ import audio_player from '@/sfx/player'
 import { useSessionStore } from '@/stores/session'
 import { onMounted } from 'vue'
 import logger from '@/utils/logger'
-import { useTheme } from '@/composables/use-theme'
+import { useThemeStore } from '@/stores/theme'
 import { useRouter } from 'vue-router'
 import { clearStaticLoader } from '@/utils/static-loader'
 
 const { toasts } = useToast()
 const session = useSessionStore()
-const theme = useTheme()
+const theme = useThemeStore()
 const router = useRouter()
 
 const removeGuard = router.afterEach((to) => {

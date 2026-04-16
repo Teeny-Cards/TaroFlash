@@ -2,7 +2,7 @@
 import { type Grade, Rating, type RecordLog } from 'ts-fsrs'
 import { useI18n } from 'vue-i18n'
 import UiTooltip from '@/components/ui-kit/tooltip.vue'
-import { useRatingFormat } from '@/utils/fsrs'
+import { useRatingFormat } from '@/composables/use-fsrs'
 
 const { t } = useI18n()
 const { getRatingTimeFormat } = useRatingFormat()
