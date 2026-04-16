@@ -93,6 +93,42 @@ wrapper.find('ui-icon-stub[src="check"]')
 wrapper.findAllComponents({ name: 'UiIcon' }).some((c) => c.props('src') === 'check')
 ```
 
+### `findComponent({ name })` vs `findComponent(ImportedRef)`
+
+Components declared with `<script setup>` don't always expose a reliable `name` unless they call `defineOptions({ name: 'X' })`. If `findAllComponents({ name: 'ImageButton' })` returns an empty array under `shallowMount`, pass the imported component reference instead:
+
+```js
+import ImageButton from '@/views/deck/image-button.vue'
+
+// Bad — may silently return []
+wrapper.findAllComponents({ name: 'ImageButton' })
+
+// Good — matches regardless of defineOptions presence
+wrapper.findAllComponents(ImageButton)
+```
+
+### Stubs hide slot content by default
+
+When a child component stub replaces a real component, its slots don't render — anything you wrote inside the child becomes unreachable. If the test needs to reach into slot content (e.g. a button rendered inside `<card>`'s default slot), provide a custom stub that explicitly renders `slots.default?.()` and forwards `$attrs`:
+
+```js
+const CardStub = defineComponent({
+  name: 'Card',
+  inheritAttrs: false,
+  setup(_props, { slots }) {
+    const attrs = useAttrs()
+    return () => h('div', attrs, [slots.default?.(), slots.editor?.()])
+  }
+})
+
+// then in mount:
+global: {
+  stubs: {
+    Card: CardStub
+  }
+}
+```
+
 ## Fixtures and test data
 
 Use `mimicry-js` + `faker-js` factory builders for test data, in a separate `fixtures.js` file.
