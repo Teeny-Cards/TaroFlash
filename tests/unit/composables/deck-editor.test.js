@@ -16,6 +16,8 @@ const { mockUploadImage } = vi.hoisted(() => ({
   mockUploadImage: vi.fn().mockResolvedValue('https://cdn.example.com/cover.jpg')
 }))
 
+const TEST_MEMBER_ID = '11111111-1111-1111-1111-111111111111'
+
 vi.mock('@/api/decks', () => ({
   deleteDeck: mockDeleteDeck
 }))
@@ -29,6 +31,10 @@ vi.mock('@/composables/deck/use-deck-actions', () => ({
 
 vi.mock('@/api/media', () => ({
   uploadImage: mockUploadImage
+}))
+
+vi.mock('@/stores/member', () => ({
+  useMemberStore: () => ({ id: TEST_MEMBER_ID })
 }))
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -421,7 +427,11 @@ describe('useDeckEditor', () => {
 
       await setCoverImage(makePayload())
 
-      expect(mockUploadImage).toHaveBeenCalledWith('decks', 'covers/42', expect.any(File))
+      expect(mockUploadImage).toHaveBeenCalledWith(
+        'decks',
+        `${TEST_MEMBER_ID}/covers/42`,
+        expect.any(File)
+      )
     })
 
     test('uses draft path when deck has no id', async () => {
@@ -431,7 +441,7 @@ describe('useDeckEditor', () => {
       await setCoverImage(makePayload())
 
       const [, path] = mockUploadImage.mock.calls[0]
-      expect(path).toMatch(/^covers\/draft-/)
+      expect(path).toMatch(new RegExp(`^${TEST_MEMBER_ID}/covers/draft-`))
     })
   })
 

@@ -36,3 +36,21 @@ Link the CLI to the project, then push:
 supabase link --project-ref <project-ref>
 supabase migration up
 ```
+
+---
+
+## Storage buckets
+
+Buckets are provisioned via SQL migrations (not `config.toml`), so
+`supabase migration up` creates them in every environment — local,
+staging, production — with no separate step.
+
+See `supabase/migrations/20260416000007_cards-bucket.sql` as the pattern:
+a single `INSERT ... ON CONFLICT (id) DO UPDATE` on `storage.buckets`.
+The `ON CONFLICT` clause makes it idempotent and lets follow-up migrations
+edit settings (public flag, file-size limit, MIME allowlist) by writing
+new INSERTs against the same `id`.
+
+Bucket-scoped RLS policies on `storage.objects` live in adjacent migrations
+(e.g. `20260416000005_cards-bucket-storage-policies.sql`) and apply
+through the same `migration up` flow.
