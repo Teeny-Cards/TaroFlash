@@ -5,6 +5,20 @@ paths:
 
 # Writing Tests
 
+## Before modifying a failing test
+
+**Highest priority when a test is failing: verify the failure isn't catching a real bug.** A failing test is a signal, not noise — the default assumption should be that the code under test (or a recently changed dependency) regressed, not that the test is wrong.
+
+Before touching the test file:
+
+1. Read the assertion that failed and the source code it exercises.
+2. Check whether recent changes to the source could have broken the behaviour the test was asserting.
+3. Run the test in isolation and confirm the failure mode (stale fixture, missing mock, actual regression).
+
+**If there's even a chance the test is catching a real bug, stop. Surface a concise message to the user** — name the test, the assertion, and your best read of the suspected bug — and wait for confirmation before proceeding. Do not edit the test, update fixtures, or add mocks on your own initiative when the failure might be meaningful.
+
+Only edit the test after you've either verified the source is correct and the test expectation is outdated, or the user has explicitly confirmed to proceed.
+
 ## Test type selection
 
 | Priority | Type            | Environment        | When to use                                                           |
