@@ -70,9 +70,14 @@ gh auth status
 Block and surface a warning if any of these are true:
 
 - Current branch is `master` or `main`.
-- `git status` shows uncommitted changes — ask the user to commit or stash first.
-- `master..HEAD` is empty. Nothing to prepare.
+- `master..HEAD` is empty **and** there are no staged changes. Nothing to prepare.
 - `gh` is not authenticated. The final step needs it; either authenticate now or agree to skip the auto-open at the end.
+
+**Handling uncommitted changes.** Inspect `git status --short`:
+
+- **Staged changes present** (`A`/`M`/`D`/`R` in column 1): commit them before continuing. Read the staged diff (`git diff --cached`), group by concern if multiple are mixed, and propose Conventional Commits messages. Wait for approval, then commit. Treat the new commits as part of the branch for the rest of the workflow.
+- **Unstaged changes present** (column 2 only — `M`/`D`/`?`): leave them alone. Do not `git add` them, do not stash, do not mention them as a blocker. They sit out of the PR by design.
+- **Mixed**: handle staged as above; ignore unstaged.
 
 Note the current upstream (`git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null`) so the push step can decide flags.
 
@@ -84,7 +89,7 @@ For each SHA from `git log master..HEAD --oneline`, run:
 git show --stat <sha>
 ```
 
-Read enough of the diff to understand the user-visible effect. If the stat list is ambiguous, run `git show <sha> -- <path>` on the most interesting files. Goal: know what *belongs* in the subject line, not just what got touched.
+Read enough of the diff to understand the user-visible effect. If the stat list is ambiguous, run `git show <sha> -- <path>` on the most interesting files. Goal: know what _belongs_ in the subject line, not just what got touched.
 
 For each commit answer:
 
@@ -172,11 +177,11 @@ Keep a note of which branch is which PR and what each one's base is. The remaini
 
 For each branch in the plan, show a table:
 
-| SHA (short) | Current | Proposed |
-| --- | --- | --- |
-| `71538c8` | add edit functionality to session | `feat(study-session): edit card text mid-session` |
-| `e6d0a22` | Refactor study-session to be cleaner | `refactor(study-session): extract composables and introduce deck context` |
-| `7475c52` | refactor card editing network pipeline | `refactor(cards): replace CardRecord class with saveCard API` |
+| SHA (short) | Current                                | Proposed                                                                  |
+| ----------- | -------------------------------------- | ------------------------------------------------------------------------- |
+| `71538c8`   | add edit functionality to session      | `feat(study-session): edit card text mid-session`                         |
+| `e6d0a22`   | Refactor study-session to be cleaner   | `refactor(study-session): extract composables and introduce deck context` |
+| `7475c52`   | refactor card editing network pipeline | `refactor(cards): replace CardRecord class with saveCard API`             |
 
 **Wait for approval.** Integrate any user edits. Messages that are already in good Conventional Commits shape can be left unchanged — call that out rather than re-proposing them verbatim.
 
