@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-13T21:03:32-07:00
+---
+
 # Theming
 
 TaroFlash uses a two-layer theming model: a **root-level dark/light mode** controlled by `use-theme`, and **component-level color themes** controlled by `data-theme` / `data-theme-dark` attributes.

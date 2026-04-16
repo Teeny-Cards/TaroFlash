@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-13T21:03:32-07:00
+---
+
 # Vite Plugins
 
 Custom Vite plugins used in the build pipeline.

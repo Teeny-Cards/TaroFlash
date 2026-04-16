@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-13T21:03:32-07:00
+---
+
 # Colors & Palette
 
 Component themes are typed as `MemberTheme` (defined in `types/member.d.ts`). Each value maps to a block in `src/styles/palettes.css` that defines the `--theme-*` tokens for that color.

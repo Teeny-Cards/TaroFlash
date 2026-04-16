@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-16T15:46:10-07:00
+---
+
 # Supabase Setup
 
 One-time steps required when provisioning a new environment (local, staging, or production).

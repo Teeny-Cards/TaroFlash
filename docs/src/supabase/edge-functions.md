@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T13:00:20-07:00
+---
+
 # Edge Function Secrets
 
 Edge functions read secrets from environment variables at runtime.

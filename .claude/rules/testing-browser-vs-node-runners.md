@@ -1,4 +1,8 @@
 ---
+lastUpdated: 2026-04-13T21:03:32-07:00
+---
+
+---
 title: Browser Mode vs jsdom
 paths:
   - 'tests/**/*'

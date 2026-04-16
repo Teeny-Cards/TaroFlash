@@ -2,6 +2,7 @@
 name: prepare-pr
 description: Prepare a branch for PR by rewriting commit messages into release-notes-friendly Conventional Commits, renaming the branch if it no longer fits the changes, splitting unrelated or oversized work into a stack of smaller PRs, drafting a PR title and body, and opening the GitHub "create PR" page pre-filled. Use when a feature branch is code-complete and ready for review.
 allowed-tools: Read, Edit, Write, Bash, Glob, Grep
+lastUpdated: 2026-04-15T16:54:40-07:00
 ---
 
 ## Why this skill exists

@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T11:56:41-07:00
+---
+
 # Controllers
 
 A **controller** is the logic layer for a phone app. It separates data fetching, state management, and side effects from the component that renders them — the controller is the model, the component is the view.

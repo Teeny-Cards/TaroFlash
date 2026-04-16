@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-13T16:02:30-07:00
+---
+
 # Vault Secrets
 
 The `cleanup-media` cron job needs two secrets stored in the Supabase Vault so it can call the edge function on a schedule.

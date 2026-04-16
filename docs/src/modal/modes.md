@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T12:16:07-07:00
+---
+
 # Modes & Backdrop
 
 The `mode` option controls both the animation and the layout container for the modal. The `backdrop` option controls whether a blurred overlay renders behind it.

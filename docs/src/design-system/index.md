@@ -1,3 +1,7 @@
+---
+lastUpdated: 2026-04-12T11:56:41-07:00
+---
+
 # Design System Overview
 
 Welcome to our comprehensive Design System, the foundational framework that encapsulates our commitment to creating cohesive, impactful, and user-centric digital experiences. This system is meticulously crafted, serving as the cornerstone for design consistency, efficiency, and scalability across our products.
