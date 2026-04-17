@@ -28,7 +28,7 @@ vi.mock('@/supabase-client', () => ({
 vi.mock('@/utils/logger', () => ({ default: { error: vi.fn() } }))
 
 import { supabase } from '@/supabase-client'
-import { uploadImage, deleteImage, getImageUrl, insertMedia, deleteMedia } from '@/api/media'
+import { uploadImage, deleteImage, getImageUrl, insertMedia, deleteMedia } from '@/api/media/db'
 
 describe('uploadImage', () => {
   beforeEach(() => {

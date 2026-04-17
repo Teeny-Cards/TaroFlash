@@ -3,11 +3,13 @@ import { Rating } from 'ts-fsrs'
 import { useFlashcardSession } from '@/composables/study-session/flashcard-session'
 import { card } from '../../../fixtures/card'
 
-vi.mock('@/api/reviews', () => ({
-  saveReview: vi.fn().mockResolvedValue(undefined)
+const { saveReviewMock } = vi.hoisted(() => ({
+  saveReviewMock: vi.fn().mockResolvedValue(undefined)
 }))
 
-import { saveReview } from '@/api/reviews'
+vi.mock('@/api/reviews', () => ({
+  useSaveReviewMutation: () => ({ mutate: saveReviewMock, mutateAsync: saveReviewMock })
+}))
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -30,7 +32,7 @@ function makeDueTodayCard(overrides = {}) {
 
 describe('useFlashcardSession', () => {
   beforeEach(() => {
-    vi.mocked(saveReview).mockClear()
+    saveReviewMock.mockClear()
   })
 
   // ── setCards filtering ─────────────────────────────────────────────────────
@@ -183,7 +185,12 @@ describe('useFlashcardSession', () => {
       const card_id = session.active_card.value?.id
       session.reviewCard(Rating.Good)
 
-      expect(saveReview).toHaveBeenCalledWith(card_id, expect.any(Object), expect.any(Object))
+      expect(saveReviewMock).toHaveBeenCalledWith({
+        card_id,
+        deck_id: expect.any(Number),
+        card: expect.any(Object),
+        log: expect.any(Object)
+      })
     })
   })
 
@@ -281,7 +288,7 @@ describe('useFlashcardSession', () => {
 
     session.reviewCard(Rating.Good)
 
-    expect(saveReview).not.toHaveBeenCalled()
+    expect(saveReviewMock).not.toHaveBeenCalled()
   })
 
   test('reviewCard is a no-op when there is no active card', () => {
@@ -290,7 +297,7 @@ describe('useFlashcardSession', () => {
 
     // Should not throw
     expect(() => session.reviewCard(Rating.Good)).not.toThrow()
-    expect(saveReview).not.toHaveBeenCalled()
+    expect(saveReviewMock).not.toHaveBeenCalled()
   })
 
   // ── current_card_side initial state ────────────────────────────────────────
