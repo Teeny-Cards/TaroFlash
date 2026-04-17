@@ -1,25 +1,35 @@
 import { useI18n } from 'vue-i18n'
 import { useMemberDeckCountQuery, useUpsertDeckMutation } from '@/api/decks'
 import { useAlert } from '@/composables/alert'
+import { useModal } from '@/composables/modal'
 import { useCan } from '@/composables/use-can'
+import Checkout from '@/components/modals/checkout.vue'
 
 export function useDeckActions() {
   const { t } = useI18n()
   const alert = useAlert()
+  const modal = useModal()
   const can = useCan()
   const deck_count_query = useMemberDeckCountQuery()
   const upsert_mutation = useUpsertDeckMutation()
 
-  async function createDeck(deck: Deck): Promise<boolean> {
+  async function guardCreateDeck(): Promise<boolean> {
     await deck_count_query.refresh()
-    const count = deck_count_query.data.value ?? 0
-    if (!can.createDeck(count)) {
-      await alert.warn({
-        title: t('errors.deck-limit-reached.title'),
-        message: t('errors.deck-limit-reached.message')
-      }).response
-      return false
+    if (can.createDeck.value) return true
+
+    const confirmed = await alert.warn({
+      title: t('errors.deck-limit-reached.title'),
+      message: t('errors.deck-limit-reached.message'),
+      confirmLabel: t('errors.deck-limit-reached.upgrade-cta')
+    }).response
+    if (confirmed) {
+      modal.open(Checkout, { mode: 'mobile-sheet', backdrop: true })
     }
+    return false
+  }
+
+  async function createDeck(deck: Deck): Promise<boolean> {
+    if (!(await guardCreateDeck())) return false
     await upsert_mutation.mutateAsync(deck)
     return true
   }
@@ -29,5 +39,5 @@ export function useDeckActions() {
     return true
   }
 
-  return { createDeck, updateDeck }
+  return { guardCreateDeck, createDeck, updateDeck }
 }

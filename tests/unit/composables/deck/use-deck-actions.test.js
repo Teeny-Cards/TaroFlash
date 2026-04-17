@@ -1,40 +1,39 @@
 import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
-import { useDeckActions } from '@/composables/deck/use-deck-actions'
 
-const { refreshMock, upsertMock, countRef, mockCreateDeckCapability, mockWarn } = vi.hoisted(
-  () => ({
-    refreshMock: vi.fn().mockResolvedValue(undefined),
-    upsertMock: vi.fn().mockResolvedValue(undefined),
-    countRef: { value: 0 },
-    mockCreateDeckCapability: vi.fn(),
-    mockWarn: vi.fn()
-  })
-)
+const { refreshMock, upsertMock, canCreateDeck, mockWarn, mockModalOpen } = vi.hoisted(() => ({
+  refreshMock: vi.fn().mockResolvedValue(undefined),
+  upsertMock: vi.fn().mockResolvedValue(undefined),
+  canCreateDeck: { value: true },
+  mockWarn: vi.fn(),
+  mockModalOpen: vi.fn()
+}))
 
 vi.mock('@/api/decks', () => ({
-  useMemberDeckCountQuery: () => ({
-    refresh: refreshMock,
-    data: countRef
-  }),
-  useUpsertDeckMutation: () => ({
-    mutate: upsertMock,
-    mutateAsync: upsertMock
-  })
+  useMemberDeckCountQuery: () => ({ refresh: refreshMock, data: { value: 0 } }),
+  useUpsertDeckMutation: () => ({ mutate: upsertMock, mutateAsync: upsertMock })
 }))
 
 vi.mock('@/composables/use-can', () => ({
-  useCan: () => ({ createDeck: mockCreateDeckCapability })
+  useCan: () => ({ createDeck: canCreateDeck })
 }))
 
 vi.mock('@/composables/alert', () => ({
-  useAlert: () => ({
-    warn: mockWarn
-  })
+  useAlert: () => ({ warn: mockWarn })
+}))
+
+vi.mock('@/composables/modal', () => ({
+  useModal: () => ({ open: mockModalOpen })
+}))
+
+vi.mock('@/components/modals/checkout.vue', () => ({
+  default: { name: 'Checkout' }
 }))
 
 vi.mock('vue-i18n', () => ({
   useI18n: () => ({ t: (key) => key })
 }))
+
+import { useDeckActions } from '@/composables/deck/use-deck-actions'
 
 function makeAlertResponse(promise = Promise.resolve(undefined)) {
   return { response: promise }
@@ -42,91 +41,97 @@ function makeAlertResponse(promise = Promise.resolve(undefined)) {
 
 describe('useDeckActions', () => {
   beforeEach(() => {
-    refreshMock.mockReset()
-    refreshMock.mockResolvedValue(undefined)
-    upsertMock.mockReset()
-    upsertMock.mockResolvedValue(undefined)
-    countRef.value = 0
-    mockCreateDeckCapability.mockReset()
+    refreshMock.mockClear()
+    upsertMock.mockClear()
     mockWarn.mockReset()
     mockWarn.mockReturnValue(makeAlertResponse())
+    mockModalOpen.mockClear()
+    canCreateDeck.value = true
+  })
+
+  describe('guardCreateDeck', () => {
+    test('refreshes the deck-count query before checking capability', async () => {
+      const { guardCreateDeck } = useDeckActions()
+      await guardCreateDeck()
+      expect(refreshMock).toHaveBeenCalledTimes(1)
+    })
+
+    test('returns true when allowed, without prompting', async () => {
+      canCreateDeck.value = true
+      const { guardCreateDeck } = useDeckActions()
+      const result = await guardCreateDeck()
+      expect(result).toBe(true)
+      expect(mockWarn).not.toHaveBeenCalled()
+      expect(mockModalOpen).not.toHaveBeenCalled()
+    })
+
+    test('shows the upgrade alert when blocked', async () => {
+      canCreateDeck.value = false
+      const { guardCreateDeck } = useDeckActions()
+      await guardCreateDeck()
+      expect(mockWarn).toHaveBeenCalledWith({
+        title: 'errors.deck-limit-reached.title',
+        message: 'errors.deck-limit-reached.message',
+        confirmLabel: 'errors.deck-limit-reached.upgrade-cta'
+      })
+    })
+
+    test('opens checkout modal when user confirms upgrade', async () => {
+      canCreateDeck.value = false
+      mockWarn.mockReturnValue(makeAlertResponse(Promise.resolve(true)))
+
+      const { guardCreateDeck } = useDeckActions()
+      const result = await guardCreateDeck()
+
+      expect(result).toBe(false)
+      expect(mockModalOpen).toHaveBeenCalledWith(
+        expect.objectContaining({ name: 'Checkout' }),
+        { mode: 'mobile-sheet', backdrop: true }
+      )
+    })
+
+    test('does not open checkout when user cancels the alert', async () => {
+      canCreateDeck.value = false
+      mockWarn.mockReturnValue(makeAlertResponse(Promise.resolve(false)))
+
+      const { guardCreateDeck } = useDeckActions()
+      const result = await guardCreateDeck()
+
+      expect(result).toBe(false)
+      expect(mockModalOpen).not.toHaveBeenCalled()
+    })
   })
 
   describe('createDeck', () => {
-    test('calls upsertDeck and returns true when capability check passes', async () => {
-      countRef.value = 2
-      mockCreateDeckCapability.mockReturnValue(true)
-
+    test('upserts the deck when guard passes', async () => {
+      canCreateDeck.value = true
       const { createDeck } = useDeckActions()
       const result = await createDeck({ title: 'New Deck' })
 
-      expect(mockCreateDeckCapability).toHaveBeenCalledWith(2)
       expect(upsertMock).toHaveBeenCalledWith({ title: 'New Deck' })
-      expect(mockWarn).not.toHaveBeenCalled()
       expect(result).toBe(true)
     })
 
-    test('opens warn alert and returns false when capability check fails', async () => {
-      countRef.value = 5
-      mockCreateDeckCapability.mockReturnValue(false)
-
+    test('returns false and skips upsert when guard blocks', async () => {
+      canCreateDeck.value = false
       const { createDeck } = useDeckActions()
       const result = await createDeck({ title: 'Blocked Deck' })
 
-      expect(mockWarn).toHaveBeenCalledWith({
-        title: 'errors.deck-limit-reached.title',
-        message: 'errors.deck-limit-reached.message'
-      })
       expect(upsertMock).not.toHaveBeenCalled()
       expect(result).toBe(false)
-    })
-
-    test('awaits the alert response before resolving', async () => {
-      countRef.value = 5
-      mockCreateDeckCapability.mockReturnValue(false)
-
-      let resolveAlert
-      mockWarn.mockReturnValue(
-        makeAlertResponse(
-          new Promise((r) => {
-            resolveAlert = r
-          })
-        )
-      )
-
-      const { createDeck } = useDeckActions()
-      const pending = createDeck({ title: 'Blocked' })
-
-      let settled = false
-      pending.then(() => {
-        settled = true
-      })
-
-      await Promise.resolve()
-      await Promise.resolve()
-      expect(settled).toBe(false)
-
-      resolveAlert()
-      await pending
-      expect(settled).toBe(true)
     })
   })
 
   describe('updateDeck', () => {
-    test('calls upsertDeck and returns true', async () => {
+    test('upserts without running the guard', async () => {
+      canCreateDeck.value = false // guard would block — prove update bypasses it
       const { updateDeck } = useDeckActions()
       const result = await updateDeck({ id: 1, title: 'Updated' })
 
+      expect(refreshMock).not.toHaveBeenCalled()
+      expect(mockWarn).not.toHaveBeenCalled()
       expect(upsertMock).toHaveBeenCalledWith({ id: 1, title: 'Updated' })
       expect(result).toBe(true)
-    })
-
-    test('does not check capability or call refresh', async () => {
-      const { updateDeck } = useDeckActions()
-      await updateDeck({ id: 1, title: 'Updated' })
-
-      expect(refreshMock).not.toHaveBeenCalled()
-      expect(mockCreateDeckCapability).not.toHaveBeenCalled()
     })
   })
 })
