@@ -15,7 +15,7 @@ vi.mock('@/api/reviews/db', () => ({
   saveReview: saveReviewMock
 }))
 
-import { useSaveReviewMutation } from '@/api/reviews/mutations/save'
+import { useSaveReviewMutation, useFlushDeckReviews } from '@/api/reviews/mutations/save'
 
 beforeEach(() => {
   useMutationSpy.mockClear()
@@ -53,35 +53,43 @@ describe('useSaveReviewMutation', () => {
     expect(invalidateSpy).toHaveBeenCalledWith({ key: ['decks'] })
   })
 
-  test('onSettled invalidates ["deck", deck_id] so the detail view refetches', () => {
+  // Per-review saves must not invalidate ["deck", id] or ["cards", id]: those
+  // are active during a study session and refetching on every rating churns
+  // the full deck+cards join. The session flushes them once on close instead.
+  test('onSettled fires exactly one invalidation per review (no deck/cards refetch mid-session)', () => {
     const { onSettled } = configFrom(useSaveReviewMutation)
 
     onSettled(undefined, undefined, { card_id: 1, deck_id: 7, card: {}, log: {} })
 
-    expect(invalidateSpy).toHaveBeenCalledWith({ key: ['deck', 7] })
+    expect(invalidateSpy).toHaveBeenCalledTimes(1)
   })
 
-  test('onSettled invalidates ["cards", deck_id] so the cards-in-deck query refetches', () => {
-    const { onSettled } = configFrom(useSaveReviewMutation)
-
-    onSettled(undefined, undefined, { card_id: 1, deck_id: 7, card: {}, log: {} })
-
-    expect(invalidateSpy).toHaveBeenCalledWith({ key: ['cards', 7] })
-  })
-
-  test('onSettled fires exactly three invalidations (no accidental over-invalidation)', () => {
-    const { onSettled } = configFrom(useSaveReviewMutation)
-
-    onSettled(undefined, undefined, { card_id: 1, deck_id: 7, card: {}, log: {} })
-
-    expect(invalidateSpy).toHaveBeenCalledTimes(3)
-  })
-
-  test('invalidations still fire when the mutation itself errored', () => {
+  test('invalidation still fires when the mutation itself errored', () => {
     const { onSettled } = configFrom(useSaveReviewMutation)
 
     onSettled(undefined, new Error('network'), { card_id: 1, deck_id: 7, card: {}, log: {} })
 
-    expect(invalidateSpy).toHaveBeenCalledTimes(3)
+    expect(invalidateSpy).toHaveBeenCalledTimes(1)
+    expect(invalidateSpy).toHaveBeenCalledWith({ key: ['decks'] })
+  })
+})
+
+describe('useFlushDeckReviews', () => {
+  test('invalidates ["deck", deck_id] and ["cards", deck_id]', () => {
+    const flush = useFlushDeckReviews()
+
+    flush(7)
+
+    expect(invalidateSpy).toHaveBeenCalledWith({ key: ['deck', 7] })
+    expect(invalidateSpy).toHaveBeenCalledWith({ key: ['cards', 7] })
+    expect(invalidateSpy).toHaveBeenCalledTimes(2)
+  })
+
+  test('does not invalidate ["decks"] — that is handled by the per-review mutation', () => {
+    const flush = useFlushDeckReviews()
+
+    flush(7)
+
+    expect(invalidateSpy).not.toHaveBeenCalledWith({ key: ['decks'] })
   })
 })
