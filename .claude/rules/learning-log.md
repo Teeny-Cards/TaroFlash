@@ -1,5 +1,5 @@
 ---
-lastUpdated: 2026-04-16T15:26:08-07:00
+lastUpdated: 2026-04-17T00:00:00-07:00
 ---
 
 # Backend Learning Log
@@ -75,3 +75,20 @@ After each backend teaching session, list the key concepts covered as touchpoint
 | storage.objects RLS with owner column                 | 9     |
 | UPSERT requires SELECT policy (ON CONFLICT DO UPDATE) | 2     |
 | storage.foldername + path-based member isolation      | 8     |
+
+### 2026-04-17 — Stripe backend: plans table, webhook, checkout + portal
+
+| Concept                                                 | Score |
+| ------------------------------------------------------- | ----- |
+| Lookup table vs postgres enum                           | 6     |
+| ALTER COLUMN TYPE USING \<expr\>                        | 5     |
+| Dropping dependent objects before column retype         | 7     |
+| `is not distinct from` for NULL-safe equality           | 5     |
+| Webhook signature verification (raw body, SubtleCrypto) | 4     |
+| Service-role vs user-scoped edge-function clients       | 6     |
+| Idempotent webhook handlers                             | 6     |
+| checkout.session.completed vs customer.subscription.\*  | 8     |
+| Embedded Checkout vs Payment Element                    | 3     |
+| Server-side plan→price resolution                       | 3     |
+| Stripe customer lookup ladder                           | 5     |
+| Billing Portal as hosted flow                           | 3     |
