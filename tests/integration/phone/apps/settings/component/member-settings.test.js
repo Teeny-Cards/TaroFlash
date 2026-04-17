@@ -181,7 +181,10 @@ describe('member-settings subscription section', () => {
     })
 
     test('clicking Manage billing creates a portal session with the current URL as returnUrl', async () => {
-      mockPortalMutate.mockResolvedValue({ url: 'https://portal.stripe.com/session_x' })
+      // Never resolves — the component redirects via `window.location.href = url`
+      // on success, which navigates the test iframe away and trips Vitest's
+      // iframe-connect watchdog. We only need to assert the mutation arg here.
+      mockPortalMutate.mockReturnValue(new Promise(() => {}))
       const wrapper = await makeMemberSettings()
 
       await wrapper
