@@ -13,9 +13,10 @@ const { mockRegister } = vi.hoisted(() => ({
 
 const { mockEmitSfx } = vi.hoisted(() => ({ mockEmitSfx: vi.fn() }))
 
-const { mockFetchAllCardsByDeckId } = vi.hoisted(() => ({
-  mockFetchAllCardsByDeckId: vi.fn()
-}))
+const { cardsDataRef } = await vi.hoisted(async () => {
+  const { shallowRef } = await import('vue')
+  return { cardsDataRef: shallowRef(undefined) }
+})
 
 const { mockSaveReview } = vi.hoisted(() => ({
   mockSaveReview: vi.fn().mockResolvedValue(undefined)
@@ -38,15 +39,29 @@ vi.mock('@/composables/use-shortcuts', () => ({
 
 vi.mock('@/sfx/bus', () => ({ emitSfx: mockEmitSfx }))
 
-vi.mock('@/api/cards', () => ({
-  fetchAllCardsByDeckId: mockFetchAllCardsByDeckId,
-  upsertCard: vi.fn().mockResolvedValue(undefined),
-  reserveCard: vi.fn().mockResolvedValue({ out_id: 1, out_rank: 1 }),
-  saveCard: vi.fn().mockResolvedValue(undefined)
-}))
+vi.mock('@/api/cards', () => {
+  const passthrough = () => ({ mutate: vi.fn(), mutateAsync: vi.fn().mockResolvedValue(undefined) })
+  return {
+    useCardsInDeckQuery: () => ({
+      data: cardsDataRef,
+      refetch: vi.fn(),
+      refresh: vi.fn()
+    }),
+    useSaveCardMutation: passthrough,
+    useUpsertCardMutation: passthrough,
+    useInsertCardMutation: passthrough,
+    useDeleteCardsMutation: passthrough,
+    useSetCardImageMutation: passthrough,
+    useDeleteCardImageMutation: passthrough,
+    useUpsertCardsMutation: passthrough,
+    useReorderCardMutation: passthrough,
+    useMoveCardsToDeckMutation: passthrough,
+    useMemberCardCountQuery: () => ({ data: { value: 0 }, refetch: vi.fn(), refresh: vi.fn() })
+  }
+})
 
 vi.mock('@/api/reviews', () => ({
-  saveReview: mockSaveReview
+  useSaveReviewMutation: () => ({ mutate: mockSaveReview, mutateAsync: mockSaveReview })
 }))
 
 // ── Card stub ─────────────────────────────────────────────────────────────────
@@ -86,7 +101,7 @@ const FinishAnimationStub = defineComponent({
 
 function makeSession(cardCount = 2, deckOverrides = {}) {
   const cards_data = card.many(cardCount)
-  mockFetchAllCardsByDeckId.mockResolvedValue(cards_data)
+  cardsDataRef.value = cards_data
   const deck_data = deck.one({
     overrides: {
       id: 1,
@@ -134,7 +149,7 @@ describe('Session', () => {
   beforeEach(() => {
     mockRegister.mockClear()
     mockEmitSfx.mockClear()
-    mockFetchAllCardsByDeckId.mockClear()
+    cardsDataRef.value = undefined
     mockSaveReview.mockClear()
   })
 
@@ -142,8 +157,8 @@ describe('Session', () => {
 
   describe('loading behavior', () => {
     test('while loading, shows skeleton card without study-card', async () => {
-      // Delay the API response so we can inspect the loading state
-      mockFetchAllCardsByDeckId.mockReturnValue(new Promise(() => {}))
+      // Leave cards_query.data undefined to keep the session in loading mode.
+      cardsDataRef.value = undefined
       const deck_data = deck.one({
         overrides: { id: 1, study_config: { study_all_cards: true, retry_failed_cards: false } }
       })

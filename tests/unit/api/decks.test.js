@@ -34,7 +34,7 @@ import {
   fetchMemberDeckCount,
   upsertDeck,
   deleteDeck
-} from '@/api/decks'
+} from '@/api/decks/db'
 
 beforeEach(() => {
   Object.values(queryMock).forEach((fn) => fn.mockReset?.())

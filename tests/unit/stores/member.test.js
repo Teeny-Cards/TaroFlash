@@ -1,20 +1,33 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 import { setActivePinia, createPinia } from 'pinia'
 
+const { memberRef, sessionUser } = vi.hoisted(() => ({
+  memberRef: { value: null },
+  sessionUser: { value: null }
+}))
+
 vi.mock('@/api/members', () => ({
-  fetchMemberById: vi.fn()
+  useCurrentMemberQuery: () => ({ data: memberRef })
+}))
+
+vi.mock('@/stores/session', () => ({
+  useSessionStore: () => ({
+    get user() {
+      return sessionUser.value
+    }
+  })
 }))
 
 import { useMemberStore } from '@/stores/member'
-import { fetchMemberById } from '@/api/members'
 
 describe('useMemberStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
-    vi.mocked(fetchMemberById).mockReset()
+    memberRef.value = null
+    sessionUser.value = null
   })
 
-  test('initializes with all fields undefined and has_member false', () => {
+  test('all fields are undefined and has_member is false when nothing is loaded', () => {
     const store = useMemberStore()
     expect(store.id).toBeUndefined()
     expect(store.display_name).toBeUndefined()
@@ -24,14 +37,16 @@ describe('useMemberStore', () => {
     expect(store.has_member).toBe(false)
   })
 
-  test('has_member is true once an id is set', () => {
+  test('id comes from the session and has_member flips once session.user is set', () => {
     const store = useMemberStore()
-    store.id = 'abc'
+    sessionUser.value = { id: 'abc' }
+    expect(store.id).toBe('abc')
     expect(store.has_member).toBe(true)
   })
 
-  test('fetchMember hydrates every field from the api result', async () => {
-    vi.mocked(fetchMemberById).mockResolvedValue({
+  test('profile fields come from the member query, id stays session-sourced', () => {
+    sessionUser.value = { id: 'user-1' }
+    memberRef.value = {
       id: 'user-1',
       display_name: 'Alice',
       description: 'hi',
@@ -41,12 +56,10 @@ describe('useMemberStore', () => {
       updated_at: '2026-01-02',
       role: 'admin',
       plan: 'paid'
-    })
+    }
 
     const store = useMemberStore()
-    await store.fetchMember('user-1')
 
-    expect(fetchMemberById).toHaveBeenCalledWith('user-1')
     expect(store.id).toBe('user-1')
     expect(store.display_name).toBe('Alice')
     expect(store.description).toBe('hi')
@@ -59,15 +72,15 @@ describe('useMemberStore', () => {
     expect(store.has_member).toBe(true)
   })
 
-  test('fetchMember leaves store untouched when api returns null', async () => {
-    vi.mocked(fetchMemberById).mockResolvedValue(null)
+  test('profile fields stay undefined when the query resolves to null', () => {
+    sessionUser.value = { id: 'user-1' }
+    memberRef.value = null
 
     const store = useMemberStore()
-    await store.fetchMember('user-1')
 
-    expect(store.id).toBeUndefined()
+    expect(store.id).toBe('user-1')
     expect(store.role).toBeUndefined()
     expect(store.plan).toBeUndefined()
-    expect(store.has_member).toBe(false)
+    expect(store.has_member).toBe(true)
   })
 })

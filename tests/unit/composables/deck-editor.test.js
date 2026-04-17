@@ -19,7 +19,7 @@ const { mockUploadImage } = vi.hoisted(() => ({
 const TEST_MEMBER_ID = '11111111-1111-1111-1111-111111111111'
 
 vi.mock('@/api/decks', () => ({
-  deleteDeck: mockDeleteDeck
+  useDeleteDeckMutation: () => ({ mutate: mockDeleteDeck, mutateAsync: mockDeleteDeck })
 }))
 
 vi.mock('@/composables/deck/use-deck-actions', () => ({
@@ -30,7 +30,7 @@ vi.mock('@/composables/deck/use-deck-actions', () => ({
 }))
 
 vi.mock('@/api/media', () => ({
-  uploadImage: mockUploadImage
+  useUploadImageMutation: () => ({ mutate: mockUploadImage, mutateAsync: mockUploadImage })
 }))
 
 vi.mock('@/stores/member', () => ({
@@ -427,11 +427,11 @@ describe('useDeckEditor', () => {
 
       await setCoverImage(makePayload())
 
-      expect(mockUploadImage).toHaveBeenCalledWith(
-        'decks',
-        `${TEST_MEMBER_ID}/covers/42`,
-        expect.any(File)
-      )
+      expect(mockUploadImage).toHaveBeenCalledWith({
+        bucket: 'decks',
+        path: `${TEST_MEMBER_ID}/covers/42`,
+        file: expect.any(File)
+      })
     })
 
     test('uses draft path when deck has no id', async () => {
@@ -440,7 +440,7 @@ describe('useDeckEditor', () => {
 
       await setCoverImage(makePayload())
 
-      const [, path] = mockUploadImage.mock.calls[0]
+      const [{ path }] = mockUploadImage.mock.calls[0]
       expect(path).toMatch(new RegExp(`^${TEST_MEMBER_ID}/covers/draft-`))
     })
   })
