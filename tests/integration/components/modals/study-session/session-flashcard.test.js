@@ -60,8 +60,11 @@ vi.mock('@/api/cards', () => {
   }
 })
 
+const { mockFlushDeckReviews } = vi.hoisted(() => ({ mockFlushDeckReviews: vi.fn() }))
+
 vi.mock('@/api/reviews', () => ({
-  useSaveReviewMutation: () => ({ mutate: mockSaveReview, mutateAsync: mockSaveReview })
+  useSaveReviewMutation: () => ({ mutate: mockSaveReview, mutateAsync: mockSaveReview }),
+  useFlushDeckReviews: () => mockFlushDeckReviews
 }))
 
 // ── Card stub ─────────────────────────────────────────────────────────────────
@@ -151,6 +154,7 @@ describe('Session', () => {
     mockEmitSfx.mockClear()
     cardsDataRef.value = undefined
     mockSaveReview.mockClear()
+    mockFlushDeckReviews.mockClear()
   })
 
   // ── Loading behavior ───────────────────────────────────────────────────────
@@ -573,7 +577,7 @@ describe('Session', () => {
       expect(wrapper.emitted('finished')).toBeFalsy()
     })
 
-    test('requestClose after reviewing a card emits "finished" with stats', async () => {
+    test('requestClose after reviewing a card routes through finish-animation and emits "finished"', async () => {
       const wrapper = makeSession(2)
       await waitForLoad(wrapper)
 
@@ -585,9 +589,108 @@ describe('Session', () => {
       await flushPromises()
 
       wrapper.vm.requestClose()
+      await flushPromises()
 
       expect(wrapper.emitted('finished')).toHaveLength(1)
       expect(wrapper.emitted('closed')).toBeFalsy()
+    })
+
+    // requestClose during an active session no longer emits 'finished' directly —
+    // it flips mode to 'completed' so the finish animation gets to play, and the
+    // animation's @done handler is the single emitter of 'finished'.
+    test('early close with 1 review of 2 cards: total reports cards.length, not reviewed_count', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+
+      await startSession(wrapper)
+      await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
+      await wrapper.find('[data-testid="rating-buttons__good"]').trigger('click')
+      await flushPromises()
+      fireTransitionEnd(wrapper)
+      await flushPromises()
+
+      wrapper.vm.requestClose()
+      await flushPromises()
+
+      const [, total] = wrapper.emitted('finished')[0]
+      expect(total).toBe(2)
+    })
+  })
+
+  // ── Deck cache flush (post-migration to end-of-session invalidation) ───────
+
+  describe('deck cache flush', () => {
+    test('flushDeckReviews is not called during per-review saves', async () => {
+      const wrapper = makeSession(3)
+      await waitForLoad(wrapper)
+
+      await startSession(wrapper)
+      await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
+      await wrapper.find('[data-testid="rating-buttons__good"]').trigger('click')
+      await flushPromises()
+      fireTransitionEnd(wrapper)
+      await flushPromises()
+
+      expect(mockSaveReview).toHaveBeenCalledTimes(1)
+      expect(mockFlushDeckReviews).not.toHaveBeenCalled()
+    })
+
+    test('flushDeckReviews fires with deck.id on natural completion (last card reviewed)', async () => {
+      const wrapper = makeSession(1)
+      await waitForLoad(wrapper)
+
+      await startSession(wrapper)
+      await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
+      await wrapper.find('[data-testid="rating-buttons__good"]').trigger('click')
+      await flushPromises()
+      fireTransitionEnd(wrapper)
+      await flushPromises()
+
+      expect(mockFlushDeckReviews).toHaveBeenCalledTimes(1)
+      expect(mockFlushDeckReviews).toHaveBeenCalledWith(1)
+    })
+
+    test('flushDeckReviews fires when requestClose is invoked after ≥1 review', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+
+      await startSession(wrapper)
+      await wrapper.find('[data-testid="rating-buttons__show"]').trigger('click')
+      await wrapper.find('[data-testid="rating-buttons__good"]').trigger('click')
+      await flushPromises()
+      fireTransitionEnd(wrapper)
+      await flushPromises()
+
+      expect(mockFlushDeckReviews).not.toHaveBeenCalled()
+
+      wrapper.vm.requestClose()
+      await flushPromises()
+
+      expect(mockFlushDeckReviews).toHaveBeenCalledTimes(1)
+      expect(mockFlushDeckReviews).toHaveBeenCalledWith(1)
+    })
+
+    test('flushDeckReviews is NOT called when requestClose from cover state emits "closed"', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+
+      wrapper.vm.requestClose()
+      await flushPromises()
+
+      expect(wrapper.emitted('closed')).toHaveLength(1)
+      expect(mockFlushDeckReviews).not.toHaveBeenCalled()
+    })
+
+    test('flushDeckReviews is NOT called when requestClose after starting but before any review', async () => {
+      const wrapper = makeSession(2)
+      await waitForLoad(wrapper)
+
+      await startSession(wrapper)
+      wrapper.vm.requestClose()
+      await flushPromises()
+
+      expect(wrapper.emitted('closed')).toHaveLength(1)
+      expect(mockFlushDeckReviews).not.toHaveBeenCalled()
     })
   })
 })

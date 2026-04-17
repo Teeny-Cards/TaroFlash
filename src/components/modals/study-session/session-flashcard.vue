@@ -15,6 +15,7 @@ import { type Grade } from 'ts-fsrs'
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 import Card from '@/components/card/index.vue'
 import { useCardsInDeckQuery } from '@/api/cards'
+import { useFlushDeckReviews } from '@/api/reviews'
 import { emitSfx } from '@/sfx/bus'
 
 const { deck, config_override } = defineProps<{
@@ -76,6 +77,7 @@ const card_view = computed<'skeleton' | 'edit' | 'read'>(() => {
 })
 
 const cards_query = useCardsInDeckQuery(() => deck.id!)
+const flushDeckReviews = useFlushDeckReviews()
 
 onMounted(() => {
   if (!deck.id) emit('closed')
@@ -103,10 +105,15 @@ function requestClose() {
     return
   }
 
+  mode.value = 'completed'
+}
+
+function onFinishAnimationDone() {
+  if (deck.id) flushDeckReviews(deck.id)
   emit(
     'finished',
     num_correct.value,
-    reviewed_count.value,
+    cards.value.length,
     remaining_due_count.value,
     config.study_all_cards
   )
@@ -229,8 +236,5 @@ async function onCardReviewed(grade?: Grade) {
     />
   </div>
 
-  <finish-animation
-    v-if="mode === 'completed'"
-    @done="emit('finished', num_correct, cards.length, remaining_due_count, config.study_all_cards)"
-  />
+  <finish-animation v-if="mode === 'completed'" @done="onFinishAnimationDone" />
 </template>
