@@ -13,10 +13,16 @@ export function useSaveReviewMutation() {
   const queryCache = useQueryCache()
   return useMutation({
     mutation: (vars: SaveReviewVars) => saveReview(vars.card_id, vars.card, vars.log),
-    onSettled: (_data, _error, vars) => {
+    onSettled: () => {
       queryCache.invalidateQueries({ key: ['decks'] })
-      queryCache.invalidateQueries({ key: ['deck', vars.deck_id] })
-      queryCache.invalidateQueries({ key: ['cards', vars.deck_id] })
     }
   })
+}
+
+export function useFlushDeckReviews() {
+  const queryCache = useQueryCache()
+  return (deck_id: number) => {
+    queryCache.invalidateQueries({ key: ['deck', deck_id] })
+    queryCache.invalidateQueries({ key: ['cards', deck_id] })
+  }
 }

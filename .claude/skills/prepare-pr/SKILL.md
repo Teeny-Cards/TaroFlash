@@ -2,7 +2,7 @@
 name: prepare-pr
 description: Prepare a branch for PR by rewriting commit messages into release-notes-friendly Conventional Commits, renaming the branch if it no longer fits the changes, splitting unrelated or oversized work into a stack of smaller PRs, drafting a PR title and body, and opening the GitHub "create PR" page pre-filled. Use when a feature branch is code-complete and ready for review.
 allowed-tools: Read, Edit, Write, Bash, Glob, Grep
-lastUpdated: 2026-04-15T16:54:40-07:00
+lastUpdated: 2026-04-17T01:40:00Z
 ---
 
 ## Why this skill exists
@@ -15,7 +15,7 @@ The output is:
 2. Commits renamed into **Conventional Commits** format (see style guide below).
 3. Branches renamed if their slugs no longer fit.
 4. Branches pushed (force-with-lease if rewritten, fresh push if new).
-5. GitHub "create PR" pages opened in the browser with title + body pre-filled via `gh pr create --web`, one per PR, each with the correct base branch for stacked reviews.
+5. Each PR submitted via `gh pr create` — created directly (no browser) when the plan has multiple PRs, or opened pre-filled in the browser when there's a single PR.
 
 History may have been published — **the user has pre-authorised force-pushing on this branch**, so don't block on upstream state. Still surface what you're about to do before you do it.
 
@@ -309,22 +309,35 @@ If `.github/pull_request_template.md` exists, use its structure instead and fill
 
 Keep the body tight. One short paragraph + a handful of bullets beats a wall of text.
 
-### Step 10 — Open pre-filled PR page (per PR)
+### Step 10 — Submit or open each PR
 
-For each branch, open the GitHub create-PR page with base set correctly:
+Behaviour depends on how many PRs the plan produced:
+
+**Multiple PRs → create each one directly, no browser.** Spawning N create-PR tabs in a stack is annoying; for stacked reviews the user also needs parent PR numbers resolved before stacked children can reference them.
 
 ```sh
-gh pr create --web \
+gh pr create \
   --base <base-branch> \
   --title "<title from Step 9>" \
   --body "<body from Step 9>"
 ```
 
-`<base-branch>` is `master` for the root PR and the parent PR's branch name for stacked PRs. `--web` opens the browser on the GitHub "create pull request" form with the fields pre-filled. The user clicks "Create pull request" when satisfied.
+Run parents before children. Capture the URL each invocation prints — needed for the Step 11 report and for substituting `#N` references into stacked-child bodies before their own create call.
 
-Open root PRs first so their PR numbers exist by the time stacked PRs are drafted (lets you reference `#N` in the body).
+**Single PR → open the pre-filled create page in the browser.**
 
-If `gh` isn't available or auth failed in Step 1: skip this command and print the title and body as fenced blocks so the user can paste them manually.
+```sh
+gh pr create --web \
+  --base master \
+  --title "<title from Step 9>" \
+  --body "<body from Step 9>"
+```
+
+`--web` opens the GitHub "create pull request" form with the fields pre-filled. The user clicks "Create pull request" when satisfied.
+
+`<base-branch>` is `master` for the root PR and the parent PR's branch name for stacked PRs.
+
+If `gh` isn't available or auth failed in Step 1: skip these commands and print each PR's title, body, and base as fenced blocks so the user can create them manually.
 
 ### Step 11 — Report
 
@@ -332,13 +345,18 @@ Output a summary per PR:
 
 ```
 PR 1: <branch>   (base: master)   (was: <old-name>)   # omit "was" if unchanged
+  <url-or-draft-note>
   <new log — short>
 
 PR 2: <branch>   (base: <parent-branch>) [stacked]
+  <url>
   <new log — short>
-
-All PR draft pages opened in browser.
 ```
+
+The line under the header:
+
+- **Multiple-PR runs**: the URL returned by each `gh pr create` call (e.g. `https://github.com/org/repo/pull/123`).
+- **Single-PR runs**: `Draft opened in browser — submit when ready.`
 
 If anything was skipped (split declined, rename declined, gh unavailable, push blocked), list it under **Deferred items** so it's not forgotten.
 
