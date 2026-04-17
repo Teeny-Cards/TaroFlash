@@ -12,19 +12,16 @@ import {
 } from '@/api/session'
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
-import { useMemberStore } from './member'
 import logger from '@/utils/logger'
 
 export const useSessionStore = defineStore('sessionStore', () => {
   const router = useRouter()
-  const memberStore = useMemberStore()
 
   const user = ref<User | undefined>(undefined)
   const loading_count = ref(0)
 
   const authenticated = computed(() => Boolean(user.value?.aud === 'authenticated'))
   const isLoading = computed(() => loading_count.value > 0)
-  const user_id = computed(() => user.value?.id ?? '')
 
   async function restoreSession(): Promise<boolean> {
     startLoading()
@@ -33,10 +30,6 @@ export const useSessionStore = defineStore('sessionStore', () => {
       if (!authenticated.value) {
         const session = await getSession()
         user.value = session?.user
-      }
-
-      if (user_id.value && !memberStore.has_member) {
-        await memberStore.fetchMember(user_id.value)
       }
 
       return authenticated.value

@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import Card from '@/components/card/index.vue'
-import { upsertCards } from '@/api/cards'
+import { useUpsertCardsMutation } from '@/api/cards'
 
 type CardDraft = { front_text: string; back_text: string; deck_id: number }
 
@@ -10,6 +10,7 @@ const saving = ref(false)
 const delimiter = ref<string>('::')
 const raw_text = ref<string>('')
 const cards = ref<CardDraft[]>([])
+const upsert_cards_mutation = useUpsertCardsMutation()
 
 const { deck_id } = defineProps<{ deck_id: number }>()
 
@@ -30,7 +31,7 @@ async function onSave() {
   if (!has_unsaved_changes.value || saving.value) return
 
   saving.value = true
-  await upsertCards(cards.value)
+  await upsert_cards_mutation.mutateAsync(cards.value)
   saving.value = false
   cards.value = []
 }

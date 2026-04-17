@@ -1,26 +1,23 @@
 import { supabase } from '@/supabase-client'
 import logger from '@/utils/logger'
 import { DateTime } from 'luxon'
-import { uploadImage, insertMedia } from '@/api/media'
+import { uploadImage, insertMedia } from '@/api/media/db'
 import { useMemberStore } from '@/stores/member'
 import uid from '@/utils/uid'
-import { debounce } from '@/utils/debounce'
 import { buildCardPayload, hasCardChanges } from '@/utils/card/payload'
 import { type CardBase } from '@type/card'
 
 /**
- * In-place update + debounced upsert for an existing card. Skips the network
- * round-trip if `values` introduces no actual change. The debounce is keyed
- * by card id so concurrent edits to different cards don't supersede each
- * other. Returns undefined for calls that are superseded by a later call
- * within the debounce window.
+ * In-place update + upsert for an existing card. Skips the network round-trip
+ * if `values` introduces no actual change. Caller-side debouncing lives in
+ * the `useSaveCardMutation` wrapper, not here.
  */
 export async function saveCard(card: Card, values: Partial<Card>): Promise<void> {
   if (!card.id) return
   if (!hasCardChanges(card, values)) return
 
   Object.assign(card, values)
-  await debounce(() => upsertCard(buildCardPayload(card)), { key: `card-${card.id}` })
+  await upsertCard(buildCardPayload(card))
 }
 
 export async function upsertCard(card: Partial<CardBase>): Promise<Card> {

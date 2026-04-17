@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { fetchMemberDecks } from '@/api/decks'
-import { fetchMemberCardCount } from '@/api/cards'
+import { computed, watch } from 'vue'
+import { useMemberDecksQuery } from '@/api/decks'
 import { useToast } from '@/composables/toast'
 import Deck from '@/components/deck.vue'
 import { useRouter } from 'vue-router'
@@ -21,33 +20,21 @@ const router = useRouter()
 const is_md = useMediaQuery('md')
 
 const deck_settings_modal = useDeckSettingsModal()
-const loading = ref(true)
-const decks = ref<Deck[]>([])
-const due_card_count = ref(0)
-
-onMounted(async () => {
-  await refetchDecks()
-  due_card_count.value = await fetchMemberCardCount({ only_due_cards: true })
-  loading.value = false
+const { data: decks_data, error: decks_error } = useMemberDecksQuery()
+const decks = computed(() => decks_data.value ?? [])
+watch(decks_error, (err) => {
+  if (err) toast.error(err.message)
 })
 
 const due_decks = computed(() => {
   return decks.value.filter((deck) => (deck.due_count ?? 0) > 0)
 })
 
-async function refetchDecks() {
-  try {
-    decks.value = await fetchMemberDecks()
-  } catch (e: any) {
-    toast.error(e.message)
-  }
-}
-
 function onDeckClicked(deck: Deck) {
   router.push({ name: 'deck', params: { id: deck.id } })
 }
 
-async function onCreateDeckClicked() {
+function onCreateDeckClicked() {
   if (!can.createDeck(decks.value.length)) {
     alert.warn({
       title: t('errors.deck-limit-reached.title'),
@@ -56,11 +43,7 @@ async function onCreateDeckClicked() {
     return
   }
 
-  const { response: deck_created } = deck_settings_modal.open()
-
-  if (await deck_created) {
-    await refetchDecks()
-  }
+  deck_settings_modal.open()
 }
 </script>
 
@@ -93,7 +76,6 @@ async function onCreateDeckClicked() {
         :deck="deck"
         :size="is_md ? 'base' : 'sm'"
         @click="onDeckClicked(deck)"
-        @updated="refetchDecks"
       />
     </div>
   </div>

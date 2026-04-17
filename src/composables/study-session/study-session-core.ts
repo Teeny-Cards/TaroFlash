@@ -8,7 +8,7 @@ import {
   type RecordLog
 } from 'ts-fsrs'
 import { DateTime } from 'luxon'
-import { saveReview } from '@/api/reviews'
+import { useSaveReviewMutation } from '@/api/reviews'
 
 export type StudyCard = Card & { preview?: RecordLog; state: ReviewState }
 
@@ -43,6 +43,8 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
   const _raw_cards = shallowRef<Card[]>([])
   const _cards_in_deck = shallowRef<StudyCard[]>([])
+
+  const save_review_mutation = useSaveReviewMutation()
 
   const mode = ref<'studying' | 'completed'>('studying')
   const active_card = shallowRef<StudyCard | undefined>(undefined)
@@ -123,7 +125,14 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
       active_card.value = cards.value.find((c) => c.state === 'unreviewed')
       if (!active_card.value) mode.value = 'completed'
 
-      if (card.id) return saveReview(card.id, item.card, item.log)
+      if (card.id && card.deck_id !== undefined) {
+        return save_review_mutation.mutateAsync({
+          card_id: card.id,
+          deck_id: card.deck_id,
+          card: item.card,
+          log: item.log
+        })
+      }
     } else {
       card.state = 'passed'
       active_card.value = cards.value.find((c) => c.state === 'unreviewed')
