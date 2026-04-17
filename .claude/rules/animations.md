@@ -1,5 +1,7 @@
 ---
-lastUpdated: 2026-04-12T11:56:41-07:00
+lastUpdated: 2026-04-17T01:31:17Z
+paths:
+  - 'src/**/*.{ts,vue}'
 ---
 
 # Animation Sequencing
