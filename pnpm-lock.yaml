@@ -40,8 +40,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(pinia@3.0.4(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))
       '@stripe/stripe-js':
-        specifier: ^8.11.0
-        version: 8.11.0
+        specifier: ^9.2.0
+        version: 9.2.0
       '@supabase/supabase-js':
         specifier: ^2.101.1
         version: 2.101.1
@@ -1272,8 +1272,8 @@ packages:
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
-  '@stripe/stripe-js@8.11.0':
-    resolution: {integrity: sha512-3fVF4z3efsgwgyj64nFK+6F4/vMw0mUXD2TBbOfftJtKVNx4JNv3CSfe1fY4DCtCk0JFp8/YPNcRkzgV0HJ8cg==}
+  '@stripe/stripe-js@9.2.0':
+    resolution: {integrity: sha512-YSzLC0t6VS9MDdPTynSMqU8IxrItFUjkDORALFT6sSMR/XZ5Vgm3RDp/Gk7z727MC4A9s4MFVel0gF0c7+kdrg==}
     engines: {node: '>=12.16'}
 
   '@supabase/auth-js@2.101.1':
@@ -4611,7 +4611,7 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@stripe/stripe-js@8.11.0': {}
+  '@stripe/stripe-js@9.2.0': {}
 
   '@supabase/auth-js@2.101.1':
     dependencies:

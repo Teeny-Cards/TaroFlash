@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vp dev",
     "dev:host": "vp dev --host",
+    "dev:full": "run-p -l vite stripe",
+    "vite": "vp dev",
+    "stripe": "stripe listen --forward-to http://localhost:54321/functions/v1/stripe-webhook",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vp preview",
     "test": "vp test run --coverage",
@@ -29,7 +32,7 @@
     "@lexical/selection": "^0.41.0",
     "@lexical/utils": "^0.41.0",
     "@pinia/colada": "^1.1.0",
-    "@stripe/stripe-js": "^8.11.0",
+    "@stripe/stripe-js": "^9.2.0",
     "@supabase/supabase-js": "^2.101.1",
     "@types/howler": "^2.2.12",
     "body-scroll-lock": "4.0.0-beta.0",
