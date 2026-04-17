@@ -23,8 +23,14 @@ const mocks = vi.hoisted(() => ({
 }))
 
 vi.mock('@/api/cards', () => ({
-  setCardImage: mocks.setCardImageMock,
-  deleteCardImage: mocks.deleteCardImageMock
+  useSetCardImageMutation: () => ({
+    mutate: mocks.setCardImageMock,
+    mutateAsync: mocks.setCardImageMock
+  }),
+  useDeleteCardImageMutation: () => ({
+    mutate: mocks.deleteCardImageMock,
+    mutateAsync: mocks.deleteCardImageMock
+  })
 }))
 
 vi.mock('@/sfx/bus', () => ({ emitSfx: mocks.emitSfxMock }))
@@ -39,16 +45,16 @@ import ImageButton from '@/views/deck/image-button.vue'
 function mount(props = {}) {
   return shallowMount(ListItemCard, {
     props: {
+      duplicate: false,
+      ...props,
       card: {
         id: 1,
         deck_id: 10,
         front_text: 'Q',
         back_text: 'A',
         rank: 1000,
-        ...props.card
-      },
-      duplicate: false,
-      ...props
+        ...(props.card ?? {})
+      }
     },
     global: {
       stubs: { Card: CardStub },
@@ -108,7 +114,12 @@ describe('ListItemCard', () => {
     const file = new File(['x'], 'a.png', { type: 'image/png' })
     const frontButton = wrapper.findAllComponents(ImageButton)[0]
     await frontButton.vm.$emit('image-uploaded', file)
-    expect(mocks.setCardImageMock).toHaveBeenCalledWith(42, file, 'front')
+    expect(mocks.setCardImageMock).toHaveBeenCalledWith({
+      card_id: 42,
+      deck_id: 10,
+      file,
+      side: 'front'
+    })
   })
 
   test('passes the side to setCardImage when the back image button emits', async () => {
@@ -116,13 +127,22 @@ describe('ListItemCard', () => {
     const file = new File(['x'], 'b.png', { type: 'image/png' })
     const backButton = wrapper.findAllComponents(ImageButton)[1]
     await backButton.vm.$emit('image-uploaded', file)
-    expect(mocks.setCardImageMock).toHaveBeenCalledWith(42, file, 'back')
+    expect(mocks.setCardImageMock).toHaveBeenCalledWith({
+      card_id: 42,
+      deck_id: 10,
+      file,
+      side: 'back'
+    })
   })
 
   test('deletes the front image when the front image button emits image-deleted', async () => {
     const wrapper = mount({ card: { id: 42 } })
     const frontButton = wrapper.findAllComponents(ImageButton)[0]
     await frontButton.vm.$emit('image-deleted')
-    expect(mocks.deleteCardImageMock).toHaveBeenCalledWith(42, 'front')
+    expect(mocks.deleteCardImageMock).toHaveBeenCalledWith({
+      card_id: 42,
+      deck_id: 10,
+      side: 'front'
+    })
   })
 })

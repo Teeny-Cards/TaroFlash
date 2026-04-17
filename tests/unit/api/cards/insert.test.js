@@ -10,7 +10,7 @@ vi.mock('@/supabase-client', () => ({
 
 vi.mock('@/utils/logger', () => ({ default: { error: vi.fn() } }))
 
-import { insertCard } from '@/api/cards/insert'
+import { insertCard } from '@/api/cards/db/insert'
 
 describe('insertCard', () => {
   beforeEach(() => {

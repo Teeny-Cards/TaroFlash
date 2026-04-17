@@ -42,7 +42,7 @@ vi.mock('@/supabase-client', () => ({
   }
 }))
 
-vi.mock('@/api/media', () => ({
+vi.mock('@/api/media/db', () => ({
   uploadImage: mocks.uploadImageMock,
   insertMedia: mocks.insertMediaMock
 }))
@@ -52,11 +52,6 @@ vi.mock('@/stores/member', () => ({
 }))
 
 vi.mock('@/utils/logger', () => ({ default: { error: vi.fn() } }))
-
-// Call the debounced fn immediately so saveCard resolves synchronously.
-vi.mock('@/utils/debounce', () => ({
-  debounce: vi.fn((fn) => fn())
-}))
 
 // Deterministic uid so path assertions are stable.
 vi.mock('@/utils/uid', () => ({ default: () => 'FIXED_UID' }))
@@ -68,8 +63,7 @@ import {
   reorderCard,
   moveCardsToDeck,
   setCardImage
-} from '@/api/cards/update'
-import { debounce } from '@/utils/debounce'
+} from '@/api/cards/db/update'
 
 function makeCard(overrides = {}) {
   return {
@@ -97,7 +91,6 @@ beforeEach(() => {
   mocks.insertMediaMock.mockReset()
   mocks.insertMediaMock.mockResolvedValue(undefined)
   mocks.memberIdRef.value = 'member-uuid-1'
-  vi.mocked(debounce).mockClear()
 })
 
 describe('saveCard', () => {
@@ -118,12 +111,6 @@ describe('saveCard', () => {
     const card = makeCard({ id: 0 })
     await saveCard(card, { front_text: 'New' })
     expect(mocks.singleMock).not.toHaveBeenCalled()
-  })
-
-  test('keys the debounce by card id so concurrent card edits do not supersede each other', async () => {
-    const card = makeCard()
-    await saveCard(card, { front_text: 'X' })
-    expect(debounce).toHaveBeenCalledWith(expect.any(Function), { key: `card-${card.id}` })
   })
 
   test('strips runtime-only fields (review, state) from the upsert payload', async () => {

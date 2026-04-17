@@ -28,6 +28,7 @@
     "@lexical/rich-text": "^0.41.0",
     "@lexical/selection": "^0.41.0",
     "@lexical/utils": "^0.41.0",
+    "@pinia/colada": "^1.1.0",
     "@stripe/stripe-js": "^8.11.0",
     "@supabase/supabase-js": "^2.101.1",
     "@types/howler": "^2.2.12",

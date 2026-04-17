@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import OverviewPanel from '@/views/deck/overview-panel.vue'
-import { onMounted, ref, reactive, provide } from 'vue'
-import { fetchDeck } from '@/api/decks'
+import { ref, reactive, provide, watch } from 'vue'
+import { useDeckQuery } from '@/api/decks'
 import CardEditor from './card-editor/index.vue'
 import CardGrid from './card-grid/index.vue'
 import CardImporter from './card-importer.vue'
@@ -11,7 +11,7 @@ import { useAlert } from '@/composables/alert'
 import { useModal } from '@/composables/modal'
 import { emitSfx } from '@/sfx/bus'
 import UiScrollBar from '@/components/ui-kit/scroll-bar.vue'
-import { moveCardsToDeck } from '@/api/cards'
+import { useMoveCardsToDeckMutation } from '@/api/cards'
 import MoveCardsModal from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
 import UiButton from '@/components/ui-kit/button.vue'
@@ -28,11 +28,27 @@ const alert = useAlert()
 const is_md = useMediaQuery('md')
 
 const image_url = ref<string | undefined>()
-const deck = ref<Deck>()
 const active_tab = ref(0)
 const card_attributes = reactive<DeckCardAttributes>({ front: {}, back: {} })
 
+const deck_query = useDeckQuery(() => Number(deck_id))
+const deck = deck_query.data
+const refetchDeck = () => deck_query.refetch()
+const move_cards_mutation = useMoveCardsToDeckMutation()
+
 const editor = useCardBulkEditor(deck.value?.cards ?? [], Number(deck_id))
+
+watch(
+  deck,
+  (current) => {
+    if (!current) return
+    if (current.cards) editor.resetCards(current.cards)
+    const incoming = current.card_attributes
+    card_attributes.front = incoming?.front ?? {}
+    card_attributes.back = incoming?.back ?? {}
+  },
+  { immediate: true }
+)
 
 provide('card-editor', editor)
 provide('card-attributes', card_attributes)
@@ -61,10 +77,6 @@ const tab_components: { [key: number]: any } = {
   2: CardImporter
 }
 
-onMounted(async () => {
-  await refetchDeck()
-})
-
 async function onCancel() {
   emitSfx('ui.card_drop')
 
@@ -72,22 +84,6 @@ async function onCancel() {
   editor.clearSelectedCards()
 
   await refetchDeck()
-}
-
-async function refetchDeck() {
-  try {
-    deck.value = await fetchDeck(Number(deck_id))
-
-    if (deck.value.cards) {
-      editor.resetCards(deck.value.cards)
-    }
-
-    const incoming = deck.value.card_attributes
-    card_attributes.front = incoming?.front ?? {}
-    card_attributes.back = incoming?.back ?? {}
-  } catch (e: any) {
-    // TODO
-  }
 }
 
 async function onDeleteCards(id?: number) {
@@ -134,8 +130,7 @@ async function onMoveCards(id?: number) {
   const res = await response
 
   if (res) {
-    await moveCardsToDeck(selected_cards, res.deck_id)
-    await refetchDeck()
+    await move_cards_mutation.mutateAsync({ cards: selected_cards, deck_id: res.deck_id })
   } else {
     editor.deselectCard(id)
   }

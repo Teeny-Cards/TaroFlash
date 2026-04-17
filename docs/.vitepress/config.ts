@@ -40,6 +40,11 @@ const frontendSidebar = [
     ]
   },
   {
+    text: 'Server State',
+    collapsed: true,
+    items: [{ text: 'Overview', link: '/state/index' }]
+  },
+  {
     text: 'TaroPhone',
     collapsed: true,
     items: [
@@ -91,6 +96,7 @@ export default defineConfig({
       '/components/': frontendSidebar,
       '/modal/': frontendSidebar,
       '/phone/': frontendSidebar,
+      '/state/': frontendSidebar,
       '/supabase/': backendSidebar,
       '/devops/': devopsSidebar,
       '/design-system/': [

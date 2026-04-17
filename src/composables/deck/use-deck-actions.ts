@@ -1,5 +1,5 @@
 import { useI18n } from 'vue-i18n'
-import { fetchMemberDeckCount, upsertDeck } from '@/api/decks'
+import { useMemberDeckCountQuery, useUpsertDeckMutation } from '@/api/decks'
 import { useAlert } from '@/composables/alert'
 import { useCan } from '@/composables/use-can'
 
@@ -7,9 +7,12 @@ export function useDeckActions() {
   const { t } = useI18n()
   const alert = useAlert()
   const can = useCan()
+  const deck_count_query = useMemberDeckCountQuery()
+  const upsert_mutation = useUpsertDeckMutation()
 
   async function createDeck(deck: Deck): Promise<boolean> {
-    const count = await fetchMemberDeckCount()
+    await deck_count_query.refresh()
+    const count = deck_count_query.data.value ?? 0
     if (!can.createDeck(count)) {
       await alert.warn({
         title: t('errors.deck-limit-reached.title'),
@@ -17,12 +20,12 @@ export function useDeckActions() {
       }).response
       return false
     }
-    await upsertDeck(deck)
+    await upsert_mutation.mutateAsync(deck)
     return true
   }
 
   async function updateDeck(deck: Deck): Promise<boolean> {
-    await upsertDeck(deck)
+    await upsert_mutation.mutateAsync(deck)
     return true
   }
 

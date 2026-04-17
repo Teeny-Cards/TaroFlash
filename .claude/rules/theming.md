@@ -1,5 +1,7 @@
 ---
-lastUpdated: 2026-04-13T21:03:32-07:00
+lastUpdated: 2026-04-17T01:31:17Z
+paths:
+  - 'src/**/*.{vue,css}'
 ---
 
 # Theming Convention
