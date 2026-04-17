@@ -1,112 +1,134 @@
+// Creates an incomplete subscription + PaymentIntent for the caller's plan.
+//
+// Used with Stripe Elements (Payment Element). The client gets back the
+// PaymentIntent's client_secret and runs `stripe.confirmPayment()` with a
+// Payment Element mounted in our own UI. That's the opposite of Embedded
+// Checkout (which returned a *Session* client_secret and mounted Stripe's
+// pre-built UI). We chose Elements to own the appearance layer.
+
 import Stripe from 'npm:stripe@20'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const stripe = Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
-  apiVersion: '2024-06-20'
+const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
+  apiVersion: '2024-06-20',
+  httpClient: Stripe.createFetchHttpClient()
 })
 
-const corsHeaders = {
+const cors = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type'
 }
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 204,
-      headers: corsHeaders
-    })
+    return new Response(null, { status: 204, headers: cors })
   }
-
   if (req.method !== 'POST') {
-    return new Response('Method Not Allowed', {
-      status: 405,
-      headers: corsHeaders
-    })
+    return new Response('Method Not Allowed', { status: 405, headers: cors })
   }
 
-  // Verify the caller is a logged-in Supabase user.
-  // The frontend sends the session JWT as "Authorization: Bearer <token>".
-  // We create a Supabase client scoped to that token and call getUser(),
-  // which validates the JWT server-side. If it fails, we stop here.
   const authHeader = req.headers.get('Authorization')
   if (!authHeader) {
-    return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+    return new Response('Unauthorized', { status: 401, headers: cors })
   }
 
-  const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, {
-    global: { headers: { Authorization: authHeader } }
-  })
+  const userClient = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_ANON_KEY')!,
+    { global: { headers: { Authorization: authHeader } } }
+  )
 
   const {
     data: { user },
     error: authError
-  } = await supabase.auth.getUser()
+  } = await userClient.auth.getUser()
   if (authError || !user) {
-    return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+    return new Response('Unauthorized', { status: 401, headers: cors })
   }
 
+  const admin = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+  )
+
   try {
-    const { priceId, customerId, email } = await req.json().catch(() => ({}))
-
-    if (!priceId) {
-      return new Response('Missing priceId', { status: 400 })
+    const { planId } = await req.json().catch(() => ({}))
+    if (!planId) {
+      return new Response('Missing planId', { status: 400, headers: cors })
     }
 
-    let customer: string
+    // Client sends plan id, server resolves to Stripe price id via plans.
+    const { data: plan } = await admin
+      .from('plans')
+      .select('stripe_price_id')
+      .eq('id', planId)
+      .eq('is_active', true)
+      .maybeSingle()
 
-    if (customerId) {
-      customer = customerId
-    } else if (email) {
-      const existing = await stripe.customers.list({
-        email,
-        limit: 1
+    if (!plan?.stripe_price_id) {
+      return new Response(`Plan not purchasable: ${planId}`, {
+        status: 400,
+        headers: cors
       })
-
-      if (existing.data.length > 0) {
-        customer = existing.data[0].id
-      } else {
-        const created = await stripe.customers.create({ email })
-        customer = created.id
-      }
-    } else {
-      return new Response('Missing customerId or email', { status: 400 })
     }
 
-    // Create subscription in "incomplete" state
+    // Get — or create — the Stripe customer for this member.
+    const { data: member } = await admin
+      .from('members')
+      .select('stripe_customer_id')
+      .eq('id', user.id)
+      .single()
+
+    let customerId = member?.stripe_customer_id ?? null
+
+    if (!customerId) {
+      const existing = await stripe.customers.list({ email: user.email, limit: 1 })
+      const customer =
+        existing.data[0] ??
+        (await stripe.customers.create({
+          email: user.email,
+          metadata: { member_id: user.id }
+        }))
+      customerId = customer.id
+
+      await admin.from('members').update({ stripe_customer_id: customerId }).eq('id', user.id)
+    }
+
+    // Create the subscription in "incomplete" state. Stripe generates a
+    // PaymentIntent for the first invoice; we expand it so we can read the
+    // client_secret without a second round-trip.
+    //
+    // `default_incomplete` means the subscription exists but has no active
+    // payment yet — completing the PaymentIntent on the frontend activates
+    // it, at which point the webhook fires `customer.subscription.updated`.
     const subscription = await stripe.subscriptions.create({
-      customer,
-      items: [{ price: priceId }],
+      customer: customerId,
+      items: [{ price: plan.stripe_price_id }],
       payment_behavior: 'default_incomplete',
       payment_settings: {
         save_default_payment_method: 'on_subscription'
       },
-      expand: ['latest_invoice.payment_intent']
+      expand: ['latest_invoice.payment_intent'],
+      metadata: { member_id: user.id }
     })
 
     const paymentIntent = subscription.latest_invoice?.payment_intent
-
     if (!paymentIntent || typeof paymentIntent !== 'object') {
-      return new Response('No PaymentIntent on subscription', { status: 500 })
+      return new Response('No PaymentIntent on subscription', {
+        status: 500,
+        headers: cors
+      })
     }
-
-    const clientSecret = (paymentIntent as any).client_secret as string
 
     return new Response(
       JSON.stringify({
-        clientSecret,
-        subscriptionId: subscription.id,
-        customerId: customer
+        clientSecret: paymentIntent.client_secret,
+        subscriptionId: subscription.id
       }),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        }
-      }
+      { headers: { ...cors, 'Content-Type': 'application/json' } }
     )
   } catch (err) {
     console.error(err)
-    return new Response('Error creating subscription', { status: 500 })
+    return new Response('Error creating subscription', { status: 500, headers: cors })
   }
 })
