@@ -9,17 +9,15 @@ import UiButton from '@/components/ui-kit/button.vue'
 import { useMediaQuery } from '@/composables/use-media-query'
 import ReviewInbox from './review-inbox.vue'
 import { useDeckSettingsModal } from '@/composables/modals/use-deck-settings-modal'
-import { useAlert } from '@/composables/alert'
-import { useCan } from '@/composables/use-can'
+import { useDeckActions } from '@/composables/deck/use-deck-actions'
 
 const { t } = useI18n()
 const toast = useToast()
-const alert = useAlert()
-const can = useCan()
 const router = useRouter()
 const is_md = useMediaQuery('md')
 
 const deck_settings_modal = useDeckSettingsModal()
+const deck_actions = useDeckActions()
 const { data: decks_data, error: decks_error } = useMemberDecksQuery()
 const decks = computed(() => decks_data.value ?? [])
 watch(decks_error, (err) => {
@@ -34,16 +32,10 @@ function onDeckClicked(deck: Deck) {
   router.push({ name: 'deck', params: { id: deck.id } })
 }
 
-function onCreateDeckClicked() {
-  if (!can.createDeck(decks.value.length)) {
-    alert.warn({
-      title: t('errors.deck-limit-reached.title'),
-      message: t('errors.deck-limit-reached.message')
-    })
-    return
+async function onCreateDeckClicked() {
+  if (await deck_actions.guardCreateDeck()) {
+    deck_settings_modal.open()
   }
-
-  deck_settings_modal.open()
 }
 </script>
 
