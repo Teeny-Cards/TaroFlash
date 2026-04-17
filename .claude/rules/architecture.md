@@ -1,5 +1,7 @@
 ---
-lastUpdated: 2026-04-15T10:47:25-07:00
+lastUpdated: 2026-04-17T01:31:17Z
+paths:
+  - 'src/**/*.{ts,vue}'
 ---
 
 # Architecture Conventions
@@ -24,18 +26,18 @@ Adjust props/emits to wire components together. Don't copy template markup or sc
 
 ## Supabase calls belong in `src/api/`
 
-All Supabase client calls must live in the appropriate `src/api/` module. Never call `supabase` directly from composables, views, or components.
+All Supabase client calls must live in the appropriate `src/api/` module. Never call `supabase` directly from composables, views, or components. Components consume the domain barrel via hooks (`useXxxQuery` / `useXxxMutation`); the raw Supabase calls live in `src/api/<domain>/db/` and are internal.
 
 ```ts
 // Bad — supabase call inline in a composable
 const { data } = await supabase.from('decks').select('*')
 
-// Good — delegate to the API layer
-import { getDecks } from '@/api/decks'
-const data = await getDecks()
+// Good — call the query hook exported by the domain
+import { useMemberDecksQuery } from '@/api/decks'
+const { data: decks } = useMemberDecksQuery()
 ```
 
-If no suitable module exists for the operation, create one (e.g. `src/api/media.ts` for media operations). Composables and components should only call functions exported from `src/api/`.
+If no suitable domain exists, create one as `src/api/<domain>/` with `db/`, `queries/`, `mutations/`, and `index.ts`. See [`server-state`](./server-state.md) for the full topology.
 
 ## Pure helpers live in directory-scoped utils, not `src/api/`
 
@@ -43,7 +45,7 @@ If no suitable module exists for the operation, create one (e.g. `src/api/media.
 
 ```ts
 // Bad — pure helpers in the api layer
-// src/api/cards/update.ts
+// src/api/cards/db/update.ts
 export function buildCardPayload(card) { ... }
 export function hasCardChanges(card, values) { ... }
 export async function saveCard(card, values) { ... }
@@ -53,7 +55,7 @@ export async function saveCard(card, values) { ... }
 export function buildCardPayload(card) { ... }
 export function hasCardChanges(card, values) { ... }
 
-// src/api/cards/update.ts — the api function keeps orchestration + the network call
+// src/api/cards/db/update.ts — the api function keeps orchestration + the network call
 import { buildCardPayload, hasCardChanges } from '@/utils/card/payload'
 export async function saveCard(card, values) { ... }
 ```

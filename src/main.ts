@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { PiniaColada } from '@pinia/colada'
 import { createI18n } from 'vue-i18n'
 import messages from '@intlify/unplugin-vue-i18n/messages'
 import { vSfx } from '@/sfx/directive'
@@ -17,6 +18,7 @@ const i18n = createI18n({
 const app = createApp(App)
 
 app.use(createPinia())
+app.use(PiniaColada)
 app.use(i18n)
 app.use(router)
 

@@ -2,7 +2,7 @@
 name: update-tests
 description: Analyse branch changes in `src/` and `supabase/` and write tests to reach ~90% coverage of changed lines
 allowed-tools: Read, Edit, Write, Bash, Glob, Grep
-lastUpdated: 2026-04-13T21:03:32-07:00
+lastUpdated: 2026-04-16T18:00:00-07:00
 ---
 
 ## Workflow
@@ -66,6 +66,22 @@ If the changed files include `supabase/migrations/*.sql` or `supabase/functions/
 5. Prioritise testing: RLS policies (security) > RPC functions (business logic) > triggers (data integrity).
 
 Skip to Step 8 for these files — Steps 3–7 are frontend-specific.
+
+### Step 2c — Capture business-logic decisions from the current session
+
+When this skill is invoked during a working session that produced the changes, the conversation often carries *why* — invariants, race conditions, and edge-case guards that the diff alone doesn't expose. A test writer who only reads the code will cover *what* changed but miss the *decisions* that shaped it.
+
+Before writing tests, distill the conversation into a short "test obligations" list. Each obligation should map to at least one test case that exercises the decision directly.
+
+Sources to mine:
+
+- **Invariants agreed verbally** but not captured in code comments (e.g. "member id is sourced from the session, not the profile query, to avoid a race during auth restore" → a test proving `.id` is defined the moment the session restores, regardless of the profile query's state)
+- **Edge-case guards with a specific reason** — if `if (!x) return` was added because `x` could be undefined in a known scenario, write a test for that scenario
+- **Invalidation / state-flow contracts** — which query keys a mutation invalidates, what cross-cutting fields (debounce keys, deck_id, etc.) are required on the wire, what happens when they're absent
+- **Bugs found and fixed mid-session** — the failing case is a guaranteed-valuable test; preserve it before moving on
+- **Memory entries** — scan `memory/MEMORY.md` for project decisions relevant to the changed files (paradigm choices, topology rules, etc.)
+
+If this skill is invoked cold on an already-merged branch with no session context, skip this step and rely on Step 2's code reading alone.
 
 ### Step 3 — Determine test type (in priority order)
 

@@ -1,18 +1,25 @@
 import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
 import { useDeckActions } from '@/composables/deck/use-deck-actions'
 
-const { mockFetchMemberDeckCount, mockUpsertDeck, mockCreateDeckCapability, mockWarn } = vi.hoisted(
+const { refreshMock, upsertMock, countRef, mockCreateDeckCapability, mockWarn } = vi.hoisted(
   () => ({
-    mockFetchMemberDeckCount: vi.fn(),
-    mockUpsertDeck: vi.fn().mockResolvedValue(undefined),
+    refreshMock: vi.fn().mockResolvedValue(undefined),
+    upsertMock: vi.fn().mockResolvedValue(undefined),
+    countRef: { value: 0 },
     mockCreateDeckCapability: vi.fn(),
     mockWarn: vi.fn()
   })
 )
 
 vi.mock('@/api/decks', () => ({
-  fetchMemberDeckCount: mockFetchMemberDeckCount,
-  upsertDeck: mockUpsertDeck
+  useMemberDeckCountQuery: () => ({
+    refresh: refreshMock,
+    data: countRef
+  }),
+  useUpsertDeckMutation: () => ({
+    mutate: upsertMock,
+    mutateAsync: upsertMock
+  })
 }))
 
 vi.mock('@/composables/use-can', () => ({
@@ -35,9 +42,11 @@ function makeAlertResponse(promise = Promise.resolve(undefined)) {
 
 describe('useDeckActions', () => {
   beforeEach(() => {
-    mockFetchMemberDeckCount.mockReset()
-    mockUpsertDeck.mockReset()
-    mockUpsertDeck.mockResolvedValue(undefined)
+    refreshMock.mockReset()
+    refreshMock.mockResolvedValue(undefined)
+    upsertMock.mockReset()
+    upsertMock.mockResolvedValue(undefined)
+    countRef.value = 0
     mockCreateDeckCapability.mockReset()
     mockWarn.mockReset()
     mockWarn.mockReturnValue(makeAlertResponse())
@@ -45,20 +54,20 @@ describe('useDeckActions', () => {
 
   describe('createDeck', () => {
     test('calls upsertDeck and returns true when capability check passes', async () => {
-      mockFetchMemberDeckCount.mockResolvedValue(2)
+      countRef.value = 2
       mockCreateDeckCapability.mockReturnValue(true)
 
       const { createDeck } = useDeckActions()
       const result = await createDeck({ title: 'New Deck' })
 
       expect(mockCreateDeckCapability).toHaveBeenCalledWith(2)
-      expect(mockUpsertDeck).toHaveBeenCalledWith({ title: 'New Deck' })
+      expect(upsertMock).toHaveBeenCalledWith({ title: 'New Deck' })
       expect(mockWarn).not.toHaveBeenCalled()
       expect(result).toBe(true)
     })
 
     test('opens warn alert and returns false when capability check fails', async () => {
-      mockFetchMemberDeckCount.mockResolvedValue(5)
+      countRef.value = 5
       mockCreateDeckCapability.mockReturnValue(false)
 
       const { createDeck } = useDeckActions()
@@ -68,12 +77,12 @@ describe('useDeckActions', () => {
         title: 'errors.deck-limit-reached.title',
         message: 'errors.deck-limit-reached.message'
       })
-      expect(mockUpsertDeck).not.toHaveBeenCalled()
+      expect(upsertMock).not.toHaveBeenCalled()
       expect(result).toBe(false)
     })
 
     test('awaits the alert response before resolving', async () => {
-      mockFetchMemberDeckCount.mockResolvedValue(5)
+      countRef.value = 5
       mockCreateDeckCapability.mockReturnValue(false)
 
       let resolveAlert
@@ -108,15 +117,15 @@ describe('useDeckActions', () => {
       const { updateDeck } = useDeckActions()
       const result = await updateDeck({ id: 1, title: 'Updated' })
 
-      expect(mockUpsertDeck).toHaveBeenCalledWith({ id: 1, title: 'Updated' })
+      expect(upsertMock).toHaveBeenCalledWith({ id: 1, title: 'Updated' })
       expect(result).toBe(true)
     })
 
-    test('does not check capability or fetch count', async () => {
+    test('does not check capability or call refresh', async () => {
       const { updateDeck } = useDeckActions()
       await updateDeck({ id: 1, title: 'Updated' })
 
-      expect(mockFetchMemberDeckCount).not.toHaveBeenCalled()
+      expect(refreshMock).not.toHaveBeenCalled()
       expect(mockCreateDeckCapability).not.toHaveBeenCalled()
     })
   })

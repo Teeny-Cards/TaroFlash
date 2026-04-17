@@ -8,9 +8,9 @@ const { insertCardMock, saveCardMock, deleteCardsMock } = vi.hoisted(() => ({
 }))
 
 vi.mock('@/api/cards', () => ({
-  insertCard: insertCardMock,
-  saveCard: saveCardMock,
-  deleteCards: deleteCardsMock
+  useInsertCardMutation: () => ({ mutate: insertCardMock, mutateAsync: insertCardMock }),
+  useSaveCardMutation: () => ({ mutate: saveCardMock, mutateAsync: saveCardMock }),
+  useDeleteCardsMutation: () => ({ mutate: deleteCardsMock, mutateAsync: deleteCardsMock })
 }))
 
 import { useCardBulkEditor } from '@/composables/card-bulk-editor'

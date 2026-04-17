@@ -1,7 +1,5 @@
 import { computed, ref } from 'vue'
-import { deleteCards as upstreamDeleteCards } from '@/api/cards'
-import { insertCard } from '@/api/cards'
-import { saveCard } from '@/api/cards'
+import { useDeleteCardsMutation, useInsertCardMutation, useSaveCardMutation } from '@/api/cards'
 
 // TODO: Add error handling for all async functions
 
@@ -23,6 +21,10 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
   const mode = ref<CardEditorMode>('view')
   const saving = ref(false)
 
+  const delete_mutation = useDeleteCardsMutation()
+  const insert_mutation = useInsertCardMutation()
+  const save_mutation = useSaveCardMutation()
+
   const all_cards_selected = computed(() => {
     return selected_card_ids.value.length === all_cards.value.length
   })
@@ -38,7 +40,7 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
         // temp id for the real one. Neighbors are derived from the array's
         // current order (skipping other temp cards).
         const { left_card_id, right_card_id } = findRealNeighbors(card.id)
-        const inserted = await insertCard({
+        const inserted = await insert_mutation.mutateAsync({
           deck_id: deck_id.value!,
           left_card_id,
           right_card_id,
@@ -49,7 +51,7 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
         card.rank = inserted.rank
         Object.assign(card, values)
       } else {
-        await saveCard(card, values)
+        await save_mutation.mutateAsync({ card, values })
       }
     } finally {
       saving.value = false
@@ -198,7 +200,7 @@ export function useCardBulkEditor(initial_cards: Card[], _deck_id: number) {
     if (cards.length <= 0) return
 
     try {
-      await upstreamDeleteCards(cards)
+      await delete_mutation.mutateAsync(cards)
     } catch {
       // TODO
     } finally {

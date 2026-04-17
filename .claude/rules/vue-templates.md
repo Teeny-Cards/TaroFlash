@@ -1,5 +1,7 @@
 ---
-lastUpdated: 2026-04-12T10:02:26-07:00
+lastUpdated: 2026-04-17T01:31:17Z
+paths:
+  - 'src/**/*.vue'
 ---
 
 # Vue Template Conventions

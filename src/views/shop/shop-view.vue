@@ -1,20 +1,15 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import ShopItem from './shop-item.vue'
-import { fetchShopItems, upsertPurchase } from '@/api/shop'
+import { useShopItemsQuery, useUpsertPurchaseMutation } from '@/api/shop'
 import { useMemberStore } from '@/stores/member'
 
-const shop_items = ref<{ [key: string]: ShopItem[] }>({})
 const selected_item = ref<ShopItem | undefined>()
 const memberStore = useMemberStore()
+const { data: items } = useShopItemsQuery()
+const upsert_purchase_mutation = useUpsertPurchaseMutation()
 
-onMounted(async () => {
-  const items = await fetchShopItems()
-
-  if (items) {
-    shop_items.value = groupItemsByCategory(items)
-  }
-})
+const shop_items = computed(() => (items.value ? groupItemsByCategory(items.value) : {}))
 
 function groupItemsByCategory(items: ShopItem[]) {
   return items.reduce((acc: { [key: string]: ShopItem[] }, item: ShopItem) => {
@@ -28,7 +23,7 @@ function groupItemsByCategory(items: ShopItem[]) {
 }
 
 async function submitPurchase(item: ShopItem) {
-  await upsertPurchase({
+  await upsert_purchase_mutation.mutateAsync({
     item_id: item.id,
     member_id: memberStore.id,
     quantity: 1

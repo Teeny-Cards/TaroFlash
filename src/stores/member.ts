@@ -1,37 +1,30 @@
-import { fetchMemberById } from '@/api/members'
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
+import { useCurrentMemberQuery } from '@/api/members'
+import { useSessionStore } from './session'
 
 export const useMemberStore = defineStore('member', () => {
-  const display_name = ref<Member['display_name']>()
-  const description = ref<Member['description']>()
-  const email = ref<Member['email']>()
-  const created_at = ref<Member['created_at']>()
-  const id = ref<Member['id']>()
-  const avatar_url = ref<Member['avatar_url']>()
-  const updated_at = ref<Member['updated_at']>()
-  const role = ref<Member['role']>()
-  const plan = ref<Member['plan']>()
+  const session = useSessionStore()
+  const query = useCurrentMemberQuery()
+  const member = query.data
 
-  async function fetchMember(user_id: string): Promise<void> {
-    const fetched_member = await fetchMemberById(user_id)
-    if (!fetched_member) return
-
-    display_name.value = fetched_member.display_name
-    description.value = fetched_member.description
-    email.value = fetched_member.email
-    created_at.value = fetched_member.created_at
-    id.value = fetched_member.id
-    avatar_url.value = fetched_member.avatar_url
-    updated_at.value = fetched_member.updated_at
-    role.value = fetched_member.role
-    plan.value = fetched_member.plan
-  }
+  // `id` is sourced from the session (set synchronously once auth restores),
+  // not the member-profile query. Downstream api calls that scope queries by
+  // member_id read this field synchronously, so racing against a pending
+  // profile fetch would stringify `undefined` into the query and fail.
+  const id = computed(() => session.user?.id)
+  const display_name = computed(() => member.value?.display_name)
+  const description = computed(() => member.value?.description)
+  const email = computed(() => member.value?.email)
+  const created_at = computed(() => member.value?.created_at)
+  const avatar_url = computed(() => member.value?.avatar_url)
+  const updated_at = computed(() => member.value?.updated_at)
+  const role = computed(() => member.value?.role)
+  const plan = computed(() => member.value?.plan)
 
   const has_member = computed(() => Boolean(id.value))
 
   return {
-    fetchMember,
     has_member,
     display_name,
     description,
