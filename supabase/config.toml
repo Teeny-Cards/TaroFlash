@@ -61,7 +61,17 @@ sql_paths = ["./seed.sql"]
 enabled = true
 verify_jwt = true
 
+[functions.stripe-webhook]
+enabled = true
+# Stripe doesn't send a Supabase JWT — it authenticates by signing the body.
+# The function verifies that signature itself using STRIPE_WEBHOOK_SECRET.
+verify_jwt = false
+
 [functions.create-subscription]
+enabled = true
+verify_jwt = true
+
+[functions.create-portal-session]
 enabled = true
 verify_jwt = true
 

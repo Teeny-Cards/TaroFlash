@@ -1,15 +1,15 @@
 # Guidelines
 
-- If the locally checked out branch is 'master', checkout a new branch before starting any work.
-- Always use translation strings (e.g., `t('deck.settings-modal.title')`) instead of hardcoded text. If the string is not already in `locales/en-us.json`, add it.
-- IMPORTANT: When writing code (migrations, functions, etc.) in `supabase/`, always explain what you're doing like a teacher teaching a student. Keep explanations concise and simple but with necessary context. Stop and let me ask questions along the way.
-- After a backend teaching session, ask the user to rate their understanding of the main concepts covered on a scale of 1-10. Record the results in `.claude/rules/learning-log.md`.
-- Confirm this file has been loaded by printing a message to the console on startup.
+- If locally checked out branch is 'master', checkout new branch before starting work.
+- Always use translation strings (e.g., `t('deck.settings-modal.title')`) instead of hardcoded text. If string not in `locales/en-us.json`, add it.
+- IMPORTANT: When writing code (migrations, functions, etc.) in `supabase/`, explain like teacher to student. Concise, simple, necessary context. Stop, let user ask questions.
+- After backend teaching session, ask user to rate understanding of main concepts 1-10. Record in `.claude/rules/learning-log.md`.
+- Confirm this file loaded by printing message to console on startup.
 - NEVER call `supabase db reset` always use `supabase migrations up` to apply migrations.
 
 ## Toolchain: Vite+
 
-This project uses **Vite+** (`vp`), a unified toolchain wrapping Vite, Rolldown, Vitest, Oxlint, and Oxfmt. Always use `vp` — never invoke `pnpm`, `npm`, `vitest`, `oxlint`, or `oxfmt` directly.
+Project uses **Vite+** (`vp`), unified toolchain wrapping Vite, Rolldown, Vitest, Oxlint, Oxfmt. Always use `vp` — never `pnpm`, `npm`, `vitest`, `oxlint`, `oxfmt` directly.
 
 ### Common commands
 
@@ -30,11 +30,11 @@ vp dlx <bin>        # Run a one-off binary (instead of npx/pnpm dlx)
 
 - Import build/config utilities from `vite-plus`, not `vite`: `import { defineConfig } from 'vite-plus'`
 - Import test utilities from `vite-plus/test`, not `vitest`: `import { expect, test, vi } from 'vite-plus/test'`
-- Do not install `vitest`, `oxlint`, `oxfmt`, or `tsdown` — they are bundled in Vite+
+- Don't install `vitest`, `oxlint`, `oxfmt`, `tsdown` — bundled in Vite+
 
 ## Architecture
 
-**TaroFlash** is a spaced repetition flashcard app (FSRS algorithm via `ts-fsrs`). It's a Vue 3 SPA with a Supabase backend.
+**TaroFlash** = spaced repetition flashcard app (FSRS algorithm via `ts-fsrs`). Vue 3 SPA, Supabase backend.
 
 ### Frontend (`src/`)
 
@@ -48,13 +48,13 @@ vp dlx <bin>        # Run a one-off binary (instead of npx/pnpm dlx)
 | `src/styles/`      | Global CSS and TailwindCSS 4 config; `palettes.css` defines color tokens                                                      |
 | `types/`           | Shared TypeScript type definitions (not inside `src/`)                                                                        |
 
-**Routing**: Public routes (welcome, auth callback, legal) vs. authenticated routes protected by `authenticated.vue`. Main authenticated views: dashboard (deck list) and deck study view.
+**Routing**: Public routes (welcome, auth callback, legal) vs authenticated routes protected by `authenticated.vue`. Main authenticated views: dashboard (deck list), deck study view.
 
-**State**: Session + member profile are global Pinia stores. Most other state is local or composable-scoped.
+**State**: Session + member profile = global Pinia stores. Most other state local or composable-scoped.
 
-**Rich text**: Cards use a Lexical-based editor (`src/components/text-editor/`) with markdown support.
+**Rich text**: Cards use Lexical-based editor (`src/components/text-editor/`) with markdown support.
 
-**Sound effects**: A custom `v-sfx` directive plays audio via Howler.js.
+**Sound effects**: Custom `v-sfx` directive plays audio via Howler.js.
 
 ### Backend (`supabase/`)
 
@@ -63,12 +63,12 @@ vp dlx <bin>        # Run a one-off binary (instead of npx/pnpm dlx)
 | `supabase/migrations/` | SQL migrations run via Supabase CLI (`supabase db reset` applies all + `seed.sql`) |
 | `supabase/functions/`  | Deno edge functions: `create-subscription` (Stripe), `cleanup-media`               |
 
-The database uses RLS for multi-tenant data isolation. Complex queries go through PostgreSQL RPC functions (e.g., `get_member_decks_with_due_count`). A trigger auto-creates a `members` row on user signup.
+Database uses RLS for multi-tenant data isolation. Complex queries via PostgreSQL RPC functions (e.g., `get_member_decks_with_due_count`). Trigger auto-creates `members` row on user signup.
 
 ### Testing (`tests/`)
 
-Tests use Vitest with jsdom. `tests/fixtures/` contains MSW handlers and Faker-based fixtures. Coverage is enforced in CI (GitHub Actions runs on all PRs).
+Tests use Vitest with jsdom. `tests/fixtures/` contains MSW handlers, Faker-based fixtures. Coverage enforced in CI (GitHub Actions runs on all PRs).
 
 ## Local development
 
-- Local Supabase runs on port 54321 (API) and 54322 (PostgreSQL). Start it with `supabase start`.
+- Local Supabase runs on port 54321 (API), 54322 (PostgreSQL). Start with `supabase start`.
