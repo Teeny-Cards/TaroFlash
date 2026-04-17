@@ -1,90 +1,103 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 
-const state = vi.hoisted(() => ({ member: null }))
+let planRef
+let deckCountRef
 
-vi.mock('@/stores/member', () => ({
-  useMemberStore: () => ({
-    get id() {
-      return state.member?.id
-    },
-    get plan() {
-      return state.member?.plan
-    },
-    get role() {
-      return state.member?.role
-    },
-    get has_member() {
-      return Boolean(state.member?.id)
-    }
-  })
-}))
+vi.mock('@/stores/member', async () => {
+  const { ref } = await vi.importActual('vue')
+  planRef = ref(null)
+  return {
+    useMemberStore: () => ({
+      get plan() {
+        return planRef.value
+      }
+    })
+  }
+})
 
-import { useCan } from '@/composables/use-can'
+vi.mock('@/api/decks', async () => {
+  const { ref } = await vi.importActual('vue')
+  deckCountRef = ref(0)
+  return {
+    useMemberDeckCountQuery: () => ({ data: deckCountRef })
+  }
+})
 
-function setMember(patch) {
-  state.member = { id: 'm1', ...patch }
-}
+const { useCan } = await import('@/composables/use-can')
 
 describe('useCan', () => {
   beforeEach(() => {
-    state.member = null
+    planRef.value = null
+    deckCountRef.value = 0
   })
 
   describe('useProFeature', () => {
-    test('returns true when member plan is paid', () => {
-      setMember({ plan: 'paid' })
-      const can = useCan()
-      expect(can.useProFeature()).toBe(true)
+    test('true when plan is paid', () => {
+      planRef.value = 'paid'
+      expect(useCan().useProFeature.value).toBe(true)
     })
 
-    test('returns false when member plan is free', () => {
-      setMember({ plan: 'free' })
-      const can = useCan()
-      expect(can.useProFeature()).toBe(false)
+    test('false when plan is free', () => {
+      planRef.value = 'free'
+      expect(useCan().useProFeature.value).toBe(false)
     })
 
-    test('returns false when member plan is not set', () => {
-      const can = useCan()
-      expect(can.useProFeature()).toBe(false)
+    test('false when plan is unset', () => {
+      expect(useCan().useProFeature.value).toBe(false)
     })
 
-    test('reflects live store state (not captured at call time)', () => {
+    test('reactively updates when plan changes', () => {
       const can = useCan()
-
-      setMember({ plan: 'free' })
-      expect(can.useProFeature()).toBe(false)
-
-      setMember({ plan: 'paid' })
-      expect(can.useProFeature()).toBe(true)
+      planRef.value = 'free'
+      expect(can.useProFeature.value).toBe(false)
+      planRef.value = 'paid'
+      expect(can.useProFeature.value).toBe(true)
     })
   })
 
   describe('createDeck', () => {
     test('allows free user under the limit', () => {
-      setMember({ plan: 'free' })
+      planRef.value = 'free'
       const can = useCan()
-      expect(can.createDeck(0)).toBe(true)
-      expect(can.createDeck(4)).toBe(true)
+      deckCountRef.value = 0
+      expect(can.createDeck.value).toBe(true)
+      deckCountRef.value = 4
+      expect(can.createDeck.value).toBe(true)
     })
 
     test('blocks free user at the limit', () => {
-      setMember({ plan: 'free' })
+      planRef.value = 'free'
       const can = useCan()
-      expect(can.createDeck(5)).toBe(false)
-      expect(can.createDeck(99)).toBe(false)
+      deckCountRef.value = 5
+      expect(can.createDeck.value).toBe(false)
+      deckCountRef.value = 99
+      expect(can.createDeck.value).toBe(false)
     })
 
     test('allows paid user regardless of count', () => {
-      setMember({ plan: 'paid' })
+      planRef.value = 'paid'
       const can = useCan()
-      expect(can.createDeck(0)).toBe(true)
-      expect(can.createDeck(1_000_000)).toBe(true)
+      deckCountRef.value = 0
+      expect(can.createDeck.value).toBe(true)
+      deckCountRef.value = 1_000_000
+      expect(can.createDeck.value).toBe(true)
     })
 
     test('treats unset plan as free', () => {
       const can = useCan()
-      expect(can.createDeck(4)).toBe(true)
-      expect(can.createDeck(5)).toBe(false)
+      deckCountRef.value = 4
+      expect(can.createDeck.value).toBe(true)
+      deckCountRef.value = 5
+      expect(can.createDeck.value).toBe(false)
+    })
+
+    test('reactively updates when plan flips free → paid', () => {
+      const can = useCan()
+      planRef.value = 'free'
+      deckCountRef.value = 10
+      expect(can.createDeck.value).toBe(false)
+      planRef.value = 'paid'
+      expect(can.createDeck.value).toBe(true)
     })
   })
 })
