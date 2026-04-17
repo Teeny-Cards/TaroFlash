@@ -3,7 +3,7 @@ import MemberCard from '@/components/modals/member-card.vue'
 import { useI18n } from 'vue-i18n'
 import { reactive, ref } from 'vue'
 import { DateTime } from 'luxon'
-import { upsertMember } from '@/api/members'
+import { useUpsertMemberMutation } from '@/api/members'
 import { useMemberStore } from '@/stores/member'
 import UiInput from '@/components/ui-kit/input.vue'
 import UiButton from '@/components/ui-kit/button.vue'
@@ -17,6 +17,7 @@ const { close } = defineProps<{
 
 const { t } = useI18n()
 const memberStore = useMemberStore()
+const upsert_mutation = useUpsertMemberMutation()
 
 const created_at = DateTime.now().toISO()
 const created_at_formatted = DateTime.fromISO(created_at).toFormat('LLL d, yyyy')
@@ -49,7 +50,7 @@ function setTheme(theme: MemberTheme) {
 }
 
 async function onConfirm() {
-  await upsertMember(member)
+  await upsert_mutation.mutateAsync(member)
   close(true)
 }
 </script>

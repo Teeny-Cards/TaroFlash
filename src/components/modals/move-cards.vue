@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { fetchMemberDecks } from '@/api/decks'
-import { computed, onMounted, ref } from 'vue'
+import { useMemberDecksQuery } from '@/api/decks'
+import { computed, ref } from 'vue'
 import Card from '@/components/card/index.vue'
 import { useI18n } from 'vue-i18n'
 import { emitSfx } from '@/sfx/bus'
@@ -20,7 +20,7 @@ const { cards, current_deck_id, close } = defineProps<{
 
 const { t } = useI18n()
 
-const decks = ref<Deck[]>([])
+const { data: decks } = useMemberDecksQuery()
 const selected_deck_id = ref<number | undefined>(undefined)
 
 const title = computed(() => {
@@ -32,10 +32,6 @@ const title = computed(() => {
     front: card.front_text || '-',
     back: card.back_text || '-'
   })
-})
-
-onMounted(async () => {
-  decks.value = await fetchMemberDecks()
 })
 
 async function onMove() {

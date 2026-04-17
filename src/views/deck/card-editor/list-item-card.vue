@@ -2,7 +2,7 @@
 import Card from '@/components/card/index.vue'
 import ImageButton from '../image-button.vue'
 import { useI18n } from 'vue-i18n'
-import { setCardImage, deleteCardImage } from '@/api/cards'
+import { useSetCardImageMutation, useDeleteCardImageMutation } from '@/api/cards'
 import { useToast } from '@/composables/toast'
 import { inject, ref, useTemplateRef } from 'vue'
 import { type CardBulkEditor } from '@/composables/card-bulk-editor'
@@ -26,6 +26,8 @@ const focusOutPromise = ref<Promise<void> | null>(null)
 
 const { mode, updateCard } = inject<CardBulkEditor>('card-editor')!
 const card_attributes = inject<DeckCardAttributes>('card-attributes')!
+const set_image_mutation = useSetCardImageMutation()
+const delete_image_mutation = useDeleteCardImageMutation()
 
 function onUpdate(side: 'front' | 'back', text: string) {
   const update: Partial<Card> = {
@@ -42,20 +44,20 @@ function focusEditor() {
 }
 
 async function onImageUpload(side: 'front' | 'back', file: File) {
-  if (!card.id) return
+  if (!card.id || card.deck_id === undefined) return
 
   try {
-    await setCardImage(card.id, file, side)
+    await set_image_mutation.mutateAsync({ card_id: card.id, deck_id: card.deck_id, file, side })
   } catch (e: any) {
     toast.error(t('card.image-upload-error'))
   }
 }
 
 async function onImageDelete(side: 'front' | 'back') {
-  if (!card.id) return
+  if (!card.id || card.deck_id === undefined) return
 
   try {
-    await deleteCardImage(card.id, side)
+    await delete_image_mutation.mutateAsync({ card_id: card.id, deck_id: card.deck_id, side })
   } catch (e: any) {
     toast.error(t('card.image-delete-error'))
   }

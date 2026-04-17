@@ -1,6 +1,6 @@
 import { reactive, ref } from 'vue'
-import { deleteDeck as upstreamDeleteDeck } from '@/api/decks'
-import { uploadImage as uploadImageToStorage } from '@/api/media'
+import { useDeleteDeckMutation } from '@/api/decks'
+import { useUploadImageMutation } from '@/api/media'
 import { useDeckActions } from '@/composables/deck/use-deck-actions'
 import { useMemberStore } from '@/stores/member'
 import type { ImageUploadPayload } from '@/components/image-uploader.vue'
@@ -33,6 +33,8 @@ export function useDeckEditor(deck?: Deck) {
   const cover_image_loading = ref(false)
 
   const deck_actions = useDeckActions()
+  const delete_mutation = useDeleteDeckMutation()
+  const upload_image_mutation = useUploadImageMutation()
 
   async function saveDeck(): Promise<boolean> {
     const payload: Deck = {
@@ -53,7 +55,7 @@ export function useDeckEditor(deck?: Deck) {
     if (!deck?.id) return
 
     try {
-      await upstreamDeleteDeck(deck.id)
+      await delete_mutation.mutateAsync(deck.id)
     } catch {
       // TODO
     }
@@ -76,7 +78,11 @@ export function useDeckEditor(deck?: Deck) {
       const deck_id = settings.id
       const leaf = deck_id ? `covers/${deck_id}` : `covers/draft-${crypto.randomUUID()}`
       const path = `${member_id}/${leaf}`
-      const url = await uploadImageToStorage('decks', path, payload.file)
+      const url = await upload_image_mutation.mutateAsync({
+        bucket: 'decks',
+        path,
+        file: payload.file
+      })
       cover.bg_image = url
       cover_image_preview.value = url
     } finally {

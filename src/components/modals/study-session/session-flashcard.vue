@@ -12,9 +12,9 @@ import { useCardPreview } from '@/composables/study-session/card-preview'
 import { useCardEdit } from '@/composables/study-session/card-edit'
 import { useModalRequestClose } from '@/composables/modal'
 import { type Grade } from 'ts-fsrs'
-import { computed, onMounted, ref, useTemplateRef } from 'vue'
+import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 import Card from '@/components/card/index.vue'
-import { fetchAllCardsByDeckId } from '@/api/cards'
+import { useCardsInDeckQuery } from '@/api/cards'
 import { emitSfx } from '@/sfx/bus'
 
 const { deck, config_override } = defineProps<{
@@ -75,15 +75,21 @@ const card_view = computed<'skeleton' | 'edit' | 'read'>(() => {
   return 'read'
 })
 
-onMounted(async () => {
-  if (!deck.id) {
-    emit('closed')
-    return
-  }
+const cards_query = useCardsInDeckQuery(() => deck.id!)
 
-  setCards(await fetchAllCardsByDeckId(deck.id))
-  loading.value = false
+onMounted(() => {
+  if (!deck.id) emit('closed')
 })
+
+watch(
+  cards_query.data,
+  (data) => {
+    if (!data || !loading.value) return
+    setCards(data)
+    loading.value = false
+  },
+  { immediate: true }
+)
 
 function onSideChanged() {
   emitSfx(is_starting_side.value ? 'ui.transition_up' : 'ui.transition_down')
