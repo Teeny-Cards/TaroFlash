@@ -30,6 +30,11 @@ const tabs: Array<{
     label: t('settings.app-settings.title')
   },
   {
+    key: 'billing-settings',
+    icon: 'shopping-bag',
+    label: t('settings.billing-settings.title')
+  },
+  {
     key: 'notification-settings',
     icon: 'book',
     label: t('settings.notification-settings.title')
