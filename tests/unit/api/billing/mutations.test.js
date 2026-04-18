@@ -1,28 +1,46 @@
 import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
 
-const { useMutationSpy, createSubscriptionMock, createPortalSessionMock } = vi.hoisted(() => ({
-  useMutationSpy: vi.fn((cfg) => cfg),
-  createSubscriptionMock: vi.fn().mockResolvedValue({
-    clientSecret: 'pi_secret_x',
-    subscriptionId: 'sub_1'
-  }),
-  createPortalSessionMock: vi.fn().mockResolvedValue({ url: 'https://portal' })
-}))
+const { useMutationSpy, useQueryCacheSpy, createSubscriptionMock, manageMocks } = vi.hoisted(
+  () => ({
+    useMutationSpy: vi.fn((cfg) => cfg),
+    useQueryCacheSpy: vi.fn(() => ({ invalidateQueries: vi.fn() })),
+    createSubscriptionMock: vi.fn().mockResolvedValue({
+      clientSecret: 'pi_secret_x',
+      subscriptionId: 'sub_1'
+    }),
+    manageMocks: {
+      changePlan: vi.fn().mockResolvedValue({ subscription: { id: 'sub_1' } }),
+      cancelSubscription: vi.fn().mockResolvedValue({ subscription: { id: 'sub_1' } }),
+      resumeSubscription: vi.fn().mockResolvedValue({ subscription: { id: 'sub_1' } }),
+      setDefaultPaymentMethod: vi.fn().mockResolvedValue({ customer: {} }),
+      detachPaymentMethod: vi.fn().mockResolvedValue({ paymentMethod: { id: 'pm_1' } }),
+      createSetupIntent: vi.fn().mockResolvedValue({ clientSecret: 'seti_secret_x' })
+    }
+  })
+)
 
-vi.mock('@pinia/colada', () => ({ useMutation: useMutationSpy }))
+vi.mock('@pinia/colada', () => ({
+  useMutation: useMutationSpy,
+  useQueryCache: useQueryCacheSpy
+}))
 
 vi.mock('@/api/billing/db', () => ({
   createSubscription: createSubscriptionMock,
-  createPortalSession: createPortalSessionMock
+  ...manageMocks
 }))
 
-import { useCreateSubscriptionMutation } from '@/api/billing/mutations/create-subscription'
-import { useCreatePortalSessionMutation } from '@/api/billing/mutations/create-portal-session'
+import { useCreateSubscriptionMutation } from '@/api/billing/mutations/use-create-subscription-mutation'
+import { useChangePlanMutation } from '@/api/billing/mutations/use-change-plan-mutation'
+import { useCancelSubscriptionMutation } from '@/api/billing/mutations/use-cancel-subscription-mutation'
+import { useResumeSubscriptionMutation } from '@/api/billing/mutations/use-resume-subscription-mutation'
+import { useSetDefaultPaymentMethodMutation } from '@/api/billing/mutations/use-set-default-payment-method-mutation'
+import { useDetachPaymentMethodMutation } from '@/api/billing/mutations/use-detach-payment-method-mutation'
+import { useCreateSetupIntentMutation } from '@/api/billing/mutations/use-create-setup-intent-mutation'
 
 beforeEach(() => {
   useMutationSpy.mockClear()
   createSubscriptionMock.mockClear()
-  createPortalSessionMock.mockClear()
+  Object.values(manageMocks).forEach((mock) => mock.mockClear())
 })
 
 function configFrom(hook) {
@@ -44,16 +62,50 @@ describe('useCreateSubscriptionMutation', () => {
   })
 })
 
-describe('useCreatePortalSessionMutation', () => {
-  test('delegates to createPortalSession with the caller args', async () => {
-    const { mutation } = configFrom(useCreatePortalSessionMutation)
-    await mutation({ returnUrl: 'https://app' })
-    expect(createPortalSessionMock).toHaveBeenCalledWith({ returnUrl: 'https://app' })
+describe('useChangePlanMutation', () => {
+  test('delegates to changePlan with the planId', async () => {
+    const { mutation } = configFrom(useChangePlanMutation)
+    await mutation('paid')
+    expect(manageMocks.changePlan).toHaveBeenCalledWith('paid')
   })
+})
 
-  test('returns the portal url', async () => {
-    const { mutation } = configFrom(useCreatePortalSessionMutation)
-    const result = await mutation({ returnUrl: 'https://app' })
-    expect(result).toEqual({ url: 'https://portal' })
+describe('useCancelSubscriptionMutation', () => {
+  test('delegates to cancelSubscription with the atPeriodEnd flag', async () => {
+    const { mutation } = configFrom(useCancelSubscriptionMutation)
+    await mutation(true)
+    expect(manageMocks.cancelSubscription).toHaveBeenCalledWith(true)
+  })
+})
+
+describe('useResumeSubscriptionMutation', () => {
+  test('delegates to resumeSubscription', async () => {
+    const { mutation } = configFrom(useResumeSubscriptionMutation)
+    await mutation()
+    expect(manageMocks.resumeSubscription).toHaveBeenCalled()
+  })
+})
+
+describe('useSetDefaultPaymentMethodMutation', () => {
+  test('delegates to setDefaultPaymentMethod with the id', async () => {
+    const { mutation } = configFrom(useSetDefaultPaymentMethodMutation)
+    await mutation('pm_1')
+    expect(manageMocks.setDefaultPaymentMethod).toHaveBeenCalledWith('pm_1')
+  })
+})
+
+describe('useDetachPaymentMethodMutation', () => {
+  test('delegates to detachPaymentMethod with the id', async () => {
+    const { mutation } = configFrom(useDetachPaymentMethodMutation)
+    await mutation('pm_1')
+    expect(manageMocks.detachPaymentMethod).toHaveBeenCalledWith('pm_1')
+  })
+})
+
+describe('useCreateSetupIntentMutation', () => {
+  test('delegates to createSetupIntent', async () => {
+    const { mutation } = configFrom(useCreateSetupIntentMutation)
+    await mutation()
+    expect(manageMocks.createSetupIntent).toHaveBeenCalled()
   })
 })

@@ -1,56 +1,70 @@
 import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
-import { shallowMount, flushPromises } from '@vue/test-utils'
+import { shallowMount } from '@vue/test-utils'
 import { defineComponent, h, useAttrs } from 'vue'
 
-// ── Hoisted mocks ──────────────────────────────────────────────────────────────
-
-const { mockPortalMutate, mockModalOpen, mockToastError, state } = vi.hoisted(() => ({
-  mockPortalMutate: vi.fn(),
+const { mockModalOpen, subscriptionState } = vi.hoisted(() => ({
   mockModalOpen: vi.fn(),
-  mockToastError: vi.fn(),
-  state: { plan: 'free', deckCount: 0 }
+  subscriptionState: {
+    plan: 'paid',
+    isLoading: false,
+    error: null,
+    data: { subscription: { id: 'sub_1' }, upcoming: null }
+  }
 }))
 
 vi.mock('@/stores/member', () => ({
   useMemberStore: () => ({
-    get plan() {
-      return state.plan
-    },
     display_name: 'Alice',
-    email: 'alice@example.com'
+    email: 'alice@example.com',
+    get plan() {
+      return subscriptionState.plan
+    }
   })
 }))
 
-vi.mock('@/api/decks', async () => {
-  const { ref } = await vi.importActual('vue')
+vi.mock('@/api/billing', () => {
+  const noopMutation = () => ({ mutateAsync: vi.fn(), isLoading: { value: false } })
+  const noopQuery = () => ({
+    isLoading: { value: false },
+    error: { value: null },
+    data: { value: null }
+  })
   return {
-    useMemberDeckCountQuery: () => ({
+    useSubscriptionQuery: () => ({
+      isLoading: {
+        get value() {
+          return subscriptionState.isLoading
+        }
+      },
+      error: {
+        get value() {
+          return subscriptionState.error
+        }
+      },
       data: {
         get value() {
-          return state.deckCount
+          return subscriptionState.data
         }
       }
-    })
+    }),
+    useInvoicesQuery: noopQuery,
+    usePaymentMethodsQuery: noopQuery,
+    useChangePlanMutation: noopMutation,
+    useCancelSubscriptionMutation: noopMutation,
+    useResumeSubscriptionMutation: noopMutation,
+    useSetDefaultPaymentMethodMutation: noopMutation,
+    useDetachPaymentMethodMutation: noopMutation,
+    useCreateSetupIntentMutation: noopMutation
   }
 })
-
-vi.mock('@/api/billing', () => ({
-  useCreatePortalSessionMutation: () => ({ mutateAsync: mockPortalMutate })
-}))
 
 vi.mock('@/composables/modal', () => ({
   useModal: () => ({ open: mockModalOpen })
 }))
 
-vi.mock('@/composables/toast', () => ({
-  useToast: () => ({ error: mockToastError })
-}))
-
 vi.mock('@/components/modals/checkout.vue', () => ({
   default: { name: 'Checkout' }
 }))
-
-// ── Stubs (render functions — no runtime compiler in browser mode) ────────────
 
 const SectionHeaderStub = defineComponent({
   name: 'SectionHeader',
@@ -64,8 +78,8 @@ const SectionHeaderStub = defineComponent({
 const UiInputStub = defineComponent({
   name: 'UiInput',
   props: ['value'],
-  setup() {
-    return () => h('input', { 'data-testid': 'ui-input-stub' })
+  setup(props) {
+    return () => h('input', { 'data-testid': 'ui-input-stub', value: props.value })
   }
 })
 
@@ -75,138 +89,106 @@ const UiButtonStub = defineComponent({
   emits: ['click'],
   setup(_props, { slots, emit }) {
     const attrs = useAttrs()
-    return () =>
-      h(
-        'button',
-        {
-          ...attrs,
-          onClick: () => emit('click')
-        },
-        slots.default?.()
-      )
+    return () => h('button', { ...attrs, onClick: () => emit('click') }, slots.default?.())
   }
 })
 
-// ── Component-under-test loader ────────────────────────────────────────────────
-
 async function makeMemberSettings() {
-  const MemberSettings = (
-    await import('@/phone/apps/settings/component/member-settings.vue')
-  ).default
+  const MemberSettings = (await import('@/phone/apps/settings/component/member-settings.vue'))
+    .default
 
   return shallowMount(MemberSettings, {
     global: {
       stubs: {
         SectionHeader: SectionHeaderStub,
         UiInput: UiInputStub,
-        UiButton: UiButtonStub
+        UiButton: UiButtonStub,
+        PlanSection: {
+          name: 'PlanSection',
+          render: () => h('div', { 'data-testid': 'plan-section-stub' })
+        },
+        PaymentMethodsSection: {
+          name: 'PaymentMethodsSection',
+          render: () => h('div', { 'data-testid': 'payment-methods-stub' })
+        },
+        InvoicesSection: {
+          name: 'InvoicesSection',
+          render: () => h('div', { 'data-testid': 'invoices-stub' })
+        }
       }
     }
   })
 }
 
-// ── Setup ──────────────────────────────────────────────────────────────────────
-
 beforeEach(() => {
-  state.plan = 'free'
-  state.deckCount = 0
-  mockPortalMutate.mockReset()
   mockModalOpen.mockReset()
-  mockToastError.mockReset()
+  subscriptionState.plan = 'paid'
+  subscriptionState.isLoading = false
+  subscriptionState.error = null
+  subscriptionState.data = { subscription: { id: 'sub_1' }, upcoming: null }
 })
 
-// ── Tests ──────────────────────────────────────────────────────────────────────
-
-describe('member-settings subscription section', () => {
-  describe('free plan', () => {
-    beforeEach(() => {
-      state.plan = 'free'
-      state.deckCount = 3
-    })
-
-    test('renders the free-plan subsection', async () => {
-      const wrapper = await makeMemberSettings()
-      expect(wrapper.find('[data-testid="member-settings__subscription-free"]').exists()).toBe(true)
-      expect(wrapper.find('[data-testid="member-settings__subscription-paid"]').exists()).toBe(
-        false
-      )
-    })
-
-    test('shows an Upgrade button', async () => {
-      const wrapper = await makeMemberSettings()
-      expect(
-        wrapper.find('[data-testid="member-settings__subscription-upgrade"]').exists()
-      ).toBe(true)
-    })
-
-    test('displays the current deck usage', async () => {
-      const wrapper = await makeMemberSettings()
-      const usage = wrapper.find('[data-testid="member-settings__subscription-usage"]')
-      expect(usage.exists()).toBe(true)
-      expect(usage.text()).toContain('3')
-      expect(usage.text()).toContain('5')
-    })
-
-    test('clicking Upgrade opens the Checkout modal as a mobile sheet with backdrop', async () => {
-      const wrapper = await makeMemberSettings()
-      await wrapper
-        .find('[data-testid="member-settings__subscription-upgrade"]')
-        .trigger('click')
-
-      expect(mockModalOpen).toHaveBeenCalledWith(
-        expect.objectContaining({ name: 'Checkout' }),
-        { mode: 'mobile-sheet', backdrop: true }
-      )
-    })
+describe('member-settings — general', () => {
+  test('renders the general section', async () => {
+    const wrapper = await makeMemberSettings()
+    expect(wrapper.find('[data-testid="member-settings__general"]').exists()).toBe(true)
   })
 
-  describe('paid plan', () => {
-    beforeEach(() => {
-      state.plan = 'paid'
+  test('renders display name and email inputs from the member store', async () => {
+    const wrapper = await makeMemberSettings()
+    const inputs = wrapper.findAll('[data-testid="ui-input-stub"]')
+    expect(inputs.length).toBe(2)
+    const values = inputs.map((i) => i.attributes('value'))
+    expect(values).toContain('Alice')
+    expect(values).toContain('alice@example.com')
+  })
+})
+
+describe('member-settings — billing (free plan)', () => {
+  beforeEach(() => {
+    subscriptionState.plan = 'free'
+  })
+
+  test('renders the free-plan upgrade prompt', async () => {
+    const wrapper = await makeMemberSettings()
+    expect(wrapper.find('[data-testid="member-settings__free"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="plan-section-stub"]').exists()).toBe(false)
+  })
+
+  test('clicking upgrade opens the Checkout modal as a mobile sheet', async () => {
+    const wrapper = await makeMemberSettings()
+    await wrapper.find('[data-testid="member-settings__upgrade"]').trigger('click')
+    expect(mockModalOpen).toHaveBeenCalledWith(expect.objectContaining({ name: 'Checkout' }), {
+      mode: 'mobile-sheet',
+      backdrop: true
     })
+  })
+})
 
-    test('renders the paid-plan subsection', async () => {
-      const wrapper = await makeMemberSettings()
-      expect(wrapper.find('[data-testid="member-settings__subscription-paid"]').exists()).toBe(true)
-      expect(wrapper.find('[data-testid="member-settings__subscription-free"]').exists()).toBe(
-        false
-      )
-    })
+describe('member-settings — billing (paid plan)', () => {
+  test('renders the loading state while the query resolves', async () => {
+    subscriptionState.isLoading = true
+    const wrapper = await makeMemberSettings()
+    expect(wrapper.find('[data-testid="member-settings__billing-loading"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="plan-section-stub"]').exists()).toBe(false)
+  })
 
-    test('shows a Manage billing button', async () => {
-      const wrapper = await makeMemberSettings()
-      expect(wrapper.find('[data-testid="member-settings__subscription-manage"]').exists()).toBe(
-        true
-      )
-    })
+  test('renders the error state when the query fails', async () => {
+    subscriptionState.error = new Error('boom')
+    const wrapper = await makeMemberSettings()
+    expect(wrapper.find('[data-testid="member-settings__billing-error"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="plan-section-stub"]').exists()).toBe(false)
+  })
 
-    test('clicking Manage billing creates a portal session with the current URL as returnUrl', async () => {
-      // Never resolves — the component redirects via `window.location.href = url`
-      // on success, which navigates the test iframe away and trips Vitest's
-      // iframe-connect watchdog. We only need to assert the mutation arg here.
-      mockPortalMutate.mockReturnValue(new Promise(() => {}))
-      const wrapper = await makeMemberSettings()
+  test('renders all three billing sections once loaded', async () => {
+    const wrapper = await makeMemberSettings()
+    expect(wrapper.find('[data-testid="plan-section-stub"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="payment-methods-stub"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="invoices-stub"]').exists()).toBe(true)
+  })
 
-      await wrapper
-        .find('[data-testid="member-settings__subscription-manage"]')
-        .trigger('click')
-
-      expect(mockPortalMutate).toHaveBeenCalledWith({
-        returnUrl: window.location.href
-      })
-    })
-
-    test('shows a toast when the portal session fails', async () => {
-      mockPortalMutate.mockRejectedValue(new Error('network down'))
-      const wrapper = await makeMemberSettings()
-
-      await wrapper
-        .find('[data-testid="member-settings__subscription-manage"]')
-        .trigger('click')
-      await flushPromises()
-
-      expect(mockToastError).toHaveBeenCalledTimes(1)
-      expect(mockToastError.mock.calls[0][0]).toContain('billing portal')
-    })
+  test('does not render the free-plan prompt', async () => {
+    const wrapper = await makeMemberSettings()
+    expect(wrapper.find('[data-testid="member-settings__free"]').exists()).toBe(false)
   })
 })

@@ -10,19 +10,19 @@ import {
 } from '@stripe/stripe-js'
 import mobileSheet from '@/components/layout-kit/modal/mobile-sheet.vue'
 import UiButton from '@/components/ui-kit/button.vue'
-import { useCreateSubscriptionMutation } from '@/api/billing'
+import { useCreateSetupIntentMutation } from '@/api/billing'
 import { getStripeAppearance, STRIPE_FONTS } from '@/utils/billing/stripe-theme'
 import logger from '@/utils/logger'
 
-export type CheckoutResponse = { upgraded: boolean }
+export type AddCreditCardResponse = { added: boolean }
 
 const { close } = defineProps<{
-  close: (response?: CheckoutResponse) => void
+  close: (response?: AddCreditCardResponse) => void
 }>()
 
 const { t } = useI18n()
 const queryCache = useQueryCache()
-const { mutateAsync: createSubscription } = useCreateSubscriptionMutation()
+const { mutateAsync: createSetupIntent } = useCreateSetupIntentMutation()
 
 const container_ref = useTemplateRef<HTMLDivElement>('container')
 
@@ -38,15 +38,15 @@ let payment_element: StripePaymentElement | null = null
 
 onMounted(async () => {
   try {
-    const [subscription, stripeInstance] = await Promise.all([
-      createSubscription({ planId: 'paid' }),
+    const [setup, stripeInstance] = await Promise.all([
+      createSetupIntent(),
       loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
     ])
     if (!stripeInstance) throw new Error('Stripe.js failed to load')
     stripe = stripeInstance
 
     elements = stripe.elements({
-      clientSecret: subscription.clientSecret,
+      clientSecret: setup.clientSecret,
       appearance: getStripeAppearance(),
       fonts: STRIPE_FONTS
     })
@@ -74,7 +74,7 @@ async function onSubmit() {
   is_submitting.value = true
   submit_error.value = null
 
-  const result = await stripe.confirmPayment({
+  const result = await stripe.confirmSetup({
     elements,
     confirmParams: {
       return_url: window.location.origin
@@ -83,59 +83,68 @@ async function onSubmit() {
   })
 
   if (result.error) {
-    submit_error.value = result.error.message ?? t('billing.checkout.submit-error')
+    submit_error.value =
+      result.error.message ?? t('settings.member-settings.billing.add-credit-card.submit-error')
     is_submitting.value = false
     return
   }
 
-  if (result.paymentIntent?.status === 'succeeded') {
-    queryCache.invalidateQueries({ key: ['member'] })
-    close({ upgraded: true })
+  if (result.setupIntent?.status === 'succeeded') {
+    queryCache.invalidateQueries({ key: ['billing', 'payment-methods'] })
+    close({ added: true })
     return
   }
 
-  submit_error.value = t('billing.checkout.submit-error')
+  submit_error.value = t('settings.member-settings.billing.add-credit-card.submit-error')
   is_submitting.value = false
 }
 </script>
 
 <template>
   <mobile-sheet
-    data-testid="checkout"
+    data-testid="add-credit-card-modal"
     class="sm:max-w-130! max-h-[95dvh]"
-    :title="t('billing.checkout.title')"
+    :title="t('settings.member-settings.billing.add-credit-card.title')"
     theme="green-400"
     @close="close()"
   >
     <template #body>
       <div
-        data-testid="checkout__body"
+        data-testid="add-credit-card-modal__body"
         class="overflow-y-auto max-h-[65dvh] px-6 pb-2 flex flex-col gap-4"
       >
         <p
           v-if="is_loading"
-          data-testid="checkout__loading"
+          data-testid="add-credit-card-modal__loading"
           class="text-brown-700 py-10 text-center"
         >
-          {{ t('billing.checkout.loading') }}
+          {{ t('settings.member-settings.billing.add-credit-card.loading') }}
         </p>
         <p
           v-else-if="load_error"
-          data-testid="checkout__error"
+          data-testid="add-credit-card-modal__error"
           class="py-10 text-center text-red-500"
         >
-          {{ t('billing.checkout.error') }}
+          {{ t('settings.member-settings.billing.add-credit-card.error') }}
         </p>
-        <div ref="container" data-testid="checkout__payment-element"></div>
-        <p v-if="submit_error" data-testid="checkout__submit-error" class="text-sm text-red-500">
+        <div ref="container" data-testid="add-credit-card-modal__payment-element"></div>
+        <p
+          v-if="submit_error"
+          data-testid="add-credit-card-modal__submit-error"
+          class="text-sm text-red-500"
+        >
           {{ submit_error }}
         </p>
       </div>
     </template>
     <template #footer>
-      <div v-if="!is_loading && !load_error" data-testid="checkout__footer" class="px-6 pb-6 pt-2">
+      <div
+        v-if="!is_loading && !load_error"
+        data-testid="add-credit-card-modal__footer"
+        class="px-6 pb-6 pt-2"
+      >
         <ui-button
-          data-testid="checkout__submit"
+          data-testid="add-credit-card-modal__submit"
           theme="green-400"
           full-width
           size="lg"
@@ -143,7 +152,7 @@ async function onSubmit() {
           :disabled="!is_ready"
           @click="onSubmit"
         >
-          {{ t('billing.checkout.submit') }}
+          {{ t('settings.member-settings.billing.add-credit-card.submit') }}
         </ui-button>
       </div>
     </template>

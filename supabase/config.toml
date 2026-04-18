@@ -71,7 +71,7 @@ verify_jwt = false
 enabled = true
 verify_jwt = true
 
-[functions.create-portal-session]
+[functions.manage-subscription]
 enabled = true
 verify_jwt = true
 

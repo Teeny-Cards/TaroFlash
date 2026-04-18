@@ -2,7 +2,7 @@ import { describe, test, expect } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
 import CardCover from '@/components/card/card-cover.vue'
 
-function mountCover(cover = undefined) {
+function mountCover(cover) {
   return shallowMount(CardCover, { props: { cover } })
 }
 
