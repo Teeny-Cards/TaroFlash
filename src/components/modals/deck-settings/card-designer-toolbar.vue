@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import UiIcon from '@/components/ui-kit/icon.vue'
-import Popover from './cover-designer/popover.vue'
+import PickerPopover from './cover-designer/picker-popover.vue'
 import { emitSfx } from '@/sfx/bus'
 
 type CardDesignerToolbarProps = {
@@ -67,7 +67,7 @@ function onSelectVAlign(value: VAlign) {
 
 <template>
   <div data-testid="card-designer-toolbar" class="flex gap-4">
-    <popover :label="t('deck-view.card-attributes.text-size')" icon="text-field">
+    <picker-popover :label="t('deck-view.card-attributes.text-size')" icon="text-field">
       <div
         data-testid="card-designer-toolbar__text-size-options"
         class="col-span-4 flex flex-col gap-1"
@@ -83,9 +83,12 @@ function onSelectVAlign(value: VAlign) {
           {{ option.label }}
         </button>
       </div>
-    </popover>
+    </picker-popover>
 
-    <popover :label="t('deck-view.card-attributes.horizontal-alignment')" icon="align-center">
+    <picker-popover
+      :label="t('deck-view.card-attributes.horizontal-alignment')"
+      icon="align-center"
+    >
       <div
         data-testid="card-designer-toolbar__h-align-options"
         class="col-span-4 grid grid-cols-3 gap-1"
@@ -101,9 +104,12 @@ function onSelectVAlign(value: VAlign) {
           <ui-icon :src="option.icon" />
         </button>
       </div>
-    </popover>
+    </picker-popover>
 
-    <popover :label="t('deck-view.card-attributes.vertical-alignment')" icon="align-v-center">
+    <picker-popover
+      :label="t('deck-view.card-attributes.vertical-alignment')"
+      icon="align-v-center"
+    >
       <div
         data-testid="card-designer-toolbar__v-align-options"
         class="col-span-4 grid grid-cols-3 gap-1"
@@ -119,6 +125,6 @@ function onSelectVAlign(value: VAlign) {
           <ui-icon :src="option.icon" />
         </button>
       </div>
-    </popover>
+    </picker-popover>
   </div>
 </template>

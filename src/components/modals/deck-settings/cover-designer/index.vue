@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import Popover from './popover.vue'
 import type { ImageUploadPayload } from '@/components/image-uploader.vue'
 import BgColorPicker from './bg-color-picker.vue'
-import BorderSliders from './border-sliders.vue'
 import IconPicker from './icon-picker.vue'
 import PatternPicker from './pattern-picker.vue'
-import PatternSliders from './pattern-sliders.vue'
 
 type CoverDesignerToolbarProps = {
   config: DeckCover
@@ -26,69 +23,55 @@ const supported_themes: MemberTheme[] = [
   'red-500',
   'orange-500'
 ]
+
+const supported_patterns: DeckCoverPattern[] = [
+  'diagonal-stripes',
+  'wave',
+  'bank-note',
+  'aztec',
+  'endless-clouds'
+]
+
+const supported_icons: string[] = [
+  'card-deck',
+  'book',
+  'school-cap',
+  'music-note',
+  'moon-stars',
+  'cable-car',
+  'bell',
+  'public',
+  'id-card',
+  'store',
+  'teeny-cards'
+]
 </script>
 
 <template>
   <div data-testid="cover-designer-toolbar">
     <div data-testid="cover-designer-toolbar__controls" class="flex gap-4">
-      <popover label="BG Color" icon="paint-brush">
-        <template #default="{ close }">
-          <bg-color-picker
-            :supported_themes="supported_themes"
-            :bg_color="config.bg_color"
-            @select="
-              (value) => {
-                config.bg_color = value
-                close()
-              }
-            "
-          />
-        </template>
+      <bg-color-picker
+        :supported_themes="supported_themes"
+        :bg_color="config.bg_color"
+        :border_size="config.border_size"
+        @update:bg_color="config.bg_color = $event"
+        @update:border_size="config.border_size = $event"
+      />
 
-        <template #extra>
-          <border-sliders
-            :border_size="config.border_size"
-            @update:size="config.border_size = $event"
-          />
-        </template>
-      </popover>
+      <icon-picker
+        :supported_icons="supported_icons"
+        :icon="config.icon"
+        @update:icon="config.icon = $event"
+      />
 
-      <popover label="Icon" icon="card-deck">
-        <template #default="{ close }">
-          <icon-picker
-            :icon="config.icon"
-            @select="
-              (value) => {
-                config.icon = value
-                close()
-              }
-            "
-          />
-        </template>
-      </popover>
-
-      <popover label="Pattern" icon="texture-add">
-        <template #default="{ close }">
-          <pattern-picker
-            :pattern="config.pattern"
-            :pattern_size="config.pattern_size"
-            :bg_color="config.bg_color"
-            @select="
-              (value) => {
-                config.pattern = value
-                close()
-              }
-            "
-          />
-        </template>
-
-        <template v-if="config.pattern" #extra>
-          <pattern-sliders
-            :pattern_size="config.pattern_size"
-            @update:size="config.pattern_size = $event"
-          />
-        </template>
-      </popover>
+      <pattern-picker
+        :supported_patterns="supported_patterns"
+        :selected_pattern="config.pattern"
+        :pattern_size="config.pattern_size"
+        :bg_color="config.bg_color"
+        @update:pattern="config.pattern = $event"
+        @update:pattern_size="config.pattern_size = $event"
+      />
     </div>
   </div>
 </template>

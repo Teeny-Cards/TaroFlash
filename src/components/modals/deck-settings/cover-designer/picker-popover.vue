@@ -1,18 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import UiPopover from '@/components/ui-kit/popover.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 
-type CoverColorPickerProps = {
+type PickerPopoverProps = {
   label: string
   icon?: string
+  size?: 'lg' | 'base'
 }
 
-defineProps<CoverColorPickerProps>()
-
-const emit = defineEmits<{
-  (e: 'select', theme: MemberTheme | undefined): void
-}>()
+const { label, icon, size = 'base' } = defineProps<PickerPopoverProps>()
 
 const slots = defineSlots<{
   default(props: { close: () => void }): any
@@ -20,22 +17,24 @@ const slots = defineSlots<{
 }>()
 
 const open = ref(false)
+
+const grid_cols = computed(() => (size === 'lg' ? 'grid-cols-4' : 'grid-cols-6'))
 </script>
 
 <template>
   <ui-popover
-    data-testid="cover-designer-popover-container"
-    position="right"
+    data-testid="picker-popover"
+    position="bottom"
     :gap="12"
     :open="open"
-    :fallback_placements="['bottom', 'top']"
+    :fallback_placements="['top']"
     shadow
     @close="open = false"
   >
     <template #trigger>
       <div class="flex flex-col gap-1">
         <ui-button
-          data-testid="cover-designer-popover__trigger"
+          data-testid="picker-popover__trigger"
           v-sfx="{ hover: 'ui.click_07', click: 'ui.select' }"
           @click="open = !open"
           :icon-left="icon"
@@ -51,18 +50,14 @@ const open = ref(false)
     </template>
 
     <template #arrow>
-      <div class="size-full rotate-45 rounded-br-1 bg-brown-100"></div>
+      <div class="size-full rotate-45 rounded-1 bg-brown-100"></div>
     </template>
 
     <div
-      data-testid="cover-designer-popover__content"
-      class="rounded-6 bg-brown-100 p-4 flex flex-col gap-4 w-80"
+      data-testid="picker-popover__content"
+      class="rounded-8 bg-brown-100 p-4 flex flex-col gap-4 w-80"
     >
-      <h3 class="text-brown-700 text-xl text-center">{{ label }}</h3>
-      <div
-        data-testid="cover-designer-popover__grid"
-        class="grid grid-cols-[1fr_1fr_1fr_1fr] gap-1"
-      >
+      <div data-testid="picker-popover__grid" class="grid gap-2" :class="grid_cols">
         <slot :close="() => (open = false)"></slot>
       </div>
       <slot name="extra"></slot>
