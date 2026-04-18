@@ -1,0 +1,19 @@
+# Local dev stack launched by `pnpm up` via mprocs.
+# Each key is a named pane in the mprocs TUI.
+
+procs:
+  # Boots the Supabase stack (Postgres, Auth, Storage, Studio) if not already running.
+  # CLI daemonizes — this pane exits once startup completes.
+  supabase:
+    shell: 'supabase status >/dev/null 2>&1 || supabase start'
+    autostart: true
+  # Serves Edge Functions with hot-reload. JWT verification is per-function via config.toml.
+  functions:
+    shell: 'supabase functions serve'
+  # Vite dev server for the Vue SPA (via Vite+ toolchain wrapper).
+  vite:
+    shell: 'vp dev --host'
+  # Forwards Stripe webhook events to the local stripe-webhook function.
+  # Requires STRIPE_WEBHOOK_SECRET cached by scripts/bootstrap-env.sh.
+  stripe:
+    shell: 'stripe listen --forward-to http://localhost:54321/functions/v1/stripe-webhook'
