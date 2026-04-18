@@ -59,8 +59,8 @@ vi.mock('@/composables/toast', () => ({
   useToast: () => ({ success: toastSuccessMock, error: toastErrorMock })
 }))
 
-vi.mock('@/phone/apps/settings/component/billing-settings/add-card-modal.vue', () => ({
-  default: { name: 'AddCardModal' }
+vi.mock('@/phone/apps/settings/component/billing-settings/add-credit-card-modal.vue', () => ({
+  default: { name: 'AddCreditCardModal' }
 }))
 
 const SectionHeaderStub = defineComponent({
@@ -222,13 +222,16 @@ describe('payment-methods-section — detach', () => {
 })
 
 describe('payment-methods-section — add card', () => {
-  test('clicking add opens the AddCardModal as a mobile sheet', async () => {
+  test('clicking add opens the AddCreditCardModal as a mobile sheet', async () => {
     queryState.data = { paymentMethods: [], defaultPaymentMethodId: null }
     const wrapper = await makePaymentMethodsSection()
     await wrapper.find('[data-testid="billing-settings__payment-methods-add"]').trigger('click')
-    expect(modalOpenMock).toHaveBeenCalledWith(expect.objectContaining({ name: 'AddCardModal' }), {
-      mode: 'mobile-sheet',
-      backdrop: true
-    })
+    expect(modalOpenMock).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'AddCreditCardModal' }),
+      {
+        mode: 'mobile-sheet',
+        backdrop: true
+      }
+    )
   })
 })

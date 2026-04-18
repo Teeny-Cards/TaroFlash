@@ -23,28 +23,25 @@ async function makeSettingsHeader(props = { selectedTab: 'app-settings' }) {
 }
 
 describe('settings-header', () => {
-  test('renders a button for each tab, including the new billing tab', async () => {
+  test('renders a button for each tab', async () => {
     const wrapper = await makeSettingsHeader()
-    const buttons = wrapper.findAll('button')
-    // close button + 4 tab buttons
-    expect(buttons.length).toBeGreaterThanOrEqual(5)
-
-    const tabButtons = buttons.filter((b) => b.attributes('icon-left') !== 'close')
+    const tabButtons = wrapper
+      .findAll('button')
+      .filter((b) => b.attributes('icon-left') !== 'close')
     const icons = tabButtons.map((b) => b.attributes('icon-left'))
     expect(icons).toContain('id-card')
     expect(icons).toContain('settings')
-    expect(icons).toContain('shopping-bag')
     expect(icons).toContain('book')
   })
 
   test('emits change-tab with the clicked tab key', async () => {
     const wrapper = await makeSettingsHeader({ selectedTab: 'app-settings' })
-    const billingButton = wrapper
+    const memberButton = wrapper
       .findAll('button')
-      .find((b) => b.attributes('icon-left') === 'shopping-bag')
-    await billingButton.trigger('click')
+      .find((b) => b.attributes('icon-left') === 'id-card')
+    await memberButton.trigger('click')
     expect(wrapper.emitted('change-tab')).toBeTruthy()
-    expect(wrapper.emitted('change-tab')[0]).toEqual(['billing-settings'])
+    expect(wrapper.emitted('change-tab')[0]).toEqual(['member-settings'])
   })
 
   test('emits close when the close button is clicked', async () => {
@@ -55,19 +52,19 @@ describe('settings-header', () => {
   })
 
   test('renders the translated title for the selected tab', async () => {
-    const wrapper = await makeSettingsHeader({ selectedTab: 'billing-settings' })
-    expect(wrapper.find('h1').text()).toBe('Billing')
+    const wrapper = await makeSettingsHeader({ selectedTab: 'member-settings' })
+    expect(wrapper.find('h1').text()).toBe('Member Settings')
   })
 
   test('marks the selected tab as solid and others as outline', async () => {
-    const wrapper = await makeSettingsHeader({ selectedTab: 'billing-settings' })
+    const wrapper = await makeSettingsHeader({ selectedTab: 'member-settings' })
     const tabButtons = wrapper
       .findAll('button')
       .filter((b) => b.attributes('icon-left') !== 'close')
 
-    const billingBtn = tabButtons.find((b) => b.attributes('icon-left') === 'shopping-bag')
+    const memberBtn = tabButtons.find((b) => b.attributes('icon-left') === 'id-card')
     const appBtn = tabButtons.find((b) => b.attributes('icon-left') === 'settings')
-    expect(billingBtn.attributes('variant')).toBe('solid')
+    expect(memberBtn.attributes('variant')).toBe('solid')
     expect(appBtn.attributes('variant')).toBe('outline')
   })
 })

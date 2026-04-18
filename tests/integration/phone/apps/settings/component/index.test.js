@@ -25,17 +25,10 @@ const MemberSettingsStub = defineComponent({
   name: 'MemberSettings',
   setup: () => () => h('div', { 'data-testid': 'member-settings-stub' })
 })
-const BillingSettingsStub = defineComponent({
-  name: 'BillingSettings',
-  setup: () => () => h('div', { 'data-testid': 'billing-settings-stub' })
-})
 
 vi.mock('@/phone/apps/settings/component/app-settings.vue', () => ({ default: AppSettingsStub }))
 vi.mock('@/phone/apps/settings/component/member-settings.vue', () => ({
   default: MemberSettingsStub
-}))
-vi.mock('@/phone/apps/settings/component/billing-settings/index.vue', () => ({
-  default: BillingSettingsStub
 }))
 
 const SettingsHeaderStub = defineComponent({
@@ -47,14 +40,6 @@ const SettingsHeaderStub = defineComponent({
     const attrs = useAttrs()
     return () =>
       h('div', { ...attrs, 'data-testid': 'settings-header-stub' }, [
-        h(
-          'button',
-          {
-            'data-testid': 'change-to-billing',
-            onClick: () => emit('change-tab', 'billing-settings')
-          },
-          'billing'
-        ),
         h(
           'button',
           {
@@ -99,7 +84,6 @@ async function makeSettings() {
         SettingsHeader: SettingsHeaderStub,
         AppSettings: AppSettingsStub,
         MemberSettings: MemberSettingsStub,
-        BillingSettings: BillingSettingsStub,
         UiIcon: UiIconStub
       }
     }
@@ -120,16 +104,16 @@ describe('settings app shell', () => {
   })
 
   test('restores the selected tab from storage on mount', async () => {
-    storageState.value = 'billing-settings'
+    storageState.value = 'member-settings'
     const wrapper = await makeSettings()
-    expect(wrapper.find('[data-testid="billing-settings-stub"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="selected-tab"]').text()).toBe('billing-settings')
+    expect(wrapper.find('[data-testid="member-settings-stub"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="selected-tab"]').text()).toBe('member-settings')
   })
 
   test('change-tab switches the rendered tab component', async () => {
     const wrapper = await makeSettings()
-    await wrapper.find('[data-testid="change-to-billing"]').trigger('click')
-    expect(wrapper.find('[data-testid="billing-settings-stub"]').exists()).toBe(true)
+    await wrapper.find('[data-testid="change-to-member"]').trigger('click')
+    expect(wrapper.find('[data-testid="member-settings-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="app-settings-stub"]').exists()).toBe(false)
   })
 
@@ -144,13 +128,5 @@ describe('settings app shell', () => {
     storageSet.mockClear()
     await wrapper.find('[data-testid="change-to-same"]').trigger('click')
     expect(storageSet).not.toHaveBeenCalled()
-  })
-
-  test('routes billing-settings key to the BillingSettings component', async () => {
-    storageState.value = 'billing-settings'
-    const wrapper = await makeSettings()
-    expect(wrapper.find('[data-testid="billing-settings-stub"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="member-settings-stub"]').exists()).toBe(false)
-    expect(wrapper.find('[data-testid="app-settings-stub"]').exists()).toBe(false)
   })
 })

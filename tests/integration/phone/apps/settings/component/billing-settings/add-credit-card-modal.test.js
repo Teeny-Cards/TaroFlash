@@ -64,12 +64,12 @@ function makeStripe() {
   }
 }
 
-async function makeAddCardModal({ close = vi.fn() } = {}) {
-  const AddCardModal = (
-    await import('@/phone/apps/settings/component/billing-settings/add-card-modal.vue')
+async function makeAddCreditCardModal({ close = vi.fn() } = {}) {
+  const AddCreditCardModal = (
+    await import('@/phone/apps/settings/component/billing-settings/add-credit-card-modal.vue')
   ).default
 
-  const wrapper = shallowMount(AddCardModal, {
+  const wrapper = shallowMount(AddCreditCardModal, {
     props: { close },
     global: {
       stubs: {
@@ -97,7 +97,7 @@ beforeEach(() => {
   mockLoadStripe.mockResolvedValue(makeStripe())
 })
 
-describe('add-card-modal — load states', () => {
+describe('add-credit-card-modal — load states', () => {
   test('shows a loading indicator before Stripe.js resolves', async () => {
     let resolveStripe
     mockLoadStripe.mockReturnValue(
@@ -105,57 +105,59 @@ describe('add-card-modal — load states', () => {
         resolveStripe = r
       })
     )
-    const { wrapper } = await makeAddCardModal()
-    expect(wrapper.find('[data-testid="add-card-modal__loading"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="add-card-modal__footer"]').exists()).toBe(false)
+    const { wrapper } = await makeAddCreditCardModal()
+    expect(wrapper.find('[data-testid="add-credit-card-modal__loading"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="add-credit-card-modal__footer"]').exists()).toBe(false)
     resolveStripe(makeStripe())
     await flushPromises()
   })
 
   test('mounts the Payment Element once SetupIntent + Stripe resolve', async () => {
-    const { wrapper } = await makeAddCardModal()
+    const { wrapper } = await makeAddCreditCardModal()
     await flushPromises()
-    expect(wrapper.find('[data-testid="add-card-modal__payment-element"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="add-credit-card-modal__payment-element"]').exists()).toBe(
+      true
+    )
     expect(mockElementMount).toHaveBeenCalledTimes(1)
   })
 
   test('renders the error state when createSetupIntent rejects', async () => {
     mockCreateSetupIntent.mockRejectedValue(new Error('api down'))
-    const { wrapper } = await makeAddCardModal()
+    const { wrapper } = await makeAddCreditCardModal()
     await flushPromises()
-    expect(wrapper.find('[data-testid="add-card-modal__error"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="add-card-modal__footer"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="add-credit-card-modal__error"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="add-credit-card-modal__footer"]').exists()).toBe(false)
   })
 
   test('renders the error state when Stripe.js fails to load', async () => {
     mockLoadStripe.mockResolvedValue(null)
-    const { wrapper } = await makeAddCardModal()
+    const { wrapper } = await makeAddCreditCardModal()
     await flushPromises()
-    expect(wrapper.find('[data-testid="add-card-modal__error"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="add-credit-card-modal__error"]').exists()).toBe(true)
   })
 
   test('submit is disabled until the Payment Element fires "ready"', async () => {
-    const { wrapper } = await makeAddCardModal()
+    const { wrapper } = await makeAddCreditCardModal()
     await flushPromises()
-    const submit = wrapper.find('[data-testid="add-card-modal__submit"]')
+    const submit = wrapper.find('[data-testid="add-credit-card-modal__submit"]')
     expect(submit.attributes('disabled')).toBeDefined()
     fireReady()
     await flushPromises()
     expect(
-      wrapper.find('[data-testid="add-card-modal__submit"]').attributes('disabled')
+      wrapper.find('[data-testid="add-credit-card-modal__submit"]').attributes('disabled')
     ).toBeUndefined()
   })
 })
 
-describe('add-card-modal — submit', () => {
+describe('add-credit-card-modal — submit', () => {
   test('on succeeded SetupIntent, invalidates payment-methods cache and closes with added=true', async () => {
     mockConfirmSetup.mockResolvedValue({ setupIntent: { status: 'succeeded' } })
-    const { wrapper, close } = await makeAddCardModal()
+    const { wrapper, close } = await makeAddCreditCardModal()
     await flushPromises()
     fireReady()
     await flushPromises()
 
-    await wrapper.find('[data-testid="add-card-modal__submit"]').trigger('click')
+    await wrapper.find('[data-testid="add-credit-card-modal__submit"]').trigger('click')
     await flushPromises()
 
     expect(mockInvalidateQueries).toHaveBeenCalledWith({ key: ['billing', 'payment-methods'] })
@@ -164,15 +166,15 @@ describe('add-card-modal — submit', () => {
 
   test('shows the submit error when confirmSetup returns an error', async () => {
     mockConfirmSetup.mockResolvedValue({ error: { message: 'Your card was declined.' } })
-    const { wrapper, close } = await makeAddCardModal()
+    const { wrapper, close } = await makeAddCreditCardModal()
     await flushPromises()
     fireReady()
     await flushPromises()
 
-    await wrapper.find('[data-testid="add-card-modal__submit"]').trigger('click')
+    await wrapper.find('[data-testid="add-credit-card-modal__submit"]').trigger('click')
     await flushPromises()
 
-    const err = wrapper.find('[data-testid="add-card-modal__submit-error"]')
+    const err = wrapper.find('[data-testid="add-credit-card-modal__submit-error"]')
     expect(err.exists()).toBe(true)
     expect(err.text()).toBe('Your card was declined.')
     expect(close).not.toHaveBeenCalled()
@@ -180,22 +182,22 @@ describe('add-card-modal — submit', () => {
 
   test('falls back to a generic submit error when setupIntent status is non-success', async () => {
     mockConfirmSetup.mockResolvedValue({ setupIntent: { status: 'requires_action' } })
-    const { wrapper, close } = await makeAddCardModal()
+    const { wrapper, close } = await makeAddCreditCardModal()
     await flushPromises()
     fireReady()
     await flushPromises()
 
-    await wrapper.find('[data-testid="add-card-modal__submit"]').trigger('click')
+    await wrapper.find('[data-testid="add-credit-card-modal__submit"]').trigger('click')
     await flushPromises()
 
-    expect(wrapper.find('[data-testid="add-card-modal__submit-error"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="add-credit-card-modal__submit-error"]').exists()).toBe(true)
     expect(close).not.toHaveBeenCalled()
   })
 })
 
-describe('add-card-modal — cleanup', () => {
+describe('add-credit-card-modal — cleanup', () => {
   test('destroys the Payment Element on unmount', async () => {
-    const { wrapper } = await makeAddCardModal()
+    const { wrapper } = await makeAddCreditCardModal()
     await flushPromises()
     wrapper.unmount()
     expect(mockElementDestroy).toHaveBeenCalledTimes(1)

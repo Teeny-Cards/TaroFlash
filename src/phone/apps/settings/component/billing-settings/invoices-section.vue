@@ -26,14 +26,14 @@ function formatDate(ts: number) {
 
 <template>
   <div data-testid="billing-settings__invoices" class="flex flex-col gap-8">
-    <section-header>{{ t('settings.billing-settings.invoices.label') }}</section-header>
+    <section-header>{{ t('settings.member-settings.billing.invoices.label') }}</section-header>
 
     <p
       v-if="invoices_query.isLoading.value"
       data-testid="billing-settings__invoices-loading"
       class="text-brown-500 dark:text-brown-400"
     >
-      {{ t('settings.billing-settings.loading') }}
+      {{ t('settings.member-settings.billing.loading') }}
     </p>
 
     <p
@@ -41,7 +41,7 @@ function formatDate(ts: number) {
       data-testid="billing-settings__invoices-empty"
       class="text-brown-500 dark:text-brown-400"
     >
-      {{ t('settings.billing-settings.invoices.empty') }}
+      {{ t('settings.member-settings.billing.invoices.empty') }}
     </p>
 
     <ul v-else data-testid="billing-settings__invoices-list" class="flex flex-col gap-2">
@@ -66,7 +66,7 @@ function formatDate(ts: number) {
           rel="noopener noreferrer"
           class="text-sm text-green-700 dark:text-green-400 hover:underline"
         >
-          {{ t('settings.billing-settings.invoices.view') }}
+          {{ t('settings.member-settings.billing.invoices.view') }}
         </a>
         <span v-else></span>
       </li>
