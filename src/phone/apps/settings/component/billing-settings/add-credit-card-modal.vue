@@ -11,12 +11,13 @@ import {
 import mobileSheet from '@/components/layout-kit/modal/mobile-sheet.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import { useCreateSetupIntentMutation } from '@/api/billing'
+import { STRIPE_APPEARANCE, STRIPE_FONTS } from '@/utils/billing/stripe-theme'
 import logger from '@/utils/logger'
 
-export type AddCardResponse = { added: boolean }
+export type AddCreditCardResponse = { added: boolean }
 
 const { close } = defineProps<{
-  close: (response?: AddCardResponse) => void
+  close: (response?: AddCreditCardResponse) => void
 }>()
 
 const { t } = useI18n()
@@ -35,20 +36,6 @@ let stripe: Stripe | null = null
 let elements: StripeElements | null = null
 let payment_element: StripePaymentElement | null = null
 
-const APPEARANCE = {
-  theme: 'stripe' as const,
-  variables: {
-    colorPrimary: '#6f9b80',
-    colorBackground: '#f9f8f5',
-    colorText: '#744e2a',
-    colorDanger: '#dc2626',
-    colorTextPlaceholder: '#b8b1a9',
-    fontFamily: 'Tilt Neon, sans-serif',
-    spacingUnit: '4px',
-    borderRadius: '8px'
-  }
-}
-
 onMounted(async () => {
   try {
     const [setup, stripeInstance] = await Promise.all([
@@ -60,8 +47,8 @@ onMounted(async () => {
 
     elements = stripe.elements({
       clientSecret: setup.clientSecret,
-      appearance: APPEARANCE,
-      fonts: [{ cssSrc: 'https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap' }]
+      appearance: STRIPE_APPEARANCE,
+      fonts: STRIPE_FONTS
     })
 
     payment_element = elements.create('payment', { layout: 'tabs' })
@@ -97,7 +84,7 @@ async function onSubmit() {
 
   if (result.error) {
     submit_error.value =
-      result.error.message ?? t('settings.billing-settings.add-card.submit-error')
+      result.error.message ?? t('settings.member-settings.billing.add-credit-card.submit-error')
     is_submitting.value = false
     return
   }
@@ -108,42 +95,42 @@ async function onSubmit() {
     return
   }
 
-  submit_error.value = t('settings.billing-settings.add-card.submit-error')
+  submit_error.value = t('settings.member-settings.billing.add-credit-card.submit-error')
   is_submitting.value = false
 }
 </script>
 
 <template>
   <mobile-sheet
-    data-testid="add-card-modal"
+    data-testid="add-credit-card-modal"
     class="sm:max-w-130! max-h-[95dvh]"
-    :title="t('settings.billing-settings.add-card.title')"
+    :title="t('settings.member-settings.billing.add-credit-card.title')"
     theme="green-400"
     @close="close()"
   >
     <template #body>
       <div
-        data-testid="add-card-modal__body"
+        data-testid="add-credit-card-modal__body"
         class="overflow-y-auto max-h-[65dvh] px-6 pb-2 flex flex-col gap-4"
       >
         <p
           v-if="is_loading"
-          data-testid="add-card-modal__loading"
+          data-testid="add-credit-card-modal__loading"
           class="text-brown-700 py-10 text-center"
         >
-          {{ t('settings.billing-settings.add-card.loading') }}
+          {{ t('settings.member-settings.billing.add-credit-card.loading') }}
         </p>
         <p
           v-else-if="load_error"
-          data-testid="add-card-modal__error"
+          data-testid="add-credit-card-modal__error"
           class="py-10 text-center text-red-500"
         >
-          {{ t('settings.billing-settings.add-card.error') }}
+          {{ t('settings.member-settings.billing.add-credit-card.error') }}
         </p>
-        <div ref="container" data-testid="add-card-modal__payment-element"></div>
+        <div ref="container" data-testid="add-credit-card-modal__payment-element"></div>
         <p
           v-if="submit_error"
-          data-testid="add-card-modal__submit-error"
+          data-testid="add-credit-card-modal__submit-error"
           class="text-sm text-red-500"
         >
           {{ submit_error }}
@@ -153,11 +140,11 @@ async function onSubmit() {
     <template #footer>
       <div
         v-if="!is_loading && !load_error"
-        data-testid="add-card-modal__footer"
+        data-testid="add-credit-card-modal__footer"
         class="px-6 pb-6 pt-2"
       >
         <ui-button
-          data-testid="add-card-modal__submit"
+          data-testid="add-credit-card-modal__submit"
           theme="green-400"
           full-width
           size="lg"
@@ -165,7 +152,7 @@ async function onSubmit() {
           :disabled="!is_ready"
           @click="onSubmit"
         >
-          {{ t('settings.billing-settings.add-card.submit') }}
+          {{ t('settings.member-settings.billing.add-credit-card.submit') }}
         </ui-button>
       </div>
     </template>

@@ -11,6 +11,7 @@ import {
 import mobileSheet from '@/components/layout-kit/modal/mobile-sheet.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import { useCreateSubscriptionMutation } from '@/api/billing'
+import { STRIPE_APPEARANCE, STRIPE_FONTS } from '@/utils/billing/stripe-theme'
 import logger from '@/utils/logger'
 
 export type CheckoutResponse = { upgraded: boolean }
@@ -35,45 +36,6 @@ let stripe: Stripe | null = null
 let elements: StripeElements | null = null
 let payment_element: StripePaymentElement | null = null
 
-const APPEARANCE = {
-  theme: 'stripe' as const,
-  variables: {
-    colorPrimary: '#6f9b80',
-    colorBackground: '#f9f8f5',
-    colorText: '#744e2a',
-    colorDanger: '#dc2626',
-    colorTextPlaceholder: '#b8b1a9',
-    fontFamily: 'Tilt Neon, sans-serif',
-    spacingUnit: '4px',
-    borderRadius: '8px'
-  },
-  rules: {
-    '.Input': {
-      border: '1px solid #e7e0d5',
-      boxShadow: 'none'
-    },
-    '.Input:focus': {
-      border: '1px solid #6f9b80',
-      boxShadow: '0 0 0 3px rgba(111, 155, 128, 0.25)'
-    },
-    '.Label': {
-      color: '#744e2a',
-      fontWeight: '500'
-    },
-    '.Tab': {
-      border: '1px solid #e7e0d5',
-      backgroundColor: '#f9f8f5'
-    },
-    '.Tab:hover': {
-      backgroundColor: '#ede9df'
-    },
-    '.Tab--selected': {
-      borderColor: '#6f9b80',
-      backgroundColor: '#f3f1ea'
-    }
-  }
-}
-
 onMounted(async () => {
   try {
     const [subscription, stripeInstance] = await Promise.all([
@@ -85,8 +47,8 @@ onMounted(async () => {
 
     elements = stripe.elements({
       clientSecret: subscription.clientSecret,
-      appearance: APPEARANCE,
-      fonts: [{ cssSrc: 'https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap' }]
+      appearance: STRIPE_APPEARANCE,
+      fonts: STRIPE_FONTS
     })
 
     payment_element = elements.create('payment', { layout: 'tabs' })

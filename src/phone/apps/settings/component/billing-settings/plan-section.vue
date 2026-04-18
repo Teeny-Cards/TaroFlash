@@ -39,8 +39,8 @@ const price_label = computed(() => {
   const currency = price.currency.toUpperCase()
   const interval = price.recurring?.interval ?? null
   return interval
-    ? t('settings.billing-settings.plan.price-per-interval', { amount, currency, interval })
-    : t('settings.billing-settings.plan.price', { amount, currency })
+    ? t('settings.member-settings.billing.plan.price-per-interval', { amount, currency, interval })
+    : t('settings.member-settings.billing.plan.price', { amount, currency })
 })
 
 const renewal_label = computed(() => {
@@ -50,50 +50,50 @@ const renewal_label = computed(() => {
     .setLocale(locale.value)
     .toLocaleString(DateTime.DATE_MED)
   return subscription.value.cancel_at_period_end
-    ? t('settings.billing-settings.plan.cancels-on', { date: formatted })
-    : t('settings.billing-settings.plan.renews-on', { date: formatted })
+    ? t('settings.member-settings.billing.plan.cancels-on', { date: formatted })
+    : t('settings.member-settings.billing.plan.renews-on', { date: formatted })
 })
 
 const status_label = computed(() => {
   const status = subscription.value?.status
   if (!status) return null
-  return t(`settings.billing-settings.plan.status.${status}`, status)
+  return t(`settings.member-settings.billing.plan.status.${status}`, status)
 })
 
 async function onCancel() {
   try {
     await cancelMutation.mutateAsync(true)
     confirming_cancel.value = false
-    toast.success(t('settings.billing-settings.plan.cancel-success'))
+    toast.success(t('settings.member-settings.billing.plan.cancel-success'))
   } catch {
-    toast.error(t('settings.billing-settings.plan.cancel-error'))
+    toast.error(t('settings.member-settings.billing.plan.cancel-error'))
   }
 }
 
 async function onResume() {
   try {
     await resumeMutation.mutateAsync()
-    toast.success(t('settings.billing-settings.plan.resume-success'))
+    toast.success(t('settings.member-settings.billing.plan.resume-success'))
   } catch {
-    toast.error(t('settings.billing-settings.plan.resume-error'))
+    toast.error(t('settings.member-settings.billing.plan.resume-error'))
   }
 }
 </script>
 
 <template>
   <div data-testid="billing-settings__plan" class="flex flex-col gap-8">
-    <section-header>{{ t('settings.billing-settings.plan.label') }}</section-header>
+    <section-header>{{ t('settings.member-settings.billing.plan.label') }}</section-header>
 
     <div class="grid grid-cols-[200px_1fr] gap-6 items-start">
       <h2 class="text-brown-700 dark:text-brown-300 text-lg">
-        {{ t('settings.billing-settings.plan.current') }}
+        {{ t('settings.member-settings.billing.plan.current') }}
       </h2>
       <div
         data-testid="billing-settings__plan-details"
         class="flex flex-col gap-2 text-brown-700 dark:text-brown-300"
       >
         <p data-testid="billing-settings__plan-name" class="text-xl">
-          {{ product_name ?? t('settings.billing-settings.plan.unknown') }}
+          {{ product_name ?? t('settings.member-settings.billing.plan.unknown') }}
         </p>
         <p
           v-if="price_label"
@@ -128,7 +128,7 @@ async function onResume() {
             :loading="resumeMutation.isLoading.value"
             @click="onResume"
           >
-            {{ t('settings.billing-settings.plan.resume') }}
+            {{ t('settings.member-settings.billing.plan.resume') }}
           </ui-button>
         </template>
 
@@ -140,7 +140,7 @@ async function onResume() {
             variant="outline"
             @click="confirming_cancel = true"
           >
-            {{ t('settings.billing-settings.plan.cancel') }}
+            {{ t('settings.member-settings.billing.plan.cancel') }}
           </ui-button>
         </template>
 
@@ -149,7 +149,7 @@ async function onResume() {
             data-testid="billing-settings__plan-cancel-prompt"
             class="text-sm text-brown-700 dark:text-brown-300 w-full"
           >
-            {{ t('settings.billing-settings.plan.cancel-confirm') }}
+            {{ t('settings.member-settings.billing.plan.cancel-confirm') }}
           </p>
           <ui-button
             data-testid="billing-settings__plan-cancel-confirm"
@@ -158,7 +158,7 @@ async function onResume() {
             :loading="cancelMutation.isLoading.value"
             @click="onCancel"
           >
-            {{ t('settings.billing-settings.plan.cancel-confirm-button') }}
+            {{ t('settings.member-settings.billing.plan.cancel-confirm-button') }}
           </ui-button>
           <ui-button
             data-testid="billing-settings__plan-cancel-abort"
@@ -167,7 +167,7 @@ async function onResume() {
             variant="outline"
             @click="confirming_cancel = false"
           >
-            {{ t('settings.billing-settings.plan.cancel-abort') }}
+            {{ t('settings.member-settings.billing.plan.cancel-abort') }}
           </ui-button>
         </template>
       </div>
