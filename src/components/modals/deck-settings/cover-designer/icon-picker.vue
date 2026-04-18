@@ -1,30 +1,18 @@
 <script setup lang="ts">
 import { emitSfx } from '@/sfx/bus'
 import UiIcon from '@/components/ui-kit/icon.vue'
+import PickerPopover from './picker-popover.vue'
 
 type IconPickerProps = {
+  supported_icons: string[]
   icon: string | undefined
 }
 
 const { icon } = defineProps<IconPickerProps>()
 
 const emit = defineEmits<{
-  (e: 'select', icon: string | undefined): void
+  (e: 'update:icon', icon: string | undefined): void
 }>()
-
-const icons: string[] = [
-  'card-deck',
-  'book',
-  'school-cap',
-  'music-note',
-  'moon-stars',
-  'cable-car',
-  'bell',
-  'public',
-  'id-card',
-  'store',
-  'teeny-cards'
-]
 
 function onIconSelect(value: string | undefined) {
   if (value === icon) {
@@ -32,29 +20,34 @@ function onIconSelect(value: string | undefined) {
     return
   }
 
-  emitSfx('ui.etc_camera_shutter')
-  emit('select', value)
+  emitSfx('ui.toggle_on')
+  emit('update:icon', value)
 }
 </script>
 
 <template>
-  <button
-    v-for="name in icons"
-    :key="name"
-    :data-testid="`icon-picker__option-${name}`"
-    :data-selected="name === icon || undefined"
-    class="w-full aspect-square rounded-2 cursor-pointer bg-brown-200 flex items-center justify-center text-brown-700 [&_svg]:size-6 data-selected:ring-2 data-selected:ring-brown-700 data-selected:bg-brown-300"
-    @click="onIconSelect(name)"
-  >
-    <ui-icon :src="name" />
-  </button>
+  <picker-popover label="Icon" icon="card-deck">
+    <template #default>
+      <button
+        v-for="name in supported_icons"
+        :key="name"
+        :data-testid="`icon-picker__option-${name}`"
+        :data-selected="name === icon || undefined"
+        v-sfx.hover="'ui.click_07'"
+        class="w-full aspect-square rounded-4 rounded-tr-2 rounded-bl-2 cursor-pointer bg-brown-100 flex items-center justify-center text-brown-700 [&_svg]:size-6 data-selected:ring-2 ring-brown-700 data-selected:bg-brown-300 hover:bg-brown-300"
+        @click="onIconSelect(name)"
+      >
+        <ui-icon :src="name" />
+      </button>
 
-  <button
-    data-testid="icon-picker__none"
-    :data-selected="icon === undefined || undefined"
-    class="w-full aspect-square rounded-2 cursor-pointer bg-brown-200 border-2 border-dashed border-brown-400 flex items-center justify-center text-brown-500 text-xs font-medium"
-    @click="onIconSelect(undefined)"
-  >
-    None
-  </button>
+      <button
+        data-testid="icon-picker__none"
+        :data-selected="icon === undefined || undefined"
+        class="w-full aspect-square rounded-4 rounded-tr-2 rounded-bl-2 cursor-pointer bg-brown-200 border-2 border-dashed border-brown-400 flex items-center justify-center text-brown-500 text-xs font-medium"
+        @click="onIconSelect(undefined)"
+      >
+        None
+      </button>
+    </template>
+  </picker-popover>
 </template>
