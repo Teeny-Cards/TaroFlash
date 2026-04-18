@@ -65,8 +65,7 @@ const UiButtonStub = defineComponent({
   emits: ['click'],
   setup(_props, { slots, emit }) {
     const attrs = useAttrs()
-    return () =>
-      h('button', { ...attrs, onClick: () => emit('click') }, slots.default?.())
+    return () => h('button', { ...attrs, onClick: () => emit('click') }, slots.default?.())
   }
 })
 

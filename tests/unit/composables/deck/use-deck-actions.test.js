@@ -84,10 +84,10 @@ describe('useDeckActions', () => {
       const result = await guardCreateDeck()
 
       expect(result).toBe(false)
-      expect(mockModalOpen).toHaveBeenCalledWith(
-        expect.objectContaining({ name: 'Checkout' }),
-        { mode: 'mobile-sheet', backdrop: true }
-      )
+      expect(mockModalOpen).toHaveBeenCalledWith(expect.objectContaining({ name: 'Checkout' }), {
+        mode: 'mobile-sheet',
+        backdrop: true
+      })
     })
 
     test('does not open checkout when user cancels the alert', async () => {

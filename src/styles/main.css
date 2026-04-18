@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap');
+/* Web font URL lives in `src/styles/fonts.ts` and is injected by `main.ts`. */
 
 @import 'tailwindcss';
 @import '@/styles/palettes.css';

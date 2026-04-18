@@ -1,4 +1,5 @@
 import './styles/main.css'
+import { loadFont } from './styles/fonts'
 import App from './App.vue'
 import router from './router'
 import { createApp } from 'vue'
@@ -7,6 +8,8 @@ import { PiniaColada } from '@pinia/colada'
 import { createI18n } from 'vue-i18n'
 import messages from '@intlify/unplugin-vue-i18n/messages'
 import { vSfx } from '@/sfx/directive'
+
+loadFont()
 
 const i18n = createI18n({
   locale: 'en-us',

@@ -53,7 +53,7 @@ function mount(props = {}) {
         front_text: 'Q',
         back_text: 'A',
         rank: 1000,
-        ...(props.card ?? {})
+        ...props.card
       }
     },
     global: {
