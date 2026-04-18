@@ -13,8 +13,8 @@ export const PATTERN_SIZE_SCALE: Record<DeckCoverPattern, number> = {
   'endless-clouds': 2
 }
 
-export function patternSize(pattern: DeckCoverPattern, size: number): string {
-  return `${size * PATTERN_SIZE_SCALE[pattern]}px`
+export function patternSize(pattern: DeckCoverPattern, size: number, multiplier = 1): string {
+  return `${size * PATTERN_SIZE_SCALE[pattern] * multiplier}px`
 }
 
 export const PATTERN_OPACITY_SCALE: Record<DeckCoverPattern, number> = {

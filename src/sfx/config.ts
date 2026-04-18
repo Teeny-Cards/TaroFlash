@@ -21,9 +21,7 @@ export const AUDIO_CONFIG = createAudioConfig({
     pop_drip_mid: {
       default_volume: 0.1
     },
-    pop_window: {
-      default_volume: 0.3
-    },
+    pop_window: {},
     slide_up: {},
     trash_crumple_short: {},
     negative_pop: {
