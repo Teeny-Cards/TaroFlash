@@ -51,6 +51,7 @@ function onThemeSelect(theme: MemberTheme) {
       <button
         v-for="theme in supported_themes"
         :key="theme"
+        :data-testid="`bg-color-picker__option-${theme}`"
         :data-theme="theme"
         v-sfx.hover="'ui.click_07'"
         class="w-full aspect-square bg-(--theme-primary) rounded-8 rounded-tr-3 cursor-pointer relative! hover:outline-5 outline-white"

@@ -68,9 +68,7 @@ const supported_icons: string[] = [
         :supported_patterns="supported_patterns"
         :selected_pattern="config.pattern"
         :pattern_size="config.pattern_size"
-        :bg_color="config.bg_color"
         @update:pattern="config.pattern = $event"
-        @update:pattern_size="config.pattern_size = $event"
       />
     </div>
   </div>
