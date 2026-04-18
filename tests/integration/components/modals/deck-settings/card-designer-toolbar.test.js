@@ -5,11 +5,11 @@ import CardDesignerToolbar from '@/components/modals/deck-settings/card-designer
 
 // ── Stubs ──────────────────────────────────────────────────────────────────────
 
-// The toolbar composes `./cover-designer/popover.vue`. Stub it to expose its
-// default slot content inline so we can interact with the option buttons
+// The toolbar composes `./cover-designer/picker-popover.vue`. Stub it to expose
+// its default slot content inline so we can interact with the option buttons
 // without rendering the full popover UI.
-const PopoverStub = defineComponent({
-  name: 'Popover',
+const PickerPopoverStub = defineComponent({
+  name: 'PickerPopover',
   props: ['label', 'icon'],
   setup(_props, { slots }) {
     return () => h('div', { 'data-testid': 'popover-stub' }, slots.default?.())
@@ -24,7 +24,7 @@ function makeToolbar(initial = {}) {
   const wrapper = shallowMount(CardDesignerToolbar, {
     props: { attributes },
     global: {
-      stubs: { Popover: PopoverStub }
+      stubs: { PickerPopover: PickerPopoverStub }
     }
   })
 

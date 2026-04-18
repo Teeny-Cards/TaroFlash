@@ -8,14 +8,12 @@ type PatternPickerProps = {
   supported_patterns: DeckCoverPattern[]
   selected_pattern: DeckCoverPattern | undefined
   pattern_size: number | undefined
-  bg_color: MemberTheme | undefined
 }
 
-const { selected_pattern, pattern_size, bg_color } = defineProps<PatternPickerProps>()
+const { selected_pattern, pattern_size } = defineProps<PatternPickerProps>()
 
 const emit = defineEmits<{
   (e: 'update:pattern', pattern: DeckCoverPattern | undefined): void
-  (e: 'update:pattern_size', size: number): void
 }>()
 
 function swatchStyle(p: DeckCoverPattern): Record<string, string> {

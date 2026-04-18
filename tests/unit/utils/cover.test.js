@@ -1,5 +1,19 @@
 import { describe, test, expect } from 'vite-plus/test'
-import { coverBindings } from '@/utils/cover'
+import { coverBindings, patternSize } from '@/utils/cover'
+
+describe('patternSize', () => {
+  test('defaults the multiplier to 1', () => {
+    // wave has scale 2 → 10 * 2 * 1 = 20
+    expect(patternSize('wave', 10)).toBe('20px')
+  })
+
+  test('applies the multiplier argument', () => {
+    // wave: 10 * 2 * 0.5 = 10
+    expect(patternSize('wave', 10, 0.5)).toBe('10px')
+    // aztec: 20 * 1 * 0.65 = 13
+    expect(patternSize('aztec', 20, 0.65)).toBe('13px')
+  })
+})
 
 describe('coverBindings', () => {
   test('returns empty bindings when called with no argument', () => {
