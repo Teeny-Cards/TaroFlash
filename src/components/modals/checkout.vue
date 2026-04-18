@@ -11,7 +11,7 @@ import {
 import mobileSheet from '@/components/layout-kit/modal/mobile-sheet.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import { useCreateSubscriptionMutation } from '@/api/billing'
-import { STRIPE_APPEARANCE, STRIPE_FONTS } from '@/utils/billing/stripe-theme'
+import { getStripeAppearance, STRIPE_FONTS } from '@/utils/billing/stripe-theme'
 import logger from '@/utils/logger'
 
 export type CheckoutResponse = { upgraded: boolean }
@@ -47,7 +47,7 @@ onMounted(async () => {
 
     elements = stripe.elements({
       clientSecret: subscription.clientSecret,
-      appearance: STRIPE_APPEARANCE,
+      appearance: getStripeAppearance(),
       fonts: STRIPE_FONTS
     })
 
