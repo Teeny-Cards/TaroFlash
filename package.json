@@ -6,9 +6,7 @@
   "scripts": {
     "dev": "vp dev",
     "dev:host": "vp dev --host",
-    "dev:full": "run-p -l vite stripe",
-    "vite": "vp dev",
-    "stripe": "stripe listen --forward-to http://localhost:54321/functions/v1/stripe-webhook",
+    "dev:up": "./scripts/bootstrap-env.sh && mprocs",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vp preview",
     "test": "vp test run --coverage",
