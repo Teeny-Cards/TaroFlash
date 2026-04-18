@@ -2,12 +2,17 @@
 import UiIcon from '@/components/ui-kit/icon.vue'
 import AppSettings from './app-settings.vue'
 import MemberSettings from './member-settings.vue'
+import BillingSettings from './billing-settings/index.vue'
 import { ref, onMounted } from 'vue'
 import SettingsHeader from './settings-header.vue'
 import type { AppProps, AppEmits } from '@/phone/system/types'
 import storage from '@/utils/storage'
 
-export type SettingsTab = 'app-settings' | 'member-settings' | 'notification-settings'
+export type SettingsTab =
+  | 'app-settings'
+  | 'member-settings'
+  | 'billing-settings'
+  | 'notification-settings'
 
 const STORAGE_KEY = 'settings-tab'
 
@@ -19,6 +24,7 @@ const tab = ref<SettingsTab>('app-settings')
 const tabs: { [key in SettingsTab]: any } = {
   'app-settings': AppSettings,
   'member-settings': MemberSettings,
+  'billing-settings': BillingSettings,
   'notification-settings': undefined
 }
 
