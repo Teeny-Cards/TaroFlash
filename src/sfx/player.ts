@@ -1,4 +1,4 @@
-import { Howl } from 'howler'
+import { Howl, Howler } from 'howler'
 import { debounce } from '@/utils/debounce'
 import {
   AUDIO_CONFIG,
@@ -70,17 +70,43 @@ class AudioPlayer {
       return
     }
 
+    const sound = this.loaded_sounds.get(key)
+
+    if (!sound) {
+      throw new Error(`Sound "${key}" not loaded.`)
+    }
+
+    await this._ensureContextRunning()
+
+    if (Howler.ctx && Howler.ctx.state !== 'running') {
+      return
+    }
+
     return new Promise((resolve) => {
-      const sound = this.loaded_sounds.get(key)
-
-      if (!sound) {
-        throw new Error(`Sound "${key}" not loaded.`)
+      const done = () => {
+        sound.off('end', done)
+        sound.off('playerror', done)
+        clearTimeout(timer)
+        resolve()
       }
+      const fallbackMs = Math.ceil((sound.duration() || 1) * 1000) + 500
+      const timer = setTimeout(done, fallbackMs)
 
+      sound.once('end', done)
+      sound.once('playerror', done)
       sound.volume(options.volume ?? sound.volume())
-      sound.once('end', () => resolve())
       sound.play()
     })
+  }
+
+  private _ensureContextRunning = async (): Promise<void> => {
+    const ctx = Howler.ctx
+    if (!ctx || ctx.state === 'running') return
+    try {
+      await ctx.resume()
+    } catch {
+      // Suspension recovery needs a user gesture; lifecycle watcher handles it.
+    }
   }
 
   private async _setupAudioCategory(
