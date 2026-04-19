@@ -13,7 +13,7 @@ const { card, index } = defineProps<{
   duplicate: boolean
 }>()
 
-const { mode, selected_card_ids, appendCard, prependCard } = inject<CardBulkEditor>('card-editor')!
+const { mode, isCardSelected, appendCard, prependCard } = inject<CardBulkEditor>('card-editor')!
 
 const onDeleteCard = inject<(id: number) => void>('on-delete-card')
 const onMoveCard = inject<(id: number) => void>('on-move-card')
@@ -21,7 +21,7 @@ const onSelectCard = inject<(id: number) => void>('on-select-card')
 
 const list_item_card = useTemplateRef('list-item-card')
 
-const selected = computed(() => selected_card_ids.value.includes(card.id!))
+const selected = computed(() => isCardSelected(card.id!))
 
 function onClick(e: MouseEvent) {
   const closest = (selector: string) => !!(e.target as HTMLElement)?.closest(selector)

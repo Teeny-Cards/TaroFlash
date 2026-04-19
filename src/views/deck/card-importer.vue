@@ -2,15 +2,15 @@
 import { computed, ref } from 'vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import Card from '@/components/card/index.vue'
-import { useUpsertCardsMutation } from '@/api/cards'
+import { useBulkInsertCardsInDeckMutation } from '@/api/cards'
 
-type CardDraft = { front_text: string; back_text: string; deck_id: number }
+type CardDraft = { front_text: string; back_text: string }
 
 const saving = ref(false)
 const delimiter = ref<string>('::')
 const raw_text = ref<string>('')
 const cards = ref<CardDraft[]>([])
-const upsert_cards_mutation = useUpsertCardsMutation()
+const bulk_insert_mutation = useBulkInsertCardsInDeckMutation()
 
 const { deck_id } = defineProps<{ deck_id: number }>()
 
@@ -21,8 +21,7 @@ function onImport() {
     const [front, back] = line.split(delimiter.value)
     return {
       front_text: front.trim(),
-      back_text: back.trim(),
-      deck_id
+      back_text: back.trim()
     }
   })
 }
@@ -31,7 +30,7 @@ async function onSave() {
   if (!has_unsaved_changes.value || saving.value) return
 
   saving.value = true
-  await upsert_cards_mutation.mutateAsync(cards.value)
+  await bulk_insert_mutation.mutateAsync({ deck_id, cards: cards.value })
   saving.value = false
   cards.value = []
 }
