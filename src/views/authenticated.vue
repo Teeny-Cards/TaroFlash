@@ -2,6 +2,8 @@
 import NavBar from '@/components/nav-bar.vue'
 import Phone from '@/phone/phone.vue'
 import UiLoader from '@/components/ui-kit/loader/index.vue'
+import DashboardSkeleton from '@/views/dashboard/skeleton.vue'
+import DeckSkeleton from '@/views/deck/skeleton.vue'
 import { useSessionStore } from '@/stores/session'
 import { clearStaticLoader } from '@/utils/static-loader'
 
@@ -23,7 +25,16 @@ const session = useSessionStore()
     <phone />
 
     <main class="h-full w-full max-w-(--page-width) px-4 sm:px-16">
-      <router-view />
+      <router-view v-slot="{ Component, route }">
+        <suspense>
+          <component :is="Component" />
+          <template #fallback>
+            <dashboard-skeleton v-if="route.name === 'dashboard'" />
+            <deck-skeleton v-else-if="route.name === 'deck'" />
+            <div v-else data-testid="route-skeleton" class="h-full w-full animate-pulse"></div>
+          </template>
+        </suspense>
+      </router-view>
     </main>
   </ui-loader>
 </template>
