@@ -21,11 +21,17 @@ const editor = inject<CardBulkEditor>('card-editor')
   >
     <ui-button icon-left="close" theme="grey-400" @click="emit('cancel')">Cancel</ui-button>
     <ui-button theme="brown-100" icon-left="check" @click="emit('toggle-all')">
-      {{ editor?.all_cards_selected ? 'Deselect All' : 'Select All' }}
+      {{ editor?.all_cards_selected.value ? 'Deselect All' : 'Select All' }}
     </ui-button>
-    <ui-button theme="brown-100" icon-left="arrow-forward" @click="emit('move')">Move</ui-button>
+    <ui-button
+      theme="brown-100"
+      icon-left="arrow-forward"
+      :disabled="editor?.select_all_mode.value"
+      @click="emit('move')"
+      >Move</ui-button
+    >
     <ui-button theme="red-500" icon-left="delete" @click="emit('delete')"
-      >Delete ({{ editor?.selected_card_ids.value.length ?? 0 }})</ui-button
+      >Delete ({{ editor?.selected_count.value ?? 0 }})</ui-button
     >
   </div>
 </template>

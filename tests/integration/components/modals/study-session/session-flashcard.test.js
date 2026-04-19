@@ -49,12 +49,11 @@ vi.mock('@/api/cards', () => {
     }),
     useSaveCardMutation: passthrough,
     useUpsertCardMutation: passthrough,
-    useInsertCardMutation: passthrough,
+    useInsertCardAtMutation: passthrough,
     useDeleteCardsMutation: passthrough,
     useSetCardImageMutation: passthrough,
     useDeleteCardImageMutation: passthrough,
     useUpsertCardsMutation: passthrough,
-    useReorderCardMutation: passthrough,
     useMoveCardsToDeckMutation: passthrough,
     useMemberCardCountQuery: () => ({ data: { value: 0 }, refetch: vi.fn(), refresh: vi.fn() })
   }

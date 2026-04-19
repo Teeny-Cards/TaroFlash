@@ -11,7 +11,11 @@ import { useAlert } from '@/composables/alert'
 import { useModal } from '@/composables/modal'
 import { emitSfx } from '@/sfx/bus'
 import UiScrollBar from '@/components/ui-kit/scroll-bar.vue'
-import { useMoveCardsToDeckMutation } from '@/api/cards'
+import {
+  useCardsInDeckInfiniteQuery,
+  useDeckCardIdsQuery,
+  useMoveCardsToDeckMutation
+} from '@/api/cards'
 import MoveCardsModal from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
 import UiButton from '@/components/ui-kit/button.vue'
@@ -36,13 +40,14 @@ const deck = deck_query.data
 const refetchDeck = () => deck_query.refetch()
 const move_cards_mutation = useMoveCardsToDeckMutation()
 
-const editor = useCardBulkEditor(deck.value?.cards ?? [], Number(deck_id))
+const cards_query = useCardsInDeckInfiniteQuery(() => Number(deck_id))
+const ids_query = useDeckCardIdsQuery(() => Number(deck_id))
+const editor = useCardBulkEditor(cards_query, ids_query, Number(deck_id))
 
 watch(
   deck,
   (current) => {
     if (!current) return
-    if (current.cards) editor.resetCards(current.cards)
     const incoming = current.card_attributes
     card_attributes.front = incoming?.front ?? {}
     card_attributes.back = incoming?.back ?? {}
@@ -51,6 +56,7 @@ watch(
 )
 
 provide('card-editor', editor)
+provide('cards-query', cards_query)
 provide('card-attributes', card_attributes)
 provide('on-delete-card', onDeleteCards)
 provide('on-move-card', onMoveCards)
@@ -87,7 +93,7 @@ async function onCancel() {
 }
 
 async function onDeleteCards(id?: number) {
-  const count = editor.selected_card_ids.value.length + (id !== undefined ? 1 : 0)
+  const count = editor.selected_count.value + (id !== undefined ? 1 : 0)
 
   const { response: did_confirm } = alert.warn({
     title: t('alert.delete-card', { count }),
