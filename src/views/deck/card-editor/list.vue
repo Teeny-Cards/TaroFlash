@@ -2,7 +2,6 @@
 import ListItem from './list-item.vue'
 import { inject } from 'vue'
 import { type CardBulkEditor } from '@/composables/card-bulk-editor'
-import toolbar from '@/components/text-editor/toolbar/index.vue'
 
 const { all_cards, isDuplicate } = inject<CardBulkEditor>('card-editor')!
 </script>
@@ -16,9 +15,6 @@ const { all_cards, isDuplicate } = inject<CardBulkEditor>('card-editor')!
       :card="card"
       :duplicate="isDuplicate(card)"
     >
-      <template #toolbar>
-        <toolbar />
-      </template>
     </list-item>
     <slot></slot>
   </div>

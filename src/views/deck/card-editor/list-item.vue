@@ -53,10 +53,10 @@ function onClick(e: MouseEvent) {
   <div
     data-testid="card-list-item"
     :data-id="card.id"
-    class="group/listitem relative grid w-full grid-cols-[1fr_auto_1fr] grid-rows-[auto_auto] gap-x-6 place-items-center rounded-6 bg-transparent p-0 sm:p-6 transition-colors duration-100 ease-in-out hover:not-focus-within:bg-brown-200 dark:hover:not-focus-within:bg-grey-700"
+    class="group/listitem relative grid w-full grid-cols-[1fr_auto_1fr] gap-x-6 place-items-center rounded-6 bg-transparent p-0 sm:p-6 transition-colors duration-100 ease-in-out hover:not-focus-within:bg-brown-200 dark:hover:not-focus-within:bg-grey-700"
     :class="{
       'cursor-pointer': mode === 'select',
-      'focus-within:gap-y-6 focus-within:bg-brown-300 hover:focus-within:bg-brown-300 dark:focus-within:bg-blue-650 dark:hover:focus-within:bg-blue-650':
+      'focus-within:bg-brown-300 hover:focus-within:bg-brown-300 dark:focus-within:bg-blue-650 dark:hover:focus-within:bg-blue-650':
         mode !== 'select'
     }"
     @mousedown="onClick"
@@ -92,15 +92,6 @@ function onClick(e: MouseEvent) {
       @delete="onDeleteCard?.(card.id!)"
     />
     <ui-radio v-else :checked="selected" />
-
-    <div
-      class="grid-rows-2 h-0 overflow-hidden transition-all duration-75"
-      :class="{
-        'group-focus-within/listitem:flex group-focus-within/listitem:h-10': mode !== 'select'
-      }"
-    >
-      <slot name="toolbar"></slot>
-    </div>
 
     <ui-button
       v-if="mode !== 'select'"
