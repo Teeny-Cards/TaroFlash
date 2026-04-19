@@ -1,8 +1,11 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vite-plus/test'
 import { flushPromises } from '@vue/test-utils'
 import { useStudyModal } from '@/composables/modals/use-study-modal'
-import StudySession from '@/components/modals/study-session/index.vue'
-import SessionComplete from '@/components/modals/study-session/session-complete.vue'
+
+// StudySession and SessionComplete are wrapped with defineAsyncComponent inside
+// the composable, so the component identity doesn't match the raw .vue import.
+// We assert on the wrapper object shape instead.
+const asyncComponentMatcher = expect.objectContaining({ __asyncLoader: expect.any(Function) })
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
 
@@ -62,10 +65,10 @@ describe('useStudyModal', () => {
     const { start } = useStudyModal()
     const startPromise = start(DECK)
 
-    expect(mockOpen).toHaveBeenCalledWith(StudySession, {
+    expect(mockOpen).toHaveBeenCalledWith(asyncComponentMatcher, {
       backdrop: true,
       mode: 'mobile-sheet',
-      props: { deck: DECK }
+      props: { deck: DECK, config_override: undefined }
     })
 
     resolveSession(undefined)
@@ -138,10 +141,10 @@ describe('useStudyModal', () => {
     vi.advanceTimersByTime(300)
     await flushPromises()
 
-    expect(mockOpen).toHaveBeenNthCalledWith(2, SessionComplete, {
+    expect(mockOpen).toHaveBeenNthCalledWith(2, asyncComponentMatcher, {
       backdrop: true,
       mode: 'mobile-sheet',
-      props: { score: 3, total: 5, secondary_action: 'study-all' }
+      props: { score: 3, total: 5, secondary_action: 'study-all', theme: undefined }
     })
 
     resolveComplete(undefined)
