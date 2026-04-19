@@ -1,6 +1,9 @@
 import { type CardInput as FSRSCard } from 'ts-fsrs'
 
+export type Review = FSRSCard
+
 export type CardBase = {
+  // Persisted columns on the `cards` table.
   id: number
   deck_id?: number
   front_text?: string
@@ -9,20 +12,21 @@ export type CardBase = {
   updated_at?: string
   rank?: number
   member_id?: string
-}
 
-export type Review = FSRSCard
-
-export type ImageCard = {
+  // View-derived fields (cards_with_images). Optional because they don't
+  // appear on direct upserts; they're only present on reads through the view.
+  // The runtime allow-list in `src/utils/card/payload.ts` keeps these from
+  // leaking into upsert payloads.
   front_image_path?: string
   back_image_path?: string
-}
+  is_duplicate?: boolean
 
-export type ReviewCard = {
+  // Joined relation from `reviews` (per-card review state). Optional for the
+  // same reason as the view-derived fields above.
   review?: Review
 }
 
 declare global {
   type Review = FSRSCard
-  type Card = Prettify<CardBase & ImageCard & ReviewCard>
+  type Card = Prettify<CardBase>
 }
