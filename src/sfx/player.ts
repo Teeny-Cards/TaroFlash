@@ -14,11 +14,13 @@ export type PlayOptions = {
   debounce?: number
 }
 
-// Audio files are inlined as base64 data URIs at build time.
-// Howler decodes them directly — no network requests needed.
+// Audio files ship as separate hashed assets; Howler fetches them when
+// setup() runs. The glob captures URL strings only — no binary payload
+// lands in the JS bundle. setup() itself is invoked post-paint from
+// App.vue so audio download never blocks first paint.
 const AUDIO_FILES = import.meta.glob('@/assets/audio/**/*.{wav,mp3,ogg}', {
   eager: true,
-  query: '?datauri',
+  query: '?url',
   import: 'default'
 }) as Record<string, string>
 
