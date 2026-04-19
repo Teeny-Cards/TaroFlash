@@ -4,8 +4,9 @@ import { useToast } from '@/composables/toast'
 import UiToast from '@/components/ui-kit/toast.vue'
 import UiModal from '@/components/ui-kit/modal.vue'
 import audio_player from '@/sfx/player'
+import { installAudioLifecycle } from '@/sfx/lifecycle'
 import { useSessionStore } from '@/stores/session'
-import { onMounted } from 'vue'
+import { onMounted, onBeforeUnmount } from 'vue'
 import logger from '@/utils/logger'
 import { useThemeStore } from '@/stores/theme'
 import { useRouter } from 'vue-router'
@@ -24,16 +25,23 @@ const removeGuard = router.afterEach((to) => {
   }
 })
 
+let teardownAudioLifecycle: (() => void) | undefined
+
 onMounted(async () => {
   try {
     theme.load()
     session.startLoading()
     await audio_player.setup()
+    teardownAudioLifecycle = installAudioLifecycle()
   } catch (e: any) {
     logger.error(e.message, e)
   } finally {
     session.stopLoading()
   }
+})
+
+onBeforeUnmount(() => {
+  teardownAudioLifecycle?.()
 })
 </script>
 

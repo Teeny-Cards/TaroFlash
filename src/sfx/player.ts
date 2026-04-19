@@ -1,4 +1,4 @@
-import { Howl } from 'howler'
+import { Howl, Howler } from 'howler'
 import { debounce } from '@/utils/debounce'
 import {
   AUDIO_CONFIG,
@@ -70,17 +70,60 @@ class AudioPlayer {
       return
     }
 
+    const sound = this.loaded_sounds.get(key)
+
+    if (!sound) {
+      throw new Error(`Sound "${key}" not loaded.`)
+    }
+
+    await this._ensureContextRunning()
+
+    if (Howler.ctx && Howler.ctx.state !== 'running') {
+      return
+    }
+
     return new Promise((resolve) => {
-      const sound = this.loaded_sounds.get(key)
-
-      if (!sound) {
-        throw new Error(`Sound "${key}" not loaded.`)
+      // The returned Promise must settle in exactly one of three ways:
+      //   1. 'end'       — Howler's normal completion event.
+      //   2. 'playerror' — Howler failed to decode/play (e.g. autoplay policy).
+      //   3. Timer       — neither of the above fired in time.
+      //
+      // (3) is the safety net: if the AudioContext suspends mid-play (tab hides
+      // right after play, device locks) Howler never emits 'end' and the
+      // promise would hang forever, stalling any caller that awaits emitSfx().
+      //
+      // Whichever path wins, settle() cancels the other two: clearing the
+      // timer and off()-ing both handlers. The off() calls matter because
+      // Howl.once() only auto-removes a handler when it fires — if the timer
+      // wins, the 'end'/'playerror' subscriptions would otherwise leak,
+      // holding resolve + timer references for the lifetime of the Howl.
+      let settled = false
+      const settle = () => {
+        if (settled) return
+        settled = true
+        sound.off('end', settle)
+        sound.off('playerror', settle)
+        clearTimeout(timer)
+        resolve()
       }
+      const fallbackMs = Math.ceil((sound.duration() || 1) * 1000) + 500
+      const timer = setTimeout(settle, fallbackMs)
 
+      sound.once('end', settle)
+      sound.once('playerror', settle)
       sound.volume(options.volume ?? sound.volume())
-      sound.once('end', () => resolve())
       sound.play()
     })
+  }
+
+  private _ensureContextRunning = async (): Promise<void> => {
+    const ctx = Howler.ctx
+    if (!ctx || ctx.state === 'running') return
+    try {
+      await ctx.resume()
+    } catch {
+      // Suspension recovery needs a user gesture; lifecycle watcher handles it.
+    }
   }
 
   private async _setupAudioCategory(
