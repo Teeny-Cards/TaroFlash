@@ -4,21 +4,9 @@ import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
 import { inject } from 'vue'
 import { type CardBulkEditor } from '@/composables/card-bulk-editor'
-import text_composer from '@/utils/text-composer'
-import { emitSfx } from '@/sfx/bus'
 
 const { t } = useI18n()
 const { all_cards, addCard } = inject<CardBulkEditor>('card-editor')!
-
-// const unsub = text_composer.registerUpdateListener(onTextComposerUpdate)
-
-// function onTextComposerUpdate() {
-//   setTimeout(() => {
-//     if (!text_composer.hasActiveRoot()) {
-//       emitSfx('ui.card_drop')
-//     }
-//   }, 100)
-// }
 </script>
 
 <template>
