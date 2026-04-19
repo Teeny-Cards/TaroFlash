@@ -43,6 +43,9 @@ const emit = defineEmits<{
 
   max-width: 314px;
   width: 100%;
+
+  content-visibility: auto;
+  contain-intrinsic-size: auto 220px;
 }
 
 .grid-item .grid-item__card {

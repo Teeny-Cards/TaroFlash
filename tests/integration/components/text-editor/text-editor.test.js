@@ -1,22 +1,6 @@
-import { describe, test, expect, vi } from 'vite-plus/test'
+import { describe, test, expect } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
 import TextEditor from '@/components/text-editor/text-editor.vue'
-
-// ── Hoisted mocks ──────────────────────────────────────────────────────────────
-
-// Shared ref created lazily on first useTextComposer call.
-// Tests set `mockHasContent` before mounting to control placeholder visibility.
-let mockHasContent
-
-vi.mock('@/composables/use-text-composer', async () => {
-  const { ref: vueRef } = await import('vue')
-  return {
-    useTextComposer: () => {
-      mockHasContent = vueRef(false)
-      return { has_content: mockHasContent, focus: vi.fn() }
-    }
-  }
-})
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -26,6 +10,10 @@ function makeEditor(props = {}) {
 
 function getEditorEl(wrapper) {
   return wrapper.find('[data-testid="text-editor"]')
+}
+
+function getPlaceholder(wrapper) {
+  return wrapper.find('[data-testid="text-editor__placeholder"]')
 }
 
 // ── Tests ──────────────────────────────────────────────────────────────────────
@@ -125,25 +113,64 @@ describe('TextEditor', () => {
     expect(classes).toContain('text-editor--v-center')
   })
 
+  // ── contenteditable wiring ─────────────────────────────────────────────────
+
+  test('enables plaintext-only contenteditable when not disabled', () => {
+    const wrapper = makeEditor()
+    expect(getEditorEl(wrapper).attributes('contenteditable')).toBe('plaintext-only')
+  })
+
+  test('disables contenteditable when disabled', () => {
+    const wrapper = makeEditor({ disabled: true })
+    expect(getEditorEl(wrapper).attributes('contenteditable')).toBe('false')
+  })
+
+  test('seeds initial textContent from content prop', () => {
+    const wrapper = makeEditor({ content: 'hello' })
+    expect(getEditorEl(wrapper).element.textContent).toBe('hello')
+  })
+
+  test('emits update with current textContent on input', async () => {
+    const wrapper = makeEditor()
+    const el = getEditorEl(wrapper)
+    el.element.textContent = 'typed'
+    await el.trigger('input')
+    expect(wrapper.emitted('update')).toEqual([['typed']])
+  })
+
+  test('emits focus and blur on native focus events', async () => {
+    const wrapper = makeEditor()
+    const el = getEditorEl(wrapper)
+    await el.trigger('focus')
+    await el.trigger('blur')
+    expect(wrapper.emitted('focus')).toHaveLength(1)
+    expect(wrapper.emitted('blur')).toHaveLength(1)
+  })
+
   // ── Placeholder ────────────────────────────────────────────────────────────
 
   test('shows placeholder when no content and not disabled', () => {
     const wrapper = makeEditor({ placeholder: 'Type here...' })
-    // mockHasContent defaults to false on each mount
-    const placeholder = wrapper.find('.text-editor__placeholder')
+    const placeholder = getPlaceholder(wrapper)
     expect(placeholder.exists()).toBe(true)
     expect(placeholder.text()).toBe('Type here...')
   })
 
-  test('hides placeholder when has content', async () => {
+  test('hides placeholder when content prop is set', () => {
+    const wrapper = makeEditor({ placeholder: 'Type here...', content: 'hi' })
+    expect(getPlaceholder(wrapper).exists()).toBe(false)
+  })
+
+  test('hides placeholder after typing', async () => {
     const wrapper = makeEditor({ placeholder: 'Type here...' })
-    mockHasContent.value = true
-    await wrapper.vm.$nextTick()
-    expect(wrapper.find('.text-editor__placeholder').exists()).toBe(false)
+    const el = getEditorEl(wrapper)
+    el.element.textContent = 'typed'
+    await el.trigger('input')
+    expect(getPlaceholder(wrapper).exists()).toBe(false)
   })
 
   test('hides placeholder when disabled', () => {
     const wrapper = makeEditor({ placeholder: 'Type here...', disabled: true })
-    expect(wrapper.find('.text-editor__placeholder').exists()).toBe(false)
+    expect(getPlaceholder(wrapper).exists()).toBe(false)
   })
 })
