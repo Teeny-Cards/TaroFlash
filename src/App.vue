@@ -27,17 +27,29 @@ const removeGuard = router.afterEach((to) => {
 
 let teardownAudioLifecycle: (() => void) | undefined
 
-onMounted(async () => {
+const scheduleIdle =
+  typeof window !== 'undefined' && 'requestIdleCallback' in window
+    ? (cb: () => void) => (window as any).requestIdleCallback(cb, { timeout: 3000 })
+    : (cb: () => void) => setTimeout(cb, 0)
+
+onMounted(() => {
   try {
     theme.load()
     session.startLoading()
-    await audio_player.setup()
-    teardownAudioLifecycle = installAudioLifecycle()
   } catch (e: any) {
     logger.error(e.message, e)
   } finally {
     session.stopLoading()
   }
+
+  scheduleIdle(() => {
+    audio_player
+      .setup()
+      .then(() => {
+        teardownAudioLifecycle = installAudioLifecycle()
+      })
+      .catch((e: any) => logger.error(e.message, e))
+  })
 })
 
 onBeforeUnmount(() => {
