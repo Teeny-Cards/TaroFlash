@@ -60,7 +60,6 @@ import {
   saveCard,
   upsertCard,
   upsertCards,
-  reorderCard,
   moveCardsToDeck,
   setCardImage
 } from '@/api/cards/db/update'
@@ -153,29 +152,6 @@ describe('upsertCards', () => {
   test('throws when the DB returns an error', async () => {
     mocks.selectMock.mockResolvedValueOnce({ data: null, error: { message: 'boom' } })
     await expect(upsertCards([makeCard()])).rejects.toThrow('boom')
-  })
-})
-
-describe('reorderCard', () => {
-  test('calls reorder_card RPC with the neighbor IDs', async () => {
-    await reorderCard(42, 10, 20)
-    expect(mocks.rpcMock).toHaveBeenCalledWith('reorder_card', {
-      p_card_id: 42,
-      p_left_card_id: 10,
-      p_right_card_id: 20
-    })
-  })
-
-  test('coerces undefined neighbors to null for the RPC', async () => {
-    await reorderCard(42)
-    const [, args] = mocks.rpcMock.mock.calls[0]
-    expect(args.p_left_card_id).toBeNull()
-    expect(args.p_right_card_id).toBeNull()
-  })
-
-  test('throws when the RPC returns an error', async () => {
-    mocks.rpcMock.mockResolvedValueOnce({ error: { message: 'denied' } })
-    await expect(reorderCard(42)).rejects.toThrow('denied')
   })
 })
 

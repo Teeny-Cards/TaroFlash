@@ -21,8 +21,11 @@ describe('invalidateDeck', () => {
     expect(cache.invalidateQueries).toHaveBeenCalledWith({ key: ['deck', 42] })
   })
 
-  test('invalidates ["cards", id] so cards-in-deck + its search variant refetch (prefix match)', () => {
+  test('invalidates ["cards", id] — prefix match covers cards-in-deck, its infinite + ids + search variants', () => {
     invalidateDeck(cache, 42)
+    // Pinia Colada matches by prefix unless `exact: true`, so this single call
+    // refetches every nested entry: ['cards', 42], ['cards', 42, 'pages', N],
+    // ['cards', 42, 'ids'], and ['cards', 42, 'search', q].
     expect(cache.invalidateQueries).toHaveBeenCalledWith({ key: ['cards', 42] })
   })
 

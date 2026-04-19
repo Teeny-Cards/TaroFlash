@@ -1,11 +1,11 @@
 import { useMutation, useQueryCache } from '@pinia/colada'
-import { insertCardAt, type InsertCardAtParams } from '../db'
+import { bulkInsertCardsInDeck, type BulkInsertCardsParams } from '../db'
 import { invalidateAllCardCounts, invalidateDeck } from './_invalidate'
 
-export function useInsertCardAtMutation() {
+export function useBulkInsertCardsInDeckMutation() {
   const queryCache = useQueryCache()
   return useMutation({
-    mutation: (params: InsertCardAtParams) => insertCardAt(params),
+    mutation: (params: BulkInsertCardsParams) => bulkInsertCardsInDeck(params),
     onSettled: (_data, _error, params) => {
       invalidateDeck(queryCache, params.deck_id)
       invalidateAllCardCounts(queryCache)

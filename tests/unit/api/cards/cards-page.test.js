@@ -1,0 +1,79 @@
+import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
+
+const { fromMock, rangeMock, orderMock, eqMock, selectMock } = vi.hoisted(() => {
+  const rangeMock = vi.fn()
+  const orderMock = vi.fn(() => ({ range: rangeMock }))
+  const eqMock = vi.fn(() => ({ order: orderMock }))
+  const selectMock = vi.fn(() => ({ eq: eqMock, order: orderMock }))
+  const fromMock = vi.fn(() => ({ select: selectMock }))
+  return { fromMock, rangeMock, orderMock, eqMock, selectMock }
+})
+
+vi.mock('@/supabase-client', () => ({
+  supabase: { from: fromMock }
+}))
+
+vi.mock('@/utils/logger', () => ({ default: { error: vi.fn() } }))
+
+import { fetchCardsPageByDeckId, fetchCardIdsByDeckId } from '@/api/cards/db/cards-page'
+
+beforeEach(() => {
+  fromMock.mockClear()
+  selectMock.mockClear()
+  eqMock.mockClear()
+  orderMock.mockClear()
+  rangeMock.mockReset()
+})
+
+describe('fetchCardsPageByDeckId', () => {
+  test('queries cards_with_images joined with reviews, scoped to the deck, ordered by rank', async () => {
+    rangeMock.mockResolvedValueOnce({ data: [], error: null })
+    await fetchCardsPageByDeckId({ deck_id: 10, offset: 0, limit: 50 })
+    expect(fromMock).toHaveBeenCalledWith('cards_with_images')
+    expect(selectMock).toHaveBeenCalledWith('*, review:reviews(*)')
+    expect(eqMock).toHaveBeenCalledWith('deck_id', 10)
+    expect(orderMock).toHaveBeenCalledWith('rank', { ascending: true })
+  })
+
+  test('translates offset+limit into a Postgrest inclusive range', async () => {
+    rangeMock.mockResolvedValueOnce({ data: [], error: null })
+    await fetchCardsPageByDeckId({ deck_id: 10, offset: 100, limit: 50 })
+    expect(rangeMock).toHaveBeenCalledWith(100, 149)
+  })
+
+  test('returns rows from the response', async () => {
+    rangeMock.mockResolvedValueOnce({ data: [{ id: 1 }, { id: 2 }], error: null })
+    const result = await fetchCardsPageByDeckId({ deck_id: 10, offset: 0, limit: 50 })
+    expect(result).toEqual([{ id: 1 }, { id: 2 }])
+  })
+
+  test('throws when the request errors', async () => {
+    rangeMock.mockResolvedValueOnce({ data: null, error: { message: 'boom' } })
+    await expect(fetchCardsPageByDeckId({ deck_id: 10, offset: 0, limit: 50 })).rejects.toThrow(
+      'boom'
+    )
+  })
+})
+
+describe('fetchCardIdsByDeckId', () => {
+  test('selects only the id column from cards, ordered by rank', async () => {
+    // fetchCardIdsByDeckId doesn't call .range — it terminates on .order, which
+    // must resolve as a thenable. Override orderMock for this describe block.
+    orderMock.mockImplementationOnce(() =>
+      Promise.resolve({ data: [{ id: 1 }, { id: 2 }], error: null })
+    )
+    const ids = await fetchCardIdsByDeckId(10)
+    expect(fromMock).toHaveBeenCalledWith('cards')
+    expect(selectMock).toHaveBeenCalledWith('id')
+    expect(eqMock).toHaveBeenCalledWith('deck_id', 10)
+    expect(orderMock).toHaveBeenCalledWith('rank', { ascending: true })
+    expect(ids).toEqual([1, 2])
+  })
+
+  test('throws when the request errors', async () => {
+    orderMock.mockImplementationOnce(() =>
+      Promise.resolve({ data: null, error: { message: 'denied' } })
+    )
+    await expect(fetchCardIdsByDeckId(10)).rejects.toThrow('denied')
+  })
+})
