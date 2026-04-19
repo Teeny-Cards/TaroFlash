@@ -34,6 +34,7 @@ vi.mock('@/composables/use-shortcuts', () => ({
 // The mock must call onComplete so transition-group JS hooks finish in browser mode.
 vi.mock('gsap', () => ({
   gsap: {
+    set: vi.fn(),
     fromTo: vi.fn((_el, _from, to) => to?.onComplete?.()),
     to: vi.fn((_el, opts) => opts?.onComplete?.())
   }

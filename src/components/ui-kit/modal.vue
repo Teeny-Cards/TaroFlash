@@ -57,14 +57,27 @@ function getModeConfig(el: Element) {
   return MODAL_MODE_CONFIG[mode]
 }
 
+function onBeforeEnter(el: Element) {
+  ;(el as HTMLElement).style.willChange = 'transform, opacity'
+}
+
 function onEnter(el: Element, done: () => void) {
   const config = getModeConfig(el)
-  config.enter(el, is_desktop_size.value, done)
+  const html_el = el as HTMLElement
+  config.enter(el, is_desktop_size.value, () => {
+    html_el.style.willChange = ''
+    done()
+  })
 }
 
 function onLeave(el: Element, done: () => void) {
   const config = getModeConfig(el)
-  config.leave(el, is_desktop_size.value, done)
+  const html_el = el as HTMLElement
+  html_el.style.willChange = 'transform, opacity'
+  config.leave(el, is_desktop_size.value, () => {
+    html_el.style.willChange = ''
+    done()
+  })
 }
 </script>
 
@@ -90,6 +103,7 @@ function onLeave(el: Element, done: () => void) {
 
   <transition-group
     :css="false"
+    @before-enter="onBeforeEnter"
     @enter="onEnter"
     @leave="onLeave"
     data-testid="ui-kit-modal-container"

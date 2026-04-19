@@ -8,8 +8,10 @@ import { PiniaColada } from '@pinia/colada'
 import { createI18n } from 'vue-i18n'
 import messages from '@intlify/unplugin-vue-i18n/messages'
 import { vSfx } from '@/sfx/directive'
+import { warmupAnimations } from '@/utils/animations/warmup'
 
 loadFont()
+warmupAnimations()
 
 const i18n = createI18n({
   locale: 'en-us',

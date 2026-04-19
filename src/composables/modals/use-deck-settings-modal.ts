@@ -1,8 +1,11 @@
+import { defineAsyncComponent } from 'vue'
 import { useModal } from '@/composables/modal'
 import { emitSfx } from '@/sfx/bus'
-import DeckSettings, {
-  type DeckSettingsResponse
-} from '@/components/modals/deck-settings/index.vue'
+import type { DeckSettingsResponse } from '@/components/modals/deck-settings/index.vue'
+
+const DeckSettings = defineAsyncComponent(
+  () => import('@/components/modals/deck-settings/index.vue')
+)
 
 export function useDeckSettingsModal() {
   const modal = useModal()
