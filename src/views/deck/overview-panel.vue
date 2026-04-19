@@ -15,7 +15,7 @@ const deck_settings_modal = useDeckSettingsModal()
 const study_session = useStudyModal()
 
 const study_disabled = computed(() => {
-  return deck.cards?.length === 0
+  return (deck.card_count ?? 0) === 0
 })
 
 async function onSettingsClicked() {

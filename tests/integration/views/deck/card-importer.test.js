@@ -1,0 +1,133 @@
+import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
+import { shallowMount } from '@vue/test-utils'
+import { defineComponent, h, useAttrs } from 'vue'
+
+const { bulkInsertMock } = vi.hoisted(() => ({
+  bulkInsertMock: vi.fn().mockResolvedValue([])
+}))
+
+vi.mock('@/api/cards', () => ({
+  useBulkInsertCardsInDeckMutation: () => ({
+    mutate: bulkInsertMock,
+    mutateAsync: bulkInsertMock
+  })
+}))
+
+import CardImporter from '@/views/deck/card-importer.vue'
+
+const UiButtonStub = defineComponent({
+  name: 'UiButton',
+  inheritAttrs: false,
+  props: ['disabled'],
+  setup(_props, { slots, emit }) {
+    const attrs = useAttrs()
+    return () =>
+      h(
+        'button',
+        { ...attrs, disabled: attrs.disabled, onClick: () => emit('click') },
+        slots.default?.()
+      )
+  }
+})
+
+beforeEach(() => {
+  bulkInsertMock.mockReset()
+  bulkInsertMock.mockResolvedValue([])
+})
+
+function mount(props = { deck_id: 10 }) {
+  return shallowMount(CardImporter, {
+    props,
+    global: { stubs: { UiButton: UiButtonStub } }
+  })
+}
+
+function importButton(wrapper) {
+  return wrapper.findAllComponents({ name: 'UiButton' })[0]
+}
+
+function saveButton(wrapper) {
+  return wrapper.findAllComponents({ name: 'UiButton' })[1]
+}
+
+describe('CardImporter', () => {
+  // ── onImport: parses raw text into card drafts ─────────────────────────────
+
+  test('splits raw_text by newline and the configured delimiter into card drafts', async () => {
+    const wrapper = mount()
+    await wrapper.find('textarea').setValue('front1::back1\nfront2::back2')
+    await importButton(wrapper).trigger('click')
+    // Each parsed line yields one front + one back Card preview, so two lines
+    // = four Card stubs.
+    const cardStubs = wrapper.findAllComponents({ name: 'Card' })
+    expect(cardStubs).toHaveLength(4)
+    expect(cardStubs[0].props('front_text')).toBe('front1')
+    expect(cardStubs[1].props('back_text')).toBe('back1')
+  })
+
+  test('trims whitespace around each parsed field', async () => {
+    const wrapper = mount()
+    await wrapper.find('textarea').setValue('  hello  ::  world  ')
+    await importButton(wrapper).trigger('click')
+    // Parsed cards become previews; the trim is internal — we re-trigger save
+    // and inspect the payload sent to the mutation.
+    await saveButton(wrapper).trigger('click')
+    const [args] = bulkInsertMock.mock.calls[0]
+    expect(args.cards[0]).toEqual({ front_text: 'hello', back_text: 'world' })
+  })
+
+  // ── onSave: routes through useBulkInsertCardsInDeckMutation ────────────────
+
+  test('passes deck_id from props through to the bulk-insert mutation', async () => {
+    const wrapper = mount({ deck_id: 99 })
+    await wrapper.find('textarea').setValue('a::b')
+    await importButton(wrapper).trigger('click')
+    await saveButton(wrapper).trigger('click')
+    const [args] = bulkInsertMock.mock.calls[0]
+    expect(args.deck_id).toBe(99)
+  })
+
+  test('sends every parsed card to the bulk-insert mutation in order', async () => {
+    const wrapper = mount()
+    await wrapper.find('textarea').setValue('a1::b1\na2::b2\na3::b3')
+    await importButton(wrapper).trigger('click')
+    await saveButton(wrapper).trigger('click')
+    const [args] = bulkInsertMock.mock.calls[0]
+    expect(args.cards).toEqual([
+      { front_text: 'a1', back_text: 'b1' },
+      { front_text: 'a2', back_text: 'b2' },
+      { front_text: 'a3', back_text: 'b3' }
+    ])
+  })
+
+  test('clears the parsed cards after a successful save', async () => {
+    const wrapper = mount()
+    await wrapper.find('textarea').setValue('a::b')
+    await importButton(wrapper).trigger('click')
+    await saveButton(wrapper).trigger('click')
+    await wrapper.vm.$nextTick()
+    // Save button re-disables once the parsed cards are cleared (back to the
+    // empty state where has_unsaved_changes is false).
+    expect(saveButton(wrapper).props('disabled')).toBe(true)
+  })
+
+  // ── Save button gating ─────────────────────────────────────────────────────
+
+  test('disables the save button when there are no parsed cards', () => {
+    const wrapper = mount()
+    expect(saveButton(wrapper).props('disabled')).toBe(true)
+  })
+
+  test('enables the save button after import populates cards', async () => {
+    const wrapper = mount()
+    await wrapper.find('textarea').setValue('a::b')
+    await importButton(wrapper).trigger('click')
+    expect(saveButton(wrapper).props('disabled')).toBe(false)
+  })
+
+  test('does not call the mutation when save is clicked with nothing parsed', async () => {
+    const wrapper = mount()
+    await saveButton(wrapper).trigger('click')
+    expect(bulkInsertMock).not.toHaveBeenCalled()
+  })
+})

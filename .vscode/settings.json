@@ -4,5 +4,9 @@
   },
   "[xml]": {
     "editor.defaultFormatter": "DotJoshJohnson.xml"
+  },
+  "[vue]": {
+    "editor.wordWrap": "on",
+    "editor.wrappingIndent": "indent"
   }
 }

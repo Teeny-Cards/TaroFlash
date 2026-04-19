@@ -1,13 +1,24 @@
 import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
 
-const { useMutationSpy, invalidateSpy, upsertCardsMock, deleteCardsMock, moveCardsToDeckMock } =
-  vi.hoisted(() => ({
-    useMutationSpy: vi.fn((cfg) => cfg),
-    invalidateSpy: vi.fn(),
-    upsertCardsMock: vi.fn().mockResolvedValue([]),
-    deleteCardsMock: vi.fn().mockResolvedValue(undefined),
-    moveCardsToDeckMock: vi.fn().mockResolvedValue(undefined)
-  }))
+const {
+  useMutationSpy,
+  invalidateSpy,
+  upsertCardsMock,
+  deleteCardsMock,
+  deleteCardsInDeckMock,
+  bulkInsertCardsInDeckMock,
+  moveCardMock,
+  moveCardsToDeckMock
+} = vi.hoisted(() => ({
+  useMutationSpy: vi.fn((cfg) => cfg),
+  invalidateSpy: vi.fn(),
+  upsertCardsMock: vi.fn().mockResolvedValue([]),
+  deleteCardsMock: vi.fn().mockResolvedValue(undefined),
+  deleteCardsInDeckMock: vi.fn().mockResolvedValue(0),
+  bulkInsertCardsInDeckMock: vi.fn().mockResolvedValue([]),
+  moveCardMock: vi.fn().mockResolvedValue(1500),
+  moveCardsToDeckMock: vi.fn().mockResolvedValue(undefined)
+}))
 
 vi.mock('@pinia/colada', () => ({
   useMutation: useMutationSpy,
@@ -17,11 +28,16 @@ vi.mock('@pinia/colada', () => ({
 vi.mock('@/api/cards/db', () => ({
   upsertCards: upsertCardsMock,
   deleteCards: deleteCardsMock,
+  deleteCardsInDeck: deleteCardsInDeckMock,
+  bulkInsertCardsInDeck: bulkInsertCardsInDeckMock,
+  moveCard: moveCardMock,
   moveCardsToDeck: moveCardsToDeckMock
 }))
 
 import { useUpsertCardsMutation } from '@/api/cards/mutations/upsert-bulk'
-import { useDeleteCardsMutation } from '@/api/cards/mutations/delete'
+import { useDeleteCardsMutation, useDeleteCardsInDeckMutation } from '@/api/cards/mutations/delete'
+import { useBulkInsertCardsInDeckMutation } from '@/api/cards/mutations/bulk-insert'
+import { useMoveCardMutation } from '@/api/cards/mutations/move'
 import { useMoveCardsToDeckMutation } from '@/api/cards/mutations/move-to-deck'
 
 beforeEach(() => {
@@ -29,6 +45,9 @@ beforeEach(() => {
   invalidateSpy.mockClear()
   upsertCardsMock.mockClear()
   deleteCardsMock.mockClear()
+  deleteCardsInDeckMock.mockClear()
+  bulkInsertCardsInDeckMock.mockClear()
+  moveCardMock.mockClear()
   moveCardsToDeckMock.mockClear()
 })
 
@@ -101,6 +120,64 @@ describe('useDeleteCardsMutation', () => {
     const cards = [{ id: 1, deck_id: 10 }]
     await mutation(cards)
     expect(deleteCardsMock).toHaveBeenCalledWith(cards)
+  })
+})
+
+describe('useBulkInsertCardsInDeckMutation', () => {
+  test('mutation delegates to bulkInsertCardsInDeck', async () => {
+    const { mutation } = configFrom(useBulkInsertCardsInDeckMutation)
+    const params = {
+      deck_id: 10,
+      cards: [{ front_text: 'A', back_text: '1' }]
+    }
+    await mutation(params)
+    expect(bulkInsertCardsInDeckMock).toHaveBeenCalledWith(params)
+  })
+
+  test('onSettled invalidates the deck + all card counts (bulk insert shifts deck totals)', () => {
+    const { onSettled } = configFrom(useBulkInsertCardsInDeckMutation)
+    onSettled([], undefined, { deck_id: 10, cards: [] })
+    const keys = invalidatedKeys()
+    expect(keys).toContainEqual(['deck', 10])
+    expect(keys).toContainEqual(['cards', 10])
+    expect(keys).toContainEqual(['cards', 'count'])
+    expect(keys).toContainEqual(['decks'])
+  })
+})
+
+describe('useDeleteCardsInDeckMutation', () => {
+  test('mutation delegates to deleteCardsInDeck (strips the deck_id-shaped wrapper through)', async () => {
+    const { mutation } = configFrom(useDeleteCardsInDeckMutation)
+    await mutation({ deck_id: 10, except_ids: [1, 2] })
+    expect(deleteCardsInDeckMock).toHaveBeenCalledWith({ deck_id: 10, except_ids: [1, 2] })
+  })
+
+  test('onSettled invalidates the deck + all card counts', () => {
+    const { onSettled } = configFrom(useDeleteCardsInDeckMutation)
+    onSettled(0, undefined, { deck_id: 10 })
+    const keys = invalidatedKeys()
+    expect(keys).toContainEqual(['deck', 10])
+    expect(keys).toContainEqual(['cards', 10])
+    expect(keys).toContainEqual(['cards', 'count'])
+    expect(keys).toContainEqual(['decks'])
+  })
+})
+
+describe('useMoveCardMutation', () => {
+  test('mutation delegates to moveCard, stripping deck_id from the params it forwards', async () => {
+    const { mutation } = configFrom(useMoveCardMutation)
+    await mutation({ deck_id: 10, card_id: 42, anchor_id: 7, side: 'after' })
+    expect(moveCardMock).toHaveBeenCalledWith({ card_id: 42, anchor_id: 7, side: 'after' })
+  })
+
+  test('onSettled invalidates only the affected deck (counts unchanged by reorder)', () => {
+    const { onSettled } = configFrom(useMoveCardMutation)
+    onSettled(1500, undefined, { deck_id: 10, card_id: 42, anchor_id: 7, side: 'after' })
+    const keys = invalidatedKeys()
+    expect(keys).toContainEqual(['deck', 10])
+    expect(keys).toContainEqual(['cards', 10])
+    expect(keys).not.toContainEqual(['cards', 'count'])
+    expect(keys).not.toContainEqual(['decks'])
   })
 })
 

@@ -13,6 +13,25 @@ export async function deleteCards(cards: CardBase[]): Promise<void> {
   }
 }
 
+export type DeleteCardsInDeckParams = {
+  deck_id: number
+  except_ids?: number[] | null
+}
+
+export async function deleteCardsInDeck(params: DeleteCardsInDeckParams): Promise<number> {
+  const { data, error } = await supabase.rpc('delete_cards_in_deck', {
+    p_deck_id: params.deck_id,
+    p_except_ids: params.except_ids ?? null
+  })
+
+  if (error) {
+    logger.error(error.message)
+    throw new Error(error.message)
+  }
+
+  return data
+}
+
 export async function deleteCardImage(card_id: number, side: 'front' | 'back') {
   const { error } = await supabase
     .from('media')

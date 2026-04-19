@@ -59,23 +59,6 @@ export async function upsertCards(cards: Partial<CardBase>[]): Promise<Card[]> {
   return data
 }
 
-export async function reorderCard(
-  card_id: number,
-  left_card_id?: number,
-  right_card_id?: number
-): Promise<void> {
-  const { error } = await supabase.rpc('reorder_card', {
-    p_card_id: card_id,
-    p_left_card_id: left_card_id ?? null,
-    p_right_card_id: right_card_id ?? null
-  })
-
-  if (error) {
-    logger.error(error.message)
-    throw new Error(error.message)
-  }
-}
-
 export async function moveCardsToDeck(cards: CardBase[], deck_id: number): Promise<void> {
   const sanitized = cards.map((card) => ({
     ...card,
