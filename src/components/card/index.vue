@@ -3,21 +3,20 @@ import { computed } from 'vue'
 import CardFace from './card-face.vue'
 import CardCover from './card-cover.vue'
 import { type CardEditorMode } from '@/composables/card-bulk-editor'
-import { type CardBase, type ImageCard } from '@type/card'
+import { type CardBase } from '@type/card'
 import { getImageUrl } from '@/api/media'
 import { type SfxOptions } from '@/sfx/directive'
 import { gsap } from 'gsap'
 
-type CardProps = Partial<CardBase> &
-  ImageCard & {
-    size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
-    mode?: CardEditorMode
-    side?: 'front' | 'back' | 'cover'
-    cover_config?: DeckCover
-    card_attributes?: DeckCardAttributes
-    face_classes?: string
-    sfx?: SfxOptions
-  }
+type CardProps = Partial<CardBase> & {
+  size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
+  mode?: CardEditorMode
+  side?: 'front' | 'back' | 'cover'
+  cover_config?: DeckCover
+  card_attributes?: DeckCardAttributes
+  face_classes?: string
+  sfx?: SfxOptions
+}
 
 const emit = defineEmits<{
   (e: 'flip-complete'): void

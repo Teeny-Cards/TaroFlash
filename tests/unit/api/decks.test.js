@@ -63,23 +63,14 @@ describe('fetchMemberDecks', () => {
 })
 
 describe('fetchDeck', () => {
-  test('reads from decks_with_stats with the nested cards + member embed', async () => {
+  test('reads from decks_with_stats with the member embed only — cards are paginated separately', async () => {
     queryMock.single.mockResolvedValueOnce({ data: { id: 5 }, error: null })
     await fetchDeck(5)
     expect(capturedTables[0]).toBe('decks_with_stats')
     const [selectArg] = queryMock.select.mock.calls[0]
-    expect(selectArg).toContain('cards:cards_with_images')
     expect(selectArg).toContain('member:members(display_name)')
+    expect(selectArg).not.toContain('cards:cards_with_images')
     expect(queryMock.eq).toHaveBeenCalledWith('id', 5)
-  })
-
-  test('orders embedded cards by rank ascending', async () => {
-    queryMock.single.mockResolvedValueOnce({ data: {}, error: null })
-    await fetchDeck(5)
-    expect(queryMock.order).toHaveBeenCalledWith('rank', {
-      ascending: true,
-      referencedTable: 'cards_with_images'
-    })
   })
 
   test('throws when the query errors', async () => {

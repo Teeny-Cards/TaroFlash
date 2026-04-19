@@ -10,28 +10,28 @@ vi.mock('@/supabase-client', () => ({
 
 vi.mock('@/utils/logger', () => ({ default: { error: vi.fn() } }))
 
-import { insertCard } from '@/api/cards/db/insert'
+import { insertCardAt } from '@/api/cards/db/insert'
 
-describe('insertCard', () => {
+describe('insertCardAt', () => {
   beforeEach(() => {
     rpcMock.mockReset()
   })
 
-  test('calls the insert_card RPC with the expected param shape', async () => {
+  test('calls the insert_card_at RPC with the expected param shape', async () => {
     rpcMock.mockResolvedValueOnce({ data: [{ id: 1, rank: 1500 }], error: null })
 
-    await insertCard({
+    await insertCardAt({
       deck_id: 10,
-      left_card_id: 1,
-      right_card_id: 2,
+      anchor_id: 1,
+      side: 'after',
       front_text: 'Q',
       back_text: 'A'
     })
 
-    expect(rpcMock).toHaveBeenCalledWith('insert_card', {
+    expect(rpcMock).toHaveBeenCalledWith('insert_card_at', {
       p_deck_id: 10,
-      p_left_card_id: 1,
-      p_right_card_id: 2,
+      p_anchor_id: 1,
+      p_side: 'after',
       p_front_text: 'Q',
       p_back_text: 'A'
     })
@@ -40,10 +40,10 @@ describe('insertCard', () => {
   test('returns the first row (id + rank) from the RPC response', async () => {
     rpcMock.mockResolvedValueOnce({ data: [{ id: 42, rank: 2500 }], error: null })
 
-    const result = await insertCard({
+    const result = await insertCardAt({
       deck_id: 10,
-      left_card_id: null,
-      right_card_id: null,
+      anchor_id: null,
+      side: null,
       front_text: '',
       back_text: ''
     })
@@ -51,20 +51,20 @@ describe('insertCard', () => {
     expect(result).toEqual({ id: 42, rank: 2500 })
   })
 
-  test('forwards null neighbors unchanged (used for empty-deck inserts)', async () => {
+  test('forwards null anchor + side unchanged (used for empty-deck inserts)', async () => {
     rpcMock.mockResolvedValueOnce({ data: [{ id: 1, rank: 1000 }], error: null })
 
-    await insertCard({
+    await insertCardAt({
       deck_id: 10,
-      left_card_id: null,
-      right_card_id: null,
+      anchor_id: null,
+      side: null,
       front_text: 'Q',
       back_text: 'A'
     })
 
     const [, args] = rpcMock.mock.calls[0]
-    expect(args.p_left_card_id).toBeNull()
-    expect(args.p_right_card_id).toBeNull()
+    expect(args.p_anchor_id).toBeNull()
+    expect(args.p_side).toBeNull()
   })
 
   test('throws when the RPC returns an error', async () => {
@@ -72,10 +72,10 @@ describe('insertCard', () => {
     rpcMock.mockResolvedValueOnce({ data: null, error: err })
 
     await expect(
-      insertCard({
+      insertCardAt({
         deck_id: 10,
-        left_card_id: null,
-        right_card_id: null,
+        anchor_id: null,
+        side: null,
         front_text: '',
         back_text: ''
       })
