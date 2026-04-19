@@ -18,7 +18,6 @@ type Deck = {
   title?: string
   member_id?: number
   member?: { display_name: string }
-  cards?: Card[]
   tags?: string[]
   due_count?: number
   study_config?: DeckConfig

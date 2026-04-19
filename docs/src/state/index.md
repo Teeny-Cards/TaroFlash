@@ -85,11 +85,10 @@ Every mutation's `onSettled` handler documents what goes stale when that mutatio
 | `useDeleteDeckMutation`      | `['decks']` + `['deck', id]`                                                                        |
 | `useUpsertCardMutation`      | `['deck', deck_id]` + `['cards', deck_id]`                                                          |
 | `useSaveCardMutation`        | same as above (debounced — see [Edge cases](#edge-cases))                                           |
-| `useInsertCardMutation`      | deck + `['cards', 'count']` + `['decks']` (new card shifts counts)                                  |
+| `useInsertCardAtMutation`    | deck + `['cards', 'count']` + `['decks']` (new card shifts counts)                                  |
 | `useUpsertCardsMutation`     | every affected deck + all card counts                                                               |
 | `useDeleteCardsMutation`     | every affected deck + all card counts                                                               |
 | `useMoveCardsToDeckMutation` | **source** deck(s) **and** destination deck + all counts                                            |
-| `useReorderCardMutation`     | just the deck (counts unchanged)                                                                    |
 | `useSetCardImageMutation`    | deck (`deck_id` comes from the mutation variables, not the card row)                                |
 | `useDeleteCardImageMutation` | deck                                                                                                |
 | `useSaveReviewMutation`      | `['decks']` + `['deck', deck_id]` + `['cards', deck_id]` — fixes dashboard drift                    |
