@@ -1,13 +1,11 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 
-// ── Hoisted mocks ─────────────────────────────────────────────────────────────
-
-const { mockFromTo, mockTo } = vi.hoisted(() => ({
-  mockFromTo: vi.fn(),
+const { mockSet, mockTo } = vi.hoisted(() => ({
+  mockSet: vi.fn(),
   mockTo: vi.fn()
 }))
 
-vi.mock('gsap', () => ({ gsap: { fromTo: mockFromTo, to: mockTo } }))
+vi.mock('gsap', () => ({ gsap: { set: mockSet, to: mockTo } }))
 
 import {
   slideUpFadeIn,
@@ -18,12 +16,8 @@ import {
   scaleFadeOut
 } from '@/utils/animations/modal'
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
 const el = document.createElement('div')
 const done = vi.fn()
-
-// ── Tests ─────────────────────────────────────────────────────────────────────
 
 describe('modal animations', () => {
   beforeEach(() => {
@@ -31,24 +25,36 @@ describe('modal animations', () => {
   })
 
   describe('slideUpFadeIn', () => {
-    test('slides in from 200px below with fade', () => {
+    test('primes initial state at 200px below with opacity 0', () => {
       slideUpFadeIn(el, done)
 
-      expect(mockFromTo).toHaveBeenCalledWith(
+      expect(mockSet).toHaveBeenCalledWith(el, { translateY: '200px', opacity: 0 })
+    })
+
+    test('tweens to rest position with opacity 1', () => {
+      slideUpFadeIn(el, done)
+
+      expect(mockTo).toHaveBeenCalledWith(
         el,
-        { translateY: '200px', opacity: 0 },
         expect.objectContaining({ translateY: 0, opacity: 1 })
       )
+    })
+
+    test('applies a settle delay before tweening', () => {
+      slideUpFadeIn(el, done)
+
+      expect(mockTo).toHaveBeenCalledWith(
+        el,
+        expect.objectContaining({ delay: expect.any(Number) })
+      )
+      const { delay } = mockTo.mock.calls[0][1]
+      expect(delay).toBeGreaterThan(0)
     })
 
     test('calls done via onComplete', () => {
       slideUpFadeIn(el, done)
 
-      expect(mockFromTo).toHaveBeenCalledWith(
-        el,
-        expect.anything(),
-        expect.objectContaining({ onComplete: done })
-      )
+      expect(mockTo).toHaveBeenCalledWith(el, expect.objectContaining({ onComplete: done }))
     })
   })
 
@@ -62,6 +68,12 @@ describe('modal animations', () => {
       )
     })
 
+    test('does not prime with gsap.set (leave animation)', () => {
+      slideDownFadeOut(el, done)
+
+      expect(mockSet).not.toHaveBeenCalled()
+    })
+
     test('calls done via onComplete', () => {
       slideDownFadeOut(el, done)
 
@@ -70,32 +82,43 @@ describe('modal animations', () => {
   })
 
   describe('slideUpFromEdge', () => {
-    test('slides in from 100% (full-height edge)', () => {
+    test('primes initial state at 100% translateY', () => {
       slideUpFromEdge(el, done)
 
-      expect(mockFromTo).toHaveBeenCalledWith(
-        el,
-        { translateY: '100%' },
-        expect.objectContaining({ translateY: 0 })
-      )
+      expect(mockSet).toHaveBeenCalledWith(el, { translateY: '100%' })
+    })
+
+    test('tweens to rest position', () => {
+      slideUpFromEdge(el, done)
+
+      expect(mockTo).toHaveBeenCalledWith(el, expect.objectContaining({ translateY: 0 }))
+    })
+
+    test('applies a settle delay before tweening', () => {
+      slideUpFromEdge(el, done)
+
+      const { delay } = mockTo.mock.calls[0][1]
+      expect(delay).toBeGreaterThan(0)
     })
 
     test('calls done via onComplete', () => {
       slideUpFromEdge(el, done)
 
-      expect(mockFromTo).toHaveBeenCalledWith(
-        el,
-        expect.anything(),
-        expect.objectContaining({ onComplete: done })
-      )
+      expect(mockTo).toHaveBeenCalledWith(el, expect.objectContaining({ onComplete: done }))
     })
   })
 
   describe('slideDownToEdge', () => {
-    test('slides out to 100% (full-height edge)', () => {
+    test('slides out to 100% translateY', () => {
       slideDownToEdge(el, done)
 
       expect(mockTo).toHaveBeenCalledWith(el, expect.objectContaining({ translateY: '100%' }))
+    })
+
+    test('does not prime with gsap.set (leave animation)', () => {
+      slideDownToEdge(el, done)
+
+      expect(mockSet).not.toHaveBeenCalled()
     })
 
     test('calls done via onComplete', () => {
@@ -106,24 +129,32 @@ describe('modal animations', () => {
   })
 
   describe('springScaleIn', () => {
-    test('scales in from 0.8 with spring ease', () => {
+    test('primes initial state at scale 0.8 with opacity 0', () => {
       springScaleIn(el, done)
 
-      expect(mockFromTo).toHaveBeenCalledWith(
+      expect(mockSet).toHaveBeenCalledWith(el, { scale: 0.8, opacity: 0 })
+    })
+
+    test('tweens to scale 1 with opacity 1 using spring ease', () => {
+      springScaleIn(el, done)
+
+      expect(mockTo).toHaveBeenCalledWith(
         el,
-        { scale: 0.8, opacity: 0 },
         expect.objectContaining({ scale: 1, opacity: 1, ease: 'back.out(1.7)' })
       )
+    })
+
+    test('applies a settle delay before tweening', () => {
+      springScaleIn(el, done)
+
+      const { delay } = mockTo.mock.calls[0][1]
+      expect(delay).toBeGreaterThan(0)
     })
 
     test('calls done via onComplete', () => {
       springScaleIn(el, done)
 
-      expect(mockFromTo).toHaveBeenCalledWith(
-        el,
-        expect.anything(),
-        expect.objectContaining({ onComplete: done })
-      )
+      expect(mockTo).toHaveBeenCalledWith(el, expect.objectContaining({ onComplete: done }))
     })
   })
 
@@ -132,6 +163,12 @@ describe('modal animations', () => {
       scaleFadeOut(el, done)
 
       expect(mockTo).toHaveBeenCalledWith(el, expect.objectContaining({ scale: 0.8, opacity: 0 }))
+    })
+
+    test('does not prime with gsap.set (leave animation)', () => {
+      scaleFadeOut(el, done)
+
+      expect(mockSet).not.toHaveBeenCalled()
     })
 
     test('calls done via onComplete', () => {
