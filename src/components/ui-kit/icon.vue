@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Component, ref, watchEffect } from 'vue'
+import { type Component, shallowRef, watchEffect } from 'vue'
 import logger from '@/utils/logger'
 
 const { src } = defineProps<{
@@ -22,7 +22,7 @@ const lazyIcons: Record<string, () => Promise<Component>> = import.meta.glob(
   }
 )
 
-const iconComponent = ref<Component | undefined>()
+const iconComponent = shallowRef<Component | undefined>()
 
 watchEffect(async () => {
   const key = `../../assets/icons/${src}.svg`
