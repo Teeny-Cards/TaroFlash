@@ -1,7 +1,7 @@
 import { supabase } from '@/supabase-client'
 import { useMemberStore } from '@/stores/member'
 import logger from '@/utils/logger'
-import { DateTime } from 'luxon'
+import { isoNow } from '@/utils/date'
 
 export async function fetchMemberDecks(): Promise<Deck[]> {
   const { data, error } = await supabase
@@ -47,7 +47,7 @@ export async function fetchMemberDeckCount(): Promise<number> {
 }
 
 export async function upsertDeck(deck: Deck): Promise<void> {
-  deck.updated_at = DateTime.now().toISO()
+  deck.updated_at = isoNow()
   const { error } = await supabase.from('decks').upsert(deck, { onConflict: 'id' })
 
   if (error) {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { DateTime } from 'luxon'
+import { formatShortDate } from '@/utils/date'
 import SectionHeader from '../section-header.vue'
 import { useInvoicesQuery } from '@/api/billing'
 
@@ -18,9 +18,7 @@ function formatAmount(amount: number, currency: string) {
 }
 
 function formatDate(ts: number) {
-  return DateTime.fromMillis(ts * 1000)
-    .setLocale(locale.value)
-    .toLocaleString(DateTime.DATE_MED)
+  return formatShortDate(ts * 1000, locale.value)
 }
 </script>
 

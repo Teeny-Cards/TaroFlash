@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { DateTime } from 'luxon'
+import { isoNow, formatShortDate } from '@/utils/date'
 import UiImage from '@/components/ui-kit/image.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
-const { createdAt = DateTime.now().toISO(), theme = 'green-400' } = defineProps<{
+const { createdAt = isoNow(), theme = 'green-400' } = defineProps<{
   createdAt: string
   displayName?: string
   cardComment?: string
@@ -15,7 +15,7 @@ const { createdAt = DateTime.now().toISO(), theme = 'green-400' } = defineProps<
 }>()
 
 const created_on = computed(() => {
-  return DateTime.fromISO(createdAt).toFormat('LLL d, yyyy')
+  return formatShortDate(createdAt, locale.value)
 })
 </script>
 

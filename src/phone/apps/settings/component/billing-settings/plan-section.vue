@@ -6,7 +6,7 @@ import UiButton from '@/components/ui-kit/button.vue'
 import { useCancelSubscriptionMutation, useResumeSubscriptionMutation } from '@/api/billing'
 import type { useSubscriptionQuery } from '@/api/billing'
 import { useToast } from '@/composables/toast'
-import { DateTime } from 'luxon'
+import { formatShortDate } from '@/utils/date'
 
 type SubscriptionQuery = ReturnType<typeof useSubscriptionQuery>
 
@@ -46,9 +46,7 @@ const price_label = computed(() => {
 const renewal_label = computed(() => {
   if (!subscription.value) return null
   const ts = subscription.value.current_period_end * 1000
-  const formatted = DateTime.fromMillis(ts)
-    .setLocale(locale.value)
-    .toLocaleString(DateTime.DATE_MED)
+  const formatted = formatShortDate(ts, locale.value)
   return subscription.value.cancel_at_period_end
     ? t('settings.member-settings.billing.plan.cancels-on', { date: formatted })
     : t('settings.member-settings.billing.plan.renews-on', { date: formatted })

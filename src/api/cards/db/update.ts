@@ -1,6 +1,6 @@
 import { supabase } from '@/supabase-client'
 import logger from '@/utils/logger'
-import { DateTime } from 'luxon'
+import { isoNow } from '@/utils/date'
 import { uploadImage, insertMedia } from '@/api/media/db'
 import { useMemberStore } from '@/stores/member'
 import uid from '@/utils/uid'
@@ -23,7 +23,7 @@ export async function saveCard(card: Card, values: Partial<Card>): Promise<void>
 export async function upsertCard(card: Partial<CardBase>): Promise<Card> {
   const sanitized = {
     ...card,
-    updated_at: DateTime.now().toISO()
+    updated_at: isoNow()
   }
 
   const { data, error } = await supabase
@@ -43,7 +43,7 @@ export async function upsertCard(card: Partial<CardBase>): Promise<Card> {
 export async function upsertCards(cards: Partial<CardBase>[]): Promise<Card[]> {
   const sanitized = cards.map((card) => ({
     ...card,
-    updated_at: DateTime.now().toISO()
+    updated_at: isoNow()
   }))
 
   const { data, error } = await supabase
