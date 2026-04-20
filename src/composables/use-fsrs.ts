@@ -1,9 +1,9 @@
-import { DateTime } from 'luxon'
 import { type Grade, type RecordLog } from 'ts-fsrs'
 import { useI18n } from 'vue-i18n'
+import { toRelative } from '@/utils/date'
 
 export function useRatingFormat() {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
 
   function getRatingTimeFormat(
     grade: Grade,
@@ -13,7 +13,7 @@ export function useRatingFormat() {
     const date = options?.[grade].card.due
     if (!date) return ''
 
-    const timeString = DateTime.fromJSDate(date).toRelative({ style })
+    const timeString = toRelative(date, { style, locale: locale.value })
     return t('study.study-again', { time: timeString })
   }
 
