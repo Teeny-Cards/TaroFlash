@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { supabase } from '@/supabase-client'
 
-onMounted(async () => {
-  await supabase.auth.exchangeCodeForSession(window.location.href)
+const router = useRouter()
 
-  if (window.opener) {
-    window.opener.postMessage('auth_complete', window.location.origin)
+onMounted(async () => {
+  await supabase.auth.getSession()
+
+  if (window.opener && window.opener !== window) {
+    window.close()
+    return
   }
 
-  window.close()
+  router.push({ name: 'dashboard' })
 })
 </script>

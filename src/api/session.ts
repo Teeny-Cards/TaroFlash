@@ -68,10 +68,26 @@ export async function signupEmail(
   return data?.session
 }
 
+function prefersFullRedirect(): boolean {
+  return window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768
+}
+
 export async function signInOAuth(
   provider: OAuthProvider,
   options?: SignupOAuthOptions
 ): Promise<void> {
+  if (prefersFullRedirect()) {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: AUTH_REDIRECT_URL,
+        ...options
+      }
+    })
+    if (error) throw error
+    return
+  }
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
@@ -85,33 +101,37 @@ export async function signInOAuth(
     throw error ?? new Error('No URL returned')
   }
 
-  // Calculate centered position
   const width = 500
   const height = 600
   const left = window.screenX + (window.outerWidth - width) / 2
   const top = window.screenY + (window.outerHeight - height) / 2
-
   const popupFeatures = `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
 
-  // Check if window.open is supported and not blocked
   const popup = window.open(data.url, 'googleAuth', popupFeatures)
 
   if (!popup || popup.closed || typeof popup.closed === 'undefined') {
-    // Fallback: redirect the current tab instead
     window.location.href = data.url
     return
   }
 
-  return new Promise((resolve, reject) => {
-    window.addEventListener(
-      'message',
-      async (event) => {
-        if (event.origin !== window.location.origin) reject(new Error('Invalid origin'))
-        if (event.data !== 'auth_complete') reject(new Error('Invalid message'))
+  const TIMEOUT_MS = 5 * 60 * 1000
 
+  return new Promise<void>((resolve, reject) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        cleanup()
         resolve()
-      },
-      { once: true }
-    )
+      }
+    })
+
+    const timeout = window.setTimeout(() => {
+      cleanup()
+      reject(new Error('OAuth timed out'))
+    }, TIMEOUT_MS)
+
+    function cleanup() {
+      sub.subscription.unsubscribe()
+      window.clearTimeout(timeout)
+    }
   })
 }
