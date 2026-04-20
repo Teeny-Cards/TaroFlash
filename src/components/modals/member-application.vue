@@ -2,7 +2,7 @@
 import MemberCard from '@/components/modals/member-card.vue'
 import { useI18n } from 'vue-i18n'
 import { reactive, ref } from 'vue'
-import { DateTime } from 'luxon'
+import { isoNow, formatShortDate } from '@/utils/date'
 import { useUpsertMemberMutation } from '@/api/members'
 import { useMemberStore } from '@/stores/member'
 import UiInput from '@/components/ui-kit/input.vue'
@@ -15,12 +15,12 @@ const { close } = defineProps<{
   close: (response?: boolean) => void
 }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const memberStore = useMemberStore()
 const upsert_mutation = useUpsertMemberMutation()
 
-const created_at = DateTime.now().toISO()
-const created_at_formatted = DateTime.fromISO(created_at).toFormat('LLL d, yyyy')
+const created_at = isoNow()
+const created_at_formatted = formatShortDate(created_at, locale.value)
 
 const member = reactive<Member>({
   display_name: '',

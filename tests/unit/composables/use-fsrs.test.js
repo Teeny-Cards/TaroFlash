@@ -4,7 +4,8 @@ import { useRatingFormat } from '@/composables/use-fsrs'
 
 vi.mock('vue-i18n', () => ({
   useI18n: () => ({
-    t: (key, params) => `${key}:${JSON.stringify(params)}`
+    t: (key, params) => `${key}:${JSON.stringify(params)}`,
+    locale: { value: 'en-US' }
   })
 }))
 
