@@ -7,7 +7,6 @@ import {
   type Grade,
   type RecordLog
 } from 'ts-fsrs'
-import { DateTime } from 'luxon'
 import { useSaveReviewMutation } from '@/api/reviews'
 
 export type StudyCard = Card & { preview?: RecordLog; state: ReviewState }
@@ -156,8 +155,8 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
   function _isCardDue(card: Card) {
     if (!card.review?.due) return true
     const raw = card.review.due
-    const due = raw instanceof Date ? DateTime.fromJSDate(raw) : DateTime.fromISO(String(raw))
-    return due <= DateTime.now()
+    const due = raw instanceof Date ? raw : new Date(String(raw))
+    return due.getTime() <= Date.now()
   }
 
   return {
