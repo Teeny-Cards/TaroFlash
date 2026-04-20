@@ -1,0 +1,105 @@
+import { describe, test, expect, vi, beforeEach, afterEach } from 'vite-plus/test'
+import { isoNow, formatShortDate, toRelative } from '@/utils/date'
+
+describe('isoNow', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  test('returns the current time as an ISO 8601 UTC string', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-03-15T12:34:56.000Z'))
+    expect(isoNow()).toBe('2026-03-15T12:34:56.000Z')
+  })
+
+  test('ends with Z so Postgres timestamptz parses it as UTC', () => {
+    // Guards against accidentally reintroducing a local-offset variant, which
+    // would still parse correctly but is a silent drift from the old Luxon
+    // behavior and harder to reason about in logs.
+    expect(isoNow().endsWith('Z')).toBe(true)
+  })
+})
+
+describe('formatShortDate', () => {
+  // Use a mid-day UTC timestamp so the date is unambiguous regardless of the
+  // test host's local timezone (Intl.DateTimeFormat defaults to local tz).
+  const ISO = '2026-03-15T18:00:00.000Z'
+
+  test('formats an ISO string as "Mon D, YYYY" in en-US', () => {
+    expect(formatShortDate(ISO, 'en-US')).toBe('Mar 15, 2026')
+  })
+
+  test('accepts a millisecond epoch timestamp', () => {
+    expect(formatShortDate(new Date(ISO).getTime(), 'en-US')).toBe('Mar 15, 2026')
+  })
+
+  test('accepts a Date instance', () => {
+    expect(formatShortDate(new Date(ISO), 'en-US')).toBe('Mar 15, 2026')
+  })
+
+  test('respects the provided locale', () => {
+    // fr-FR writes short months lowercased with a period (e.g. "15 mars 2026").
+    // The exact string differs across ICU versions, so we only assert the
+    // locale actually changed the output.
+    const us = formatShortDate(ISO, 'en-US')
+    const fr = formatShortDate(ISO, 'fr-FR')
+    expect(us).not.toBe(fr)
+  })
+})
+
+describe('toRelative', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-03-15T12:00:00.000Z'))
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  test('future dates use "in" phrasing in en-US', () => {
+    const inOneDay = new Date('2026-03-16T12:00:00.000Z')
+    expect(toRelative(inOneDay, { locale: 'en-US' })).toBe('in 1 day')
+  })
+
+  test('past dates use "ago" phrasing in en-US', () => {
+    const twoHoursAgo = new Date('2026-03-15T10:00:00.000Z')
+    expect(toRelative(twoHoursAgo, { locale: 'en-US' })).toBe('2 hours ago')
+  })
+
+  test('selects the largest unit whose diff >= one of that unit', () => {
+    // +90 seconds → should snap to the minute bucket, not stay at seconds.
+    const inNinetySeconds = new Date('2026-03-15T12:01:30.000Z')
+    expect(toRelative(inNinetySeconds, { locale: 'en-US' })).toBe('in 2 minutes')
+  })
+
+  test('falls back to "in 0 seconds" when the diff is under a second', () => {
+    // Below 1s, no unit threshold is met so the formatter returns the
+    // zero-seconds string rather than throwing or returning an empty value.
+    const almostNow = new Date('2026-03-15T12:00:00.500Z')
+    expect(toRelative(almostNow, { locale: 'en-US' })).toBe('in 0 seconds')
+  })
+
+  test('short style produces a compact string', () => {
+    const inOneDay = new Date('2026-03-16T12:00:00.000Z')
+    const long = toRelative(inOneDay, { locale: 'en-US', style: 'long' })
+    const short = toRelative(inOneDay, { locale: 'en-US', style: 'short' })
+    expect(short.length).toBeLessThanOrEqual(long.length)
+  })
+
+  test('defaults to long style when none is provided', () => {
+    const inOneDay = new Date('2026-03-16T12:00:00.000Z')
+    expect(toRelative(inOneDay, { locale: 'en-US' })).toBe('in 1 day')
+  })
+
+  test('accepts a Date, ISO string, and millisecond epoch', () => {
+    const iso = '2026-03-16T12:00:00.000Z'
+    const date = new Date(iso)
+    const ms = date.getTime()
+    const expected = 'in 1 day'
+
+    expect(toRelative(iso, { locale: 'en-US' })).toBe(expected)
+    expect(toRelative(date, { locale: 'en-US' })).toBe(expected)
+    expect(toRelative(ms, { locale: 'en-US' })).toBe(expected)
+  })
+})
