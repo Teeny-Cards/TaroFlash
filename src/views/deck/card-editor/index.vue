@@ -3,10 +3,10 @@ import List from './list.vue'
 import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
 import { inject } from 'vue'
-import { type CardBulkEditor } from '@/composables/card-bulk-editor'
+import { type CardListController } from '@/composables/card-list-controller'
 
 const { t } = useI18n()
-const { all_cards, addCard } = inject<CardBulkEditor>('card-editor')!
+const { all_cards, addCard } = inject<CardListController>('card-editor')!
 </script>
 
 <template>

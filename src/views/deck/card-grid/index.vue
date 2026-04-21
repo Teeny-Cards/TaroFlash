@@ -1,20 +1,23 @@
 <script setup lang="ts">
 import GridItem from './grid-item.vue'
-import { type CardBulkEditor } from '@/composables/card-bulk-editor'
+import { type CardListController } from '@/composables/card-list-controller'
 import { inject, ref, useTemplateRef } from 'vue'
-import { useInfiniteScroll } from '@/composables/use-infinite-scroll'
-import { useCardsInDeckInfiniteQuery } from '@/api/cards'
 
-const { all_cards, mode, isCardSelected, getKey } = inject<CardBulkEditor>('card-editor')!
-const card_attributes = inject<DeckCardAttributes>('card-attributes')
-const cards_query = inject<ReturnType<typeof useCardsInDeckInfiniteQuery>>('cards-query')!
+const {
+  all_cards,
+  mode,
+  isCardSelected,
+  getKey,
+  card_attributes,
+  hasNextPage,
+  isLoading,
+  observeSentinel
+} = inject<CardListController>('card-editor')!
 
 const side = ref<'front' | 'back'>('front')
 const sentinel = useTemplateRef<HTMLElement>('sentinel')
 
-useInfiniteScroll(sentinel, () => cards_query.loadNextPage(), {
-  enabled: () => cards_query.hasNextPage.value && !cards_query.isLoading.value
-})
+observeSentinel(sentinel)
 
 const emit = defineEmits<{
   (e: 'card-selected', id: number): void
@@ -43,12 +46,12 @@ const emit = defineEmits<{
       ></grid-item>
     </div>
     <div
-      v-if="cards_query.hasNextPage.value"
+      v-if="hasNextPage"
       ref="sentinel"
       data-testid="card-grid__sentinel"
       class="w-full py-6 flex items-center justify-center text-brown-500"
     >
-      <span v-if="cards_query.isLoading.value">Loading…</span>
+      <span v-if="isLoading">Loading…</span>
     </div>
   </div>
 </template>

@@ -3,7 +3,7 @@ import ItemOptions from './list-item-options.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
-import { type CardBulkEditor } from '@/composables/card-bulk-editor'
+import { type CardListController } from '@/composables/card-list-controller'
 import { inject, computed, useTemplateRef } from 'vue'
 import ListItemCard from './list-item-card.vue'
 
@@ -13,11 +13,8 @@ const { card, index } = defineProps<{
   duplicate: boolean
 }>()
 
-const { mode, isCardSelected, appendCard, prependCard } = inject<CardBulkEditor>('card-editor')!
-
-const onDeleteCard = inject<(id: number) => void>('on-delete-card')
-const onMoveCard = inject<(id: number) => void>('on-move-card')
-const onSelectCard = inject<(id: number) => void>('on-select-card')
+const { mode, isCardSelected, appendCard, prependCard, onDeleteCards, onMoveCards, onSelectCard } =
+  inject<CardListController>('card-editor')!
 
 const list_item_card = useTemplateRef('list-item-card')
 
@@ -28,7 +25,7 @@ function onClick(e: MouseEvent) {
 
   // If we're in select mode, select the card and blur the active element
   if (mode.value === 'select') {
-    onSelectCard?.(card.id!)
+    onSelectCard(card.id!)
     ;(document.activeElement as HTMLElement)?.blur?.()
     return
   }
@@ -87,9 +84,9 @@ function onClick(e: MouseEvent) {
     <item-options
       v-if="mode !== 'select'"
       class="hidden sm:grid opacity-0 pointer-events-none transition-opacity duration-100 ease-in-out group-hover/listitem:opacity-100 group-hover/listitem:pointer-events-auto group-focus-within/listitem:opacity-100 group-focus-within/listitem:pointer-events-auto row-span-2"
-      @select="onSelectCard?.(card.id!)"
-      @move="onMoveCard?.(card.id!)"
-      @delete="onDeleteCard?.(card.id!)"
+      @select="onSelectCard(card.id!)"
+      @move="onMoveCards(card.id!)"
+      @delete="onDeleteCards(card.id!)"
     />
     <ui-radio v-else :checked="selected" />
 
