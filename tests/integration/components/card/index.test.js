@@ -41,4 +41,23 @@ describe('Card (cover side)', () => {
     const coverStub = wrapper.findComponent({ name: 'CardCover' })
     expect(coverStub.props('cover')).toBeUndefined()
   })
+
+  // ── error prop → data-error attribute (drives red outline in CSS) ────────────
+
+  test('does not set data-error on the root when error is false', () => {
+    const wrapper = mountCard({ error: false })
+    expect(wrapper.find('[data-testid="card"]').attributes('data-error')).toBeUndefined()
+  })
+
+  test('does not set data-error on the root when error is omitted (defaults to false)', () => {
+    const wrapper = mountCard()
+    expect(wrapper.find('[data-testid="card"]').attributes('data-error')).toBeUndefined()
+  })
+
+  test('sets data-error on the root when error is true', () => {
+    const wrapper = mountCard({ error: true })
+    // Binding uses `error || undefined` so the attribute is absent when false
+    // and present when true; we don't assert a specific value string.
+    expect(wrapper.find('[data-testid="card"]').attributes('data-error')).toBeDefined()
+  })
 })

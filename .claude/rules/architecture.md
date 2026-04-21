@@ -67,3 +67,20 @@ Rules of thumb:
 - **Reactive state (refs, lifecycle, provide/inject)** → `src/composables/`.
 
 Prefer a directory under `src/utils/` over a flat `src/utils/foo.ts` when more than one file is likely, so helpers stay co-located with their domain.
+
+## `src/api/` functions must not mutate their arguments
+
+API-layer functions are thin network adapters. They must not mutate their input parameters — callers can't tell from the signature which fields are now stale, and optimistic-UI rollback becomes impossible because the "before" state is already gone by the time the network fails. Optimistic apply belongs in the composable that calls the mutation, not in the network adapter.
+
+```ts
+// Bad — mutates `card` before the network call
+export async function saveCard(card: Card, values: Partial<Card>) {
+  Object.assign(card, values)
+  await upsertCard(buildCardPayload(card))
+}
+
+// Good — builds an immutable payload, leaves `card` untouched
+export async function saveCard(card: Card, values: Partial<Card>) {
+  await upsertCard(buildCardPayload({ ...card, ...values }))
+}
+```

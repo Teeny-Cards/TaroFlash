@@ -37,6 +37,10 @@ const { image, text } = defineProps<{
   outline: 2px solid var(--color-blue-500);
 }
 
+.card-container[data-error] .card-face {
+  outline: 2px solid var(--color-red-500);
+}
+
 .card-face[data-mode='edit'][data-image='false'] {
   grid-template-rows: auto 1fr;
 }

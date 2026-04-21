@@ -24,16 +24,28 @@ const front_input = useTemplateRef('front-input')
 const focused = ref(false)
 const focusOutPromise = ref<Promise<void> | null>(null)
 
+// Local editor state is the source of truth while the component is mounted.
+// Initialised from the card prop; later cache updates are ignored so
+// incoming refetches can't clobber what the user has typed.
+const front_text = ref(card.front_text ?? '')
+const back_text = ref(card.back_text ?? '')
+const save_failed = ref(false)
+
 const { mode, updateCard, card_attributes } = inject<CardListController>('card-editor')!
 const set_image_mutation = useSetCardImageMutation()
 const delete_image_mutation = useDeleteCardImageMutation()
 
-function onUpdate(side: 'front' | 'back', text: string) {
-  const update: Partial<Card> = {
-    [`${side}_text`]: text
-  }
+async function onUpdate(side: 'front' | 'back', text: string) {
+  if (side === 'front') front_text.value = text
+  else back_text.value = text
 
-  updateCard(card.id, update)
+  save_failed.value = false
+
+  try {
+    await updateCard(card.id, { [`${side}_text`]: text })
+  } catch {
+    save_failed.value = true
+  }
 }
 
 function focusEditor() {
@@ -101,6 +113,7 @@ defineExpose({ focusEditor, hasFocusWithin })
       size="xl"
       mode="edit"
       v-bind="card"
+      :error="save_failed"
       class="group/card"
       :class="{ 'pointer-events-none': mode === 'select' }"
     >
@@ -116,7 +129,7 @@ defineExpose({ focusEditor, hasFocusWithin })
       <template #editor>
         <text-editor
           ref="front-input"
-          :content="card.front_text"
+          :content="front_text"
           :attributes="card_attributes.front"
           :placeholder="t('common.front')"
           class="w-full h-full"
@@ -134,6 +147,7 @@ defineExpose({ focusEditor, hasFocusWithin })
       size="xl"
       mode="edit"
       v-bind="card"
+      :error="save_failed"
       class="group/card"
       :class="{ 'pointer-events-none': mode === 'select' }"
     >
@@ -149,7 +163,7 @@ defineExpose({ focusEditor, hasFocusWithin })
       <template #editor>
         <text-editor
           ref="back-input"
-          :content="card.back_text"
+          :content="back_text"
           :attributes="card_attributes.back"
           :placeholder="t('common.back')"
           class="w-full h-full"
