@@ -3,9 +3,12 @@ lastUpdated: 2026-04-11T11:26:28-07:00
 ---
 
 ---
+
 title: Configure Pinia Testing with createTestingPinia and setActivePinia
 paths:
-  - 'tests/**/*'
+
+- 'tests/\*_/_'
+
 ---
 
 # Configure Pinia Testing with createTestingPinia and setActivePinia
