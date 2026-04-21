@@ -3,9 +3,12 @@ lastUpdated: 2026-04-11T11:26:28-07:00
 ---
 
 ---
+
 title: Use Vitest for Vue 3 Testing - Recommended by Vue Team
 paths:
-  - 'tests/**/*'
+
+- 'tests/\*_/_'
+
 ---
 
 # Use Vitest for Vue 3 Testing - Recommended by Vue Team
