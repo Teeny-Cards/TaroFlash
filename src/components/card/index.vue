@@ -16,6 +16,7 @@ type CardProps = Partial<CardBase> & {
   card_attributes?: DeckCardAttributes
   face_classes?: string
   sfx?: SfxOptions
+  error?: boolean
 }
 
 const emit = defineEmits<{
@@ -29,7 +30,8 @@ const {
   cover_config,
   card_attributes,
   front_image_path,
-  back_image_path
+  back_image_path,
+  error = false
 } = defineProps<CardProps>()
 
 const front_image_url = computed(() => {
@@ -78,6 +80,7 @@ function onLeave(el: Element, done: () => void) {
     translate="no"
     class="card-container"
     :class="`card-container--${size} card-container--${mode}`"
+    :data-error="error || undefined"
     v-sfx="sfx"
   >
     <slot></slot>

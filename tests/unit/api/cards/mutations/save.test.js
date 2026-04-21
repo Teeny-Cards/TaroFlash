@@ -1,8 +1,7 @@
 import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
 
-const { useMutationSpy, invalidateSpy, saveCardMock, debounceMock } = vi.hoisted(() => ({
+const { useMutationSpy, saveCardMock, debounceMock } = vi.hoisted(() => ({
   useMutationSpy: vi.fn((cfg) => cfg),
-  invalidateSpy: vi.fn(),
   saveCardMock: vi.fn().mockResolvedValue(undefined),
   // Call the debounced fn immediately so the mutation resolves synchronously
   // in tests. We still assert on the debounce call shape.
@@ -10,8 +9,7 @@ const { useMutationSpy, invalidateSpy, saveCardMock, debounceMock } = vi.hoisted
 }))
 
 vi.mock('@pinia/colada', () => ({
-  useMutation: useMutationSpy,
-  useQueryCache: () => ({ invalidateQueries: invalidateSpy })
+  useMutation: useMutationSpy
 }))
 
 vi.mock('@/api/cards/db', () => ({
@@ -26,7 +24,6 @@ import { useSaveCardMutation } from '@/api/cards/mutations/save'
 
 beforeEach(() => {
   useMutationSpy.mockClear()
-  invalidateSpy.mockClear()
   saveCardMock.mockClear()
   saveCardMock.mockResolvedValue(undefined)
   debounceMock.mockClear()
@@ -57,20 +54,10 @@ describe('useSaveCardMutation', () => {
     expect(saveCardMock).toHaveBeenCalledWith(card, values)
   })
 
-  test("onSettled invalidates the card's deck (list + detail)", () => {
-    const { onSettled } = configFrom()
-
-    onSettled(undefined, undefined, { card: { id: 5, deck_id: 10 }, values: {} })
-
-    expect(invalidateSpy).toHaveBeenCalledWith({ key: ['deck', 10] })
-    expect(invalidateSpy).toHaveBeenCalledWith({ key: ['cards', 10] })
-  })
-
-  test('onSettled no-ops invalidation when the card has no deck_id', () => {
-    const { onSettled } = configFrom()
-
-    onSettled(undefined, undefined, { card: { id: 5 }, values: {} })
-
-    expect(invalidateSpy).not.toHaveBeenCalled()
+  test('does not install an onSettled handler — deck cache is not invalidated on self-save', () => {
+    // Refetch after a self-save would clobber the component-owned editor
+    // state that's driving the input. Bulk ops invalidate explicitly.
+    const config = configFrom()
+    expect(config.onSettled).toBeUndefined()
   })
 })
