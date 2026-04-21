@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { useSetCardImageMutation, useDeleteCardImageMutation } from '@/api/cards'
 import { useToast } from '@/composables/toast'
 import { inject, ref, useTemplateRef } from 'vue'
-import { type CardBulkEditor } from '@/composables/card-bulk-editor'
+import { type CardListController } from '@/composables/card-list-controller'
 import textEditor from '@/components/text-editor/text-editor.vue'
 import { emitSfx } from '@/sfx/bus'
 
@@ -24,8 +24,7 @@ const front_input = useTemplateRef('front-input')
 const focused = ref(false)
 const focusOutPromise = ref<Promise<void> | null>(null)
 
-const { mode, updateCard } = inject<CardBulkEditor>('card-editor')!
-const card_attributes = inject<DeckCardAttributes>('card-attributes')!
+const { mode, updateCard, card_attributes } = inject<CardListController>('card-editor')!
 const set_image_mutation = useSetCardImageMutation()
 const delete_image_mutation = useDeleteCardImageMutation()
 
