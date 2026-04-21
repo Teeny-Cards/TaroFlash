@@ -93,53 +93,29 @@ vue-tsc: 0 errors. Format: clean.
 
 Ordered by impact ÷ effort. Pick up from the top in a fresh session.
 
-### 1. [HIGH] Optimistic rollback on updateCard
+### 1. [DONE] ~~Optimistic rollback on updateCard~~ — solved by component-owned editor state
 
-`src/composables/card-mutations.ts` — `updateCard` path for real cards:
+Shipped in PR #143 (`refactor/card-editor-auto-save`). The original plan was
+optimistic apply + snapshot rollback inside the mutation layer. That path
+was attempted and rejected mid-session: rollback coordinated correctly
+across debounce supersessions, but refetches from `invalidateDeck` still
+clobbered in-flight edits because the cache was driving the editor input
+directly.
 
-```ts
-saving.value = true
-try {
-  await save_mutation.mutateAsync({ card, values })
-} finally {
-  saving.value = false
-}
-```
+Final shape:
 
-The save mutation internally mutates `card` in place before the network call.
-If the network call fails, the local card object is already mutated — UI
-shows the new value but the DB has the old one, and a future refetch will
-silently revert the user's edit.
+- `saveCard` (db) is pure — no `Object.assign` on its arg.
+- `useSaveCardMutation` no longer invalidates the deck on settle. Bulk ops
+  still invalidate explicitly.
+- `list-item-card.vue` owns local `front_text` / `back_text` / `save_failed`
+  refs. The text editor renders from local state, immune to cache updates.
+- Save failures surface as a red outline on the failing card via a new
+  `error` prop on `Card`; the next edit clears it.
+- Architecture rule added: `src/api/` functions must not mutate their args
+  (`.claude/rules/architecture.md`).
 
-If the user edits the same card twice quickly while the first save is
-in-flight, the second `save_mutation.mutateAsync` runs against the already-
-mutated card. The first mutation's `onSettled` invalidates the cache, which
-may refetch the pre-edit-2 state and clobber edit-2 on the next render.
-
-**Fix**: add `onMutate` / `onError` around `save_mutation`:
-
-```ts
-return useMutation({
-  mutation: ({ card, values }) => saveCard(card, values),
-  onMutate: ({ card, values }) => {
-    const rollback = { ...card } // snapshot
-    Object.assign(card, values) // optimistic apply
-    return rollback
-  },
-  onError: (_err, { card }, rollback) => {
-    if (rollback) Object.assign(card, rollback)
-  },
-  onSettled: (_data, _err, _vars, _ctx, { queryCache }) => {
-    invalidateDeck(queryCache, deck_id)
-  }
-})
-```
-
-Likely lives inside `src/api/cards/mutations/save.ts`, not in the composable
-layer. Verify the Pinia Colada mutation signature for context parameter shape.
-
-Tests: add cases for "updateCard rolls back local card on network failure",
-"concurrent edits don't drop the later value".
+No more rollback machinery. Local state is the source of truth while the
+component is mounted; the cache is persistence-only for the editor flow.
 
 ---
 

@@ -4,20 +4,19 @@ import { isoNow } from '@/utils/date'
 import { uploadImage, insertMedia } from '@/api/media/db'
 import { useMemberStore } from '@/stores/member'
 import uid from '@/utils/uid'
-import { buildCardPayload, hasCardChanges } from '@/utils/card/payload'
+import { buildCardPayload } from '@/utils/card/payload'
 import { type CardBase } from '@type/card'
 
 /**
- * In-place update + upsert for an existing card. Skips the network round-trip
- * if `values` introduces no actual change. Caller-side debouncing lives in
- * the `useSaveCardMutation` wrapper, not here.
+ * Upserts a card with `values` merged over the current state. Leaves `card`
+ * untouched — optimistic apply and rollback are the caller's concern.
+ * Caller-side debouncing lives in the `useSaveCardMutation` wrapper, and the
+ * no-change short-circuit lives in the composable that calls it (both must
+ * happen before any optimistic mutation is applied to `card`).
  */
 export async function saveCard(card: Card, values: Partial<Card>): Promise<void> {
   if (!card.id) return
-  if (!hasCardChanges(card, values)) return
-
-  Object.assign(card, values)
-  await upsertCard(buildCardPayload(card))
+  await upsertCard(buildCardPayload({ ...card, ...values }))
 }
 
 export async function upsertCard(card: Partial<CardBase>): Promise<Card> {
