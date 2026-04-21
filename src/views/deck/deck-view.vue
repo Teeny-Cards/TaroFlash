@@ -1,22 +1,13 @@
 <script setup lang="ts">
 import OverviewPanel from '@/views/deck/overview-panel.vue'
-import { ref, reactive, provide, watch } from 'vue'
+import { ref, provide } from 'vue'
 import { useDeckQuery } from '@/api/decks'
 import CardEditor from './card-editor/index.vue'
 import CardGrid from './card-grid/index.vue'
 import CardImporter from './card-importer.vue'
 import { useI18n } from 'vue-i18n'
-import { useCardBulkEditor } from '@/composables/card-bulk-editor'
-import { useAlert } from '@/composables/alert'
-import { useModal } from '@/composables/modal'
-import { emitSfx } from '@/sfx/bus'
+import { useCardListController } from '@/composables/card-list-controller'
 import UiScrollBar from '@/components/ui-kit/scroll-bar.vue'
-import {
-  useCardsInDeckInfiniteQuery,
-  useDeckCardIdsQuery,
-  useMoveCardsToDeckMutation
-} from '@/api/cards'
-import MoveCardsModal from '@/components/modals/move-cards.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import BulkSelectToolbar from '@/views/deck/bulk-select-toolbar.vue'
@@ -27,40 +18,20 @@ const { id: deck_id } = defineProps<{
 }>()
 
 const { t } = useI18n()
-const modal = useModal()
-const alert = useAlert()
 const is_md = useMediaQuery('md')
 
 const image_url = ref<string | undefined>()
 const active_tab = ref(0)
-const card_attributes = reactive<DeckCardAttributes>({ front: {}, back: {} })
 
 const deck_query = useDeckQuery(() => Number(deck_id))
 const deck = deck_query.data
-const refetchDeck = () => deck_query.refetch()
-const move_cards_mutation = useMoveCardsToDeckMutation()
 
-const cards_query = useCardsInDeckInfiniteQuery(() => Number(deck_id))
-const ids_query = useDeckCardIdsQuery(() => Number(deck_id))
-const editor = useCardBulkEditor(cards_query, ids_query, Number(deck_id))
-
-watch(
-  deck,
-  (current) => {
-    if (!current) return
-    const incoming = current.card_attributes
-    card_attributes.front = incoming?.front ?? {}
-    card_attributes.back = incoming?.back ?? {}
-  },
-  { immediate: true }
-)
+const editor = useCardListController({
+  deck_id: Number(deck_id),
+  deck_query
+})
 
 provide('card-editor', editor)
-provide('cards-query', cards_query)
-provide('card-attributes', card_attributes)
-provide('on-delete-card', onDeleteCards)
-provide('on-move-card', onMoveCards)
-provide('on-select-card', onSelectCard)
 
 const tabs = [
   {
@@ -82,65 +53,6 @@ const tab_components: { [key: number]: any } = {
   1: CardEditor,
   2: CardImporter
 }
-
-async function onCancel() {
-  emitSfx('ui.card_drop')
-
-  editor.setMode('view')
-  editor.clearSelectedCards()
-
-  await refetchDeck()
-}
-
-async function onDeleteCards(id?: number) {
-  const count = editor.selected_count.value + (id !== undefined ? 1 : 0)
-
-  const { response: did_confirm } = alert.warn({
-    title: t('alert.delete-card', { count }),
-    message: t('alert.delete-card.message', { count }),
-    confirmLabel: t('common.delete'),
-    confirmAudio: 'ui.trash_crumple_short'
-  })
-
-  if (await did_confirm) {
-    if (id !== undefined) editor.selectCard(id)
-
-    await editor.deleteCards()
-    await refetchDeck()
-    editor.setMode('view')
-  }
-}
-
-function onSelectCard(id?: number) {
-  if (id !== undefined) editor.toggleSelectCard(id)
-
-  editor.setMode('select')
-  emitSfx('ui.etc_camera_shutter')
-}
-
-async function onMoveCards(id?: number) {
-  if (id === undefined) {
-    return
-  }
-
-  editor.selectCard(id)
-  const selected_cards = editor.getSelectedCards()
-
-  emitSfx('ui.double_pop_up')
-  const { response } = modal.open<{ deck_id: number }>(MoveCardsModal, {
-    backdrop: true,
-    props: { cards: selected_cards, current_deck_id: Number(deck_id) }
-  })
-  response.then(() => emitSfx('ui.double_pop_down'))
-
-  const res = await response
-
-  if (res) {
-    await move_cards_mutation.mutateAsync({ cards: selected_cards, deck_id: res.deck_id })
-  } else {
-    editor.deselectCard(id)
-  }
-}
 </script>
 
 <template>
@@ -153,7 +65,7 @@ async function onMoveCards(id?: number) {
       class="xl:sticky top-(--nav-height)"
       :deck="deck"
       :image-url="image_url"
-      @updated="refetchDeck()"
+      @updated="deck_query.refetch()"
     />
 
     <div class="relative flex h-full w-full flex-col items-center">
@@ -169,7 +81,7 @@ async function onMoveCards(id?: number) {
 
           <ui-button
             v-if="editor.mode.value === 'select'"
-            @click="onCancel"
+            @click="editor.onCancel"
             icon-left="close"
             theme="grey-400"
           >
@@ -182,8 +94,12 @@ async function onMoveCards(id?: number) {
         ></div>
       </div>
 
-      <component :is="is_md ? tab_components[active_tab] : CardGrid" :deck_id="Number(deck_id)">
-        <bulk-select-toolbar @cancel="onCancel" @move="onMoveCards" @delete="onDeleteCards" />
+      <component :is="is_md ? tab_components[active_tab] : CardGrid">
+        <bulk-select-toolbar
+          @cancel="editor.onCancel"
+          @move="editor.onMoveCards"
+          @delete="editor.onDeleteCards"
+        />
       </component>
     </div>
 

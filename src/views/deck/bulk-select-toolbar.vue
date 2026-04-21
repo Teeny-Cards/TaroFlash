@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import UiButton from '@/components/ui-kit/button.vue'
 import { inject } from 'vue'
-import { type CardBulkEditor } from '@/composables/card-bulk-editor'
+import { type CardListController } from '@/composables/card-list-controller'
 
 const emit = defineEmits<{
   (e: 'cancel'): void
@@ -10,7 +10,7 @@ const emit = defineEmits<{
   (e: 'delete'): void
 }>()
 
-const editor = inject<CardBulkEditor>('card-editor')
+const editor = inject<CardListController>('card-editor')
 </script>
 
 <template>
