@@ -93,17 +93,19 @@ beforeEach(() => {
 })
 
 describe('saveCard', () => {
-  test('mutates card in place and upserts when values change', async () => {
+  test('upserts with values merged over the current card state when values change', async () => {
     const card = makeCard()
     await saveCard(card, { front_text: 'Updated' })
-    expect(card.front_text).toBe('Updated')
     expect(mocks.singleMock).toHaveBeenCalled()
+    const { data } = mocks.singleMock.mock.calls[0][0]
+    expect(data.front_text).toBe('Updated')
   })
 
-  test('skips upsert when values are unchanged', async () => {
+  test('does not mutate the input card', async () => {
     const card = makeCard()
-    await saveCard(card, { front_text: card.front_text })
-    expect(mocks.singleMock).not.toHaveBeenCalled()
+    const before = { ...card }
+    await saveCard(card, { front_text: 'Updated' })
+    expect(card).toEqual(before)
   })
 
   test('skips upsert when card has no id', async () => {

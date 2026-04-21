@@ -155,6 +155,14 @@ describe('useCardMutations', () => {
       expect(saveCardMock).not.toHaveBeenCalled()
     })
 
+    test("does not mutate the card passed to saveCard — optimistic apply is the caller's job", async () => {
+      const realCard = makeCard({ id: 42, front_text: 'before' })
+      const list = makeList({ persisted: [realCard], findCard: () => realCard })
+      const m = makeMutations({ list })
+      await m.updateCard(42, { front_text: 'after' })
+      expect(realCard.front_text).toBe('before')
+    })
+
     test('toggles saving=true during the async save and back to false afterward', async () => {
       const realCard = makeCard({ id: 1 })
       const list = makeList({ findCard: () => realCard })
@@ -168,7 +176,7 @@ describe('useCardMutations', () => {
       expect(m.saving.value).toBe(false)
     })
 
-    test('resets saving to false when saveCard rejects', async () => {
+    test('resets saving to false when saveCard rejects and propagates the rejection', async () => {
       const realCard = makeCard({ id: 1 })
       const list = makeList({ findCard: () => realCard })
       saveCardMock.mockRejectedValueOnce(new Error('boom'))
@@ -216,12 +224,9 @@ describe('useCardMutations', () => {
     })
 
     test('does not clear selection state (controller owns that)', async () => {
-      // The mutation layer is deliberately selection-agnostic after the
-      // refactor — verify it doesn't touch anything beyond the network call.
       const m = makeMutations()
       await m.deleteCards({ cards: [makeCard({ id: 1 })] })
       expect(deleteCardsMock).toHaveBeenCalledOnce()
-      // No selection-layer assertion needed; mutation takes no selection dep.
     })
   })
 

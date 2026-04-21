@@ -50,7 +50,8 @@ export function useCardMutations(opts: Options) {
       return
     }
 
-    // Real card path — debounced in-place save.
+    // Real card path — debounced save. Editor state lives on the component,
+    // so there's nothing to reconcile here: we just write through.
     const card = list.findCard(id)
     if (!card) return
 
