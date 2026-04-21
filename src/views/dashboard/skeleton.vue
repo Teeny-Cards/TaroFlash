@@ -24,11 +24,7 @@
       data-testid="dashboard-skeleton__decks"
       class="flex gap-x-6.5 gap-y-8 flex-wrap md:col-start-2"
     >
-      <div
-        v-for="n in 6"
-        :key="n"
-        class="h-64 w-44 bg-brown-200 dark:bg-grey-800 rounded-xl"
-      ></div>
+      <div v-for="n in 6" :key="n" class="h-64 w-44 bg-brown-200 dark:bg-grey-800 rounded-xl"></div>
     </div>
   </div>
 </template>

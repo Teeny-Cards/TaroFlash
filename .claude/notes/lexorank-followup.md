@@ -29,6 +29,7 @@ row in the table. For a 10k-card deck that's ~10k UPDATEs in one transaction.
 ## What LexoRank gives us
 
 A string-based rank scheme (e.g. `"0|hzzzzz:"`) where:
+
 - Inserting between two ranks produces a new rank with at most one extra character.
 - Length growth is bounded and amortizable — no need for periodic full rebalances.
 - Comparison is plain lexicographic — works as a `text` column with a btree index.

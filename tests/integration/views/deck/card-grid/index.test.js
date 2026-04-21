@@ -21,7 +21,12 @@ function makeCardsQuery({ has_next = false, is_loading = false, load = vi.fn() }
   }
 }
 
-function makeEditor({ cards = [], getKey = (c) => c.id, mode = ref('view'), isCardSelected = () => false } = {}) {
+function makeEditor({
+  cards = [],
+  getKey = (c) => c.id,
+  mode = ref('view'),
+  isCardSelected = () => false
+} = {}) {
   return {
     all_cards: computed(() => cards),
     mode,

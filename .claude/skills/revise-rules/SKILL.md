@@ -55,7 +55,7 @@ For a **skill** (`.claude/skills/*/SKILL.md`):
 - A step refers to a convention that a rule has since overridden.
 - The skill's `description` frontmatter no longer matches what the skill actually does.
 
-Stylistic tightening is out of scope unless the user has complained about it — this skill is for *correctness*, not *polish*.
+Stylistic tightening is out of scope unless the user has complained about it — this skill is for _correctness_, not _polish_.
 
 ## Always write concisely
 
@@ -109,7 +109,7 @@ For each file in `.claude/rules/*.md` and `.claude/skills/*/SKILL.md`:
 
 2. **Resolve the rule's surface area:**
    - If the rule declares `paths:`, use those globs as the verification surface.
-   - If no `paths:` is declared, fall back to the full `src/`/`supabase/` tree and mark the rule as *scope-missing* for Step 4.
+   - If no `paths:` is declared, fall back to the full `src/`/`supabase/` tree and mark the rule as _scope-missing_ for Step 4.
    - For skills, the surface is whatever files / directories / commands the skill references in its workflow.
 
 3. **Re-scan the surface for pattern drift.** This is the core check and goes beyond Step 2's change surface, because a drifted pattern can exist in files that haven't been touched since the last sync.
@@ -120,7 +120,7 @@ For each file in `.claude/rules/*.md` and `.claude/skills/*/SKILL.md`:
 
 4. **Check scope drift against the current tree:**
    - Each `paths:` glob should match at least one file — if it matches none, the target moved or was deleted (propose removal or update).
-   - The rule's content should not consistently reference directories *outside* its `paths:` glob — if it does, the scope has grown and should be extended.
+   - The rule's content should not consistently reference directories _outside_ its `paths:` glob — if it does, the scope has grown and should be extended.
    - If a rule was moved or a referenced directory was renamed (visible in Step 2's change surface), the `paths:` entry probably needs rewriting.
 
 5. **Cross-check** rules against each other for contradiction; cross-check each skill's steps against the rules.
@@ -139,7 +139,7 @@ Be efficient: for rules with narrow `paths:` globs, scan only those globs. For r
    - `[change]` — a target moved or was renamed; propose rewriting the glob.
 3. **Proposed edits** — one line per non-scope edit (fix a command, rename a cited path in the prose, update an example). Minimal surgery only.
 4. **Questions** (only if any, max 3) — things you can't resolve without user input. E.g. "`animations.md` forbids magic timeouts, but `phone.ts` uses one — was this a deliberate exception?"
-5. **Possibly new rule territory** — if the code clearly establishes a pattern with no corresponding rule, mention it as *one line*. Do **not** draft the rule. The user decides whether a new rule is warranted.
+5. **Possibly new rule territory** — if the code clearly establishes a pattern with no corresponding rule, mention it as _one line_. Do **not** draft the rule. The user decides whether a new rule is warranted.
 
 **Wait for the user** before Step 5.
 
@@ -186,9 +186,9 @@ Only bump the global when at least one rule or skill was edited. A "verified, no
 
 ### Step 7 — Report
 
-| File | Kind         | Change                                          | Scope change |
-| ---- | ------------ | ----------------------------------------------- | ------------ |
-| ...  | rule / skill | what was edited (or "none — verified")          | add / remove / change / added / — |
+| File | Kind         | Change                                 | Scope change                      |
+| ---- | ------------ | -------------------------------------- | --------------------------------- |
+| ...  | rule / skill | what was edited (or "none — verified") | add / remove / change / added / — |
 
 - One line per file verified-but-unchanged (grouped).
 - **Deferred** section for anything raised in Step 4 that wasn't resolved (including scope proposals the user declined).
