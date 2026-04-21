@@ -3,9 +3,12 @@ lastUpdated: 2026-04-13T12:01:02-07:00
 ---
 
 ---
+
 title: Test Quality Checklist
 paths:
-  - 'tests/**/*'
+
+- 'tests/\*_/_'
+
 ---
 
 # Test Quality Checklist

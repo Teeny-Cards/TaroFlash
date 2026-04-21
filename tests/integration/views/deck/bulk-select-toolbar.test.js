@@ -72,17 +72,13 @@ describe('BulkSelectToolbar', () => {
   // ── Select-all label flip ──────────────────────────────────────────────────
 
   test('shows "Select All" label when nothing is selected', () => {
-    const wrapper = mount(
-      makeEditorStub({ all_cards_selected: computed(() => false) })
-    )
+    const wrapper = mount(makeEditorStub({ all_cards_selected: computed(() => false) }))
     expect(wrapper.text()).toContain('Select All')
     expect(wrapper.text()).not.toContain('Deselect All')
   })
 
   test('shows "Deselect All" label when everything is selected', () => {
-    const wrapper = mount(
-      makeEditorStub({ all_cards_selected: computed(() => true) })
-    )
+    const wrapper = mount(makeEditorStub({ all_cards_selected: computed(() => true) }))
     expect(wrapper.text()).toContain('Deselect All')
   })
 

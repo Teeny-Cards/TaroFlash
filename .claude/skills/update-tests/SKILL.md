@@ -69,7 +69,7 @@ Skip to Step 8 for these files — Steps 3–7 are frontend-specific.
 
 ### Step 2c — Capture business-logic decisions from the current session
 
-When this skill is invoked during a working session that produced the changes, the conversation often carries *why* — invariants, race conditions, and edge-case guards that the diff alone doesn't expose. A test writer who only reads the code will cover *what* changed but miss the *decisions* that shaped it.
+When this skill is invoked during a working session that produced the changes, the conversation often carries _why_ — invariants, race conditions, and edge-case guards that the diff alone doesn't expose. A test writer who only reads the code will cover _what_ changed but miss the _decisions_ that shaped it.
 
 Before writing tests, distill the conversation into a short "test obligations" list. Each obligation should map to at least one test case that exercises the decision directly.
 

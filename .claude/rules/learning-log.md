@@ -95,58 +95,58 @@ After each backend teaching session, list the key concepts covered as touchpoint
 
 ### 2026-04-19 — insert_card_at: drop+create, neighbor resolution, advisory locks
 
-| Concept                                              | Score |
-| ---------------------------------------------------- | ----- |
-| DROP + CREATE vs CREATE OR REPLACE                   | 9     |
-| Function overloading by argument types               | 8     |
-| Server-resolves-neighbor pattern                     | 8     |
-| `LIMIT 1` ordered queries for nearest-neighbor       | 9     |
-| `pg_advisory_xact_lock`                              | 9     |
-| EXCEPTION blocks + SQLSTATE matching                 | 3     |
+| Concept                                                | Score |
+| ------------------------------------------------------ | ----- |
+| DROP + CREATE vs CREATE OR REPLACE                     | 9     |
+| Function overloading by argument types                 | 8     |
+| Server-resolves-neighbor pattern                       | 8     |
+| `LIMIT 1` ordered queries for nearest-neighbor         | 9     |
+| `pg_advisory_xact_lock`                                | 9     |
+| EXCEPTION blocks + SQLSTATE matching                   | 3     |
 | `RETURNS TABLE` + `RETURNING ... INTO` + `RETURN NEXT` | 6     |
 
 ### 2026-04-19 — cards_with_images: window functions, view recreate, composite indexes
 
-| Concept                                                  | Score |
-| -------------------------------------------------------- | ----- |
-| Window functions vs aggregates                           | 4     |
-| `PARTITION BY` semantics                                 | 1     |
-| SQL execution order (WHERE → window → LIMIT)             | 5     |
-| View recreation: DROP + CREATE vs CREATE OR REPLACE      | 9     |
-| `WITH (security_invoker = true)` inline on CREATE VIEW   | 7     |
-| Composite btree indexes + sort-order alignment           | 10    |
+| Concept                                                | Score |
+| ------------------------------------------------------ | ----- |
+| Window functions vs aggregates                         | 4     |
+| `PARTITION BY` semantics                               | 1     |
+| SQL execution order (WHERE → window → LIMIT)           | 5     |
+| View recreation: DROP + CREATE vs CREATE OR REPLACE    | 9     |
+| `WITH (security_invoker = true)` inline on CREATE VIEW | 7     |
+| Composite btree indexes + sort-order alignment         | 10    |
 
 ### 2026-04-19 — move_card: exclude-self lookup, scalar returns
 
-| Concept                                                  | Score |
-| -------------------------------------------------------- | ----- |
-| Excluding the moved row from neighbor lookup             | 6     |
-| Collapsing existence check + data lookup into one SELECT...INTO | 8 |
-| `RETURNS scalar` vs `RETURNS TABLE` (single value vs row) | 9     |
+| Concept                                                         | Score |
+| --------------------------------------------------------------- | ----- |
+| Excluding the moved row from neighbor lookup                    | 6     |
+| Collapsing existence check + data lookup into one SELECT...INTO | 8     |
+| `RETURNS scalar` vs `RETURNS TABLE` (single value vs row)       | 9     |
 
 ### 2026-04-19 — delete_cards_in_deck: arrays, NULL logic, diagnostics
 
-| Concept                                                  | Score |
-| -------------------------------------------------------- | ----- |
-| Postgres typed arrays + `<> ALL` / `= ANY`               | 6     |
-| SQL three-valued logic (NULL handling)                   | 8     |
-| `GET DIAGNOSTICS ROW_COUNT`                              | 6     |
-| RLS vs RPC decision rule (when each fits)                | 8     |
-| pgTAP `results_eq` + `VALUES` literal tables             | 6     |
+| Concept                                      | Score |
+| -------------------------------------------- | ----- |
+| Postgres typed arrays + `<> ALL` / `= ANY`   | 6     |
+| SQL three-valued logic (NULL handling)       | 8     |
+| `GET DIAGNOSTICS ROW_COUNT`                  | 6     |
+| RLS vs RPC decision rule (when each fits)    | 8     |
+| pgTAP `results_eq` + `VALUES` literal tables | 6     |
 
 ### 2026-04-19 — backfill-null-ranks: DO blocks, ALTER NOT NULL, SELECT INTO ambiguity
 
-| Concept                                                                  | Score |
-| ------------------------------------------------------------------------ | ----- |
-| `DO $$ ... $$` anonymous block + `FOR ... IN SELECT ... LOOP`            | 8     |
-| `ALTER COLUMN ... SET NOT NULL` (locks column post-backfill)             | 8     |
-| `SELECT col INTO var` ambiguity (no row vs row with NULL col)            | 8     |
+| Concept                                                       | Score |
+| ------------------------------------------------------------- | ----- |
+| `DO $$ ... $$` anonymous block + `FOR ... IN SELECT ... LOOP` | 8     |
+| `ALTER COLUMN ... SET NOT NULL` (locks column post-backfill)  | 8     |
+| `SELECT col INTO var` ambiguity (no row vs row with NULL col) | 8     |
 
 ### 2026-04-19 — bulk_insert_cards_in_deck: jsonb args, RETURNS SETOF
 
-| Concept                                                              | Score |
-| -------------------------------------------------------------------- | ----- |
-| `jsonb` parameter + `jsonb_array_elements()` iteration               | 1     |
-| `->` vs `->>` (jsonb extraction operators)                           | 1     |
-| `RETURNS SETOF table_name` + `RETURN NEXT row_var`                   | 1     |
-| `MAX(rank) + step` append pattern (no neighbor resolution needed)    | 1     |
+| Concept                                                           | Score |
+| ----------------------------------------------------------------- | ----- |
+| `jsonb` parameter + `jsonb_array_elements()` iteration            | 1     |
+| `->` vs `->>` (jsonb extraction operators)                        | 1     |
+| `RETURNS SETOF table_name` + `RETURN NEXT row_var`                | 1     |
+| `MAX(rank) + step` append pattern (no neighbor resolution needed) | 1     |

@@ -12,6 +12,19 @@
     ],
     "deny": ["Bash(rm -rf *)"]
   },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | xargs -r vp fmt > /dev/null 2>&1 || true"
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "vue-best-practices@vue-skills": true,
     "vue-options-api-best-practices@vue-skills": true,

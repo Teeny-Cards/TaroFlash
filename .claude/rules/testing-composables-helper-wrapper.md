@@ -3,9 +3,12 @@ lastUpdated: 2026-04-11T11:26:28-07:00
 ---
 
 ---
+
 title: Test Complex Composables with Host Component Wrapper
 paths:
-  - 'tests/**/*'
+
+- 'tests/\*_/_'
+
 ---
 
 # Test Complex Composables with Host Component Wrapper
