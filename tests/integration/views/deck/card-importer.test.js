@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
-import { defineComponent, h, useAttrs } from 'vue'
+import { defineComponent, h, ref, useAttrs } from 'vue'
 
 const { bulkInsertMock } = vi.hoisted(() => ({
   bulkInsertMock: vi.fn().mockResolvedValue([])
@@ -35,10 +35,14 @@ beforeEach(() => {
   bulkInsertMock.mockResolvedValue([])
 })
 
-function mount(props = { deck_id: 10 }) {
+function mount({ deck_id = 10 } = {}) {
   return shallowMount(CardImporter, {
-    props,
-    global: { stubs: { UiButton: UiButtonStub } }
+    global: {
+      stubs: { UiButton: UiButtonStub },
+      provide: {
+        'card-editor': { deck_id: ref(deck_id) }
+      }
+    }
   })
 }
 

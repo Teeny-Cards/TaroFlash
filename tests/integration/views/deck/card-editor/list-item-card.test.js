@@ -61,9 +61,9 @@ function mount(props = {}) {
       provide: {
         'card-editor': {
           mode: ref('edit'),
-          updateCard: mocks.updateCardMock
-        },
-        'card-attributes': { front: {}, back: {} }
+          updateCard: mocks.updateCardMock,
+          card_attributes: { front: {}, back: {} }
+        }
       }
     }
   })
