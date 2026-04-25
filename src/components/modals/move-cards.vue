@@ -92,7 +92,7 @@ function onClick(deck_id?: number) {
     >
       <ui-button
         data-testid="move-cards__cancel"
-        theme="grey-400"
+        data-theme="grey-400"
         icon-left="close"
         @click="close(false)"
         class="ring-brown-300 ring-7"
@@ -102,6 +102,7 @@ function onClick(deck_id?: number) {
 
       <ui-button
         data-testid="move-cards__move"
+        data-theme="blue-500"
         icon-left="arrow-forward"
         @click="onMove"
         :disabled="!selected_deck_id"

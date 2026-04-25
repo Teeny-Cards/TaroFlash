@@ -9,7 +9,7 @@ vi.mock('@/composables/modals/use-study-modal', () => ({
   useStudyModal: () => ({ start: vi.fn() })
 }))
 
-import OverviewPanel from '@/views/deck/overview-panel.vue'
+import DeckHero from '@/views/deck/deck-hero.vue'
 
 const UiButtonStub = defineComponent({
   name: 'UiButton',
@@ -22,7 +22,7 @@ const UiButtonStub = defineComponent({
 })
 
 function mount(deck = {}) {
-  return shallowMount(OverviewPanel, {
+  return shallowMount(DeckHero, {
     props: {
       deck: { id: 1, title: 'd', card_count: 10, ...deck }
     },
@@ -36,7 +36,7 @@ function studyButton(wrapper) {
     .find((b) => b.attributes('data-testid') === 'overview-panel__study-button')
 }
 
-describe('OverviewPanel', () => {
+describe('DeckHero', () => {
   // ── study_disabled is driven by deck.card_count (was deck.cards.length) ─────
 
   test('enables the study button when card_count > 0', () => {

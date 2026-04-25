@@ -32,7 +32,7 @@ const app = computed(() => {
       class="absolute! top-2 right-2 pointer-fine:top-0 pointer-fine:left-0 shadow-xs pointer-fine:opacity-0 pointer-fine:group-hover/phone:opacity-100 opacity-100 transition-opacity duration-75 z-10"
       icon-left="close"
       icon-only
-      theme="brown-100"
+      data-theme="brown-100"
       :size="is_mobile ? 'lg' : 'base'"
       @click="emit('close')"
     />
