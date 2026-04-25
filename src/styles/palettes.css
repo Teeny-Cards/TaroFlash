@@ -113,6 +113,12 @@
   --theme-on-neutral: var(--color-brown-500);
 }
 
+[data-theme='green-800'],
+[data-theme='dark'] [data-theme-dark='green-800'] {
+  --theme-primary: var(--color-green-800);
+  --theme-on-primary: var(--color-brown-100);
+}
+
 [data-theme='green-400'],
 [data-theme='dark'] [data-theme-dark='green-400'] {
   --theme-primary: var(--color-green-400);
@@ -179,6 +185,12 @@
 
   --theme-accent: var(--color-orange-400);
   --theme-on-accent: var(--color-brown-100);
+}
+
+[data-theme='grey-800'],
+[data-theme='dark'] [data-theme-dark='grey-800'] {
+  --theme-primary: var(--color-grey-800);
+  --theme-on-primary: var(--color-brown-100);
 }
 
 [data-theme='white'],
