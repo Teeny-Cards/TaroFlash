@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import GridItem from './grid-item.vue'
-import { type CardListController } from '@/composables/card-list-controller'
+import { type CardListController } from '@/composables/card-editor/card-list-controller'
 import { inject, ref, useTemplateRef } from 'vue'
 
 const {
   all_cards,
   mode,
   isCardSelected,
-  getKey,
   card_attributes,
   hasNextPage,
   isLoading,
@@ -36,7 +35,7 @@ const emit = defineEmits<{
     >
       <grid-item
         v-for="card in all_cards"
-        :key="getKey(card)"
+        :key="card.client_id"
         :card="card"
         :mode="mode"
         :side="side"

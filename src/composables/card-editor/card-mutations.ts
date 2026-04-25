@@ -1,0 +1,73 @@
+import { type Ref } from 'vue'
+import {
+  useDeleteCardsMutation,
+  useDeleteCardsInDeckMutation,
+  useInsertCardAtMutation,
+  useMoveCardsToDeckMutation,
+  useSaveCardMutation,
+  type InsertCardAtParams
+} from '@/api/cards'
+
+export type CardMutations = ReturnType<typeof useCardMutations>
+
+type DeleteArgs = { cards: Card[] } | { except_ids: number[] }
+type MoveArgs = { cards: Card[]; target_deck_id: number }
+
+/**
+ * Persistence wrappers for card writes. A thin layer over `@/api/cards`
+ * mutation hooks: takes the raw shapes the API expects and returns the
+ * results, with no knowledge of the deck-editor's UI state, list shape, or
+ * temp-card lifecycle.
+ *
+ * Higher-level orchestration (insert vs update routing, optimistic state,
+ * the in-flight saving flag) lives on `useCardListController`.
+ *
+ * @param deck_id - Reactive deck id, required for INSERT and bulk-delete.
+ */
+export function useCardMutations(deck_id: Ref<number | undefined>) {
+  const insert_mutation = useInsertCardAtMutation()
+  const save_mutation = useSaveCardMutation()
+  const delete_mutation = useDeleteCardsMutation()
+  const delete_in_deck_mutation = useDeleteCardsInDeckMutation()
+  const move_mutation = useMoveCardsToDeckMutation()
+
+  /** Insert a new card at the anchor + side described by `params`. */
+  function insertCard(params: InsertCardAtParams): Promise<{ id: number; rank: number }> {
+    return insert_mutation.mutateAsync(params)
+  }
+
+  /** Persist `values` against an existing card. */
+  function saveCard(card: Card, values: Partial<Card>): Promise<unknown> {
+    return save_mutation.mutateAsync({ card, values })
+  }
+
+  /**
+   * Delete a discriminated set of cards.
+   *
+   * - `{ cards }`      — delete this explicit list. No-op if empty.
+   * - `{ except_ids }` — delete every card in the deck except these. Used
+   *                      by the select-all flow so the FE doesn't have to
+   *                      enumerate every id.
+   */
+  async function deleteCards(args: DeleteArgs) {
+    if ('except_ids' in args) {
+      await delete_in_deck_mutation.mutateAsync({
+        deck_id: deck_id.value!,
+        except_ids: args.except_ids
+      })
+
+      return
+    }
+
+    if (args.cards.length === 0) return
+    await delete_mutation.mutateAsync(args.cards)
+  }
+
+  /** Move the given cards into `target_deck_id`. No-op if the array is empty. */
+  async function moveCards(args: MoveArgs) {
+    if (args.cards.length === 0) return
+    await move_mutation.mutateAsync({ cards: args.cards, deck_id: args.target_deck_id })
+  }
+
+  return { insertCard, saveCard, deleteCards, moveCards }
+}

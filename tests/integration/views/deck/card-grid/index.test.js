@@ -6,7 +6,6 @@ import CardGrid from '@/views/deck/card-grid/index.vue'
 
 function makeEditor({
   cards = [],
-  getKey = (c) => c.id,
   mode = ref('view'),
   isCardSelected = () => false,
   hasNextPage = ref(false),
@@ -15,9 +14,8 @@ function makeEditor({
   card_attributes = { front: {}, back: {} }
 } = {}) {
   return {
-    all_cards: computed(() => cards),
+    all_cards: computed(() => cards.map((c, i) => ({ ...c, client_id: `cid-${c.id ?? i}` }))),
     mode,
-    getKey,
     isCardSelected,
     hasNextPage,
     isLoading,
@@ -63,20 +61,12 @@ describe('CardGrid (card-grid/index.vue)', () => {
     expect(observeSentinel).toHaveBeenCalledOnce()
   })
 
-  // ── Grid item rendering — getKey + isCardSelected ─────────────────────────
+  // ── Grid item rendering — client_id + isCardSelected ─────────────────────
 
   test('renders one grid-item per card from all_cards', () => {
     const cards = [{ id: 1 }, { id: 2 }, { id: 3 }]
     const wrapper = mount({ editor: makeEditor({ cards }) })
     expect(wrapper.findAllComponents({ name: 'GridItem' })).toHaveLength(3)
-  })
-
-  test('uses editor-supplied getKey() for v-for keys', () => {
-    const cards = [{ id: 1 }, { id: 2 }]
-    const getKey = vi.fn((c) => `gk-${c.id}`)
-    mount({ editor: makeEditor({ cards, getKey }) })
-    expect(getKey).toHaveBeenCalledWith(cards[0])
-    expect(getKey).toHaveBeenCalledWith(cards[1])
   })
 
   test('forwards isCardSelected(card.id) as the selected prop on each grid-item', () => {

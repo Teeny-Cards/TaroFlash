@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Card from '@/components/card/index.vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
-import { type CardEditorMode } from '@/composables/card-list-controller'
+import { type CardEditorMode } from '@/composables/card-editor/card-list-controller'
 
 const { card, side, mode } = defineProps<{
   card: Card

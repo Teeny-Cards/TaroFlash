@@ -3,7 +3,7 @@ import ItemOptions from './list-item-options.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
-import { type CardListController } from '@/composables/card-list-controller'
+import { type CardListController } from '@/composables/card-editor/card-list-controller'
 import { inject, computed, useTemplateRef } from 'vue'
 import ListItemCard from './list-item-card.vue'
 

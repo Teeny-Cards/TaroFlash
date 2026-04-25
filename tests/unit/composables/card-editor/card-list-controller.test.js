@@ -4,7 +4,7 @@ import { card } from '@tests/fixtures/card'
 
 const {
   cardsInfiniteQueryMock,
-  deckCardIdsQueryMock,
+  deckQueryMock,
   insertCardAtMock,
   saveCardMock,
   deleteCardsMock,
@@ -16,7 +16,7 @@ const {
   useInfiniteScrollMock
 } = vi.hoisted(() => ({
   cardsInfiniteQueryMock: vi.fn(),
-  deckCardIdsQueryMock: vi.fn(),
+  deckQueryMock: vi.fn(),
   insertCardAtMock: vi.fn(),
   saveCardMock: vi.fn(),
   deleteCardsMock: vi.fn(),
@@ -30,7 +30,6 @@ const {
 
 vi.mock('@/api/cards', () => ({
   useCardsInDeckInfiniteQuery: cardsInfiniteQueryMock,
-  useDeckCardIdsQuery: deckCardIdsQueryMock,
   useInsertCardAtMutation: () => ({ mutate: insertCardAtMock, mutateAsync: insertCardAtMock }),
   useSaveCardMutation: () => ({ mutate: saveCardMock, mutateAsync: saveCardMock }),
   useDeleteCardsMutation: () => ({ mutate: deleteCardsMock, mutateAsync: deleteCardsMock }),
@@ -39,6 +38,10 @@ vi.mock('@/api/cards', () => ({
     mutateAsync: deleteCardsInDeckMock
   }),
   useMoveCardsToDeckMutation: () => ({ mutate: moveCardsMock, mutateAsync: moveCardsMock })
+}))
+
+vi.mock('@/api/decks', () => ({
+  useDeckQuery: deckQueryMock
 }))
 
 vi.mock('vue-i18n', () => ({
@@ -61,7 +64,7 @@ vi.mock('@/composables/use-infinite-scroll', () => ({
 
 vi.mock('@/components/modals/move-cards.vue', () => ({ default: {} }))
 
-import { useCardListController } from '@/composables/card-list-controller'
+import { useCardListController } from '@/composables/card-editor/card-list-controller'
 
 function makeCard(overrides = {}) {
   return card.one({ overrides })
@@ -76,28 +79,25 @@ function makeCardsQuery(persisted = []) {
   }
 }
 
-function makeIdsQuery(ids = []) {
-  return { data: { value: ids } }
-}
-
-function makeDeckQuery() {
+function makeDeckQuery(card_count = 0) {
   return {
-    data: ref(null),
+    data: ref({ id: 10, card_count }),
     refetch: vi.fn().mockResolvedValue(undefined)
   }
 }
 
-function makeController(
-  persisted = [],
-  ids = persisted.map((c) => c.id),
-  deck_query = makeDeckQuery()
-) {
+// Returns the controller with `deck_query` attached so refetch + reactive
+// data assertions can target the same handle the controller uses internally.
+// Mocks `useDeckQuery` for the lifetime of the call so both the controller
+// and the inner card-selection composable resolve to this query — mirrors
+// Pinia Colada's per-key dedupe in production.
+function makeController(persisted = [], ids = persisted.map((c) => c.id), deck_query) {
+  const dq = deck_query ?? makeDeckQuery(ids.length)
   cardsInfiniteQueryMock.mockReturnValueOnce(makeCardsQuery(persisted))
-  deckCardIdsQueryMock.mockReturnValueOnce(makeIdsQuery(ids))
-  return useCardListController({
-    deck_id: 10,
-    deck_query
-  })
+  deckQueryMock.mockReturnValue(dq)
+  const controller = useCardListController({ deck_id: 10 })
+  controller.deck_query = dq
+  return controller
 }
 
 describe('useCardListController', () => {
@@ -470,8 +470,8 @@ describe('useCardListController', () => {
       cards_query.hasNextPage.value = true
       cards_query.isLoading.value = false
       cardsInfiniteQueryMock.mockReturnValueOnce(cards_query)
-      deckCardIdsQueryMock.mockReturnValueOnce(makeIdsQuery([]))
-      const ctrl = useCardListController({ deck_id: 10, deck_query: makeDeckQuery() })
+      deckQueryMock.mockReturnValue(makeDeckQuery())
+      const ctrl = useCardListController({ deck_id: 10 })
       expect(ctrl.hasNextPage.value).toBe(true)
       expect(ctrl.isLoading.value).toBe(false)
     })
@@ -479,8 +479,8 @@ describe('useCardListController', () => {
     test('observeSentinel calls useInfiniteScroll with the sentinel and a delegating loader', () => {
       const cards_query = makeCardsQuery([])
       cardsInfiniteQueryMock.mockReturnValueOnce(cards_query)
-      deckCardIdsQueryMock.mockReturnValueOnce(makeIdsQuery([]))
-      const ctrl = useCardListController({ deck_id: 10, deck_query: makeDeckQuery() })
+      deckQueryMock.mockReturnValue(makeDeckQuery())
+      const ctrl = useCardListController({ deck_id: 10 })
       const sentinel = { value: null }
       ctrl.observeSentinel(sentinel)
       expect(useInfiniteScrollMock).toHaveBeenCalledOnce()
@@ -495,8 +495,8 @@ describe('useCardListController', () => {
       cards_query.hasNextPage.value = true
       cards_query.isLoading.value = false
       cardsInfiniteQueryMock.mockReturnValueOnce(cards_query)
-      deckCardIdsQueryMock.mockReturnValueOnce(makeIdsQuery([]))
-      const ctrl = useCardListController({ deck_id: 10, deck_query: makeDeckQuery() })
+      deckQueryMock.mockReturnValue(makeDeckQuery())
+      const ctrl = useCardListController({ deck_id: 10 })
       ctrl.observeSentinel({ value: null })
       const [, , options] = useInfiniteScrollMock.mock.calls[0]
       expect(options.enabled()).toBe(true)
@@ -596,6 +596,15 @@ describe('useCardListController', () => {
       expect(alertWarnMock).not.toHaveBeenCalled()
       expect(deleteCardsMock).not.toHaveBeenCalled()
       expect(deleteCardsInDeckMock).not.toHaveBeenCalled()
+    })
+
+    test('onDeleteCards does not duplicate the card when its id is already in the selection', async () => {
+      alertWarnMock.mockReturnValueOnce({ response: Promise.resolve(true) })
+      const ctrl = makeController([makeCard({ id: 7 })], [7])
+      ctrl.selectCard(7)
+      await ctrl.onDeleteCards(7)
+      const [cards] = deleteCardsMock.mock.calls[0]
+      expect(cards.map((c) => c.id)).toEqual([7])
     })
 
     test('onMoveCards is a no-op when called without an id and nothing is selected', async () => {

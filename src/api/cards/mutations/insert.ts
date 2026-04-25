@@ -2,6 +2,8 @@ import { useMutation, useQueryCache } from '@pinia/colada'
 import { insertCardAt, type InsertCardAtParams } from '../db'
 import { invalidateAllCardCounts, invalidateDeck } from './_invalidate'
 
+export type { InsertCardAtParams }
+
 export function useInsertCardAtMutation() {
   const queryCache = useQueryCache()
   return useMutation({
