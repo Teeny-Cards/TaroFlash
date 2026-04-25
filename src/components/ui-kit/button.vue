@@ -149,11 +149,14 @@ const merged_sfx = computed(() => {
   height: 100%;
   max-height: 100%;
   max-width: 100%;
+  height: var(--icon-size);
+  width: var(--icon-size);
 }
 
 .ui-kit-btn.ui-kit-btn--icon-only {
   --btn-padding: 8px;
   --btn-border-radius: var(--radius-4);
+  width: auto;
   aspect-ratio: 1/1;
 }
 
@@ -192,8 +195,8 @@ const merged_sfx = computed(() => {
   }
 }
 .ui-kit-btn.ui-kit-btn--sm {
-  --btn-font-size: var(--text-sm);
-  --btn-font-size--line-height: var(--text-sm--line-height);
+  --btn-font-size: var(--text-base);
+  --btn-font-size--line-height: var(--text-base--line-height);
   --btn-border-radius: var(--radius-3);
   --btn-gap: 6px;
   --btn-padding: 4px 6px;
@@ -203,15 +206,15 @@ const merged_sfx = computed(() => {
   }
 }
 .ui-kit-btn.ui-kit-btn--xs {
-  --btn-font-size: var(--text-sm);
-  --btn-font-size--line-height: var(--text-sm--line-height);
-  --btn-border-radius: var(--radius-3_25);
-  --btn-gap: 6px;
-  --btn-padding: 4px 6px;
-  --btn-height: 30px;
+  --btn-font-size: var(--text-base);
+  --btn-font-size--line-height: var(--text-base--line-height);
+  --btn-border-radius: var(--radius-3_5);
+  --btn-gap: 3px;
+  --btn-padding: 4px 12px;
+  --icon-size: 16px;
 
   &.ui-kit-btn--icon-only {
-    --btn-padding: 4px;
+    --btn-padding: 8px;
   }
 }
 

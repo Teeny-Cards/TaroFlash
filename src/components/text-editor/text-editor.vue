@@ -80,7 +80,6 @@ defineExpose({ focus })
   width: 100%;
   height: 100%;
   outline: none;
-  color: var(--color-brown-700);
   white-space: pre-wrap;
   overflow-wrap: break-word;
 }
