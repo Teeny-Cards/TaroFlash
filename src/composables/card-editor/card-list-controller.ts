@@ -11,7 +11,7 @@ import { useVirtualCardList, type CardEntry } from './virtual-card-list'
 import { useCardSelection } from './card-selection'
 import { useCardMutations } from './card-mutations'
 
-export type CardEditorMode = 'view' | 'select' | 'edit'
+export type CardEditorMode = 'view' | 'edit' | 'import-export'
 export type CardListController = ReturnType<typeof useCardListController>
 
 type Options = {
@@ -26,7 +26,9 @@ type Options = {
  * card-importer, bulk-select-toolbar).
  *
  * Owns:
- * - `mode` UI state (view / select / edit)
+ * - `mode` UI state (view / edit / import-export) — user-chosen view.
+ *   Selection is orthogonal: `is_selecting` flips on the moment any card is
+ *   selected, regardless of which mode is active.
  * - intent handlers (`onCancel`, `onDeleteCards`, `onSelectCard`,
  *   `onMoveCards`) which compose modal + alert + sfx around the underlying
  *   mutations
@@ -65,7 +67,7 @@ export function useCardListController(opts: Options) {
 
   const mode = ref<CardEditorMode>('view')
 
-  /** Set the editor's UI mode (view / select / edit). */
+  /** Set the editor's UI mode (view / edit / import-export). */
   function setMode(new_mode: CardEditorMode) {
     mode.value = new_mode
   }
@@ -160,13 +162,13 @@ export function useCardListController(opts: Options) {
   }
 
   /**
-   * Exit edit/select mode: clear selection, return to view mode, and refetch
-   * the deck so any unsaved derived state re-syncs.
+   * Exit the current mode: drop selection state, exit selection mode, return
+   * to view mode, and refetch the deck so any unsaved derived state re-syncs.
    */
   async function onCancel() {
     emitSfx('ui.card_drop')
     setMode('view')
-    selection.clearSelectedCards()
+    selection.exitSelection()
 
     await deck_query.refetch()
   }
@@ -184,7 +186,7 @@ export function useCardListController(opts: Options) {
 
   /** Cleanup applied after any successful delete: drop selection, refetch, exit. */
   async function afterDelete() {
-    selection.clearSelectedCards()
+    selection.exitSelection()
     await deck_query.refetch()
     setMode('view')
   }
@@ -228,13 +230,15 @@ export function useCardListController(opts: Options) {
   }
 
   /**
-   * Toggle selection for `id` (when given) and switch to select mode. Used
-   * by both the row checkbox click and the "select" item-options action —
-   * the latter passes no id to enter select mode without altering anything.
+   * Toggle selection for `id` (when given) and enter selection mode. Used by
+   * both the row checkbox click and the "select" item-options action — the
+   * latter passes no id to enter selection mode without altering anything.
+   * Selection mode is orthogonal to the editor mode (`view` / `edit` /
+   * `import-export`), so this never touches `mode`.
    */
   function onSelectCard(id?: number) {
     if (id !== undefined) selection.toggleSelectCard(id)
-    setMode('select')
+    selection.enterSelection()
     emitSfx('ui.etc_camera_shutter')
   }
 
@@ -287,6 +291,9 @@ export function useCardListController(opts: Options) {
     selectAllCards: selection.selectAllCards,
     clearSelectedCards: selection.clearSelectedCards,
     toggleSelectAll: selection.toggleSelectAll,
+    enterSelection: selection.enterSelection,
+    exitSelection: selection.exitSelection,
+    is_selecting: selection.is_selecting,
     selected_card_ids: selection.selected_card_ids,
     deselected_ids: selection.deselected_ids,
     select_all_mode: selection.select_all_mode,

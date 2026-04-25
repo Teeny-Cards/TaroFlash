@@ -511,29 +511,33 @@ describe('useCardListController', () => {
   // ── intent handlers — onCancel / onSelectCard / onDeleteCards / onMoveCards ─
 
   describe('intent handlers', () => {
-    test('onCancel resets mode to view, clears selection, and refetches', async () => {
+    test('onCancel resets mode to view, exits selection, clears selection, and refetches', async () => {
       const deck_query = makeDeckQuery()
       const ctrl = makeController([makeCard({ id: 1 })], [1], deck_query)
       ctrl.selectCard(1)
-      ctrl.setMode('select')
+      ctrl.enterSelection()
+      ctrl.setMode('edit')
       await ctrl.onCancel()
       expect(ctrl.mode.value).toBe('view')
+      expect(ctrl.is_selecting.value).toBe(false)
       expect(ctrl.selected_card_ids.value).toEqual([])
       expect(deck_query.refetch).toHaveBeenCalledOnce()
     })
 
-    test('onSelectCard toggles the id and enters select mode', () => {
+    test('onSelectCard toggles the id and enters selection mode without changing the editor mode', () => {
       const ctrl = makeController([makeCard({ id: 1 })], [1])
+      ctrl.setMode('edit')
       ctrl.onSelectCard(1)
       expect(ctrl.isCardSelected(1)).toBe(true)
-      expect(ctrl.mode.value).toBe('select')
+      expect(ctrl.is_selecting.value).toBe(true)
+      expect(ctrl.mode.value).toBe('edit')
     })
 
-    test('onSelectCard without id just enters select mode without mutating selection', () => {
+    test('onSelectCard without id just enters selection mode without mutating selection', () => {
       const ctrl = makeController([makeCard({ id: 1 })], [1])
       ctrl.onSelectCard()
       expect(ctrl.selected_card_ids.value).toEqual([])
-      expect(ctrl.mode.value).toBe('select')
+      expect(ctrl.is_selecting.value).toBe(true)
     })
 
     test('onDeleteCards skips deletion when the user cancels the confirm alert', async () => {
@@ -549,11 +553,12 @@ describe('useCardListController', () => {
       const deck_query = makeDeckQuery()
       const ctrl = makeController([makeCard({ id: 1 })], [1], deck_query)
       ctrl.selectCard(1)
-      ctrl.setMode('select')
+      ctrl.enterSelection()
       await ctrl.onDeleteCards()
       expect(deleteCardsMock).toHaveBeenCalledOnce()
       expect(deck_query.refetch).toHaveBeenCalledOnce()
       expect(ctrl.mode.value).toBe('view')
+      expect(ctrl.is_selecting.value).toBe(false)
     })
 
     test('onDeleteCards with an explicit id deletes just that card when nothing else selected', async () => {

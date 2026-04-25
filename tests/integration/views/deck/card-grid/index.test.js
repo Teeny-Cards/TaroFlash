@@ -6,7 +6,7 @@ import CardGrid from '@/views/deck/card-grid/index.vue'
 
 function makeEditor({
   cards = [],
-  mode = ref('view'),
+  is_selecting = ref(false),
   isCardSelected = () => false,
   hasNextPage = ref(false),
   isLoading = ref(false),
@@ -15,7 +15,7 @@ function makeEditor({
 } = {}) {
   return {
     all_cards: computed(() => cards.map((c, i) => ({ ...c, client_id: `cid-${c.id ?? i}` }))),
-    mode,
+    is_selecting,
     isCardSelected,
     hasNextPage,
     isLoading,

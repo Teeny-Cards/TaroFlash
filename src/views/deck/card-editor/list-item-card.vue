@@ -31,7 +31,7 @@ const front_text = ref(card.front_text ?? '')
 const back_text = ref(card.back_text ?? '')
 const save_failed = ref(false)
 
-const { mode, updateCard, card_attributes } = inject<CardListController>('card-editor')!
+const { is_selecting, updateCard, card_attributes } = inject<CardListController>('card-editor')!
 const set_image_mutation = useSetCardImageMutation()
 const delete_image_mutation = useDeleteCardImageMutation()
 
@@ -115,7 +115,7 @@ defineExpose({ focusEditor, hasFocusWithin })
       v-bind="card"
       :error="save_failed"
       class="group/card"
-      :class="{ 'pointer-events-none': mode === 'select' }"
+      :class="{ 'pointer-events-none': is_selecting }"
     >
       <image-button
         v-if="card.id > 0"
@@ -149,7 +149,7 @@ defineExpose({ focusEditor, hasFocusWithin })
       v-bind="card"
       :error="save_failed"
       class="group/card"
-      :class="{ 'pointer-events-none': mode === 'select' }"
+      :class="{ 'pointer-events-none': is_selecting }"
     >
       <image-button
         v-if="card.id > 0"
