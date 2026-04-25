@@ -1,3 +1,9 @@
+---
+lastUpdated: 2026-04-25T19:03:21Z
+paths:
+  - 'src/**/*'
+---
+
 # Formatting
 
 Run `vp fmt` on every file you create or edit, before reporting the work as done.
