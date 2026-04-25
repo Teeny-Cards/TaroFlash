@@ -195,7 +195,7 @@ function onLeave(el: Element, done: () => void) {
 }
 
 [data-theme='dark'] .card-container {
-  --card-bg-color: var(--color-grey-800);
+  --card-bg-color: var(--color-grey-750);
   --card-text-color: var(--color-brown-100);
   --card-text-color--placeholder: var(--color-brown-500);
 }

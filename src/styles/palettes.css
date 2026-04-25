@@ -193,6 +193,12 @@
   --theme-on-primary: var(--color-brown-100);
 }
 
+[data-theme='grey-750'],
+[data-theme='dark'] [data-theme-dark='grey-750'] {
+  --theme-primary: var(--color-grey-750);
+  --theme-on-primary: var(--color-brown-100);
+}
+
 [data-theme='white'],
 [data-theme='dark'] [data-theme-dark='white'] {
   --theme-primary: var(--color-white);
