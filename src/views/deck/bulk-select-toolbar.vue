@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import UiButton from '@/components/ui-kit/button.vue'
 import { inject } from 'vue'
-import { type CardListController } from '@/composables/card-list-controller'
+import { type CardListController } from '@/composables/card-editor/card-list-controller'
 
 const emit = defineEmits<{
   (e: 'cancel'): void

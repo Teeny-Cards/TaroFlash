@@ -1,9 +1,13 @@
 ---
 name: prepare-pr
-description: Prepare a branch for PR by rewriting commit messages into release-notes-friendly Conventional Commits, renaming the branch if it no longer fits the changes, splitting unrelated or oversized work into a stack of smaller PRs, drafting a PR title and body, and opening the GitHub "create PR" page pre-filled. Use when a feature branch is code-complete and ready for review.
+description: Prepare a branch for PR by committing any pending work, rewriting commit messages into release-notes-friendly Conventional Commits, renaming the branch if it no longer fits the changes, drafting a PR title and body, and opening the GitHub "create PR" page pre-filled. Bundles all branch work — committed AND uncommitted (staged + unstaged) — into the PR by default. Pass `--split` to additionally analyse whether the work should be split into a stack of smaller PRs. Use when a feature branch is code-complete and ready for review.
 allowed-tools: Read, Edit, Write, Bash, Glob, Grep
-lastUpdated: 2026-04-17T01:40:00Z
+lastUpdated: 2026-04-25T00:00:00Z
 ---
+
+## Args
+
+- **`--split`** (optional) — analyse the branch and propose splitting unrelated or oversized work into a stack of smaller PRs (Steps 3 and 4). Without this flag, the whole branch is treated as a single PR — those steps are skipped.
 
 ## Why this skill exists
 
@@ -11,11 +15,12 @@ Feature branches accumulate vague commits ("fix", "tests", "refactor study-sessi
 
 Output:
 
-1. Branch commits grouped into one or more PRs — unrelated split out, oversized broken into reviewable stack.
-2. Commits renamed to **Conventional Commits** (see style guide below).
-3. Branches renamed if slug no longer fit.
-4. Branches pushed (force-with-lease if rewritten, fresh push if new).
-5. Each PR submitted via `gh pr create` — created directly (no browser) for multi-PR plans, opened pre-filled in browser for single PR.
+1. All branch work — committed AND uncommitted (staged + unstaged) — bundled into the PR. Uncommitted changes are committed as part of the workflow.
+2. Branch commits grouped into one PR by default, or (with `--split`) into a stack of smaller PRs.
+3. Commits renamed to **Conventional Commits** (see style guide below).
+4. Branches renamed if slug no longer fit.
+5. Branches pushed (force-with-lease if rewritten, fresh push if new).
+6. Each PR submitted via `gh pr create` — created directly (no browser) for multi-PR plans, opened pre-filled in browser for single PR.
 
 History may be published — **user pre-authorised force-push on this branch** — don't block on upstream. Still surface actions before doing them.
 
@@ -74,11 +79,15 @@ Block and warn if any true:
 - `master..HEAD` empty **and** no staged changes. Nothing to prepare.
 - `gh` not authenticated. Final step need it; authenticate now or agree to skip auto-open.
 
-**Uncommitted changes.** Inspect `git status --short`:
+**Uncommitted changes — both staged and unstaged are included in the PR.** Inspect `git status --short` and `git diff` / `git diff --cached`:
 
-- **Staged** (`A`/`M`/`D`/`R` col 1): commit before continuing. Read staged diff (`git diff --cached`), group by concern if mixed, propose Conventional Commits messages. Wait for approval, commit. Treat new commits as part of branch for rest of workflow.
-- **Unstaged** (col 2 only — `M`/`D`/`?`): leave alone. Don't `git add`, don't stash, don't mention as blocker. Sit out of PR by design.
-- **Mixed**: handle staged as above; ignore unstaged.
+- **Staged** (`A`/`M`/`D`/`R` col 1): read the staged diff with `git diff --cached`.
+- **Unstaged** (col 2 — `M`/`D`/`?`): read with `git diff` and `git status --short` (untracked files need `git diff --no-index /dev/null <path>` or just a `Read`).
+- **Mixed**: read both.
+
+Combine them into one logical view of pending work. Group by concern if multiple distinct changes are present, propose Conventional Commits messages (one commit per concern), wait for approval, then stage + commit each group. Treat the new commits as part of the branch for the rest of the workflow.
+
+Skip this step only if there are zero uncommitted changes.
 
 Note current upstream (`git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null`) so push step can decide flags.
 
@@ -99,9 +108,11 @@ Per commit answer:
 3. Concrete outcome in one imperative clause?
 4. Depends on earlier commit, or independent?
 
-### Step 3 — Decide: one PR or several
+### Step 3 — Decide: one PR or several (only with `--split`)
 
-Before writing messages, decide single PR or split. Two forces push toward splitting:
+**Skip this step entirely unless invoked with `--split`.** Default behaviour treats the whole branch as a single PR; jump to Step 5 with `<base>..HEAD` as the one group.
+
+When `--split` is passed, decide single PR or split. Two forces push toward splitting:
 
 **A. Unrelated concerns.** Commits touching different areas, could merge in any order. Review load, revert blast radius, changelog noise all worse when unrelated work rides together.
 
@@ -139,7 +150,7 @@ Proposed PRs:
 
 If PR depends on another (later PR's commits need earlier PR's changes to compile/run/make sense), mark stacked. **Wait for approval** before proceeding. If user want single PR, skip to Step 5 with whole branch as one group.
 
-### Step 4 — Plan the split (only if splitting)
+### Step 4 — Plan the split (only with `--split`, and only if Step 3 chose to split)
 
 For each proposed PR, decide:
 

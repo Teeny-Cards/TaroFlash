@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { useSetCardImageMutation, useDeleteCardImageMutation } from '@/api/cards'
 import { useToast } from '@/composables/toast'
 import { inject, ref, useTemplateRef } from 'vue'
-import { type CardListController } from '@/composables/card-list-controller'
+import { type CardListController } from '@/composables/card-editor/card-list-controller'
 import textEditor from '@/components/text-editor/text-editor.vue'
 import { emitSfx } from '@/sfx/bus'
 

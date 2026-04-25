@@ -5,7 +5,6 @@ const {
   useInfiniteQuerySpy,
   fetchAllCardsByDeckIdMock,
   fetchCardsPageByDeckIdMock,
-  fetchCardIdsByDeckIdMock,
   searchCardsInDeckMock,
   fetchMemberCardCountMock
 } = vi.hoisted(() => ({
@@ -13,7 +12,6 @@ const {
   useInfiniteQuerySpy: vi.fn((cfg) => cfg),
   fetchAllCardsByDeckIdMock: vi.fn(),
   fetchCardsPageByDeckIdMock: vi.fn(),
-  fetchCardIdsByDeckIdMock: vi.fn(),
   searchCardsInDeckMock: vi.fn(),
   fetchMemberCardCountMock: vi.fn()
 }))
@@ -26,14 +24,12 @@ vi.mock('@pinia/colada', () => ({
 vi.mock('@/api/cards/db', () => ({
   fetchAllCardsByDeckId: fetchAllCardsByDeckIdMock,
   fetchCardsPageByDeckId: fetchCardsPageByDeckIdMock,
-  fetchCardIdsByDeckId: fetchCardIdsByDeckIdMock,
   searchCardsInDeck: searchCardsInDeckMock,
   fetchMemberCardCount: fetchMemberCardCountMock
 }))
 
 import { useCardsInDeckQuery } from '@/api/cards/queries/cards-in-deck'
 import { useCardsInDeckInfiniteQuery, CARDS_PAGE_SIZE } from '@/api/cards/queries/cards-page'
-import { useDeckCardIdsQuery } from '@/api/cards/queries/card-ids'
 import { useSearchCardsInDeckQuery } from '@/api/cards/queries/search-in-deck'
 import { useMemberCardCountQuery } from '@/api/cards/queries/member-card-count'
 
@@ -110,21 +106,6 @@ describe('useCardsInDeckInfiniteQuery', () => {
   test('getNextPageParam returns null when the last page is short — there is no more to fetch', () => {
     const { getNextPageParam } = infiniteConfigFrom(() => useCardsInDeckInfiniteQuery(10, 50))
     expect(getNextPageParam([{}], [[{}]])).toBeNull()
-  })
-})
-
-describe('useDeckCardIdsQuery', () => {
-  test('uses ["cards", deck_id, "ids"] — nests under the deck cards prefix', () => {
-    const { key } = configFrom(() => useDeckCardIdsQuery(10))
-    expect(key()).toEqual(['cards', 10, 'ids'])
-  })
-
-  test('query delegates to fetchCardIdsByDeckId', async () => {
-    fetchCardIdsByDeckIdMock.mockResolvedValueOnce([1, 2, 3])
-    const { query } = configFrom(() => useDeckCardIdsQuery(10))
-    const ids = await query()
-    expect(fetchCardIdsByDeckIdMock).toHaveBeenCalledWith(10)
-    expect(ids).toEqual([1, 2, 3])
   })
 })
 
