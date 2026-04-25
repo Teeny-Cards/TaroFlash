@@ -103,7 +103,7 @@ function openAddCreditCard() {
           <ui-button
             v-else
             :data-testid="`billing-settings__payment-method-make-default-${method.id}`"
-            theme="green-400"
+            data-theme="green-400"
             size="xs"
             variant="outline"
             :loading="set_default_mutation.isLoading.value"
@@ -114,7 +114,7 @@ function openAddCreditCard() {
 
           <ui-button
             :data-testid="`billing-settings__payment-method-detach-${method.id}`"
-            theme="red-500"
+            data-theme="red-500"
             size="xs"
             variant="outline"
             icon-only
@@ -130,7 +130,7 @@ function openAddCreditCard() {
       <div>
         <ui-button
           data-testid="billing-settings__payment-methods-add"
-          theme="green-400"
+          data-theme="green-400"
           size="sm"
           icon-left="add"
           @click="openAddCreditCard"

@@ -10,11 +10,11 @@ const { t } = useI18n()
 <template>
   <toolbar-base>
     <template #left>
-      <ui-button theme="brown-300" size="xs" icon-left="search" icon-only>
+      <ui-button data-theme="brown-300" size="xs" icon-left="search" icon-only>
         {{ t('common.search') }}
       </ui-button>
 
-      <ui-button size="xs" icon-left="add">
+      <ui-button data-theme="blue-500" size="xs" icon-left="add">
         {{ t('common.new-card') }}
       </ui-button>
     </template>

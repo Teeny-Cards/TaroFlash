@@ -101,7 +101,7 @@ function onClick(e: MouseEvent) {
       data-testid="card-list-item__add-above"
       icon-left="add"
       icon-only
-      theme="brown-100"
+      data-theme="brown-100"
       size="xs"
       class="absolute! z-1 top-0 -translate-y-1/2 opacity-0 pointer-events-none transition-opacity duration-100 ease-in-out group-hover/listitem:opacity-100 group-hover/listitem:pointer-events-auto group-focus-within/listitem:opacity-100 group-focus-within/listitem:pointer-events-auto *:[.btn-icon]:text-brown-500"
       @click.stop="prependCard(card.id!)"
@@ -111,7 +111,7 @@ function onClick(e: MouseEvent) {
       data-testid="card-list-item__add-below"
       icon-left="add"
       icon-only
-      theme="brown-100"
+      data-theme="brown-100"
       size="xs"
       class="absolute! z-1 bottom-0 translate-y-1/2 opacity-0 pointer-events-none transition-opacity duration-100 ease-in-out group-hover/listitem:opacity-100 group-hover/listitem:pointer-events-auto group-focus-within/listitem:opacity-100 group-focus-within/listitem:pointer-events-auto *:[.btn-icon]:text-brown-500"
       @click.stop="appendCard(card.id!)"

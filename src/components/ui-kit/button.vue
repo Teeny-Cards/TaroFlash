@@ -4,8 +4,6 @@ import UiIcon from '@/components/ui-kit/icon.vue'
 import type { SfxOptions } from '@/sfx/directive'
 
 export type ButtonProps = {
-  theme?: MemberTheme
-  themeDark?: MemberTheme
   size?: 'xl' | 'lg' | 'base' | 'sm' | 'xs'
   variant?: 'solid' | 'outline'
   inverted?: boolean
@@ -21,7 +19,6 @@ export type ButtonProps = {
 }
 
 const {
-  theme = 'blue-500',
   size = 'base',
   variant = 'solid',
   iconOnly = false,
@@ -44,8 +41,6 @@ const merged_sfx = computed(() => {
 <template>
   <button
     data-testid="ui-kit-button"
-    :data-theme="theme"
-    :data-theme-dark="themeDark ?? theme"
     class="ui-kit-btn group/btn"
     v-sfx="merged_sfx"
     :class="[

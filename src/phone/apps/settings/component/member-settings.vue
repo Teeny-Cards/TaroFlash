@@ -59,7 +59,7 @@ function openUpgradeModal() {
         <div>
           <ui-button
             data-testid="member-settings__upgrade"
-            theme="green-400"
+            data-theme="green-400"
             size="sm"
             icon-left="moon-stars"
             @click="openUpgradeModal"

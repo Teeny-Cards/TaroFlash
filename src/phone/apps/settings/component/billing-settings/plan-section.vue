@@ -121,7 +121,7 @@ async function onResume() {
         <template v-if="subscription?.cancel_at_period_end">
           <ui-button
             data-testid="billing-settings__plan-resume"
-            theme="green-400"
+            data-theme="green-400"
             size="sm"
             :loading="resumeMutation.isLoading.value"
             @click="onResume"
@@ -133,7 +133,7 @@ async function onResume() {
         <template v-else-if="!confirming_cancel">
           <ui-button
             data-testid="billing-settings__plan-cancel"
-            theme="red-500"
+            data-theme="red-500"
             size="sm"
             variant="outline"
             @click="confirming_cancel = true"
@@ -151,7 +151,7 @@ async function onResume() {
           </p>
           <ui-button
             data-testid="billing-settings__plan-cancel-confirm"
-            theme="red-500"
+            data-theme="red-500"
             size="sm"
             :loading="cancelMutation.isLoading.value"
             @click="onCancel"
@@ -160,7 +160,7 @@ async function onResume() {
           </ui-button>
           <ui-button
             data-testid="billing-settings__plan-cancel-abort"
-            theme="grey-400"
+            data-theme="grey-400"
             size="sm"
             variant="outline"
             @click="confirming_cancel = false"

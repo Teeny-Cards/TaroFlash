@@ -46,7 +46,7 @@ async function onSave() {
           class="p-6 w-full h-200 bg-white outline-1 outline-blue-500 rounded-4 resize-none text-brown-700"
           v-model="raw_text"
         />
-        <ui-button @click="onImport">Import</ui-button>
+        <ui-button data-theme="blue-500" @click="onImport">Import</ui-button>
       </div>
 
       <div class="w-full flex flex-col gap-2">
@@ -56,7 +56,7 @@ async function onSave() {
             <Card v-bind="card" side="back" size="lg" />
           </div>
         </div>
-        <ui-button @click="onSave" :disabled="!has_unsaved_changes">{{
+        <ui-button data-theme="blue-500" @click="onSave" :disabled="!has_unsaved_changes">{{
           saving ? 'Saving...' : 'Save'
         }}</ui-button>
       </div>
