@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, provide } from 'vue'
+import { ref, computed, provide } from 'vue'
 import DeckHero from '@/views/deck/deck-hero.vue'
 import ModeToolbar from './mode-toolbar/index.vue'
 import CardEditor from './card-editor/index.vue'
 import CardGrid from './card-grid/index.vue'
+import CardImporter from './card-importer.vue'
 import { useDeckQuery } from '@/api/decks'
 import {
   useCardListController,
@@ -31,9 +32,11 @@ provide('card-editor', editor)
 
 const mode_components: { [key in CardEditorMode]: any } = {
   view: CardGrid,
-  select: CardEditor,
-  edit: CardEditor
+  edit: CardEditor,
+  'import-export': CardImporter
 }
+
+const is_empty = computed(() => !editor.isLoading.value && editor.all_cards.value.length === 0)
 </script>
 
 <template>
@@ -51,7 +54,8 @@ const mode_components: { [key in CardEditorMode]: any } = {
 
     <div class="relative flex h-full w-full flex-col items-center">
       <mode-toolbar :mode="editor.mode.value" />
-      <component :is="is_md ? mode_components[editor.mode.value] : CardGrid" />
+      <div v-if="is_empty" data-testid="deck-view__empty" />
+      <component v-else :is="is_md ? mode_components[editor.mode.value] : CardGrid" />
     </div>
 
     <ui-scroll-bar target="html" />

@@ -37,6 +37,7 @@ export function useCardSelection(deck_id: MaybeRefOrGetter<number>) {
   const selected_card_ids = ref<number[]>([])
   const deselected_ids = ref<number[]>([])
   const select_all_mode = ref(false)
+  const is_selecting = ref(false)
 
   const total_card_count = computed(() => deck_query.data.value?.card_count ?? 0)
 
@@ -52,6 +53,21 @@ export function useCardSelection(deck_id: MaybeRefOrGetter<number>) {
     if (select_all_mode.value) return deselected_ids.value.length === 0
     return total_card_count.value > 0 && selected_card_ids.value.length === total_card_count.value
   })
+
+  /**
+   * Enter selection mode. UI then renders selection-aware affordances
+   * (checkboxes, bulk-action toolbar) across any editor mode. The flag
+   * persists past `clearSelectedCards` — user must explicitly exit.
+   */
+  function enterSelection() {
+    is_selecting.value = true
+  }
+
+  /** Exit selection mode and drop any in-flight selection state. */
+  function exitSelection() {
+    is_selecting.value = false
+    clearSelectedCards()
+  }
 
   /**
    * Mode-agnostic predicate: is this card currently selected? In select-all
@@ -144,6 +160,9 @@ export function useCardSelection(deck_id: MaybeRefOrGetter<number>) {
     total_card_count,
     selected_count,
     all_cards_selected,
+    is_selecting,
+    enterSelection,
+    exitSelection,
     isCardSelected,
     selectCard,
     deselectCard,

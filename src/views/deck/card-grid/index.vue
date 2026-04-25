@@ -5,7 +5,7 @@ import { inject, ref, useTemplateRef } from 'vue'
 
 const {
   all_cards,
-  mode,
+  is_selecting,
   isCardSelected,
   card_attributes,
   hasNextPage,
@@ -37,7 +37,7 @@ const emit = defineEmits<{
         v-for="card in all_cards"
         :key="card.client_id"
         :card="card"
-        :mode="mode"
+        :is_selecting="is_selecting"
         :side="side"
         :card_attributes="card_attributes"
         :selected="card.id !== undefined ? isCardSelected(card.id) : false"
