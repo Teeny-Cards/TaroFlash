@@ -6,14 +6,12 @@ import List from '@/views/deck/card-editor/list.vue'
 
 function makeEditor({
   cards = [],
-  getKey = (c) => c.id,
   hasNextPage = ref(false),
   isLoading = ref(false),
   observeSentinel = vi.fn()
 } = {}) {
   return {
-    all_cards: computed(() => cards),
-    getKey,
+    all_cards: computed(() => cards.map((c) => ({ ...c, client_id: `cid-${c.id}` }))),
     hasNextPage,
     isLoading,
     observeSentinel
@@ -62,7 +60,7 @@ describe('CardList (list.vue)', () => {
     expect(observeSentinel).toHaveBeenCalledOnce()
   })
 
-  // ── List item rendering — getKey + duplicate prop ─────────────────────────
+  // ── List item rendering — client_id + duplicate prop ─────────────────────
 
   test('renders one list-item per card from all_cards', () => {
     const cards = [
@@ -71,17 +69,6 @@ describe('CardList (list.vue)', () => {
     ]
     const wrapper = mount({ editor: makeEditor({ cards }) })
     expect(wrapper.findAllComponents({ name: 'ListItem' })).toHaveLength(2)
-  })
-
-  test('uses the editor-supplied getKey() for each list-item v-for entry', () => {
-    const cards = [
-      { id: 1, front_text: 'a' },
-      { id: 2, front_text: 'b' }
-    ]
-    const getKey = vi.fn((c) => `key-${c.id}`)
-    mount({ editor: makeEditor({ cards, getKey }) })
-    expect(getKey).toHaveBeenCalledWith(cards[0])
-    expect(getKey).toHaveBeenCalledWith(cards[1])
   })
 
   test('forwards card.is_duplicate as the duplicate prop on each list-item', () => {

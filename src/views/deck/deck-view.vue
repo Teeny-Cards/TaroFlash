@@ -6,7 +6,7 @@ import CardEditor from './card-editor/index.vue'
 import CardGrid from './card-grid/index.vue'
 import CardImporter from './card-importer.vue'
 import { useI18n } from 'vue-i18n'
-import { useCardListController } from '@/composables/card-list-controller'
+import { useCardListController } from '@/composables/card-editor/card-list-controller'
 import UiScrollBar from '@/components/ui-kit/scroll-bar.vue'
 import UiTabs from '@/components/ui-kit/tabs.vue'
 import UiButton from '@/components/ui-kit/button.vue'
@@ -27,8 +27,7 @@ const deck_query = useDeckQuery(() => Number(deck_id))
 const deck = deck_query.data
 
 const editor = useCardListController({
-  deck_id: Number(deck_id),
-  deck_query
+  deck_id: Number(deck_id)
 })
 
 provide('card-editor', editor)

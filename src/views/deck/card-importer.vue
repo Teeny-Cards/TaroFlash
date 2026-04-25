@@ -3,7 +3,7 @@ import { computed, inject, ref } from 'vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import Card from '@/components/card/index.vue'
 import { useBulkInsertCardsInDeckMutation } from '@/api/cards'
-import { type CardListController } from '@/composables/card-list-controller'
+import { type CardListController } from '@/composables/card-editor/card-list-controller'
 
 type CardDraft = { front_text: string; back_text: string }
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import textEditor from '../text-editor/text-editor.vue'
-import { type CardEditorMode } from '@/composables/card-list-controller'
+import { type CardEditorMode } from '@/composables/card-editor/card-list-controller'
 
 const { image, text } = defineProps<{
   image?: string

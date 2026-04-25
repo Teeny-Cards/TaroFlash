@@ -26,18 +26,3 @@ export async function fetchCardsPageByDeckId({
 
   return data
 }
-
-export async function fetchCardIdsByDeckId(deck_id: number): Promise<number[]> {
-  const { data, error } = await supabase
-    .from('cards')
-    .select('id')
-    .eq('deck_id', deck_id)
-    .order('rank', { ascending: true })
-
-  if (error) {
-    logger.error(error.message)
-    throw new Error(error.message)
-  }
-
-  return data.map((row) => row.id)
-}

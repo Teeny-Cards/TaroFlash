@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import CardFace from './card-face.vue'
 import CardCover from './card-cover.vue'
-import { type CardEditorMode } from '@/composables/card-list-controller'
+import { type CardEditorMode } from '@/composables/card-editor/card-list-controller'
 import { type CardBase } from '@type/card'
 import { getImageUrl } from '@/api/media'
 import { type SfxOptions } from '@/sfx/directive'
