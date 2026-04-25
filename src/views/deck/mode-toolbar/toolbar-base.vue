@@ -17,7 +17,7 @@
       class="w-full border-b-2 border-dashed border-(--theme-primary)"
     ></span>
 
-    <div v-if="$slots.right" data-testid="mode-toolbar__right" class="flex gap-1.5">
+    <div v-if="$slots.right" data-testid="mode-toolbar__right" class="flex gap-1.5 shrink-0">
       <slot name="right"></slot>
     </div>
   </div>
