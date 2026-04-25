@@ -28,7 +28,7 @@ Steps:
 
 # Review
 
-- Review new tests against the test quality checklist (in `.claude/rules/testing-quality-checklist.md` — auto-loaded when working on test files).
+- Review new tests against the flakiness audit in `.claude/rules/testing.md` (auto-loaded when working on test files).
 - Fix critical issues (flakiness, masked regressions)
 - Note non-critical issues in the report — don't auto-fix them.
 

@@ -1,91 +1,110 @@
 # Card-editor architecture refactor — follow-up
 
-Branch: `refactor/card-list-controller` (PR not yet opened).
-
-Context: audit of `src/views/deck/card-editor/` identified 6 findings. This
-session completed the architectural restructure (original Rec 5, expanded).
-Findings 1, 2, 3, 4, 6, 7 from the original audit remain open, plus a few new
-smells surfaced during the refactor.
+Status: prior branches all merged to master. Composables now live under
+`src/composables/card-editor/`. The list below is what _remains_; completed
+items are kept as strikethroughs for historical context.
 
 ---
 
-## What this session shipped
+## Sessions to date
+
+### Session A — single-controller restructure
 
 Split the old `useCardBulkEditor` aggregator into four composables + a
-controller that is the single feature root:
+controller that became the single feature root. Single
+`provide('card-editor', editor)` from `deck-view.vue`; every consumer does
+exactly one `inject<CardListController>('card-editor')!`.
 
-```
-deck-view.vue
-  deck_query = useDeckQuery(...)
-  editor = useCardListController({ deck_id, deck_query })
-      ├── cards_query        (internal, owned by controller)
-      ├── ids_query          (internal, owned by controller)
-      ├── card_attributes    (computed from deck_query.data)
-      ├── list       = useVirtualCardList(cards_query, deck_id)
-      ├── selection  = useCardSelection(ids_query)
-      ├── mutations  = useCardMutations({ list, deck_id })
-      ├── mode + setMode
-      ├── hasNextPage / isLoading / observeSentinel(ref)
-      └── onCancel / onDeleteCards / onSelectCard / onMoveCards
+Design rules locked in:
 
-  provide('card-editor', editor)  // SINGLE provide
-```
+1. Single provide / single inject per feature.
+2. Controller owns its queries (callers pass `deck_id` only).
+3. Mode lives on the intent layer, not on selection.
+4. Intent handlers take explicit args to mutations.
+5. Helpers inline if small + single-call-site.
+6. Controller return is explicit-pick, not `...spread`.
 
-Every consumer (`card-editor/index.vue`, `list.vue`, `list-item.vue`,
-`list-item-card.vue`, `card-grid/index.vue`, `card-grid/grid-item.vue`,
-`bulk-select-toolbar.vue`, `card-importer.vue`) does exactly one inject:
-`inject<CardListController>('card-editor')!`.
+### Session B — component-owned editor state (PR #143)
 
-### Design rules the refactor locked in
+Killed the optimistic-rollback machinery in the mutation layer in favour of
+local component state in `list-item-card.vue`. `saveCard` (db) is pure;
+`useSaveCardMutation` no longer invalidates the deck on settle; save
+failures surface via a new `error` prop on `Card`. Architecture rule added:
+`src/api/` functions must not mutate their args.
 
-1. **Single provide / single inject per feature.** `'card-editor'` is the only
-   key. No parallel `'cards-query'` / `'card-attributes'` / `'on-*-card'`
-   provides.
-2. **Controller owns its queries.** Callers pass `deck_id + deck_query` only.
-   `cards_query` and `ids_query` are constructed inside the controller.
-3. **Mode lives on the intent layer**, not on selection. Selection is pure
-   data (ids + counts); mode is UI state driven by intent handlers.
-4. **Intent handlers take explicit args** to mutations. No more
-   `selection.selectCard(id)` → `getSelectedCards()` dance as a side-effect to
-   piggy-back the bulk flow. `deleteCards({ cards } | { except_ids })`,
-   `moveCards({ cards, target_deck_id })`.
-5. **Helpers inline if small + single-call-site.** `loadedSelectedCards` and
-   `collectCards` live inside `useCardListController`, not in `src/utils/`.
-   Extract only when reused.
-6. **Controller return is explicit-pick, not `...spread`.** Internal seams
-   (`findTemp`, `findCard`, `promoteTemp`, `temp_cards`, `persisted_cards`,
-   `filterSelected`, `deleteCards`, `moveCards`, `getSelectedCards`) do not
-   leak to the consumer surface.
+### Session C — temp-card lifecycle, decoupling, and convention pass
 
-### Files touched
+Shipped on `refactor/card-editor-composables` (merged to master).
 
-New:
+**Temp-card lifecycle (Item #2 from old list — option (b) chosen):**
 
-- `src/composables/card-list-controller.ts`
-- `src/composables/card-mutations.ts`
-- `src/composables/card-selection.ts`
-- `src/composables/virtual-card-list.ts`
-- `tests/unit/composables/card-list-controller.test.js`
+- Every rendered card carries a stable `client_id` (uid()-based) used as the
+  v-for key; `Card & { client_id: string }` wrapper exposed by
+  `all_cards.value`.
+- `promoteTemp(temp_id, real_id, rank, values)` seeds a per-deck Map
+  `client_id_by_real_id` so the persisted refetch reuses the temp's
+  client_id — text editor stays mounted across the temp → persisted
+  handoff. No more `local_keys` Map, no more `id < 0` / `id > 0` sentinels,
+  no more brittle key migration.
+- `live_temps` filters out promoted entries whose persisted refetch has
+  arrived (`persisted_id_set.has(entry.real_id)`). Dedupe is now explicit.
+- Dev-only invariant `assertUniqueClientIds(cards)` runs inside `all_cards`
+  to catch dedupe regressions loudly.
+- `findEntryByCardId(id)` replaces `findTemp` and the sign-of-id sniffing.
+  Used by `updateCard` to branch INSERT vs UPDATE on
+  `entry.real_id === null`.
 
-Deleted:
+**Layering / decoupling:**
 
-- `src/composables/card-bulk-editor.ts`
-- `tests/unit/composables/card-bulk-editor.test.js`
+- `useCardMutations` is now a thin wrapper layer over `@/api/cards` hooks
+  (`insertCard`, `saveCard`, `deleteCards`, `moveCards`). Zero knowledge of
+  list state. Controller owns the temp-routing in `updateCard` and the
+  `saving` flag.
+- `useCardSelection(deck_id)` self-owns its query, reading
+  `total_card_count` from `useDeckQuery.card_count`. Dropped the dead
+  `useDeckCardIdsQuery` + `fetchCardIdsByDeckId` db helper.
+- `useCardListController({ deck_id })` self-owns its `useDeckQuery`
+  (Pinia Colada dedupe means `deck-view`'s own call shares the cache).
+  Controller `Options` no longer takes `deck_query`.
+- Composables and tests regrouped under `src/composables/card-editor/` and
+  `tests/unit/composables/card-editor/`.
 
-Modified (inject shape + type imports):
+**Single-responsibility / nesting pass on the controller:**
 
-- `src/components/card/{index,card-face}.vue` — import `CardEditorMode` from
-  `card-list-controller` instead of removed `card-bulk-editor`
-- `src/views/deck/deck-view.vue` — single provide, drops inline handlers +
-  modal/alert/sfx/move-mutation imports
-- `src/views/deck/bulk-select-toolbar.vue`
-- `src/views/deck/card-editor/{index,list,list-item,list-item-card}.vue`
-- `src/views/deck/card-grid/{index,grid-item}.vue`
-- `src/views/deck/card-importer.vue` — injects controller for `deck_id`
-- Integration tests for the above
+- `withSaving<T>(fn)` — generic try/finally wrapper around the saving flag.
+- `insertTemp(temp_id, entry, values)` — INSERT + promote, no flag logic.
+- `confirmDelete(count)` — opens the alert, returns the response promise
+  (no double-await).
+- `afterDelete()` — selection clear + refetch + setMode('view') trio.
+- `resolveDeleteArgs(additional_card_id)` — pure: deduces
+  `{ count, args }` or `null` from selection state.
+- `openMoveModal(cards)` — sfx + modal open + settle sfx, returns response.
+- `updateCard`, `onDeleteCards`, `onMoveCards` are now flat orchestrators
+  with early returns.
 
-Baseline going in: 1061 tests passing. After refactor: 1067 tests passing.
-vue-tsc: 0 errors. Format: clean.
+**Single-responsibility pass on `virtual-card-list`:**
+
+- `wrapPersisted()`, `withTempInserted(cards, entry)`,
+  `assertUniqueClientIds(cards)` — `all_cards` computed reads as
+  `live_temps.value.reduce(withTempInserted, wrapPersisted())`.
+- `resolveAnchor(left, right)` and `buildEmptyCard()` extracted from
+  `addCard`.
+
+**Rules added:**
+
+- `.claude/rules/composables.md` — JSDoc on every exported function in
+  `src/composables/`; lead with behaviour; document edge cases; skip
+  restating the type.
+- `.claude/rules/code-style.md` — blank-line grouping inside function
+  bodies; max one level of nesting (use early returns and inverted ifs);
+  one responsibility per function (orchestrator vs worker).
+
+**Tooling:**
+
+- Skill `prepare-prs` renamed to `prepare-pr`. New `--split` flag (default =
+  single PR; bundles uncommitted work into the PR).
+
+**Test count:** 1132 passing. vue-tsc: 0 errors. Format: clean.
 
 ---
 
@@ -93,84 +112,21 @@ vue-tsc: 0 errors. Format: clean.
 
 Ordered by impact ÷ effort. Pick up from the top in a fresh session.
 
-### 1. [DONE] ~~Optimistic rollback on updateCard~~ — solved by component-owned editor state
+### 1. [DONE] ~~Optimistic rollback on updateCard~~
 
-Shipped in PR #143 (`refactor/card-editor-auto-save`). The original plan was
-optimistic apply + snapshot rollback inside the mutation layer. That path
-was attempted and rejected mid-session: rollback coordinated correctly
-across debounce supersessions, but refetches from `invalidateDeck` still
-clobbered in-flight edits because the cache was driving the editor input
-directly.
+Shipped Session B. See above.
 
-Final shape:
+### 2. [DONE] ~~Temp-card lifecycle refactor~~
 
-- `saveCard` (db) is pure — no `Object.assign` on its arg.
-- `useSaveCardMutation` no longer invalidates the deck on settle. Bulk ops
-  still invalidate explicitly.
-- `list-item-card.vue` owns local `front_text` / `back_text` / `save_failed`
-  refs. The text editor renders from local state, immune to cache updates.
-- Save failures surface as a red outline on the failing card via a new
-  `error` prop on `Card`; the next edit clears it.
-- Architecture rule added: `src/api/` functions must not mutate their args
-  (`.claude/rules/architecture.md`).
-
-No more rollback machinery. Local state is the source of truth while the
-component is mounted; the cache is persistence-only for the editor flow.
-
----
-
-### 2. [HIGH] Temp-card lifecycle refactor
-
-`src/composables/virtual-card-list.ts` coordinates three parallel systems:
-
-- `temp_cards: Ref<TempCardEntry[]>` — in-memory staged cards
-- `local_keys: Map<number, string>` — stable v-for keys (not reactive)
-- `promoted_temp_ids: ComputedRef<Set<number>>` — dedupe of persisted vs temp
-
-On promotion (temp → real after insert succeeds):
-
-1. `local_keys.delete(old_id); local_keys.set(new_id, old_key)` — key migration
-2. `temp.card.id = new_id; temp.card.rank = new_rank` — identity mutation
-3. `Object.assign(temp.card, values)` — text apply
-4. Temp stays in the list after promotion; `promoted_temp_ids` dedupes the
-   refetched persisted copy so rendering doesn't churn.
-
-Risks:
-
-- If the key migration is forgotten or ordered wrong, the text-editor
-  component remounts and loses focus mid-typing.
-- If the temp is removed before the persisted refetch arrives, the card
-  disappears briefly, then reappears — visible flicker.
-- The dedupe logic assumes `temp.card.id > 0` means "already promoted".
-  Brittle sentinel — bugs here are silent edit loss.
-
-**Shape options**:
-
-(a) Extract `useTempCards()` composable with an explicit `promoteTemp`
-returning the migrated entry. Narrow surface, single responsibility for
-lifecycle.
-
-(b) Rethink the "temp stays in list after promotion" pattern. Alternative:
-track temp cards by an internal UUID independent of Postgres id.
-`getKey(card)` looks up UUID → v-for key. ID mutation no longer affects
-key. Simpler invariant: temp in list iff UUID not yet in persisted data.
-
-Option (b) is cleaner but needs a server-returned UUID or a client-generated
-one threaded through the insert RPC. Check `src/api/cards/db/insert.ts` +
-Supabase `insert_card_at` RPC — would need server side to echo a
-client-provided UUID.
-
-**Quick win regardless**: add an invariant assertion inside the `all_cards`
-computed that no id appears twice in the merged output. Fires loudly when
-the dedupe breaks.
-
----
+Shipped Session C. Option (b) — client-side `client_id` instead of relying
+on id sign — chosen and implemented. The dev invariant assertion landed
+alongside.
 
 ### 3. [MED] select-all completeness constraint
 
-`src/composables/card-list-controller.ts` — `onDeleteCards` select-all path
-correctly routes through `deleteCards({ except_ids })` which handles the
-whole-deck delete server-side. That path is safe.
+`src/composables/card-editor/card-list-controller.ts` — `onDeleteCards`
+select-all path correctly routes through `deleteCards({ except_ids })`
+which handles the whole-deck delete server-side. That path is safe.
 
 But `loadedSelectedCards()` (and anything that calls
 `selection.filterSelected(list.persisted_cards.value)`) returns only loaded
@@ -186,7 +142,7 @@ function loadedSelectedCards(): Card[] {
   if (selection.select_all_mode.value && cards_query.hasNextPage.value) {
     throw new Error(
       'Cannot build a loaded-cards payload while select_all_mode is active ' +
-      'with unloaded pages. Use deleteCards({ except_ids }) or load all pages first.'
+        'with unloaded pages. Use deleteCards({ except_ids }) or load all pages first.'
     )
   }
   return ...
@@ -200,8 +156,6 @@ until `!hasNextPage`).
 Bulk move via toolbar is currently a dead path (`onMoveCards` called with
 undefined id short-circuits via `cards.length === 0`). If bulk move is ever
 wanted, it must handle this.
-
----
 
 ### 4. [MED] Image mutations bypass the orchestration layer
 
@@ -245,7 +199,8 @@ calls those instead of importing mutations directly.
 Tests: `list-item-card.test.js` already mocks `@/api/cards`; migrate to stub
 `editor.setCardImage` / `editor.deleteCardImage` and assert on those calls.
 
----
+Note: the controller now owns `updateCard` directly (Session C); pattern to
+mirror is `withSaving(() => mutations.setCardImage(...))`.
 
 ### 5. [LOW] Convention polish (bundle)
 
@@ -256,13 +211,14 @@ Small fixes worth doing together in one commit:
   transition event. Per `.claude/rules/animations.md` (no magic timeouts).
 - Extract `FOCUS_DELAY = 1` constant — if it stays, move to a shared
   constants file so any change is single-source.
-- Add invariant assertion in `virtual-card-list.ts` `all_cards` computed
-  (see #2 quick win).
+- ~~Add invariant assertion in `virtual-card-list.ts` `all_cards` computed
+  (see #2 quick win).~~ Shipped Session C as `assertUniqueClientIds`.
 - `src/views/deck/card-editor/list-item.vue:10–14` + `list-item-card.vue:14–17`
   — extract named `type ListItemProps = {...}` + `type ListItemCardProps = {...}`
   per `.claude/rules/vue-props.md`.
-- Add a doc comment block in `virtual-card-list.ts` explaining the temp →
-  real id promotion contract (helps anyone reading #2 cold).
+- ~~Add a doc comment block in `virtual-card-list.ts` explaining the temp →
+  real id promotion contract (helps anyone reading #2 cold).~~ Landed
+  Session C as JSDoc on `useVirtualCardList` + `promoteTemp`.
 
 ---
 
@@ -272,7 +228,7 @@ Small fixes worth doing together in one commit:
 | --- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | A   | Controller couples UI primitives (`useModal`, `useAlert`, `useI18n`, `emitSfx`, `MoveCardsModal`) | Deliberate. Factoring them out as callbacks was considered and rejected for one-call-site boilerplate. Revisit if the controller needs to run headless (e.g. a bulk-import tool). |
 | B   | `addCard()` with no args lands mid-deck when `hasNextPage` is true                                | Documented inline in `virtual-card-list.ts:addCard`. Proper fix: gate the global "+ card" affordance on `!hasNextPage`, or make `addCard` load all pages first.                   |
-| C   | `saving` flag is global, not per-card                                                             | User editing two cards quickly can't tell which is in-flight. If relevant UX, add `saving_card_ids: Ref<Set<number>>` to mutations.                                               |
+| C   | `saving` flag is global, not per-card                                                             | User editing two cards quickly can't tell which is in-flight. If relevant UX, add `saving_card_ids: Ref<Set<number>>` to the controller.                                          |
 
 ---
 
@@ -282,16 +238,16 @@ For reference when wiring tests / new consumers:
 
 ```ts
 {
-  // list — read + actions
-  all_cards, getKey, addCard, appendCard, prependCard,
+  // list — rendered cards + add/append/prepend
+  all_cards, addCard, appendCard, prependCard,
 
-  // selection — read + actions
+  // selection — predicates, actions, derived counts
   isCardSelected, selectCard, deselectCard, toggleSelectCard,
   selectAllCards, clearSelectedCards, toggleSelectAll,
   selected_card_ids, deselected_ids, select_all_mode,
   selected_count, all_cards_selected, total_card_count,
 
-  // mutations (consumer-facing only)
+  // writes — in-flight flag + edit entry-point
   saving, updateCard,
 
   // deck-derived
@@ -303,23 +259,38 @@ For reference when wiring tests / new consumers:
   // infinite scroll
   hasNextPage, isLoading, observeSentinel,
 
-  // intent
+  // intent handlers — what templates call on user actions
   onCancel, onDeleteCards, onSelectCard, onMoveCards,
 }
 ```
+
+Notes:
+
+- `getKey` is gone. v-for keys come straight from `card.client_id` on each
+  item in `all_cards`.
+- `all_cards` items are typed `CardWithClientId = Card & { client_id: string }`.
+- Internal seams (`findEntryByCardId`, `findCard`, `promoteTemp`,
+  `temp_entries`, `persisted_cards`, `filterSelected`, `deleteCards`,
+  `moveCards`, `insertCard`, `saveCard`) do not leak to the consumer
+  surface.
 
 ---
 
 ## Gotchas for the next session
 
+- Composables now live under `src/composables/card-editor/`. Imports use
+  `@/composables/card-editor/<name>`. Old top-level paths are gone.
 - `vp fmt` / `vp check --fix` will reformat unrelated markdown across
-  `.claude/rules/`, `.claude/skills/`, `CLAUDE.md`. Run `git restore
---source=master --` on those before committing. Same applies to any file
-  you haven't intentionally touched.
-- Baseline test count going into the next session should be 1067. If it
+  `.claude/rules/`, `.claude/skills/`, `CLAUDE.md`. Run
+  `git restore --source=master --` on those before committing. Same applies
+  to any file you haven't intentionally touched.
+- Baseline test count going into the next session should be **1132**. If it
   differs, something regressed before you started.
 - `vp dlx vue-tsc --noEmit -p tsconfig.app.json` is the typecheck invocation
   (`vp check` does not run tsc).
 - Pinia Colada mutation signature differs slightly from TanStack — check
   `src/api/cards/mutations/save.ts` for the current `onSettled` shape before
-  adding `onMutate` in step #1.
+  adding `onMutate`.
+- Two project rules now in force on any composables work:
+  `.claude/rules/composables.md` (JSDoc), `.claude/rules/code-style.md`
+  (blank-line grouping, max one level of nesting, single responsibility).

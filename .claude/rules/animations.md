@@ -1,33 +1,21 @@
 ---
-lastUpdated: 2026-04-17T01:31:17Z
+lastUpdated: 2026-04-25T19:03:21Z
 paths:
   - 'src/**/*.{ts,vue}'
 ---
 
 # Animation Sequencing
 
-Never use `setTimeout(resolve, N)` to wait for an animation to finish. Instead, emit an event from the animation's completion callback and resolve the promise from that handler.
+Prefer animation-completion hooks over wall-clock waits. Emit from the hook's `onComplete` so timing stays in sync if the animation changes.
 
 ```ts
-// Bad
-await new Promise((resolve) => setTimeout(resolve, 400))
-
-// Good
 await new Promise((resolve) => {
   gsap.to(el, { duration: 0.4, opacity: 0, onComplete: resolve })
 })
-
-// Or with a Vue emit
-gsap.to(el, {
-  duration: 0.4,
-  onComplete: () => emit('animation-complete')
-})
 ```
 
-If a duration must be referenced in more than one place, extract it as a named constant rather than repeating the magic number.
-
-**Why:** Hardcoded durations drift out of sync when animations change. Event-driven callbacks are inherently correct regardless of timing.
+If a duration is referenced in more than one place, extract it as a named constant rather than repeating the magic number.
 
 # File Structure
 
-All animation functions should be in `src/utils/animations/` and should be named after the element or effect they animate, e.g. `modal.ts`, `phone.ts`, `blur.ts`, etc.
+All animation functions should be in `src/utils/animations/` and named after the element or effect they animate (`modal.ts`, `phone.ts`, `blur.ts`).
