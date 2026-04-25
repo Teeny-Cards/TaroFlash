@@ -1,42 +1,48 @@
 import { describe, test, expect } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
 import UiButton from '@/components/ui-kit/button.vue'
+import UiTooltip from '@/components/ui-kit/tooltip.vue'
 
 function mountButton(props = {}, slots = {}) {
   return shallowMount(UiButton, { props, slots })
 }
 
+function findTooltip(wrapper) {
+  return wrapper.findComponent(UiTooltip)
+}
+
 describe('UiButton', () => {
-  // ── mobileTooltip ──────────────────────────────────────────────────────────
+  // ── tooltip wiring ─────────────────────────────────────────────────────────
 
-  describe('mobileTooltip prop', () => {
-    test('renders tooltip when iconOnly=true, slot content exists, and mobileTooltip=true', () => {
-      const wrapper = mountButton({ iconOnly: true, mobileTooltip: true }, { default: 'Close' })
-      expect(wrapper.find('[data-testid="ui-kit-btn__tooltip"]').exists()).toBe(true)
-    })
-
-    // mobileTooltip=false adds a CSS utility class to hide the tooltip on mobile
-    // but the element still exists in the DOM. data-mobile-tooltip encodes the state.
-    test('tooltip is mobile-hidden when mobileTooltip=false even with iconOnly and slot content', () => {
-      const wrapper = mountButton({ iconOnly: true, mobileTooltip: false }, { default: 'Close' })
-      const tooltip = wrapper.find('[data-testid="ui-kit-btn__tooltip"]')
-      expect(tooltip.exists()).toBe(true)
-      expect(tooltip.attributes('data-mobile-tooltip')).toBe('false')
-    })
-
-    test('tooltip defaults to visible (mobileTooltip defaults to true)', () => {
+  describe('tooltip', () => {
+    test('tooltip enabled when iconOnly=true and slot content exists', () => {
       const wrapper = mountButton({ iconOnly: true }, { default: 'Close' })
-      expect(wrapper.find('[data-testid="ui-kit-btn__tooltip"]').exists()).toBe(true)
+      expect(findTooltip(wrapper).props('suppress')).toBe(false)
     })
 
-    test('tooltip is absent when there is no slot content, regardless of mobileTooltip', () => {
-      const wrapper = mountButton({ iconOnly: true, mobileTooltip: true })
-      expect(wrapper.find('[data-testid="ui-kit-btn__tooltip"]').exists()).toBe(false)
+    test('tooltip suppressed when iconOnly=false', () => {
+      const wrapper = mountButton({ iconOnly: false }, { default: 'Label' })
+      expect(findTooltip(wrapper).props('suppress')).toBe(true)
     })
 
-    test('tooltip is absent when iconOnly=false', () => {
-      const wrapper = mountButton({ iconOnly: false, mobileTooltip: true }, { default: 'Label' })
-      expect(wrapper.find('[data-testid="ui-kit-btn__tooltip"]').exists()).toBe(false)
+    test('tooltip suppressed when there is no slot content', () => {
+      const wrapper = mountButton({ iconOnly: true })
+      expect(findTooltip(wrapper).props('suppress')).toBe(true)
+    })
+
+    test('mobileTooltip=true forwards static_on_mobile=true (tap-shows on mobile)', () => {
+      const wrapper = mountButton({ iconOnly: true, mobileTooltip: true }, { default: 'Close' })
+      expect(findTooltip(wrapper).props('static_on_mobile')).toBe(true)
+    })
+
+    test('mobileTooltip=false forwards static_on_mobile=false (hover-only)', () => {
+      const wrapper = mountButton({ iconOnly: true, mobileTooltip: false }, { default: 'Close' })
+      expect(findTooltip(wrapper).props('static_on_mobile')).toBe(false)
+    })
+
+    test('renders tooltip via element=button (button is the trigger)', () => {
+      const wrapper = mountButton({ iconOnly: true }, { default: 'Close' })
+      expect(findTooltip(wrapper).props('element')).toBe('button')
     })
   })
 
