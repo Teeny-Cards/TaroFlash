@@ -21,6 +21,10 @@
   "common.none": "None",
   "common.front": "Front",
   "common.back": "Back",
+  "common.new-card": "New Card",
+  "common.search": "Search",
+  "common.previous": "Previous",
+  "common.next": "Next",
 
   "app.title": "TaroFlash",
   "app.description": "A warm little space to learn, make, and collect things you love.",

@@ -29,7 +29,7 @@ const tabs: Array<{ key: DeckSettingsTab; icon: string; label: string }> = [
       icon-only
       size="lg"
       rounded-full
-      theme="brown-100"
+      data-theme="brown-100"
       :variant="selectedTab === tab.key ? 'solid' : 'outline'"
       :sfx="{ click: 'ui.select' }"
       @click="emit('change-tab', tab.key)"

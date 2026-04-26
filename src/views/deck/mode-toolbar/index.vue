@@ -1,15 +1,25 @@
 <script setup lang="ts">
 import { type CardEditorMode } from '@/composables/card-editor/card-list-controller'
+import ModeView from './mode-view.vue'
+import { computed } from 'vue'
 
 type TopBarProps = {
   mode: CardEditorMode
+  is_empty: boolean
+  is_selecting: boolean
 }
 
 defineProps<TopBarProps>()
+
+const toolbarComponent = computed(() => {
+  // if (is_selecting) return BulkSelectToolbar
+  // if (is_empty) return null
+  // if (mode === 'view') return null
+
+  return ModeView
+})
 </script>
 
 <template>
-  <div data-testid="deck-view__top-bar" class="flex justify-between items-center">
-    <slot />
-  </div>
+  <component :is="toolbarComponent" />
 </template>

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, useSlots } from 'vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
+import UiTooltip from '@/components/ui-kit/tooltip.vue'
 import type { SfxOptions } from '@/sfx/directive'
 
+defineOptions({ inheritAttrs: false })
+
 export type ButtonProps = {
-  theme?: MemberTheme
-  themeDark?: MemberTheme
   size?: 'xl' | 'lg' | 'base' | 'sm' | 'xs'
   variant?: 'solid' | 'outline'
   inverted?: boolean
@@ -21,7 +22,6 @@ export type ButtonProps = {
 }
 
 const {
-  theme = 'blue-500',
   size = 'base',
   variant = 'solid',
   iconOnly = false,
@@ -33,21 +33,29 @@ const {
   mobileTooltip = true
 } = defineProps<ButtonProps>()
 
+const slots = useSlots()
+
 const merged_sfx = computed(() => {
   return {
     ...sfx,
     hover: sfx.hover ?? 'ui.click_07'
   }
 })
+
+const tooltip_active = computed(() => iconOnly && !!slots.default)
 </script>
 
 <template>
-  <button
+  <ui-tooltip
+    element="button"
+    theme="brown-100"
+    :gap="-6"
+    :suppress="!tooltip_active"
+    :static_on_mobile="mobileTooltip"
     data-testid="ui-kit-button"
-    :data-theme="theme"
-    :data-theme-dark="themeDark ?? theme"
     class="ui-kit-btn group/btn"
     v-sfx="merged_sfx"
+    v-bind="$attrs"
     :class="[
       `ui-kit-btn--${size}`,
       `ui-kit-btn--${variant}`,
@@ -66,16 +74,6 @@ const merged_sfx = computed(() => {
     <ui-icon v-if="iconRight" class="btn-icon btn-icon--right" :src="iconRight" />
 
     <div
-      v-if="iconOnly && $slots.default"
-      data-testid="ui-kit-btn__tooltip"
-      :data-mobile-tooltip="mobileTooltip"
-      class="ui-kit-btn__tooltip"
-      :class="{ 'max-sm:hidden!': !mobileTooltip }"
-    >
-      <slot></slot>
-    </div>
-
-    <div
       class="absolute inset-0 bgx-diagonal-stripes animation-safe:bgx-slide rounded-(--btn-border-radius) pointer-events-none"
       :class="{
         'bg-(--theme-primary) flex items-center justify-center': loading,
@@ -87,7 +85,11 @@ const merged_sfx = computed(() => {
     >
       <ui-icon v-if="loading" src="loading-dots" class="h-12 w-12" />
     </div>
-  </button>
+
+    <template v-if="tooltip_active" #tooltip>
+      <slot></slot>
+    </template>
+  </ui-tooltip>
 </template>
 
 <style>
@@ -117,7 +119,7 @@ const merged_sfx = computed(() => {
 .ui-kit-btn--solid {
   --btn-bg-color: var(--theme-primary);
   --btn-text-color: var(--theme-on-primary);
-  --btn-outline-color: var(--theme-accent);
+  --btn-outline-color: var(--theme-primary);
 }
 
 .ui-kit-btn--outline {
@@ -130,7 +132,7 @@ const merged_sfx = computed(() => {
 .ui-kit-btn--solid.ui-kit-btn--inverted {
   --btn-bg-color: var(--theme-neutral);
   --btn-text-color: var(--theme-primary);
-  --btn-outline-color: var(--theme-accent);
+  --btn-outline-color: var(--theme-primary);
 }
 
 .ui-kit-btn--outline.ui-kit-btn--inverted {
@@ -149,11 +151,14 @@ const merged_sfx = computed(() => {
   height: 100%;
   max-height: 100%;
   max-width: 100%;
+  height: var(--icon-size);
+  width: var(--icon-size);
 }
 
 .ui-kit-btn.ui-kit-btn--icon-only {
   --btn-padding: 8px;
   --btn-border-radius: var(--radius-4);
+  width: auto;
   aspect-ratio: 1/1;
 }
 
@@ -192,8 +197,8 @@ const merged_sfx = computed(() => {
   }
 }
 .ui-kit-btn.ui-kit-btn--sm {
-  --btn-font-size: var(--text-sm);
-  --btn-font-size--line-height: var(--text-sm--line-height);
+  --btn-font-size: var(--text-base);
+  --btn-font-size--line-height: var(--text-base--line-height);
   --btn-border-radius: var(--radius-3);
   --btn-gap: 6px;
   --btn-padding: 4px 6px;
@@ -203,15 +208,15 @@ const merged_sfx = computed(() => {
   }
 }
 .ui-kit-btn.ui-kit-btn--xs {
-  --btn-font-size: var(--text-sm);
-  --btn-font-size--line-height: var(--text-sm--line-height);
-  --btn-border-radius: var(--radius-3_25);
-  --btn-gap: 6px;
-  --btn-padding: 4px 6px;
-  --btn-height: 30px;
+  --btn-font-size: var(--text-base);
+  --btn-font-size--line-height: var(--text-base--line-height);
+  --btn-border-radius: var(--radius-3_5);
+  --btn-gap: 3px;
+  --btn-padding: 4px 12px;
+  --icon-size: 16px;
 
   &.ui-kit-btn--icon-only {
-    --btn-padding: 4px;
+    --btn-padding: 8px;
   }
 }
 
@@ -223,27 +228,5 @@ const merged_sfx = computed(() => {
 }
 .ui-kit-btn:hover .btn-icon.btn-icon--right {
   transform: scale(1.3) rotate(5deg);
-}
-
-/* Button tooltips */
-.ui-kit-btn__tooltip {
-  display: none;
-  position: absolute;
-  top: -22px;
-
-  border-radius: var(--radius-full);
-  padding: 6px 8px;
-
-  font-size: var(--text-sm);
-  line-height: var(--text-sm--line-height);
-  color: var(--color-brown-700);
-  white-space: nowrap;
-  background-color: var(--color-white);
-
-  pointer-events: none;
-  z-index: 10;
-}
-.ui-kit-btn:hover .ui-kit-btn__tooltip {
-  display: block;
 }
 </style>

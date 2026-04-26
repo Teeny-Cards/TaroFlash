@@ -46,6 +46,7 @@ async function onCreateDeckClicked() {
   >
     <ui-button
       icon-left="add"
+      data-theme="blue-500"
       class="w-full! max-md:row-start-4"
       size="xl"
       @click="onCreateDeckClicked"

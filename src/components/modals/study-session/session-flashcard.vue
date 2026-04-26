@@ -205,6 +205,7 @@ async function onCardReviewed(grade?: Grade) {
       <ui-button
         v-if="card_view === 'read' && !is_cover"
         data-testid="study-session__edit"
+        data-theme="blue-500"
         class="absolute! -top-2 -right-2 z-20"
         icon-only
         rounded-full

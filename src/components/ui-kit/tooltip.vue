@@ -17,7 +17,7 @@ const {
   fallback_placements?: Placement[]
   element?: 'div' | 'span' | 'button' | 'label'
   visible?: boolean
-  disabled?: boolean
+  suppress?: boolean
   theme?: MemberTheme
   static_on_mobile?: boolean
 }>()
@@ -44,16 +44,16 @@ const { floatingStyles } = useFloating(triggerRef, popoverRef, {
   </component>
 
   <div
-    v-if="!disabled"
+    v-if="!suppress"
     ref="ui-tooltip"
     :style="floatingStyles"
     class="ui-tooltip"
     :class="[
       { 'ui-tooltip--visible': visible },
-      `ui-tooltip--${theme} ui-tooltip--${static_on_mobile ? 'static' : 'dynamic'}`
+      `ui-tooltip--${static_on_mobile ? 'static' : 'dynamic'}`
     ]"
   >
-    {{ text }}
+    <slot name="tooltip">{{ text }}</slot>
   </div>
 </template>
 
@@ -73,7 +73,7 @@ const { floatingStyles } = useFloating(triggerRef, popoverRef, {
   color: var(--tooltip-color);
 
   pointer-events: none;
-  z-index: 10;
+  z-index: 100;
   user-select: none;
 }
 
