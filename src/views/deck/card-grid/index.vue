@@ -14,7 +14,9 @@ const {
   visible_cards,
   setVisibleCapacity,
   page,
+  page_size,
   page_direction,
+  is_page_loading,
   hasNextPage,
   isLoading,
   observeSentinel
@@ -82,16 +84,26 @@ const emit = defineEmits<{
           :style="gridStyle"
           class="justify-items-center py-3 w-full"
         >
-          <grid-item
-            v-for="card in cards_to_render"
-            :key="card.client_id"
-            :card="card"
-            :is_selecting="is_selecting"
-            :side="side"
-            :card_attributes="card_attributes"
-            :selected="card.id !== undefined ? isCardSelected(card.id) : false"
-            @card-selected="emit('card-selected', card.id!)"
-          ></grid-item>
+          <template v-if="cards_to_render.length > 0 && !is_page_loading">
+            <grid-item
+              v-for="card in cards_to_render"
+              :key="card.client_id"
+              :card="card"
+              :is_selecting="is_selecting"
+              :side="side"
+              :card_attributes="card_attributes"
+              :selected="card.id !== undefined ? isCardSelected(card.id) : false"
+              @card-selected="emit('card-selected', card.id!)"
+            ></grid-item>
+          </template>
+          <template v-else>
+            <div
+              v-for="n in Math.max(capacity, page_size, 1)"
+              :key="`skel-${n}`"
+              data-testid="card-grid__skeleton"
+              class="aspect-5/7 w-full max-w-78.5 bg-brown-200 dark:bg-grey-800 rounded-xl animate-pulse"
+            ></div>
+          </template>
         </div>
       </Transition>
     </div>
