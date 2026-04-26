@@ -1,4 +1,4 @@
-import { computed, ref, type Ref } from 'vue'
+import { computed, ref, watch, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAlert } from '@/composables/alert'
 import { useModal } from '@/composables/modal'
@@ -11,7 +11,7 @@ import { useVirtualCardList, type CardEntry } from './virtual-card-list'
 import { useCardSelection } from './card-selection'
 import { useCardMutations } from './card-mutations'
 
-export type CardEditorMode = 'view' | 'select' | 'edit'
+export type CardEditorMode = 'view' | 'edit' | 'import-export'
 export type CardListController = ReturnType<typeof useCardListController>
 
 type Options = {
@@ -26,7 +26,9 @@ type Options = {
  * card-importer, bulk-select-toolbar).
  *
  * Owns:
- * - `mode` UI state (view / select / edit)
+ * - `mode` UI state (view / edit / import-export) — user-chosen view.
+ *   Selection is orthogonal: `is_selecting` flips on the moment any card is
+ *   selected, regardless of which mode is active.
  * - intent handlers (`onCancel`, `onDeleteCards`, `onSelectCard`,
  *   `onMoveCards`) which compose modal + alert + sfx around the underlying
  *   mutations
@@ -65,7 +67,7 @@ export function useCardListController(opts: Options) {
 
   const mode = ref<CardEditorMode>('view')
 
-  /** Set the editor's UI mode (view / select / edit). */
+  /** Set the editor's UI mode (view / edit / import-export). */
   function setMode(new_mode: CardEditorMode) {
     mode.value = new_mode
   }
@@ -80,6 +82,81 @@ export function useCardListController(opts: Options) {
       enabled: () => cards_query.hasNextPage.value && !cards_query.isLoading.value
     })
   }
+
+  const visible_capacity = ref(0)
+
+  /**
+   * Reported by the card-grid once it has measured its visible area. Drives
+   * `page_size`, `total_pages`, and `visible_cards`. Stays at 0 until the
+   * grid mounts and reports — first paint shows a single card so the grid
+   * has a child to measure (see `visible_cards`).
+   */
+  function setVisibleCapacity(n: number) {
+    visible_capacity.value = n
+  }
+
+  const page = ref(0)
+  const page_size = computed(() => Math.max(1, visible_capacity.value))
+  const total_pages = computed(() =>
+    Math.max(1, Math.ceil((deck_query.data.value?.card_count ?? 0) / page_size.value))
+  )
+  const visible_cards = computed(() => {
+    if (visible_capacity.value === 0) return list.all_cards.value.slice(0, 1)
+    const start = page.value * page_size.value
+    return list.all_cards.value.slice(start, start + page_size.value)
+  })
+  const can_prev_page = computed(() => total_pages.value > 1)
+  const can_next_page = computed(() => total_pages.value > 1)
+
+  // 'forward' = nextPage was last invoked (incoming from right);
+  // 'backward' = prevPage. Drives the page-transition direction in the grid.
+  const page_direction = ref<'forward' | 'backward'>('forward')
+
+  /** Step back one page; wraps from page 0 to the last page. */
+  function prevPage() {
+    if (total_pages.value <= 1) return
+    page_direction.value = 'backward'
+    page.value = (page.value - 1 + total_pages.value) % total_pages.value
+    emitSfx('ui.slide_up')
+  }
+
+  /** Step forward one page; wraps from the last page back to page 0. */
+  function nextPage() {
+    if (total_pages.value <= 1) return
+    page_direction.value = 'forward'
+    page.value = (page.value + 1) % total_pages.value
+    emitSfx('ui.slide_up')
+  }
+
+  watch(total_pages, (n) => {
+    if (page.value > n - 1) page.value = Math.max(0, n - 1)
+  })
+
+  // walk pages until the current carousel window is fully loaded. tracks
+  // page/page_size, loaded count, and the query flags as discrete sources
+  // so each fetch's completion (length grew + isLoading flipped) re-fires
+  // the handler and keeps loading until the target window is reached.
+  watch(
+    () => ({
+      target: (page.value + 1) * page_size.value,
+      loaded: list.all_cards.value.length,
+      can_fetch: cards_query.hasNextPage.value && !cards_query.isLoading.value
+    }),
+    ({ target, loaded, can_fetch }) => {
+      if (target > loaded && can_fetch) cards_query.loadNextPage()
+    },
+    { immediate: true }
+  )
+
+  /**
+   * True when the currently-targeted page lies beyond the loaded card count
+   * and more pages can still be fetched. Drives the grid's skeleton state
+   * while the auto-loader walks pages sequentially toward the target.
+   */
+  const is_page_loading = computed(() => {
+    const start = page.value * page_size.value
+    return start >= list.all_cards.value.length && cards_query.hasNextPage.value
+  })
 
   /**
    * Loaded persisted cards that the current selection covers, with `review`
@@ -160,13 +237,13 @@ export function useCardListController(opts: Options) {
   }
 
   /**
-   * Exit edit/select mode: clear selection, return to view mode, and refetch
-   * the deck so any unsaved derived state re-syncs.
+   * Exit the current mode: drop selection state, exit selection mode, return
+   * to view mode, and refetch the deck so any unsaved derived state re-syncs.
    */
   async function onCancel() {
     emitSfx('ui.card_drop')
     setMode('view')
-    selection.clearSelectedCards()
+    selection.exitSelection()
 
     await deck_query.refetch()
   }
@@ -184,7 +261,7 @@ export function useCardListController(opts: Options) {
 
   /** Cleanup applied after any successful delete: drop selection, refetch, exit. */
   async function afterDelete() {
-    selection.clearSelectedCards()
+    selection.exitSelection()
     await deck_query.refetch()
     setMode('view')
   }
@@ -228,13 +305,15 @@ export function useCardListController(opts: Options) {
   }
 
   /**
-   * Toggle selection for `id` (when given) and switch to select mode. Used
-   * by both the row checkbox click and the "select" item-options action —
-   * the latter passes no id to enter select mode without altering anything.
+   * Toggle selection for `id` (when given) and enter selection mode. Used by
+   * both the row checkbox click and the "select" item-options action — the
+   * latter passes no id to enter selection mode without altering anything.
+   * Selection mode is orthogonal to the editor mode (`view` / `edit` /
+   * `import-export`), so this never touches `mode`.
    */
   function onSelectCard(id?: number) {
     if (id !== undefined) selection.toggleSelectCard(id)
-    setMode('select')
+    selection.enterSelection()
     emitSfx('ui.etc_camera_shutter')
   }
 
@@ -287,6 +366,9 @@ export function useCardListController(opts: Options) {
     selectAllCards: selection.selectAllCards,
     clearSelectedCards: selection.clearSelectedCards,
     toggleSelectAll: selection.toggleSelectAll,
+    enterSelection: selection.enterSelection,
+    exitSelection: selection.exitSelection,
+    is_selecting: selection.is_selecting,
     selected_card_ids: selection.selected_card_ids,
     deselected_ids: selection.deselected_ids,
     select_all_mode: selection.select_all_mode,
@@ -310,6 +392,22 @@ export function useCardListController(opts: Options) {
     hasNextPage: cards_query.hasNextPage,
     isLoading: cards_query.isLoading,
     observeSentinel,
+    loadNextPage: cards_query.loadNextPage,
+
+    // pagination — capacity is set by the card-grid once it has measured;
+    // page state is consumed by both the grid (visible_cards) and the
+    // mode-view toolbar (counter + prev/next buttons)
+    setVisibleCapacity,
+    page,
+    page_size,
+    page_direction,
+    total_pages,
+    visible_cards,
+    is_page_loading,
+    prevPage,
+    nextPage,
+    can_prev_page,
+    can_next_page,
 
     // intent handlers — what the templates call on user actions
     onCancel,

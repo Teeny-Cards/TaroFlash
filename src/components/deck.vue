@@ -14,8 +14,12 @@ const { deck, size = 'base' } = defineProps<{
   <div data-testid="deck" class="relative cursor-pointer h-min">
     <card side="cover" :size="size" :cover_config="deck?.cover_config" />
 
-    <div v-if="!hide_title" class="absolute w-full -bottom-2.5 bg-brown-300 px-3 py-2 rounded-4.5">
-      <h2 class="text-lg text-center text-brown-700">{{ deck?.title }}</h2>
+    <div
+      v-if="!hide_title"
+      class="absolute w-full -bottom-2.5 bg-brown-300 dark:bg-grey-750 p-4 rounded-5.5"
+    >
+      <slot name="actions"></slot>
+      <h2 class="text-xl text-center text-brown-700 dark:text-brown-100">{{ deck?.title }}</h2>
     </div>
   </div>
 </template>

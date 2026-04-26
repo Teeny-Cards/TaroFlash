@@ -8,9 +8,8 @@ import PrivacyPolicyView from '@/views/privacy-policy.vue'
 import TermsOfServiceView from '@/views/terms-of-service.vue'
 import AuthCallbackView from '@/views/auth/callback.vue'
 
-const Dashboard = () => import('@/views/dashboard/dashboard.vue')
-const ShopView = () => import('@/views/shop/shop-view.vue')
-const DeckView = () => import('@/views/deck/deck-view.vue')
+const Dashboard = () => import('@/views/dashboard/index.vue')
+const DeckView = () => import('@/views/deck/index.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,11 +56,6 @@ const router = createRouter({
           path: 'dashboard',
           name: 'dashboard',
           component: Dashboard
-        },
-        {
-          path: 'shop',
-          name: 'shop',
-          component: ShopView
         },
         {
           path: 'deck/:id',

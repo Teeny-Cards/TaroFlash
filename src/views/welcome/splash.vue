@@ -80,7 +80,12 @@ defineExpose({ openSignup })
           <p class="text-brown-100 text-center text-lg w-60">{{ t('app.description') }}</p>
         </div>
 
-        <ui-button size="lg" @click="openSignup" class="outline-4! outline-brown-100!">
+        <ui-button
+          size="lg"
+          data-theme="blue-500"
+          @click="openSignup"
+          class="outline-4! outline-brown-100!"
+        >
           {{ t('welcome-view.sign-up') }}
         </ui-button>
       </div>

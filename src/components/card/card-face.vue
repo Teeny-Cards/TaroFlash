@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import textEditor from '../text-editor/text-editor.vue'
-import { type CardEditorMode } from '@/composables/card-editor/card-list-controller'
 
 const { image, text } = defineProps<{
   image?: string
   text?: string
-  mode?: CardEditorMode
+  mode?: 'view' | 'edit'
   attributes?: CardAttributes
 }>()
 </script>
@@ -15,7 +14,12 @@ const { image, text } = defineProps<{
     <img v-if="image" :src="image" class="h-full w-full object-cover" />
 
     <slot name="editor" v-else>
-      <text-editor :content="text" :attributes="attributes" disabled class="w-full h-full" />
+      <text-editor
+        :content="text"
+        :attributes="attributes"
+        disabled
+        class="card-face__text-editor w-full h-full"
+      />
     </slot>
   </div>
 </template>

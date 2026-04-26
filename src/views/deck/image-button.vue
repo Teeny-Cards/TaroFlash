@@ -29,13 +29,13 @@ async function onImageDelete() {
       v-if="image"
       icon-only
       icon-left="delete"
-      theme="red-500"
+      data-theme="red-500"
       @click.stop="onImageDelete"
     >
       {{ t('deck-view.item-options.remove-image') }}
     </ui-button>
 
-    <ui-button v-else icon-only icon-left="add-image" theme="orange-500" @click.stop="trigger">
+    <ui-button v-else icon-only icon-left="add-image" data-theme="yellow-500" @click.stop="trigger">
       {{ t('deck-view.item-options.upload-image') }}
     </ui-button>
   </image-uploader>

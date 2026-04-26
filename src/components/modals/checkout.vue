@@ -136,7 +136,7 @@ async function onSubmit() {
       <div v-if="!is_loading && !load_error" data-testid="checkout__footer" class="px-6 pb-6 pt-2">
         <ui-button
           data-testid="checkout__submit"
-          theme="green-400"
+          data-theme="green-400"
           full-width
           size="lg"
           :loading="is_submitting"

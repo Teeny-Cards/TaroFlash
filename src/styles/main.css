@@ -18,6 +18,7 @@
   --color-blue-650: #0a7588;
   --color-blue-500: #11b7d4;
   --color-blue-400: #6cbfd5;
+  --color-green-800: #467d60;
   --color-green-600: #6f9b80;
   --color-green-400: #a4c6ae;
   --color-green-300: #e4edd9;
@@ -32,9 +33,10 @@
   --color-red-500: #e66061;
   --color-red-400: #f97b7b;
   --color-red-300: #ffa399;
-  --color-orange-600: #fc946f;
-  --color-orange-500: #fbc56f;
-  --color-orange-400: #f7d279;
+  --color-yellow-700: #d69224;
+  --color-yellow-600: #fc946f;
+  --color-yellow-500: #fbc56f;
+  --color-yellow-400: #f7d279;
   --color-brown-800: #4a3b30;
   --color-brown-700: #744e2a;
   --color-brown-500: #b8b1a9;
@@ -44,6 +46,9 @@
   --color-brown-50: #f9f8f5;
   --color-grey-900: #1c1c1c;
   --color-grey-800: #292929;
+
+  --color-grey-750: #292c2e; /* dark mode card bg - has some blue in it - WORKING ON IT */
+
   --color-grey-700: #4f4f4f;
   --color-grey-500: #959595;
   --color-grey-400: #b2b2b2;
@@ -69,6 +74,7 @@
   --radius-3: --spacing(3); /* 12px */
   --radius-3_25: --spacing(3.25); /* 13px */
   --radius-3_5: --spacing(3.5); /* 14px */
+  --radius-3_75: --spacing(3.75); /* 15px */
   --radius-4: --spacing(4); /* 16px */
   --radius-4_5: --spacing(4.5); /* 18px */
   --radius-5: --spacing(5); /* 20px */

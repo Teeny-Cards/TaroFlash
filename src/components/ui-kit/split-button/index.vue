@@ -104,8 +104,8 @@ function onToggle() {
   --split-button-theme: var(--color-purple-400);
 }
 
-.ui-kit-split-button__option--orange-500 {
-  --split-button-theme: var(--color-orange-500);
+.ui-kit-split-button__option--yellow-500 {
+  --split-button-theme: var(--color-yellow-500);
 }
 
 .ui-kit-split-button__option--green-500 {

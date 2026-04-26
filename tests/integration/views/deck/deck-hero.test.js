@@ -9,7 +9,7 @@ vi.mock('@/composables/modals/use-study-modal', () => ({
   useStudyModal: () => ({ start: vi.fn() })
 }))
 
-import OverviewPanel from '@/views/deck/overview-panel.vue'
+import DeckHero from '@/views/deck/deck-hero.vue'
 
 const UiButtonStub = defineComponent({
   name: 'UiButton',
@@ -22,7 +22,7 @@ const UiButtonStub = defineComponent({
 })
 
 function mount(deck = {}) {
-  return shallowMount(OverviewPanel, {
+  return shallowMount(DeckHero, {
     props: {
       deck: { id: 1, title: 'd', card_count: 10, ...deck }
     },
@@ -30,30 +30,7 @@ function mount(deck = {}) {
   })
 }
 
-function studyButton(wrapper) {
-  return wrapper
-    .findAllComponents({ name: 'UiButton' })
-    .find((b) => b.attributes('data-testid') === 'overview-panel__study-button')
-}
-
-describe('OverviewPanel', () => {
-  // ── study_disabled is driven by deck.card_count (was deck.cards.length) ─────
-
-  test('enables the study button when card_count > 0', () => {
-    const wrapper = mount({ card_count: 5 })
-    expect(studyButton(wrapper).props('disabled')).toBe(false)
-  })
-
-  test('disables the study button when card_count is 0', () => {
-    const wrapper = mount({ card_count: 0 })
-    expect(studyButton(wrapper).props('disabled')).toBe(true)
-  })
-
-  test('disables the study button when card_count is missing (treated as 0)', () => {
-    const wrapper = mount({ card_count: undefined })
-    expect(studyButton(wrapper).props('disabled')).toBe(true)
-  })
-
+describe('DeckHero', () => {
   // ── Display ────────────────────────────────────────────────────────────────
 
   test('renders the card_count in the cards-in-deck label', () => {

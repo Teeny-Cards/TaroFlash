@@ -56,7 +56,7 @@ function onHover(index: number) {
       data-testid="ui-kit-tabs__tab"
       theme="white"
       :gap="-4"
-      :disabled="active_tab === index"
+      :suppress="active_tab === index"
       class="ui-kit-tabs__tab"
       :text="tab.label"
       :class="{ 'ui-kit-tabs__tab--active': active_tab === index }"

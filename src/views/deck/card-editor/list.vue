@@ -12,7 +12,10 @@ observeSentinel(sentinel)
 </script>
 
 <template>
-  <div data-testid="card-list" class="w-full pt-6 flex flex-col items-center">
+  <div
+    data-testid="card-list"
+    class="w-full md:h-full md:overflow-auto pb-24 flex flex-col items-center"
+  >
     <list-item
       v-for="(card, index) in all_cards"
       :key="card.client_id"
