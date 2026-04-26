@@ -25,7 +25,7 @@ const session = useSessionStore()
       <nav-bar />
       <phone />
 
-      <main class="flex-1 min-h-0 w-full max-w-(--page-width) px-4 sm:px-16">
+      <main class="md:flex-1 md:min-h-0 w-full max-w-(--page-width) px-4 sm:px-16">
         <router-view v-slot="{ Component, route }">
           <suspense>
             <component :is="Component" />

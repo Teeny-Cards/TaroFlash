@@ -39,40 +39,42 @@ const { addCard, page, total_pages, prevPage, nextPage, can_prev_page, can_next_
     </template>
 
     <template #right>
-      <ui-tag
-        data-testid="mode-view__page-counter"
-        data-theme="green-400"
-        data-theme-dark="green-800"
-        class="bgx-diagonal-stripes dark:bgx-opacity-10"
-      >
-        {{ t('deck.mode-view.page-counter', { current: page + 1, total: total_pages }) }}
-      </ui-tag>
+      <div class="hidden md:flex items-center gap-2" data-testid="mode-view__pager">
+        <ui-tag
+          data-testid="mode-view__page-counter"
+          data-theme="green-400"
+          data-theme-dark="green-800"
+          class="bgx-diagonal-stripes dark:bgx-opacity-10"
+        >
+          {{ t('deck.mode-view.page-counter', { current: page + 1, total: total_pages }) }}
+        </ui-tag>
 
-      <ui-button
-        data-testid="mode-view__previous-page-button"
-        data-theme="brown-300"
-        data-theme-dark="grey-800"
-        icon-only
-        size="xs"
-        icon-left="arrow-left"
-        :disabled="!can_prev_page"
-        @click="prevPage"
-      >
-        {{ t('common.previous') }}
-      </ui-button>
+        <ui-button
+          data-testid="mode-view__previous-page-button"
+          data-theme="brown-300"
+          data-theme-dark="grey-800"
+          icon-only
+          size="xs"
+          icon-left="arrow-left"
+          :disabled="!can_prev_page"
+          @click="prevPage"
+        >
+          {{ t('common.previous') }}
+        </ui-button>
 
-      <ui-button
-        data-testid="mode-view__next-page-button"
-        data-theme="brown-300"
-        data-theme-dark="grey-800"
-        icon-only
-        size="xs"
-        icon-left="arrow-right"
-        :disabled="!can_next_page"
-        @click="nextPage"
-      >
-        {{ t('common.next') }}
-      </ui-button>
+        <ui-button
+          data-testid="mode-view__next-page-button"
+          data-theme="brown-300"
+          data-theme-dark="grey-800"
+          icon-only
+          size="xs"
+          icon-left="arrow-right"
+          :disabled="!can_next_page"
+          @click="nextPage"
+        >
+          {{ t('common.next') }}
+        </ui-button>
+      </div>
     </template>
   </toolbar-base>
 </template>

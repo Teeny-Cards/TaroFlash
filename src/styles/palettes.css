@@ -12,6 +12,7 @@
  * value to data-theme on the root, even when the user's preference is 'system'.
  */
 
+:root,
 [data-theme='blue-500'],
 [data-theme='dark'] [data-theme-dark='blue-500'] {
   --theme-primary: var(--color-blue-500);
@@ -45,7 +46,7 @@
 [data-theme='blue-650'],
 [data-theme='dark'] [data-theme-dark='blue-650'] {
   --theme-primary: var(--color-blue-650);
-  --theme-on-primary: var(--color-white);
+  --theme-on-primary: var(--color-brown-100);
 }
 
 [data-theme='blue-400'],

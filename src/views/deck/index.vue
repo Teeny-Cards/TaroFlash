@@ -46,7 +46,7 @@ function onToggleEditCards() {
 <template>
   <section
     data-testid="deck-view"
-    class="flex h-full flex-col xl:flex-row items-center xl:items-start gap-6 md:gap-15"
+    class="flex md:h-full flex-col xl:flex-row items-center xl:items-start gap-6 md:gap-15"
   >
     <deck-hero
       v-if="deck"
@@ -57,7 +57,7 @@ function onToggleEditCards() {
       @toggle-edit-cards="onToggleEditCards"
     />
 
-    <div class="h-full relative flex w-full flex-col items-center gap-4">
+    <div class="md:h-full relative flex w-full flex-col items-center gap-4">
       <mode-toolbar />
       <div v-if="is_empty" data-testid="deck-view__empty" />
       <component v-else :is="mode_components[editor.mode.value]" />

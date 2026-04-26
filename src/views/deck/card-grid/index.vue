@@ -1,27 +1,34 @@
 <script setup lang="ts">
 import GridItem from './grid-item.vue'
 import { type CardListController } from '@/composables/card-editor/card-list-controller'
-import { inject, ref, useTemplateRef, watch } from 'vue'
+import { computed, inject, ref, useTemplateRef, watch } from 'vue'
 import { useGridCapacity } from '@/composables/use-grid-capacity'
 import { useMediaQuery } from '@/composables/use-media-query'
 import { slideInFromDirection, slideOutInDirection } from '@/utils/animations/grid-page'
 
 const {
+  all_cards,
   is_selecting,
   isCardSelected,
   card_attributes,
   visible_cards,
   setVisibleCapacity,
   page,
-  page_direction
+  page_direction,
+  hasNextPage,
+  isLoading,
+  observeSentinel
 } = inject<CardListController>('card-editor')!
 
 const side = ref<'front' | 'back'>('front')
 const grid = useTemplateRef<HTMLElement>('grid')
 const grid_wrapper = useTemplateRef<HTMLElement>('grid_wrapper')
+const sentinel = useTemplateRef<HTMLElement>('sentinel')
 
 const isSm = useMediaQuery('sm')
 const isMd = useMediaQuery('md')
+
+observeSentinel(sentinel)
 
 const { gridStyle, capacity } = useGridCapacity({
   grid,
@@ -30,7 +37,19 @@ const { gridStyle, capacity } = useGridCapacity({
   gap: () => (isMd.value ? 16 : 8)
 })
 
-watch(capacity, (n) => setVisibleCapacity(n), { immediate: true })
+// only push capacity into the controller while the carousel is active —
+// below md the grid scrolls natively and paging state is irrelevant
+watch(
+  capacity,
+  (n) => {
+    if (isMd.value) setVisibleCapacity(n)
+  },
+  { immediate: true }
+)
+
+// md+ renders the current page; below md renders everything and lets the
+// page scroll naturally with infinite-scroll loading more
+const cards_to_render = computed(() => (isMd.value ? visible_cards.value : all_cards.value))
 
 const emit = defineEmits<{
   (e: 'card-selected', id: number): void
@@ -41,12 +60,12 @@ const emit = defineEmits<{
 <template>
   <div
     data-testid="card-grid-container"
-    class="flex flex-col items-center w-full max-w-208 xl:max-w-full flex-1 min-h-0 overflow-hidden"
+    class="flex flex-col items-center w-full max-w-208 xl:max-w-full md:flex-1 md:min-h-0 md:overflow-hidden"
   >
     <div
       ref="grid_wrapper"
       data-testid="card-grid__wrapper"
-      class="w-full flex-1 min-h-0 overflow-hidden"
+      class="w-full md:flex-1 md:min-h-0 md:overflow-hidden"
     >
       <Transition
         :css="false"
@@ -55,14 +74,14 @@ const emit = defineEmits<{
         @leave="(el, done) => slideOutInDirection(el, page_direction, done)"
       >
         <div
-          :key="page"
+          :key="isMd ? page : 'all'"
           ref="grid"
           data-testid="card-grid"
           :style="gridStyle"
           class="justify-items-center py-3 w-full"
         >
           <grid-item
-            v-for="card in visible_cards"
+            v-for="card in cards_to_render"
             :key="card.client_id"
             :card="card"
             :is_selecting="is_selecting"
@@ -73,6 +92,14 @@ const emit = defineEmits<{
           ></grid-item>
         </div>
       </Transition>
+    </div>
+    <div
+      v-if="!isMd && hasNextPage"
+      ref="sentinel"
+      data-testid="card-grid__sentinel"
+      class="w-full py-6 flex items-center justify-center text-brown-500"
+    >
+      <span v-if="isLoading">Loading…</span>
     </div>
   </div>
 </template>
