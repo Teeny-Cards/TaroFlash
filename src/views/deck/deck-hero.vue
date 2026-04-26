@@ -5,14 +5,17 @@ import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import { useStudyModal } from '@/composables/modals/use-study-modal'
 import { useDeckSettingsModal } from '@/composables/modals/use-deck-settings-modal'
-import { type CardEditorMode } from '@/composables/card-editor/card-list-controller'
+import { inject } from 'vue'
+import { type CardListController } from '@/composables/card-editor/card-list-controller'
 
-const { deck } = defineProps<{ deck: Deck; imageUrl?: string; mode: CardEditorMode }>()
-const emit = defineEmits<{ (e: 'toggle-edit-cards'): void }>()
+const { deck } = defineProps<{ deck: Deck; imageUrl?: string }>()
 
 const { t } = useI18n()
 const study_session = useStudyModal()
 const deck_settings_modal = useDeckSettingsModal()
+
+const editor = inject<CardListController | null>('card-editor', null)
+const mode = editor?.mode
 
 function onStudyClicked() {
   study_session.start(deck)
@@ -20,6 +23,11 @@ function onStudyClicked() {
 
 function onSettingsClicked() {
   deck_settings_modal.open(deck)
+}
+
+function onToggleEditCards() {
+  if (!editor) return
+  editor.setMode(editor.mode.value === 'edit' ? 'view' : 'edit')
 }
 </script>
 
@@ -90,7 +98,8 @@ function onSettingsClicked() {
         :data-theme-dark="mode === 'edit' ? 'yellow-700' : 'grey-800'"
         full-width
         size="xl"
-        @click="emit('toggle-edit-cards')"
+        @click="onToggleEditCards"
+        v-sfx.click="'ui.select'"
       >
         {{ mode === 'edit' ? t('deck-view.actions.cancel') : t('deck-view.actions.edit-cards') }}
       </ui-button>

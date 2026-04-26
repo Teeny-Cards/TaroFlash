@@ -1,5 +1,4 @@
-import { computed, ref, type MaybeRefOrGetter } from 'vue'
-import { useDeckQuery } from '@/api/decks'
+import { computed, ref, toValue, type MaybeRefOrGetter } from 'vue'
 
 export type CardSelection = ReturnType<typeof useCardSelection>
 
@@ -19,31 +18,26 @@ export type CardSelection = ReturnType<typeof useCardSelection>
  * is active. Use `filterSelected(cards)` to pull the selected subset out
  * of any list of cards.
  *
- * `total_card_count` reads `deck.card_count` from the deck query (sourced
- * from the `decks_with_stats` view). Pinia Colada dedupes by key, so calling
- * `useDeckQuery` here doesn't fetch again when other consumers already hold
- * the same handle.
- *
- * @param deck_id - Reactive deck id (ref, getter, or plain number).
+ * @param total_card_count - Total persisted card count for the deck.
+ *                           Sourced by the caller (typically from
+ *                           `deck.card_count`) so this composable stays
+ *                           independent of the decks query.
  *
  * @example
- * const selection = useCardSelection(deck_id)
+ * const selection = useCardSelection(() => deck_query.data.value?.card_count ?? 0)
  * selection.toggleSelectCard(card.id)
- * if (selection.all_cards_selected.value) { ... }
  */
-export function useCardSelection(deck_id: MaybeRefOrGetter<number>) {
-  const deck_query = useDeckQuery(deck_id)
-
+export function useCardSelection(total_card_count: MaybeRefOrGetter<number>) {
   const selected_card_ids = ref<number[]>([])
   const deselected_ids = ref<number[]>([])
   const select_all_mode = ref(false)
   const is_selecting = ref(false)
 
-  const total_card_count = computed(() => deck_query.data.value?.card_count ?? 0)
+  const total_count = computed(() => toValue(total_card_count) ?? 0)
 
   const selected_count = computed(() => {
     if (select_all_mode.value) {
-      return Math.max(0, total_card_count.value - deselected_ids.value.length)
+      return Math.max(0, total_count.value - deselected_ids.value.length)
     }
 
     return selected_card_ids.value.length
@@ -51,7 +45,7 @@ export function useCardSelection(deck_id: MaybeRefOrGetter<number>) {
 
   const all_cards_selected = computed(() => {
     if (select_all_mode.value) return deselected_ids.value.length === 0
-    return total_card_count.value > 0 && selected_card_ids.value.length === total_card_count.value
+    return total_count.value > 0 && selected_card_ids.value.length === total_count.value
   })
 
   /**
@@ -157,7 +151,7 @@ export function useCardSelection(deck_id: MaybeRefOrGetter<number>) {
     selected_card_ids,
     deselected_ids,
     select_all_mode,
-    total_card_count,
+    total_card_count: total_count,
     selected_count,
     all_cards_selected,
     is_selecting,

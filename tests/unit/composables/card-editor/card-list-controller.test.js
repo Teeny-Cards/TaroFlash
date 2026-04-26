@@ -511,7 +511,7 @@ describe('useCardListController', () => {
   // ── intent handlers — onCancel / onSelectCard / onDeleteCards / onMoveCards ─
 
   describe('intent handlers', () => {
-    test('onCancel resets mode to view, exits selection, clears selection, and refetches', async () => {
+    test('onCancel resets mode to view, exits selection, and clears selection', async () => {
       const deck_query = makeDeckQuery()
       const ctrl = makeController([makeCard({ id: 1 })], [1], deck_query)
       ctrl.selectCard(1)
@@ -521,7 +521,7 @@ describe('useCardListController', () => {
       expect(ctrl.mode.value).toBe('view')
       expect(ctrl.is_selecting.value).toBe(false)
       expect(ctrl.selected_card_ids.value).toEqual([])
-      expect(deck_query.refetch).toHaveBeenCalledOnce()
+      expect(deck_query.refetch).not.toHaveBeenCalled()
     })
 
     test('onSelectCard toggles the id and enters selection mode without changing the editor mode', () => {
@@ -749,14 +749,12 @@ describe('useCardListController', () => {
       expect(controller.page.value).toBe(0)
     })
 
-    test('can_prev_page and can_next_page are true only when total_pages > 1', () => {
+    test('can_paginate is true only when total_pages > 1', () => {
       const { controller } = makePagingController({ card_count: 5 })
       controller.setVisibleCapacity(10)
-      expect(controller.can_prev_page.value).toBe(false)
-      expect(controller.can_next_page.value).toBe(false)
+      expect(controller.can_paginate.value).toBe(false)
       controller.setVisibleCapacity(2)
-      expect(controller.can_prev_page.value).toBe(true)
-      expect(controller.can_next_page.value).toBe(true)
+      expect(controller.can_paginate.value).toBe(true)
     })
 
     test('page is clamped when total_pages shrinks below the current page', async () => {

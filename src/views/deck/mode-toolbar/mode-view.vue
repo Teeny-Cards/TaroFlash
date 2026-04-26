@@ -8,7 +8,7 @@ import { type CardListController } from '@/composables/card-editor/card-list-con
 
 const { t } = useI18n()
 
-const { addCard, page, total_pages, prevPage, nextPage, can_prev_page, can_next_page } =
+const { addCard, page, total_pages, prevPage, nextPage, can_paginate } =
   inject<CardListController>('card-editor')!
 </script>
 
@@ -56,7 +56,7 @@ const { addCard, page, total_pages, prevPage, nextPage, can_prev_page, can_next_
           icon-only
           size="xs"
           icon-left="arrow-left"
-          :disabled="!can_prev_page"
+          :disabled="!can_paginate"
           @click="prevPage"
         >
           {{ t('common.previous') }}
@@ -69,7 +69,7 @@ const { addCard, page, total_pages, prevPage, nextPage, can_prev_page, can_next_
           icon-only
           size="xs"
           icon-left="arrow-right"
-          :disabled="!can_next_page"
+          :disabled="!can_paginate"
           @click="nextPage"
         >
           {{ t('common.next') }}
