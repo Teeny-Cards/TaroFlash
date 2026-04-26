@@ -21,20 +21,22 @@ const session = useSessionStore()
     class="absolute inset-0 text-white"
     @finish="clearStaticLoader"
   >
-    <nav-bar />
-    <phone />
+    <div class="flex flex-col h-full w-full md:items-center">
+      <nav-bar />
+      <phone />
 
-    <main class="h-full w-full max-w-(--page-width) px-4 sm:px-16">
-      <router-view v-slot="{ Component, route }">
-        <suspense>
-          <component :is="Component" />
-          <template #fallback>
-            <dashboard-skeleton v-if="route.name === 'dashboard'" />
-            <deck-skeleton v-else-if="route.name === 'deck'" />
-            <div v-else data-testid="route-skeleton" class="h-full w-full animate-pulse"></div>
-          </template>
-        </suspense>
-      </router-view>
-    </main>
+      <main class="flex-1 min-h-0 w-full max-w-(--page-width) px-4 sm:px-16">
+        <router-view v-slot="{ Component, route }">
+          <suspense>
+            <component :is="Component" />
+            <template #fallback>
+              <dashboard-skeleton v-if="route.name === 'dashboard'" />
+              <deck-skeleton v-else-if="route.name === 'deck'" />
+              <div v-else data-testid="route-skeleton" class="h-full w-full animate-pulse"></div>
+            </template>
+          </suspense>
+        </router-view>
+      </main>
+    </div>
   </ui-loader>
 </template>

@@ -1,4 +1,4 @@
-import { computed, ref, type Ref } from 'vue'
+import { computed, ref, watch, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAlert } from '@/composables/alert'
 import { useModal } from '@/composables/modal'
@@ -82,6 +82,66 @@ export function useCardListController(opts: Options) {
       enabled: () => cards_query.hasNextPage.value && !cards_query.isLoading.value
     })
   }
+
+  const visible_capacity = ref(0)
+
+  /**
+   * Reported by the card-grid once it has measured its visible area. Drives
+   * `page_size`, `total_pages`, and `visible_cards`. Stays at 0 until the
+   * grid mounts and reports — first paint shows a single card so the grid
+   * has a child to measure (see `visible_cards`).
+   */
+  function setVisibleCapacity(n: number) {
+    visible_capacity.value = n
+  }
+
+  const page = ref(0)
+  const page_size = computed(() => Math.max(1, visible_capacity.value))
+  const total_pages = computed(() =>
+    Math.max(1, Math.ceil((deck_query.data.value?.card_count ?? 0) / page_size.value))
+  )
+  const visible_cards = computed(() => {
+    if (visible_capacity.value === 0) return list.all_cards.value.slice(0, 1)
+    const start = page.value * page_size.value
+    return list.all_cards.value.slice(start, start + page_size.value)
+  })
+  const can_prev_page = computed(() => total_pages.value > 1)
+  const can_next_page = computed(() => total_pages.value > 1)
+
+  // 'forward' = nextPage was last invoked (incoming from right);
+  // 'backward' = prevPage. Drives the page-transition direction in the grid.
+  const page_direction = ref<'forward' | 'backward'>('forward')
+
+  /** Step back one page; wraps from page 0 to the last page. */
+  function prevPage() {
+    if (total_pages.value <= 1) return
+    page_direction.value = 'backward'
+    page.value = (page.value - 1 + total_pages.value) % total_pages.value
+    emitSfx('ui.slide_up')
+  }
+
+  /** Step forward one page; wraps from the last page back to page 0. */
+  function nextPage() {
+    if (total_pages.value <= 1) return
+    page_direction.value = 'forward'
+    page.value = (page.value + 1) % total_pages.value
+    emitSfx('ui.slide_up')
+  }
+
+  watch(total_pages, (n) => {
+    if (page.value > n - 1) page.value = Math.max(0, n - 1)
+  })
+
+  watch([page, page_size], async () => {
+    const needed = (page.value + 1) * page_size.value
+    if (
+      needed > list.all_cards.value.length &&
+      cards_query.hasNextPage.value &&
+      !cards_query.isLoading.value
+    ) {
+      await cards_query.loadNextPage()
+    }
+  })
 
   /**
    * Loaded persisted cards that the current selection covers, with `review`
@@ -317,6 +377,21 @@ export function useCardListController(opts: Options) {
     hasNextPage: cards_query.hasNextPage,
     isLoading: cards_query.isLoading,
     observeSentinel,
+    loadNextPage: cards_query.loadNextPage,
+
+    // pagination — capacity is set by the card-grid once it has measured;
+    // page state is consumed by both the grid (visible_cards) and the
+    // mode-view toolbar (counter + prev/next buttons)
+    setVisibleCapacity,
+    page,
+    page_size,
+    page_direction,
+    total_pages,
+    visible_cards,
+    prevPage,
+    nextPage,
+    can_prev_page,
+    can_next_page,
 
     // intent handlers — what the templates call on user actions
     onCancel,

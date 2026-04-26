@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import { type CardEditorMode } from '@/composables/card-editor/card-list-controller'
 import ModeView from './mode-view.vue'
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
+import { type CardListController } from '@/composables/card-editor/card-list-controller'
 
-type TopBarProps = {
-  mode: CardEditorMode
-  is_empty: boolean
-  is_selecting: boolean
-}
-
-defineProps<TopBarProps>()
+const { mode } = inject<CardListController>('card-editor')!
 
 const toolbarComponent = computed(() => {
   // if (is_selecting) return BulkSelectToolbar
@@ -21,5 +16,8 @@ const toolbarComponent = computed(() => {
 </script>
 
 <template>
-  <component :is="toolbarComponent" />
+  <div data-testid="mode-toolbar-container" class="w-full z-10 relative">
+    <component :is="toolbarComponent" />
+    <div class="bg-brown-100 dark:bg-grey-900 p-2 rounded-5 absolute -inset-2 -z-1"></div>
+  </div>
 </template>

@@ -25,6 +25,7 @@
   "common.search": "Search",
   "common.previous": "Previous",
   "common.next": "Next",
+  "common.cards": "Cards",
 
   "app.title": "TaroFlash",
   "app.description": "A warm little space to learn, make, and collect things you love.",
@@ -212,6 +213,7 @@
 
   "deck.description-placeholder": "Add a short description to your deck.",
   "deck.title-placeholder": "Deck Name",
+  "deck.mode-view.page-counter": "Page {current}/{total}",
   "deck.settings-modal.title": "Deck Configuration",
   "deck.settings-modal.is-public": "Public Deck",
   "deck.settings-modal.tab.general": "General",
@@ -235,6 +237,9 @@
   "deck.settings-modal.study.is-spaced": "Spaced Repetition",
   "deck.settings-modal.study.auto-play": "Auto-Play Audio",
 
+  "deck-view.actions.study-all": "Study <span>all</span> cards",
+  "deck-view.actions.edit-cards": "Edit Cards",
+  "deck-view.actions.cancel": "Stop Editing",
   "deck-view.add-card": "Add Card",
   "deck-view.no-cards": "No Cards",
   "deck-view.tabs.card-view": "View",
