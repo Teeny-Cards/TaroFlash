@@ -214,7 +214,7 @@
   "deck.description-placeholder": "Add a short description to your deck.",
   "deck.title-placeholder": "Deck Name",
   "deck.mode-view.page-counter": "Page {current}/{total}",
-  "deck.settings-modal.title": "Deck Configuration",
+  "deck.settings-modal.title": "Deck Settings",
   "deck.settings-modal.is-public": "Public Deck",
   "deck.settings-modal.tab.general": "General",
   "deck.settings-modal.tab.cover": "Cover",
