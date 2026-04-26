@@ -41,7 +41,10 @@ describe('useRatingFormat', () => {
 
   test('defaults to long style when none is provided', () => {
     const { getRatingTimeFormat } = useRatingFormat()
-    const due = new Date(Date.now() + 1000 * 60 * 60 * 24)
+    // 25h, not 24h: toRelative compares against `Date.now()` again at call
+    // time, so an exactly-1-day offset can fall into the "hour" bucket once
+    // a few µs of clock drift accumulate (used to flake under full-suite load).
+    const due = new Date(Date.now() + 1000 * 60 * 60 * 25)
 
     const result = getRatingTimeFormat(Rating.Good, makeOptions(due))
 
