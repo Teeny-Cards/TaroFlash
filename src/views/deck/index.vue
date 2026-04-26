@@ -10,7 +10,7 @@ import {
   useCardListController,
   type CardEditorMode
 } from '@/composables/card-editor/card-list-controller'
-import UiScrollBar from '@/components/ui-kit/scroll-bar.vue'
+import UiButton from '@/components/ui-kit/button.vue'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -34,31 +34,55 @@ const mode_components: { [key in CardEditorMode]: any } = {
 }
 
 const is_empty = computed(() => !editor.isLoading.value && editor.all_cards.value.length === 0)
+
+function onToggleEditCards() {
+  if (editor.mode.value === 'edit') {
+    editor.setMode('view')
+  } else {
+    editor.setMode('edit')
+  }
+}
 </script>
 
 <template>
   <section
     data-testid="deck-view"
-    class="flex h-full flex-col xl:flex-row items-center xl:items-start gap-6 md:gap-15 pb-24"
+    class="flex md:h-full flex-col xl:flex-row items-center xl:items-start gap-6 md:gap-15"
   >
     <deck-hero
       v-if="deck"
       class="xl:sticky top-(--nav-height)"
       :deck="deck"
       :image-url="image_url"
-      @updated="deck_query.refetch()"
+      :mode="editor.mode.value"
+      @toggle-edit-cards="onToggleEditCards"
     />
 
-    <div class="relative flex h-full w-full flex-col items-center">
-      <mode-toolbar
-        :mode="editor.mode.value"
-        :is_empty="is_empty"
-        :is_selecting="editor.is_selecting.value"
-      />
-      <div v-if="is_empty" data-testid="deck-view__empty" />
-      <component v-else :is="mode_components[editor.mode.value]" />
-    </div>
+    <div
+      class="md:h-full relative w-full grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr] gap-4 pb-4"
+    >
+      <mode-toolbar class="col-start-2" />
 
-    <ui-scroll-bar target="html" />
+      <ui-button
+        data-theme="brown-300"
+        class="col-start-1 row-start-2 self-center"
+        :class="{ 'opacity-0 pointer-events-none': editor.mode.value !== 'view' }"
+        icon-only
+        icon-left="arrow-left"
+        @click="editor.prevPage()"
+      ></ui-button>
+
+      <div v-if="is_empty" data-testid="deck-view__empty" class="row-start-2 col-start-2" />
+      <component v-else :is="mode_components[editor.mode.value]" class="row-start-2 col-start-2" />
+
+      <ui-button
+        data-theme="brown-300"
+        class="row-start-2 self-center col-start-3"
+        :class="{ 'opacity-0 pointer-events-none': editor.mode.value !== 'view' }"
+        icon-only
+        icon-left="arrow-right"
+        @click="editor.nextPage()"
+      ></ui-button>
+    </div>
   </section>
 </template>

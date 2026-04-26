@@ -199,18 +199,19 @@ const tooltip_active = computed(() => iconOnly && !!slots.default)
 .ui-kit-btn.ui-kit-btn--sm {
   --btn-font-size: var(--text-base);
   --btn-font-size--line-height: var(--text-base--line-height);
-  --btn-border-radius: var(--radius-3);
+  --btn-border-radius: var(--radius-4);
   --btn-gap: 6px;
   --btn-padding: 4px 6px;
+  --icon-size: 22px;
 
   &.ui-kit-btn--icon-only {
-    --btn-padding: 4px;
+    --btn-padding: 6px;
   }
 }
 .ui-kit-btn.ui-kit-btn--xs {
   --btn-font-size: var(--text-base);
   --btn-font-size--line-height: var(--text-base--line-height);
-  --btn-border-radius: var(--radius-3_5);
+  --btn-border-radius: var(--radius-3_75);
   --btn-gap: 3px;
   --btn-padding: 4px 12px;
   --icon-size: 16px;

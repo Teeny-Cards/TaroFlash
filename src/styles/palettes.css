@@ -12,6 +12,7 @@
  * value to data-theme on the root, even when the user's preference is 'system'.
  */
 
+:root,
 [data-theme='blue-500'],
 [data-theme='dark'] [data-theme-dark='blue-500'] {
   --theme-primary: var(--color-blue-500);
@@ -20,7 +21,7 @@
   --theme-secondary: var(--color-blue-400);
   --theme-on-secondary: var(--color-brown-100);
 
-  --theme-accent: var(--color-orange-500);
+  --theme-accent: var(--color-yellow-500);
   --theme-on-accent: var(--color-brown-100);
 
   --theme-neutral: var(--color-brown-100);
@@ -45,7 +46,7 @@
 [data-theme='blue-650'],
 [data-theme='dark'] [data-theme-dark='blue-650'] {
   --theme-primary: var(--color-blue-650);
-  --theme-on-primary: var(--color-white);
+  --theme-on-primary: var(--color-brown-100);
 }
 
 [data-theme='blue-400'],
@@ -162,13 +163,19 @@
   --theme-primary: var(--color-red-500);
   --theme-on-primary: var(--color-white);
 
-  --theme-accent: var(--color-orange-500);
+  --theme-accent: var(--color-yellow-500);
   --theme-on-accent: var(--color-white);
 }
 
-[data-theme='orange-500'],
-[data-theme='dark'] [data-theme-dark='orange-500'] {
-  --theme-primary: var(--color-orange-500);
+[data-theme='yellow-700'],
+[data-theme='dark'] [data-theme-dark='yellow-700'] {
+  --theme-primary: var(--color-yellow-700);
+  --theme-on-primary: var(--color-brown-100);
+}
+
+[data-theme='yellow-500'],
+[data-theme='dark'] [data-theme-dark='yellow-500'] {
+  --theme-primary: var(--color-yellow-500);
   --theme-on-primary: var(--color-brown-100);
 
   --theme-accent: var(--color-purple-400);
@@ -178,12 +185,12 @@
   --theme-on-neutral: var(--color-brown-500);
 }
 
-[data-theme='orange-600'],
-[data-theme='dark'] [data-theme-dark='orange-600'] {
-  --theme-primary: var(--color-orange-600);
+[data-theme='yellow-600'],
+[data-theme='dark'] [data-theme-dark='yellow-600'] {
+  --theme-primary: var(--color-yellow-600);
   --theme-on-primary: var(--color-brown-100);
 
-  --theme-accent: var(--color-orange-400);
+  --theme-accent: var(--color-yellow-400);
   --theme-on-accent: var(--color-brown-100);
 }
 
@@ -202,5 +209,5 @@
 [data-theme='white'],
 [data-theme='dark'] [data-theme-dark='white'] {
   --theme-primary: var(--color-white);
-  --theme-on-primary: var(--color-grey-900);
+  --theme-on-primary: var(--color-brown-700);
 }

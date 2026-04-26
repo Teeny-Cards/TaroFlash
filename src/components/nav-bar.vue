@@ -2,7 +2,7 @@
   <nav
     data-testid="nav-bar-container"
     ref="nav-bar"
-    class="w-full sticky top-0 z-50 pt-4 pb-8 mb-4 px-4 bg-blue-500 dark:bg-blue-650 wave-bottom-[30px] flex justify-center"
+    class="w-full sticky top-0 z-50 pt-4 pb-8 mb-6 px-4 bg-blue-500 dark:bg-blue-650 wave-bottom-[30px] flex justify-center"
   >
     <div
       data-testid="nav-bar"
@@ -24,7 +24,7 @@ import UiIcon from '@/components/ui-kit/icon.vue'
 const nav_bar = useTemplateRef('nav-bar')
 
 onMounted(() => {
-  const height = (nav_bar.value?.clientHeight ?? 0) + 16
+  const height = (nav_bar.value?.clientHeight ?? 0) + 24
   document.documentElement.style.setProperty('--nav-height', `${height}px`)
 })
 </script>
