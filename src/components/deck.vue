@@ -16,9 +16,10 @@ const { deck, size = 'base' } = defineProps<{
 
     <div
       v-if="!hide_title"
-      class="absolute w-full -bottom-2.5 bg-brown-300 dark:bg-grey-750 px-3 py-2 rounded-4.5"
+      class="absolute w-full -bottom-2.5 bg-brown-300 dark:bg-grey-750 p-4 rounded-5.5"
     >
-      <h2 class="text-lg text-center text-brown-700 dark:text-brown-100">{{ deck?.title }}</h2>
+      <slot name="actions"></slot>
+      <h2 class="text-xl text-center text-brown-700 dark:text-brown-100">{{ deck?.title }}</h2>
     </div>
   </div>
 </template>
