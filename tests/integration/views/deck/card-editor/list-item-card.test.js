@@ -61,7 +61,7 @@ function mount(props = {}) {
       stubs: { Card: CardStub },
       provide: {
         'card-editor': {
-          is_selecting: ref(false),
+          selection: { is_selecting: ref(false) },
           updateCard: mocks.updateCardMock,
           card_attributes: { front: {}, back: {} }
         }

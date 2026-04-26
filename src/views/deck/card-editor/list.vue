@@ -3,8 +3,8 @@ import ListItem from './list-item.vue'
 import { inject, useTemplateRef } from 'vue'
 import { type CardListController } from '@/composables/card-editor/card-list-controller'
 
-const { all_cards, hasNextPage, isLoading, observeSentinel } =
-  inject<CardListController>('card-editor')!
+const { list, hasNextPage, isLoading, observeSentinel } = inject<CardListController>('card-editor')!
+const { all_cards } = list
 
 const sentinel = useTemplateRef<HTMLElement>('sentinel')
 

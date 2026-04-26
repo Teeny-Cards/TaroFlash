@@ -33,7 +33,7 @@ const mode_components: { [key in CardEditorMode]: any } = {
   'import-export': CardImporter
 }
 
-const is_empty = computed(() => !editor.isLoading.value && editor.all_cards.value.length === 0)
+const is_empty = computed(() => !editor.isLoading.value && editor.list.all_cards.value.length === 0)
 </script>
 
 <template>
@@ -59,7 +59,7 @@ const is_empty = computed(() => !editor.isLoading.value && editor.all_cards.valu
         :class="{ 'opacity-0 pointer-events-none': editor.mode.value !== 'view' }"
         icon-only
         icon-left="arrow-left"
-        @click="editor.prevPage()"
+        @click="editor.carousel.prevPage()"
       >
         {{ t('common.previous') }}
       </ui-button>
@@ -73,7 +73,7 @@ const is_empty = computed(() => !editor.isLoading.value && editor.all_cards.valu
         :class="{ 'opacity-0 pointer-events-none': editor.mode.value !== 'view' }"
         icon-only
         icon-left="arrow-right"
-        @click="editor.nextPage()"
+        @click="editor.carousel.nextPage()"
       >
         {{ t('common.next') }}
       </ui-button>

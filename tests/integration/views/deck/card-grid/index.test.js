@@ -46,18 +46,23 @@ function makeEditor({
   card_attributes = { front: {}, back: {} }
 } = {}) {
   return {
-    all_cards: computed(() => cards.map((c, i) => ({ ...c, client_id: `cid-${c.id ?? i}` }))),
-    visible_cards: computed(() => visible.map((c, i) => ({ ...c, client_id: `cid-${c.id ?? i}` }))),
-    is_selecting,
-    isCardSelected,
+    list: {
+      all_cards: computed(() => cards.map((c, i) => ({ ...c, client_id: `cid-${c.id ?? i}` })))
+    },
+    selection: { is_selecting, isCardSelected },
+    carousel: {
+      visible_cards: computed(() =>
+        visible.map((c, i) => ({ ...c, client_id: `cid-${c.id ?? i}` }))
+      ),
+      is_page_loading,
+      setVisibleCapacity,
+      page,
+      page_size,
+      page_direction
+    },
     hasNextPage,
     isLoading,
-    is_page_loading,
     observeSentinel,
-    setVisibleCapacity,
-    page,
-    page_size,
-    page_direction,
     card_attributes
   }
 }

@@ -6,21 +6,12 @@ import { useGridCapacity } from '@/composables/use-grid-capacity'
 import { useMediaQuery } from '@/composables/use-media-query'
 import { slideInFromDirection, slideOutInDirection } from '@/utils/animations/grid-page'
 
-const {
-  all_cards,
-  is_selecting,
-  isCardSelected,
-  card_attributes,
-  visible_cards,
-  setVisibleCapacity,
-  page,
-  page_size,
-  page_direction,
-  is_page_loading,
-  hasNextPage,
-  isLoading,
-  observeSentinel
-} = inject<CardListController>('card-editor')!
+const { list, selection, carousel, card_attributes, hasNextPage, isLoading, observeSentinel } =
+  inject<CardListController>('card-editor')!
+const { all_cards } = list
+const { is_selecting, isCardSelected } = selection
+const { visible_cards, setVisibleCapacity, page, page_size, page_direction, is_page_loading } =
+  carousel
 
 const side = ref<'front' | 'back'>('front')
 const grid = useTemplateRef<HTMLElement>('grid')
