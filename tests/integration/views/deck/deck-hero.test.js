@@ -1,6 +1,6 @@
 import { describe, test, expect, vi } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
-import { defineComponent, h, useAttrs } from 'vue'
+import { defineComponent, h, ref, useAttrs } from 'vue'
 
 vi.mock('@/composables/modals/use-deck-settings-modal', () => ({
   useDeckSettingsModal: () => ({ open: vi.fn(() => ({ response: Promise.resolve(false) })) })
@@ -21,37 +21,83 @@ const UiButtonStub = defineComponent({
   }
 })
 
-function mount(deck = {}) {
+function mount({ deck = {}, editor } = {}) {
   return shallowMount(DeckHero, {
     props: {
       deck: { id: 1, title: 'd', card_count: 10, ...deck }
     },
-    global: { stubs: { UiButton: UiButtonStub } }
+    global: {
+      stubs: { UiButton: UiButtonStub },
+      provide: editor === undefined ? {} : { 'card-editor': editor }
+    }
   })
+}
+
+function makeEditor({ mode = 'view', setMode = vi.fn() } = {}) {
+  return { mode: ref(mode), setMode }
+}
+
+function modeButton(wrapper) {
+  return wrapper.find('[data-testid="overview-panel__settings-button"]')
 }
 
 describe('DeckHero', () => {
   // ── Display ────────────────────────────────────────────────────────────────
 
   test('renders the card_count in the cards-in-deck label', () => {
-    const wrapper = mount({ card_count: 17 })
+    const wrapper = mount({ deck: { card_count: 17 } })
     expect(wrapper.text()).toContain('17 cards in deck')
   })
 
   test('renders 0 in the cards-in-deck label when card_count is missing', () => {
-    const wrapper = mount({ card_count: undefined })
+    const wrapper = mount({ deck: { card_count: undefined } })
     expect(wrapper.text()).toContain('0 cards in deck')
   })
 
   test('renders the deck description', () => {
-    const wrapper = mount({ description: 'My description' })
+    const wrapper = mount({ deck: { description: 'My description' } })
     expect(wrapper.find('[data-testid="overview-panel__description"]').text()).toBe(
       'My description'
     )
   })
 
   test('renders the member display name from deck.member', () => {
-    const wrapper = mount({ member: { display_name: 'Alice' } })
+    const wrapper = mount({ deck: { member: { display_name: 'Alice' } } })
     expect(wrapper.text()).toContain('Alice')
+  })
+
+  // ── Mode-driven edit-cards button ─────────────────────────────────────────
+
+  describe('mode toggle', () => {
+    test('shows the "edit cards" label when injected mode is view', () => {
+      const wrapper = mount({ editor: makeEditor({ mode: 'view' }) })
+      expect(modeButton(wrapper).text()).toContain('Edit Cards')
+    })
+
+    test('shows the "cancel" label when injected mode is edit', () => {
+      const wrapper = mount({ editor: makeEditor({ mode: 'edit' }) })
+      expect(modeButton(wrapper).text()).toContain('Stop Editing')
+    })
+
+    test('clicking the button flips the editor mode from view to edit', async () => {
+      const setMode = vi.fn()
+      const wrapper = mount({ editor: makeEditor({ mode: 'view', setMode }) })
+      await modeButton(wrapper).trigger('click')
+      expect(setMode).toHaveBeenCalledWith('edit')
+    })
+
+    test('clicking the button flips the editor mode from edit to view', async () => {
+      const setMode = vi.fn()
+      const wrapper = mount({ editor: makeEditor({ mode: 'edit', setMode }) })
+      await modeButton(wrapper).trigger('click')
+      expect(setMode).toHaveBeenCalledWith('view')
+    })
+
+    test('clicking is a no-op when no editor is provided', async () => {
+      const wrapper = mount()
+      await modeButton(wrapper).trigger('click')
+      // No throw + button still renders the default label
+      expect(modeButton(wrapper).exists()).toBe(true)
+    })
   })
 })
