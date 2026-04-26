@@ -132,15 +132,30 @@ export function useCardListController(opts: Options) {
     if (page.value > n - 1) page.value = Math.max(0, n - 1)
   })
 
-  watch([page, page_size], async () => {
-    const needed = (page.value + 1) * page_size.value
-    if (
-      needed > list.all_cards.value.length &&
-      cards_query.hasNextPage.value &&
-      !cards_query.isLoading.value
-    ) {
-      await cards_query.loadNextPage()
-    }
+  // walk pages until the current carousel window is fully loaded. tracks
+  // page/page_size, loaded count, and the query flags as discrete sources
+  // so each fetch's completion (length grew + isLoading flipped) re-fires
+  // the handler and keeps loading until the target window is reached.
+  watch(
+    () => ({
+      target: (page.value + 1) * page_size.value,
+      loaded: list.all_cards.value.length,
+      can_fetch: cards_query.hasNextPage.value && !cards_query.isLoading.value
+    }),
+    ({ target, loaded, can_fetch }) => {
+      if (target > loaded && can_fetch) cards_query.loadNextPage()
+    },
+    { immediate: true }
+  )
+
+  /**
+   * True when the currently-targeted page lies beyond the loaded card count
+   * and more pages can still be fetched. Drives the grid's skeleton state
+   * while the auto-loader walks pages sequentially toward the target.
+   */
+  const is_page_loading = computed(() => {
+    const start = page.value * page_size.value
+    return start >= list.all_cards.value.length && cards_query.hasNextPage.value
   })
 
   /**
@@ -388,6 +403,7 @@ export function useCardListController(opts: Options) {
     page_direction,
     total_pages,
     visible_cards,
+    is_page_loading,
     prevPage,
     nextPage,
     can_prev_page,
