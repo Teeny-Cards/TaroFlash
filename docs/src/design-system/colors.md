@@ -21,7 +21,7 @@ Component themes are typed as `MemberTheme` (defined in `types/member.d.ts`). Ea
 | `red-500`    | Red 500       |
 | `red-400`    | Red 400       |
 | `orange-600` | Orange 600    |
-| `orange-500` | Orange 500    |
+| `yellow-500` | Orange 500    |
 | `brown-300`  | Brown 300     |
 | `brown-100`  | Brown 100     |
 | `grey-900`   | Grey 900      |
