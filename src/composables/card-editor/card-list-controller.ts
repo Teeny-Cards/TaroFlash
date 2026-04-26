@@ -122,66 +122,21 @@ export function useCardListController(opts: Options) {
   }
 
   return {
-    // list — rendered cards + add/append/prepend
-    all_cards: list.all_cards,
-    addCard: list.addCard,
-    appendCard: list.appendCard,
-    prependCard: list.prependCard,
+    list,
+    selection,
+    carousel,
+    actions,
 
-    // selection — predicates, actions, and derived counts
-    isCardSelected: selection.isCardSelected,
-    selectCard: selection.selectCard,
-    deselectCard: selection.deselectCard,
-    toggleSelectCard: selection.toggleSelectCard,
-    selectAllCards: selection.selectAllCards,
-    clearSelectedCards: selection.clearSelectedCards,
-    toggleSelectAll: selection.toggleSelectAll,
-    enterSelection: selection.enterSelection,
-    exitSelection: selection.exitSelection,
-    is_selecting: selection.is_selecting,
-    selected_card_ids: selection.selected_card_ids,
-    deselected_ids: selection.deselected_ids,
-    select_all_mode: selection.select_all_mode,
-    selected_count: selection.selected_count,
-    all_cards_selected: selection.all_cards_selected,
-    total_card_count: selection.total_card_count,
-
-    // writes — in-flight flag + edit entry-point
+    mode,
+    setMode,
     saving,
     updateCard,
-
-    // deck-derived
     card_attributes,
     deck_id: opts.deck_id,
 
-    // UI state
-    mode,
-    setMode,
-
-    // infinite scroll
     hasNextPage: cards_query.hasNextPage,
     isLoading: cards_query.isLoading,
-    observeSentinel,
     loadNextPage: cards_query.loadNextPage,
-
-    // carousel — capacity is set by the card-grid once it has measured;
-    // page state is consumed by both the grid (visible_cards) and the
-    // mode-view toolbar (counter + prev/next buttons)
-    setVisibleCapacity: carousel.setVisibleCapacity,
-    page: carousel.page,
-    page_size: carousel.page_size,
-    page_direction: carousel.page_direction,
-    total_pages: carousel.total_pages,
-    visible_cards: carousel.visible_cards,
-    is_page_loading: carousel.is_page_loading,
-    prevPage: carousel.prevPage,
-    nextPage: carousel.nextPage,
-    can_paginate: carousel.can_paginate,
-
-    // intent handlers — what the templates call on user actions
-    onCancel: actions.onCancel,
-    onDeleteCards: actions.onDeleteCards,
-    onSelectCard: actions.onSelectCard,
-    onMoveCards: actions.onMoveCards
+    observeSentinel
   }
 }

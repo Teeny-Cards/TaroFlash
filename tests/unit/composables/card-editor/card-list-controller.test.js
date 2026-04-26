@@ -91,13 +91,22 @@ function makeDeckQuery(card_count = 0) {
 // Mocks `useDeckQuery` for the lifetime of the call so both the controller
 // and the inner card-selection composable resolve to this query — mirrors
 // Pinia Colada's per-key dedupe in production.
+// Returns the controller flattened — sub-namespaces (list/selection/carousel/
+// actions) are spread onto the root for ergonomic test destructuring. Real
+// consumers reach in via the grouped surface; the flatten happens here only.
 function makeController(persisted = [], ids = persisted.map((c) => c.id), deck_query) {
   const dq = deck_query ?? makeDeckQuery(ids.length)
   cardsInfiniteQueryMock.mockReturnValueOnce(makeCardsQuery(persisted))
   deckQueryMock.mockReturnValue(dq)
   const controller = useCardListController({ deck_id: 10 })
-  controller.deck_query = dq
-  return controller
+  return {
+    ...controller,
+    ...controller.list,
+    ...controller.selection,
+    ...controller.carousel,
+    ...controller.actions,
+    deck_query: dq
+  }
 }
 
 describe('useCardListController', () => {
@@ -667,7 +676,8 @@ describe('useCardListController', () => {
       cardsInfiniteQueryMock.mockReturnValueOnce(cards_query)
       const dq = makeDeckQuery(card_count ?? ids.length)
       deckQueryMock.mockReturnValue(dq)
-      const controller = useCardListController({ deck_id: 10 })
+      const root = useCardListController({ deck_id: 10 })
+      const controller = { ...root, ...root.list, ...root.selection, ...root.carousel }
       return { controller, cards_query, deck_query: dq }
     }
 

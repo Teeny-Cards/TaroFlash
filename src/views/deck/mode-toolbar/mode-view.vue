@@ -8,8 +8,9 @@ import { type CardListController } from '@/composables/card-editor/card-list-con
 
 const { t } = useI18n()
 
-const { addCard, page, total_pages, prevPage, nextPage, can_paginate } =
-  inject<CardListController>('card-editor')!
+const { list, carousel } = inject<CardListController>('card-editor')!
+const { addCard } = list
+const { page, total_pages, prevPage, nextPage, can_paginate } = carousel
 </script>
 
 <template>

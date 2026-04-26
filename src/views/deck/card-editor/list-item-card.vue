@@ -31,7 +31,8 @@ const front_text = ref(card.front_text ?? '')
 const back_text = ref(card.back_text ?? '')
 const save_failed = ref(false)
 
-const { is_selecting, updateCard, card_attributes } = inject<CardListController>('card-editor')!
+const { selection, updateCard, card_attributes } = inject<CardListController>('card-editor')!
+const { is_selecting } = selection
 const set_image_mutation = useSetCardImageMutation()
 const delete_image_mutation = useDeleteCardImageMutation()
 
