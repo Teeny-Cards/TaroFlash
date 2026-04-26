@@ -1,4 +1,4 @@
-import { type Ref } from 'vue'
+import { toValue, type MaybeRefOrGetter } from 'vue'
 import {
   useDeleteCardsMutation,
   useDeleteCardsInDeckMutation,
@@ -24,7 +24,7 @@ type MoveArgs = { cards: Card[]; target_deck_id: number }
  *
  * @param deck_id - Reactive deck id, required for INSERT and bulk-delete.
  */
-export function useCardMutations(deck_id: Ref<number | undefined>) {
+export function useCardMutations(deck_id: MaybeRefOrGetter<number | undefined>) {
   const insert_mutation = useInsertCardAtMutation()
   const save_mutation = useSaveCardMutation()
   const delete_mutation = useDeleteCardsMutation()
@@ -52,7 +52,7 @@ export function useCardMutations(deck_id: Ref<number | undefined>) {
   async function deleteCards(args: DeleteArgs) {
     if ('except_ids' in args) {
       await delete_in_deck_mutation.mutateAsync({
-        deck_id: deck_id.value!,
+        deck_id: toValue(deck_id)!,
         except_ids: args.except_ids
       })
 

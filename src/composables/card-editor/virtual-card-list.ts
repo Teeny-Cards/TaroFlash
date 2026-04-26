@@ -1,4 +1,4 @@
-import { computed, ref, type Ref } from 'vue'
+import { computed, ref, toValue, type MaybeRefOrGetter } from 'vue'
 import uid from '@/utils/uid'
 import type { useCardsInDeckInfiniteQuery } from '@/api/cards'
 
@@ -48,7 +48,10 @@ function tempPlaceholderId(): number {
  *   // card.id        — placeholder (negative) until promoted, then real
  * }
  */
-export function useVirtualCardList(cards_query: CardsQuery, deck_id: Ref<number | undefined>) {
+export function useVirtualCardList(
+  cards_query: CardsQuery,
+  deck_id: MaybeRefOrGetter<number | undefined>
+) {
   const temp_entries = ref<CardEntry[]>([])
 
   // Persistent client_id for each persisted card so v-for keys stay stable
@@ -179,7 +182,7 @@ export function useVirtualCardList(cards_query: CardsQuery, deck_id: Ref<number 
     return {
       id: tempPlaceholderId(),
       rank: 0,
-      deck_id: deck_id.value,
+      deck_id: toValue(deck_id),
       front_text: '',
       back_text: ''
     }
