@@ -17,7 +17,7 @@ const { cycle } = theme_store
 
 const modes = computed<{ [key in ThemeMode]: ModeConfig }>(() => ({
   system: { label: 'System', theme: 'purple-500' },
-  light: { label: 'Lightmode', theme: 'orange-600' },
+  light: { label: 'Lightmode', theme: 'yellow-600' },
   dark: { label: 'Darkmode', theme: 'blue-650' }
 }))
 

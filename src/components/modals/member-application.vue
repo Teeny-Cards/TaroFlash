@@ -36,7 +36,7 @@ const themes: MemberTheme[] = [
   'purple-500',
   'pink-400',
   'red-500',
-  'orange-500'
+  'yellow-500'
 ]
 
 function setTheme(theme: MemberTheme) {

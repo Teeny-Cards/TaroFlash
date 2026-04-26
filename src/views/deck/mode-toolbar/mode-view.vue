@@ -3,8 +3,13 @@ import toolbarBase from './toolbar-base.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiTag from '@/components/ui-kit/tag.vue'
 import { useI18n } from 'vue-i18n'
+import { inject } from 'vue'
+import { type CardListController } from '@/composables/card-editor/card-list-controller'
 
 const { t } = useI18n()
+
+const { addCard, page, total_pages, prevPage, nextPage, can_prev_page, can_next_page } =
+  inject<CardListController>('card-editor')!
 </script>
 
 <template>
@@ -27,6 +32,7 @@ const { t } = useI18n()
         data-theme-dark="blue-650"
         size="xs"
         icon-left="add"
+        @click="addCard()"
       >
         {{ t('common.new-card') }}
       </ui-button>
@@ -38,8 +44,9 @@ const { t } = useI18n()
         data-theme="green-400"
         data-theme-dark="green-800"
         class="bgx-diagonal-stripes dark:bgx-opacity-10"
-        >Page 1/10</ui-tag
       >
+        {{ t('deck.mode-view.page-counter', { current: page + 1, total: total_pages }) }}
+      </ui-tag>
 
       <ui-button
         data-testid="mode-view__previous-page-button"
@@ -48,6 +55,8 @@ const { t } = useI18n()
         icon-only
         size="xs"
         icon-left="arrow-left"
+        :disabled="!can_prev_page"
+        @click="prevPage"
       >
         {{ t('common.previous') }}
       </ui-button>
@@ -59,6 +68,8 @@ const { t } = useI18n()
         icon-only
         size="xs"
         icon-left="arrow-right"
+        :disabled="!can_next_page"
+        @click="nextPage"
       >
         {{ t('common.next') }}
       </ui-button>

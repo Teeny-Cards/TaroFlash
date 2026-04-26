@@ -41,3 +41,22 @@ Internal (non-returned) helpers get a JSDoc block when their behaviour is non-ob
 - Don't write JSDoc that just rephrases the function name (`/** Set the mode. */ function setMode...`).
 - Don't put implementation details in the doc — those rot and belong in inline comments or commit messages.
 - Don't document private module-level functions that aren't exported and only have one caller. Inline `//` comments are fine there.
+- Don't put JSDoc on type definitions or their properties. Type names + property names should carry the meaning. If a property genuinely needs a comment, use an inline `//` on the line above it.
+
+```ts
+// Bad — JSDoc on every property, mostly restating the name
+type UseGridCapacityResult = {
+  /** Number of columns currently rendered. */
+  cols: ComputedRef<number>
+  /** Number of full rows that fit. */
+  rows: ComputedRef<number>
+}
+
+// Good — names speak; comment only the non-obvious one
+type UseGridCapacityResult = {
+  cols: ComputedRef<number>
+  rows: ComputedRef<number>
+  // 0 until first child mounts — measured from firstElementChild
+  itemHeight: Ref<number>
+}
+```
