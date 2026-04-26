@@ -11,7 +11,9 @@ function makeEditor({
   observeSentinel = vi.fn()
 } = {}) {
   return {
-    all_cards: computed(() => cards.map((c) => ({ ...c, client_id: `cid-${c.id}` }))),
+    list: {
+      all_cards: computed(() => cards.map((c) => ({ ...c, client_id: `cid-${c.id}` })))
+    },
     hasNextPage,
     isLoading,
     observeSentinel

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { type CardEditorMode } from '@/composables/card-editor/card-list-controller'
 import ModeView from './mode-view.vue'
 import { computed, inject } from 'vue'
 import { type CardListController } from '@/composables/card-editor/card-list-controller'

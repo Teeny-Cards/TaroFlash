@@ -1,20 +1,10 @@
-import { describe, test, expect, vi } from 'vite-plus/test'
-import { ref } from 'vue'
+import { describe, test, expect } from 'vite-plus/test'
 import { card } from '@tests/fixtures/card'
-
-const { useDeckQueryMock } = vi.hoisted(() => ({
-  useDeckQueryMock: vi.fn()
-}))
-
-vi.mock('@/api/decks', () => ({
-  useDeckQuery: useDeckQueryMock
-}))
 
 import { useCardSelection } from '@/composables/card-editor/card-selection'
 
 function makeSelection(ids = []) {
-  useDeckQueryMock.mockReturnValueOnce({ data: ref({ id: 10, card_count: ids.length }) })
-  return useCardSelection(10)
+  return useCardSelection(ids.length)
 }
 
 function makeCard(overrides = {}) {
@@ -33,14 +23,13 @@ describe('useCardSelection', () => {
       expect(sel.selected_count.value).toBe(0)
     })
 
-    test('total_card_count tracks deck.card_count', () => {
+    test('total_card_count tracks the supplied total', () => {
       const sel = makeSelection([1, 2, 3, 4])
       expect(sel.total_card_count.value).toBe(4)
     })
 
-    test('total_card_count is 0 when the deck query has no data', () => {
-      useDeckQueryMock.mockReturnValueOnce({ data: ref(undefined) })
-      const sel = useCardSelection(10)
+    test('total_card_count is 0 when the supplied total is undefined', () => {
+      const sel = useCardSelection(undefined)
       expect(sel.total_card_count.value).toBe(0)
     })
   })

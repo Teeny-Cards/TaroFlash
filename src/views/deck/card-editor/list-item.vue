@@ -13,15 +13,10 @@ const { card, index } = defineProps<{
   duplicate: boolean
 }>()
 
-const {
-  is_selecting,
-  isCardSelected,
-  appendCard,
-  prependCard,
-  onDeleteCards,
-  onMoveCards,
-  onSelectCard
-} = inject<CardListController>('card-editor')!
+const { list, selection, actions } = inject<CardListController>('card-editor')!
+const { appendCard, prependCard } = list
+const { is_selecting, isCardSelected } = selection
+const { onDeleteCards, onMoveCards, onSelectCard } = actions
 
 const list_item_card = useTemplateRef('list-item-card')
 
