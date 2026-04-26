@@ -25,7 +25,10 @@ function onStudyClicked() {
     <deck size="lg" class="relative" :deck="deck"></deck>
 
     <div data-testid="deck-hero__details" class="flex flex-col items-center gap-2 md:items-start">
-      <h2 class="text-grey-500 dark:text-brown-500 w-64 text-center md:text-left">
+      <h2
+        data-testid="overview-panel__description"
+        class="text-grey-500 dark:text-brown-500 w-64 text-center md:text-left"
+      >
         {{ deck.description }}
       </h2>
 
