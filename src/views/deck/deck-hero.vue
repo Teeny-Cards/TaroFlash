@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import { useStudyModal } from '@/composables/modals/use-study-modal'
+import { useDeckSettingsModal } from '@/composables/modals/use-deck-settings-modal'
 import { type CardEditorMode } from '@/composables/card-editor/card-list-controller'
 
 const { deck } = defineProps<{ deck: Deck; imageUrl?: string; mode: CardEditorMode }>()
@@ -11,9 +12,14 @@ const emit = defineEmits<{ (e: 'toggle-edit-cards'): void }>()
 
 const { t } = useI18n()
 const study_session = useStudyModal()
+const deck_settings_modal = useDeckSettingsModal()
 
 function onStudyClicked() {
   study_session.start(deck)
+}
+
+function onSettingsClicked() {
+  deck_settings_modal.open(deck)
 }
 </script>
 
@@ -22,7 +28,19 @@ function onStudyClicked() {
     data-testid="deck-hero"
     class="flex w-max flex-col items-center gap-6 md:flex-row md:items-end xl:flex-col xl:items-start"
   >
-    <deck size="lg" class="relative" :deck="deck"></deck>
+    <deck size="lg" class="relative" :deck="deck">
+      <template #actions>
+        <ui-button
+          data-testid="deck-hero__settings-button"
+          icon-left="build"
+          class="absolute! -top-2.5 -left-2.5"
+          size="sm"
+          icon-only
+          @click="onSettingsClicked"
+          >{{ t('deck.settings-modal.title') }}</ui-button
+        >
+      </template>
+    </deck>
 
     <div data-testid="deck-hero__details" class="flex flex-col items-center gap-2 md:items-start">
       <h2 class="text-grey-500 dark:text-brown-500 w-64 text-center md:text-left">
