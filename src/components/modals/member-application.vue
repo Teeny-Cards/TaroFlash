@@ -138,6 +138,7 @@ async function onConfirm() {
       </div>
 
       <ui-button
+        data-theme="blue-500"
         icon-left="check"
         class="ring-brown-300 absolute right-8 -bottom-5 ring-7"
         @click="onConfirm"

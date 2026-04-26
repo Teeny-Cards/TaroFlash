@@ -50,11 +50,17 @@ const secondary_label = computed(() => t(`study-session.complete.${secondary_act
 
     <template #footer>
       <div class="w-full p-4 flex gap-2 items-center">
-        <ui-button data-testid="session-complete__close" full-width size="xl" @click="close()">{{
-          t('common.close')
-        }}</ui-button>
+        <ui-button
+          data-testid="session-complete__close"
+          data-theme="blue-500"
+          full-width
+          size="xl"
+          @click="close()"
+          >{{ t('common.close') }}</ui-button
+        >
         <ui-button
           data-testid="session-complete__secondary"
+          data-theme="blue-500"
           full-width
           size="xl"
           @click="close(secondary_action)"

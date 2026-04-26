@@ -145,7 +145,7 @@ async function onSubmit() {
       >
         <ui-button
           data-testid="add-credit-card-modal__submit"
-          theme="green-400"
+          data-theme="green-400"
           full-width
           size="lg"
           :loading="is_submitting"

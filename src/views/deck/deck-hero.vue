@@ -61,8 +61,9 @@ function onStudyClicked() {
       <div class="flex items-center gap-2.5">
         <ui-button
           data-testid="overview-panel__study-button"
+          data-theme="blue-500"
+          data-theme-dark="blue-650"
           icon-left="play"
-          fancy-hover
           :disabled="study_disabled"
           @click="onStudyClicked"
         >
@@ -72,7 +73,8 @@ function onStudyClicked() {
         <ui-button
           data-testid="overview-panel__settings-button"
           icon-left="settings"
-          theme="brown-300"
+          data-theme="brown-300"
+          data-theme-dark="grey-800"
           icon-only
           @click="onSettingsClicked()"
         >

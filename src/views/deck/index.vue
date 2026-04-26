@@ -11,13 +11,10 @@ import {
   type CardEditorMode
 } from '@/composables/card-editor/card-list-controller'
 import UiScrollBar from '@/components/ui-kit/scroll-bar.vue'
-import { useMediaQuery } from '@/composables/use-media-query'
 
 const { id: deck_id } = defineProps<{
   id: string
 }>()
-
-const is_md = useMediaQuery('md')
 
 const image_url = ref<string | undefined>()
 
@@ -53,9 +50,13 @@ const is_empty = computed(() => !editor.isLoading.value && editor.all_cards.valu
     />
 
     <div class="relative flex h-full w-full flex-col items-center">
-      <mode-toolbar :mode="editor.mode.value" />
+      <mode-toolbar
+        :mode="editor.mode.value"
+        :is_empty="is_empty"
+        :is_selecting="editor.is_selecting.value"
+      />
       <div v-if="is_empty" data-testid="deck-view__empty" />
-      <component v-else :is="is_md ? mode_components[editor.mode.value] : CardGrid" />
+      <component v-else :is="mode_components[editor.mode.value]" />
     </div>
 
     <ui-scroll-bar target="html" />
