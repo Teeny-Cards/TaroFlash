@@ -91,13 +91,22 @@ function makeDeckQuery(card_count = 0) {
 // Mocks `useDeckQuery` for the lifetime of the call so both the controller
 // and the inner card-selection composable resolve to this query — mirrors
 // Pinia Colada's per-key dedupe in production.
+// Returns the controller flattened — sub-namespaces (list/selection/carousel/
+// actions) are spread onto the root for ergonomic test destructuring. Real
+// consumers reach in via the grouped surface; the flatten happens here only.
 function makeController(persisted = [], ids = persisted.map((c) => c.id), deck_query) {
   const dq = deck_query ?? makeDeckQuery(ids.length)
   cardsInfiniteQueryMock.mockReturnValueOnce(makeCardsQuery(persisted))
   deckQueryMock.mockReturnValue(dq)
   const controller = useCardListController({ deck_id: 10 })
-  controller.deck_query = dq
-  return controller
+  return {
+    ...controller,
+    ...controller.list,
+    ...controller.selection,
+    ...controller.carousel,
+    ...controller.actions,
+    deck_query: dq
+  }
 }
 
 describe('useCardListController', () => {
@@ -511,7 +520,7 @@ describe('useCardListController', () => {
   // ── intent handlers — onCancel / onSelectCard / onDeleteCards / onMoveCards ─
 
   describe('intent handlers', () => {
-    test('onCancel resets mode to view, exits selection, clears selection, and refetches', async () => {
+    test('onCancel resets mode to view, exits selection, and clears selection', async () => {
       const deck_query = makeDeckQuery()
       const ctrl = makeController([makeCard({ id: 1 })], [1], deck_query)
       ctrl.selectCard(1)
@@ -521,7 +530,7 @@ describe('useCardListController', () => {
       expect(ctrl.mode.value).toBe('view')
       expect(ctrl.is_selecting.value).toBe(false)
       expect(ctrl.selected_card_ids.value).toEqual([])
-      expect(deck_query.refetch).toHaveBeenCalledOnce()
+      expect(deck_query.refetch).not.toHaveBeenCalled()
     })
 
     test('onSelectCard toggles the id and enters selection mode without changing the editor mode', () => {
@@ -667,7 +676,8 @@ describe('useCardListController', () => {
       cardsInfiniteQueryMock.mockReturnValueOnce(cards_query)
       const dq = makeDeckQuery(card_count ?? ids.length)
       deckQueryMock.mockReturnValue(dq)
-      const controller = useCardListController({ deck_id: 10 })
+      const root = useCardListController({ deck_id: 10 })
+      const controller = { ...root, ...root.list, ...root.selection, ...root.carousel }
       return { controller, cards_query, deck_query: dq }
     }
 
@@ -749,14 +759,12 @@ describe('useCardListController', () => {
       expect(controller.page.value).toBe(0)
     })
 
-    test('can_prev_page and can_next_page are true only when total_pages > 1', () => {
+    test('can_paginate is true only when total_pages > 1', () => {
       const { controller } = makePagingController({ card_count: 5 })
       controller.setVisibleCapacity(10)
-      expect(controller.can_prev_page.value).toBe(false)
-      expect(controller.can_next_page.value).toBe(false)
+      expect(controller.can_paginate.value).toBe(false)
       controller.setVisibleCapacity(2)
-      expect(controller.can_prev_page.value).toBe(true)
-      expect(controller.can_next_page.value).toBe(true)
+      expect(controller.can_paginate.value).toBe(true)
     })
 
     test('page is clamped when total_pages shrinks below the current page', async () => {

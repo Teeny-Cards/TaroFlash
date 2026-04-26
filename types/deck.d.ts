@@ -27,6 +27,8 @@ type Deck = {
   card_count?: number
 }
 
+type CardEditorMode = 'view' | 'edit' | 'import-export'
+
 type DeckStudyMode = 'flashcard'
 
 type DeckConfig = {

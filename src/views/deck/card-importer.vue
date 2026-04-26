@@ -31,8 +31,7 @@ async function onSave() {
   if (!has_unsaved_changes.value || saving.value) return
 
   saving.value = true
-  if (deck_id.value === undefined) return
-  await bulk_insert_mutation.mutateAsync({ deck_id: deck_id.value, cards: cards.value })
+  await bulk_insert_mutation.mutateAsync({ deck_id, cards: cards.value })
   saving.value = false
   cards.value = []
 }

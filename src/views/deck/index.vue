@@ -6,15 +6,15 @@ import CardEditor from './card-editor/index.vue'
 import CardGrid from './card-grid/index.vue'
 import CardImporter from './card-importer.vue'
 import { useDeckQuery } from '@/api/decks'
-import {
-  useCardListController,
-  type CardEditorMode
-} from '@/composables/card-editor/card-list-controller'
+import { useCardListController } from '@/composables/card-editor/card-list-controller'
 import UiButton from '@/components/ui-kit/button.vue'
+import { useI18n } from 'vue-i18n'
 
 const { id: deck_id } = defineProps<{
   id: string
 }>()
+
+const { t } = useI18n()
 
 const image_url = ref<string | undefined>()
 
@@ -33,15 +33,7 @@ const mode_components: { [key in CardEditorMode]: any } = {
   'import-export': CardImporter
 }
 
-const is_empty = computed(() => !editor.isLoading.value && editor.all_cards.value.length === 0)
-
-function onToggleEditCards() {
-  if (editor.mode.value === 'edit') {
-    editor.setMode('view')
-  } else {
-    editor.setMode('edit')
-  }
-}
+const is_empty = computed(() => !editor.isLoading.value && editor.list.all_cards.value.length === 0)
 </script>
 
 <template>
@@ -54,8 +46,6 @@ function onToggleEditCards() {
       class="xl:sticky top-(--nav-height)"
       :deck="deck"
       :image-url="image_url"
-      :mode="editor.mode.value"
-      @toggle-edit-cards="onToggleEditCards"
     />
 
     <div
@@ -69,8 +59,10 @@ function onToggleEditCards() {
         :class="{ 'opacity-0 pointer-events-none': editor.mode.value !== 'view' }"
         icon-only
         icon-left="arrow-left"
-        @click="editor.prevPage()"
-      ></ui-button>
+        @click="editor.carousel.prevPage()"
+      >
+        {{ t('common.previous') }}
+      </ui-button>
 
       <div v-if="is_empty" data-testid="deck-view__empty" class="row-start-2 col-start-2" />
       <component v-else :is="mode_components[editor.mode.value]" class="row-start-2 col-start-2" />
@@ -81,8 +73,10 @@ function onToggleEditCards() {
         :class="{ 'opacity-0 pointer-events-none': editor.mode.value !== 'view' }"
         icon-only
         icon-left="arrow-right"
-        @click="editor.nextPage()"
-      ></ui-button>
+        @click="editor.carousel.nextPage()"
+      >
+        {{ t('common.next') }}
+      </ui-button>
     </div>
   </section>
 </template>
