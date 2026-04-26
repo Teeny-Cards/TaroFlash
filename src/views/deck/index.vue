@@ -10,6 +10,7 @@ import {
   useCardListController,
   type CardEditorMode
 } from '@/composables/card-editor/card-list-controller'
+import UiButton from '@/components/ui-kit/button.vue'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -57,10 +58,31 @@ function onToggleEditCards() {
       @toggle-edit-cards="onToggleEditCards"
     />
 
-    <div class="md:h-full relative flex w-full flex-col items-center gap-4">
-      <mode-toolbar />
-      <div v-if="is_empty" data-testid="deck-view__empty" />
-      <component v-else :is="mode_components[editor.mode.value]" />
+    <div
+      class="md:h-full relative w-full grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr] gap-4 pb-4"
+    >
+      <mode-toolbar class="col-start-2" />
+
+      <ui-button
+        data-theme="brown-300"
+        class="col-start-1 row-start-2 self-center"
+        :class="{ 'opacity-0 pointer-events-none': editor.mode.value !== 'view' }"
+        icon-only
+        icon-left="arrow-left"
+        @click="editor.prevPage()"
+      ></ui-button>
+
+      <div v-if="is_empty" data-testid="deck-view__empty" class="row-start-2 col-start-2" />
+      <component v-else :is="mode_components[editor.mode.value]" class="row-start-2 col-start-2" />
+
+      <ui-button
+        data-theme="brown-300"
+        class="row-start-2 self-center col-start-3"
+        :class="{ 'opacity-0 pointer-events-none': editor.mode.value !== 'view' }"
+        icon-only
+        icon-left="arrow-right"
+        @click="editor.nextPage()"
+      ></ui-button>
     </div>
   </section>
 </template>

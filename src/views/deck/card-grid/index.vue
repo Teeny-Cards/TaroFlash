@@ -33,8 +33,10 @@ observeSentinel(sentinel)
 const { gridStyle, capacity } = useGridCapacity({
   grid,
   bounds: grid_wrapper,
-  trackMin: () => (isSm.value ? 192 : 176),
-  gap: () => (isMd.value ? 16 : 8)
+  trackMin: () => (isSm.value ? 170 : 176),
+  trackFloor: 160,
+  gap: () => (isMd.value ? 12 : 8),
+  fit: () => isMd.value
 })
 
 // only push capacity into the controller while the carousel is active —
@@ -60,7 +62,7 @@ const emit = defineEmits<{
 <template>
   <div
     data-testid="card-grid-container"
-    class="flex flex-col items-center w-full max-w-208 xl:max-w-full md:flex-1 md:min-h-0 md:overflow-hidden"
+    class="flex flex-col items-center w-full md:flex-1 md:min-h-0 md:overflow-hidden"
   >
     <div
       ref="grid_wrapper"
