@@ -20,7 +20,7 @@ const color = computed(() => {
     case 'info':
       return 'bg-blue-500'
     case 'warn':
-      return 'bg-orange-500'
+      return 'bg-yellow-500'
     case 'error':
       return 'bg-red-500'
     default:

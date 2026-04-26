@@ -13,8 +13,15 @@ const { card, index } = defineProps<{
   duplicate: boolean
 }>()
 
-const { mode, isCardSelected, appendCard, prependCard, onDeleteCards, onMoveCards, onSelectCard } =
-  inject<CardListController>('card-editor')!
+const {
+  is_selecting,
+  isCardSelected,
+  appendCard,
+  prependCard,
+  onDeleteCards,
+  onMoveCards,
+  onSelectCard
+} = inject<CardListController>('card-editor')!
 
 const list_item_card = useTemplateRef('list-item-card')
 
@@ -23,8 +30,7 @@ const selected = computed(() => isCardSelected(card.id!))
 function onClick(e: MouseEvent) {
   const closest = (selector: string) => !!(e.target as HTMLElement)?.closest(selector)
 
-  // If we're in select mode, select the card and blur the active element
-  if (mode.value === 'select') {
+  if (is_selecting.value) {
     onSelectCard(card.id!)
     ;(document.activeElement as HTMLElement)?.blur?.()
     return
@@ -52,9 +58,9 @@ function onClick(e: MouseEvent) {
     :data-id="card.id"
     class="group/listitem relative grid w-full grid-cols-[1fr_auto_1fr] gap-x-6 place-items-center rounded-6 bg-transparent p-0 sm:p-6 transition-colors duration-100 ease-in-out hover:not-focus-within:bg-brown-200 dark:hover:not-focus-within:bg-grey-700 [content-visibility:auto] [contain-intrinsic-size:auto_407px]"
     :class="{
-      'cursor-pointer': mode === 'select',
+      'cursor-pointer': is_selecting,
       'focus-within:bg-brown-300 hover:focus-within:bg-brown-300 dark:focus-within:bg-blue-650 dark:hover:focus-within:bg-blue-650':
-        mode !== 'select'
+        !is_selecting
     }"
     @mousedown="onClick"
   >
@@ -67,12 +73,12 @@ function onClick(e: MouseEvent) {
         src="reorder"
         class="hidden"
         :class="{
-          'group-hover/listitem:block group-focus-within/listitem:block': mode !== 'select'
+          'group-hover/listitem:block group-focus-within/listitem:block': !is_selecting
         }"
       />
       <span
         :class="{
-          'group-focus-within/listitem:hidden group-hover/listitem:hidden': mode !== 'select'
+          'group-focus-within/listitem:hidden group-hover/listitem:hidden': !is_selecting
         }"
       >
         {{ index + 1 }}
@@ -82,7 +88,7 @@ function onClick(e: MouseEvent) {
     <list-item-card ref="list-item-card" :card="card" :duplicate="duplicate" />
 
     <item-options
-      v-if="mode !== 'select'"
+      v-if="!is_selecting"
       class="hidden sm:grid opacity-0 pointer-events-none transition-opacity duration-100 ease-in-out group-hover/listitem:opacity-100 group-hover/listitem:pointer-events-auto group-focus-within/listitem:opacity-100 group-focus-within/listitem:pointer-events-auto row-span-2"
       @select="onSelectCard(card.id!)"
       @move="onMoveCards(card.id!)"
@@ -91,21 +97,21 @@ function onClick(e: MouseEvent) {
     <ui-radio v-else :checked="selected" />
 
     <ui-button
-      v-if="mode !== 'select'"
+      v-if="!is_selecting"
       data-testid="card-list-item__add-above"
       icon-left="add"
       icon-only
-      theme="brown-100"
+      data-theme="brown-100"
       size="xs"
       class="absolute! z-1 top-0 -translate-y-1/2 opacity-0 pointer-events-none transition-opacity duration-100 ease-in-out group-hover/listitem:opacity-100 group-hover/listitem:pointer-events-auto group-focus-within/listitem:opacity-100 group-focus-within/listitem:pointer-events-auto *:[.btn-icon]:text-brown-500"
       @click.stop="prependCard(card.id!)"
     />
     <ui-button
-      v-if="mode !== 'select'"
+      v-if="!is_selecting"
       data-testid="card-list-item__add-below"
       icon-left="add"
       icon-only
-      theme="brown-100"
+      data-theme="brown-100"
       size="xs"
       class="absolute! z-1 bottom-0 translate-y-1/2 opacity-0 pointer-events-none transition-opacity duration-100 ease-in-out group-hover/listitem:opacity-100 group-hover/listitem:pointer-events-auto group-focus-within/listitem:opacity-100 group-focus-within/listitem:pointer-events-auto *:[.btn-icon]:text-brown-500"
       @click.stop="appendCard(card.id!)"

@@ -39,8 +39,8 @@ const grid_cols = computed(() => (size === 'lg' ? 'grid-cols-4' : 'grid-cols-6')
           @click="open = !open"
           :icon-left="icon"
           icon-only
-          theme="brown-100"
-          theme-dark="blue-800"
+          data-theme="brown-100"
+          data-theme-dark="blue-800"
           size="lg"
           :mobile-tooltip="false"
         >

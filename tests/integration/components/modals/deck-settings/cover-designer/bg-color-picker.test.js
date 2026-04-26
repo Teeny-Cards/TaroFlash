@@ -29,7 +29,7 @@ const UiSliderStub = defineComponent({
   }
 })
 
-const DEFAULT_THEMES = ['blue-500', 'green-400', 'purple-500', 'pink-400', 'red-500', 'orange-500']
+const DEFAULT_THEMES = ['blue-500', 'green-400', 'purple-500', 'pink-400', 'red-500', 'yellow-500']
 
 function makePicker(props = {}) {
   return shallowMount(BgColorPicker, {

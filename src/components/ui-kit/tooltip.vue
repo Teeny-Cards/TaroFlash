@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useTemplateRef } from 'vue'
+import { computed, ref, useTemplateRef, watch, onBeforeUnmount } from 'vue'
 import { useFloating, flip, autoUpdate, offset, type Placement } from '@floating-ui/vue'
+import { useMediaQuery } from '@/composables/use-media-query'
 
 const {
   text,
@@ -8,7 +9,8 @@ const {
   gap = 0,
   fallback_placements = ['right', 'left', 'top', 'bottom'],
   element = 'div',
-  theme = 'brown-100',
+  visible = false,
+  suppress = false,
   static_on_mobile = false
 } = defineProps<{
   text?: string
@@ -17,18 +19,26 @@ const {
   fallback_placements?: Placement[]
   element?: 'div' | 'span' | 'button' | 'label'
   visible?: boolean
-  disabled?: boolean
-  theme?: MemberTheme
+  suppress?: boolean
   static_on_mobile?: boolean
 }>()
 
 const triggerRef = useTemplateRef<HTMLElement>('ui-tooltip-trigger')
 const popoverRef = useTemplateRef<HTMLElement>('ui-tooltip')
 
-const { floatingStyles } = useFloating(triggerRef, popoverRef, {
+const is_active = ref(false)
+const is_coarse_pointer = useMediaQuery('coarse')
+
+// gates both DOM mount (v-if) and autoUpdate — keeps unused tooltips out of
+// the DOM entirely so switching modes doesn't pay the cost of mounting N
+// teleported popovers up front
+const should_show = computed(
+  () => !suppress && (visible || is_active.value || (static_on_mobile && is_coarse_pointer.value))
+)
+
+const { floatingStyles, update } = useFloating(triggerRef, popoverRef, {
   placement: position,
   strategy: 'fixed',
-  whileElementsMounted: autoUpdate,
   middleware: [
     offset(() => gap),
     flip({
@@ -36,74 +46,65 @@ const { floatingStyles } = useFloating(triggerRef, popoverRef, {
     })
   ]
 })
+
+let stop_auto_update: (() => void) | null = null
+
+watch(
+  () => ({
+    show: should_show.value,
+    trigger: triggerRef.value,
+    popover: popoverRef.value
+  }),
+  ({ show, trigger, popover }) => {
+    stop_auto_update?.()
+    stop_auto_update = null
+    if (show && trigger && popover) {
+      stop_auto_update = autoUpdate(trigger, popover, update)
+    }
+  },
+  { flush: 'post' }
+)
+
+onBeforeUnmount(() => stop_auto_update?.())
 </script>
 
 <template>
-  <component :is="element" ref="ui-tooltip-trigger" class="ui-tooltip-trigger" v-bind="$attrs">
-    <slot></slot>
-  </component>
-
-  <div
-    v-if="!disabled"
-    ref="ui-tooltip"
-    :style="floatingStyles"
-    class="ui-tooltip"
-    :class="[
-      { 'ui-tooltip--visible': visible },
-      `ui-tooltip--${theme} ui-tooltip--${static_on_mobile ? 'static' : 'dynamic'}`
-    ]"
+  <component
+    :is="element"
+    ref="ui-tooltip-trigger"
+    class="ui-tooltip-trigger"
+    @mouseenter="is_active = true"
+    @mouseleave="is_active = false"
+    @focusin="is_active = true"
+    @focusout="is_active = false"
   >
-    {{ text }}
-  </div>
+    <slot></slot>
+    <Teleport v-if="should_show" to="body">
+      <div
+        ref="ui-tooltip"
+        data-theme="white"
+        data-theme-dark="brown-100"
+        :style="floatingStyles"
+        class="ui-tooltip ui-tooltip--visible bg-(--theme-primary) text-(--theme-on-primary) rounded-full py-1.5 px-2 text-sm pointer-events-none z-100 select-none"
+      >
+        <slot name="tooltip">{{ text }}</slot>
+      </div>
+    </Teleport>
+  </component>
 </template>
 
 <style>
 .ui-tooltip {
   display: none;
-
-  --tooltip-bg: var(--color-brown-100);
-  --tooltip-color: var(--color-brown-700);
-
-  background-color: var(--tooltip-bg);
-  border-radius: var(--radius-full);
-  padding: 6px 8px;
-
-  font-size: var(--text-sm);
-  line-height: var(--text-sm--line-height);
-  color: var(--tooltip-color);
-
-  pointer-events: none;
-  z-index: 10;
-  user-select: none;
 }
 
 .ui-tooltip--visible {
   display: block;
 }
 
-@media (pointer: fine) {
-  .ui-tooltip-trigger:hover + .ui-tooltip,
-  .ui-tooltip-trigger:focus + .ui-tooltip {
-    display: block;
-  }
-}
-
 @media (pointer: coarse) {
   .ui-tooltip--static {
     display: block;
   }
-}
-
-.ui-tooltip--brown-100 {
-  --tooltip-bg: var(--color-brown-100);
-  --tooltip-color: var(--color-brown-700);
-}
-.ui-tooltip--white {
-  --tooltip-bg: var(--color-white);
-  --tooltip-color: var(--color-brown-700);
-}
-.ui-tooltip--red-500 {
-  --tooltip-bg: var(--color-white);
-  --tooltip-color: var(--color-red-500);
 }
 </style>

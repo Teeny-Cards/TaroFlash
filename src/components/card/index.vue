@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import CardFace from './card-face.vue'
 import CardCover from './card-cover.vue'
-import { type CardEditorMode } from '@/composables/card-editor/card-list-controller'
 import { type CardBase } from '@type/card'
 import { getImageUrl } from '@/api/media'
 import { type SfxOptions } from '@/sfx/directive'
@@ -10,7 +9,7 @@ import { gsap } from 'gsap'
 
 type CardProps = Partial<CardBase> & {
   size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
-  mode?: CardEditorMode
+  mode?: 'view' | 'edit'
   side?: 'front' | 'back' | 'cover'
   cover_config?: DeckCover
   card_attributes?: DeckCardAttributes
@@ -196,8 +195,8 @@ function onLeave(el: Element, done: () => void) {
 }
 
 [data-theme='dark'] .card-container {
-  --card-bg-color: var(--color-brown-300);
-  --card-text-color: var(--color-brown-800);
+  --card-bg-color: var(--color-grey-750);
+  --card-text-color: var(--color-brown-100);
   --card-text-color--placeholder: var(--color-brown-500);
 }
 </style>

@@ -124,7 +124,7 @@ async function onSave() {
 
     <template #footer>
       <div data-testid="deck-settings__footer" class="px-4 pb-4">
-        <ui-button size="xl" @click="onSave" full-width>
+        <ui-button data-theme="blue-500" size="xl" @click="onSave" full-width>
           {{ deck ? t('common.save') : t('common.create') }}
         </ui-button>
       </div>

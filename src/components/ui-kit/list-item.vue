@@ -104,7 +104,7 @@ function onMouseEnter() {
   --primary-color: var(--color-green-400);
 }
 .ui-kit-list-item__background--orange {
-  --primary-color: var(--color-orange-400);
+  --primary-color: var(--color-yellow-400);
 }
 .ui-kit-list-item__background--red {
   --primary-color: var(--color-red-500);

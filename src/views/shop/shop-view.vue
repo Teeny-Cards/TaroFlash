@@ -58,11 +58,11 @@ async function submitPurchase(item: ShopItem) {
 
 <template>
   <div class="flex flex-col items-center gap-16 pt-4">
-    <div class="rounded-4 h-34 w-full bg-orange-500"></div>
+    <div class="rounded-4 h-34 w-full bg-yellow-500"></div>
     <div class="flex w-full flex-col items-center justify-center gap-2.5">
       <div class="flex items-center gap-2.5 text-2xl">
         <h2 class="nav-item bg-pink selected">Power Ups</h2>
-        <h2 class="nav-item bg-orange-500">Stationary</h2>
+        <h2 class="nav-item bg-yellow-500">Stationary</h2>
         <h2 class="nav-item bg-green-400">Stickers</h2>
         <h2 class="nav-item bg-arctic">Misclaneous</h2>
       </div>

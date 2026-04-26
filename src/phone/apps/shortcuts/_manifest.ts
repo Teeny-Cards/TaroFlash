@@ -9,6 +9,6 @@ export default {
   launcher: {
     icon_src: 'shortcuts',
     hover_icon_src: 'shortcuts-hover',
-    theme: 'orange-500'
+    theme: 'yellow-500'
   }
 } satisfies Omit<ViewApp, 'id'>

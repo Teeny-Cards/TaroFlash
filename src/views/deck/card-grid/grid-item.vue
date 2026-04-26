@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import Card from '@/components/card/index.vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
-import { type CardEditorMode } from '@/composables/card-editor/card-list-controller'
 
-const { card, side, mode } = defineProps<{
+const { card, side, is_selecting } = defineProps<{
   card: Card
-  mode: CardEditorMode
+  is_selecting: boolean
   side: 'front' | 'back'
   selected: boolean
   card_attributes?: DeckCardAttributes
@@ -21,14 +20,14 @@ const emit = defineEmits<{
     <card
       v-bind="card"
       :class="{
-        'cursor-pointer hover:[&>.card-face]:border-purple-500!': mode === 'select'
+        'cursor-pointer hover:[&>.card-face]:border-purple-500!': is_selecting
       }"
       class="grid-item__card"
       size="xl"
       :side="side"
       :card_attributes="card_attributes"
     >
-      <div v-if="mode === 'select'" class="absolute top-0 right-0">
+      <div v-if="is_selecting" class="absolute top-0 right-0">
         <ui-radio :checked="selected" @click.stop="emit('card-selected')" />
       </div>
     </card>

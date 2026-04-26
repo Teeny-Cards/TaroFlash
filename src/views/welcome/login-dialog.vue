@@ -43,7 +43,7 @@ async function onSubmit(): Promise<void> {
   >
     <div class="flex flex-col items-center gap-6">
       <ui-button
-        theme="brown-100"
+        data-theme="brown-100"
         size="lg"
         :fancy-hover="false"
         class="w-full!"
@@ -76,7 +76,13 @@ async function onSubmit(): Promise<void> {
           />
         </div>
 
-        <ui-button size="lg" :loading="loading" class="w-full!" @click="onSubmit">
+        <ui-button
+          size="lg"
+          data-theme="blue-500"
+          :loading="loading"
+          class="w-full!"
+          @click="onSubmit"
+        >
           {{ t('login-dialog.lets-go') }}
         </ui-button>
       </form>
