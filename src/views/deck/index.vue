@@ -51,13 +51,13 @@ const { prev_page_number, next_page_number } = editor.carousel
     />
 
     <div
-      class="md:h-full relative w-full grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr] gap-4 pb-4"
+      class="md:h-full relative w-full grid grid-cols-1 sm:grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr] gap-4 pb-4"
     >
-      <mode-toolbar class="col-start-2" />
+      <mode-toolbar class="sm:col-start-2" />
 
       <ui-button
         data-theme="brown-300"
-        class="col-start-1 row-start-2 self-center"
+        class="sm:col-start-1 sm:row-start-2 self-center max-sm:hidden!"
         :class="{ 'opacity-0 pointer-events-none': editor.mode.value !== 'view' }"
         icon-only
         icon-left="arrow-left"
@@ -66,12 +66,16 @@ const { prev_page_number, next_page_number } = editor.carousel
         {{ t('deck-view.actions.prev-page', { page: prev_page_number }) }}
       </ui-button>
 
-      <div v-if="is_empty" data-testid="deck-view__empty" class="row-start-2 col-start-2" />
-      <component v-else :is="mode_components[editor.mode.value]" class="row-start-2 col-start-2" />
+      <div v-if="is_empty" data-testid="deck-view__empty" class="sm:row-start-2 sm:col-start-2" />
+      <component
+        v-else
+        :is="mode_components[editor.mode.value]"
+        class="sm:row-start-2 sm:col-start-2"
+      />
 
       <ui-button
         data-theme="brown-300"
-        class="row-start-2 self-center col-start-3"
+        class="sm:row-start-2 self-center sm:col-start-3 max-sm:hidden!"
         :class="{ 'opacity-0 pointer-events-none': editor.mode.value !== 'view' }"
         icon-only
         icon-left="arrow-right"

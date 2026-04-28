@@ -30,7 +30,7 @@ const {
   fancyHover = true,
   sfx = {},
   fullWidth = false,
-  mobileTooltip = true
+  mobileTooltip = false
 } = defineProps<ButtonProps>()
 
 const slots = useSlots()
