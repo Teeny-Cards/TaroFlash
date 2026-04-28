@@ -143,6 +143,22 @@ describe('UiPopover', () => {
 
   // ── close event on outside click ───────────────────────────────────────────
 
+  test('outside-click listener fires in capture phase (sees clicks even when stopPropagation is used)', async () => {
+    const wrapper = mountPopover({ open: false, mode: 'click' }, {}, { attachTo: document.body })
+    await wrapper.setProps({ open: true })
+
+    const outside = document.createElement('button')
+    document.body.appendChild(outside)
+
+    // Simulate a child handler that swallows bubble-phase events.
+    outside.addEventListener('click', (e) => e.stopPropagation())
+    outside.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    await nextTick()
+
+    outside.remove()
+    expect(wrapper.emitted('close')).toHaveLength(1)
+  })
+
   test('emits close when a click occurs outside the container (mode=click)', async () => {
     // The watcher only registers the click listener on the open false→true transition.
     const wrapper = mountPopover({ open: false, mode: 'click' }, {}, { attachTo: document.body })
