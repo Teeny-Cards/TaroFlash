@@ -55,13 +55,9 @@ const emit = defineEmits<{
 <template>
   <div
     data-testid="card-grid-container"
-    class="flex flex-col items-center w-full md:flex-1 md:min-h-0 md:overflow-hidden"
+    class="flex flex-col items-center w-full md:flex-1 md:min-h-0"
   >
-    <div
-      ref="grid_wrapper"
-      data-testid="card-grid__wrapper"
-      class="w-full md:flex-1 md:min-h-0 md:overflow-hidden"
-    >
+    <div ref="grid_wrapper" data-testid="card-grid__wrapper" class="w-full md:flex-1 md:min-h-0">
       <Transition
         :css="false"
         mode="out-in"
@@ -87,6 +83,7 @@ const emit = defineEmits<{
               @card-selected="emit('card-selected', card.id!)"
             ></grid-item>
           </template>
+
           <template v-else>
             <div
               v-for="n in Math.max(capacity, page_size, 1)"
@@ -98,6 +95,7 @@ const emit = defineEmits<{
         </div>
       </Transition>
     </div>
+
     <div
       v-if="!isMd && hasNextPage"
       ref="sentinel"
