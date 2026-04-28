@@ -3,18 +3,15 @@ import toolbarBase from './toolbar-base.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiTag from '@/components/ui-kit/tag.vue'
 import { useI18n } from 'vue-i18n'
-import { computed, inject } from 'vue'
+import { inject } from 'vue'
 import { type CardListController } from '@/composables/card-editor/card-list-controller'
 
 const { t } = useI18n()
 
 const { list, carousel } = inject<CardListController>('card-editor')!
 const { addCard } = list
-const { page, total_pages, prevPage, nextPage, can_paginate } = carousel
-
-const prev_page_number = computed(() => (page.value === 0 ? total_pages.value : page.value))
-
-const next_page_number = computed(() => (page.value === total_pages.value - 1 ? 1 : page.value + 2))
+const { page, total_pages, prev_page_number, next_page_number, prevPage, nextPage, can_paginate } =
+  carousel
 </script>
 
 <template>

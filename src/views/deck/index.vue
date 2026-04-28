@@ -35,15 +35,7 @@ const mode_components: { [key in CardEditorMode]: any } = {
 
 const is_empty = computed(() => !editor.isLoading.value && editor.list.all_cards.value.length === 0)
 
-const prev_page_number = computed(() => {
-  const { page, total_pages } = editor.carousel
-  return page.value === 0 ? total_pages.value : page.value
-})
-
-const next_page_number = computed(() => {
-  const { page, total_pages } = editor.carousel
-  return page.value === total_pages.value - 1 ? 1 : page.value + 2
-})
+const { prev_page_number, next_page_number } = editor.carousel
 </script>
 
 <template>

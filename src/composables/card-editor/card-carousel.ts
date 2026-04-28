@@ -37,6 +37,13 @@ export function useCardCarousel({ list, cards_query, card_count }: Args) {
   const total_pages = computed(() => Math.max(1, Math.ceil(card_count.value / page_size.value)))
   const can_paginate = computed(() => total_pages.value > 1)
 
+  // 1-based labels for "previous"/"next" buttons. Wrap so the prev label on
+  // page 0 reads as the last page, and next on the last page reads as 1.
+  const prev_page_number = computed(() => (page.value === 0 ? total_pages.value : page.value))
+  const next_page_number = computed(() =>
+    page.value === total_pages.value - 1 ? 1 : page.value + 2
+  )
+
   const visible_cards = computed(() => {
     if (visible_capacity.value === 0) return list.all_cards.value.slice(0, 1)
     const start = page.value * page_size.value
@@ -97,6 +104,8 @@ export function useCardCarousel({ list, cards_query, card_count }: Args) {
     visible_cards,
     is_page_loading,
     can_paginate,
+    prev_page_number,
+    next_page_number,
     setVisibleCapacity,
     prevPage,
     nextPage
