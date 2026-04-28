@@ -40,9 +40,10 @@ function onToggleEditCards() {
       <template #actions>
         <ui-button
           data-testid="deck-hero__settings-button"
+          data-theme="blue-500"
+          data-theme-dark="blue-650"
           icon-left="build"
           class="absolute! -top-2.5 -left-2.5"
-          size="sm"
           icon-only
           @click="onSettingsClicked"
           >{{ t('deck.settings-modal.title') }}</ui-button
