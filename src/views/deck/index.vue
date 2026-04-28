@@ -34,6 +34,16 @@ const mode_components: { [key in CardEditorMode]: any } = {
 }
 
 const is_empty = computed(() => !editor.isLoading.value && editor.list.all_cards.value.length === 0)
+
+const prev_page_number = computed(() => {
+  const { page, total_pages } = editor.carousel
+  return page.value === 0 ? total_pages.value : page.value
+})
+
+const next_page_number = computed(() => {
+  const { page, total_pages } = editor.carousel
+  return page.value === total_pages.value - 1 ? 1 : page.value + 2
+})
 </script>
 
 <template>
@@ -61,7 +71,7 @@ const is_empty = computed(() => !editor.isLoading.value && editor.list.all_cards
         icon-left="arrow-left"
         @click="editor.carousel.prevPage()"
       >
-        {{ t('common.previous') }}
+        {{ t('deck-view.actions.prev-page', { page: prev_page_number }) }}
       </ui-button>
 
       <div v-if="is_empty" data-testid="deck-view__empty" class="row-start-2 col-start-2" />
@@ -75,7 +85,7 @@ const is_empty = computed(() => !editor.isLoading.value && editor.list.all_cards
         icon-left="arrow-right"
         @click="editor.carousel.nextPage()"
       >
-        {{ t('common.next') }}
+        {{ t('deck-view.actions.next-page', { page: next_page_number }) }}
       </ui-button>
     </div>
   </section>
