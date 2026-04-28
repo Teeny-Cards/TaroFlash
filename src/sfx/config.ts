@@ -44,7 +44,10 @@ export const AUDIO_CONFIG = createAudioConfig({
     music_plink_mid: {},
     music_plink_chordyes: {},
     music_pizz_duo_hi: {},
-    music_pizz_prompt: {}
+    music_pizz_prompt: {},
+    tap_03: {},
+    tap_04: {},
+    tap_05: {}
   }
 })
 
