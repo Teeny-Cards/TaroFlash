@@ -139,6 +139,33 @@ describe('useCardCarousel', () => {
     })
   })
 
+  // ── prev/next page-number labels ─────────────────────────────────────────
+
+  describe('prev_page_number / next_page_number', () => {
+    test('prev wraps to the last page when on page 0', () => {
+      const { carousel } = makeCarousel({ card_count: 30 })
+      carousel.setVisibleCapacity(10) // total_pages = 3
+      expect(carousel.page.value).toBe(0)
+      expect(carousel.prev_page_number.value).toBe(3)
+    })
+
+    test('next wraps to 1 when on the last page', () => {
+      const { carousel } = makeCarousel({ card_count: 30 })
+      carousel.setVisibleCapacity(10) // total_pages = 3
+      carousel.nextPage()
+      carousel.nextPage() // page = 2 (last)
+      expect(carousel.next_page_number.value).toBe(1)
+    })
+
+    test('mid-range labels reflect 1-based neighbors', () => {
+      const { carousel } = makeCarousel({ card_count: 30 })
+      carousel.setVisibleCapacity(10)
+      carousel.nextPage() // page = 1
+      expect(carousel.prev_page_number.value).toBe(1)
+      expect(carousel.next_page_number.value).toBe(3)
+    })
+  })
+
   // ── is_page_loading ──────────────────────────────────────────────────────
 
   describe('is_page_loading', () => {
