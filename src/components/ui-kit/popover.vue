@@ -72,7 +72,7 @@ const { placement, middlewareData, floatingStyles } = useFloating(triggerRef, po
 
 onUnmounted(() => {
   if (mode === 'click') {
-    document.removeEventListener('click', onPageClick)
+    document.removeEventListener('click', onPageClick, true)
   }
 })
 
@@ -99,7 +99,7 @@ function onPageClick(e: Event): void {
 
   if (!target.closest(`[data-id="${id}"]`)) {
     emit('close')
-    document.removeEventListener('click', onPageClick)
+    document.removeEventListener('click', onPageClick, true)
   }
 }
 
@@ -107,9 +107,9 @@ watch(
   () => open,
   (new_open, prev_open) => {
     if (new_open && !prev_open) {
-      document.addEventListener('click', onPageClick)
+      document.addEventListener('click', onPageClick, true)
     } else if (!new_open && prev_open) {
-      document.removeEventListener('click', onPageClick)
+      document.removeEventListener('click', onPageClick, true)
     }
   }
 )
@@ -120,7 +120,7 @@ watch(
     data-testid="ui-kit-popover-container"
     :data-id="id"
     ref="triggerRef"
-    class="ui-kit-popover-container group"
+    class="ui-kit-popover-container"
     :class="[`ui-kit-popover-container--${mode}`, { 'ui-kit-popover-container--open': open }]"
   >
     <slot name="trigger"></slot>
