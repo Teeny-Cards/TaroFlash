@@ -2,6 +2,8 @@
 import Card from '@/components/card/index.vue'
 import UiRadio from '@/components/ui-kit/radio.vue'
 import GridItemMenu from './grid-item-menu.vue'
+import { emitSfx } from '@/sfx/bus'
+import { ref } from 'vue'
 
 const { card, side, is_selecting } = defineProps<{
   card: Card
@@ -14,28 +16,33 @@ const { card, side, is_selecting } = defineProps<{
 const emit = defineEmits<{
   (e: 'card-selected'): void
 }>()
+
+const active_side = ref(side)
+
+function onCardClick() {
+  if (is_selecting) return
+  active_side.value = active_side.value === 'front' ? 'back' : 'front'
+  emitSfx(active_side.value === 'back' ? 'ui.transition_up' : 'ui.transition_down')
+}
 </script>
 
 <template>
-  <div class="group relative w-full max-w-78.5" data-testid="grid-item-wrapper">
-    <div
-      class="grid-item relative aspect-card w-full overflow-hidden [content-visibility:auto] [contain-intrinsic-size:auto_220px]"
+  <div data-testid="grid-item" class="grid-item relative aspect-card w-full group">
+    <card
+      v-bind="card"
+      :class="{
+        'hover:[&>.card-face]:border-purple-500!': is_selecting
+      }"
+      class="grid-item__card cursor-pointer"
+      size="xl"
+      :side="active_side"
+      :card_attributes="card_attributes"
+      @click="onCardClick"
     >
-      <card
-        v-bind="card"
-        :class="{
-          'cursor-pointer hover:[&>.card-face]:border-purple-500!': is_selecting
-        }"
-        class="grid-item__card"
-        size="xl"
-        :side="side"
-        :card_attributes="card_attributes"
-      >
-        <div v-if="is_selecting" class="absolute top-0 right-0">
-          <ui-radio :checked="selected" @click.stop="emit('card-selected')" />
-        </div>
-      </card>
-    </div>
+      <div v-if="is_selecting" class="absolute top-0 right-0">
+        <ui-radio :checked="selected" @click.stop="emit('card-selected')" />
+      </div>
+    </card>
 
     <grid-item-menu v-if="!is_selecting" />
   </div>
