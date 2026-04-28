@@ -3,7 +3,7 @@ import toolbarBase from './toolbar-base.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiTag from '@/components/ui-kit/tag.vue'
 import { useI18n } from 'vue-i18n'
-import { inject } from 'vue'
+import { computed, inject } from 'vue'
 import { type CardListController } from '@/composables/card-editor/card-list-controller'
 
 const { t } = useI18n()
@@ -11,6 +11,10 @@ const { t } = useI18n()
 const { list, carousel } = inject<CardListController>('card-editor')!
 const { addCard } = list
 const { page, total_pages, prevPage, nextPage, can_paginate } = carousel
+
+const prev_page_number = computed(() => (page.value === 0 ? total_pages.value : page.value))
+
+const next_page_number = computed(() => (page.value === total_pages.value - 1 ? 1 : page.value + 2))
 </script>
 
 <template>
@@ -20,7 +24,7 @@ const { page, total_pages, prevPage, nextPage, can_paginate } = carousel
         data-testid="mode-view__search-button"
         data-theme="brown-300"
         data-theme-dark="grey-800"
-        size="xs"
+        size="sm"
         icon-left="search"
         icon-only
       >
@@ -31,7 +35,7 @@ const { page, total_pages, prevPage, nextPage, can_paginate } = carousel
         data-testid="mode-view__add-card-button"
         data-theme="blue-500"
         data-theme-dark="blue-650"
-        size="xs"
+        size="sm"
         icon-left="add"
         @click="addCard()"
       >
@@ -45,7 +49,7 @@ const { page, total_pages, prevPage, nextPage, can_paginate } = carousel
           data-testid="mode-view__page-counter"
           data-theme="green-400"
           data-theme-dark="green-800"
-          class="bgx-diagonal-stripes dark:bgx-opacity-10"
+          class="bgx-diagonal-stripes bgx-opacity-10"
         >
           {{ t('deck.mode-view.page-counter', { current: page + 1, total: total_pages }) }}
         </ui-tag>
@@ -55,12 +59,12 @@ const { page, total_pages, prevPage, nextPage, can_paginate } = carousel
           data-theme="brown-300"
           data-theme-dark="grey-800"
           icon-only
-          size="xs"
+          size="sm"
           icon-left="arrow-left"
           :disabled="!can_paginate"
           @click="prevPage"
         >
-          {{ t('common.previous') }}
+          {{ t('deck-view.actions.prev-page', { page: prev_page_number }) }}
         </ui-button>
 
         <ui-button
@@ -68,12 +72,12 @@ const { page, total_pages, prevPage, nextPage, can_paginate } = carousel
           data-theme="brown-300"
           data-theme-dark="grey-800"
           icon-only
-          size="xs"
+          size="sm"
           icon-left="arrow-right"
           :disabled="!can_paginate"
           @click="nextPage"
         >
-          {{ t('common.next') }}
+          {{ t('deck-view.actions.next-page', { page: next_page_number }) }}
         </ui-button>
       </div>
     </template>
