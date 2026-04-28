@@ -7,7 +7,7 @@ import type { SfxOptions } from '@/sfx/directive'
 defineOptions({ inheritAttrs: false })
 
 export type ButtonProps = {
-  size?: 'xl' | 'lg' | 'base' | 'sm' | 'xs'
+  size?: 'xl' | 'lg' | 'base' | 'sm'
   variant?: 'solid' | 'outline'
   inverted?: boolean
   iconOnly?: boolean
@@ -108,6 +108,8 @@ const tooltip_active = computed(() => iconOnly && !!slots.default)
   height: var(--btn-height, max-content);
   width: max-content;
 
+  flex-grow: 0;
+
   display: flex;
   gap: var(--btn-gap);
   align-items: center;
@@ -158,7 +160,6 @@ const tooltip_active = computed(() => iconOnly && !!slots.default)
 .ui-kit-btn.ui-kit-btn--icon-only {
   --btn-padding: 8px;
   --btn-border-radius: var(--radius-4);
-  width: auto;
   aspect-ratio: 1/1;
 }
 
@@ -166,58 +167,53 @@ const tooltip_active = computed(() => iconOnly && !!slots.default)
 .ui-kit-btn.ui-kit-btn--xl {
   --btn-font-size: var(--text-xl);
   --btn-font-size--line-height: var(--text-xl--line-height);
-  --btn-border-radius: var(--radius-5_5);
-  --btn-gap: 16px;
+  --btn-border-radius: 22.5px;
+  --btn-gap: 10px;
   --btn-padding: 14px 24px;
   --btn-height: 50px;
+
+  &.ui-kit-btn--icon-only {
+    --btn-padding: 14px;
+  }
 }
 .ui-kit-btn.ui-kit-btn--lg {
-  --btn-font-size: var(--text-lg);
+  --btn-font-size: var(--text-xl);
   --btn-font-size--line-height: var(--text-xl--line-height);
-  --btn-border-radius: var(--radius-5);
-  --btn-gap: 16px;
-  --btn-padding: 14px 20px;
-  --btn-height: 46px;
+  --btn-border-radius: 19px;
+  --btn-gap: 6px;
+  --btn-padding: 10px 20px;
+  --btn-height: 45px;
+  --icon-size: 20px;
 
   &.ui-kit-btn--icon-only {
     --btn-padding: 10px;
   }
 }
 .ui-kit-btn.ui-kit-btn--base {
-  --btn-font-size: var(--text-base);
-  --btn-font-size--line-height: var(--text-base--line-height);
-  --btn-border-radius: var(--radius-4);
-  --btn-gap: 8px;
-  --btn-padding: 6px 10px;
+  --btn-font-size: var(--text-lg);
+  --btn-font-size--line-height: var(--text-lg--line-height);
+  --btn-border-radius: 18px;
+  --btn-gap: 4px;
+  --btn-padding: 6px 14px;
+  --btn-height: 40px;
+  --icon-size: 20px;
   --btn-height: 40px;
 
   &.ui-kit-btn--icon-only {
     --btn-padding: 8px;
-    --btn-border-radius: var(--radius-4_5);
   }
 }
 .ui-kit-btn.ui-kit-btn--sm {
   --btn-font-size: var(--text-base);
   --btn-font-size--line-height: var(--text-base--line-height);
-  --btn-border-radius: var(--radius-4);
-  --btn-gap: 6px;
-  --btn-padding: 4px 6px;
-  --icon-size: 22px;
-
-  &.ui-kit-btn--icon-only {
-    --btn-padding: 6px;
-  }
-}
-.ui-kit-btn.ui-kit-btn--xs {
-  --btn-font-size: var(--text-base);
-  --btn-font-size--line-height: var(--text-base--line-height);
-  --btn-border-radius: var(--radius-3_75);
+  --btn-border-radius: 13px;
   --btn-gap: 3px;
   --btn-padding: 4px 12px;
   --icon-size: 16px;
+  --btn-height: 30px;
 
   &.ui-kit-btn--icon-only {
-    --btn-padding: 8px;
+    --btn-padding: 7px;
   }
 }
 
