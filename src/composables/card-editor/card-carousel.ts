@@ -76,6 +76,22 @@ export function useCardCarousel({ list, cards_query, card_count }: Args) {
     emitSfx('ui.slide_up')
   }
 
+  /**
+   * Jump directly to a 0-based page index. No-op when paging is disabled
+   * or the target equals the current page; clamps out-of-range values.
+   */
+  function goToPage(n: number) {
+    if (!can_paginate.value) return
+
+    const target = Math.max(0, Math.min(total_pages.value - 1, n))
+    if (target === page.value) return
+
+    page_direction.value = target > page.value ? 'forward' : 'backward'
+    page.value = target
+
+    emitSfx('ui.slide_up')
+  }
+
   watch(total_pages, (n) => {
     if (page.value > n - 1) page.value = Math.max(0, n - 1)
   })
@@ -108,6 +124,7 @@ export function useCardCarousel({ list, cards_query, card_count }: Args) {
     next_page_number,
     setVisibleCapacity,
     prevPage,
-    nextPage
+    nextPage,
+    goToPage
   }
 }
