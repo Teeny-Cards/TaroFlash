@@ -51,11 +51,12 @@ export function useMediaQuery(breakpoint: BreakpointKey | PointerKey | ColorSche
   let entry = cache.get(query)
 
   if (!entry) {
-    const r = ref(false)
+    const mq = window.matchMedia(query)
+    const r = ref(mq.matches)
 
     entry = {
       ref: r,
-      mq: window.matchMedia(query),
+      mq,
       count: 0,
       handler: () => (r.value = entry!.mq.matches)
     }

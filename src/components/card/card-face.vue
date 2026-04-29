@@ -72,26 +72,10 @@ const { image, text } = defineProps<{
   padding: 0;
 }
 
-.card-face[data-align='top'] .ql-editor {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-.card-face[data-align='center'] .ql-editor {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.card-face[data-align='bottom'] .ql-editor {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-
 .card-face__text-editor {
   color: var(--card-text-color);
 }
-.card-face__text-editor .ql-blank::before {
+.card-face__text-editor .text-editor__placeholder {
   color: var(--card-text-color--placeholder);
 }
 </style>
