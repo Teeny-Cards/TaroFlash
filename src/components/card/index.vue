@@ -137,6 +137,7 @@ function onLeave(el: Element, done: () => void) {
   width: var(--card-width);
   transition: width 0.05s ease-in-out;
 
+  color: var(--card-text-color);
   font-size: var(--card-font-size);
   line-height: var(--card-font-size--line-height);
 }

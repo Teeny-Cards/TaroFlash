@@ -14,7 +14,7 @@ observeSentinel(sentinel)
 <template>
   <div
     data-testid="card-list"
-    class="w-full md:h-full md:overflow-auto pb-24 flex flex-col items-center"
+    class="w-full md:h-full md:overflow-auto pb-24 pt-5 flex flex-col items-center bg-brown-100 dark:bg-grey-900 scroll-hidden"
   >
     <list-item
       v-for="(card, index) in all_cards"

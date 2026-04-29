@@ -11,13 +11,13 @@ export function useDeckSettingsModal() {
   const modal = useModal()
 
   function open(deck?: Deck) {
-    emitSfx('ui.etc_camera_reel')
+    emitSfx('ui.alert_clicks_wooden')
     const result = modal.open<DeckSettingsResponse>(DeckSettings, {
       backdrop: true,
       mode: 'mobile-sheet',
       props: { deck }
     })
-    result.response.then(() => emitSfx('ui.card_drop'))
+    result.response.then(() => emitSfx('ui.pop_up_close'))
     return result
   }
 

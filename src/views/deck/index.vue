@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, provide } from 'vue'
+import { computed, provide, ref } from 'vue'
 import DeckHero from '@/views/deck/deck-hero.vue'
 import ModeToolbar from './mode-toolbar/index.vue'
 import CardEditor from './card-editor/index.vue'
@@ -9,6 +9,11 @@ import { useDeckQuery } from '@/api/decks'
 import { useCardListController } from '@/composables/card-editor/card-list-controller'
 import UiButton from '@/components/ui-kit/button.vue'
 import { useI18n } from 'vue-i18n'
+import {
+  primeOverlayBelow,
+  slideOverlayUp,
+  slideOverlayDown
+} from '@/utils/animations/deck-view/card-overlay'
 
 const { id: deck_id } = defineProps<{
   id: string
@@ -27,10 +32,22 @@ const editor = useCardListController({
 
 provide('card-editor', editor)
 
-const mode_components: { [key in CardEditorMode]: any } = {
-  view: CardGrid,
-  edit: CardEditor,
-  'import-export': CardImporter
+const overlay_component = computed(() => {
+  if (editor.mode.value === 'edit') return CardEditor
+  if (editor.mode.value === 'import-export') return CardImporter
+  return null
+})
+
+function onOverlayBeforeEnter(el: Element) {
+  primeOverlayBelow(el)
+}
+
+function onOverlayEnter(el: Element, done: () => void) {
+  slideOverlayUp(el, done)
+}
+
+function onOverlayLeave(el: Element, done: () => void) {
+  slideOverlayDown(el, done)
 }
 
 const is_empty = computed(() => !editor.isLoading.value && editor.list.all_cards.value.length === 0)
@@ -56,8 +73,9 @@ const { prev_page_number, next_page_number } = editor.carousel
       <mode-toolbar class="sm:col-start-2" />
 
       <ui-button
+        data-testid="deck-view__previous-page-button"
         data-theme="brown-300"
-        class="sm:col-start-1 sm:row-start-2 self-center max-sm:hidden!"
+        class="sm:col-start-1 sm:row-start-2 self-center max-sm:hidden! transition duration-300"
         :class="{ 'opacity-0 pointer-events-none': editor.mode.value !== 'view' }"
         icon-only
         icon-left="arrow-left"
@@ -67,15 +85,36 @@ const { prev_page_number, next_page_number } = editor.carousel
       </ui-button>
 
       <div v-if="is_empty" data-testid="deck-view__empty" class="sm:row-start-2 sm:col-start-2" />
-      <component
+      <div
         v-else
-        :is="mode_components[editor.mode.value]"
-        class="sm:row-start-2 sm:col-start-2"
-      />
+        data-testid="deck-view__mode-stack"
+        class="sm:row-start-2 sm:col-start-2 relative"
+      >
+        <card-grid
+          class="transition-transform duration-300 ease-out"
+          :class="{ 'scale-95': editor.mode.value !== 'view' }"
+        />
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+          <Transition
+            :css="false"
+            mode="out-in"
+            @before-enter="onOverlayBeforeEnter"
+            @enter="onOverlayEnter"
+            @leave="onOverlayLeave"
+          >
+            <component
+              :is="overlay_component"
+              v-if="overlay_component"
+              class="size-full pointer-events-auto"
+            />
+          </Transition>
+        </div>
+      </div>
 
       <ui-button
+        data-testid="deck-view__next-page-button"
         data-theme="brown-300"
-        class="sm:row-start-2 self-center sm:col-start-3 max-sm:hidden!"
+        class="sm:row-start-2 self-center sm:col-start-3 max-sm:hidden! transition duration-300"
         :class="{ 'opacity-0 pointer-events-none': editor.mode.value !== 'view' }"
         icon-only
         icon-left="arrow-right"
