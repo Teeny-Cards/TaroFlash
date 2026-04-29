@@ -45,7 +45,13 @@ const { prev_page_number, next_page_number } = editor.carousel
 
     <div
       data-testid="deck-view__main"
-      class="md:h-full relative w-full grid grid-cols-1 sm:grid-cols-[auto_1fr_auto] grid-rows-[auto_minmax(0,1fr)_auto] gap-4 pb-4"
+      :data-mode="editor.mode.value"
+      class="md:h-full relative w-full grid grid-cols-1 sm:grid-cols-[auto_1fr_auto] gap-x-4"
+      :class="
+        editor.mode.value === 'view'
+          ? 'grid-rows-[auto_minmax(0,1fr)_auto] gap-y-4 pb-4'
+          : 'grid-rows-[auto_minmax(0,1fr)_0] gap-y-0 pb-0'
+      "
     >
       <mode-toolbar class="sm:col-start-2" />
 
