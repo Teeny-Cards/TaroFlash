@@ -14,22 +14,19 @@ const { visible_cards, setVisibleCapacity, page, page_size, page_direction, is_p
   carousel
 
 const side = ref<'front' | 'back'>('front')
-const grid = useTemplateRef<HTMLElement>('grid')
 const grid_wrapper = useTemplateRef<HTMLElement>('grid_wrapper')
 const sentinel = useTemplateRef<HTMLElement>('sentinel')
 
-const isSm = useMediaQuery('sm')
 const isMd = useMediaQuery('md')
 
 observeSentinel(sentinel)
 
 const { gridStyle, capacity } = useGridCapacity({
-  grid,
   bounds: grid_wrapper,
-  trackMin: () => (isSm.value ? 170 : 176),
-  trackFloor: 160,
-  gap: () => (isMd.value ? 12 : 8),
-  fit: () => isMd.value
+  aspect_ratio: 7 / 8,
+  min_width: 170,
+  max_width: 220,
+  gap: () => (isMd.value ? 12 : 8)
 })
 
 // only push capacity into the controller while the carousel is active —
@@ -55,9 +52,13 @@ const emit = defineEmits<{
 <template>
   <div
     data-testid="card-grid-container"
-    class="flex flex-col items-center w-full md:flex-1 md:min-h-0"
+    class="flex flex-col items-center w-full h-full md:flex-1 md:min-h-0"
   >
-    <div ref="grid_wrapper" data-testid="card-grid__wrapper" class="w-full md:flex-1 md:min-h-0">
+    <div
+      ref="grid_wrapper"
+      data-testid="card-grid__wrapper"
+      class="w-full h-full md:flex-1 md:min-h-0"
+    >
       <Transition
         :css="false"
         mode="out-in"
@@ -66,10 +67,9 @@ const emit = defineEmits<{
       >
         <div
           :key="isMd ? page : 'all'"
-          ref="grid"
           data-testid="card-grid"
           :style="gridStyle"
-          class="justify-items-center py-3 w-full"
+          class="justify-items-center w-full"
         >
           <template v-if="cards_to_render.length > 0 && !is_page_loading">
             <grid-item
@@ -89,7 +89,7 @@ const emit = defineEmits<{
               v-for="n in Math.max(capacity, page_size, 1)"
               :key="`skel-${n}`"
               data-testid="card-grid__skeleton"
-              class="aspect-5/7 w-full max-w-78.5 bg-brown-200 dark:bg-grey-800 rounded-xl animate-pulse"
+              class="aspect-card w-full bg-brown-200 dark:bg-grey-800 rounded-xl animate-pulse"
             ></div>
           </template>
         </div>
