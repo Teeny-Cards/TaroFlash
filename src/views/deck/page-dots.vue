@@ -46,7 +46,7 @@ function onClick() {
     data-theme-dark="brown-300"
     :data-engaged="hovered_index !== null || undefined"
     class="sm:row-start-3 sm:col-start-2 justify-self-center relative cursor-pointer transition-opacity duration-300 before:content-[''] before:absolute before:-inset-x-10 before:-inset-y-3"
-    :class="{ 'opacity-0 pointer-events-none': editor.mode.value !== 'view' }"
+    :class="{ 'opacity-0 pointer-events-none overflow-hidden': editor.mode.value !== 'view' }"
     @pointermove="onPointerMove"
     @pointerleave="onPointerLeave"
     @click="onClick"
