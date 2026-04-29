@@ -242,6 +242,7 @@
   "deck-view.actions.cancel": "Stop Editing",
   "deck-view.actions.prev-page": "Page {page}",
   "deck-view.actions.next-page": "Page {page}",
+  "deck-view.page-dots.tooltip": "Page {page}",
   "deck-view.add-card": "Add Card",
   "deck-view.no-cards": "No Cards",
   "deck-view.tabs.card-view": "View",

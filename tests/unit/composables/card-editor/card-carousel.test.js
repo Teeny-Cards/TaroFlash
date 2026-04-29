@@ -124,6 +124,70 @@ describe('useCardCarousel', () => {
     })
   })
 
+  // ── goToPage ─────────────────────────────────────────────────────────────
+
+  describe('goToPage', () => {
+    test('jumps to the target page and emits sfx', () => {
+      const { carousel } = makeCarousel({ card_count: 30 })
+      carousel.setVisibleCapacity(10) // total_pages = 3
+      carousel.goToPage(2)
+      expect(carousel.page.value).toBe(2)
+      expect(emitSfxMock).toHaveBeenCalledWith('ui.slide_up')
+    })
+
+    test('sets direction=forward when target > current', () => {
+      const { carousel } = makeCarousel({ card_count: 30 })
+      carousel.setVisibleCapacity(10)
+      carousel.goToPage(2)
+      expect(carousel.page_direction.value).toBe('forward')
+    })
+
+    test('sets direction=backward when target < current', () => {
+      const { carousel } = makeCarousel({ card_count: 30 })
+      carousel.setVisibleCapacity(10)
+      carousel.nextPage()
+      carousel.nextPage() // page = 2
+      emitSfxMock.mockReset()
+      carousel.goToPage(0)
+      expect(carousel.page.value).toBe(0)
+      expect(carousel.page_direction.value).toBe('backward')
+      expect(emitSfxMock).toHaveBeenCalledWith('ui.slide_up')
+    })
+
+    test('clamps an out-of-range target to the last page', () => {
+      const { carousel } = makeCarousel({ card_count: 30 })
+      carousel.setVisibleCapacity(10)
+      carousel.goToPage(99)
+      expect(carousel.page.value).toBe(2)
+    })
+
+    test('clamps a negative target to 0', () => {
+      const { carousel } = makeCarousel({ card_count: 30 })
+      carousel.setVisibleCapacity(10)
+      carousel.nextPage() // page = 1
+      emitSfxMock.mockReset()
+      carousel.goToPage(-5)
+      expect(carousel.page.value).toBe(0)
+    })
+
+    test('is a no-op when target equals current page (no sfx)', () => {
+      const { carousel } = makeCarousel({ card_count: 30 })
+      carousel.setVisibleCapacity(10)
+      emitSfxMock.mockReset()
+      carousel.goToPage(0)
+      expect(carousel.page.value).toBe(0)
+      expect(emitSfxMock).not.toHaveBeenCalled()
+    })
+
+    test('is a no-op when paging is disabled', () => {
+      const { carousel } = makeCarousel({ card_count: 4 })
+      carousel.setVisibleCapacity(10) // total_pages = 1
+      carousel.goToPage(2)
+      expect(carousel.page.value).toBe(0)
+      expect(emitSfxMock).not.toHaveBeenCalled()
+    })
+  })
+
   // ── page clamping when total_pages shrinks ───────────────────────────────
 
   describe('page clamping', () => {

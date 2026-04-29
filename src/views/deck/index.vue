@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import DeckHero from '@/views/deck/deck-hero.vue'
 import ModeToolbar from './mode-toolbar/index.vue'
 import ModeStack from './mode-stack.vue'
+import PageDots from './page-dots.vue'
 import PageNavButton from './page-nav-button.vue'
 import { useDeckQuery } from '@/api/decks'
 import { useCardListController } from '@/composables/card-editor/card-list-controller'
@@ -44,7 +45,7 @@ const { prev_page_number, next_page_number } = editor.carousel
 
     <div
       data-testid="deck-view__main"
-      class="md:h-full relative w-full grid grid-cols-1 sm:grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr] gap-4 pb-4"
+      class="md:h-full relative w-full grid grid-cols-1 sm:grid-cols-[auto_1fr_auto] grid-rows-[auto_minmax(0,1fr)_auto] gap-4 pb-4"
     >
       <mode-toolbar class="sm:col-start-2" />
 
@@ -58,6 +59,8 @@ const { prev_page_number, next_page_number } = editor.carousel
       <page-nav-button direction="next">
         {{ t('deck-view.actions.next-page', { page: next_page_number }) }}
       </page-nav-button>
+
+      <page-dots />
     </div>
   </section>
 </template>
