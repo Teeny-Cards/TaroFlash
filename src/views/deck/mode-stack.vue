@@ -20,9 +20,8 @@ const overlay_component = computed(() => {
 </script>
 
 <template>
-  <div data-testid="deck-view__mode-stack" class="relative grid">
+  <div data-testid="deck-view__mode-stack" class="relative">
     <card-grid
-      data-testid="deck-view__mode-stack__grid"
       class="transition-transform duration-300 ease-out"
       :class="{ 'scale-95': editor.mode.value !== 'view' }"
     />
