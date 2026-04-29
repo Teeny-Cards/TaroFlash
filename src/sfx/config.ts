@@ -47,7 +47,9 @@ export const AUDIO_CONFIG = createAudioConfig({
     music_pizz_prompt: {},
     tap_03: {},
     tap_04: {},
-    tap_05: {}
+    tap_05: {},
+    alert_clicks_wooden: {},
+    pop_up_close: {}
   }
 })
 
