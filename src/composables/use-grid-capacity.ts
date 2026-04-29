@@ -93,7 +93,10 @@ export function useGridCapacity({
     if (!el) return
 
     gridWidth.value = el.clientWidth
-    boundsHeight.value = (bounds?.value ?? el).clientHeight
+
+    const style = getComputedStyle(el)
+    const grid_pad_y = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom)
+    boundsHeight.value = (bounds?.value ?? el).clientHeight - grid_pad_y
 
     const first = el.firstElementChild as HTMLElement | null
     if (first) {
