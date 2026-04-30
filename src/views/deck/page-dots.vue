@@ -42,8 +42,8 @@ function onClick() {
   <div
     v-if="can_paginate"
     data-testid="deck-view__page-dots"
-    data-theme="brown-300"
-    data-theme-dark="brown-300"
+    data-theme="brown-700"
+    data-theme-dark="brown-100"
     :data-engaged="hovered_index !== null || undefined"
     class="sm:row-start-3 sm:col-start-2 justify-self-center relative cursor-pointer transition-opacity duration-300 before:content-[''] before:absolute before:-inset-x-10 before:-inset-y-3"
     :class="{ 'opacity-0 pointer-events-none overflow-hidden': editor.mode.value !== 'view' }"
@@ -62,7 +62,7 @@ function onClick() {
         :gap="6"
         :data-testid="`deck-view__page-dots__dot-${n}`"
         :data-active="hovered_index === n - 1 || page === n - 1 || undefined"
-        class="size-2 rounded-full bg-(--theme-on-neutral) opacity-50 scale-75 data-active:opacity-100 data-active:scale-125 transition-[opacity,scale] duration-200 ease-out pointer-events-none"
+        class="size-2 rounded-full bg-(--theme-primary) opacity-50 scale-75 data-active:opacity-100 data-active:scale-125 transition-[opacity,scale] duration-200 ease-out pointer-events-none"
       />
     </div>
   </div>
