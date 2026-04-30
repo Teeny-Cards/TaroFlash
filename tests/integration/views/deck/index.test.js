@@ -38,6 +38,12 @@ const PageNavButtonStub = defineComponent({
     () =>
       h('div', { 'data-testid': `page-nav-${props.direction}` }, slots.default?.())
 })
+const ScrollBarStub = defineComponent({
+  name: 'ScrollBar',
+  props: ['target'],
+  setup: (props) => () =>
+    h('div', { 'data-testid': 'scroll-bar-stub', 'data-target': props.target })
+})
 
 function makeEditor({ mode = 'view', cards = [], isLoading = false } = {}) {
   return {
@@ -66,7 +72,8 @@ function mount({ deck = { id: 1, name: 'Test' }, editorOpts = {} } = {}) {
         ModeToolbar: ModeToolbarStub,
         ModeStack: ModeStackStub,
         PageDots: PageDotsStub,
-        PageNavButton: PageNavButtonStub
+        PageNavButton: PageNavButtonStub,
+        ScrollBar: ScrollBarStub
       }
     }
   })
@@ -134,5 +141,30 @@ describe('DeckView (views/deck/index.vue)', () => {
     const wrapper = mount()
     expect(wrapper.find('[data-testid="page-nav-prev"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="page-nav-next"]').exists()).toBe(true)
+  })
+
+  test('does not render the scroll-bar in view mode', () => {
+    const wrapper = mount({ editorOpts: { mode: 'view' } })
+    expect(wrapper.find('[data-testid="scroll-bar-stub"]').exists()).toBe(false)
+  })
+
+  test('does not render the scroll-bar in import-export mode', () => {
+    const wrapper = mount({ editorOpts: { mode: 'import-export' } })
+    expect(wrapper.find('[data-testid="scroll-bar-stub"]').exists()).toBe(false)
+  })
+
+  test('renders the scroll-bar when mode is edit and targets the card-list', () => {
+    const wrapper = mount({ editorOpts: { mode: 'edit' } })
+    const bar = wrapper.find('[data-testid="scroll-bar-stub"]')
+    expect(bar.exists()).toBe(true)
+    expect(bar.attributes('data-target')).toBe("[data-testid='card-list']")
+  })
+
+  test('keeps the main grid layout stable across modes (no row-height swap)', () => {
+    const view = mount({ editorOpts: { mode: 'view' } })
+    const edit = mount({ editorOpts: { mode: 'edit' } })
+    const viewClasses = view.find('[data-testid="deck-view__main"]').classes()
+    const editClasses = edit.find('[data-testid="deck-view__main"]').classes()
+    expect(viewClasses).toEqual(editClasses)
   })
 })

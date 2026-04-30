@@ -12,11 +12,8 @@ import type { CardListController } from '@/composables/card-editor/card-list-con
 
 const editor = inject<CardListController>('card-editor')!
 
-const overlay_component = computed(() => {
-  if (editor.mode.value === 'edit') return CardEditor
-  if (editor.mode.value === 'import-export') return CardImporter
-  return null
-})
+const is_editing = computed(() => editor.mode.value === 'edit')
+const is_importing = computed(() => editor.mode.value === 'import-export')
 </script>
 
 <template>
@@ -31,16 +28,22 @@ const overlay_component = computed(() => {
     >
       <Transition
         :css="false"
-        mode="out-in"
         @before-enter="primeOverlayBelow"
         @enter="slideOverlayUp"
         @leave="slideOverlayDown"
       >
-        <component
-          :is="overlay_component"
-          v-if="overlay_component"
-          class="size-full pointer-events-auto"
-        />
+        <div v-show="is_editing" class="size-full pointer-events-auto">
+          <card-editor class="size-full" />
+        </div>
+      </Transition>
+
+      <Transition
+        :css="false"
+        @before-enter="primeOverlayBelow"
+        @enter="slideOverlayUp"
+        @leave="slideOverlayDown"
+      >
+        <card-importer v-if="is_importing" class="size-full pointer-events-auto" />
       </Transition>
     </div>
   </div>

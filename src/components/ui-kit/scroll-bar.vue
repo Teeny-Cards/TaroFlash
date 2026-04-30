@@ -204,10 +204,6 @@ function isPageTarget(el: HTMLElement) {
   --transition-dur: 0.05s;
   --transition: background-color 0.05s ease-in-out, outline 0.05s ease-in-out;
 
-  position: fixed;
-  top: 100px;
-  bottom: 32px;
-  right: 24px;
   width: 4px;
 
   user-select: none;

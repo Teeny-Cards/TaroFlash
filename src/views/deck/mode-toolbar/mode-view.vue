@@ -20,7 +20,7 @@ const { page, total_pages, prev_page_number, next_page_number, prevPage, nextPag
       <ui-button
         data-testid="mode-view__search-button"
         data-theme="brown-300"
-        data-theme-dark="grey-800"
+        data-theme-dark="stone-700"
         size="sm"
         icon-left="search"
         icon-only
@@ -54,7 +54,7 @@ const { page, total_pages, prev_page_number, next_page_number, prevPage, nextPag
         <ui-button
           data-testid="mode-view__previous-page-button"
           data-theme="brown-300"
-          data-theme-dark="grey-800"
+          data-theme-dark="stone-700"
           icon-only
           size="sm"
           icon-left="arrow-left"
@@ -67,7 +67,7 @@ const { page, total_pages, prev_page_number, next_page_number, prevPage, nextPag
         <ui-button
           data-testid="mode-view__next-page-button"
           data-theme="brown-300"
-          data-theme-dark="grey-800"
+          data-theme-dark="stone-700"
           icon-only
           size="sm"
           icon-left="arrow-right"
