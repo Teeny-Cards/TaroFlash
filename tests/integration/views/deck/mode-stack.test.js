@@ -49,6 +49,18 @@ function mount(editor = makeEditor()) {
   })
 }
 
+function transitions(wrapper) {
+  return wrapper.findAll('[data-testid="deck-view__mode-stack__overlay-clip"] transition-stub')
+}
+
+function editorTransition(wrapper) {
+  return transitions(wrapper)[0]
+}
+
+function importerTransition(wrapper) {
+  return transitions(wrapper)[1]
+}
+
 describe('ModeStack', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -87,61 +99,83 @@ describe('ModeStack', () => {
     expect(cls).toContain('scale-95')
   })
 
-  // shallowMount wraps overlay content in <transition-stub>. The dynamic
-  // `<component :is>` resolves to either nothing (view mode) or an SFC stub
-  // (`<index-stub>` for both card-editor/index.vue and card-importer.vue).
-  function hasOverlayChild(wrapper) {
-    return wrapper.find('[data-testid="deck-view__mode-stack__overlay-clip"] transition-stub')
-      .element.children.length
-  }
-
-  test('renders no overlay component in view mode', () => {
+  test('renders the card-editor at all times for stable scroll target', () => {
     const wrapper = mount(makeEditor('view'))
-    expect(hasOverlayChild(wrapper)).toBe(0)
+    expect(wrapper.findComponent({ name: 'CardEditor' }).exists()).toBe(true)
   })
 
-  test('renders an overlay component when mode is edit', async () => {
+  test('hides the card-editor wrapper via display:none in view mode', () => {
+    const wrapper = mount(makeEditor('view'))
+    const editorWrapper = editorTransition(wrapper).element.firstElementChild
+    expect(editorWrapper.style.display).toBe('none')
+  })
+
+  test('shows the card-editor wrapper when mode is edit', () => {
+    const wrapper = mount(makeEditor('edit'))
+    const editorWrapper = editorTransition(wrapper).element.firstElementChild
+    expect(editorWrapper.style.display).toBe('')
+  })
+
+  test('toggles card-editor visibility when mode flips between view and edit', async () => {
     const editor = makeEditor('view')
     const wrapper = mount(editor)
-    expect(hasOverlayChild(wrapper)).toBe(0)
+    let editorWrapper = editorTransition(wrapper).element.firstElementChild
+    expect(editorWrapper.style.display).toBe('none')
 
     editor.mode.value = 'edit'
     await nextTick()
     await nextTick()
+    editorWrapper = editorTransition(wrapper).element.firstElementChild
+    expect(editorWrapper.style.display).toBe('')
 
-    expect(hasOverlayChild(wrapper)).toBe(1)
+    editor.mode.value = 'view'
+    await nextTick()
+    await nextTick()
+    editorWrapper = editorTransition(wrapper).element.firstElementChild
+    expect(editorWrapper.style.display).toBe('none')
   })
 
-  test('renders an overlay component when mode is import-export', async () => {
+  test('does not render the card-importer in view mode', () => {
+    const wrapper = mount(makeEditor('view'))
+    expect(importerTransition(wrapper).element.children.length).toBe(0)
+    expect(wrapper.findComponent({ name: 'CardImporter' }).exists()).toBe(false)
+  })
+
+  test('renders the card-importer when mode is import-export', async () => {
     const editor = makeEditor('view')
     const wrapper = mount(editor)
+    expect(wrapper.findComponent({ name: 'CardImporter' }).exists()).toBe(false)
 
     editor.mode.value = 'import-export'
     await nextTick()
     await nextTick()
 
-    expect(hasOverlayChild(wrapper)).toBe(1)
+    expect(wrapper.findComponent({ name: 'CardImporter' }).exists()).toBe(true)
   })
 
-  test('removes the overlay when returning to view mode', async () => {
-    const editor = makeEditor('edit')
+  test('removes the card-importer when leaving import-export mode', async () => {
+    const editor = makeEditor('import-export')
     const wrapper = mount(editor)
-    expect(hasOverlayChild(wrapper)).toBe(1)
+    expect(wrapper.findComponent({ name: 'CardImporter' }).exists()).toBe(true)
 
     editor.mode.value = 'view'
     await nextTick()
     await nextTick()
 
-    expect(hasOverlayChild(wrapper)).toBe(0)
+    expect(wrapper.findComponent({ name: 'CardImporter' }).exists()).toBe(false)
   })
 
-  test('forwards size-full and pointer-events-auto to the overlay element', () => {
+  test('forwards size-full and pointer-events-auto to the editor wrapper', () => {
     const wrapper = mount(makeEditor('edit'))
-    const overlay = wrapper.find(
-      '[data-testid="deck-view__mode-stack__overlay-clip"] transition-stub'
-    ).element.firstElementChild
-    expect(overlay).not.toBeNull()
-    expect(overlay.classList.contains('size-full')).toBe(true)
-    expect(overlay.classList.contains('pointer-events-auto')).toBe(true)
+    const editorWrapper = editorTransition(wrapper).element.firstElementChild
+    expect(editorWrapper.classList.contains('size-full')).toBe(true)
+    expect(editorWrapper.classList.contains('pointer-events-auto')).toBe(true)
+  })
+
+  test('forwards size-full and pointer-events-auto to the importer', () => {
+    const wrapper = mount(makeEditor('import-export'))
+    const importerEl = importerTransition(wrapper).element.firstElementChild
+    expect(importerEl.classList.contains('size-full')).toBe(true)
+    expect(importerEl.classList.contains('pointer-events-auto')).toBe(true)
   })
 })

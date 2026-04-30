@@ -96,7 +96,7 @@ function onToggleEditCards() {
         data-testid="overview-panel__settings-button"
         :icon-left="mode === 'edit' ? 'stop' : 'edit'"
         :data-theme="mode === 'edit' ? 'yellow-500' : 'brown-300'"
-        :data-theme-dark="mode === 'edit' ? 'yellow-700' : 'grey-800'"
+        :data-theme-dark="mode === 'edit' ? 'yellow-700' : 'stone-700'"
         full-width
         size="xl"
         @click="onToggleEditCards"
