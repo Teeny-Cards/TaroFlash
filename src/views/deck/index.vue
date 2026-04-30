@@ -6,6 +6,8 @@ import ModeToolbar from './mode-toolbar/index.vue'
 import ModeStack from './mode-stack.vue'
 import PageDots from './page-dots.vue'
 import PageNavButton from './page-nav-button.vue'
+import ScrollBar from '@/components/ui-kit/scroll-bar.vue'
+import { fadeEnter, fadeLeave } from '@/utils/animations/fade'
 import { useDeckQuery } from '@/api/decks'
 import { useCardListController } from '@/composables/card-editor/card-list-controller'
 
@@ -46,12 +48,7 @@ const { prev_page_number, next_page_number } = editor.carousel
     <div
       data-testid="deck-view__main"
       :data-mode="editor.mode.value"
-      class="md:h-full relative w-full grid grid-cols-1 sm:grid-cols-[auto_1fr_auto] gap-x-4"
-      :class="
-        editor.mode.value === 'view'
-          ? 'grid-rows-[auto_minmax(0,1fr)_auto] gap-y-4 pb-4'
-          : 'grid-rows-[auto_minmax(0,1fr)_0] gap-y-0 pb-0'
-      "
+      class="md:h-full relative w-full grid grid-cols-1 sm:grid-cols-[auto_1fr_auto] grid-rows-[auto_minmax(0,1fr)_auto] gap-x-4 gap-y-4 pb-4"
     >
       <mode-toolbar class="sm:col-start-2" />
 
@@ -65,6 +62,14 @@ const { prev_page_number, next_page_number } = editor.carousel
       <page-nav-button direction="next">
         {{ t('deck-view.actions.next-page', { page: next_page_number }) }}
       </page-nav-button>
+
+      <Transition :css="false" @enter="fadeEnter" @leave="fadeLeave">
+        <scroll-bar
+          v-if="editor.mode.value === 'edit'"
+          class="sm:row-start-2 sm:col-start-3 absolute inset-y-10 left-1/2 -translate-x-1/2"
+          target="[data-testid='card-list']"
+        />
+      </Transition>
 
       <page-dots />
     </div>
