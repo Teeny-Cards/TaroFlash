@@ -26,6 +26,7 @@ function onClick() {
   <ui-button
     :data-testid="testid"
     data-theme="brown-300"
+    data-theme-dark="stone-700"
     class="sm:row-start-2 self-center max-sm:hidden! transition duration-300"
     :class="[column, { 'opacity-0 pointer-events-none': editor.mode.value !== 'view' }]"
     icon-only

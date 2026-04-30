@@ -13,30 +13,40 @@
 
   --color-white: #ffffff;
   --color-black: #000000;
+
   --color-blue-900: #1b2a3a;
   --color-blue-800: #2d455e;
   --color-blue-650: #0a7588;
   --color-blue-500: #11b7d4;
   --color-blue-400: #6cbfd5;
+
+  --color-stone-900: #292c2e;
+  --color-stone-700: #393e40;
+
   --color-green-800: #467d60;
   --color-green-600: #6f9b80;
   --color-green-400: #a4c6ae;
   --color-green-300: #e4edd9;
   --color-green-200: #e8f6e7;
+
   --color-purple-700: #675694;
   --color-purple-500: #ad89d8;
   --color-purple-400: #bea0df;
   --color-purple-200: #c6c4db;
+
   --color-pink-500: #f388a5;
   --color-pink-400: #f599b3;
+
   --color-red-600: #d44c4c;
   --color-red-500: #e66061;
   --color-red-400: #f97b7b;
   --color-red-300: #ffa399;
+
   --color-yellow-700: #d69224;
   --color-yellow-600: #fc946f;
   --color-yellow-500: #fbc56f;
   --color-yellow-400: #f7d279;
+
   --color-brown-800: #4a3b30;
   --color-brown-700: #744e2a;
   --color-brown-500: #b8b1a9;
@@ -44,11 +54,9 @@
   --color-brown-200: #ede9df;
   --color-brown-100: #f3f1ea;
   --color-brown-50: #f9f8f5;
+
   --color-grey-900: #1c1c1c;
   --color-grey-800: #292929;
-
-  --color-grey-750: #292c2e; /* dark mode card bg - has some blue in it - WORKING ON IT */
-
   --color-grey-700: #4f4f4f;
   --color-grey-500: #959595;
   --color-grey-400: #b2b2b2;

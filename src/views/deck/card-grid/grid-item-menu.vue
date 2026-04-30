@@ -19,7 +19,7 @@ defineOptions({ inheritAttrs: false })
     <template #trigger="{ toggle, is_open }">
       <ui-button
         data-theme="brown-300"
-        data-theme-dark="grey-800"
+        data-theme-dark="stone-900"
         icon-only
         icon-right="more"
         data-testid="grid-item__menu-trigger"
@@ -34,7 +34,7 @@ defineOptions({ inheritAttrs: false })
 
     <ui-button
       data-theme="brown-300"
-      data-theme-dark="grey-800"
+      data-theme-dark="stone-900"
       size="sm"
       icon-right="edit"
       class="shadow-xs"
@@ -43,7 +43,7 @@ defineOptions({ inheritAttrs: false })
     </ui-button>
     <ui-button
       data-theme="brown-300"
-      data-theme-dark="grey-800"
+      data-theme-dark="stone-900"
       size="sm"
       icon-right="move-item"
       class="shadow-xs"
@@ -52,14 +52,14 @@ defineOptions({ inheritAttrs: false })
     </ui-button>
     <ui-button
       data-theme="brown-300"
-      data-theme-dark="grey-800"
+      data-theme-dark="stone-900"
       size="sm"
       icon-right="reorder"
       class="shadow-xs"
     >
       {{ t('deck-view.item-options.reorder') }}
     </ui-button>
-    <ui-button data-theme="brown-300" data-theme-dark="grey-800" size="sm" class="shadow-xs">
+    <ui-button data-theme="brown-300" data-theme-dark="stone-900" size="sm" class="shadow-xs">
       {{ t('deck-view.item-options.select') }}
     </ui-button>
     <ui-button
