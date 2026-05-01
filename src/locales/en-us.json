@@ -233,7 +233,8 @@
   "deck.settings-modal.study.flip-cards": "Start on Back",
   "deck.settings-modal.study.shuffle": "Shuffle Cards",
   "deck.settings-modal.study.retry-failed": "Retry Failed Cards",
-  "deck.settings-modal.study.card-limit": "Cards Per Session",
+  "deck.settings-modal.study.max-reviews-per-day": "Max Reviews Per Day",
+  "deck.settings-modal.study.max-new-per-day": "Max New Cards Per Day",
   "deck.settings-modal.study.is-spaced": "Spaced Repetition",
   "deck.settings-modal.study.auto-play": "Auto-Play Audio",
 

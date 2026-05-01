@@ -9,9 +9,18 @@ const shuffle = defineModel<boolean | undefined>('shuffle')
 const flip_cards = defineModel<boolean | undefined>('flip_cards')
 const is_spaced = defineModel<boolean | undefined>('is_spaced')
 const auto_play = defineModel<boolean | undefined>('auto_play')
-const card_limit = defineModel<number | null | undefined>('card_limit')
+const max_reviews_per_day = defineModel<number | null | undefined>('max_reviews_per_day')
+const max_new_per_day = defineModel<number | null | undefined>('max_new_per_day')
 
-const CARD_LIMIT_PRESETS: Array<{ label: string; value: number | null }> = [
+const REVIEW_LIMIT_PRESETS: Array<{ label: string; value: number | null }> = [
+  { label: '20', value: 20 },
+  { label: '50', value: 50 },
+  { label: '100', value: 100 },
+  { label: '200', value: 200 },
+  { label: t('study.settings.all'), value: null }
+]
+
+const NEW_LIMIT_PRESETS: Array<{ label: string; value: number | null }> = [
   { label: '5', value: 5 },
   { label: '10', value: 10 },
   { label: '20', value: 20 },
@@ -52,19 +61,40 @@ const CARD_LIMIT_PRESETS: Array<{ label: string; value: number | null }> = [
 
     <div class="flex flex-col gap-2">
       <span class="text-sm font-medium text-brown-700">
-        {{ t('deck.settings-modal.study.card-limit') }}
+        {{ t('deck.settings-modal.study.max-reviews-per-day') }}
       </span>
       <div class="flex gap-2">
         <button
-          v-for="preset in CARD_LIMIT_PRESETS"
+          v-for="preset in REVIEW_LIMIT_PRESETS"
           :key="String(preset.value)"
           class="h-9 min-w-12 cursor-pointer rounded-4 px-3 text-sm font-medium transition-all duration-75"
           :class="
-            card_limit === preset.value
+            max_reviews_per_day === preset.value
               ? 'bg-blue-500 text-brown-100'
               : 'bg-brown-100 text-brown-700 hover:bg-brown-200'
           "
-          @click="card_limit = preset.value"
+          @click="max_reviews_per_day = preset.value"
+        >
+          {{ preset.label }}
+        </button>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <span class="text-sm font-medium text-brown-700">
+        {{ t('deck.settings-modal.study.max-new-per-day') }}
+      </span>
+      <div class="flex gap-2">
+        <button
+          v-for="preset in NEW_LIMIT_PRESETS"
+          :key="String(preset.value)"
+          class="h-9 min-w-12 cursor-pointer rounded-4 px-3 text-sm font-medium transition-all duration-75"
+          :class="
+            max_new_per_day === preset.value
+              ? 'bg-blue-500 text-brown-100'
+              : 'bg-brown-100 text-brown-700 hover:bg-brown-200'
+          "
+          @click="max_new_per_day = preset.value"
         >
           {{ preset.label }}
         </button>
