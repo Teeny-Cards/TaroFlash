@@ -14,7 +14,7 @@ import { useModalRequestClose } from '@/composables/modal'
 import { type Grade } from 'ts-fsrs'
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 import Card from '@/components/card/index.vue'
-import { useCardsInDeckQuery } from '@/api/cards'
+import { useStudySessionCardsQuery } from '@/api/cards'
 import { useFlushDeckReviews } from '@/api/reviews'
 import { emitSfx } from '@/sfx/bus'
 
@@ -76,7 +76,10 @@ const card_view = computed<'skeleton' | 'edit' | 'read'>(() => {
   return 'read'
 })
 
-const cards_query = useCardsInDeckQuery(() => deck.id!)
+const cards_query = useStudySessionCardsQuery(
+  () => deck.id!,
+  () => !!config.study_all_cards
+)
 const flushDeckReviews = useFlushDeckReviews()
 
 onMounted(() => {
