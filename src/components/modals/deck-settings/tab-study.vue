@@ -59,7 +59,7 @@ const NEW_LIMIT_PRESETS: Array<{ label: string; value: number | null }> = [
       </div>
     </ui-toggle>
 
-    <div class="flex flex-col gap-2">
+    <div data-testid="tab-study__max-reviews" class="flex flex-col gap-2">
       <span class="text-sm font-medium text-brown-700">
         {{ t('deck.settings-modal.study.max-reviews-per-day') }}
       </span>
@@ -67,6 +67,8 @@ const NEW_LIMIT_PRESETS: Array<{ label: string; value: number | null }> = [
         <button
           v-for="preset in REVIEW_LIMIT_PRESETS"
           :key="String(preset.value)"
+          data-testid="tab-study__max-reviews-preset"
+          :data-active="max_reviews_per_day === preset.value"
           class="h-9 min-w-12 cursor-pointer rounded-4 px-3 text-sm font-medium transition-all duration-75"
           :class="
             max_reviews_per_day === preset.value
@@ -80,7 +82,7 @@ const NEW_LIMIT_PRESETS: Array<{ label: string; value: number | null }> = [
       </div>
     </div>
 
-    <div class="flex flex-col gap-2">
+    <div data-testid="tab-study__max-new" class="flex flex-col gap-2">
       <span class="text-sm font-medium text-brown-700">
         {{ t('deck.settings-modal.study.max-new-per-day') }}
       </span>
@@ -88,6 +90,8 @@ const NEW_LIMIT_PRESETS: Array<{ label: string; value: number | null }> = [
         <button
           v-for="preset in NEW_LIMIT_PRESETS"
           :key="String(preset.value)"
+          data-testid="tab-study__max-new-preset"
+          :data-active="max_new_per_day === preset.value"
           class="h-9 min-w-12 cursor-pointer rounded-4 px-3 text-sm font-medium transition-all duration-75"
           :class="
             max_new_per_day === preset.value

@@ -20,6 +20,7 @@ vi.mock('@/composables/deck-editor', async () => {
         description: deck?.description ?? '',
         is_public: deck?.is_public ?? true
       }),
+      config: reactive({ study_all_cards: false }),
       cover: reactive({}),
       card_attributes: reactive({ front: {}, back: {} })
     })

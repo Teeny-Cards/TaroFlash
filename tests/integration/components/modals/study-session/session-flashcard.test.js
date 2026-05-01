@@ -42,7 +42,7 @@ vi.mock('@/sfx/bus', () => ({ emitSfx: mockEmitSfx }))
 vi.mock('@/api/cards', () => {
   const passthrough = () => ({ mutate: vi.fn(), mutateAsync: vi.fn().mockResolvedValue(undefined) })
   return {
-    useCardsInDeckQuery: () => ({
+    useStudySessionCardsQuery: () => ({
       data: cardsDataRef,
       refetch: vi.fn(),
       refresh: vi.fn()
