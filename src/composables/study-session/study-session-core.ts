@@ -89,7 +89,10 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
     }
 
     if (config.shuffle) {
-      filtered = filtered.sort(() => Math.random() - 0.5)
+      const new_cards = filtered.filter((c) => !c.review)
+      const review_cards = filtered.filter((c) => c.review)
+      review_cards.sort(() => Math.random() - 0.5)
+      filtered = [...new_cards, ...review_cards]
     }
 
     if (config.card_limit) {
