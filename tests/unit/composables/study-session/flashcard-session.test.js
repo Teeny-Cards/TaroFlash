@@ -408,31 +408,10 @@ describe('useFlashcardSession', () => {
     expect(session.cards.value).toHaveLength(0)
   })
 
-  // ── card_limit ─────────────────────────────────────────────────────────────
-
-  test('card_limit slices the deck to the given count', () => {
-    const cards = Array.from({ length: 5 }, () => makeDueCard({ review: null }))
-    const session = useFlashcardSession({
-      study_all_cards: true,
-      retry_failed_cards: false,
-      card_limit: 3
-    })
-    session.setCards(cards)
-
-    expect(session.cards.value).toHaveLength(3)
-  })
-
-  test('card_limit of null uses all cards', () => {
-    const cards = Array.from({ length: 5 }, () => makeDueCard({ review: null }))
-    const session = useFlashcardSession({
-      study_all_cards: true,
-      retry_failed_cards: false,
-      card_limit: null
-    })
-    session.setCards(cards)
-
-    expect(session.cards.value).toHaveLength(5)
-  })
+  // ── daily caps ─────────────────────────────────────────────────────────────
+  // Daily caps are now applied server-side in get_study_session_cards. The FE
+  // composable just consumes the pre-sliced result, so no FE-side test for
+  // max_reviews_per_day / max_new_per_day belongs here.
 
   // ── shuffle ────────────────────────────────────────────────────────────────
 

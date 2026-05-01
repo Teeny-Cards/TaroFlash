@@ -33,7 +33,8 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
     study_mode: _config?.study_mode ?? 'flashcard',
     study_all_cards: _config?.study_all_cards ?? false,
     shuffle: _config?.shuffle ?? false,
-    card_limit: _config?.card_limit ?? null,
+    max_reviews_per_day: _config?.max_reviews_per_day ?? null,
+    max_new_per_day: _config?.max_new_per_day ?? null,
     flip_cards: _config?.flip_cards ?? false,
     is_spaced: _config?.is_spaced ?? true,
     auto_play: _config?.auto_play ?? false
@@ -75,7 +76,8 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
     config.study_mode = updates.study_mode ?? config.study_mode
     config.study_all_cards = updates.study_all_cards ?? config.study_all_cards
     config.shuffle = updates.shuffle ?? config.shuffle
-    config.card_limit = updates.card_limit ?? config.card_limit
+    config.max_reviews_per_day = updates.max_reviews_per_day ?? config.max_reviews_per_day
+    config.max_new_per_day = updates.max_new_per_day ?? config.max_new_per_day
     config.flip_cards = updates.flip_cards ?? config.flip_cards
 
     if (_raw_cards.value.length) _processCards()
@@ -93,10 +95,6 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
       const review_cards = filtered.filter((c) => c.review)
       review_cards.sort(() => Math.random() - 0.5)
       filtered = [...new_cards, ...review_cards]
-    }
-
-    if (config.card_limit) {
-      filtered = filtered.slice(0, config.card_limit)
     }
 
     _cards_in_deck.value = filtered.map(_setupCard)

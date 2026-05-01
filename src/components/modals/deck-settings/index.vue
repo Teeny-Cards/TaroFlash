@@ -125,7 +125,8 @@ async function onSave() {
             v-model:flip_cards="config.flip_cards"
             v-model:is_spaced="config.is_spaced"
             v-model:auto_play="config.auto_play"
-            v-model:card_limit="config.card_limit"
+            v-model:max_reviews_per_day="config.max_reviews_per_day"
+            v-model:max_new_per_day="config.max_new_per_day"
           />
         </div>
       </div>
