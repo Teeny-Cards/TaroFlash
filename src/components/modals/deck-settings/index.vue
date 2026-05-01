@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import CoverDesignerToolbar from './cover-designer/index.vue'
 import CardDesignerToolbar from './card-designer-toolbar.vue'
 import TabBar from './tab-bar.vue'
+import TabStudy from './tab-study.vue'
 import Card from '@/components/card/index.vue'
 import { useDeckEditor } from '@/composables/deck-editor'
 import UiButton from '@/components/ui-kit/button.vue'
@@ -23,7 +24,7 @@ const { deck, close } = defineProps<{
 }>()
 
 const { t } = useI18n()
-const { saveDeck, settings, cover, card_attributes } = useDeckEditor(deck)
+const { saveDeck, settings, config, cover, card_attributes } = useDeckEditor(deck)
 
 const active_tab = ref<DesignerTab>('cover')
 
@@ -118,6 +119,14 @@ async function onSave() {
               {{ t('deck.settings-modal.is-public') }}
             </div>
           </ui-toggle>
+
+          <tab-study
+            v-model:shuffle="config.shuffle"
+            v-model:flip_cards="config.flip_cards"
+            v-model:is_spaced="config.is_spaced"
+            v-model:auto_play="config.auto_play"
+            v-model:card_limit="config.card_limit"
+          />
         </div>
       </div>
     </template>
