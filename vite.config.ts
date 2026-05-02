@@ -76,14 +76,15 @@ export default defineConfig({
           environment: 'node',
           setupFiles: ['./tests/contract/setup.js'],
           testTimeout: 15000,
-          hookTimeout: 15000
+          hookTimeout: 15000,
+          retry: 1
         }
       }
     ],
     coverage: {
       enabled: true,
       include: ['src/**/*.{ts,vue}'],
-      reporter: ['text', 'html', 'json-summary'],
+      reporter: ['text', 'html', 'json', 'json-summary'],
       reportOnFailure: true,
       exclude: [
         '**/postcss.config.js',
