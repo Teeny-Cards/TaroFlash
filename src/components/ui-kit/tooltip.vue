@@ -66,6 +66,16 @@ watch(
 )
 
 onBeforeUnmount(() => stop_auto_update?.())
+
+function onPointerEnter(e: PointerEvent) {
+  if (e.pointerType !== 'mouse') return
+  is_active.value = true
+}
+
+function onPointerLeave(e: PointerEvent) {
+  if (e.pointerType !== 'mouse') return
+  is_active.value = false
+}
 </script>
 
 <template>
@@ -73,8 +83,8 @@ onBeforeUnmount(() => stop_auto_update?.())
     :is="element"
     ref="ui-tooltip-trigger"
     class="ui-tooltip-trigger"
-    @mouseenter="is_active = true"
-    @mouseleave="is_active = false"
+    @pointerenter="onPointerEnter"
+    @pointerleave="onPointerLeave"
     @focusin="is_active = true"
     @focusout="is_active = false"
   >
@@ -82,6 +92,7 @@ onBeforeUnmount(() => stop_auto_update?.())
     <Teleport v-if="should_show" to="body">
       <div
         ref="ui-tooltip"
+        data-testid="ui-tooltip"
         data-theme="white"
         data-theme-dark="brown-100"
         :style="floatingStyles"

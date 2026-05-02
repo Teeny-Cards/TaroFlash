@@ -36,7 +36,8 @@ export const vSfx: Directive<HTMLElement, SfxBindingValue> = {
 
     if (cfg.hover) {
       cleanups.push(
-        _add(el, 'mouseenter', () => {
+        _add(el, 'pointerenter', (e) => {
+          if ((e as PointerEvent).pointerType !== 'mouse') return
           emitHoverSfx(cfg.hover!, {
             debounce: cfg.debounce
           })

@@ -143,9 +143,11 @@ const tooltip_active = computed(() => iconOnly && !!slots.default)
   --btn-outline-width: 2px;
   --btn-outline-color: var(--theme-neutral);
 
-  &:hover {
-    --btn-bg-color: var(--theme-neutral);
-    --btn-text-color: var(--theme-primary);
+  @media (hover: hover) {
+    &:hover {
+      --btn-bg-color: var(--theme-neutral);
+      --btn-text-color: var(--theme-primary);
+    }
   }
 }
 
@@ -217,13 +219,15 @@ const tooltip_active = computed(() => iconOnly && !!slots.default)
   }
 }
 
-.ui-kit-btn:hover {
-  --btn-outline-width: 2px;
-}
-.ui-kit-btn:hover .btn-icon.btn-icon--left {
-  transform: scale(1.3) rotate(-5deg);
-}
-.ui-kit-btn:hover .btn-icon.btn-icon--right {
-  transform: scale(1.3) rotate(5deg);
+@media (hover: hover) {
+  .ui-kit-btn:hover {
+    --btn-outline-width: 2px;
+  }
+  .ui-kit-btn:hover .btn-icon.btn-icon--left {
+    transform: scale(1.3) rotate(-5deg);
+  }
+  .ui-kit-btn:hover .btn-icon.btn-icon--right {
+    transform: scale(1.3) rotate(5deg);
+  }
 }
 </style>
