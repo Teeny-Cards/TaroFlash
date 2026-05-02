@@ -53,9 +53,9 @@ For each source file:
 
 ### Step 2b — Backend changes (`supabase/`)
 
-If the changed files include `supabase/migrations/*.sql` or `supabase/functions/**`:
+#### Migrations (`supabase/migrations/*.sql`)
 
-1. Read the migration or function to understand what changed (new tables, RLS policies, triggers, RPC functions, etc.).
+1. Read the migration to understand what changed (new tables, RLS policies, triggers, RPC functions, views).
 2. Check if existing tests in `supabase/tests/` already cover the changed functionality.
 3. Write pgTAP tests in `supabase/tests/` following the conventions in the existing test files:
    - Use `tests.create_user()` and `tests.set_claims()` helpers for setup
@@ -64,8 +64,27 @@ If the changed files include `supabase/migrations/*.sql` or `supabase/functions/
    - Name files with a numeric prefix for ordering (e.g. `00007_new_feature.sql`)
 4. Run with `supabase test db` to validate.
 5. Prioritise testing: RLS policies (security) > RPC functions (business logic) > triggers (data integrity).
+6. **If the migration changes the resource type of an object** (view↔function, table↔view, `RETURNS TABLE` shape change), the FE↔PostgREST contract may break in ways pgTAP cannot see (FK embed resolution lives in PostgREST, not Postgres). Add or update a contract test under `tests/contract/api/<domain>.test.js` that exercises the FE call path against a real local Supabase. See Step 2d.
+
+#### Edge functions (`supabase/functions/<name>/`)
+
+1. Read the function to understand what changed.
+2. Tests are **Deno**, not Vitest. Colocate as `index.test.ts` next to `index.ts`.
+3. Inject a fake supabase via `supabase/functions/_shared/test-utils.ts` (`makeFakeSupabase`). Never hit a real network — the handler must be exported as a pure `handler({ supabase, ... })` and `Deno.serve(...)` gated on `import.meta.main`.
+4. Run from `supabase/functions/`: `deno test --allow-net --allow-env --allow-read`.
+5. See `docs/src/supabase/edge-functions.md` for full conventions.
 
 Skip to Step 8 for these files — Steps 3–7 are frontend-specific.
+
+### Step 2d — API-layer changes (`src/api/<domain>/db/**`)
+
+Files under `src/api/*/db/` talk to PostgREST. Mocked unit tests pin call shapes but cannot detect schema-cache drift, broken FK embeds, missing GRANTs, or RLS regressions — those are HTTP-layer concerns.
+
+For every changed file under `src/api/*/db/`:
+
+1. Add or extend a contract test under `tests/contract/api/<domain>.test.js`. Each function should have at least one happy-path assertion that runs against a real local Supabase via the `signInAsTestUser` helper in `tests/contract/setup.js`.
+2. Assert on **response shape**, not on which arguments were passed to `supabase.from(...).select(...)`. String-shape assertions pin broken behaviour.
+3. Run with `vp test --project Contract` (needs `supabase start`).
 
 ### Step 2c — Capture business-logic decisions from the current session
 
@@ -91,6 +110,7 @@ For each changed unit of code, choose the **lowest-cost test type** that can mea
 | -------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1        | **Unit**        | Pure functions, utilities, composables with no rendering, store logic that can be called directly                                                                                 |
 | 2        | **Integration** | Vue components — anything that renders HTML (runs in Chromium via browser mode)                                                                                                   |
+| 2        | **Contract**    | `src/api/<domain>/db/*` — anything that round-trips through PostgREST / GoTrue / Storage. See Step 2d.                                                                            |
 | 3        | **E2E**         | **Last resort only.** Use only when the behaviour cannot be covered without full navigation or multi-step flow interaction. Always justify why integration is insufficient first. |
 
 **Default to integration tests for components.** Use `shallowMount` for isolated component tests (stub child components) and `mount` only when child component behaviour is directly under test.
