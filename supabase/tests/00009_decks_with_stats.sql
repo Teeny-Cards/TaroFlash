@@ -12,7 +12,26 @@
 
 BEGIN;
 
-SELECT plan(8);
+SELECT plan(9);
+
+-- ── Test: function returns the exact columns the FE consumes ─────────────────
+-- Locks the OUT parameter list of decks_with_stats. Renaming or removing a
+-- column without updating the FE will fail here. (Cannot guard PostgREST
+-- embed resolution — that's a contract-test job — but this catches column
+-- drift cheaply.)
+SELECT bag_eq(
+  $$ SELECT parameter_name
+     FROM information_schema.parameters
+     WHERE specific_schema = 'public'
+       AND specific_name LIKE 'decks_with_stats%'
+       AND parameter_mode = 'OUT' $$,
+  $$ VALUES
+      ('id'), ('created_at'), ('updated_at'), ('description'), ('is_public'),
+      ('title'), ('member_id'), ('member_display_name'), ('tags'), ('has_image'),
+      ('study_config'), ('cover_config'), ('card_attributes'), ('card_count'),
+      ('reviewed_today_count'), ('new_reviewed_today_count'), ('due_count') $$,
+  'decks_with_stats exposes the columns the FE consumes'
+);
 
 -- ── Setup ─────────────────────────────────────────────────────────────────────
 
