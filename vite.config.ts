@@ -67,6 +67,17 @@ export default defineConfig({
             instances: [{ browser: 'chromium' }]
           }
         }
+      },
+      {
+        extends: true,
+        test: {
+          name: { label: 'Contract', color: 'magenta' },
+          include: ['tests/contract/**/*.test.js'],
+          environment: 'node',
+          setupFiles: ['./tests/contract/setup.js'],
+          testTimeout: 15000,
+          hookTimeout: 15000
+        }
       }
     ],
     coverage: {
