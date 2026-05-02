@@ -342,9 +342,8 @@ describe('useGestures', () => {
 
   // ── Click suppression after drag ──────────────────────────────────────────
 
-  test('suppresses click event that fires immediately after a drag > 4px', () => {
+  test('suppresses click that fires on the dragged element after a drag > 4px', () => {
     const onClick = vi.fn()
-    // Register AFTER the gesture system so the capture-phase suppressClick fires first
     document.addEventListener('click', onClick)
 
     const { register } = useGestures()
@@ -353,9 +352,46 @@ describe('useGestures', () => {
     pointerDown(el, 100, 100)
     pointerUp(110, 100) // 10px drag — above threshold
 
-    document.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
     expect(onClick).not.toHaveBeenCalled()
+    document.removeEventListener('click', onClick)
+  })
+
+  test('suppresses click on a child of the dragged element after a drag > 4px', () => {
+    const onClick = vi.fn()
+    const child = document.createElement('span')
+    el.appendChild(child)
+    document.addEventListener('click', onClick)
+
+    const { register } = useGestures()
+    register(el, {})
+
+    pointerDown(el, 100, 100)
+    pointerUp(110, 100)
+
+    child.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+    expect(onClick).not.toHaveBeenCalled()
+    document.removeEventListener('click', onClick)
+  })
+
+  test('does NOT suppress click on an element outside the dragged element', () => {
+    const onClick = vi.fn()
+    const outside = makeElement()
+    document.addEventListener('click', onClick)
+
+    const { register } = useGestures()
+    register(el, {})
+
+    pointerDown(el, 100, 100)
+    pointerUp(110, 100) // drag on `el`
+
+    // user immediately taps a different element (e.g. modal close button)
+    outside.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+    expect(onClick).toHaveBeenCalledOnce()
+    cleanup(outside)
     document.removeEventListener('click', onClick)
   })
 
@@ -369,9 +405,51 @@ describe('useGestures', () => {
     pointerDown(el, 100, 100)
     pointerUp(104, 100) // exactly 4px — at threshold, not above
 
-    document.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
     expect(onClick).toHaveBeenCalledOnce()
+    document.removeEventListener('click', onClick)
+  })
+
+  test('suppression listener is cleared after the timeout window so later clicks pass', () => {
+    vi.useFakeTimers()
+    const onClick = vi.fn()
+    document.addEventListener('click', onClick)
+
+    const { register } = useGestures()
+    register(el, {})
+
+    pointerDown(el, 100, 100)
+    pointerUp(110, 100)
+
+    vi.advanceTimersByTime(400) // > 350ms cleanup window
+
+    // a later click on the dragged element should now go through
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+    expect(onClick).toHaveBeenCalledOnce()
+    document.removeEventListener('click', onClick)
+    vi.useRealTimers()
+  })
+
+  test('suppression handler self-removes after the synthetic click fires', () => {
+    const onClick = vi.fn()
+    document.addEventListener('click', onClick)
+
+    const { register } = useGestures()
+    register(el, {})
+
+    pointerDown(el, 100, 100)
+    pointerUp(110, 100)
+
+    // first click on the dragged element — suppressed
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    expect(onClick).not.toHaveBeenCalled()
+
+    // second click on the dragged element — handler already removed, passes through
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    expect(onClick).toHaveBeenCalledOnce()
+
     document.removeEventListener('click', onClick)
   })
 })
