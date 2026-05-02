@@ -34,7 +34,7 @@ function onToggleEditCards() {
 <template>
   <div
     data-testid="deck-hero"
-    class="flex w-max flex-col items-center gap-6 md:flex-row md:items-end xl:flex-col xl:items-start"
+    class="flex max-w-full flex-col items-center gap-6 md:flex-row md:items-end xl:w-max xl:flex-col xl:items-start"
   >
     <deck size="lg" class="relative" :deck="deck">
       <template #actions>
