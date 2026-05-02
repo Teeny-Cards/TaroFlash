@@ -1,0 +1,83 @@
+name: E2E on label
+
+on:
+  pull_request:
+    types: [labeled, synchronize]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  start:
+    name: Post status comment
+    if: contains(github.event.pull_request.labels.*.name, 'smoke-tests')
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    outputs:
+      comment-id: ${{ steps.post.outputs.comment-id }}
+
+    steps:
+      - name: Find or create E2E comment
+        id: post
+        run: |
+          SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          BODY="⏳ E2E run in progress for \`${SHA}\`..."
+
+          COMMENT_ID=$(gh api \
+            repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments \
+            --jq '.[] | select(.body | test("E2E run")) | .id' \
+            | tail -1)
+
+          if [ -n "$COMMENT_ID" ]; then
+            gh api \
+              repos/${{ github.repository }}/issues/comments/$COMMENT_ID \
+              --method PATCH \
+              -f body="$BODY"
+          else
+            COMMENT_ID=$(gh api \
+              repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments \
+              --method POST \
+              --jq '.id' \
+              -f body="$BODY")
+          fi
+
+          echo "comment-id=$COMMENT_ID" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  run:
+    name: Run E2E
+    needs: [start]
+    if: contains(github.event.pull_request.labels.*.name, 'smoke-tests')
+    uses: ./.github/workflows/e2e.yml
+    secrets: inherit
+
+  finish:
+    name: Update status comment
+    if: always() && contains(github.event.pull_request.labels.*.name, 'smoke-tests')
+    runs-on: ubuntu-latest
+    needs: [start, run]
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Update comment
+        if: always()
+        run: |
+          RESULT="${{ needs.run.result }}"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+
+          if [ "$RESULT" = "success" ]; then
+            BODY="✅ E2E passed for \`${SHA}\`."
+          else
+            BODY="❌ E2E failed for \`${SHA}\` — [view logs](${RUN_URL})."
+          fi
+
+          gh api \
+            repos/${{ github.repository }}/issues/comments/${{ needs.start.outputs.comment-id }} \
+            --method PATCH \
+            -f body="$BODY"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
