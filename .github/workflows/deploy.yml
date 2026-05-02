@@ -7,13 +7,107 @@ on:
         description: GitHub environment to deploy to (staging or production)
         required: true
         type: string
+      force_frontend:
+        required: false
+        type: boolean
+        default: false
+      force_migrations:
+        required: false
+        type: boolean
+        default: false
+      force_functions:
+        required: false
+        type: boolean
+        default: false
+      force_config:
+        required: false
+        type: boolean
+        default: false
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: GitHub environment to deploy to
+        required: true
+        type: choice
+        options: [staging, production]
+      force_frontend:
+        description: Force frontend deploy
+        type: boolean
+        default: false
+      force_migrations:
+        description: Force DB migrations
+        type: boolean
+        default: false
+      force_functions:
+        description: Force edge functions deploy
+        type: boolean
+        default: false
+      force_config:
+        description: Force Supabase config push
+        type: boolean
+        default: false
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
+  detect-changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      migrations: ${{ steps.filter.outputs.migrations }}
+      functions: ${{ steps.filter.outputs.functions }}
+      config: ${{ steps.filter.outputs.config }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve diff base
+        id: base
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # PR-triggered staging deploy → leave empty so paths-filter uses PR base.
+        # Release / manual deploy     → previous release tag (or empty for first deploy).
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "ref=" >> $GITHUB_OUTPUT
+          else
+            PREV=$(gh release list --limit 2 --json tagName --jq '.[1].tagName // ""')
+            echo "ref=$PREV" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          base: ${{ steps.base.outputs.ref }}
+          filters: |
+            frontend:
+              - 'src/**'
+              - 'public/**'
+              - 'index.html'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - 'vite.config.*'
+              - 'tsconfig*.json'
+              - 'netlify.toml'
+            migrations:
+              - 'supabase/migrations/**'
+            functions:
+              - 'supabase/functions/**'
+            config:
+              - 'supabase/config.toml'
+
   build:
     name: Build frontend
+    needs: [detect-changes]
+    if: needs.detect-changes.outputs.frontend == 'true' || inputs.force_frontend
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     permissions:
@@ -52,7 +146,8 @@ jobs:
 
   migrate:
     name: DB migrations
-    needs: [build]
+    needs: [detect-changes]
+    if: needs.detect-changes.outputs.migrations == 'true' || inputs.force_migrations
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     permissions:
@@ -76,7 +171,11 @@ jobs:
 
   functions:
     name: Deploy edge functions
-    needs: [migrate]
+    needs: [detect-changes, migrate]
+    if: |
+      always() &&
+      (needs.migrate.result == 'success' || needs.migrate.result == 'skipped') &&
+      (needs.detect-changes.outputs.functions == 'true' || inputs.force_functions)
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     permissions:
@@ -110,9 +209,42 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
+  config:
+    name: Push Supabase config
+    needs: [detect-changes]
+    if: needs.detect-changes.outputs.config == 'true' || inputs.force_config
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Link project
+        run: supabase link --project-ref ${{ vars.SUPABASE_PROJECT_REF }} --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Push config
+        run: supabase config push
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
   frontend:
     name: Deploy frontend
-    needs: [migrate, functions]
+    needs: [build, migrate, functions]
+    if: |
+      always() &&
+      needs.build.result == 'success' &&
+      needs.migrate.result != 'failure' &&
+      needs.functions.result != 'failure'
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     permissions:
