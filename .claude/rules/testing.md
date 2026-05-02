@@ -40,10 +40,16 @@ Run: `vp test`, `vp test --project Unit|Integration|Contract`, `vp test <file>`,
 
 - Drive components via user interactions; assert on rendered output and emitted events
 - Don't read `wrapper.vm.*` or call internal methods
-- Query only by `data-testid` — never tag, class, or generated stub names (`ui-icon-stub`)
+- **Query only by `data-testid`** — applies to every test type (Unit, Integration, **Contract**, **E2E**). Never query by tag (`input[name="email"]`), class, role + visible text (`getByRole('button', { name: /log in/i })`), or generated stub names (`ui-icon-stub`). Visible text breaks under i18n, role queries are noisy, tag/name attributes are implementation details. If a structural element you need to drive or assert against doesn't have a `data-testid`, **add one to the source** (`component-name__section` naming) before writing the test.
 - Don't assert Tailwind utility classes; semantic/BEM names OK when they are the most direct state signal
 - Find child components with `findAllComponents(ImportedRef)` (or `{ name }` if `defineOptions({ name })` is set)
 - Don't assert audio names — assert audio was played
+
+## E2E flows
+
+- Multi-step flows shared across specs (login, sign-up, deck creation, study session) live as helpers in `tests/e2e/_helpers.ts`. Each helper is a single function that drives the flow and asserts the post-condition (e.g. `loginAs(page, user)` lands on the dashboard before returning).
+- Specs call helpers — they don't re-implement the steps inline. Treat the helper as the contract: if a flow changes, update the helper once, every spec follows.
+- ui-kit primitives that wrap their root in a tooltip/wrapper (e.g. `UiInput`) don't forward `data-testid` to the inner `<input>`. Wrap the call site in a `<div data-testid="...">` and target via `.locator('input')` from the wrapper. `UiButton` uses `inheritAttrs: false` and forwards `$attrs` to the root, so `data-testid` passed at the call site lands correctly.
 
 ## Browser mode constraints
 
