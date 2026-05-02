@@ -2,6 +2,17 @@ export function isoNow(): string {
   return new Date().toISOString()
 }
 
+/**
+ * ISO timestamp of the start of the caller's local day (00:00 in their
+ * current timezone). Used to scope "today's" daily-cap counts on the
+ * backend without baking a timezone assumption into SQL.
+ */
+export function localDayStart(): string {
+  const now = new Date()
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  return start.toISOString()
+}
+
 type DateInput = string | number | Date
 
 function toDate(input: DateInput): Date {
