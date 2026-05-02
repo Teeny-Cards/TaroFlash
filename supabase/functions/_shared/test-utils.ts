@@ -1,0 +1,68 @@
+// Test fixtures shared across edge-function unit tests.
+// Keep generic — function-specific behavior belongs in that function's test file.
+
+export type FakeSupabaseOpts<Row> = {
+  rows?: Row[]
+  selectError?: any
+  removeErrors?: Map<string, any[]>
+  deleteError?: any
+}
+
+export type FakeSupabaseCalls = {
+  removed: { bucket: string; paths: string[] }[]
+  deletedIds: number[][]
+}
+
+export type FakeSupabase = {
+  from: (table: string) => any
+  storage: { from: (bucket: string) => { remove: (paths: string[]) => Promise<{ error: any }> } }
+}
+
+// Minimal supabase-js stand-in covering the surface our edge functions touch:
+// `.from(t).select().not().limit()`, `.from(t).delete().in()`, `.storage.from(b).remove()`.
+// Storage `remove` errors are queued per bucket so retries can be exercised.
+export function makeFakeSupabase<Row>(opts: FakeSupabaseOpts<Row> = {}): {
+  supabase: FakeSupabase
+  calls: FakeSupabaseCalls
+} {
+  const calls: FakeSupabaseCalls = { removed: [], deletedIds: [] }
+  const removeErrors = opts.removeErrors ?? new Map()
+  const consumed = new Map<string, number>()
+
+  const supabase: FakeSupabase = {
+    from: (table: string) => ({
+      select: () => ({
+        not: () => ({
+          limit: () =>
+            Promise.resolve(
+              opts.selectError
+                ? { data: null, error: opts.selectError }
+                : { data: opts.rows ?? [], error: null }
+            )
+        })
+      }),
+      delete: () => ({
+        in: (_col: string, ids: number[]) => {
+          if (table === 'media') calls.deletedIds.push(ids)
+          return Promise.resolve({ error: opts.deleteError ?? null })
+        }
+      })
+    }),
+    storage: {
+      from: (bucket: string) => ({
+        remove: (paths: string[]) => {
+          calls.removed.push({ bucket, paths })
+          const queue = removeErrors.get(bucket) ?? []
+          const idx = consumed.get(bucket) ?? 0
+          consumed.set(bucket, idx + 1)
+          const error = queue[idx] ?? null
+          return Promise.resolve({ error })
+        }
+      })
+    }
+  }
+
+  return { supabase, calls }
+}
+
+export const noSleep = () => Promise.resolve()
