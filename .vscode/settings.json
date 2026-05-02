@@ -8,5 +8,7 @@
   "[vue]": {
     "editor.wordWrap": "on",
     "editor.wrappingIndent": "indent"
-  }
+  },
+  "deno.enable": false,
+  "deno.enablePaths": ["supabase/functions"]
 }
