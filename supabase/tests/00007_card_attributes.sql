@@ -46,7 +46,7 @@ SET LOCAL role = 'authenticated';
 SELECT results_eq(
   $$
     SELECT card_attributes
-    FROM public.decks_with_stats
+    FROM public.decks_with_stats(date_trunc('day', now()))
     WHERE id = 900
   $$,
   $$
@@ -72,7 +72,7 @@ SET LOCAL role = 'authenticated';
 SELECT results_eq(
   $$
     SELECT card_attributes IS NULL
-    FROM public.decks_with_stats
+    FROM public.decks_with_stats(date_trunc('day', now()))
     WHERE id = 901
   $$,
   $$ VALUES (true) $$,
