@@ -61,8 +61,8 @@ describe('DeckHero', () => {
     )
   })
 
-  test('renders the member display name from deck.member', () => {
-    const wrapper = mount({ deck: { member: { display_name: 'Alice' } } })
+  test('renders the member display name from deck.member_display_name', () => {
+    const wrapper = mount({ deck: { member_display_name: 'Alice' } })
     expect(wrapper.text()).toContain('Alice')
   })
 

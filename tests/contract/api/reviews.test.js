@@ -1,0 +1,65 @@
+import { describe, test, expect, beforeEach, afterEach } from 'vite-plus/test'
+import { signInAsTestUser } from '../setup.js'
+import { createDeck, insertCardDirect } from '../fixtures.js'
+import { saveReview } from '@/api/reviews/db'
+
+let session
+
+beforeEach(async () => {
+  session = await signInAsTestUser()
+})
+
+afterEach(async () => {
+  await session?.cleanup()
+  session = null
+})
+
+describe('saveReview (contract)', () => {
+  test('writes the review row and review_logs entry for the card', async () => {
+    const deck = await createDeck(session.client, session.userId)
+    const card = await insertCardDirect(session.client, deck.id)
+
+    const now = new Date()
+    const card_state = {
+      due: new Date(now.getTime() + 86_400_000).toISOString(),
+      stability: 1.5,
+      difficulty: 5,
+      elapsed_days: 0,
+      scheduled_days: 1,
+      reps: 1,
+      lapses: 0,
+      last_review: now.toISOString(),
+      state: 1
+    }
+    const log = {
+      rating: 3,
+      state: 1,
+      due: card_state.due,
+      stability: card_state.stability,
+      difficulty: card_state.difficulty,
+      scheduled_days: card_state.scheduled_days,
+      review: now.toISOString()
+    }
+
+    await saveReview(card.id, card_state, log)
+
+    const { data: review } = await session.client
+      .from('reviews')
+      .select('*')
+      .eq('card_id', card.id)
+      .single()
+    expect(review).toMatchObject({
+      card_id: card.id,
+      stability: card_state.stability,
+      difficulty: card_state.difficulty,
+      reps: 1
+    })
+
+    const { data: logs } = await session.client
+      .from('review_logs')
+      .select('*')
+      .eq('card_id', card.id)
+    expect(logs).toHaveLength(1)
+    expect(logs[0].rating).toBe(3)
+  })
+})

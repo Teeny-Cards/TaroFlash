@@ -104,10 +104,23 @@ jobs:
             config:
               - 'supabase/config.toml'
 
+  e2e-smoke:
+    name: E2E smoke
+    needs: [detect-changes]
+    if: |
+      needs.detect-changes.outputs.frontend == 'true' || inputs.force_frontend ||
+      needs.detect-changes.outputs.migrations == 'true' || inputs.force_migrations ||
+      needs.detect-changes.outputs.functions == 'true' || inputs.force_functions
+    uses: ./.github/workflows/e2e.yml
+    secrets: inherit
+
   build:
     name: Build frontend
-    needs: [detect-changes]
-    if: needs.detect-changes.outputs.frontend == 'true' || inputs.force_frontend
+    needs: [detect-changes, e2e-smoke]
+    if: |
+      always() &&
+      (needs.e2e-smoke.result == 'success' || needs.e2e-smoke.result == 'skipped') &&
+      (needs.detect-changes.outputs.frontend == 'true' || inputs.force_frontend)
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     permissions:
@@ -146,8 +159,11 @@ jobs:
 
   migrate:
     name: DB migrations
-    needs: [detect-changes]
-    if: needs.detect-changes.outputs.migrations == 'true' || inputs.force_migrations
+    needs: [detect-changes, e2e-smoke]
+    if: |
+      always() &&
+      (needs.e2e-smoke.result == 'success' || needs.e2e-smoke.result == 'skipped') &&
+      (needs.detect-changes.outputs.migrations == 'true' || inputs.force_migrations)
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     permissions:
@@ -171,9 +187,10 @@ jobs:
 
   functions:
     name: Deploy edge functions
-    needs: [detect-changes, migrate]
+    needs: [detect-changes, e2e-smoke, migrate]
     if: |
       always() &&
+      (needs.e2e-smoke.result == 'success' || needs.e2e-smoke.result == 'skipped') &&
       (needs.migrate.result == 'success' || needs.migrate.result == 'skipped') &&
       (needs.detect-changes.outputs.functions == 'true' || inputs.force_functions)
     runs-on: ubuntu-latest

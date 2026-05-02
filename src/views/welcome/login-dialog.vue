@@ -39,10 +39,12 @@ async function onSubmit(): Promise<void> {
 
 <template>
   <div
+    data-testid="login-dialog"
     class="w-80 bg-brown-300 rounded-l-6 rounded-br-6 rounded-tr-0.5 p-6 shadow-sm overflow-hidden relative"
   >
     <div class="flex flex-col items-center gap-6">
       <ui-button
+        data-testid="login-dialog__google"
         data-theme="brown-100"
         size="lg"
         :fancy-hover="false"
@@ -57,26 +59,31 @@ async function onSubmit(): Promise<void> {
 
       <form class="w-full flex flex-col items-center gap-6" @submit.prevent="onSubmit">
         <div class="flex flex-col gap-4 w-full">
-          <ui-input
-            type="email"
-            name="email"
-            autocomplete="username"
-            size="lg"
-            v-model="email"
-            :placeholder="t('login-dialog.email')"
-          />
+          <div data-testid="login-dialog__email">
+            <ui-input
+              type="email"
+              name="email"
+              autocomplete="username"
+              size="lg"
+              v-model="email"
+              :placeholder="t('login-dialog.email')"
+            />
+          </div>
 
-          <ui-input
-            type="password"
-            name="password"
-            autocomplete="current-password"
-            size="lg"
-            v-model="password"
-            :placeholder="t('login-dialog.password')"
-          />
+          <div data-testid="login-dialog__password">
+            <ui-input
+              type="password"
+              name="password"
+              autocomplete="current-password"
+              size="lg"
+              v-model="password"
+              :placeholder="t('login-dialog.password')"
+            />
+          </div>
         </div>
 
         <ui-button
+          data-testid="login-dialog__submit"
           size="lg"
           data-theme="blue-500"
           :loading="loading"

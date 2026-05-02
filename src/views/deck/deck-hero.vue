@@ -62,7 +62,7 @@ function onToggleEditCards() {
       <div class="flex items-center gap-2 text-blue-500">
         <ui-icon src="user" />
         <h2>
-          {{ deck.member?.display_name }}
+          {{ deck.member_display_name }}
         </h2>
       </div>
 
