@@ -1,11 +1,11 @@
 import { supabase } from '@/supabase-client'
 import { useMemberStore } from '@/stores/member'
 import logger from '@/utils/logger'
-import { isoNow } from '@/utils/date'
+import { isoNow, localDayStart } from '@/utils/date'
 
 export async function fetchMemberDecks(): Promise<Deck[]> {
   const { data, error } = await supabase
-    .from('decks_with_stats')
+    .rpc('decks_with_stats', { p_today_start: localDayStart() })
     .select('*')
     .eq('member_id', useMemberStore().id)
 
@@ -19,7 +19,7 @@ export async function fetchMemberDecks(): Promise<Deck[]> {
 
 export async function fetchDeck(id: number): Promise<Deck> {
   const { data, error } = await supabase
-    .from('decks_with_stats')
+    .rpc('decks_with_stats', { p_today_start: localDayStart() })
     .select('*, member:members(display_name)')
     .eq('id', id)
     .single()
@@ -29,7 +29,7 @@ export async function fetchDeck(id: number): Promise<Deck> {
     throw error
   }
 
-  return data
+  return data as Deck
 }
 
 export async function fetchMemberDeckCount(): Promise<number> {

@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 
-const { queryMock, capturedTables } = vi.hoisted(() => {
+const { queryMock, capturedTables, capturedRpcs } = vi.hoisted(() => {
   const queryMock = {
     select: vi.fn(),
     eq: vi.fn(),
@@ -9,13 +9,17 @@ const { queryMock, capturedTables } = vi.hoisted(() => {
     upsert: vi.fn(),
     delete: vi.fn()
   }
-  return { queryMock, capturedTables: [] }
+  return { queryMock, capturedTables: [], capturedRpcs: [] }
 })
 
 vi.mock('@/supabase-client', () => ({
   supabase: {
     from: vi.fn((table) => {
       capturedTables.push(table)
+      return queryMock
+    }),
+    rpc: vi.fn((fn, args) => {
+      capturedRpcs.push({ fn, args })
       return queryMock
     })
   }
@@ -43,14 +47,17 @@ beforeEach(() => {
   queryMock.order.mockReturnValue(queryMock)
   queryMock.delete.mockReturnValue(queryMock)
   capturedTables.length = 0
+  capturedRpcs.length = 0
   supabase.from.mockClear()
+  supabase.rpc.mockClear()
 })
 
 describe('fetchMemberDecks', () => {
-  test('reads from decks_with_stats filtered by current member', async () => {
+  test('calls decks_with_stats RPC filtered by current member', async () => {
     queryMock.eq.mockResolvedValueOnce({ data: [{ id: 1 }], error: null })
     const result = await fetchMemberDecks()
-    expect(capturedTables[0]).toBe('decks_with_stats')
+    expect(capturedRpcs[0].fn).toBe('decks_with_stats')
+    expect(capturedRpcs[0].args.p_today_start).toEqual(expect.any(String))
     expect(queryMock.eq).toHaveBeenCalledWith('member_id', 'member-uuid-1')
     expect(result).toEqual([{ id: 1 }])
   })
@@ -63,10 +70,11 @@ describe('fetchMemberDecks', () => {
 })
 
 describe('fetchDeck', () => {
-  test('reads from decks_with_stats with the member embed only — cards are paginated separately', async () => {
+  test('calls decks_with_stats RPC with the member embed only — cards are paginated separately', async () => {
     queryMock.single.mockResolvedValueOnce({ data: { id: 5 }, error: null })
     await fetchDeck(5)
-    expect(capturedTables[0]).toBe('decks_with_stats')
+    expect(capturedRpcs[0].fn).toBe('decks_with_stats')
+    expect(capturedRpcs[0].args.p_today_start).toEqual(expect.any(String))
     const [selectArg] = queryMock.select.mock.calls[0]
     expect(selectArg).toContain('member:members(display_name)')
     expect(selectArg).not.toContain('cards:cards_with_images')
