@@ -19,7 +19,9 @@ export default defineConfig({
   webServer: process.env.E2E_BASE_URL
     ? undefined
     : {
-        command: 'pnpm exec vp dev --host 127.0.0.1 --port 5173',
+        command: process.env.CI
+          ? 'pnpm exec vp preview --host 127.0.0.1 --port 5173 --strictPort'
+          : 'pnpm exec vp dev --host 127.0.0.1 --port 5173',
         url: 'http://127.0.0.1:5173',
         reuseExistingServer: !process.env.CI,
         timeout: 60_000
