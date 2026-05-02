@@ -1,32 +1,85 @@
 // supabase/functions/cleanup-media/index.ts
-import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 const BATCH_SIZE = 500
 
-// Retry a fallible async operation up to `attempts` times with exponential backoff.
-// Delays: 500ms, 1000ms, 2000ms (capped at 3 attempts by default).
-async function withRetry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
+type MediaRow = { id: number; bucket: string; path: string; member_id: string }
+type Group = { bucket: string; memberId: string; paths: string[]; ids: number[] }
+
+export type Sleep = (ms: number) => Promise<void>
+export type SupabaseLike = {
+  from: (table: string) => any
+  storage: { from: (bucket: string) => { remove: (paths: string[]) => Promise<{ error: any }> } }
+}
+
+export type Deps = {
+  supabase: SupabaseLike
+  sleep?: Sleep
+  retryAttempts?: number
+}
+
+async function withRetry<T>(fn: () => Promise<T>, attempts: number, sleep: Sleep): Promise<T> {
   let lastError: unknown
+
   for (let i = 0; i < attempts; i++) {
     try {
       return await fn()
     } catch (err) {
       lastError = err
-      if (i < attempts - 1) {
-        await new Promise((r) => setTimeout(r, 500 * Math.pow(2, i)))
-      }
+      if (i < attempts - 1) await sleep(500 * Math.pow(2, i))
     }
   }
+
   throw lastError
 }
 
-serve(async (_req: any) => {
-  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-    auth: { persistSession: false }
-  })
+function groupByBucketAndMember(rows: MediaRow[]): Group[] {
+  const groups = new Map<string, Group>()
+
+  for (const row of rows) {
+    const key = `${row.bucket}::${row.member_id}`
+    if (!groups.has(key)) {
+      groups.set(key, { bucket: row.bucket, memberId: row.member_id, paths: [], ids: [] })
+    }
+    const g = groups.get(key)!
+    g.paths.push(row.path)
+    g.ids.push(row.id)
+  }
+
+  return [...groups.values()]
+}
+
+async function removeGroupFromStorage(
+  supabase: SupabaseLike,
+  group: Group,
+  attempts: number,
+  sleep: Sleep
+): Promise<{ ids: number[]; error: string | null }> {
+  const fullPaths = group.paths.map((p) => `${group.memberId}/${p}`)
+
+  try {
+    await withRetry(
+      () =>
+        supabase.storage
+          .from(group.bucket)
+          .remove(fullPaths)
+          .then(({ error }) => {
+            if (error) throw error
+          }),
+      attempts,
+      sleep
+    )
+    return { ids: group.ids, error: null }
+  } catch (err: any) {
+    return {
+      ids: [],
+      error: `bucket=${group.bucket} member=${group.memberId}: ${err?.message ?? err}`
+    }
+  }
+}
+
+export async function handler({ supabase, sleep, retryAttempts = 3 }: Deps): Promise<Response> {
+  const wait = sleep ?? ((ms) => new Promise((r) => setTimeout(r, ms)))
 
   const { data: mediaRows, error: selectError } = await supabase
     .from('media')
@@ -43,53 +96,21 @@ serve(async (_req: any) => {
     return new Response(JSON.stringify({ message: 'No media to clean' }), { status: 200 })
   }
 
-  // Group paths by (bucket, member_id) so we build the correct storage path
-  // for each member. Storage paths are scoped under the member's folder:
-  // {member_id}/{path}
-  type GroupKey = string // `${bucket}::${member_id}`
-  const groups = new Map<
-    GroupKey,
-    { bucket: string; memberId: string; paths: string[]; ids: number[] }
-  >()
+  const groups = groupByBucketAndMember(mediaRows)
 
-  for (const row of mediaRows) {
-    const key: GroupKey = `${row.bucket}::${row.member_id}`
-    if (!groups.has(key)) {
-      groups.set(key, { bucket: row.bucket, memberId: row.member_id, paths: [], ids: [] })
-    }
-    const g = groups.get(key)!
-    g.paths.push(row.path)
-    g.ids.push(row.id)
-  }
-
-  // Track which media IDs were successfully removed from storage so we only
-  // delete DB records for those. If storage removal fails for a group (even
-  // after retries) we skip its IDs — the next invocation will retry them.
   const successfulIds: number[] = []
   const storageErrors: string[] = []
 
-  for (const { bucket, memberId, paths, ids } of groups.values()) {
-    const fullPaths = paths.map((p) => `${memberId}/${p}`)
-
-    try {
-      await withRetry(() =>
-        supabase.storage
-          .from(bucket)
-          .remove(fullPaths)
-          .then(({ error }) => {
-            if (error) throw error
-          })
-      )
-      successfulIds.push(...ids)
-    } catch (err: any) {
-      const msg = `bucket=${bucket} member=${memberId}: ${err?.message ?? err}`
-      console.error('Storage delete failed after retries:', msg)
-      storageErrors.push(msg)
-      // Continue to the next group — don't let one failure block the rest.
+  for (const group of groups) {
+    const { ids, error } = await removeGroupFromStorage(supabase, group, retryAttempts, wait)
+    if (error) {
+      console.error('Storage delete failed after retries:', error)
+      storageErrors.push(error)
+      continue
     }
+    successfulIds.push(...ids)
   }
 
-  // Delete DB records only for files that were confirmed removed from storage.
   if (successfulIds.length > 0) {
     const { error: deleteError } = await supabase.from('media').delete().in('id', successfulIds)
 
@@ -102,7 +123,7 @@ serve(async (_req: any) => {
     }
   }
 
-  const status = storageErrors.length > 0 ? 207 : 200 // 207 = partial success
+  const status = storageErrors.length > 0 ? 207 : 200
   return new Response(
     JSON.stringify({
       message: 'Media cleanup complete',
@@ -112,4 +133,16 @@ serve(async (_req: any) => {
     }),
     { status }
   )
-})
+}
+
+if (import.meta.main) {
+  const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
+  const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+
+  Deno.serve(() => {
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+      auth: { persistSession: false }
+    })
+    return handler({ supabase })
+  })
+}
