@@ -47,13 +47,13 @@ SET LOCAL role = 'authenticated';
 
 -- Test 1: Alice can read her own decks through the view.
 SELECT lives_ok(
-  $$ SELECT * FROM public.decks_with_stats WHERE id IN (100, 101) $$,
+  $$ SELECT * FROM public.decks_with_stats(date_trunc('day', now())) WHERE id IN (100, 101) $$,
   'Alice can read her own decks via decks_with_stats'
 );
 
 -- Test 2: card_count is accurate on Alice's private deck (2 cards).
 SELECT is(
-  (SELECT card_count FROM public.decks_with_stats WHERE id = 100),
+  (SELECT card_count FROM public.decks_with_stats(date_trunc('day', now())) WHERE id = 100),
   2,
   'card_count on deck 100 equals 2'
 );
@@ -61,14 +61,14 @@ SELECT is(
 -- Test 3: due_count on deck 100 is 1 — card 1000 is due (no review),
 -- card 1001 is not (review.due is in the future).
 SELECT is(
-  (SELECT due_count FROM public.decks_with_stats WHERE id = 100),
+  (SELECT due_count FROM public.decks_with_stats(date_trunc('day', now())) WHERE id = 100),
   1,
   'due_count on deck 100 equals 1 (only card 1000 is currently due)'
 );
 
 -- Test 4: due_count on Alice's public deck 101 is 1 — card 1100 has no review.
 SELECT is(
-  (SELECT due_count FROM public.decks_with_stats WHERE id = 101),
+  (SELECT due_count FROM public.decks_with_stats(date_trunc('day', now())) WHERE id = 101),
   1,
   'due_count on deck 101 equals 1 (card 1100 has no review, so it is due)'
 );
@@ -77,7 +77,7 @@ SELECT is(
 -- If security_invoker were not set, the view would run as postgres and
 -- return Bob's row — this assertion would fail.
 SELECT is(
-  (SELECT count(*) FROM public.decks_with_stats WHERE id = 200)::int,
+  (SELECT count(*) FROM public.decks_with_stats(date_trunc('day', now())) WHERE id = 200)::int,
   0,
   'security_invoker: Alice cannot read Bob''s private deck via decks_with_stats'
 );
@@ -86,7 +86,7 @@ SELECT is(
 -- Catches accidental join-style duplication where a deck with N cards
 -- would return N rows.
 SELECT is(
-  (SELECT count(*) FROM public.decks_with_stats WHERE member_id = '11111111-1111-1111-1111-111111111111')::int,
+  (SELECT count(*) FROM public.decks_with_stats(date_trunc('day', now())) WHERE member_id = '11111111-1111-1111-1111-111111111111')::int,
   2,
   'view row count equals member deck count (no join duplication)'
 );

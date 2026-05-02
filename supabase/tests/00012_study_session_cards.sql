@@ -13,7 +13,7 @@
 
 BEGIN;
 
-SELECT plan(11);
+SELECT plan(13);
 
 -- ── Setup ─────────────────────────────────────────────────────────────────────
 SELECT tests.create_user('11111111-1111-1111-1111-111111111111'::uuid, 'alice_caps');
@@ -59,21 +59,21 @@ SET LOCAL role = 'authenticated';
 -- Test 1: with no review_logs yet, due_count is clamped to max_reviews_per_day.
 -- Raw due = 4 (1000, 1001, 1002, 1003), cap = 3, used = 0 → 3.
 SELECT is(
-  (SELECT due_count FROM public.decks_with_stats WHERE id = 100),
+  (SELECT due_count FROM public.decks_with_stats(date_trunc('day', now())) WHERE id = 100),
   3,
   'due_count clamped by max_reviews_per_day when no reviews logged today'
 );
 
 -- Test 2: reviewed_today_count is 0 before any logs.
 SELECT is(
-  (SELECT reviewed_today_count FROM public.decks_with_stats WHERE id = 100),
+  (SELECT reviewed_today_count FROM public.decks_with_stats(date_trunc('day', now())) WHERE id = 100),
   0,
   'reviewed_today_count is 0 before any review_logs'
 );
 
 -- Test 3: NULL caps mean unlimited — due_count = raw due (2 new = both due).
 SELECT is(
-  (SELECT due_count FROM public.decks_with_stats WHERE id = 101),
+  (SELECT due_count FROM public.decks_with_stats(date_trunc('day', now())) WHERE id = 101),
   2,
   'due_count is uncapped when max_reviews_per_day is null'
 );
@@ -82,7 +82,7 @@ SELECT is(
 -- with due review cards up to max_reviews_per_day = 3. Expected order:
 -- [1 new card by rank, 2 due review cards by rank] = [1000, 1002, 1003].
 SELECT results_eq(
-  $$ SELECT id FROM public.get_study_session_cards(100) $$,
+  $$ SELECT id FROM public.get_study_session_cards(100, date_trunc('day', now())) $$,
   $$ VALUES (1000::bigint), (1002::bigint), (1003::bigint) $$,
   'queue: 1 new card + due reviews up to total cap, ordered by rank'
 );
@@ -98,14 +98,14 @@ SELECT tests.set_claims('11111111-1111-1111-1111-111111111111'::uuid);
 
 -- Test 5: reviewed_today_count = 1 after the log.
 SELECT is(
-  (SELECT reviewed_today_count FROM public.decks_with_stats WHERE id = 100),
+  (SELECT reviewed_today_count FROM public.decks_with_stats(date_trunc('day', now())) WHERE id = 100),
   1,
   'reviewed_today_count counts logged reviews from today'
 );
 
 -- Test 6: new_reviewed_today_count = 1 (the state=0 log).
 SELECT is(
-  (SELECT new_reviewed_today_count FROM public.decks_with_stats WHERE id = 100),
+  (SELECT new_reviewed_today_count FROM public.decks_with_stats(date_trunc('day', now())) WHERE id = 100),
   1,
   'new_reviewed_today_count counts state=0 logs only'
 );
@@ -113,7 +113,7 @@ SELECT is(
 -- Test 7: due_count clamped by remaining budget. Raw due now = 3 (1001, 1002,
 -- 1003 — 1000 has a future review). Cap budget = 3 - 1 = 2. So due_count = 2.
 SELECT is(
-  (SELECT due_count FROM public.decks_with_stats WHERE id = 100),
+  (SELECT due_count FROM public.decks_with_stats(date_trunc('day', now())) WHERE id = 100),
   2,
   'due_count subtracts reviewed_today from max_reviews_per_day'
 );
@@ -122,7 +122,7 @@ SELECT is(
 -- skips 1001 (new budget exhausted: 1 used, max 1). Returns 2 due reviews:
 -- [1002, 1003] up to remaining total budget = 2.
 SELECT results_eq(
-  $$ SELECT id FROM public.get_study_session_cards(100) $$,
+  $$ SELECT id FROM public.get_study_session_cards(100, date_trunc('day', now())) $$,
   $$ VALUES (1002::bigint), (1003::bigint) $$,
   'queue respects exhausted new-card budget and remaining total budget'
 );
@@ -130,9 +130,25 @@ SELECT results_eq(
 -- Test 9: p_study_all = true returns every card in deck regardless of caps,
 -- in rank order.
 SELECT results_eq(
-  $$ SELECT id FROM public.get_study_session_cards(100, true) $$,
+  $$ SELECT id FROM public.get_study_session_cards(100, date_trunc('day', now()), true) $$,
   $$ VALUES (1000::bigint), (1001::bigint), (1002::bigint), (1003::bigint), (1004::bigint) $$,
   'p_study_all bypasses caps and returns all cards in rank order'
+);
+
+-- Test 9a: p_today_start in the future ignores all logs → reviewed_today = 0
+-- (proves the parameter actually scopes the count).
+SELECT is(
+  (SELECT reviewed_today_count FROM public.decks_with_stats(now() + interval '1 day') WHERE id = 100),
+  0,
+  'p_today_start in the future yields reviewed_today_count = 0'
+);
+
+-- Test 9b: with reviewed_today = 0, due_count uses the full cap. Raw due now
+-- is 3 (1001, 1002, 1003 — 1000 has future review). Cap = 3. due_count = 3.
+SELECT is(
+  (SELECT due_count FROM public.decks_with_stats(now() + interval '1 day') WHERE id = 100),
+  3,
+  'p_today_start in the future restores due_count to the unclamped cap'
 );
 
 
@@ -143,7 +159,7 @@ SET LOCAL role = 'authenticated';
 
 -- Test 10: Bob cannot read Alice's deck stats.
 SELECT is(
-  (SELECT count(*) FROM public.decks_with_stats WHERE id = 100)::int,
+  (SELECT count(*) FROM public.decks_with_stats(date_trunc('day', now())) WHERE id = 100)::int,
   0,
   'security_invoker: Bob cannot see Alice''s deck via decks_with_stats'
 );
@@ -151,7 +167,7 @@ SELECT is(
 -- Test 11: Bob's RPC call against Alice's deck returns no rows (his own
 -- claims scope cards/reviews — the function runs as invoker so RLS applies).
 SELECT is(
-  (SELECT count(*) FROM public.get_study_session_cards(100))::int,
+  (SELECT count(*) FROM public.get_study_session_cards(100, date_trunc('day', now())))::int,
   0,
   'security_invoker: Bob''s call to get_study_session_cards on Alice''s deck returns 0 rows'
 );

@@ -1,5 +1,5 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vite-plus/test'
-import { isoNow, formatShortDate, toRelative } from '@/utils/date'
+import { isoNow, localDayStart, formatShortDate, toRelative } from '@/utils/date'
 
 describe('isoNow', () => {
   afterEach(() => {
@@ -17,6 +17,32 @@ describe('isoNow', () => {
     // would still parse correctly but is a silent drift from the old Luxon
     // behavior and harder to reason about in logs.
     expect(isoNow().endsWith('Z')).toBe(true)
+  })
+})
+
+describe('localDayStart', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  test('returns midnight of the local day as a UTC ISO string', () => {
+    vi.useFakeTimers()
+    // 2026-03-15 14:30 in the host's local timezone — pick a Date constructor
+    // form that fixes local fields rather than UTC fields.
+    vi.setSystemTime(new Date(2026, 2, 15, 14, 30, 0))
+    const expected = new Date(2026, 2, 15).toISOString()
+    expect(localDayStart()).toBe(expected)
+  })
+
+  test('rolls back to start of day even moments before midnight', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date(2026, 2, 15, 23, 59, 59))
+    const expected = new Date(2026, 2, 15).toISOString()
+    expect(localDayStart()).toBe(expected)
+  })
+
+  test('returns an ISO string ending in Z (Postgres timestamptz friendly)', () => {
+    expect(localDayStart().endsWith('Z')).toBe(true)
   })
 })
 
