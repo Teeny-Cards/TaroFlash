@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import GridItem from './grid-item.vue'
 import { type CardListController } from '@/composables/card-editor/card-list-controller'
-import { computed, inject, ref, useTemplateRef, watch } from 'vue'
+import { computed, inject, ref, useTemplateRef, watch, type CSSProperties } from 'vue'
 import { useGridCapacity } from '@/composables/use-grid-capacity'
 import { useMediaQuery } from '@/composables/use-media-query'
 import { slideInFromDirection, slideOutInDirection } from '@/utils/animations/grid-page'
@@ -21,13 +21,25 @@ const isMd = useMediaQuery('md')
 
 observeSentinel(sentinel)
 
-const { gridStyle, capacity } = useGridCapacity({
+const MIN_ITEM_WIDTH = 170
+const MAX_ITEM_WIDTH = 220
+
+const { gridStyle: desktopGridStyle, capacity } = useGridCapacity({
   bounds: grid_wrapper,
   aspect_ratio: 7 / 8,
-  min_width: 170,
-  max_width: 220,
+  min_width: MIN_ITEM_WIDTH,
+  max_width: MAX_ITEM_WIDTH,
   gap: () => (isMd.value ? 12 : 8)
 })
+
+const mobileGridStyle: CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: `repeat(auto-fit, minmax(${MIN_ITEM_WIDTH}px, 1fr))`,
+  gap: '8px',
+  justifyContent: 'center'
+}
+
+const gridStyle = computed(() => (isMd.value ? desktopGridStyle.value : mobileGridStyle))
 
 // only push capacity into the controller while the carousel is active —
 // below md the grid scrolls natively and paging state is irrelevant
