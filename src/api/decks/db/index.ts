@@ -20,7 +20,7 @@ export async function fetchMemberDecks(): Promise<Deck[]> {
 export async function fetchDeck(id: number): Promise<Deck> {
   const { data, error } = await supabase
     .rpc('decks_with_stats', { p_today_start: localDayStart() })
-    .select('*, member:members(display_name)')
+    .select('*')
     .eq('id', id)
     .single()
 

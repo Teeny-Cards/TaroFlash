@@ -10,6 +10,8 @@ Steps:
 # Read `vite.config.ts`
 
 - note the `test.projects` include globs (new files must match) and `coverage.exclude` (skip these — they don't count toward metrics).
+- three projects exist: **Unit** (jsdom), **Integration** (Chromium), **Contract** (Node, real local Supabase). Pick the project that matches the source: pure logic → Unit, components → Integration, `src/api/*/db/*` → Contract. See `.claude/rules/testing.md` for the type table.
+- Contract tests need `supabase start` running locally. Edge functions (`supabase/functions/`) use Deno + colocated `index.test.ts`, not Vitest — they don't count toward Vitest coverage.
 
 # Identify coverage gaps
 

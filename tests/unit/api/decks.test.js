@@ -70,15 +70,14 @@ describe('fetchMemberDecks', () => {
 })
 
 describe('fetchDeck', () => {
-  test('calls decks_with_stats RPC with the member embed only — cards are paginated separately', async () => {
-    queryMock.single.mockResolvedValueOnce({ data: { id: 5 }, error: null })
-    await fetchDeck(5)
+  test('calls decks_with_stats RPC filtered by id and returns the row', async () => {
+    const row = { id: 5, title: 'X', member_display_name: 'Alice' }
+    queryMock.single.mockResolvedValueOnce({ data: row, error: null })
+    const result = await fetchDeck(5)
     expect(capturedRpcs[0].fn).toBe('decks_with_stats')
     expect(capturedRpcs[0].args.p_today_start).toEqual(expect.any(String))
-    const [selectArg] = queryMock.select.mock.calls[0]
-    expect(selectArg).toContain('member:members(display_name)')
-    expect(selectArg).not.toContain('cards:cards_with_images')
     expect(queryMock.eq).toHaveBeenCalledWith('id', 5)
+    expect(result).toEqual(row)
   })
 
   test('throws when the query errors', async () => {

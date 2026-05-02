@@ -58,6 +58,7 @@ defineExpose({ openSignup })
       >
         <template #trigger>
           <button
+            data-testid="welcome-view__login-trigger"
             class="bg-brown-300 text-brown-700 px-4 py-2.5 rounded-2.5 text-lg cursor-pointer"
             :class="{ 'rounded-b-0.5': login_dropdown_open }"
             @click="triggerLoginDropdown"
