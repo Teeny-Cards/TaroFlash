@@ -17,7 +17,7 @@ type Deck = {
   is_public?: boolean
   title?: string
   member_id?: number
-  member?: { display_name: string }
+  member_display_name?: string
   tags?: string[]
   due_count?: number
   reviewed_today_count?: number
