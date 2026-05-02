@@ -96,12 +96,20 @@ function onPointerUp(e: PointerEvent): void {
   for (const r of active) r.callbacks.onEnd?.(result)
 
   if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
-    document.addEventListener('click', suppressClick, { capture: true, once: true })
+    const elements = active.map((r) => r.element)
+    const handler = (clickEvent: Event) => {
+      const target = clickEvent.target as Node | null
+      if (target && elements.some((el) => el.contains(target))) {
+        clickEvent.stopPropagation()
+      }
+      document.removeEventListener('click', handler, { capture: true })
+      clearTimeout(timer)
+    }
+    const timer = window.setTimeout(() => {
+      document.removeEventListener('click', handler, { capture: true })
+    }, 350)
+    document.addEventListener('click', handler, { capture: true })
   }
-}
-
-function suppressClick(e: Event): void {
-  e.stopPropagation()
 }
 
 function onPointerCancel(e: PointerEvent): void {
