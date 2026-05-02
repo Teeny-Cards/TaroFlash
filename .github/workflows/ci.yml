@@ -2,6 +2,8 @@ name: CI
 
 on:
   pull_request:
+  push:
+    branches: [master]
 
 jobs:
   changes:
@@ -13,6 +15,7 @@ jobs:
       frontend: ${{ steps.filter.outputs.frontend }}
       functions: ${{ steps.filter.outputs.functions }}
       db: ${{ steps.filter.outputs.db }}
+      contract: ${{ steps.filter.outputs.contract }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -39,33 +42,31 @@ jobs:
               - 'supabase/tests/**'
               - 'supabase/seed.sql'
               - 'supabase/config.toml'
+            contract:
+              - 'src/api/**'
+              - 'tests/contract/**'
+              - 'tests/fixtures/**'
+              - 'types/**'
+              - 'supabase/migrations/**'
+              - 'supabase/seed.sql'
+              - 'supabase/config.toml'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - 'vite.config.*'
 
   lint-and-test:
     needs: changes
-    if: needs.changes.outputs.frontend == 'true'
+    if: needs.changes.outputs.frontend == 'true' || github.event_name == 'push'
     runs-on: ubuntu-latest
 
     permissions:
       contents: read
-      pull-requests: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
+      - uses: ./.github/actions/setup-node
 
       - name: Run lint
         run: pnpm exec vp lint
@@ -74,13 +75,15 @@ jobs:
         run: pnpm exec playwright install chromium
 
       - name: Run tests
-        run: pnpm exec vp test run --coverage --project Unit --project Integration
+        run: pnpm exec vp test run --coverage --reporter=blob --reporter=default --project Unit --project Integration
 
-      - name: 'Report Coverage'
-        if: always()
-        uses: davelosert/vitest-coverage-report-action@v2
+      - name: Upload blob report
+        uses: actions/upload-artifact@v4
         with:
-          file-coverage-mode: 'all'
+          name: blob-unit-integration
+          path: .vitest-reports/
+          retention-days: 30
+          include-hidden-files: true
 
   test-functions:
     needs: changes
@@ -132,7 +135,7 @@ jobs:
 
   test-contract:
     needs: changes
-    if: needs.changes.outputs.frontend == 'true' || needs.changes.outputs.db == 'true'
+    if: needs.changes.outputs.contract == 'true' || github.event_name == 'push'
     runs-on: ubuntu-latest
 
     permissions:
@@ -142,19 +145,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
+      - uses: ./.github/actions/setup-node
 
       - name: Install Supabase CLI
         uses: supabase/setup-cli@v1
@@ -173,4 +164,64 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Run contract tests
-        run: pnpm exec vp test run --project Contract
+        run: pnpm exec vp test run --coverage --reporter=blob --reporter=default --project Contract
+
+      - name: Upload blob report
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-contract
+          path: .vitest-reports/
+          retention-days: 30
+          include-hidden-files: true
+
+  coverage-report:
+    needs: [changes, lint-and-test, test-contract]
+    if: |
+      always() &&
+      github.event_name == 'pull_request' &&
+      needs.lint-and-test.result == 'success' &&
+      (needs.test-contract.result == 'success' || needs.test-contract.result == 'skipped')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup-node
+
+      - name: Download unit/integration blob
+        uses: actions/download-artifact@v4
+        with:
+          name: blob-unit-integration
+          path: .vitest-reports/
+
+      - name: Download contract blob (this run)
+        if: needs.test-contract.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: blob-contract
+          path: .vitest-reports/
+
+      - name: Download contract blob (master fallback)
+        if: needs.test-contract.result == 'skipped'
+        uses: dawidd6/action-download-artifact@v6
+        continue-on-error: true
+        with:
+          workflow: ci.yml
+          workflow_conclusion: success
+          branch: master
+          name: blob-contract
+          path: .vitest-reports/
+          if_no_artifact_found: warn
+
+      - name: Merge coverage
+        run: pnpm exec vp test --merge-reports --coverage
+
+      - name: Report Coverage
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          file-coverage-mode: 'all'
