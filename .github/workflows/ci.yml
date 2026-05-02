@@ -75,7 +75,7 @@ jobs:
         run: pnpm exec playwright install chromium
 
       - name: Run tests
-        run: pnpm exec vp test run --coverage --reporter=blob --reporter=default --project Unit --project Integration
+        run: pnpm exec vp test run --coverage --reporter=blob:.vitest-reports/blob-unit.json --reporter=default --project Unit --project Integration
 
       - name: Upload blob report
         uses: actions/upload-artifact@v4
@@ -164,7 +164,7 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Run contract tests
-        run: pnpm exec vp test run --coverage --reporter=blob --reporter=default --project Contract
+        run: pnpm exec vp test run --coverage --reporter=blob:.vitest-reports/blob-contract.json --reporter=default --project Contract
 
       - name: Upload blob report
         uses: actions/upload-artifact@v4

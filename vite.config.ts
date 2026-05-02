@@ -83,7 +83,7 @@ export default defineConfig({
     coverage: {
       enabled: true,
       include: ['src/**/*.{ts,vue}'],
-      reporter: ['text', 'html', 'json-summary'],
+      reporter: ['text', 'html', 'json', 'json-summary'],
       reportOnFailure: true,
       exclude: [
         '**/postcss.config.js',
