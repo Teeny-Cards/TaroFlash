@@ -23,6 +23,11 @@ on:
         required: false
         type: boolean
         default: false
+      skip_smoke:
+        description: Skip the E2E smoke gate (use only for emergency hotfixes)
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
     inputs:
       environment:
@@ -44,6 +49,10 @@ on:
         default: false
       force_config:
         description: Force Supabase config push
+        type: boolean
+        default: false
+      skip_smoke:
+        description: Skip the E2E smoke gate (emergency hotfix only)
         type: boolean
         default: false
 
@@ -108,9 +117,11 @@ jobs:
     name: E2E smoke
     needs: [detect-changes]
     if: |
-      needs.detect-changes.outputs.frontend == 'true' || inputs.force_frontend ||
-      needs.detect-changes.outputs.migrations == 'true' || inputs.force_migrations ||
-      needs.detect-changes.outputs.functions == 'true' || inputs.force_functions
+      !inputs.skip_smoke && (
+        needs.detect-changes.outputs.frontend == 'true' || inputs.force_frontend ||
+        needs.detect-changes.outputs.migrations == 'true' || inputs.force_migrations ||
+        needs.detect-changes.outputs.functions == 'true' || inputs.force_functions
+      )
     uses: ./.github/workflows/e2e.yml
     secrets: inherit
 
