@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 import { mount } from '@vue/test-utils'
-import { defineComponent, h, nextTick, withAttrs } from 'vue'
+import { defineComponent, h, nextTick, ref, withAttrs } from 'vue'
 import ModalUiKit from '@/components/ui-kit/modal.vue'
 import { useModal, useModalRequestClose, request_close_handlers } from '@/composables/modal'
 
@@ -40,8 +40,12 @@ vi.mock('gsap', () => ({
   }
 }))
 
+const mobileBreakpointRef = ref(false)
+const mockUseMobileBreakpoint = vi.fn(() => mobileBreakpointRef)
+
 vi.mock('@/composables/use-media-query', () => ({
-  useMediaQuery: vi.fn(() => ({ value: true }))
+  useMediaQuery: vi.fn(() => ({ value: true })),
+  useMobileBreakpoint: (...args) => mockUseMobileBreakpoint(...args)
 }))
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -51,6 +55,8 @@ beforeEach(() => {
   const { modal_stack, pop } = useModal()
   while (modal_stack.value.length > 0) pop()
   request_close_handlers.clear()
+  mockUseMobileBreakpoint.mockClear()
+  mobileBreakpointRef.value = false
 })
 
 const ModalStub = defineComponent({
@@ -241,6 +247,49 @@ describe('modal.vue', () => {
       expect(wrapper.find('[data-testid="ui-kit-modal-backdrop"]').exists()).toBe(true)
     })
   })
+
+  describe('html overflow lock', () => {
+    beforeEach(() => {
+      document.documentElement.style.overflow = ''
+    })
+
+    test('locks html overflow to hidden while a modal is open', async () => {
+      const { open } = useModal()
+      open(ModalStub)
+
+      mountModal()
+      await nextTick()
+
+      expect(document.documentElement.style.overflow).toBe('hidden')
+    })
+
+    test('restores html overflow when the last modal closes', async () => {
+      const { open, pop } = useModal()
+      open(ModalStub)
+
+      mountModal()
+      await nextTick()
+      expect(document.documentElement.style.overflow).toBe('hidden')
+
+      pop()
+      await nextTick()
+
+      expect(document.documentElement.style.overflow).toBe('')
+    })
+
+    test('restores html overflow on unmount', async () => {
+      const { open } = useModal()
+      open(ModalStub)
+
+      const wrapper = mountModal()
+      await nextTick()
+      expect(document.documentElement.style.overflow).toBe('hidden')
+
+      wrapper.unmount()
+
+      expect(document.documentElement.style.overflow).toBe('')
+    })
+  })
 })
 
 // ── modal wrapper click.self dispatch ────────────────────────────────────────
@@ -379,5 +428,57 @@ describe('requestClose dispatch', () => {
 
       expect(modal_stack.value).toHaveLength(0)
     })
+  })
+})
+
+// ── mobile-breakpoint forwarding ─────────────────────────────────────────────
+
+describe('mobile breakpoint forwarding', () => {
+  beforeEach(() => {
+    const { modal_stack, pop } = useModal()
+    while (modal_stack.value.length > 0) pop()
+    request_close_handlers.clear()
+    mockUseMobileBreakpoint.mockClear()
+  })
+
+  test('sets data-mobile-below-width/height to "sm" when modal opens with no thresholds', async () => {
+    const { open } = useModal()
+    open(ModalStub)
+
+    const wrapper = mountModal()
+    await nextTick()
+
+    const el = wrapper.find('[data-testid="ui-kit-modal"]')
+    expect(el.attributes('data-mobile-below-width')).toBe('sm')
+    expect(el.attributes('data-mobile-below-height')).toBe('sm')
+  })
+
+  test('sets data-mobile-below-width/height from open() args', async () => {
+    const { open } = useModal()
+    open(ModalStub, { mobile_below_width: 'md', mobile_below_height: 'lg' })
+
+    const wrapper = mountModal()
+    await nextTick()
+
+    const el = wrapper.find('[data-testid="ui-kit-modal"]')
+    expect(el.attributes('data-mobile-below-width')).toBe('md')
+    expect(el.attributes('data-mobile-below-height')).toBe('lg')
+  })
+
+  test('each modal in the stack gets its own data-mobile-below attrs', async () => {
+    const { open } = useModal()
+    open(ModalStub, { mobile_below_width: 'sm', mobile_below_height: 'sm' })
+    open(ModalStub, { mobile_below_width: 'lg', mobile_below_height: '2xl' })
+
+    const wrapper = mountModal()
+    await nextTick()
+
+    const modals = wrapper.findAll('[data-testid="ui-kit-modal"]')
+    const widths = modals.map((m) => m.attributes('data-mobile-below-width'))
+    const heights = modals.map((m) => m.attributes('data-mobile-below-height'))
+    expect(widths).toContain('sm')
+    expect(widths).toContain('lg')
+    expect(heights).toContain('sm')
+    expect(heights).toContain('2xl')
   })
 })

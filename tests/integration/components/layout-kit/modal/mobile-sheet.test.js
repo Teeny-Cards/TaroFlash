@@ -91,4 +91,17 @@ describe('MobileSheet', () => {
     const wrapper = mountSheet({}, { footer: '<p data-testid="footer-content">Footer</p>' })
     expect(wrapper.find('[data-testid="footer-content"]').exists()).toBe(true)
   })
+
+  // ── mobile-modal variant utilities ─────────────────────────────────────────
+
+  test('declares the mobile-modal variant utilities for layout flip', () => {
+    const wrapper = mountSheet()
+    const classes = wrapper.find('[data-testid="mobile-sheet"]').classes()
+    // CSS-driven via the `mobile-modal` variant — these classes only take
+    // effect when an ancestor has data-mobile-below-{width,height}.
+    expect(classes).toContain('mobile-modal:mt-auto')
+    expect(classes).toContain('mobile-modal:rounded-b-none')
+    // Default desktop look (overridden by the variant when active).
+    expect(classes).toContain('rounded-b-8')
+  })
 })
