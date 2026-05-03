@@ -1,6 +1,5 @@
 # Guidelines
 
-- If locally checked out branch is 'master', checkout new branch before starting work.
 - Always use translation strings (e.g., `t('deck.settings-modal.title')`) instead of hardcoded text. If string not in `locales/en-us.json`, add it.
 - IMPORTANT: When writing code (migrations, functions, etc.) in `supabase/`, explain like teacher to student. Concise, simple, necessary context. Stop, let user ask questions.
 - After backend teaching session, ask user to rate understanding of main concepts 1-10. Record in `.claude/rules/learning-log.md`.
@@ -72,3 +71,14 @@ Tests use Vitest with jsdom. `tests/fixtures/` contains MSW handlers, Faker-base
 ## Local development
 
 - Local Supabase runs on port 54321 (API), 54322 (PostgreSQL). Start with `supabase start`.
+
+## Branch & PR workflow
+
+For any feature work or code changes:
+
+1. **Check current branch.** If on `master`, or current branch's scope doesn't match the requested work, create a new branch before editing.
+2. **Check staleness.** At session start, verify the current branch isn't already merged (e.g. `gh pr view --json state,mergedAt` or `git log master..HEAD`). If merged, create a fresh branch off `master`.
+3. **Commit in logical chunks.** Group related changes into separate commits with clear messages — don't batch unrelated work into one commit.
+4. **Open a PR early.** If the branch has no PR yet, open one (draft is fine) after the first meaningful commit. Push subsequent commits to that PR as you go for incremental review.
+5. **Push as you commit.** Don't accumulate local commits — push after each logical chunk so the PR stays current.
+6. **No Claude attribution.** Never add `Co-Authored-By: Claude` trailers to commits, and never add the "Generated with Claude Code" footer to PR bodies.
