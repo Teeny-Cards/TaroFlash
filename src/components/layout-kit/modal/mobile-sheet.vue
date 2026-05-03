@@ -42,7 +42,7 @@ const showHeader = computed(() => {
   <div
     data-testid="mobile-sheet"
     :data-theme="theme"
-    class="flex flex-col gap-8 overflow-hidden w-full shrink-0 max-sm:mt-auto bg-brown-300 dark:bg-grey-800 rounded-t-8 sm:rounded-b-8 shadow-lg"
+    class="flex flex-col gap-8 overflow-hidden w-full shrink-0 bg-brown-300 dark:bg-grey-800 rounded-t-8 rounded-b-8 mobile-modal:rounded-b-none mobile-modal:mt-auto shadow-lg"
   >
     <slot v-if="showHeader" name="header">
       <div

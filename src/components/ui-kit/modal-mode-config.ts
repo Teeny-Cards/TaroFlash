@@ -10,8 +10,8 @@ import {
 
 type ModeConfig = {
   containerClass: string
-  enter(el: Element, isDesktop: boolean, done: () => void): void
-  leave(el: Element, isDesktop: boolean, done: () => void): void
+  enter(el: Element, is_mobile: boolean, done: () => void): void
+  leave(el: Element, is_mobile: boolean, done: () => void): void
 }
 
 export const MODAL_MODE_CONFIG: Record<ModalMode, ModeConfig> = {
@@ -21,13 +21,18 @@ export const MODAL_MODE_CONFIG: Record<ModalMode, ModeConfig> = {
     leave: (el, _, done) => slideDownFadeOut(el, done)
   },
 
+  // The `mobile-modal:` Tailwind variant (defined in
+  // `src/styles/custom-variants.css`) activates these utilities when the
+  // viewport drops below the modal's threshold (data-mobile-below-width/height
+  // are stamped by modal.vue). Keeping the class string static on the Vue side
+  // avoids touch-disrupting setAttribute calls during scroll on iOS Safari.
   'mobile-sheet': {
     containerClass:
-      'max-sm:flex-col max-sm:overflow-y-auto max-sm:overscroll-y-contain max-sm:justify-start max-sm:pt-4 max-sm:pointer-events-auto sm:items-center',
-    enter: (el, isDesktop, done) =>
-      isDesktop ? slideUpFadeIn(el, done) : slideUpFromEdge(el, done),
-    leave: (el, isDesktop, done) =>
-      isDesktop ? slideDownFadeOut(el, done) : slideDownToEdge(el, done)
+      'items-center mobile-modal:flex-col mobile-modal:overflow-y-auto mobile-modal:overscroll-y-contain mobile-modal:justify-start mobile-modal:pt-4 mobile-modal:pointer-events-auto mobile-modal:items-stretch',
+    enter: (el, is_mobile, done) =>
+      is_mobile ? slideUpFromEdge(el, done) : slideUpFadeIn(el, done),
+    leave: (el, is_mobile, done) =>
+      is_mobile ? slideDownToEdge(el, done) : slideDownFadeOut(el, done)
   },
 
   popup: {
