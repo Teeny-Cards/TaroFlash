@@ -109,29 +109,11 @@ describe('useMediaQuery', () => {
     wrapper.unmount()
   })
 
-  test('removes event listener when the last consumer unmounts', async () => {
+  test('does not remove listener on unmount — cache is app-lifetime', async () => {
     const [, wrapper] = withSetup(() => useMediaQuery('dark'))
     await nextTick()
     wrapper.unmount()
-    expect(mockMql.removeEventListener).toHaveBeenCalled()
-  })
-
-  test('does not remove listener when one of two consumers unmounts', async () => {
-    const [, w1] = withSetup(() => useMediaQuery('dark'))
-    const [, w2] = withSetup(() => useMediaQuery('dark'))
-    w1.unmount()
     expect(mockMql.removeEventListener).not.toHaveBeenCalled()
-    w2.unmount()
-    expect(mockMql.removeEventListener).toHaveBeenCalled()
-  })
-
-  test('re-registers matchMedia after all consumers unmount', async () => {
-    const [, w1] = withSetup(() => useMediaQuery('dark'))
-    w1.unmount()
-    window.matchMedia.mockClear()
-    const [, w2] = withSetup(() => useMediaQuery('dark'))
-    expect(window.matchMedia).toHaveBeenCalledTimes(1)
-    w2.unmount()
   })
 
   test('different queries create separate cache entries', () => {
@@ -142,5 +124,110 @@ describe('useMediaQuery', () => {
     expect(ref1).not.toBe(ref2)
     w1.unmount()
     w2.unmount()
+  })
+})
+
+describe('useMobileBreakpoint', () => {
+  let widthMql
+  let heightMql
+  let useMobileBreakpoint
+
+  beforeEach(async () => {
+    vi.resetModules()
+    widthMql = createMockMql(false)
+    heightMql = createMockMql(false)
+
+    window.matchMedia = vi.fn((query) => {
+      if (query.includes('min-width')) return widthMql
+      if (query.includes('min-height')) return heightMql
+      return createMockMql(false)
+    })
+    ;({ useMobileBreakpoint } = await import('@/composables/use-media-query'))
+  })
+
+  test('queries both width and height against the same breakpoint token', () => {
+    const [, w] = withSetup(() => useMobileBreakpoint('sm'))
+
+    const queries = window.matchMedia.mock.calls.map((c) => c[0])
+    expect(queries.some((q) => q.includes('min-width'))).toBe(true)
+    expect(queries.some((q) => q.includes('min-height'))).toBe(true)
+    w.unmount()
+  })
+
+  test('returns false when both width and height match are false', async () => {
+    const [result, w] = withSetup(() => useMobileBreakpoint('sm'))
+    await nextTick()
+    expect(result.value).toBe(false)
+    w.unmount()
+  })
+
+  test('returns true when only width is below threshold', async () => {
+    widthMql.matches = true
+    const [result, w] = withSetup(() => useMobileBreakpoint('sm'))
+    await nextTick()
+    expect(result.value).toBe(true)
+    w.unmount()
+  })
+
+  test('returns true when only height is below threshold', async () => {
+    heightMql.matches = true
+    const [result, w] = withSetup(() => useMobileBreakpoint('sm'))
+    await nextTick()
+    expect(result.value).toBe(true)
+    w.unmount()
+  })
+
+  test('returns true when both are below threshold', async () => {
+    widthMql.matches = true
+    heightMql.matches = true
+    const [result, w] = withSetup(() => useMobileBreakpoint('sm'))
+    await nextTick()
+    expect(result.value).toBe(true)
+    w.unmount()
+  })
+
+  test('reacts when width crosses the threshold', async () => {
+    const [result, w] = withSetup(() => useMobileBreakpoint('sm'))
+    await nextTick()
+    expect(result.value).toBe(false)
+
+    widthMql.matches = true
+    widthMql._fire()
+    await nextTick()
+    expect(result.value).toBe(true)
+    w.unmount()
+  })
+
+  test('reacts when height crosses the threshold', async () => {
+    const [result, w] = withSetup(() => useMobileBreakpoint('sm'))
+    await nextTick()
+
+    heightMql.matches = true
+    heightMql._fire()
+    await nextTick()
+    expect(result.value).toBe(true)
+    w.unmount()
+  })
+
+  test('width and height axes are queried separately', () => {
+    const [, w] = withSetup(() => useMobileBreakpoint('md', 'lg'))
+
+    const queries = window.matchMedia.mock.calls.map((c) => c[0])
+    expect(queries.some((q) => q.includes('min-width'))).toBe(true)
+    expect(queries.some((q) => q.includes('min-height'))).toBe(true)
+    w.unmount()
+  })
+
+  test('defaults both width and height to "sm"', () => {
+    const [, w] = withSetup(() => useMobileBreakpoint())
+
+    const queries = window.matchMedia.mock.calls.map((c) => c[0])
+    const widthQuery = queries.find((q) => q.includes('min-width'))
+    const heightQuery = queries.find((q) => q.includes('min-height'))
+
+    const widthValue = widthQuery.match(/min-width:\s*([^)]*)\)/)?.[1]
+    const heightValue = heightQuery.match(/min-height:\s*([^)]*)\)/)?.[1]
+    expect(widthValue).toBe(heightValue)
+    w.unmount()
   })
 })

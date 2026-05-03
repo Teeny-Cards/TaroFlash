@@ -2,7 +2,7 @@
 import { onUnmounted, watchEffect, computed, useTemplateRef } from 'vue'
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
 import { useModal, request_close_handlers, type ModalMode } from '@/composables/modal'
-import { useMediaQuery } from '@/composables/use-media-query'
+import { useMobileBreakpoint, type BreakpointKey } from '@/composables/use-media-query'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { MODAL_MODE_CONFIG } from './modal-mode-config'
 import ModalSlot from './modal-slot.vue'
@@ -10,8 +10,29 @@ import ModalSlot from './modal-slot.vue'
 const DEFAULT_MODE: ModalMode = 'dialog'
 
 const { modal_stack, pop } = useModal()
-const is_desktop_size = useMediaQuery('sm')
 const shortcuts = useShortcuts('modal')
+
+const DEFAULT_WIDTH_KEY: BreakpointKey = 'sm'
+const DEFAULT_HEIGHT_KEY: BreakpointKey = 'sm'
+
+const mobile_refs = new Map<string, ReturnType<typeof useMobileBreakpoint>>()
+
+function getMobileRef(width_key: BreakpointKey, height_key: BreakpointKey) {
+  const cache_key = `${width_key}|${height_key}`
+  let r = mobile_refs.get(cache_key)
+  if (!r) {
+    r = useMobileBreakpoint(width_key, height_key)
+    mobile_refs.set(cache_key, r)
+  }
+  return r
+}
+
+function isMobileFor(el: Element) {
+  const html = el as HTMLElement
+  const width_key = (html.dataset.mobileBelowWidth as BreakpointKey) ?? DEFAULT_WIDTH_KEY
+  const height_key = (html.dataset.mobileBelowHeight as BreakpointKey) ?? DEFAULT_HEIGHT_KEY
+  return getMobileRef(width_key, height_key).value
+}
 
 const modal_container = useTemplateRef<{ $el: HTMLElement }>('modal_container')
 
@@ -30,17 +51,22 @@ function requestClose() {
 onUnmounted(() => {
   shortcuts.dispose()
   if (modal_container.value?.$el) enableBodyScroll(modal_container.value.$el)
+  document.documentElement.style.overflow = ''
 })
 
 watchEffect(() => {
   if (!modal_container.value?.$el) return
 
   if (modal_stack.value.length > 0) {
+    // body-scroll-lock locks the body but iOS Safari still lets the html
+    // element scroll via rubber-banding. Lock html explicitly.
+    document.documentElement.style.overflow = 'hidden'
     disableBodyScroll(modal_container.value.$el, {
       allowTouchMove: (el) => modal_container.value!.$el.contains(el as Node)
     })
     shortcuts.register({ combo: 'esc', handler: requestClose })
   } else {
+    document.documentElement.style.overflow = ''
     enableBodyScroll(modal_container.value.$el)
     shortcuts.clearScope()
   }
@@ -64,7 +90,7 @@ function onBeforeEnter(el: Element) {
 function onEnter(el: Element, done: () => void) {
   const config = getModeConfig(el)
   const html_el = el as HTMLElement
-  config.enter(el, is_desktop_size.value, () => {
+  config.enter(el, isMobileFor(el), () => {
     html_el.style.willChange = ''
     done()
   })
@@ -74,7 +100,7 @@ function onLeave(el: Element, done: () => void) {
   const config = getModeConfig(el)
   const html_el = el as HTMLElement
   html_el.style.willChange = 'transform, opacity'
-  config.leave(el, is_desktop_size.value, () => {
+  config.leave(el, isMobileFor(el), () => {
     html_el.style.willChange = ''
     done()
   })
@@ -119,6 +145,8 @@ function onLeave(el: Element, done: () => void) {
       class="absolute inset-0 flex justify-center pointer-events-none"
       :class="MODAL_MODE_CONFIG[modal.mode].containerClass"
       :data-modal-mode="modal.mode"
+      :data-mobile-below-width="modal.mobile_below_width ?? DEFAULT_WIDTH_KEY"
+      :data-mobile-below-height="modal.mobile_below_height ?? DEFAULT_HEIGHT_KEY"
       @click.self="requestClose"
     >
       <modal-slot :id="modal.id" :context="modal.context">
@@ -126,6 +154,8 @@ function onLeave(el: Element, done: () => void) {
           :is="modal.component"
           v-bind="modal.componentProps"
           :data-modal-mode="modal.mode"
+          :data-mobile-below-width="modal.mobile_below_width ?? DEFAULT_WIDTH_KEY"
+          :data-mobile-below-height="modal.mobile_below_height ?? DEFAULT_HEIGHT_KEY"
           class="pointer-events-auto"
         />
       </modal-slot>

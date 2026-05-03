@@ -1,4 +1,5 @@
 import { ref, markRaw, inject, onUnmounted, type InjectionKey } from 'vue'
+import type { BreakpointKey } from './use-media-query'
 
 export type ModalContext = {
   key: InjectionKey<unknown> | string
@@ -38,6 +39,8 @@ type ModalEntry = {
   id: string
   resolve: (result?: any) => void
   context?: ModalContext
+  mobile_below_width?: BreakpointKey
+  mobile_below_height?: BreakpointKey
 }
 
 type OpenArgs = {
@@ -45,6 +48,8 @@ type OpenArgs = {
   backdrop?: boolean
   mode?: ModalMode
   context?: ModalContext
+  mobile_below_width?: BreakpointKey
+  mobile_below_height?: BreakpointKey
 }
 
 export type ModalCloseFn<T> = (responseValue?: T) => void
@@ -80,7 +85,9 @@ export function useModal() {
         close: closeFunc
       },
       resolve: resolveFn,
-      context: args?.context
+      context: args?.context,
+      mobile_below_width: args?.mobile_below_width,
+      mobile_below_height: args?.mobile_below_height
     }
 
     modal_stack.value.push(entry)
