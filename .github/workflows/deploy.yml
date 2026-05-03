@@ -127,11 +127,8 @@ jobs:
 
   build:
     name: Build frontend
-    needs: [detect-changes, e2e-smoke]
-    if: |
-      always() &&
-      (needs.e2e-smoke.result == 'success' || needs.e2e-smoke.result == 'skipped') &&
-      (needs.detect-changes.outputs.frontend == 'true' || inputs.force_frontend)
+    needs: [detect-changes]
+    if: needs.detect-changes.outputs.frontend == 'true' || inputs.force_frontend
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     permissions:
@@ -258,10 +255,11 @@ jobs:
 
   frontend:
     name: Deploy frontend
-    needs: [build, migrate, functions]
+    needs: [build, e2e-smoke, migrate, functions]
     if: |
       always() &&
       needs.build.result == 'success' &&
+      (needs.e2e-smoke.result == 'success' || needs.e2e-smoke.result == 'skipped') &&
       needs.migrate.result != 'failure' &&
       needs.functions.result != 'failure'
     runs-on: ubuntu-latest
