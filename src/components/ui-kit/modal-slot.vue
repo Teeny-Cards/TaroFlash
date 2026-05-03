@@ -10,6 +10,7 @@ type ModalSlotProps = {
 const { id, context } = defineProps<ModalSlotProps>()
 
 provide(MODAL_ID_KEY, id)
+
 if (context !== undefined) {
   provide(context.key, context.value)
 }
