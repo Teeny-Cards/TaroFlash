@@ -13,6 +13,17 @@
     "deny": ["Bash(rm -rf *)"]
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "branch=$(git branch --show-current 2>/dev/null) || exit 0; [ \"$branch\" = \"master\" ] && echo 'On master — cut a branch before editing (see CLAUDE.md branch/PR workflow)' >&2 && exit 2; exit 0"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write|MultiEdit|NotebookEdit",
@@ -20,6 +31,16 @@
           {
             "type": "command",
             "command": "jq -r '.tool_input.file_path // empty' | xargs -r vp fmt > /dev/null 2>&1 || true"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "branch=$(git branch --show-current 2>/dev/null); if [ -z \"$branch\" ]; then echo '{}'; exit 0; fi; pr_state=$(gh pr view --json state 2>/dev/null | jq -r '.state // \"none\"' 2>/dev/null); [ -z \"$pr_state\" ] && pr_state='none'; ctx=\"Branch: $branch | PR: $pr_state\"; jq -n --arg ctx \"$ctx\" '{hookSpecificOutput: {hookEventName: \"SessionStart\", additionalContext: $ctx}}'"
           }
         ]
       }
