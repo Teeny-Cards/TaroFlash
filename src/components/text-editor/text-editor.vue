@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, useTemplateRef, watch } from 'vue'
+import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 
 type TextEditorProps = {
   disabled?: boolean
@@ -8,7 +8,27 @@ type TextEditorProps = {
   attributes?: CardAttributes
 }
 
-const { disabled, content } = defineProps<TextEditorProps>()
+const { disabled, content, attributes } = defineProps<TextEditorProps>()
+
+const LEVEL_PX = [16, 20, 24, 30, 36, 44, 52, 60, 70, 84]
+const DEFAULT_LEVEL = 4
+const LEGACY_LEVEL: Record<string, number> = {
+  small: 1,
+  medium: 2,
+  large: 4,
+  'x-large': 5,
+  huge: 6,
+  ginormous: 7
+}
+
+const font_size_px = computed(() => {
+  const raw = attributes?.text_size as unknown
+  let level = DEFAULT_LEVEL
+  if (typeof raw === 'number') level = raw
+  else if (typeof raw === 'string' && raw in LEGACY_LEVEL) level = LEGACY_LEVEL[raw]
+  const clamped = Math.min(LEVEL_PX.length, Math.max(1, Math.round(level)))
+  return LEVEL_PX[clamped - 1]
+})
 
 const emit = defineEmits<{
   (e: 'update', text: string): void
@@ -55,8 +75,8 @@ defineExpose({ focus })
       ref="text-editor"
       class="text-editor"
       :contenteditable="disabled ? 'false' : 'plaintext-only'"
+      :style="{ fontSize: `${font_size_px}px` }"
       :class="[
-        `text-editor--size-${attributes?.text_size ?? 'large'}`,
         `text-editor--h-${attributes?.horizontal_alignment ?? 'center'}`,
         `text-editor--v-${attributes?.vertical_alignment ?? 'center'}`
       ]"
@@ -128,37 +148,6 @@ defineExpose({ focus })
 }
 
 .text-editor {
-  font-size: var(--editor-p);
-  line-height: var(--editor-p-lh);
-}
-
-.text-editor--size-small {
-  --editor-p: var(--text-lg);
-  --editor-p-lh: var(--text-lg--line-height);
-}
-
-.text-editor--size-medium {
-  --editor-p: var(--text-2xl);
-  --editor-p-lh: var(--text-2xl--line-height);
-}
-
-.text-editor--size-large {
-  --editor-p: var(--text-4xl);
-  --editor-p-lh: var(--text-4xl--line-height);
-}
-
-.text-editor--size-x-large {
-  --editor-p: var(--text-5xl);
-  --editor-p-lh: var(--text-5xl--line-height);
-}
-
-.text-editor--size-huge {
-  --editor-p: var(--text-6xl);
-  --editor-p-lh: var(--text-6xl--line-height);
-}
-
-.text-editor--size-ginormous {
-  --editor-p: var(--text-7xl);
-  --editor-p-lh: var(--text-7xl--line-height);
+  line-height: 1.2;
 }
 </style>

@@ -264,12 +264,6 @@
   "deck-view.card-attributes.text-size": "Text Size",
   "deck-view.card-attributes.horizontal-alignment": "Horizontal Alignment",
   "deck-view.card-attributes.vertical-alignment": "Vertical Alignment",
-  "deck-view.card-attributes.text-size.small": "Small",
-  "deck-view.card-attributes.text-size.medium": "Medium",
-  "deck-view.card-attributes.text-size.large": "Large",
-  "deck-view.card-attributes.text-size.x-large": "X-Large",
-  "deck-view.card-attributes.text-size.huge": "Huge",
-  "deck-view.card-attributes.text-size.ginormous": "Ginormous",
 
   "reward-stack.perfect-score": "Perfect Score!",
   "reward-stack.great-job": "Great Job!",
