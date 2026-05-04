@@ -5,9 +5,6 @@ import CardDesignerToolbar from '@/components/modals/deck-settings/card-designer
 
 // ── Stubs ──────────────────────────────────────────────────────────────────────
 
-// The toolbar composes `./cover-designer/picker-popover.vue`. Stub it to expose
-// its default slot content inline so we can interact with the option buttons
-// without rendering the full popover UI.
 const PickerPopoverStub = defineComponent({
   name: 'PickerPopover',
   props: ['label', 'icon'],
@@ -16,18 +13,33 @@ const PickerPopoverStub = defineComponent({
   }
 })
 
+const UiSpinboxStub = defineComponent({
+  name: 'UiSpinbox',
+  props: ['value', 'min', 'max', 'step', 'size', 'suffix'],
+  emits: ['update:value'],
+  setup(props, { emit }) {
+    return () =>
+      h('button', {
+        'data-testid': 'ui-kit-spinbox-stub',
+        'data-value': props.value,
+        'data-min': props.min,
+        'data-max': props.max,
+        'data-step': props.step,
+        onClick: () => emit('update:value', (props.value ?? 0) + 1)
+      })
+  }
+})
+
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
 function makeToolbar(initial = {}) {
   const attributes = reactive(initial)
-
   const wrapper = shallowMount(CardDesignerToolbar, {
     props: { attributes },
     global: {
-      stubs: { PickerPopover: PickerPopoverStub }
+      stubs: { PickerPopover: PickerPopoverStub, UiSpinbox: UiSpinboxStub }
     }
   })
-
   return { wrapper, attributes }
 }
 
@@ -41,40 +53,44 @@ describe('CardDesignerToolbar', () => {
     expect(wrapper.find('[data-testid="card-designer-toolbar"]').exists()).toBe(true)
   })
 
-  test('renders three popovers (text size, h-align, v-align)', () => {
+  test('renders two popovers (h-align, v-align)', () => {
     const { wrapper } = makeToolbar()
-    expect(wrapper.findAll('[data-testid="popover-stub"]')).toHaveLength(3)
+    expect(wrapper.findAll('[data-testid="popover-stub"]')).toHaveLength(2)
   })
 
-  // ── Text size ──────────────────────────────────────────────────────────────
+  // ── Text size spinbox ──────────────────────────────────────────────────────
 
-  test('renders all 6 text size options', () => {
+  test('renders the text size spinbox inline (not inside a popover)', () => {
     const { wrapper } = makeToolbar()
-    const options = wrapper.findAll('[data-testid="card-designer-toolbar__text-size-option"]')
-    expect(options).toHaveLength(6)
+    const spinbox = wrapper.findComponent({ name: 'UiSpinbox' })
+    expect(spinbox.exists()).toBe(true)
   })
 
-  test('clicking a text size option updates attributes', async () => {
-    const { wrapper, attributes } = makeToolbar()
-    const options = wrapper.findAll('[data-testid="card-designer-toolbar__text-size-option"]')
-    // First option is "Small"
-    await options[0].trigger('click')
-    expect(attributes.text_size).toBe('small')
-  })
-
-  test('marks the active text size option', () => {
-    const { wrapper } = makeToolbar({ text_size: 'huge' })
-    const options = wrapper.findAll('[data-testid="card-designer-toolbar__text-size-option"]')
-    // huge is the 5th option (index 4)
-    expect(options[4].attributes('data-active')).toBe('true')
-    expect(options[0].attributes('data-active')).toBe('false')
-  })
-
-  test('defaults the active text size to large when unset', () => {
+  test('spinbox is configured with min=1, max=10, step=1', () => {
     const { wrapper } = makeToolbar()
-    const options = wrapper.findAll('[data-testid="card-designer-toolbar__text-size-option"]')
-    // large is the 3rd option (index 2)
-    expect(options[2].attributes('data-active')).toBe('true')
+    const spinbox = wrapper.findComponent({ name: 'UiSpinbox' })
+    expect(spinbox.props('min')).toBe(1)
+    expect(spinbox.props('max')).toBe(10)
+    expect(spinbox.props('step')).toBe(1)
+  })
+
+  test('spinbox value defaults to level 4 when text_size unset', () => {
+    const { wrapper } = makeToolbar()
+    const spinbox = wrapper.findComponent({ name: 'UiSpinbox' })
+    expect(spinbox.props('value')).toBe(4)
+  })
+
+  test('spinbox value reflects existing text_size on attributes', () => {
+    const { wrapper } = makeToolbar({ text_size: 7 })
+    const spinbox = wrapper.findComponent({ name: 'UiSpinbox' })
+    expect(spinbox.props('value')).toBe(7)
+  })
+
+  test('spinbox update:value writes back to attributes.text_size', async () => {
+    const { wrapper, attributes } = makeToolbar({ text_size: 4 })
+    const spinbox = wrapper.findComponent({ name: 'UiSpinbox' })
+    await spinbox.vm.$emit('update:value', 8)
+    expect(attributes.text_size).toBe(8)
   })
 
   // ── Horizontal alignment ───────────────────────────────────────────────────
@@ -105,6 +121,13 @@ describe('CardDesignerToolbar', () => {
     expect(options[1].attributes('data-active')).toBe('true')
   })
 
+  test('re-clicking the active horizontal option does not change attributes', async () => {
+    const { wrapper, attributes } = makeToolbar({ horizontal_alignment: 'left' })
+    const options = wrapper.findAll('[data-testid="card-designer-toolbar__h-align-option"]')
+    await options[0].trigger('click')
+    expect(attributes.horizontal_alignment).toBe('left')
+  })
+
   // ── Vertical alignment ─────────────────────────────────────────────────────
 
   test('renders 3 vertical alignment options', () => {
@@ -131,5 +154,12 @@ describe('CardDesignerToolbar', () => {
     const { wrapper } = makeToolbar()
     const options = wrapper.findAll('[data-testid="card-designer-toolbar__v-align-option"]')
     expect(options[1].attributes('data-active')).toBe('true')
+  })
+
+  test('re-clicking the active vertical option does not change attributes', async () => {
+    const { wrapper, attributes } = makeToolbar({ vertical_alignment: 'top' })
+    const options = wrapper.findAll('[data-testid="card-designer-toolbar__v-align-option"]')
+    await options[0].trigger('click')
+    expect(attributes.vertical_alignment).toBe('top')
   })
 })

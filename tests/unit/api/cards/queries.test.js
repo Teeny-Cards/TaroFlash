@@ -80,6 +80,24 @@ describe('useCardsInDeckInfiniteQuery', () => {
     const { getNextPageParam } = infiniteConfigFrom(() => useCardsInDeckInfiniteQuery(10, 50))
     expect(getNextPageParam([{}], [[{}]])).toBeNull()
   })
+
+  test('enabled is false when deck_id is undefined — avoids a bogus fetch with id=0', () => {
+    const { enabled } = infiniteConfigFrom(() => useCardsInDeckInfiniteQuery(() => undefined))
+    expect(enabled()).toBe(false)
+  })
+
+  test('enabled flips to true once a real deck id is provided', () => {
+    let id
+    const { enabled } = infiniteConfigFrom(() => useCardsInDeckInfiniteQuery(() => id))
+    expect(enabled()).toBe(false)
+    id = 10
+    expect(enabled()).toBe(true)
+  })
+
+  test('key falls back to ["cards", 0, "pages", N] when deck_id is undefined', () => {
+    const { key } = infiniteConfigFrom(() => useCardsInDeckInfiniteQuery(() => undefined))
+    expect(key()).toEqual(['cards', 0, 'pages', CARDS_PAGE_SIZE])
+  })
 })
 
 describe('useSearchCardsInDeckQuery', () => {
