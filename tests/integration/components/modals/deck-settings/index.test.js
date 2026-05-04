@@ -5,9 +5,12 @@ import DeckSettings from '@/components/modals/deck-settings/index.vue'
 
 // ── Hoisted mocks ──────────────────────────────────────────────────────────────
 
-const { mockSaveDeck } = vi.hoisted(() => ({
-  mockSaveDeck: vi.fn().mockResolvedValue(true)
-}))
+const { mockSaveDeck, cardsRef } = vi.hoisted(() => {
+  return {
+    mockSaveDeck: vi.fn().mockResolvedValue(true),
+    cardsRef: { value: { pages: [] } }
+  }
+})
 
 vi.mock('@/composables/deck-editor', async () => {
   const { reactive } = await import('vue')
@@ -23,6 +26,15 @@ vi.mock('@/composables/deck-editor', async () => {
       config: reactive({ study_all_cards: false }),
       cover: reactive({}),
       card_attributes: reactive({ front: {}, back: {} })
+    })
+  }
+})
+
+vi.mock('@/api/cards', async () => {
+  const { computed } = await import('vue')
+  return {
+    useCardsInDeckInfiniteQuery: () => ({
+      data: computed(() => cardsRef.value)
     })
   }
 })
@@ -99,6 +111,7 @@ describe('DeckSettings', () => {
   beforeEach(() => {
     mockSaveDeck.mockClear()
     mockSaveDeck.mockResolvedValue(true)
+    cardsRef.value = { pages: [] }
   })
 
   // ── Structure ──────────────────────────────────────────────────────────────
@@ -258,5 +271,47 @@ describe('DeckSettings', () => {
     expect(
       wrapper.find('[data-testid="deck-settings__footer"] [data-testid="ui-button-stub"]').text()
     ).toContain('Create')
+  })
+
+  // ── First-card preview ─────────────────────────────────────────────────────
+
+  test('preview falls back to localized "Front" when deck has no cards', async () => {
+    const wrapper = makeDeckSettings({ deck: makeDeck() })
+    await wrapper.findComponent({ name: 'TabBar' }).vm.$emit('update:active', 'front')
+    expect(wrapper.findComponent({ name: 'Card' }).props('front_text')).toBe('Front')
+  })
+
+  test('preview falls back to localized "Back" when deck has no cards', async () => {
+    const wrapper = makeDeckSettings({ deck: makeDeck() })
+    await wrapper.findComponent({ name: 'TabBar' }).vm.$emit('update:active', 'back')
+    expect(wrapper.findComponent({ name: 'Card' }).props('back_text')).toBe('Back')
+  })
+
+  test('front tab preview uses first card front_text when available', async () => {
+    cardsRef.value = { pages: [[{ front_text: 'Hello', back_text: 'Hi' }]] }
+    const wrapper = makeDeckSettings({ deck: makeDeck() })
+    await wrapper.findComponent({ name: 'TabBar' }).vm.$emit('update:active', 'front')
+    expect(wrapper.findComponent({ name: 'Card' }).props('front_text')).toBe('Hello')
+  })
+
+  test('back tab preview uses first card back_text when available', async () => {
+    cardsRef.value = { pages: [[{ front_text: 'Hello', back_text: 'Hi' }]] }
+    const wrapper = makeDeckSettings({ deck: makeDeck() })
+    await wrapper.findComponent({ name: 'TabBar' }).vm.$emit('update:active', 'back')
+    expect(wrapper.findComponent({ name: 'Card' }).props('back_text')).toBe('Hi')
+  })
+
+  test('preview falls back to localized text when first card has empty front_text', async () => {
+    cardsRef.value = { pages: [[{ front_text: '', back_text: 'something' }]] }
+    const wrapper = makeDeckSettings({ deck: makeDeck() })
+    await wrapper.findComponent({ name: 'TabBar' }).vm.$emit('update:active', 'front')
+    expect(wrapper.findComponent({ name: 'Card' }).props('front_text')).toBe('Front')
+  })
+
+  test('preview hides front_text on cover and back tabs', () => {
+    cardsRef.value = { pages: [[{ front_text: 'Hello', back_text: 'Hi' }]] }
+    const wrapper = makeDeckSettings({ deck: makeDeck() })
+    expect(wrapper.findComponent({ name: 'Card' }).props('front_text')).toBeUndefined()
+    expect(wrapper.findComponent({ name: 'Card' }).props('back_text')).toBeUndefined()
   })
 })
