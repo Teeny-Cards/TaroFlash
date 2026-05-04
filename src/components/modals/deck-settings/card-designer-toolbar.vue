@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UiIcon from '@/components/ui-kit/icon.vue'
+import UiSpinbox from '@/components/ui-kit/spinbox.vue'
 import PickerPopover from './cover-designer/picker-popover.vue'
 import { emitSfx } from '@/sfx/bus'
 
@@ -12,18 +14,10 @@ const { attributes } = defineProps<CardDesignerToolbarProps>()
 
 const { t } = useI18n()
 
-type TextSizeOption = NonNullable<CardAttributes['text_size']>
 type HAlign = NonNullable<CardAttributes['horizontal_alignment']>
 type VAlign = NonNullable<CardAttributes['vertical_alignment']>
 
-const text_size_options: { value: TextSizeOption; label: string }[] = [
-  { value: 'small', label: t('deck-view.card-attributes.text-size.small') },
-  { value: 'medium', label: t('deck-view.card-attributes.text-size.medium') },
-  { value: 'large', label: t('deck-view.card-attributes.text-size.large') },
-  { value: 'x-large', label: t('deck-view.card-attributes.text-size.x-large') },
-  { value: 'huge', label: t('deck-view.card-attributes.text-size.huge') },
-  { value: 'ginormous', label: t('deck-view.card-attributes.text-size.ginormous') }
-]
+const TEXT_SIZE_DEFAULT = 4
 
 const h_align_options: { value: HAlign; icon: string }[] = [
   { value: 'left', icon: 'align-left' },
@@ -37,14 +31,13 @@ const v_align_options: { value: VAlign; icon: string }[] = [
   { value: 'bottom', icon: 'align-v-bottom' }
 ]
 
-function onSelectTextSize(value: TextSizeOption) {
-  if (attributes.text_size === value) {
-    emitSfx('ui.digi_powerdown')
-    return
+const text_size = computed({
+  get: () => (typeof attributes.text_size === 'number' ? attributes.text_size : TEXT_SIZE_DEFAULT),
+  set: (value: number) => {
+    attributes.text_size = value
+    emitSfx('ui.select')
   }
-  emitSfx('ui.etc_camera_shutter')
-  attributes.text_size = value
-}
+})
 
 function onSelectHAlign(value: HAlign) {
   if (attributes.horizontal_alignment === value) {
@@ -67,23 +60,14 @@ function onSelectVAlign(value: VAlign) {
 
 <template>
   <div data-testid="card-designer-toolbar" class="flex gap-4">
-    <picker-popover :label="t('deck-view.card-attributes.text-size')" icon="text-field">
-      <div
-        data-testid="card-designer-toolbar__text-size-options"
-        class="col-span-4 flex flex-col gap-1"
-      >
-        <button
-          v-for="option in text_size_options"
-          :key="option.value"
-          data-testid="card-designer-toolbar__text-size-option"
-          :data-active="option.value === (attributes.text_size ?? 'large')"
-          class="w-full text-left px-3 py-2 rounded-2 cursor-pointer text-brown-700 hover:bg-brown-200 data-[active=true]:bg-(--theme-primary) data-[active=true]:text-(--theme-on-primary)"
-          @click="onSelectTextSize(option.value)"
-        >
-          {{ option.label }}
-        </button>
-      </div>
-    </picker-popover>
+    <ui-spinbox
+      data-testid="card-designer-toolbar__text-size-spinbox"
+      v-model:value="text_size"
+      :min="1"
+      :max="10"
+      :step="1"
+      size="lg"
+    />
 
     <picker-popover
       :label="t('deck-view.card-attributes.horizontal-alignment')"

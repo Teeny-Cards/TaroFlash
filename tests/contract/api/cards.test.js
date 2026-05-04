@@ -5,7 +5,6 @@ import {
   insertCardAt,
   bulkInsertCardsInDeck,
   fetchCardsPageByDeckId,
-  fetchAllCardsByDeckId,
   fetchMemberCardCount,
   searchCardsInDeck,
   moveCard,
@@ -93,20 +92,6 @@ describe('fetchCardsPageByDeckId (contract)', () => {
   })
 })
 
-describe('fetchAllCardsByDeckId (contract)', () => {
-  test('returns every card in the deck', async () => {
-    await bulkInsertCardsInDeck({
-      deck_id: deck.id,
-      cards: [
-        { front_text: 'one', back_text: '1' },
-        { front_text: 'two', back_text: '2' }
-      ]
-    })
-    const all = await fetchAllCardsByDeckId(deck.id)
-    expect(all).toHaveLength(2)
-  })
-})
-
 describe('fetchMemberCardCount (contract)', () => {
   test('counts cards owned by the current member', async () => {
     expect(await fetchMemberCardCount({ only_due_cards: false })).toBe(0)
@@ -163,7 +148,7 @@ describe('deleteCards (contract)', () => {
       ]
     })
     await deleteCards(cards)
-    const remaining = await fetchAllCardsByDeckId(deck.id)
+    const remaining = await fetchCardsPageByDeckId({ deck_id: deck.id, offset: 0, limit: 1000 })
     expect(remaining).toHaveLength(0)
   })
 })
@@ -181,7 +166,7 @@ describe('deleteCardsInDeck (contract)', () => {
     const [keep] = cards
     const deleted = await deleteCardsInDeck({ deck_id: deck.id, except_ids: [keep.id] })
     expect(deleted).toBe(2)
-    const remaining = await fetchAllCardsByDeckId(deck.id)
+    const remaining = await fetchCardsPageByDeckId({ deck_id: deck.id, offset: 0, limit: 1000 })
     expect(remaining.map((c) => c.id)).toEqual([keep.id])
   })
 })
@@ -215,7 +200,11 @@ describe('moveCardsToDeck (contract)', () => {
       cards: [{ front_text: 'mover', back_text: '' }]
     })
     await moveCardsToDeck([card], target.id)
-    const inTarget = await fetchAllCardsByDeckId(target.id)
+    const inTarget = await fetchCardsPageByDeckId({
+      deck_id: target.id,
+      offset: 0,
+      limit: 1000
+    })
     expect(inTarget.map((c) => c.id)).toContain(card.id)
   })
 })

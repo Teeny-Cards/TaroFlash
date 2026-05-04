@@ -33,9 +33,9 @@ describe('TextEditor', () => {
 
   // ── Default classes ────────────────────────────────────────────────────────
 
-  test('applies default size class when no attributes provided', () => {
+  test('applies default font-size of 30px (level 4) when no attributes provided', () => {
     const wrapper = makeEditor()
-    expect(getEditorEl(wrapper).classes()).toContain('text-editor--size-large')
+    expect(getEditorEl(wrapper).attributes('style')).toContain('font-size: 30px')
   })
 
   test('applies default horizontal alignment class when no attributes provided', () => {
@@ -48,21 +48,41 @@ describe('TextEditor', () => {
     expect(getEditorEl(wrapper).classes()).toContain('text-editor--v-center')
   })
 
-  // ── Size classes ───────────────────────────────────────────────────────────
+  // ── Font size by level ─────────────────────────────────────────────────────
 
-  test('applies text-editor--size-small for small text size', () => {
-    const wrapper = makeEditor({ attributes: { text_size: 'small' } })
-    expect(getEditorEl(wrapper).classes()).toContain('text-editor--size-small')
+  test('level 1 maps to 16px', () => {
+    const wrapper = makeEditor({ attributes: { text_size: 1 } })
+    expect(getEditorEl(wrapper).attributes('style')).toContain('font-size: 16px')
   })
 
-  test('applies text-editor--size-ginormous for ginormous text size', () => {
-    const wrapper = makeEditor({ attributes: { text_size: 'ginormous' } })
-    expect(getEditorEl(wrapper).classes()).toContain('text-editor--size-ginormous')
+  test('level 2 maps to 20px', () => {
+    const wrapper = makeEditor({ attributes: { text_size: 2 } })
+    expect(getEditorEl(wrapper).attributes('style')).toContain('font-size: 20px')
   })
 
-  test('applies text-editor--size-x-large for x-large text size', () => {
-    const wrapper = makeEditor({ attributes: { text_size: 'x-large' } })
-    expect(getEditorEl(wrapper).classes()).toContain('text-editor--size-x-large')
+  test('level 4 maps to 30px (default level)', () => {
+    const wrapper = makeEditor({ attributes: { text_size: 4 } })
+    expect(getEditorEl(wrapper).attributes('style')).toContain('font-size: 30px')
+  })
+
+  test('level 10 maps to 84px (max)', () => {
+    const wrapper = makeEditor({ attributes: { text_size: 10 } })
+    expect(getEditorEl(wrapper).attributes('style')).toContain('font-size: 84px')
+  })
+
+  test('level above 10 clamps to 84px', () => {
+    const wrapper = makeEditor({ attributes: { text_size: 99 } })
+    expect(getEditorEl(wrapper).attributes('style')).toContain('font-size: 84px')
+  })
+
+  test('level below 1 clamps to 16px', () => {
+    const wrapper = makeEditor({ attributes: { text_size: 0 } })
+    expect(getEditorEl(wrapper).attributes('style')).toContain('font-size: 16px')
+  })
+
+  test('non-integer level rounds to nearest level', () => {
+    const wrapper = makeEditor({ attributes: { text_size: 3.7 } })
+    expect(getEditorEl(wrapper).attributes('style')).toContain('font-size: 30px')
   })
 
   // ── Alignment classes ──────────────────────────────────────────────────────
@@ -89,28 +109,28 @@ describe('TextEditor', () => {
 
   // ── Combined attributes ────────────────────────────────────────────────────
 
-  test('applies all three attribute classes together', () => {
+  test('applies all three attribute renderings together', () => {
     const wrapper = makeEditor({
       attributes: {
-        text_size: 'huge',
+        text_size: 6,
         horizontal_alignment: 'right',
         vertical_alignment: 'bottom'
       }
     })
-    const classes = getEditorEl(wrapper).classes()
-    expect(classes).toContain('text-editor--size-huge')
-    expect(classes).toContain('text-editor--h-right')
-    expect(classes).toContain('text-editor--v-bottom')
+    const el = getEditorEl(wrapper)
+    expect(el.attributes('style')).toContain('font-size: 44px')
+    expect(el.classes()).toContain('text-editor--h-right')
+    expect(el.classes()).toContain('text-editor--v-bottom')
   })
 
   // ── Partial attributes ─────────────────────────────────────────────────────
 
   test('falls back to defaults for missing attribute fields', () => {
-    const wrapper = makeEditor({ attributes: { text_size: 'medium' } })
-    const classes = getEditorEl(wrapper).classes()
-    expect(classes).toContain('text-editor--size-medium')
-    expect(classes).toContain('text-editor--h-center')
-    expect(classes).toContain('text-editor--v-center')
+    const wrapper = makeEditor({ attributes: { text_size: 2 } })
+    const el = getEditorEl(wrapper)
+    expect(el.attributes('style')).toContain('font-size: 20px')
+    expect(el.classes()).toContain('text-editor--h-center')
+    expect(el.classes()).toContain('text-editor--v-center')
   })
 
   // ── contenteditable wiring ─────────────────────────────────────────────────
