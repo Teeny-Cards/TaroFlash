@@ -12,20 +12,9 @@ const { disabled, content, attributes } = defineProps<TextEditorProps>()
 
 const LEVEL_PX = [16, 20, 24, 30, 36, 44, 52, 60, 70, 84]
 const DEFAULT_LEVEL = 4
-const LEGACY_LEVEL: Record<string, number> = {
-  small: 1,
-  medium: 2,
-  large: 4,
-  'x-large': 5,
-  huge: 6,
-  ginormous: 7
-}
 
 const font_size_px = computed(() => {
-  const raw = attributes?.text_size as unknown
-  let level = DEFAULT_LEVEL
-  if (typeof raw === 'number') level = raw
-  else if (typeof raw === 'string' && raw in LEGACY_LEVEL) level = LEGACY_LEVEL[raw]
+  const level = attributes?.text_size ?? DEFAULT_LEVEL
   const clamped = Math.min(LEVEL_PX.length, Math.max(1, Math.round(level)))
   return LEVEL_PX[clamped - 1]
 })
