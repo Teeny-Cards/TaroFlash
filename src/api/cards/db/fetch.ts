@@ -22,18 +22,3 @@ export async function fetchMemberCardCount(opts: FetchMemberCardCountOptions): P
 
   return data
 }
-
-export async function fetchAllCardsByDeckId(deck_id: number): Promise<Card[]> {
-  const { data, error } = await supabase
-    .from('cards_with_images')
-    .select('*, review:reviews(*)')
-    .eq('deck_id', deck_id)
-    .order('rank', { ascending: true })
-
-  if (error) {
-    logger.error(error.message)
-    throw new Error(error.message)
-  }
-
-  return data
-}

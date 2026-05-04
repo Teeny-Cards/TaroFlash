@@ -6,6 +6,7 @@ import CardDesignerToolbar from './card-designer-toolbar.vue'
 import TabBar from './tab-bar.vue'
 import TabStudy from './tab-study.vue'
 import Card from '@/components/card/index.vue'
+import { useCardsInDeckInfiniteQuery } from '@/api/cards'
 import { useDeckEditor } from '@/composables/deck-editor'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiInput from '@/components/ui-kit/input.vue'
@@ -26,6 +27,9 @@ const { deck, close } = defineProps<{
 const { t } = useI18n()
 const { saveDeck, settings, config, cover, card_attributes } = useDeckEditor(deck)
 
+const cards_query = useCardsInDeckInfiniteQuery(() => deck?.id)
+const first_card = computed(() => cards_query.data.value?.pages?.[0]?.[0])
+
 const active_tab = ref<DesignerTab>('cover')
 
 const tabs = computed(() => [
@@ -34,9 +38,12 @@ const tabs = computed(() => [
   { value: 'back' as const, label: t('deck.settings-modal.designer-tabs.back') }
 ])
 
-const preview_text = computed(() =>
-  active_tab.value === 'front' ? t('common.front') : t('common.back')
-)
+const preview_text = computed(() => {
+  if (active_tab.value === 'front') {
+    return first_card.value?.front_text || t('common.front')
+  }
+  return first_card.value?.back_text || t('common.back')
+})
 
 function onTabChange(tab: DesignerTab) {
   if (tab === active_tab.value) {
