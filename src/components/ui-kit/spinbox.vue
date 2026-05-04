@@ -82,7 +82,7 @@ function increment() {
         class="inline-flex items-center justify-center aspect-square text-brown-700 cursor-pointer transition-[background-color,color,transform] duration-100 hover:bg-(--theme-primary) hover:text-(--theme-on-primary) active:scale-95 disabled:opacity-[0.35] disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-brown-700"
         :class="size_classes.btn"
         :disabled="!can_decrement"
-        v-sfx="{ hover: 'ui.click_07', click: 'ui.select' }"
+        v-sfx="{ hover: 'ui.click_07' }"
         @click="decrement"
       >
         <ui-icon src="horizontal-rule" :class="size_classes.icon" />
@@ -102,7 +102,7 @@ function increment() {
         class="inline-flex items-center justify-center aspect-square text-brown-700 cursor-pointer transition-[background-color,color,transform] duration-100 hover:bg-(--theme-primary) hover:text-(--theme-on-primary) active:scale-95 disabled:opacity-[0.35] disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-brown-700"
         :class="size_classes.btn"
         :disabled="!can_increment"
-        v-sfx="{ hover: 'ui.click_07', click: 'ui.select' }"
+        v-sfx="{ hover: 'ui.click_07' }"
         @click="increment"
       >
         <ui-icon src="add" :class="size_classes.icon" />
