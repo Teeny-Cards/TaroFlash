@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import ListItem from './list-item.vue'
 import { inject, useTemplateRef, computed, watchEffect } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useVirtualizer } from '@tanstack/vue-virtual'
 import { type CardListController } from '@/composables/card-editor/card-list-controller'
+
+const { t } = useI18n()
 
 const ROW_PITCH = 407
 const LOAD_MORE_THRESHOLD = 5
@@ -71,7 +74,7 @@ watchEffect(() => {
       data-testid="card-list__loading"
       class="w-full py-6 flex items-center justify-center text-brown-500"
     >
-      <span>Loading…</span>
+      <span>{{ t('deck-view.card-editor.list.loading') }}</span>
     </div>
   </div>
 </template>

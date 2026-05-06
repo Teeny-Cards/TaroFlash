@@ -118,13 +118,18 @@ defineExpose({ submit, isValid, loading })
     <ui-divider :label="t('signup-dialog.divider-or')" />
 
     <form data-testid="email-auth" class="flex flex-col gap-4.5">
-      <ui-input size="lg" placeholder="Username" v-model="username" :error="errors.username" />
+      <ui-input
+        size="lg"
+        :placeholder="t('signup-dialog.form.username-placeholder')"
+        v-model="username"
+        :error="errors.username"
+      />
       <ui-input
         size="lg"
         type="email"
         name="email"
         autocomplete="username"
-        placeholder="Email"
+        :placeholder="t('signup-dialog.form.email-placeholder')"
         v-model="email"
         :error="errors.email"
       />
@@ -133,7 +138,7 @@ defineExpose({ submit, isValid, loading })
         type="password"
         name="password"
         autocomplete="new-password"
-        placeholder="Password"
+        :placeholder="t('signup-dialog.form.password-placeholder')"
         v-model="password"
         :error="errors.password"
       />
@@ -142,7 +147,7 @@ defineExpose({ submit, isValid, loading })
         type="password"
         name="confirm-password"
         autocomplete="new-password"
-        placeholder="Confirm Password"
+        :placeholder="t('signup-dialog.form.confirm-password-placeholder')"
         v-model="confirm_password"
         :error="errors.confirm_password"
       />

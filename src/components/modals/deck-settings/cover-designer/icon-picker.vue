@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { emitSfx } from '@/sfx/bus'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import PickerPopover from './picker-popover.vue'
+
+const { t } = useI18n()
 
 type IconPickerProps = {
   supported_icons: string[]
@@ -26,7 +29,7 @@ function onIconSelect(value: string | undefined) {
 </script>
 
 <template>
-  <picker-popover label="Icon" icon="card-deck">
+  <picker-popover :label="t('deck.settings-modal.cover.icon-picker.label')" icon="card-deck">
     <template #default>
       <button
         v-for="name in supported_icons"
@@ -46,7 +49,7 @@ function onIconSelect(value: string | undefined) {
         class="w-full aspect-square rounded-4 rounded-tr-2 rounded-bl-2 cursor-pointer bg-brown-200 border-2 border-dashed border-brown-400 flex items-center justify-center text-brown-500 text-xs font-medium"
         @click="onIconSelect(undefined)"
       >
-        None
+        {{ t('deck.settings-modal.cover.icon-picker.none-option') }}
       </button>
     </template>
   </picker-popover>

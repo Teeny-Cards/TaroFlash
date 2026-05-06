@@ -2,9 +2,12 @@
 import GridItem from './grid-item.vue'
 import { type CardListController } from '@/composables/card-editor/card-list-controller'
 import { computed, inject, ref, useTemplateRef, watch, type CSSProperties } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useGridCapacity } from '@/composables/use-grid-capacity'
 import { useMediaQuery } from '@/composables/use-media-query'
 import { slideInFromDirection, slideOutInDirection } from '@/utils/animations/grid-page'
+
+const { t } = useI18n()
 
 const { list, selection, carousel, card_attributes, hasNextPage, isLoading, observeSentinel } =
   inject<CardListController>('card-editor')!
@@ -114,7 +117,7 @@ const emit = defineEmits<{
       data-testid="card-grid__sentinel"
       class="w-full py-6 flex items-center justify-center text-brown-500"
     >
-      <span v-if="isLoading">Loading…</span>
+      <span v-if="isLoading">{{ t('deck-view.card-grid.loading') }}</span>
     </div>
   </div>
 </template>

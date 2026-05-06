@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { emitSfx } from '@/sfx/bus'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiSlider from '@/components/ui-kit/slider.vue'
 import PickerPopover from './picker-popover.vue'
+
+const { t } = useI18n()
 
 type BgColorPickerProps = {
   supported_themes: MemberTheme[]
@@ -46,7 +49,7 @@ function onThemeSelect(theme: MemberTheme) {
 </script>
 
 <template>
-  <picker-popover label="BG Color" icon="paint-brush">
+  <picker-popover :label="t('deck.settings-modal.cover.bg-color-picker.label')" icon="paint-brush">
     <template #default>
       <button
         v-for="theme in supported_themes"
@@ -69,8 +72,10 @@ function onThemeSelect(theme: MemberTheme) {
 
     <template #extra>
       <div data-testid="bg-color-picker__border" class="flex flex-col gap-2 pt-3">
-        <span data-testid="bg-color-picker__border-label" class="text-brown-700 text-sm font-medium"
-          >Border</span
+        <span
+          data-testid="bg-color-picker__border-label"
+          class="text-brown-700 text-sm font-medium"
+          >{{ t('deck.settings-modal.cover.bg-color-picker.border-label') }}</span
         >
         <div data-testid="bg-color-picker__border-slider" class="flex flex-col gap-1.5">
           <ui-slider v-model="borderSizePercent" />

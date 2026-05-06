@@ -61,7 +61,7 @@ async function onConfirm() {
       :created-at="created_at"
       :display-name="member.display_name"
       :card-comment="member.description"
-      card-title="Debut Deck Builder"
+      :card-title="t('member-application.preview-card-title')"
       :theme="selected_theme"
     />
 
@@ -93,8 +93,8 @@ async function onConfirm() {
           <span class="text-brown-500">{{ t('member-application.title') }}</span>
 
           <div class="flex gap-1">
-            <ui-tag>Debut</ui-tag>
-            <ui-tag>Deck Builder</ui-tag>
+            <ui-tag>{{ t('member-application.title-tag-debut') }}</ui-tag>
+            <ui-tag>{{ t('member-application.title-tag-deck-builder') }}</ui-tag>
           </div>
         </div>
 

@@ -1,3 +1,18 @@
+<script setup lang="ts">
+import { onMounted, useTemplateRef } from 'vue'
+import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import UiIcon from '@/components/ui-kit/icon.vue'
+
+const { t } = useI18n()
+const nav_bar = useTemplateRef('nav-bar')
+
+onMounted(() => {
+  const height = (nav_bar.value?.clientHeight ?? 0) + 24
+  document.documentElement.style.setProperty('--nav-height', `${height}px`)
+})
+</script>
+
 <template>
   <nav
     data-testid="nav-bar-container"
@@ -10,21 +25,8 @@
     >
       <RouterLink to="/dashboard" class="flex items-center gap-1 text-4xl text-white">
         <ui-icon src="logo" class="h-9" />
-        <div>TaroFlash</div>
+        <div>{{ t('app.title') }}</div>
       </RouterLink>
     </div>
   </nav>
 </template>
-
-<script setup lang="ts">
-import { onMounted, useTemplateRef } from 'vue'
-import { RouterLink } from 'vue-router'
-import UiIcon from '@/components/ui-kit/icon.vue'
-
-const nav_bar = useTemplateRef('nav-bar')
-
-onMounted(() => {
-  const height = (nav_bar.value?.clientHeight ?? 0) + 24
-  document.documentElement.style.setProperty('--nav-height', `${height}px`)
-})
-</script>
