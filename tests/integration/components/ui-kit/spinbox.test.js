@@ -10,6 +10,14 @@ function findValue(wrapper) {
   return wrapper.find('[data-testid="ui-kit-spinbox__value"]')
 }
 
+function findInput(wrapper) {
+  return wrapper.find('[data-testid="ui-kit-spinbox__input"]')
+}
+
+function findSuffix(wrapper) {
+  return wrapper.find('[data-testid="ui-kit-spinbox__suffix"]')
+}
+
 function findDecrement(wrapper) {
   return wrapper.find('[data-testid="ui-kit-spinbox__decrement"]')
 }
@@ -46,20 +54,20 @@ describe('UiSpinbox', () => {
 
   // ── Value display ──────────────────────────────────────────────────────────
 
-  test('shows the current value', () => {
+  test('shows the current value in the input', () => {
     const wrapper = mountSpinbox({ value: 7 })
-    expect(findValue(wrapper).text()).toContain('7')
+    expect(findInput(wrapper).element.value).toBe('7')
   })
 
   test('appends suffix when suffix prop is set', () => {
     const wrapper = mountSpinbox({ value: 30, suffix: 'px' })
-    expect(findValue(wrapper).text()).toContain('30')
-    expect(findValue(wrapper).text()).toContain('px')
+    expect(findInput(wrapper).element.value).toBe('30')
+    expect(findSuffix(wrapper).text()).toBe('px')
   })
 
   test('does not render suffix span when suffix is omitted', () => {
     const wrapper = mountSpinbox({ value: 30 })
-    expect(findValue(wrapper).text().trim()).toBe('30')
+    expect(findSuffix(wrapper).exists()).toBe(false)
   })
 
   // ── Increment / decrement (v-model) ────────────────────────────────────────
@@ -116,6 +124,26 @@ describe('UiSpinbox', () => {
     const wrapper = mountSpinbox({ value: 8, max: 10, step: 10 })
     await findIncrement(wrapper).trigger('click')
     expect(wrapper.emitted('update:value')).toEqual([[10]])
+  })
+
+  // ── Wrap ───────────────────────────────────────────────────────────────────
+
+  test('decrement at min wraps to max when wrap is enabled', async () => {
+    const wrapper = mountSpinbox({ value: 1, min: 1, max: 10, wrap: true })
+    await findDecrement(wrapper).trigger('click')
+    expect(wrapper.emitted('update:value')).toEqual([[10]])
+  })
+
+  test('increment at max wraps to min when wrap is enabled', async () => {
+    const wrapper = mountSpinbox({ value: 10, min: 1, max: 10, wrap: true })
+    await findIncrement(wrapper).trigger('click')
+    expect(wrapper.emitted('update:value')).toEqual([[1]])
+  })
+
+  test('wrap keeps both buttons enabled at the bounds', () => {
+    const wrapper = mountSpinbox({ value: 1, min: 1, max: 10, wrap: true })
+    expect(findDecrement(wrapper).attributes('disabled')).toBeUndefined()
+    expect(findIncrement(wrapper).attributes('disabled')).toBeUndefined()
   })
 
   // ── Defaults ──────────────────────────────────────────────────────────────
