@@ -15,7 +15,7 @@ const emit = defineEmits<{
       class="text-brown-700 cursor-pointer rounded-full bg-white px-13 py-4 hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
       @click="emit('flip')"
     >
-      {{ $t('study.flip') }}
+      {{ $t('study.flashcard.flip-button') }}
     </button>
     <button
       data-testid="study-card-edit__done"

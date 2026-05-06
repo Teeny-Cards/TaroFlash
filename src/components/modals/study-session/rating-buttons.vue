@@ -35,7 +35,7 @@ function onRatingClicked(grade: Grade) {
         static_on_mobile
         @click="onRatingClicked(Rating.Again)"
       >
-        {{ t('study.nope') }}
+        {{ t('study.flashcard.rating.fail-button') }}
       </ui-tooltip>
 
       <ui-tooltip
@@ -47,7 +47,7 @@ function onRatingClicked(grade: Grade) {
         static_on_mobile
         @click="onRatingClicked(Rating.Good)"
       >
-        {{ t('study.got-it') }}
+        {{ t('study.flashcard.rating.pass-button') }}
       </ui-tooltip>
     </template>
 
@@ -57,7 +57,7 @@ function onRatingClicked(grade: Grade) {
       class="cursor-pointer rounded-full bg-(--theme-primary) px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
       @click="$emit('revealed')"
     >
-      {{ t('study.flip') }}
+      {{ t('study.flashcard.flip-button') }}
     </button>
 
     <button
@@ -66,7 +66,7 @@ function onRatingClicked(grade: Grade) {
       class="cursor-pointer rounded-full bg-(--theme-primary) px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
       @click="$emit('started')"
     >
-      {{ t('study.start') }}
+      {{ t('study.flashcard.start-button') }}
     </button>
   </div>
 </template>

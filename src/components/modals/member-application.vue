@@ -90,7 +90,7 @@ async function onConfirm() {
         />
 
         <div class="flex flex-col gap-1.5">
-          <span class="text-brown-500">{{ t('member-application.title') }}</span>
+          <span class="text-brown-500">{{ t('member-application.title-field-label') }}</span>
 
           <div class="flex gap-1">
             <ui-tag>{{ t('member-application.title-tag-debut') }}</ui-tag>
@@ -100,7 +100,7 @@ async function onConfirm() {
 
         <ui-input
           :label="t('member-application.card-comment')"
-          :placeholder="t('member-card.description-placeholder')"
+          :placeholder="t('member-card.description-input-placeholder')"
           class="col-span-2"
           v-model:value="member.description"
         />

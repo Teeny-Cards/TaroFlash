@@ -102,7 +102,9 @@ function onToggleEditCards() {
         @click="onToggleEditCards"
         v-sfx.click="'ui.select'"
       >
-        {{ mode === 'edit' ? t('deck-view.actions.cancel') : t('deck-view.actions.edit-cards') }}
+        {{
+          mode === 'edit' ? t('deck-view.actions.stop-editing') : t('deck-view.actions.edit-cards')
+        }}
       </ui-button>
     </div>
   </div>
