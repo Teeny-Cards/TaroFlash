@@ -97,7 +97,7 @@ function onClick(deck_id?: number) {
         @click="close(false)"
         class="ring-brown-300 ring-7"
       >
-        {{ t('common.cancel') }}
+        {{ t('move-cards-modal.cancel') }}
       </ui-button>
 
       <ui-button
@@ -108,7 +108,7 @@ function onClick(deck_id?: number) {
         :disabled="!selected_deck_id"
         class="ring-brown-300 ring-7"
       >
-        {{ t('common.move') }}
+        {{ t('move-cards-modal.confirm') }}
       </ui-button>
     </div>
   </div>

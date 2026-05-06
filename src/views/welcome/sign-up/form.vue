@@ -115,7 +115,7 @@ defineExpose({ submit, isValid, loading })
       </ui-button> -->
     </div>
 
-    <ui-divider :label="t('common.or')" />
+    <ui-divider :label="t('signup-dialog.divider-or')" />
 
     <form data-testid="email-auth" class="flex flex-col gap-4.5">
       <ui-input size="lg" placeholder="Username" v-model="username" :error="errors.username" />

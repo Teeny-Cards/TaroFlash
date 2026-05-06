@@ -21,11 +21,11 @@ const { cancelLabel, confirmLabel, close, cancelAudio, confirmAudio } = definePr
 const { t } = useI18n()
 
 const cancelText = computed(() => {
-  return cancelLabel ?? t('common.cancel')
+  return cancelLabel ?? t('ui-kit.alert.cancel')
 })
 
 const confirmText = computed(() => {
-  return confirmLabel ?? t('common.continue')
+  return confirmLabel ?? t('ui-kit.alert.continue')
 })
 
 function onCancel() {

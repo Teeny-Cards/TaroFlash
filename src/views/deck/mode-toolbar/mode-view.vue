@@ -25,7 +25,7 @@ const { page, total_pages, prev_page_number, next_page_number, prevPage, nextPag
         icon-left="search"
         icon-only
       >
-        {{ t('common.search') }}
+        {{ t('deck-view.mode-view.search') }}
       </ui-button>
 
       <ui-button
@@ -36,7 +36,7 @@ const { page, total_pages, prev_page_number, next_page_number, prevPage, nextPag
         icon-left="add"
         @click="addCard()"
       >
-        {{ t('common.new-card') }}
+        {{ t('deck-view.mode-view.new-card') }}
       </ui-button>
     </template>
 

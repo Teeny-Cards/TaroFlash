@@ -41,7 +41,7 @@ export function useCardActions({ list, selection, mutations, deck_query, deck_id
     const { response } = alert.warn({
       title: t('alert.delete-card', { count }),
       message: t('alert.delete-card.message', { count }),
-      confirmLabel: t('common.delete'),
+      confirmLabel: t('alert.delete-card.confirm'),
       confirmAudio: 'ui.trash_crumple_short'
     })
     return response
