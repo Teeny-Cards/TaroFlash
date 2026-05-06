@@ -41,7 +41,11 @@ const text = computed(() => (side === 'front' ? card?.front_text : card?.back_te
         data-testid="study-card-edit__input"
         :content="text"
         :attributes="attributes"
-        :placeholder="side === 'front' ? $t('common.front') : $t('common.back')"
+        :placeholder="
+          side === 'front'
+            ? $t('study-session.edit.front-placeholder')
+            : $t('study-session.edit.back-placeholder')
+        "
         class="w-full h-full"
         @update="emit('update', side, $event)"
       />

@@ -82,13 +82,13 @@ function onToggleEditCards() {
         @click="onStudyClicked"
       >
         <div class="text-brown-100">
-          {{ t('common.study') }}
+          {{ t('deck-view.hero.study') }}
           <span
             class="bg-brown-100 dark:text-blue-650 text-blue-500 px-1 py-0.5 -rotate-5 rounded-1.5"
           >
             {{ deck.due_count }}
           </span>
-          {{ t('common.cards') }}
+          {{ t('deck-view.hero.cards-label') }}
         </div>
       </ui-button>
 

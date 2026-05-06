@@ -25,7 +25,7 @@ async function onSubmit() {
     alert.warn({
       title: t('signup-dialog.alert.generic-title'),
       message: t('signup-dialog.alert.generic-message'),
-      cancelLabel: t('common.close')
+      cancelLabel: t('signup-dialog.alert.close')
     })
   }
 
@@ -50,7 +50,7 @@ async function onSubmit() {
 
       <div data-testid="actions" class="w-full flex justify-center gap-2.5 col-start-2">
         <ui-button size="lg" data-theme="brown-100" :fancy-hover="false" @click="close()">{{
-          t('common.cancel')
+          t('signup-dialog.cancel')
         }}</ui-button>
         <ui-button size="lg" data-theme="blue-500" :loading="form?.loading" @click="onSubmit">{{
           t('signup-dialog.cta')
