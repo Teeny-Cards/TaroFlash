@@ -31,7 +31,7 @@ function formatDate(ts: number) {
       data-testid="billing-settings__invoices-loading"
       class="text-brown-500 dark:text-brown-400"
     >
-      {{ t('settings.member-settings.billing.loading') }}
+      {{ t('settings.member-settings.billing.invoices.loading') }}
     </p>
 
     <p

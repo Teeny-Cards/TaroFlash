@@ -38,7 +38,7 @@ const { t } = useI18n()
         <p>{{ t('signup-dialog.free-plan.deck-limit') }}</p>
         <p>{{ t('signup-dialog.free-plan.card-limit') }}</p>
         <p>{{ t('signup-dialog.free-plan.deck-image-upload') }}</p>
-        <p>{{ t('signup-dialog.future-features') }}</p>
+        <p>{{ t('signup-dialog.free-plan.future-features-note') }}</p>
       </plan-option>
 
       <plan-option
@@ -59,7 +59,7 @@ const { t } = useI18n()
         <p>{{ t('signup-dialog.paid-plan.unlimited-cards') }}</p>
         <p>{{ t('signup-dialog.paid-plan.deck-image-upload') }}</p>
         <p>{{ t('signup-dialog.paid-plan.card-image-upload') }}</p>
-        <p>{{ t('signup-dialog.future-features') }}</p>
+        <p>{{ t('signup-dialog.paid-plan.future-features-note') }}</p>
         <p>{{ t('signup-dialog.paid-plan.cancel-anytime') }}</p>
       </plan-option>
     </div>
