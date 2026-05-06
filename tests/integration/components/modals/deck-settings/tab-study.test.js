@@ -199,6 +199,73 @@ describe('TabStudy', () => {
     expect(emitted[0][0]).toBeGreaterThan(0)
   })
 
+  test('toggling reviews "all" on pre-fills the spinbox with card_count', async () => {
+    const wrapper = makeTabStudy({ max_reviews_per_day: 50, card_count: 137 })
+    const allToggle = wrapper.find('[data-testid="tab-study__max-reviews-all"]')
+    await allToggle.find('input').setValue(true)
+    const spinbox = wrapper.find(
+      '[data-testid="tab-study__max-reviews-row"] [data-testid="ui-kit-spinbox"]'
+    )
+    expect(spinbox.attributes('data-value')).toBe('137')
+  })
+
+  test('toggling new "all" on pre-fills the spinbox with card_count', async () => {
+    const wrapper = makeTabStudy({ max_new_per_day: 10, card_count: 42 })
+    const allToggle = wrapper.find('[data-testid="tab-study__max-new-all"]')
+    await allToggle.find('input').setValue(true)
+    const spinbox = wrapper.find(
+      '[data-testid="tab-study__max-new-row"] [data-testid="ui-kit-spinbox"]'
+    )
+    expect(spinbox.attributes('data-value')).toBe('42')
+  })
+
+  test('toggling "all" on without card_count leaves spinbox value unchanged', async () => {
+    const wrapper = makeTabStudy({ max_reviews_per_day: 50 })
+    const allToggle = wrapper.find('[data-testid="tab-study__max-reviews-all"]')
+    await allToggle.find('input').setValue(true)
+    const spinbox = wrapper.find(
+      '[data-testid="tab-study__max-reviews-row"] [data-testid="ui-kit-spinbox"]'
+    )
+    expect(spinbox.attributes('data-value')).toBe('50')
+  })
+
+  test('toggling reviews "all" off emits the last numeric local value', async () => {
+    const wrapper = makeTabStudy({ max_reviews_per_day: 75 })
+    const allToggle = wrapper.find('[data-testid="tab-study__max-reviews-all"]')
+    await allToggle.find('input').setValue(true)
+    await allToggle.find('input').setValue(false)
+    const emitted = wrapper.emitted('update:max_reviews_per_day')
+    expect(emitted[emitted.length - 1]).toEqual([75])
+  })
+
+  test('decrementing from null state turns "all" off and emits a numeric value', async () => {
+    const wrapper = makeTabStudy({ max_reviews_per_day: null })
+    const dec = wrapper.find(
+      '[data-testid="tab-study__max-reviews-row"] [data-testid="ui-kit-spinbox__decrement"]'
+    )
+    await dec.trigger('click')
+    const emitted = wrapper.emitted('update:max_reviews_per_day')
+    const last = emitted[emitted.length - 1][0]
+    expect(typeof last).toBe('number')
+    expect(last).toBeLessThan(200)
+  })
+
+  test('external prop change to null updates the "all" toggle state', async () => {
+    const wrapper = makeTabStudy({ max_reviews_per_day: 50 })
+    await wrapper.setProps({ max_reviews_per_day: null })
+    const allToggle = wrapper.find('[data-testid="tab-study__max-reviews-all"]')
+    expect(allToggle.attributes('data-checked')).toBe('true')
+  })
+
+  test('external prop change to a number updates the spinbox value', async () => {
+    const wrapper = makeTabStudy({ max_new_per_day: 10 })
+    await wrapper.setProps({ max_new_per_day: 80 })
+    const spinbox = wrapper.find(
+      '[data-testid="tab-study__max-new-row"] [data-testid="ui-kit-spinbox"]'
+    )
+    expect(spinbox.attributes('data-value')).toBe('80')
+  })
+
   test('the "all" toggles reflect null state via data-checked', () => {
     const wrapper = makeTabStudy({ max_reviews_per_day: null, max_new_per_day: 20 })
     const reviewsAll = wrapper.find('[data-testid="tab-study__max-reviews-all"]')
