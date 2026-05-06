@@ -71,7 +71,7 @@ async function onSave() {
   <mobile-sheet
     data-testid="deck-settings-container"
     class="sm:max-w-200! sm:max-h-190"
-    title="Deck Settings"
+    :title="t('deck.settings-modal.title')"
     @close="close(false)"
   >
     <template #body>

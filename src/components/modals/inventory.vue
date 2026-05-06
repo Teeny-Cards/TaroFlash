@@ -1,7 +1,10 @@
 <script setup lang="ts">
 // import { fetchPurchaseItems } from '@/services/shop-service'
 import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import UiImage from '@/components/ui-kit/image.vue'
+
+const { t } = useI18n()
 
 const INV_SLOTS = 12
 const purchases = ref<PurchaseItem[]>([])
@@ -15,7 +18,7 @@ onMounted(async () => {
 <template>
   <div class="bg-brown-300 rounded-10 flex h-163 w-254 flex-col shadow-lg">
     <div class="flex w-full items-center justify-center py-5">
-      <h2 class="text-brown-700 text-6xl">Inventory</h2>
+      <h2 class="text-brown-700 text-6xl">{{ t('inventory-modal.title') }}</h2>
     </div>
     <div class="bg-brown-100 flex h-full gap-7 p-7">
       <div class="bg-brown-300 rounded-6 h-full w-78.75"></div>

@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import ShopItem from './shop-item.vue'
 import { useShopItemsQuery, useUpsertPurchaseMutation } from '@/api/shop'
 import { useMemberStore } from '@/stores/member'
+
+const { t } = useI18n()
 
 const selected_item = ref<ShopItem | undefined>()
 const memberStore = useMemberStore()
@@ -61,13 +64,13 @@ async function submitPurchase(item: ShopItem) {
     <div class="rounded-4 h-34 w-full bg-yellow-500"></div>
     <div class="flex w-full flex-col items-center justify-center gap-2.5">
       <div class="flex items-center gap-2.5 text-2xl">
-        <h2 class="nav-item bg-pink selected">Power Ups</h2>
-        <h2 class="nav-item bg-yellow-500">Stationary</h2>
-        <h2 class="nav-item bg-green-400">Stickers</h2>
-        <h2 class="nav-item bg-arctic">Misclaneous</h2>
+        <h2 class="nav-item bg-pink selected">{{ t('shop.category.power-ups') }}</h2>
+        <h2 class="nav-item bg-yellow-500">{{ t('shop.category.stationary') }}</h2>
+        <h2 class="nav-item bg-green-400">{{ t('shop.category.stickers') }}</h2>
+        <h2 class="nav-item bg-arctic">{{ t('shop.category.miscellaneous') }}</h2>
       </div>
       <p class="text-brown-700">
-        Power ups can be used to gain an edge and score more paper clips.
+        {{ t('shop.category.power-ups.description') }}
       </p>
     </div>
     <div class="flex flex-col gap-16">
