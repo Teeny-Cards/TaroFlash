@@ -35,12 +35,12 @@ function openUpgradeModal() {
 
       <div class="grid grid-cols-[200px_1fr] gap-6">
         <h2 class="text-brown-700 dark:text-brown-300 text-lg">
-          {{ t('member-application.member-name') }}
+          {{ t('settings.member-settings.member-name-label') }}
         </h2>
         <ui-input v-model:value="display_name" />
 
         <h2 class="text-brown-700 dark:text-brown-300 text-lg">
-          {{ t('login-dialog.email') }}
+          {{ t('settings.member-settings.email-label') }}
         </h2>
         <ui-input v-model:value="email" />
       </div>
@@ -76,7 +76,7 @@ function openUpgradeModal() {
         data-testid="member-settings__billing-loading"
         class="text-brown-600 dark:text-brown-300 text-center py-8"
       >
-        {{ t('settings.member-settings.billing.loading') }}
+        {{ t('settings.member-settings.billing.section-loading') }}
       </p>
 
       <p

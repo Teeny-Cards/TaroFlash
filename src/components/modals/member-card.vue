@@ -39,7 +39,7 @@ const created_on = computed(() => {
       </div>
 
       <div type="text" class="bg-brown-300 text-brown-500 ring-brown-300 rounded-2 w-full ring-8">
-        {{ cardComment || t('member-card.description-input-placeholder') }}
+        {{ cardComment || t('member-card.description-fallback') }}
       </div>
 
       <div class="flex w-full flex-col gap-2">

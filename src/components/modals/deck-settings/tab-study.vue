@@ -120,7 +120,7 @@ const new_all = computed({
           @update:value="onReviewsChange"
         />
         <ui-toggle data-testid="tab-study__max-reviews-all" v-model:checked="reviews_all">
-          {{ t('study.settings.card-limit-all-option') }}
+          {{ t('study.settings.max-reviews.all-toggle') }}
         </ui-toggle>
       </div>
     </div>
@@ -139,7 +139,7 @@ const new_all = computed({
           @update:value="onNewChange"
         />
         <ui-toggle data-testid="tab-study__max-new-all" v-model:checked="new_all">
-          {{ t('study.settings.card-limit-all-option') }}
+          {{ t('study.settings.max-new.all-toggle') }}
         </ui-toggle>
       </div>
     </div>

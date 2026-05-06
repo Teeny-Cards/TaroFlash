@@ -57,7 +57,7 @@ function onRatingClicked(grade: Grade) {
       class="cursor-pointer rounded-full bg-(--theme-primary) px-13 py-4 text-white hover:-translate-0.5 hover:shadow-sm transition-all duration-50"
       @click="$emit('revealed')"
     >
-      {{ t('study.flashcard.flip-button') }}
+      {{ t('study.flashcard.rating.flip-button') }}
     </button>
 
     <button

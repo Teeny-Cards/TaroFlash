@@ -85,7 +85,7 @@ async function onConfirm() {
 
       <div class="grid grid-cols-[1fr_auto] gap-x-12 gap-y-6">
         <ui-input
-          :label="t('member-application.member-name')"
+          :label="t('member-application.member-name-label')"
           v-model:value="member.display_name"
         />
 
@@ -100,7 +100,7 @@ async function onConfirm() {
 
         <ui-input
           :label="t('member-application.card-comment')"
-          :placeholder="t('member-card.description-input-placeholder')"
+          :placeholder="t('member-application.description-placeholder')"
           class="col-span-2"
           v-model:value="member.description"
         />
