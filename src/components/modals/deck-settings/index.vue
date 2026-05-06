@@ -128,6 +128,7 @@ async function onSave() {
           </ui-toggle>
 
           <tab-study
+            :card_count="deck?.card_count"
             v-model:shuffle="config.shuffle"
             v-model:flip_cards="config.flip_cards"
             v-model:is_spaced="config.is_spaced"
