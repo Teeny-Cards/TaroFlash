@@ -3,8 +3,6 @@ import { mount } from '@vue/test-utils'
 import { defineComponent, h, useAttrs } from 'vue'
 import TabStudy from '@/components/modals/deck-settings/tab-study.vue'
 
-// Render-function stubs (no template strings — Chromium browser mode is
-// runtime-only Vue).
 const ToggleStub = defineComponent({
   name: 'UiToggle',
   props: { checked: { type: Boolean, default: false } },
@@ -15,7 +13,11 @@ const ToggleStub = defineComponent({
     return () =>
       h(
         'label',
-        { ...attrs, 'data-testid': 'ui-kit-toggle', 'data-checked': String(!!props.checked) },
+        {
+          'data-testid': 'ui-kit-toggle',
+          'data-checked': String(!!props.checked),
+          ...attrs
+        },
         [
           h('span', { 'data-testid': 'ui-kit-toggle__label' }, slots.default?.()),
           h('input', {
@@ -37,33 +39,77 @@ const IconStub = defineComponent({
   }
 })
 
+const SpinboxStub = defineComponent({
+  name: 'UiSpinbox',
+  props: {
+    value: { type: Number, required: true },
+    min: { type: Number, default: -Infinity },
+    max: { type: Number, default: Infinity },
+    step: { type: Number, default: 1 }
+  },
+  emits: ['update:value'],
+  inheritAttrs: false,
+  setup(props, { emit }) {
+    const attrs = useAttrs()
+    return () =>
+      h(
+        'div',
+        {
+          ...attrs,
+          'data-testid': 'ui-kit-spinbox',
+          'data-value': String(props.value),
+          'data-min': String(props.min),
+          'data-max': String(props.max),
+          'data-step': String(props.step)
+        },
+        [
+          h(
+            'button',
+            {
+              type: 'button',
+              'data-testid': 'ui-kit-spinbox__decrement',
+              onClick: () => emit('update:value', Math.max(props.min, props.value - props.step))
+            },
+            '-'
+          ),
+          h(
+            'button',
+            {
+              type: 'button',
+              'data-testid': 'ui-kit-spinbox__increment',
+              onClick: () => emit('update:value', Math.min(props.max, props.value + props.step))
+            },
+            '+'
+          )
+        ]
+      )
+  }
+})
+
 function makeTabStudy(props = {}) {
   return mount(TabStudy, {
     props,
     global: {
-      stubs: { UiToggle: ToggleStub, UiIcon: IconStub },
+      stubs: { UiToggle: ToggleStub, UiIcon: IconStub, UiSpinbox: SpinboxStub },
       mocks: { $t: (k) => k }
     }
   })
 }
 
 describe('TabStudy', () => {
-  test('renders all four toggles', () => {
+  test('renders four behavior toggles plus two "all" toggles', () => {
     const wrapper = makeTabStudy()
-    expect(wrapper.findAll('[data-testid="ui-kit-toggle"]')).toHaveLength(4)
+    expect(wrapper.findAllComponents(ToggleStub)).toHaveLength(6)
   })
 
-  test('renders 5 review-limit + 5 new-limit preset buttons', () => {
+  test('renders a spinbox for each daily limit', () => {
     const wrapper = makeTabStudy()
-    const buttons = wrapper.findAll('button')
-    // 5 + 5 = 10
-    expect(buttons).toHaveLength(10)
+    expect(wrapper.findAll('[data-testid="ui-kit-spinbox"]')).toHaveLength(2)
   })
 
   test('emits update:shuffle when shuffle toggle changes', async () => {
     const wrapper = makeTabStudy({ shuffle: false })
     const toggles = wrapper.findAllComponents(ToggleStub)
-    // Order: is_spaced, shuffle, flip_cards, auto_play
     await toggles[1].vm.$emit('update:checked', true)
     expect(wrapper.emitted('update:shuffle')).toEqual([[true]])
   })
@@ -89,47 +135,142 @@ describe('TabStudy', () => {
     expect(wrapper.emitted('update:auto_play')).toEqual([[true]])
   })
 
-  test('clicking a review-limit preset emits update:max_reviews_per_day with that value', async () => {
-    const wrapper = makeTabStudy({ max_reviews_per_day: 20 })
-    const buttons = wrapper.findAll('button')
-    // First 5 buttons = review-limit presets [20, 50, 100, 200, null]
-    await buttons[2].trigger('click')
-    expect(wrapper.emitted('update:max_reviews_per_day')).toEqual([[100]])
+  test('reviews spinbox is configured: step 5, min 5, max 200', () => {
+    const wrapper = makeTabStudy({ max_reviews_per_day: 50 })
+    const spinbox = wrapper.find(
+      '[data-testid="tab-study__max-reviews-row"] [data-testid="ui-kit-spinbox"]'
+    )
+    expect(spinbox.attributes('data-step')).toBe('5')
+    expect(spinbox.attributes('data-min')).toBe('5')
+    expect(spinbox.attributes('data-max')).toBe('200')
+    expect(spinbox.attributes('data-value')).toBe('50')
   })
 
-  test('clicking the "all" review-limit preset emits null', async () => {
+  test('new spinbox is configured: step 5, min 5, max 100', () => {
+    const wrapper = makeTabStudy({ max_new_per_day: 10 })
+    const spinbox = wrapper.find(
+      '[data-testid="tab-study__max-new-row"] [data-testid="ui-kit-spinbox"]'
+    )
+    expect(spinbox.attributes('data-step')).toBe('5')
+    expect(spinbox.attributes('data-min')).toBe('5')
+    expect(spinbox.attributes('data-max')).toBe('100')
+    expect(spinbox.attributes('data-value')).toBe('10')
+  })
+
+  test('incrementing reviews spinbox emits update:max_reviews_per_day with stepped value', async () => {
     const wrapper = makeTabStudy({ max_reviews_per_day: 50 })
-    const buttons = wrapper.findAll('button')
-    await buttons[4].trigger('click')
+    await wrapper
+      .find('[data-testid="tab-study__max-reviews-row"] [data-testid="ui-kit-spinbox__increment"]')
+      .trigger('click')
+    expect(wrapper.emitted('update:max_reviews_per_day')).toEqual([[55]])
+  })
+
+  test('reaching reviews max emits null (switches to all)', async () => {
+    const wrapper = makeTabStudy({ max_reviews_per_day: 195 })
+    await wrapper
+      .find('[data-testid="tab-study__max-reviews-row"] [data-testid="ui-kit-spinbox__increment"]')
+      .trigger('click')
+    const emitted = wrapper.emitted('update:max_reviews_per_day')
+    expect(emitted[emitted.length - 1]).toEqual([null])
+  })
+
+  test('reaching new-per-day max emits null (switches to all)', async () => {
+    const wrapper = makeTabStudy({ max_new_per_day: 95 })
+    await wrapper
+      .find('[data-testid="tab-study__max-new-row"] [data-testid="ui-kit-spinbox__increment"]')
+      .trigger('click')
+    const emitted = wrapper.emitted('update:max_new_per_day')
+    expect(emitted[emitted.length - 1]).toEqual([null])
+  })
+
+  test('toggling the reviews "all" toggle on emits null', async () => {
+    const wrapper = makeTabStudy({ max_reviews_per_day: 50 })
+    const allToggle = wrapper.find('[data-testid="tab-study__max-reviews-all"]')
+    await allToggle.find('input').setValue(true)
     expect(wrapper.emitted('update:max_reviews_per_day')).toEqual([[null]])
   })
 
-  test('clicking a new-limit preset emits update:max_new_per_day with that value', async () => {
-    const wrapper = makeTabStudy({ max_new_per_day: 5 })
-    const buttons = wrapper.findAll('button')
-    // Buttons 5–9 = new-limit presets [5, 10, 20, 50, null]
-    await buttons[6].trigger('click')
-    expect(wrapper.emitted('update:max_new_per_day')).toEqual([[10]])
+  test('toggling the new "all" toggle off restores a numeric value', async () => {
+    const wrapper = makeTabStudy({ max_new_per_day: null })
+    const allToggle = wrapper.find('[data-testid="tab-study__max-new-all"]')
+    await allToggle.find('input').setValue(false)
+    const emitted = wrapper.emitted('update:max_new_per_day')
+    expect(typeof emitted[0][0]).toBe('number')
+    expect(emitted[0][0]).toBeGreaterThan(0)
   })
 
-  test('clicking the "all" new-limit preset emits null', async () => {
+  test('toggling reviews "all" on pre-fills the spinbox with card_count', async () => {
+    const wrapper = makeTabStudy({ max_reviews_per_day: 50, card_count: 137 })
+    const allToggle = wrapper.find('[data-testid="tab-study__max-reviews-all"]')
+    await allToggle.find('input').setValue(true)
+    const spinbox = wrapper.find(
+      '[data-testid="tab-study__max-reviews-row"] [data-testid="ui-kit-spinbox"]'
+    )
+    expect(spinbox.attributes('data-value')).toBe('137')
+  })
+
+  test('toggling new "all" on pre-fills the spinbox with card_count', async () => {
+    const wrapper = makeTabStudy({ max_new_per_day: 10, card_count: 42 })
+    const allToggle = wrapper.find('[data-testid="tab-study__max-new-all"]')
+    await allToggle.find('input').setValue(true)
+    const spinbox = wrapper.find(
+      '[data-testid="tab-study__max-new-row"] [data-testid="ui-kit-spinbox"]'
+    )
+    expect(spinbox.attributes('data-value')).toBe('42')
+  })
+
+  test('toggling "all" on without card_count leaves spinbox value unchanged', async () => {
+    const wrapper = makeTabStudy({ max_reviews_per_day: 50 })
+    const allToggle = wrapper.find('[data-testid="tab-study__max-reviews-all"]')
+    await allToggle.find('input').setValue(true)
+    const spinbox = wrapper.find(
+      '[data-testid="tab-study__max-reviews-row"] [data-testid="ui-kit-spinbox"]'
+    )
+    expect(spinbox.attributes('data-value')).toBe('50')
+  })
+
+  test('toggling reviews "all" off emits the last numeric local value', async () => {
+    const wrapper = makeTabStudy({ max_reviews_per_day: 75 })
+    const allToggle = wrapper.find('[data-testid="tab-study__max-reviews-all"]')
+    await allToggle.find('input').setValue(true)
+    await allToggle.find('input').setValue(false)
+    const emitted = wrapper.emitted('update:max_reviews_per_day')
+    expect(emitted[emitted.length - 1]).toEqual([75])
+  })
+
+  test('decrementing from null state turns "all" off and emits a numeric value', async () => {
+    const wrapper = makeTabStudy({ max_reviews_per_day: null })
+    const dec = wrapper.find(
+      '[data-testid="tab-study__max-reviews-row"] [data-testid="ui-kit-spinbox__decrement"]'
+    )
+    await dec.trigger('click')
+    const emitted = wrapper.emitted('update:max_reviews_per_day')
+    const last = emitted[emitted.length - 1][0]
+    expect(typeof last).toBe('number')
+    expect(last).toBeLessThan(200)
+  })
+
+  test('external prop change to null updates the "all" toggle state', async () => {
+    const wrapper = makeTabStudy({ max_reviews_per_day: 50 })
+    await wrapper.setProps({ max_reviews_per_day: null })
+    const allToggle = wrapper.find('[data-testid="tab-study__max-reviews-all"]')
+    expect(allToggle.attributes('data-checked')).toBe('true')
+  })
+
+  test('external prop change to a number updates the spinbox value', async () => {
     const wrapper = makeTabStudy({ max_new_per_day: 10 })
-    const buttons = wrapper.findAll('button')
-    await buttons[9].trigger('click')
-    expect(wrapper.emitted('update:max_new_per_day')).toEqual([[null]])
+    await wrapper.setProps({ max_new_per_day: 80 })
+    const spinbox = wrapper.find(
+      '[data-testid="tab-study__max-new-row"] [data-testid="ui-kit-spinbox"]'
+    )
+    expect(spinbox.attributes('data-value')).toBe('80')
   })
 
-  test('marks the active review-limit preset via data-active', () => {
-    const wrapper = makeTabStudy({ max_reviews_per_day: 100 })
-    const presets = wrapper.findAll('[data-testid="tab-study__max-reviews-preset"]')
-    expect(presets[2].attributes('data-active')).toBe('true')
-    expect(presets[0].attributes('data-active')).toBe('false')
-  })
-
-  test('marks the active new-limit preset via data-active', () => {
-    const wrapper = makeTabStudy({ max_new_per_day: 20 })
-    const presets = wrapper.findAll('[data-testid="tab-study__max-new-preset"]')
-    expect(presets[2].attributes('data-active')).toBe('true')
-    expect(presets[0].attributes('data-active')).toBe('false')
+  test('the "all" toggles reflect null state via data-checked', () => {
+    const wrapper = makeTabStudy({ max_reviews_per_day: null, max_new_per_day: 20 })
+    const reviewsAll = wrapper.find('[data-testid="tab-study__max-reviews-all"]')
+    const newAll = wrapper.find('[data-testid="tab-study__max-new-all"]')
+    expect(reviewsAll.attributes('data-checked')).toBe('true')
+    expect(newAll.attributes('data-checked')).toBe('false')
   })
 })

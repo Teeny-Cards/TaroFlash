@@ -86,4 +86,3 @@ Never hardcode a raw color (hex or palette class) in `bgx-color-*` when the elem
 - Never use `@apply` — write plain CSS with `var(--theme-*)` directly (see `no-apply` rule).
 - Do not use raw hex values or hardcoded Tailwind color classes (e.g. `bg-blue-500`) for themeable colors.
 - When using `bgx-color-*` inside a themed element, always pass a `var(--theme-*)` token, not a raw color.
-- Add a `themeDark?: MemberTheme` prop alongside `theme` and bind `:data-theme-dark="themeDark ?? theme"` on the same root element. The fallback keeps the element correctly styled when no dark override is needed.
