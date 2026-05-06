@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
 import Card from '@/components/card/index.vue'
 import { useBulkInsertCardsInDeckMutation } from '@/api/cards'
 import { type CardListController } from '@/composables/card-editor/card-list-controller'
+
+const { t } = useI18n()
 
 type CardDraft = { front_text: string; back_text: string }
 
@@ -45,7 +48,9 @@ async function onSave() {
           class="p-6 w-full h-200 bg-white outline-1 outline-blue-500 rounded-4 resize-none text-brown-700"
           v-model="raw_text"
         />
-        <ui-button data-theme="blue-500" @click="onImport">Import</ui-button>
+        <ui-button data-theme="blue-500" @click="onImport">{{
+          t('deck-view.card-importer.import-button')
+        }}</ui-button>
       </div>
 
       <div class="w-full flex flex-col gap-2">
@@ -56,7 +61,9 @@ async function onSave() {
           </div>
         </div>
         <ui-button data-theme="blue-500" @click="onSave" :disabled="!has_unsaved_changes">{{
-          saving ? 'Saving...' : 'Save'
+          saving
+            ? t('deck-view.card-importer.save-button.saving')
+            : t('deck-view.card-importer.save-button.idle')
         }}</ui-button>
       </div>
     </div>

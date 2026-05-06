@@ -46,7 +46,7 @@ function onImageError() {
         <img
           v-if="imageUrl && show_image"
           :src="imageUrl"
-          alt="Deck Image preview"
+          :alt="$t('deck-preview-popover.image-alt')"
           class="h-full w-full object-cover"
           @error="onImageError"
         />
