@@ -25,7 +25,7 @@ const created_on = computed(() => {
     class="bg-brown-300 rounded-8 border-brown-300 flex w-89 flex-col overflow-hidden border-8 shadow-lg"
   >
     <div data-testid="member-card__header" class="flex items-center justify-center px-9 pt-6 pb-2">
-      <h1 class="text-brown-700 text-5xl">{{ t('member-card.header') }}</h1>
+      <h1 class="text-brown-700 text-5xl">{{ t('member-card.heading') }}</h1>
     </div>
     <div
       data-testid="member-card__body"
@@ -39,19 +39,19 @@ const created_on = computed(() => {
       </div>
 
       <div type="text" class="bg-brown-300 text-brown-500 ring-brown-300 rounded-2 w-full ring-8">
-        {{ cardComment || t('member-card.description-placeholder') }}
+        {{ cardComment || t('member-card.description-input-placeholder') }}
       </div>
 
       <div class="flex w-full flex-col gap-2">
         <div class="flex flex-col">
           <p class="text-brown-700 pb-1 text-xl">{{ displayName || 'Member Name' }}</p>
           <div class="bg-brown-300 h-px w-full"></div>
-          <p class="text-brown-100 text-sm">{{ t('member-card.member') }}</p>
+          <p class="text-brown-100 text-sm">{{ t('member-card.field.member-label') }}</p>
         </div>
         <div class="flex flex-col">
           <p class="text-brown-700 pb-1 text-xl">{{ cardTitle || 'Title' }}</p>
           <div class="bg-brown-300 h-px w-full"></div>
-          <p class="text-brown-100 text-sm">{{ t('member-card.title') }}</p>
+          <p class="text-brown-100 text-sm">{{ t('member-card.field.title-label') }}</p>
         </div>
       </div>
 
@@ -59,7 +59,7 @@ const created_on = computed(() => {
         data-testid="member-card__registration"
         class="align-center text-brown-700 flex w-full justify-between text-sm font-semibold"
       >
-        <p>{{ t('member-card.registration', { date: created_on }) }}</p>
+        <p>{{ t('member-card.field.registration-label', { date: created_on }) }}</p>
         <p>&lt; &lt; &lt; &lt; &lt; &lt; &lt; &lt; &lt; &lt; &lt; &lt; &lt;</p>
       </div>
     </div>
