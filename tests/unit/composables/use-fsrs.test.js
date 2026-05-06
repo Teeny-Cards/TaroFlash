@@ -35,7 +35,7 @@ describe('useRatingFormat', () => {
 
     const result = getRatingTimeFormat(Rating.Good, makeOptions(due))
 
-    expect(result).toContain('study.study-again')
+    expect(result).toContain('study.idle.next-session-cta')
     expect(result).toContain('"time":')
   })
 
@@ -59,7 +59,7 @@ describe('useRatingFormat', () => {
     const result = getRatingTimeFormat(Rating.Good, makeOptions(due), 'short')
 
     // Short style abbreviates (e.g. "in 1 day" may become "in 1 d.")
-    expect(result).toContain('study.study-again')
+    expect(result).toContain('study.idle.next-session-cta')
   })
 
   test('selects the due date corresponding to the given grade', () => {

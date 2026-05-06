@@ -29,7 +29,7 @@ const tier = computed(() => {
 
 const heading = computed(() => t(`study-session.complete.${tier.value}.heading`))
 const message = computed(() => t(`study-session.complete.${tier.value}.message`))
-const secondary_label = computed(() => t(`study-session.complete.${secondary_action}`))
+const secondary_label = computed(() => t(`study-session.complete.${secondary_action}-button`))
 </script>
 
 <template>

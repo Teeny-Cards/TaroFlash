@@ -90,7 +90,7 @@ async function onSubmit(): Promise<void> {
           class="w-full!"
           @click="onSubmit"
         >
-          {{ t('login-dialog.lets-go') }}
+          {{ t('login-dialog.submit-button') }}
         </ui-button>
       </form>
     </div>

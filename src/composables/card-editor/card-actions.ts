@@ -39,7 +39,7 @@ export function useCardActions({ list, selection, mutations, deck_query, deck_id
   /** Show the delete-N-cards confirm alert. Resolves to the user's choice. */
   function confirmDelete(count: number) {
     const { response } = alert.warn({
-      title: t('alert.delete-card', { count }),
+      title: t('alert.delete-card.title', { count }),
       message: t('alert.delete-card.message', { count }),
       confirmLabel: t('alert.delete-card.confirm'),
       confirmAudio: 'ui.trash_crumple_short'

@@ -175,7 +175,7 @@ function toSwipeZone(offset: number) {
           class="review-label bg-pink-400"
           :class="{ 'review-label--visible': failVisible }"
         >
-          {{ $t('study.nope') }}
+          {{ $t('study.flashcard.rating.fail-button') }}
           <p class="text-sm">{{ getRatingTimeFormat(Rating.Again, options) }}</p>
         </div>
         <div
@@ -183,7 +183,7 @@ function toSwipeZone(offset: number) {
           class="review-label bg-green-400"
           :class="{ 'review-label--visible': passVisible }"
         >
-          {{ $t('study.got-it') }}
+          {{ $t('study.flashcard.rating.pass-button') }}
           <p class="text-sm">{{ getRatingTimeFormat(Rating.Good, options) }}</p>
         </div>
       </div>

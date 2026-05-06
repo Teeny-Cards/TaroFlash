@@ -61,7 +61,7 @@ async function onImageUpload(side: 'front' | 'back', file: File) {
   try {
     await set_image_mutation.mutateAsync({ card_id: card.id, deck_id: card.deck_id, file, side })
   } catch (e: any) {
-    toast.error(t('card.image-upload-error'))
+    toast.error(t('toast.error.card-image-upload-failed'))
   }
 }
 
@@ -71,7 +71,7 @@ async function onImageDelete(side: 'front' | 'back') {
   try {
     await delete_image_mutation.mutateAsync({ card_id: card.id, deck_id: card.deck_id, side })
   } catch (e: any) {
-    toast.error(t('card.image-delete-error'))
+    toast.error(t('toast.error.card-image-delete-failed'))
   }
 }
 

@@ -14,7 +14,7 @@ export function useRatingFormat() {
     if (!date) return ''
 
     const timeString = toRelative(date, { style, locale: locale.value })
-    return t('study.study-again', { time: timeString })
+    return t('study.idle.next-session-cta', { time: timeString })
   }
 
   return { getRatingTimeFormat }
