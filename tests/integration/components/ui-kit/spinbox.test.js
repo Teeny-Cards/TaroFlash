@@ -146,6 +146,135 @@ describe('UiSpinbox', () => {
     expect(findIncrement(wrapper).attributes('disabled')).toBeUndefined()
   })
 
+  // ── Typing ─────────────────────────────────────────────────────────────────
+
+  test('typing a number updates value via input event', async () => {
+    const wrapper = mountSpinbox({ value: 5, min: 1, max: 100 })
+    const input = findInput(wrapper)
+    input.element.value = '42'
+    await input.trigger('input')
+    expect(wrapper.emitted('update:value')).toEqual([[42]])
+  })
+
+  test('typing a value above max clamps via input event', async () => {
+    const wrapper = mountSpinbox({ value: 5, min: 1, max: 100 })
+    const input = findInput(wrapper)
+    input.element.value = '999'
+    await input.trigger('input')
+    expect(wrapper.emitted('update:value')).toEqual([[100]])
+  })
+
+  test('clearing the input does not emit update:value', async () => {
+    const wrapper = mountSpinbox({ value: 5, min: 1, max: 100 })
+    const input = findInput(wrapper)
+    input.element.value = ''
+    await input.trigger('input')
+    expect(wrapper.emitted('update:value')).toBeUndefined()
+  })
+
+  test('blur on empty input restores the current value', async () => {
+    const wrapper = mountSpinbox({ value: 7, min: 1, max: 100 })
+    const input = findInput(wrapper)
+    input.element.value = ''
+    await input.trigger('blur')
+    expect(input.element.value).toBe('7')
+    expect(wrapper.emitted('update:value')).toBeUndefined()
+  })
+
+  test('blur clamps a typed below-min value to min', async () => {
+    const wrapper = mountSpinbox({ value: 50, min: 5, max: 100 })
+    const input = findInput(wrapper)
+    input.element.value = '1'
+    await input.trigger('input')
+    await input.trigger('blur')
+    const emitted = wrapper.emitted('update:value')
+    expect(emitted[emitted.length - 1]).toEqual([5])
+    expect(input.element.value).toBe('5')
+  })
+
+  test('focus selects all text in the input', async () => {
+    const wrapper = mountSpinbox({ value: 42 })
+    const input = findInput(wrapper)
+    input.element.focus()
+    await input.trigger('focus')
+    expect(input.element.selectionStart).toBe(0)
+    expect(input.element.selectionEnd).toBe(String(input.element.value).length)
+  })
+
+  // ── Input mask (beforeinput) ───────────────────────────────────────────────
+
+  test('blocks "." via beforeinput', async () => {
+    const wrapper = mountSpinbox({ value: 5, min: 1, max: 100 })
+    const input = findInput(wrapper)
+    const event = new InputEvent('beforeinput', { data: '.', cancelable: true })
+    input.element.dispatchEvent(event)
+    expect(event.defaultPrevented).toBe(true)
+  })
+
+  test('blocks "e" via beforeinput', async () => {
+    const wrapper = mountSpinbox({ value: 5, min: 1, max: 100 })
+    const input = findInput(wrapper)
+    const event = new InputEvent('beforeinput', { data: 'e', cancelable: true })
+    input.element.dispatchEvent(event)
+    expect(event.defaultPrevented).toBe(true)
+  })
+
+  test('blocks "+" via beforeinput', async () => {
+    const wrapper = mountSpinbox({ value: 5, min: 1, max: 100 })
+    const input = findInput(wrapper)
+    const event = new InputEvent('beforeinput', { data: '+', cancelable: true })
+    input.element.dispatchEvent(event)
+    expect(event.defaultPrevented).toBe(true)
+  })
+
+  test('blocks "-" when min is non-negative', async () => {
+    const wrapper = mountSpinbox({ value: 5, min: 0, max: 100 })
+    const input = findInput(wrapper)
+    const event = new InputEvent('beforeinput', { data: '-', cancelable: true })
+    input.element.dispatchEvent(event)
+    expect(event.defaultPrevented).toBe(true)
+  })
+
+  test('allows "-" when min is negative', async () => {
+    const wrapper = mountSpinbox({ value: 0, min: -10, max: 10 })
+    const input = findInput(wrapper)
+    const event = new InputEvent('beforeinput', { data: '-', cancelable: true })
+    input.element.dispatchEvent(event)
+    expect(event.defaultPrevented).toBe(false)
+  })
+
+  test('allows digits via beforeinput', async () => {
+    const wrapper = mountSpinbox({ value: 5, min: 1, max: 100 })
+    const input = findInput(wrapper)
+    const event = new InputEvent('beforeinput', { data: '7', cancelable: true })
+    input.element.dispatchEvent(event)
+    expect(event.defaultPrevented).toBe(false)
+  })
+
+  test('blocks pasted strings containing non-digits', async () => {
+    const wrapper = mountSpinbox({ value: 5, min: 1, max: 100 })
+    const input = findInput(wrapper)
+    const event = new InputEvent('beforeinput', { data: '12.5', cancelable: true })
+    input.element.dispatchEvent(event)
+    expect(event.defaultPrevented).toBe(true)
+  })
+
+  test('beforeinput with null data (e.g. backspace) is allowed', async () => {
+    const wrapper = mountSpinbox({ value: 5, min: 1, max: 100 })
+    const input = findInput(wrapper)
+    const event = new InputEvent('beforeinput', { data: null, cancelable: true })
+    input.element.dispatchEvent(event)
+    expect(event.defaultPrevented).toBe(false)
+  })
+
+  // ── Container is not a label (regression) ──────────────────────────────────
+
+  test('container is a div, not a label, so clicks do not bubble to decrement', () => {
+    const wrapper = mountSpinbox({ value: 5 })
+    const container = wrapper.find('[data-testid="ui-kit-spinbox-container"]')
+    expect(container.element.tagName).toBe('DIV')
+  })
+
   // ── Defaults ──────────────────────────────────────────────────────────────
 
   test('with no min/max, both buttons are enabled by default', () => {
