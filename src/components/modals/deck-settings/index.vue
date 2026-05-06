@@ -40,9 +40,9 @@ const tabs = computed(() => [
 
 const preview_text = computed(() => {
   if (active_tab.value === 'front') {
-    return first_card.value?.front_text || t('common.front')
+    return first_card.value?.front_text || t('deck.settings-modal.preview.front-fallback')
   }
-  return first_card.value?.back_text || t('common.back')
+  return first_card.value?.back_text || t('deck.settings-modal.preview.back-fallback')
 })
 
 function onTabChange(tab: DesignerTab) {
@@ -143,7 +143,7 @@ async function onSave() {
     <template #footer>
       <div data-testid="deck-settings__footer" class="px-4 pb-4">
         <ui-button data-theme="blue-500" size="xl" @click="onSave" full-width>
-          {{ deck ? t('common.save') : t('common.create') }}
+          {{ deck ? t('deck.settings-modal.submit-edit') : t('deck.settings-modal.submit-create') }}
         </ui-button>
       </div>
     </template>

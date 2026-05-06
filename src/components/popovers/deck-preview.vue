@@ -74,7 +74,7 @@ function onImageError() {
           class="cursor-pointer rounded-full bg-blue-500 py-2.5 text-white"
           @click.stop="$emit('study')"
         >
-          {{ $t('common.study') }}
+          {{ $t('deck-preview-popover.study') }}
         </button>
       </div>
     </div>
