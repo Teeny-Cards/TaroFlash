@@ -63,7 +63,7 @@ defineExpose({ openSignup })
             :class="{ 'rounded-b-0.5': login_dropdown_open }"
             @click="triggerLoginDropdown"
           >
-            {{ t('welcome-view.login') }}
+            {{ t('welcome-view.login-button') }}
           </button>
         </template>
 
@@ -87,7 +87,7 @@ defineExpose({ openSignup })
           @click="openSignup"
           class="outline-4! outline-brown-100!"
         >
-          {{ t('welcome-view.sign-up') }}
+          {{ t('welcome-view.signup-button') }}
         </ui-button>
       </div>
 

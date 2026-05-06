@@ -25,10 +25,10 @@ onMounted(async () => {
     <div class="flex gap-21 justify-center items-center">
       <div class="flex flex-col gap-3 w-152 text-brown-700 dark:text-brown-100">
         <h2 class="text-6xl">
-          {{ t('welcome-view.build-decks') }}
+          {{ t('welcome-view.feature.build-decks.heading') }}
         </h2>
         <p class="text-lg">
-          {{ t('welcome-view.build-decks-desc') }}
+          {{ t('welcome-view.feature.build-decks.description') }}
         </p>
       </div>
       <ui-image src="deck-example" class="w-100" />
@@ -36,8 +36,8 @@ onMounted(async () => {
 
     <div class="flex flex-col gap-6 justify-center items-center">
       <div class="flex flex-col gap-3 w-152 items-center text-brown-700 dark:text-brown-100">
-        <h2 class="text-6xl">{{ t('welcome-view.study-decks') }}</h2>
-        <p class="text-lg text-center">{{ t('welcome-view.study-decks-desc') }}</p>
+        <h2 class="text-6xl">{{ t('welcome-view.feature.study-decks.heading') }}</h2>
+        <p class="text-lg text-center">{{ t('welcome-view.feature.study-decks.description') }}</p>
       </div>
       <ui-image src="study-example" class="w-200" />
     </div>
@@ -49,8 +49,8 @@ onMounted(async () => {
     <div class="flex gap-21 justify-center items-center">
       <ui-image src="phone-example" class="w-60 z-1" />
       <div class="flex flex-col gap-3 w-152 text-brown-700 dark:text-brown-100">
-        <h2 class="text-6xl">{{ t('welcome-view.design') }}</h2>
-        <p class="text-lg">{{ t('welcome-view.design-desc') }}</p>
+        <h2 class="text-6xl">{{ t('welcome-view.feature.design.heading') }}</h2>
+        <p class="text-lg">{{ t('welcome-view.feature.design.description') }}</p>
       </div>
     </div>
   </section>
