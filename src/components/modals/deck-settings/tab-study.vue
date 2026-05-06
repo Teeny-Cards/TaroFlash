@@ -1,7 +1,15 @@
 <script setup lang="ts">
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UiToggle from '@/components/ui-kit/toggle.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
+import UiSpinbox from '@/components/ui-kit/spinbox.vue'
+
+type TabStudyProps = {
+  card_count?: number
+}
+
+const { card_count } = defineProps<TabStudyProps>()
 
 const { t } = useI18n()
 
@@ -12,21 +20,60 @@ const auto_play = defineModel<boolean | undefined>('auto_play')
 const max_reviews_per_day = defineModel<number | null | undefined>('max_reviews_per_day')
 const max_new_per_day = defineModel<number | null | undefined>('max_new_per_day')
 
-const REVIEW_LIMIT_PRESETS: Array<{ label: string; value: number | null }> = [
-  { label: '20', value: 20 },
-  { label: '50', value: 50 },
-  { label: '100', value: 100 },
-  { label: '200', value: 200 },
-  { label: t('study.settings.all'), value: null }
-]
+const STEP = 5
+const MIN = 5
+const REVIEWS_MAX = 200
+const NEW_MAX = 100
+const REVIEWS_DEFAULT = 50
+const NEW_DEFAULT = 20
 
-const NEW_LIMIT_PRESETS: Array<{ label: string; value: number | null }> = [
-  { label: '5', value: 5 },
-  { label: '10', value: 10 },
-  { label: '20', value: 20 },
-  { label: '50', value: 50 },
-  { label: t('study.settings.all'), value: null }
-]
+const is_reviews_all = ref(max_reviews_per_day.value === null)
+const reviews_local = ref(max_reviews_per_day.value ?? REVIEWS_DEFAULT)
+
+const is_new_all = ref(max_new_per_day.value === null)
+const new_local = ref(max_new_per_day.value ?? NEW_DEFAULT)
+
+watch(max_reviews_per_day, (v) => {
+  is_reviews_all.value = v === null
+  if (v != null) reviews_local.value = v
+})
+
+watch(max_new_per_day, (v) => {
+  is_new_all.value = v === null
+  if (v != null) new_local.value = v
+})
+
+function onReviewsChange(n: number) {
+  reviews_local.value = n
+  const all = n >= REVIEWS_MAX
+  is_reviews_all.value = all
+  max_reviews_per_day.value = all ? null : n
+}
+
+function onNewChange(n: number) {
+  new_local.value = n
+  const all = n >= NEW_MAX
+  is_new_all.value = all
+  max_new_per_day.value = all ? null : n
+}
+
+const reviews_all = computed({
+  get: () => is_reviews_all.value,
+  set: (on: boolean) => {
+    if (on && card_count != null) reviews_local.value = card_count
+    is_reviews_all.value = on
+    max_reviews_per_day.value = on ? null : reviews_local.value
+  }
+})
+
+const new_all = computed({
+  get: () => is_new_all.value,
+  set: (on: boolean) => {
+    if (on && card_count != null) new_local.value = card_count
+    is_new_all.value = on
+    max_new_per_day.value = on ? null : new_local.value
+  }
+})
 </script>
 
 <template>
@@ -63,22 +110,18 @@ const NEW_LIMIT_PRESETS: Array<{ label: string; value: number | null }> = [
       <span class="text-sm font-medium text-brown-700">
         {{ t('deck.settings-modal.study.max-reviews-per-day') }}
       </span>
-      <div class="flex gap-2">
-        <button
-          v-for="preset in REVIEW_LIMIT_PRESETS"
-          :key="String(preset.value)"
-          data-testid="tab-study__max-reviews-preset"
-          :data-active="max_reviews_per_day === preset.value"
-          class="h-9 min-w-12 cursor-pointer rounded-4 px-3 text-sm font-medium transition-all duration-75"
-          :class="
-            max_reviews_per_day === preset.value
-              ? 'bg-blue-500 text-brown-100'
-              : 'bg-brown-100 text-brown-700 hover:bg-brown-200'
-          "
-          @click="max_reviews_per_day = preset.value"
-        >
-          {{ preset.label }}
-        </button>
+      <div data-testid="tab-study__max-reviews-row" class="flex items-center gap-4">
+        <ui-spinbox
+          :value="reviews_local"
+          :min="MIN"
+          :max="REVIEWS_MAX"
+          :step="STEP"
+          wrap
+          @update:value="onReviewsChange"
+        />
+        <ui-toggle data-testid="tab-study__max-reviews-all" v-model:checked="reviews_all">
+          {{ t('study.settings.all') }}
+        </ui-toggle>
       </div>
     </div>
 
@@ -86,22 +129,18 @@ const NEW_LIMIT_PRESETS: Array<{ label: string; value: number | null }> = [
       <span class="text-sm font-medium text-brown-700">
         {{ t('deck.settings-modal.study.max-new-per-day') }}
       </span>
-      <div class="flex gap-2">
-        <button
-          v-for="preset in NEW_LIMIT_PRESETS"
-          :key="String(preset.value)"
-          data-testid="tab-study__max-new-preset"
-          :data-active="max_new_per_day === preset.value"
-          class="h-9 min-w-12 cursor-pointer rounded-4 px-3 text-sm font-medium transition-all duration-75"
-          :class="
-            max_new_per_day === preset.value
-              ? 'bg-blue-500 text-brown-100'
-              : 'bg-brown-100 text-brown-700 hover:bg-brown-200'
-          "
-          @click="max_new_per_day = preset.value"
-        >
-          {{ preset.label }}
-        </button>
+      <div data-testid="tab-study__max-new-row" class="flex items-center gap-4">
+        <ui-spinbox
+          :value="new_local"
+          :min="MIN"
+          :max="NEW_MAX"
+          :step="STEP"
+          wrap
+          @update:value="onNewChange"
+        />
+        <ui-toggle data-testid="tab-study__max-new-all" v-model:checked="new_all">
+          {{ t('study.settings.all') }}
+        </ui-toggle>
       </div>
     </div>
   </div>
