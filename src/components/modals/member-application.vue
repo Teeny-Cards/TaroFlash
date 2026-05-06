@@ -142,7 +142,7 @@ async function onConfirm() {
         icon-left="check"
         class="ring-brown-300 absolute right-8 -bottom-5 ring-7"
         @click="onConfirm"
-        >{{ t('common.confirm') }}</ui-button
+        >{{ t('member-application.submit') }}</ui-button
       >
     </div>
   </div>

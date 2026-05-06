@@ -55,7 +55,7 @@ async function onSubmit(): Promise<void> {
         {{ t('signup-dialog.google') }}
       </ui-button>
 
-      <ui-divider :label="t('common.or')" />
+      <ui-divider :label="t('login-dialog.divider-or')" />
 
       <form class="w-full flex flex-col items-center gap-6" @submit.prevent="onSubmit">
         <div class="flex flex-col gap-4 w-full">

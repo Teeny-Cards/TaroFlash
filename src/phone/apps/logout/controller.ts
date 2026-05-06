@@ -11,7 +11,7 @@ export function createLogoutController(ctx: PhoneContext) {
     const { response } = alert.warn({
       title: t('phone.apps.logout.title'),
       message: t('phone.apps.logout.description'),
-      confirmLabel: t('common.logout'),
+      confirmLabel: t('phone.apps.logout.confirm'),
       cancelAudio: 'ui.digi_powerdown',
       confirmAudio: 'ui.toggle_off'
     })

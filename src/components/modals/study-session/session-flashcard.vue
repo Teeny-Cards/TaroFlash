@@ -159,7 +159,7 @@ async function onCardReviewed(grade?: Grade) {
       <template v-if="editing">
         <ui-icon :src="saving ? 'loading-dots' : 'check'" class="h-5 w-5" />
         <span data-testid="study-session__save-status" class="text-sm">
-          {{ saving ? $t('common.saving') : $t('common.saved') }}
+          {{ saving ? $t('study-session.flashcard.saving') : $t('study-session.flashcard.saved') }}
         </span>
       </template>
       <template v-else>
