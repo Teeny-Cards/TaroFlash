@@ -52,7 +52,7 @@ async function onSubmit(): Promise<void> {
         icon-left="google-logo"
         @click="submitOAuth('google')"
       >
-        {{ t('signup-dialog.google') }}
+        {{ t('login-dialog.google-button') }}
       </ui-button>
 
       <ui-divider :label="t('login-dialog.divider-or')" />
@@ -66,7 +66,7 @@ async function onSubmit(): Promise<void> {
               autocomplete="username"
               size="lg"
               v-model="email"
-              :placeholder="t('login-dialog.email')"
+              :placeholder="t('login-dialog.email-placeholder')"
             />
           </div>
 

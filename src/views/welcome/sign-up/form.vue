@@ -108,7 +108,7 @@ defineExpose({ submit, isValid, loading })
         icon-left="google-logo"
         @click="submitOAuth('google')"
       >
-        {{ t('signup-dialog.google') }}
+        {{ t('signup-dialog.google-button') }}
       </ui-button>
       <!-- <ui-button size="lg" theme="brown" class="w-full!" @click="submitOAuth('apple')">
         {{ t('signup-dialog.apple') }}

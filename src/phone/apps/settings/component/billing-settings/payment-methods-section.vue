@@ -62,7 +62,7 @@ function openAddCreditCard() {
         data-testid="billing-settings__payment-methods-loading"
         class="text-brown-500 dark:text-brown-400"
       >
-        {{ t('settings.member-settings.billing.loading') }}
+        {{ t('settings.member-settings.billing.payment-methods.loading') }}
       </p>
 
       <p
