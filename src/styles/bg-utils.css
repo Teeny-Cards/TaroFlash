@@ -58,7 +58,7 @@
 
 @utility bgx-slide-down {
   &::before {
-    animation: bgx-slide-y 400ms linear infinite;
+    animation: bgx-slide-y 1000ms linear infinite;
   }
 }
 
