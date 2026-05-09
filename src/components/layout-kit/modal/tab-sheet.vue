@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import mobileSheet, { type MobileSheetProps } from './mobile-sheet.vue'
 import { emitSfx } from '@/sfx/bus'
+import { tabContentEnter, tabContentLeave } from '@/utils/animations/tab-sheet'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 
@@ -36,17 +37,22 @@ function selectOption(value: string) {
         data-testid="tab-sheet__tabs"
         class="flex flex-col gap-10 bg-brown-200 dark:bg-grey-900 p-4.5 shrink-0"
       >
-        <ui-button icon-left="close" icon-only @click="emit('close')" />
+        <ui-button
+          data-testid="tab-sheet__close-button"
+          icon-left="close"
+          icon-only
+          @click="emit('close')"
+        />
 
-        <div class="flex flex-col gap-1">
+        <div data-testid="tab-sheet__tabs" class="flex flex-col gap-2">
           <button
             v-for="tab in tabs"
             :key="tab.value"
             type="button"
-            data-testid="tab-sheet__option"
+            data-testid="tab-sheet__tab"
             :data-active="tab.value === active"
-            class="text-left py-3 px-4 rounded-4 flex items-center cursor-pointer text-brown-700 data-[active=true]:bg-(--theme-primary) data-[active=true]:text-(--theme-on-primary) hover:bg-(--theme-neutral) hover:text-(--theme-on-neutral)"
-            v-sfx.hover="'ui.click_07'"
+            class="text-left py-3 px-4 rounded-4 flex items-center cursor-pointer text-brown-700 data-[active=true]:bg-(--theme-primary) data-[active=true]:text-(--theme-on-primary) hover:bg-(--theme-neutral) hover:text-(--theme-on-neutral) data-[active=false]:hover:[&_svg]:scale-120 data-[active=false]:hover:[&_svg]:rotate-6 [&_svg]:transition-transform [&_svg]:duration-75"
+            v-sfx.hover="tab.value === active ? '' : 'ui.click_07'"
             @click="selectOption(tab.value)"
           >
             <ui-icon v-if="tab.icon" :src="tab.icon" class="mr-2" />
@@ -58,7 +64,11 @@ function selectOption(value: string) {
 
     <div data-testid="tab-sheet__content" class="p-8 pt-0">
       <slot name="before"></slot>
-      <slot :name="active"></slot>
+      <Transition mode="out-in" :css="false" @enter="tabContentEnter" @leave="tabContentLeave">
+        <div :key="active">
+          <slot :name="active"></slot>
+        </div>
+      </Transition>
       <slot name="after"></slot>
     </div>
   </mobile-sheet>
