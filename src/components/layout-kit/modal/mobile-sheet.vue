@@ -6,9 +6,10 @@ import UiButton from '@/components/ui-kit/button.vue'
 export type MobileSheetProps = {
   cover_config?: DeckCover
   title?: string
+  show_close_button?: boolean
 }
 
-const { cover_config, title } = defineProps<MobileSheetProps>()
+const { cover_config, title, show_close_button = true } = defineProps<MobileSheetProps>()
 
 const slots = defineSlots<{
   sidebar(): any
@@ -55,7 +56,7 @@ const showHeader = computed(() => {
           v-bind="headerBindings"
           class="w-full flex justify-center items-center place-items-center px-13 pt-11.5 pb-14 gap-6 wave-bottom-[50px] bg-(--theme-primary) text-(--theme-on-primary) relative"
         >
-          <div class="absolute top-0 left-0 p-4">
+          <div v-if="show_close_button" class="absolute top-0 left-0 p-4">
             <ui-button icon-left="close" icon-only inverted @click="emit('close')" />
           </div>
 

@@ -1,23 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import CoverDesignerToolbar from './cover-designer/index.vue'
-import CardDesignerToolbar from './card-designer-toolbar.vue'
-import TabBar from './tab-bar.vue'
-import TabStudy from './tab-study.vue'
-import Card from '@/components/card/index.vue'
-import { useCardsInDeckInfiniteQuery } from '@/api/cards'
+import TabDesign from './tab-design/index.vue'
+import TabDeckSettings from './tab-deck-settings/index.vue'
+import TabStudy from './tab-study/index.vue'
 import { useDeckEditor } from '@/composables/deck-editor'
 import UiButton from '@/components/ui-kit/button.vue'
-import UiInput from '@/components/ui-kit/input.vue'
-import UiToggle from '@/components/ui-kit/toggle.vue'
-import UiIcon from '@/components/ui-kit/icon.vue'
-import MobileSheet from '@/components/layout-kit/modal/mobile-sheet.vue'
-import { emitSfx } from '@/sfx/bus'
+import TabSheet from '@/components/layout-kit/modal/tab-sheet.vue'
 
 export type DeckSettingsResponse = boolean
-
-type DesignerTab = 'cover' | 'front' | 'back'
 
 const { deck, close } = defineProps<{
   deck?: Deck
@@ -27,39 +18,11 @@ const { deck, close } = defineProps<{
 const { t } = useI18n()
 const { saveDeck, settings, config, cover, card_attributes } = useDeckEditor(deck)
 
-const cards_query = useCardsInDeckInfiniteQuery(() => deck?.id)
-const first_card = computed(() => cards_query.data.value?.pages?.[0]?.[0])
-
-const active_tab = ref<DesignerTab>('cover')
-
 const tabs = computed(() => [
-  { value: 'cover' as const, label: t('deck.settings-modal.designer-tabs.cover') },
-  { value: 'front' as const, label: t('deck.settings-modal.designer-tabs.front') },
-  { value: 'back' as const, label: t('deck.settings-modal.designer-tabs.back') }
+  { value: 'deck-settings', icon: 'label', label: t('deck.settings-modal.tab.general') },
+  { value: 'design', icon: 'design-services', label: t('deck.settings-modal.tab.design') },
+  { value: 'study', icon: 'school-cap', label: t('deck.settings-modal.tab.study') }
 ])
-
-const preview_text = computed(() => {
-  if (active_tab.value === 'front') {
-    return first_card.value?.front_text || t('deck.settings-modal.preview.front-fallback')
-  }
-  return first_card.value?.back_text || t('deck.settings-modal.preview.back-fallback')
-})
-
-function onTabChange(tab: DesignerTab) {
-  if (tab === active_tab.value) {
-    emitSfx('ui.digi_powerdown')
-    return
-  }
-
-  emitSfx('ui.slide_up')
-  active_tab.value = tab
-}
-
-function cycleTab() {
-  const index = tabs.value.findIndex((tab) => tab.value === active_tab.value)
-  const next = (index + 1) % tabs.value.length
-  onTabChange(tabs.value[next].value)
-}
 
 async function onSave() {
   const saved = await saveDeck()
@@ -68,84 +31,39 @@ async function onSave() {
 </script>
 
 <template>
-  <mobile-sheet
+  <tab-sheet
     data-testid="deck-settings-container"
-    class="sm:max-w-200! sm:max-h-190"
+    data-theme="green-600"
+    data-theme-dark="green-800"
+    class="sm:max-w-200! sm:h-167"
     :title="t('deck.settings-modal.title')"
+    :tabs="tabs"
     @close="close(false)"
   >
-    <template #body>
-      <div
-        data-testid="deck-settings__body"
-        class="w-full flex flex-col items-center gap-6 sm:flex-row sm:gap-9 px-4"
-      >
-        <div data-testid="deck-designer" class="flex flex-col items-center gap-3">
-          <tab-bar :tabs="tabs" :active="active_tab" @update:active="onTabChange" />
-
-          <div
-            data-testid="deck-designer__preview"
-            class="relative flex w-min flex-col items-center"
-          >
-            <card
-              size="xl"
-              :side="active_tab"
-              :front_text="active_tab === 'front' ? preview_text : undefined"
-              :back_text="active_tab === 'back' ? preview_text : undefined"
-              :cover_config="cover"
-              :card_attributes="card_attributes"
-              class="cursor-pointer"
-              @click="cycleTab"
-            />
-          </div>
-
-          <div data-testid="deck-designer__toolbar">
-            <cover-designer-toolbar v-if="active_tab === 'cover'" :config="cover" />
-            <card-designer-toolbar
-              v-else-if="active_tab === 'front'"
-              :attributes="card_attributes.front"
-            />
-            <card-designer-toolbar v-else :attributes="card_attributes.back" />
-          </div>
-        </div>
-
-        <div class="w-full flex flex-col gap-5 items-start">
-          <ui-input
-            :placeholder="t('deck.title-placeholder')"
-            text-align="center"
-            size="lg"
-            v-model:value="settings.title"
-          />
-          <ui-input
-            :placeholder="t('deck.description-placeholder')"
-            v-model:value="settings.description"
-          />
-
-          <ui-toggle v-model:checked="settings.is_public">
-            <div class="flex items-center gap-2.5">
-              <ui-icon src="public" />
-              {{ t('deck.settings-modal.is-public') }}
-            </div>
-          </ui-toggle>
-
-          <tab-study
-            :card_count="deck?.card_count"
-            v-model:shuffle="config.shuffle"
-            v-model:flip_cards="config.flip_cards"
-            v-model:is_spaced="config.is_spaced"
-            v-model:auto_play="config.auto_play"
-            v-model:max_reviews_per_day="config.max_reviews_per_day"
-            v-model:max_new_per_day="config.max_new_per_day"
-          />
-        </div>
-      </div>
+    <template #design>
+      <tab-design :deck_id="deck?.id" :cover="cover" :card_attributes="card_attributes" />
     </template>
 
-    <template #footer>
-      <div data-testid="deck-settings__footer" class="px-4 pb-4">
-        <ui-button data-theme="blue-500" size="xl" @click="onSave" full-width>
-          {{ deck ? t('deck.settings-modal.submit-edit') : t('deck.settings-modal.submit-create') }}
-        </ui-button>
-      </div>
+    <template #deck-settings>
+      <tab-deck-settings :settings="settings" />
     </template>
-  </mobile-sheet>
+
+    <template #study>
+      <tab-study
+        :card_count="deck?.card_count"
+        v-model:shuffle="config.shuffle"
+        v-model:flip_cards="config.flip_cards"
+        v-model:is_spaced="config.is_spaced"
+        v-model:auto_play="config.auto_play"
+        v-model:max_reviews_per_day="config.max_reviews_per_day"
+        v-model:max_new_per_day="config.max_new_per_day"
+      />
+    </template>
+
+    <template #after>
+      <ui-button data-theme="blue-500" size="xl" @click="onSave" full-width>
+        {{ deck ? t('deck.settings-modal.submit-edit') : t('deck.settings-modal.submit-create') }}
+      </ui-button>
+    </template>
+  </tab-sheet>
 </template>
