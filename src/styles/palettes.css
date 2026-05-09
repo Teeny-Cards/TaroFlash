@@ -152,7 +152,7 @@
   --theme-on-accent: var(--color-brown-700);
 
   --theme-neutral: var(--color-brown-100);
-  --theme-on-neutral: var(--color-green-800);
+  --theme-on-neutral: var(--color-green-600);
 }
 
 [data-theme='green-500'],
@@ -167,7 +167,7 @@
   --theme-on-accent: var(--color-brown-700);
 
   --theme-neutral: var(--color-brown-100);
-  --theme-on-neutral: var(--color-green-800);
+  --theme-on-neutral: var(--color-green-600);
 }
 
 [data-theme='green-400'],
