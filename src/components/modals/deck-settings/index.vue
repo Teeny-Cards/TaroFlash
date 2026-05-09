@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TabDesign from './tab-design/index.vue'
 import TabDeckSettings from './tab-deck-settings/index.vue'
 import TabStudy from './tab-study/index.vue'
+import DeckPreview from './deck-preview.vue'
 import { useDeckEditor } from '@/composables/deck-editor'
 import UiButton from '@/components/ui-kit/button.vue'
 import TabSheet from '@/components/layout-kit/modal/tab-sheet.vue'
@@ -24,6 +25,8 @@ const tabs = computed(() => [
   { value: 'study', icon: 'school-cap', label: t('deck.settings-modal.tab.study') }
 ])
 
+const active_side = ref<CardSide>('cover')
+
 async function onSave() {
   const saved = await saveDeck()
   if (saved) close(true)
@@ -39,14 +42,21 @@ async function onSave() {
     :title="t('deck.settings-modal.title')"
     :tabs="tabs"
     :cover_config="{ pattern: 'endless-clouds' }"
+    :parts="{ content: 'w-98 flex flex-col gap-10' }"
     @close="close(false)"
   >
+    <template #header-content>
+      <div class="w-full">
+        <h1 class="text-5xl text-white">{{ t('deck.settings-modal.title') }}</h1>
+      </div>
+    </template>
+
     <template #design>
-      <tab-design :deck_id="deck?.id" :cover="cover" :card_attributes="card_attributes" />
+      <tab-design :cover="cover" :card_attributes="card_attributes" :side="active_side" />
     </template>
 
     <template #deck-settings>
-      <tab-deck-settings :settings="settings" />
+      <tab-deck-settings :settings="settings" :cover="cover" />
     </template>
 
     <template #study>
@@ -58,6 +68,16 @@ async function onSave() {
         v-model:auto_play="config.auto_play"
         v-model:max_reviews_per_day="config.max_reviews_per_day"
         v-model:max_new_per_day="config.max_new_per_day"
+      />
+    </template>
+
+    <template #overlay>
+      <deck-preview
+        :deck_id="deck?.id"
+        :cover="cover"
+        :card_attributes="card_attributes"
+        v-model:side="active_side"
+        class="absolute right-6 top-6 rotate-4 drop-shadow-sm"
       />
     </template>
 
