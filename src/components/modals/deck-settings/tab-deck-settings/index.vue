@@ -10,6 +10,7 @@ type TabDeckSettingsProps = {
     description?: string
     is_public?: boolean
   }
+  cover: DeckCover
 }
 
 defineProps<TabDeckSettingsProps>()
