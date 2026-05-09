@@ -12,7 +12,7 @@ defineExpose({ rate })
 
 const { card, side, options } = defineProps<{
   card?: Card
-  side: 'front' | 'back' | 'cover'
+  side: CardSide
   options?: RecordLog
 }>()
 
