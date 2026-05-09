@@ -14,6 +14,7 @@ const { cover_config, title, show_close_button = true } = defineProps<MobileShee
 
 const slots = defineSlots<{
   sidebar(): any
+  overlay(): any
   header(): any
   'header-content'(): any
   default(): any
@@ -50,17 +51,19 @@ provide(mobileSheetOverlayKey, overlay_root)
       ref="overlay_root"
       data-testid="mobile-sheet__overlay"
       class="absolute inset-0 pointer-events-none z-10"
-    ></div>
+    >
+      <slot name="overlay"></slot>
+    </div>
 
     <div
       data-testid="mobile-sheet-container"
-      class="flex overflow-hidden w-full rounded-t-8 rounded-b-8 mobile-modal:rounded-b-none shadow-lg"
+      class="flex overflow-hidden w-full h-full rounded-t-8 rounded-b-8 mobile-modal:rounded-b-none shadow-lg"
     >
       <slot name="sidebar"></slot>
 
       <div
         data-testid="mobile-sheet"
-        class="flex w-full flex-col gap-8 bg-brown-300 dark:bg-grey-800"
+        class="flex w-full h-full flex-col gap-8 bg-brown-300 dark:bg-grey-800"
       >
         <slot v-if="showHeader" name="header">
           <div
