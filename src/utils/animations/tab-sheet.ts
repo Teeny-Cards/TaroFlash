@@ -11,7 +11,17 @@ const OFFSET = 16
 /** Slide-and-fade the entering tab pane down into place from above. */
 export function tabContentEnter(el: Element, done: () => void) {
   gsap.set(el, { y: -OFFSET, opacity: 0 })
-  gsap.to(el, { y: 0, opacity: 1, duration: ENTER_DURATION, ease: 'expo.out', onComplete: done })
+  gsap.to(el, {
+    y: 0,
+    opacity: 1,
+    duration: ENTER_DURATION,
+    ease: 'expo.out',
+    // Strip the transform inline style on completion — a lingering transform
+    // creates a stacking context that traps z-indexed children (e.g. popovers)
+    // beneath later siblings.
+    clearProps: 'transform,opacity',
+    onComplete: done
+  })
 }
 
 /** Slide-and-fade the leaving tab pane downward and out. */
