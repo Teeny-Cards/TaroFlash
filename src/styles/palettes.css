@@ -155,6 +155,21 @@
   --theme-on-neutral: var(--color-green-800);
 }
 
+[data-theme='green-500'],
+[data-theme='dark'] [data-theme-dark='green-500'] {
+  --theme-primary: var(--color-green-500);
+  --theme-on-primary: var(--color-brown-100);
+
+  --theme-secondary: var(--color-green-400);
+  --theme-on-secondary: var(--color-brown-100);
+
+  --theme-accent: var(--color-yellow-500);
+  --theme-on-accent: var(--color-brown-700);
+
+  --theme-neutral: var(--color-brown-100);
+  --theme-on-neutral: var(--color-green-800);
+}
+
 [data-theme='green-400'],
 [data-theme='dark'] [data-theme-dark='green-400'] {
   --theme-primary: var(--color-green-400);
