@@ -10,7 +10,7 @@ import { gsap } from 'gsap'
 type CardProps = Partial<CardBase> & {
   size?: '2xl' | 'xl' | 'lg' | 'base' | 'sm' | 'xs' | '2xs' | '3xs'
   mode?: 'view' | 'edit'
-  side?: 'front' | 'back' | 'cover'
+  side?: CardSide
   cover_config?: DeckCover
   card_attributes?: DeckCardAttributes
   face_classes?: string
