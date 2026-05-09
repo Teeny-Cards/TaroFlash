@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { provide, ref } from 'vue'
 import mobileSheet, { type MobileSheetProps } from './mobile-sheet.vue'
+import { activeTabKey } from './tab-sheet-context'
 import { emitSfx } from '@/sfx/bus'
 import { tabContentEnter, tabContentLeave } from '@/utils/animations/tab-sheet'
 import UiButton from '@/components/ui-kit/button.vue'
@@ -18,6 +19,7 @@ const emit = defineEmits<{
 }>()
 
 const active = ref<string>(props.tabs?.[0]?.value ?? '')
+provide(activeTabKey, active)
 
 function selectOption(value: string) {
   if (value === active.value) {
