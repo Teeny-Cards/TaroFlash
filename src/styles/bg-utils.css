@@ -56,6 +56,12 @@
   }
 }
 
+@utility bgx-slide-down {
+  &::before {
+    animation: bgx-slide-y 400ms linear infinite;
+  }
+}
+
 @keyframes bgx-slide-x {
   from {
     -webkit-mask-position: 40px 0;
@@ -64,5 +70,16 @@
   to {
     -webkit-mask-position: 0 0;
     mask-position: 0 0;
+  }
+}
+
+@keyframes bgx-slide-y {
+  from {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+  to {
+    -webkit-mask-position: 0 40px;
+    mask-position: 0 40px;
   }
 }
