@@ -18,10 +18,6 @@ const emit = defineEmits<{
 
 const active = ref<string>(props.tabs?.[0]?.value ?? '')
 
-const pattern_image = computed(() =>
-  props.cover_config?.pattern ? `var(--bgx-${props.cover_config.pattern})` : 'none'
-)
-
 function selectOption(value: string) {
   if (value === active.value) {
     emitSfx('ui.digi_powerdown')
@@ -49,7 +45,8 @@ function selectOption(value: string) {
             type="button"
             data-testid="tab-sheet__option"
             :data-active="tab.value === active"
-            class="tab-sheet__option text-left py-3 px-4 rounded-4 flex items-center cursor-pointer text-brown-700 data-[active=true]:bg-(--theme-primary) data-[active=true]:text-brown-100"
+            class="text-left py-3 px-4 rounded-4 flex items-center cursor-pointer text-brown-700 data-[active=true]:bg-(--theme-primary) data-[active=true]:text-(--theme-on-primary) hover:bg-(--theme-neutral) hover:text-(--theme-on-neutral)"
+            v-sfx.hover="'ui.click_07'"
             @click="selectOption(tab.value)"
           >
             <ui-icon v-if="tab.icon" :src="tab.icon" class="mr-2" />
@@ -66,39 +63,3 @@ function selectOption(value: string) {
     </div>
   </mobile-sheet>
 </template>
-
-<style scoped>
-.tab-sheet__option {
-  position: relative;
-  isolation: isolate;
-}
-
-.tab-sheet__option::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  border-radius: inherit;
-  background-color: var(--theme-primary);
-  opacity: 0;
-  -webkit-mask-image: v-bind(pattern_image);
-  mask-image: v-bind(pattern_image);
-  -webkit-mask-repeat: repeat;
-  mask-repeat: repeat;
-  -webkit-mask-size: 24px;
-  mask-size: 24px;
-  animation: bgx-slide-x 400ms linear infinite;
-  animation-play-state: paused;
-  transition: opacity 150ms;
-}
-
-.tab-sheet__option:hover::before {
-  opacity: 0.2;
-  animation-play-state: running;
-}
-
-.tab-sheet__option[data-active='true']:hover::before {
-  opacity: 0;
-}
-</style>

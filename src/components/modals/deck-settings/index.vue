@@ -33,11 +33,12 @@ async function onSave() {
 <template>
   <tab-sheet
     data-testid="deck-settings-container"
-    data-theme="green-600"
+    data-theme="green-500"
     data-theme-dark="green-800"
-    class="sm:max-w-200! sm:h-167"
+    class="sm:w-245 sm:h-167"
     :title="t('deck.settings-modal.title')"
     :tabs="tabs"
+    :cover_config="{ pattern: 'endless-clouds' }"
     @close="close(false)"
   >
     <template #design>

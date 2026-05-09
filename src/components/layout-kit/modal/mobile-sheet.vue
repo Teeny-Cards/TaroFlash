@@ -23,12 +23,13 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-const headerBindings = computed(() =>
+const header_bindings = computed(() =>
   coverBindings(
     {
       bg_color: cover_config?.bg_color,
       bg_image: cover_config?.bg_image,
-      pattern_size: 50
+      pattern: cover_config?.pattern,
+      pattern_size: 60
     },
     { border: false }
   )
@@ -53,7 +54,7 @@ const showHeader = computed(() => {
       <slot v-if="showHeader" name="header">
         <div
           data-testid="mobile-sheet__header"
-          v-bind="headerBindings"
+          v-bind="header_bindings"
           class="w-full flex justify-center items-center place-items-center px-13 pt-11.5 pb-14 gap-6 wave-bottom-[50px] bg-(--theme-primary) text-(--theme-on-primary) relative"
         >
           <div v-if="show_close_button" class="absolute top-0 left-0 p-4">
