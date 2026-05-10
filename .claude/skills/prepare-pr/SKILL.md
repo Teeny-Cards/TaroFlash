@@ -2,12 +2,19 @@
 name: prepare-pr
 description: Prepare a branch for PR by committing any pending work, rewriting commit messages into release-notes-friendly Conventional Commits, renaming the branch if it no longer fits the changes, drafting a PR title and body, and opening the GitHub "create PR" page pre-filled. Bundles all branch work — committed AND uncommitted (staged + unstaged) — into the PR by default. Pass `--split` to additionally analyse whether the work should be split into a stack of smaller PRs. Use when a feature branch is code-complete and ready for review.
 allowed-tools: Read, Edit, Write, Bash, Glob, Grep
+argument-hint: '[--split] [--no-watch]'
+arguments:
+  - name: --split
+    description: Analyse the branch and propose splitting unrelated/oversized work into a stack of smaller PRs.
+  - name: --no-watch
+    description: Skip the post-create CI watch + coverage check (Step 12).
 lastUpdated: 2026-04-25T00:00:00Z
 ---
 
 ## Args
 
 - **`--split`** (optional) — analyse the branch and propose splitting unrelated or oversized work into a stack of smaller PRs (Steps 3 and 4). Without this flag, the whole branch is treated as a single PR — those steps are skipped.
+- **`--no-watch`** (optional) — skip the post-create CI watch + coverage check (Step 12). Default behaviour blocks on CI after opening the PR(s) until checks settle, then inspects coverage and writes more tests if it regressed.
 
 ## Why this skill exists
 
@@ -349,6 +356,68 @@ gh pr create --web \
 `<base-branch>` is `master` for root PR and parent PR's branch name for stacked.
 
 If `gh` unavailable or auth failed in Step 1: skip these and print each PR's title, body, base as fenced blocks so user can create manually.
+
+### Step 12 — Watch CI and coverage (skip with `--no-watch`)
+
+After each PR is created, block on its CI run, diagnose failures, and inspect the coverage report. Skip this step entirely if invoked with `--no-watch`. For `--split` runs with multiple PRs, run this step per PR sequentially (parents first) so failures on one don't get masked by noise from the next.
+
+Single-PR runs opened with `gh pr create --web` may not have a PR number yet at this point — wait for the user to submit, then resolve the PR via `gh pr view --json number,url` (poll up to 2 min) before proceeding. If still unresolved, skip with a deferred-item note.
+
+#### 12a — Wait for checks to settle
+
+```sh
+gh pr checks <pr-number> --watch
+```
+
+This blocks until every required check finishes. The command exits non-zero if any check fails.
+
+Don't poll in a sleep loop — `--watch` is the supported wait primitive. If `gh pr checks --watch` is unavailable on the user's gh version, fall back to `gh run watch <run-id>` for the most recent workflow run on the PR's head SHA.
+
+While waiting: do not start unrelated work. The expected outcome is either a green run (continue to 12c) or a failure to diagnose (12b).
+
+#### 12b — Diagnose failures
+
+For each failing check:
+
+1. `gh pr checks <pr-number>` — list status of all checks; identify which failed.
+2. `gh run view <run-id> --log-failed` — read the actual failure output for the failing job.
+3. Classify the failure:
+   - **Real regression introduced by this branch** — a test the branch broke, a type error in changed code, a lint rule the branch violated, a build failure tied to the branch's edits.
+   - **Flaky test or failure already red on `master`** — a non-deterministic test, a race-prone assertion, or a check that's failing on `master` too. Default to fixing it in this branch — leaving flakes / master-red tests in place erodes CI signal and every future PR has to mentally filter them out. **Exception**: if the root cause is a big lift (significant refactor, infra change, multi-file rewrite, anything that would dwarf the actual PR scope), defer it. Log under Deferred items with: the failing test, the root-cause hypothesis, and a one-line estimate of why the fix is non-trivial.
+   - **Ambiguous** — confirm with the user before editing.
+4. Apply the fix:
+   - **Minor (≤ ~20 lines, mechanical)** — fix directly, commit with a `fix(<scope>):` Conventional Commit (or `test(<scope>):` if the fix is the test itself), push, and wait for re-run. Examples: missed import, wrong type annotation, formatter drift, test expecting old i18n string, missing `data-testid`, race fixed by replacing a sleep with an event-driven wait.
+   - **Non-minor** — propose the fix to the user and wait for explicit go-ahead before editing. Examples: behavioural test failures that suggest the branch changed semantics, schema/migration errors, anything touching auth/billing/RLS, structural rework of a flake (rewriting the test, not the source under test).
+5. For flake fixes specifically: identify the root cause (timing, shared state, ordering, env drift) before patching. Re-running until green is not a fix. If the root cause requires changes outside this branch's scope, fix it anyway and call it out in the Step 11 report — fixing a flake here saves every subsequent PR.
+6. After fixing, return to 12a and re-watch. If a check keeps failing after one fix attempt, stop, summarise the failure, and ask the user how to proceed rather than firing more guesses.
+
+Never disable, mark `it.skip`, or comment out a failing test to make CI green. Treat the test as authoritative.
+
+#### 12c — Inspect coverage
+
+After CI is green, check whether coverage regressed against `master`.
+
+1. Pull the merge-base coverage baseline: `gh api repos/<owner>/<repo>/actions/artifacts` or `gh run download <master-run-id> --name coverage` — depends on how the project publishes coverage (look at `.github/workflows/` and the CI logs for the artifact name).
+2. Pull the PR's coverage: same approach on the PR's most recent run.
+3. Compare top-line `lines` / `branches` / `functions` / `statements` percentages.
+4. If any metric dropped by **more than 0.2 percentage points** relative to the baseline, treat that as a regression to fix.
+5. Drill into the per-file diff to find which changed file lost coverage. Common causes: new branch in changed file with no test, dead error path, new component with partial rendering test.
+6. Invoke the `update-tests` skill on the affected files (or, if the skill isn't a fit, write the tests directly following its conventions). Default to the bias rule in `update-tests`: don't skip just because "no test file exists yet" or "out of scope."
+7. Commit the new tests as `test(<scope>): …`, push, wait for CI to re-run, and verify coverage recovered.
+
+If the CI workflow doesn't publish a coverage artifact, note that under Deferred items rather than guessing. Don't run `vp test --coverage` locally as a substitute — it tells you the branch's coverage in isolation, not whether the PR regressed against `master`.
+
+#### When to abort the watch
+
+Stop Step 12 and hand back to the user if:
+
+- CI fails repeatedly (≥ 2 fix attempts on the same check) — likely a deeper issue. Summarise the root-cause hypothesis, not just the failure output.
+- A failure involves shared infrastructure (DB migrations against prod, secrets, CDN) — needs human judgement.
+- The user pushes their own commits while you're waiting — let them drive, surface what's left.
+
+"This test is flaky / red on master" is **not** an automatic reason to stop — default to fixing (see 12b step 3). Defer (don't stop) only when the root-cause fix would be a big lift outside this PR's scope; in that case log it under Deferred items and continue.
+
+Record what happened in the Step 11 report (CI status, fixes applied, coverage delta) so the user can see at a glance what was done after the PR opened.
 
 ### Step 11 — Report
 

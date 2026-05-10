@@ -2,6 +2,12 @@
 name: audit-architecture
 description: Run a full architecture audit (separation of concerns, reusability, naming, theming tokens, locale paths, default centralization, prop drilling vs provide/inject, ui-kit domain neutrality, layout-kit usage, stale tests, dead code). Default scope is the current branch's diff vs master. Use `--global` to expand to the entire `src/` tree. Optional `--context "<note>"` feeds extra heuristics. Trigger on `/audit-architecture`, "audit architecture", "audit this branch", "review for smells", or after a multi-step refactor when the user wants a structural sanity check.
 allowed-tools: Read, Bash, Glob, Grep
+argument-hint: '[--global] [--context "<note>"]'
+arguments:
+  - name: --global
+    description: Audit the entire `src/` tree instead of the current branch's diff vs master.
+  - name: --context "<note>"
+    description: Free-form note appended to the audit heuristics (e.g. "focus on theming tokens").
 lastUpdated: 2026-05-10T00:00:00Z
 ---
 
