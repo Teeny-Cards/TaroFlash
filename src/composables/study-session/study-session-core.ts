@@ -8,6 +8,7 @@ import {
   type RecordLog
 } from 'ts-fsrs'
 import { useSaveReviewMutation } from '@/api/reviews'
+import { withDeckConfigDefaults } from '@/utils/deck/defaults'
 
 export type StudyCard = Card & { preview?: RecordLog; state: ReviewState }
 
@@ -29,16 +30,7 @@ export function useStudySessionCore(_config?: Partial<DeckConfig>) {
     relearning_steps: []
   })
 
-  const config = reactive<Required<DeckConfig>>({
-    study_mode: _config?.study_mode ?? 'flashcard',
-    study_all_cards: _config?.study_all_cards ?? false,
-    shuffle: _config?.shuffle ?? false,
-    max_reviews_per_day: _config?.max_reviews_per_day ?? null,
-    max_new_per_day: _config?.max_new_per_day ?? null,
-    flip_cards: _config?.flip_cards ?? false,
-    is_spaced: _config?.is_spaced ?? true,
-    auto_play: _config?.auto_play ?? false
-  })
+  const config = reactive<Required<DeckConfig>>(withDeckConfigDefaults(_config))
 
   const _FSRS_INSTANCE: FSRS = new FSRS(_PARAMS)
   const _raw_cards = shallowRef<Card[]>([])

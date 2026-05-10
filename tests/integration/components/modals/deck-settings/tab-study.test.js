@@ -1,7 +1,8 @@
 import { describe, test, expect } from 'vite-plus/test'
 import { mount } from '@vue/test-utils'
-import { defineComponent, h, reactive, useAttrs } from 'vue'
+import { defineComponent, h, reactive, ref, useAttrs } from 'vue'
 import TabStudy from '@/components/modals/deck-settings/tab-study/index.vue'
+import { deckEditorKey } from '@/composables/deck-editor'
 
 const ToggleStub = defineComponent({
   name: 'UiToggle',
@@ -46,10 +47,10 @@ const SpinboxStub = defineComponent({
     min: { type: Number, default: -Infinity },
     max: { type: Number, default: Infinity },
     step: { type: Number, default: 1 },
-    all_label: { type: String, default: undefined },
-    all_active: { type: Boolean, default: false }
+    pill_label: { type: String, default: undefined },
+    pill_active: { type: Boolean, default: false }
   },
-  emits: ['update:value', 'update:all_active'],
+  emits: ['update:value', 'update:pill_active'],
   inheritAttrs: false,
   setup(props, { emit }) {
     const attrs = useAttrs()
@@ -83,16 +84,16 @@ const SpinboxStub = defineComponent({
             },
             '+'
           ),
-          props.all_label
+          props.pill_label
             ? h(
                 'button',
                 {
                   type: 'button',
                   'data-testid': 'ui-kit-spinbox__all-pill',
-                  'data-active': String(!!props.all_active),
-                  onClick: () => emit('update:all_active', !props.all_active)
+                  'data-active': String(!!props.pill_active),
+                  onClick: () => emit('update:pill_active', !props.pill_active)
                 },
-                props.all_label
+                props.pill_label
               )
             : null
         ]
@@ -102,13 +103,26 @@ const SpinboxStub = defineComponent({
 
 function makeTabStudy({ config: initial = {}, card_count } = {}) {
   const config = reactive({ ...initial })
+  const editor = {
+    deck: card_count !== undefined ? { card_count } : undefined,
+    config,
+    settings: reactive({}),
+    cover: reactive({}),
+    card_attributes: reactive({ front: {}, back: {} }),
+    cover_image_preview: ref(undefined),
+    cover_image_loading: ref(false),
+    active_side: ref('cover'),
+    saveDeck: async () => true,
+    deleteDeck: async () => {},
+    uploadImage: () => {},
+    removeImage: () => {},
+    setCoverImage: async () => {},
+    removeCoverImage: () => {},
+    setActiveSide: () => {}
+  }
   const wrapper = mount(TabStudy, {
-    props: {
-      config,
-      card_count,
-      'onUpdate:config': (next) => Object.assign(config, next)
-    },
     global: {
+      provide: { [deckEditorKey]: editor },
       stubs: { UiToggle: ToggleStub, UiIcon: IconStub, UiSpinbox: SpinboxStub },
       mocks: { $t: (k) => k }
     }

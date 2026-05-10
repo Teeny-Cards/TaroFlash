@@ -1,22 +1,15 @@
 <script setup lang="ts">
+import { inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UiInput from '@/components/ui-kit/input.vue'
 import UiToggle from '@/components/ui-kit/toggle.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import SectionList from '@/components/layout-kit/section-list.vue'
 import LabeledSection from '@/components/layout-kit/labeled-section.vue'
-
-type TabDeckSettingsProps = {
-  settings: {
-    title?: string
-    description?: string
-    is_public?: boolean
-  }
-}
-
-defineProps<TabDeckSettingsProps>()
+import { deckEditorKey } from '@/composables/deck-editor'
 
 const { t } = useI18n()
+const { settings } = inject(deckEditorKey)!
 </script>
 
 <template>

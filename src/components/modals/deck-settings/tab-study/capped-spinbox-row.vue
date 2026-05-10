@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import UiSpinbox from '@/components/ui-kit/spinbox.vue'
+import UiSpinbox from '@/components/ui-kit/spinbox/index.vue'
 import { useCappedToggle } from '@/composables/use-capped-toggle'
 
 type CappedSpinboxRowProps = {
@@ -42,8 +42,8 @@ const { spin_value, is_all, onSpin } = useCappedToggle(
       :min="min"
       :max="max"
       :step="step"
-      :all_label="all_label"
-      v-model:all_active="is_all"
+      :pill_label="all_label"
+      v-model:pill_active="is_all"
       wrap
       @update:value="onSpin"
     />
