@@ -13,9 +13,15 @@ const { mockRegister } = vi.hoisted(() => ({
 
 const { mockEmitSfx } = vi.hoisted(() => ({ mockEmitSfx: vi.fn() }))
 
-const { cardsDataRef } = await vi.hoisted(async () => {
+const { cardsDataRef, cardsRefetchImpl } = await vi.hoisted(async () => {
   const { shallowRef } = await import('vue')
-  return { cardsDataRef: shallowRef(undefined) }
+  const cardsDataRef = shallowRef(undefined)
+  return {
+    cardsDataRef,
+    cardsRefetchImpl: {
+      current: async () => ({ status: 'success', data: cardsDataRef.value, error: null })
+    }
+  }
 })
 
 const { mockSaveReview } = vi.hoisted(() => ({
@@ -44,7 +50,7 @@ vi.mock('@/api/cards', () => {
   return {
     useStudySessionCardsQuery: () => ({
       data: cardsDataRef,
-      refetch: vi.fn(),
+      refetch: vi.fn((...args) => cardsRefetchImpl.current(...args)),
       refresh: vi.fn()
     }),
     useSaveCardMutation: passthrough,
@@ -152,6 +158,11 @@ describe('Session', () => {
     mockRegister.mockClear()
     mockEmitSfx.mockClear()
     cardsDataRef.value = undefined
+    cardsRefetchImpl.current = async () => ({
+      status: 'success',
+      data: cardsDataRef.value,
+      error: null
+    })
     mockSaveReview.mockClear()
     mockFlushDeckReviews.mockClear()
   })
@@ -180,6 +191,37 @@ describe('Session', () => {
       const wrapper = makeSession(2)
       await waitForLoad(wrapper)
 
+      expect(wrapper.find('[data-testid="study-card"]').exists()).toBe(true)
+    })
+
+    // Regression: after the prior session's useFlushDeckReviews invalidation,
+    // the cards cache often holds [] (everything was capped/done). If the
+    // session seeds from that stale snapshot before refetch resolves, the
+    // queue is empty and finish-animation fires immediately. The mount path
+    // must await a fresh fetch and seed from its resolved state.
+    test('forces a fresh fetch on mount and ignores stale cached data', async () => {
+      // Simulate stale cache: empty array, as happens after the prior session's
+      // post-flush refetch returned 0 (caps consumed).
+      cardsDataRef.value = []
+
+      const fresh_cards = card.many(5, { traits: 'with_due_review' })
+      cardsRefetchImpl.current = async () => ({
+        status: 'success',
+        data: fresh_cards,
+        error: null
+      })
+
+      const deck_data = deck.one({
+        overrides: { id: 1, study_config: { study_all_cards: false, retry_failed_cards: false } }
+      })
+      const wrapper = mount(Session, {
+        props: { deck: deck_data },
+        attachTo: document.body,
+        global: { stubs: { Card: CardStub, FinishAnimation: FinishAnimationStub } }
+      })
+      await flushPromises()
+
+      expect(wrapper.emitted('finished')).toBeFalsy()
       expect(wrapper.find('[data-testid="study-card"]').exists()).toBe(true)
     })
   })
