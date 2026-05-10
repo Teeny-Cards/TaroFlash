@@ -12,6 +12,7 @@ type SpinboxProps = {
   label?: string
   suffix?: string
   wrap?: boolean
+  all_label?: string
 }
 
 const {
@@ -21,33 +22,59 @@ const {
   size = 'base',
   label,
   suffix,
-  wrap = false
+  wrap = false,
+  all_label
 } = defineProps<SpinboxProps>()
 
 const value = defineModel<number>('value', { required: true })
+const all_active = defineModel<boolean>('all_active', { default: false })
+
+function toggleAll() {
+  all_active.value = !all_active.value
+}
 
 const can_decrement = computed(() => value.value > min || (wrap && Number.isFinite(max)))
 const can_increment = computed(() => value.value < max || (wrap && Number.isFinite(min)))
 
 const size_classes = computed(() => {
-  const map: Record<SpinboxSize, { row: string; btn: string; icon: string; val: string }> = {
+  const map: Record<
+    SpinboxSize,
+    {
+      row: string
+      row_joined: string
+      btn: string
+      icon: string
+      val: string
+      pill: string
+      pill_joined: string
+    }
+  > = {
     sm: {
       row: 'rounded-3_5 p-0.5 gap-0.5',
+      row_joined: 'rounded-r-1_5',
       btn: 'h-6 rounded-2_5',
       icon: 'w-4 h-4',
-      val: 'text-base px-1.5 w-10'
+      val: 'text-base px-1.5 w-10',
+      pill: 'rounded-3_5',
+      pill_joined: 'rounded-l-1_5'
     },
     base: {
       row: 'rounded-4 p-1 gap-0.5',
+      row_joined: 'rounded-r-2',
       btn: 'h-8 rounded-3',
       icon: 'w-5 h-5',
-      val: 'text-base px-2 w-12'
+      val: 'text-base px-2 w-12',
+      pill: 'rounded-4',
+      pill_joined: 'rounded-l-2'
     },
     lg: {
       row: 'rounded-5_5 p-1.5 gap-1',
+      row_joined: 'rounded-r-3',
       btn: 'h-10 rounded-4',
       icon: 'w-6 h-6',
-      val: 'text-base px-3 w-14'
+      val: 'text-base px-3 w-14',
+      pill: 'rounded-5_5',
+      pill_joined: 'rounded-l-3'
     }
   }
   return map[size]
@@ -110,7 +137,7 @@ function onBlur(e: Event) {
 </script>
 
 <template>
-  <div data-testid="ui-kit-spinbox-container" class="flex flex-col gap-1.5 w-max">
+  <div data-testid="ui-kit-spinbox-container" class="flex gap-1 w-max">
     <label
       v-if="label"
       data-testid="ui-kit-spinbox__label"
@@ -118,10 +145,11 @@ function onBlur(e: Event) {
     >
       {{ label }}
     </label>
+
     <div
       data-testid="ui-kit-spinbox"
       class="inline-flex items-center bg-brown-100 dark:bg-grey-700"
-      :class="size_classes.row"
+      :class="[size_classes.row, all_label && size_classes.row_joined]"
     >
       <button
         type="button"
@@ -170,5 +198,18 @@ function onBlur(e: Event) {
         <ui-icon src="add" :class="size_classes.icon" />
       </button>
     </div>
+
+    <button
+      v-if="all_label"
+      type="button"
+      data-testid="ui-kit-spinbox__all-pill"
+      :data-active="all_active"
+      class="inline-flex items-center justify-center bg-brown-100 dark:bg-grey-700 px-4 text-sm cursor-pointer text-brown-700 dark:text-brown-100 transition-colors data-[active=true]:bg-(--theme-primary) data-[active=true]:text-(--theme-on-primary) data-[active=false]:hover:bg-(--theme-primary) data-[active=false]:hover:text-(--theme-on-primary)"
+      :class="[size_classes.pill, size_classes.pill_joined]"
+      v-sfx="{ hover: 'ui.click_07', click: 'ui.select' }"
+      @click="toggleAll"
+    >
+      {{ all_label }}
+    </button>
   </div>
 </template>
