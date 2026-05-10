@@ -1,118 +1,87 @@
 import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
 import { mount } from '@vue/test-utils'
-import { defineComponent, h } from 'vue'
 import AlignPicker from '@/components/modals/deck-settings/tab-design/align-picker.vue'
 
 const { mockEmitSfx } = vi.hoisted(() => ({ mockEmitSfx: vi.fn() }))
 vi.mock('@/sfx/bus', () => ({ emitSfx: mockEmitSfx }))
 
-const PickerPopoverStub = defineComponent({
-  name: 'PickerPopover',
-  props: ['label', 'icon'],
-  setup(_props, { slots }) {
-    return () => h('div', { 'data-testid': 'popover-stub' }, slots.default?.())
-  }
-})
-
-const UiIconStub = defineComponent({
-  name: 'UiIcon',
-  props: ['src'],
-  setup(p) {
-    return () => h('span', { 'data-testid': 'ui-icon', 'data-src': p.src })
-  }
-})
-
 function makePicker(props = {}) {
-  let model = props.value
+  let h_model = props.horizontal
+  let v_model = props.vertical
   const wrapper = mount(AlignPicker, {
     props: {
-      axis: 'horizontal',
       ...props,
-      'onUpdate:value': (v) => {
-        model = v
-        wrapper.setProps({ value: v })
+      'onUpdate:horizontal': (v) => {
+        h_model = v
+        wrapper.setProps({ horizontal: v })
+      },
+      'onUpdate:vertical': (v) => {
+        v_model = v
+        wrapper.setProps({ vertical: v })
       }
-    },
-    global: {
-      stubs: { PickerPopover: PickerPopoverStub, UiIcon: UiIconStub },
-      mocks: { $t: (k) => k }
     }
   })
-  return { wrapper, getValue: () => model }
+  return {
+    wrapper,
+    getHorizontal: () => h_model,
+    getVertical: () => v_model
+  }
 }
 
 describe('AlignPicker', () => {
   beforeEach(() => mockEmitSfx.mockClear())
 
-  // ── Horizontal ─────────────────────────────────────────────────────────────
-
-  test('renders 3 horizontal options', () => {
-    const { wrapper } = makePicker({ axis: 'horizontal' })
-    expect(wrapper.findAll('[data-testid="align-picker__horizontal-option"]')).toHaveLength(3)
+  test('renders 9 cells (3x3 grid)', () => {
+    const { wrapper } = makePicker()
+    expect(wrapper.findAll('[data-testid^="align-picker__cell-"]')).toHaveLength(9)
   })
 
-  test('defaults the active horizontal option to center when value is unset', () => {
-    const { wrapper } = makePicker({ axis: 'horizontal' })
-    const options = wrapper.findAll('[data-testid="align-picker__horizontal-option"]')
-    expect(options[1].attributes('data-active')).toBe('true')
-    expect(options[0].attributes('data-active')).toBe('false')
-    expect(options[2].attributes('data-active')).toBe('false')
+  test('defaults active cell to center-center when both models unset', () => {
+    const { wrapper } = makePicker()
+    expect(
+      wrapper.find('[data-testid="align-picker__cell-center-center"]').attributes('data-active')
+    ).toBe('true')
+    expect(
+      wrapper.find('[data-testid="align-picker__cell-left-top"]').attributes('data-active')
+    ).toBe('false')
   })
 
-  test('marks the active horizontal option from the model value', () => {
-    const { wrapper } = makePicker({ axis: 'horizontal', value: 'right' })
-    const options = wrapper.findAll('[data-testid="align-picker__horizontal-option"]')
-    expect(options[2].attributes('data-active')).toBe('true')
-    expect(options[0].attributes('data-active')).toBe('false')
+  test('marks active cell from horizontal + vertical models', () => {
+    const { wrapper } = makePicker({ horizontal: 'right', vertical: 'bottom' })
+    expect(
+      wrapper.find('[data-testid="align-picker__cell-right-bottom"]').attributes('data-active')
+    ).toBe('true')
+    expect(
+      wrapper.find('[data-testid="align-picker__cell-center-center"]').attributes('data-active')
+    ).toBe('false')
   })
 
-  test('clicking a horizontal option emits update:value with that value', async () => {
-    const { wrapper, getValue } = makePicker({ axis: 'horizontal' })
-    const options = wrapper.findAll('[data-testid="align-picker__horizontal-option"]')
-    await options[0].trigger('click')
-    expect(getValue()).toBe('left')
+  test('clicking a cell updates both horizontal and vertical', async () => {
+    const { wrapper, getHorizontal, getVertical } = makePicker()
+    await wrapper.find('[data-testid="align-picker__cell-left-top"]').trigger('click')
+    expect(getHorizontal()).toBe('left')
+    expect(getVertical()).toBe('top')
   })
 
-  test('clicking the active horizontal option does not change the value', async () => {
-    const { wrapper, getValue } = makePicker({ axis: 'horizontal', value: 'left' })
-    const options = wrapper.findAll('[data-testid="align-picker__horizontal-option"]')
-    await options[0].trigger('click')
-    expect(getValue()).toBe('left')
+  test('clicking the active cell does not change models', async () => {
+    const { wrapper, getHorizontal, getVertical } = makePicker({
+      horizontal: 'left',
+      vertical: 'top'
+    })
+    await wrapper.find('[data-testid="align-picker__cell-left-top"]').trigger('click')
+    expect(getHorizontal()).toBe('left')
+    expect(getVertical()).toBe('top')
   })
 
-  // ── Vertical ───────────────────────────────────────────────────────────────
-
-  test('renders 3 vertical options', () => {
-    const { wrapper } = makePicker({ axis: 'vertical' })
-    expect(wrapper.findAll('[data-testid="align-picker__vertical-option"]')).toHaveLength(3)
-  })
-
-  test('defaults the active vertical option to center when value is unset', () => {
-    const { wrapper } = makePicker({ axis: 'vertical' })
-    const options = wrapper.findAll('[data-testid="align-picker__vertical-option"]')
-    expect(options[1].attributes('data-active')).toBe('true')
-  })
-
-  test('clicking a vertical option emits update:value with that value', async () => {
-    const { wrapper, getValue } = makePicker({ axis: 'vertical' })
-    const options = wrapper.findAll('[data-testid="align-picker__vertical-option"]')
-    await options[2].trigger('click')
-    expect(getValue()).toBe('bottom')
-  })
-
-  // ── SFX ────────────────────────────────────────────────────────────────────
-
-  test('plays select sfx when changing to a new value', async () => {
-    const { wrapper } = makePicker({ axis: 'horizontal', value: 'left' })
-    const options = wrapper.findAll('[data-testid="align-picker__horizontal-option"]')
-    await options[2].trigger('click')
+  test('plays select sfx when changing to a new cell', async () => {
+    const { wrapper } = makePicker({ horizontal: 'left', vertical: 'top' })
+    await wrapper.find('[data-testid="align-picker__cell-right-bottom"]').trigger('click')
     expect(mockEmitSfx).toHaveBeenCalledWith('ui.etc_camera_shutter')
   })
 
-  test('plays reselect sfx when clicking the active value', async () => {
-    const { wrapper } = makePicker({ axis: 'horizontal', value: 'left' })
-    const options = wrapper.findAll('[data-testid="align-picker__horizontal-option"]')
-    await options[0].trigger('click')
+  test('plays reselect sfx when clicking the active cell', async () => {
+    const { wrapper } = makePicker({ horizontal: 'left', vertical: 'top' })
+    await wrapper.find('[data-testid="align-picker__cell-left-top"]').trigger('click')
     expect(mockEmitSfx).toHaveBeenCalledWith('ui.digi_powerdown')
   })
 })
