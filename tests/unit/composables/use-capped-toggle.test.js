@@ -21,18 +21,31 @@ describe('useCappedToggle', () => {
     expect(is_all.value).toBe(false)
   })
 
-  test('seeds spin_value from default_value when model is null', () => {
+  test('seeds spin_value from max when model is null and max is finite', () => {
     const { model } = makeModel(null)
     const { spin_value, is_all } = useCappedToggle(model, 200, 50)
+    expect(spin_value.value).toBe(200)
+    expect(is_all.value).toBe(true)
+  })
+
+  test('seeds spin_value from max when model is undefined and max is finite', () => {
+    const { model } = makeModel(undefined)
+    const { spin_value, is_all } = useCappedToggle(model, 200, 50)
+    expect(spin_value.value).toBe(200)
+    expect(is_all.value).toBe(false)
+  })
+
+  test('seeds spin_value from default_value when model is null and max is infinite', () => {
+    const { model } = makeModel(null)
+    const { spin_value, is_all } = useCappedToggle(model, Infinity, 50)
     expect(spin_value.value).toBe(50)
     expect(is_all.value).toBe(true)
   })
 
-  test('seeds spin_value from default_value when model is undefined', () => {
-    const { model } = makeModel(undefined)
-    const { spin_value, is_all } = useCappedToggle(model, 200, 50)
-    expect(spin_value.value).toBe(50)
-    expect(is_all.value).toBe(false)
+  test('seeds spin_value from prefill_when_all when provided and model is null', () => {
+    const { model } = makeModel(null)
+    const { spin_value } = useCappedToggle(model, 200, 50, () => 137)
+    expect(spin_value.value).toBe(137)
   })
 
   // ── onSpin ─────────────────────────────────────────────────────────────────

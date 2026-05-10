@@ -22,6 +22,10 @@ coverage
 /playwright-report/
 /playwright/.cache/
 
+# Vitest browser mode (failure attachments + auto-generated screenshots)
+.vitest-attachments/
+**/__screenshots__/
+
 # Editor directories and files
 docs/.vitepress/cache
 docs/.vitepress/dist

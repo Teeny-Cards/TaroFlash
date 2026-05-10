@@ -27,6 +27,13 @@ const BgColorPickerStub = slotlessStub('BgColorPicker')
 const IconPickerStub = slotlessStub('IconPicker')
 const PatternPickerStub = slotlessStub('PatternPicker')
 
+const SectionListStub = defineComponent({
+  name: 'SectionList',
+  setup(_p, { slots }) {
+    return () => h('div', { 'data-testid': 'section-list-stub' }, slots.default?.())
+  }
+})
+
 function makeDesigner(initial = {}) {
   const config = reactive(initial)
   const wrapper = shallowMount(CoverDesigner, {
@@ -35,7 +42,8 @@ function makeDesigner(initial = {}) {
       stubs: {
         BgColorPicker: BgColorPickerStub,
         IconPicker: IconPickerStub,
-        PatternPicker: PatternPickerStub
+        PatternPicker: PatternPickerStub,
+        SectionList: SectionListStub
       }
     }
   })

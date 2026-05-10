@@ -2,6 +2,7 @@
 import BgColorPicker from './bg-color-picker.vue'
 import IconPicker from './icon-picker.vue'
 import PatternPicker from './pattern-picker.vue'
+import SectionList from '@/components/layout-kit/section-list.vue'
 import { SUPPORTED_THEMES, SUPPORTED_PATTERNS, SUPPORTED_ICONS } from '@/utils/cover'
 
 type CoverDesignerToolbarProps = {
@@ -17,7 +18,7 @@ const { config } = defineProps<CoverDesignerToolbarProps>()
     :data-theme="config.bg_color"
     :data-theme-dark="config.bg_color_dark"
   >
-    <div data-testid="cover-designer-toolbar__controls" class="flex flex-col gap-8">
+    <section-list data-testid="cover-designer-toolbar__controls">
       <bg-color-picker
         :supported_themes="SUPPORTED_THEMES"
         :bg_color="config.bg_color"
@@ -40,6 +41,6 @@ const { config } = defineProps<CoverDesignerToolbarProps>()
         :icon="config.icon"
         @update:icon="config.icon = $event"
       />
-    </div>
+    </section-list>
   </div>
 </template>

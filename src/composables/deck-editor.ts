@@ -2,6 +2,7 @@ import { reactive, ref } from 'vue'
 import { useDeleteDeckMutation } from '@/api/decks'
 import { useUploadImageMutation } from '@/api/media'
 import { useDeckActions } from '@/composables/deck/use-deck-actions'
+import { useSessionRef } from '@/composables/use-session-ref'
 import { useMemberStore } from '@/stores/member'
 import { emitSfx } from '@/sfx/bus'
 import type { ImageUploadPayload } from '@/components/image-uploader.vue'
@@ -39,7 +40,7 @@ export function useDeckEditor(deck?: Deck) {
   const cover_image_preview = ref<string | undefined>(deck?.cover_config?.bg_image)
   const cover_image_loading = ref(false)
 
-  const active_side = ref<CardSide>('cover')
+  const active_side = useSessionRef<CardSide>('deck-settings.active-side', 'cover')
 
   const deck_actions = useDeckActions()
   const delete_mutation = useDeleteDeckMutation()
