@@ -13,7 +13,7 @@ type Member = {
 declare type MemberRole = 'user' | 'moderator' | 'admin'
 declare type MemberPlan = 'free' | 'paid'
 
-type MemberTheme =
+type Theme =
   | 'blue-500'
   | 'blue-800'
   | 'blue-650'

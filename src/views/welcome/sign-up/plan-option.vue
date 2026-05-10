@@ -2,7 +2,7 @@
 import UiRadio from '@/components/ui-kit/radio.vue'
 
 const { theme = 'brown-100' } = defineProps<{
-  theme?: MemberTheme
+  theme?: Theme
   name: string
   selected?: boolean
 }>()

@@ -9,7 +9,7 @@ const { score, total, secondary_action, close } = defineProps<{
   score: number
   total: number
   secondary_action: SecondaryAction
-  theme: MemberTheme
+  theme: Theme
   close: (action?: SecondaryAction) => void
 }>()
 

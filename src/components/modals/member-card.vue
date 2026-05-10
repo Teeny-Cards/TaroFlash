@@ -11,7 +11,7 @@ const { createdAt = isoNow(), theme = 'green-400' } = defineProps<{
   displayName?: string
   cardComment?: string
   cardTitle: string
-  theme: MemberTheme
+  theme: Theme
 }>()
 
 const created_on = computed(() => {

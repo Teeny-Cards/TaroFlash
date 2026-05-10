@@ -2,7 +2,7 @@
 import UiTooltip from '@/components/ui-kit/tooltip.vue'
 import { useMediaQuery } from '@/composables/use-media-query'
 
-defineProps<{ title: string; theme: MemberTheme }>()
+defineProps<{ title: string; theme: Theme }>()
 
 const is_coarse = useMediaQuery('coarse')
 </script>

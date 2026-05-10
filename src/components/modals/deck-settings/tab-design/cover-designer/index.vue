@@ -15,7 +15,7 @@ defineEmits<{
   (e: 'cover-image-remove'): void
 }>()
 
-const supported_themes: DeckCoverThemeOption[] = [
+const supported_themes: DeckTheme[] = [
   { light: 'blue-500', dark: 'blue-800' },
   { light: 'green-400', dark: 'green-500' },
   { light: 'purple-500', dark: 'purple-700' },
