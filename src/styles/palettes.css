@@ -279,6 +279,21 @@
 
 /* ─── PINK ─────────────────────────────────────────────────────────── */
 
+[data-theme='pink-700'],
+[data-theme='dark'] [data-theme-dark='pink-700'] {
+  --theme-primary: var(--color-pink-700);
+  --theme-on-primary: var(--color-brown-100);
+
+  --theme-secondary: var(--color-pink-500);
+  --theme-on-secondary: var(--color-brown-100);
+
+  --theme-accent: var(--color-yellow-500);
+  --theme-on-accent: var(--color-brown-700);
+
+  --theme-neutral: var(--color-brown-100);
+  --theme-on-neutral: var(--color-pink-700);
+}
+
 [data-theme='pink-500'],
 [data-theme='dark'] [data-theme-dark='pink-500'] {
   --theme-primary: var(--color-pink-500);
@@ -381,7 +396,7 @@
   --theme-secondary: var(--color-yellow-600);
   --theme-on-secondary: var(--color-brown-100);
 
-  --theme-accent: var(--color-purple-400);
+  --theme-accent: var(--color-purple-700);
   --theme-on-accent: var(--color-brown-100);
 
   --theme-neutral: var(--color-brown-100);
