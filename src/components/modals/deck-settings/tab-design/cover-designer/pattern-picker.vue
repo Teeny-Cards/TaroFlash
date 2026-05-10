@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import { emitSfx } from '@/sfx/bus'
-import { coverBindings, patternOpacity, patternSize } from '@/utils/cover'
+import { coverBindings } from '@/utils/cover'
 
 const { t } = useI18n()
 
@@ -19,16 +19,7 @@ const emit = defineEmits<{
 }>()
 
 function swatchBindings(p: DeckCoverPattern) {
-  const base = coverBindings({ pattern: p, pattern_size }, { border: false, bgImage: false })
-
-  return {
-    ...base,
-    style: {
-      ...base.style,
-      '--bgx-opacity': patternOpacity(p, 1),
-      ...(pattern_size ? { '--bgx-size': patternSize(p, pattern_size, 0.65) } : {})
-    }
-  }
+  return coverBindings({ pattern: p, pattern_size }, { border: false, bgImage: false })
 }
 
 function onPatternSelect(p: DeckCoverPattern | undefined) {
@@ -56,12 +47,12 @@ function onPatternSelect(p: DeckCoverPattern | undefined) {
         :data-selected="pattern === selected_pattern || undefined"
         v-sfx.hover="'ui.click_07'"
         v-bind="swatchBindings(pattern)"
-        class="w-14.5 aspect-square rounded-6 rounded-tr-3 rounded-bl-3 cursor-pointer bg-(--theme-primary) data-selected:ring-3 ring-brown-700 relative"
+        class="w-14.5 aspect-square rounded-6 rounded-tr-3 rounded-bl-3 cursor-pointer bg-(--theme-primary) data-selected:ring-4 ring-brown-100 relative"
         @click="onPatternSelect(pattern)"
       >
         <div
           v-if="pattern === selected_pattern"
-          class="absolute -top-2 -right-2 bg-brown-700 p-0.5 rounded-full flex items-center justify-center"
+          class="absolute -top-2 -right-2 bg-brown-100 p-0.5 rounded-full flex items-center justify-center"
         >
           <ui-icon src="check" class="text-(--theme-primary)" />
         </div>
