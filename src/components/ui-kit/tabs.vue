@@ -13,7 +13,7 @@ type Tab = {
 const { storageKey, theme = 'blue-500' } = defineProps<{
   tabs: Tab[]
   storageKey?: string
-  theme?: MemberTheme
+  theme?: Theme
 }>()
 const emit = defineEmits<{
   (e: 'update:activeTab', index: number): void

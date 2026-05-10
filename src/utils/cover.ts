@@ -1,5 +1,6 @@
 export type CoverBindings = {
-  'data-theme': MemberTheme | undefined
+  'data-theme': Theme | undefined
+  'data-theme-dark': Theme | undefined
   class: string[]
   style: Record<string, string>
 }
@@ -31,7 +32,7 @@ export function patternOpacity(pattern: DeckCoverPattern, baseline: number): str
 }
 
 export type CoverBindingsOptions = {
-  fallbackTheme?: MemberTheme
+  fallbackTheme?: Theme
   pattern?: boolean
   border?: boolean
   bgImage?: boolean
@@ -65,6 +66,7 @@ export function coverBindings(
 
   return {
     'data-theme': config?.bg_color ?? fallbackTheme,
+    'data-theme-dark': config?.bg_color_dark,
     class: classes,
     style
   }

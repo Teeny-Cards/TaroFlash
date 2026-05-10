@@ -1,7 +1,6 @@
 {
   "ui-kit.alert.cancel": "Cancel",
   "ui-kit.alert.continue": "Continue",
-
   "app.title": "TaroFlash",
   "app.description": "A warm little space to learn, make, and collect things you love.",
   "app.footer.privacy-policy": "Privacy Policy",
@@ -9,18 +8,14 @@
   "app.footer.resources": "Resources",
   "app.footer.about": "About",
   "app.footer.description": "TaroFlash is an SRS flashcard app with deck management, rich card editing, and spaced-repetition scheduling.",
-
   "phone.apps.logout.title": "Logout",
   "phone.apps.logout.description": "Are you sure you want to logout?",
   "phone.apps.logout.confirm": "Logout",
-
   "inventory-modal.title": "Inventory",
-
   "login-dialog.email-placeholder": "Email",
   "login-dialog.password": "Password",
   "login-dialog.submit-button": "Let's Go!",
   "login-dialog.divider-or": "Or",
-
   "signup-dialog.heading": "Make An Account",
   "signup-dialog.submit-button": "Sign Up!",
   "signup-dialog.plan-header": "Choose Your Plan",
@@ -59,7 +54,6 @@
   "signup-dialog.divider-or": "Or",
   "signup-dialog.cancel": "Cancel",
   "signup-dialog.alert.close": "Close",
-
   "welcome-view.login-button": "Log In",
   "welcome-view.signup-button": "Make An Account",
   "welcome-view.feature.build-decks.heading": "Build Decks Of Cards",
@@ -68,7 +62,6 @@
   "welcome-view.feature.study-decks.description": "Study your decks in calm, focused sessions designed to help you stay present. Review cards at your own pace, repeat what matters, and make steady progress without feeling rushed.",
   "welcome-view.feature.design.heading": "Designed to Feel Good",
   "welcome-view.feature.design.description": "Taroflash is designed to feel calm, clear, and comfortable. Soft colors, simple layouts, and thoughtful compositions create a space where it’s easy to focus, easy to learn, and easy to come back.",
-
   "member-application.header": "Welcome To TaroFlash!",
   "member-application.subtitle": "Let’s get you set up with your new Member Card (You can update this at any time).",
   "member-application.member-name-label": "Member Name",
@@ -87,7 +80,6 @@
   "member-application.preview-card-title": "Debut Deck Builder",
   "member-application.title-tag-debut": "Debut",
   "member-application.title-tag-deck-builder": "Deck Builder",
-
   "settings.app-settings.title": "App Settings",
   "settings.app-settings.audio.label": "Audio",
   "settings.app-settings.audio.interface": "Interface Volume",
@@ -148,7 +140,6 @@
   "settings.member-settings.billing.add-credit-card.submit": "Save card",
   "settings.member-settings.billing.add-credit-card.submit-error": "Couldn't save card. Please try again.",
   "settings.notification-settings.title": "Notification Settings",
-
   "ui-kit.alert.title-default": "Continue?",
   "ui-kit.alert.message-default": "Are you sure you want to continue?",
   "alert.delete-card.title": "Delete Card? | Delete {count} Cards?",
@@ -159,15 +150,12 @@
   "alert.leave-page.stay": "Stay",
   "alert.delete-deck.title": "Delete Deck?",
   "alert.delete-deck.message": "Are you sure you want to delete this deck?",
-
   "toast.error.add-card-failed": "Failed to add a new card",
-
   "card.add-image": "Add Image",
   "card.add-text": "Add Text",
   "toast.error.card-save-failed": "Something went wrong while trying to save your card",
   "toast.error.card-image-upload-failed": "Failed to upload image",
   "toast.error.card-image-delete-failed": "Failed to delete image",
-
   "study.flashcard.rating.fail-button": "Nope!",
   "study.flashcard.rating.fail-feedback": "Nope!",
   "study.flashcard.rating.pass-button": "Got It!",
@@ -202,29 +190,23 @@
   "study.settings.card-limit-label": "Card limit",
   "study.settings.max-reviews.all-toggle": "All",
   "study.settings.max-new.all-toggle": "All",
-
   "edit-card-modal.title": "Edit Card",
-
   "dashboard.deck-filter.due-label": "Due",
   "dashboard.deck-filter.all-label": "All Decks",
   "dashboard.create-deck-button": "Make a New Deck",
-
   "errors.deck-limit-reached.title": "Deck limit reached",
   "errors.deck-limit-reached.message": "You've reached your plan's deck limit. Upgrade to create more.",
   "errors.deck-limit-reached.upgrade-cta": "Upgrade plan",
-
   "billing.checkout.title": "Upgrade your plan",
   "billing.checkout.loading": "Loading checkout…",
   "billing.checkout.error": "Couldn't load checkout. Please try again.",
   "billing.checkout.submit": "Subscribe",
   "billing.checkout.submit-error": "Something went wrong. Please try again.",
-
   "shop.category.power-ups": "Power Ups",
   "shop.category.stationary": "Stationary",
   "shop.category.stickers": "Stickers",
   "shop.category.miscellaneous": "Misclaneous",
   "shop.category.power-ups.description": "Power ups can be used to gain an edge and score more paper clips.",
-
   "deck.description-placeholder": "Add a short description to your deck.",
   "deck.title-placeholder": "Deck Name",
   "deck.mode-view.page-counter": "Page {current}/{total}",
@@ -234,13 +216,13 @@
   "deck.settings-modal.submit-edit": "Save",
   "deck.settings-modal.submit-create": "Create",
   "deck.settings-modal.is-public": "Public Deck",
-  "deck.settings-modal.tab.general": "General",
-  "deck.settings-modal.tab.cover": "Cover",
-  "deck.settings-modal.tab.study": "Study",
+  "deck.settings-modal.tab.general": "Deck Details & Settings",
+  "deck.settings-modal.tab.design": "Card & Cover Design",
+  "deck.settings-modal.tab.study": "Study Preferences",
   "deck.settings-modal.designer-tabs.cover": "Cover",
   "deck.settings-modal.designer-tabs.front": "Front",
   "deck.settings-modal.designer-tabs.back": "Back",
-  "deck.settings-modal.cover.bg-color": "Background",
+  "deck.settings-modal.cover.bg-color": "Theme",
   "deck.settings-modal.cover.bg-color-picker.label": "BG Color",
   "deck.settings-modal.cover.bg-color-picker.border-label": "Border",
   "deck.settings-modal.cover.icon-picker.label": "Icon",
@@ -260,7 +242,6 @@
   "deck.settings-modal.study.max-new-per-day": "Max New Cards Per Day",
   "deck.settings-modal.study.is-spaced": "Spaced Repetition",
   "deck.settings-modal.study.auto-play": "Auto-Play Audio",
-
   "deck-view.hero.study": "Study",
   "deck-view.hero.cards-label": "Cards",
   "deck-view.mode-view.search": "Search",
@@ -268,7 +249,6 @@
   "deck-view.card-editor.list-item.front-placeholder": "Front",
   "deck-view.card-editor.list-item.back-placeholder": "Back",
   "deck-preview-popover.study": "Study",
-
   "deck-view.actions.study-all": "Study <span>all</span> cards",
   "deck-view.actions.edit-cards": "Edit Cards",
   "deck-view.actions.stop-editing": "Stop Editing",
@@ -301,7 +281,6 @@
   "deck-view.card-attributes.text-size": "Text Size",
   "deck-view.card-attributes.horizontal-alignment": "Horizontal Alignment",
   "deck-view.card-attributes.vertical-alignment": "Vertical Alignment",
-
   "reward-stack.tier-100.heading": "Perfect Score!",
   "reward-stack.tier-80.heading": "Great Job!",
   "reward-stack.tier-60.heading": "Good Work!",
@@ -309,14 +288,11 @@
   "reward-stack.tier-low.heading": "Dang :/",
   "reward-stack.single-reward.subheader": "Yout got a {type}! | You got <span>+{count}</span> {type}!",
   "reward-stack.multi-reward.subheader": "You got a {type}! + more... | You got <span>+{count}</span> {type}! + more...",
-
   "move-cards-modal.title": "Move Card | Move <span>{front}</span><span>{back}</span> | Move {count} Cards",
   "move-cards-modal.cancel": "Cancel",
   "move-cards-modal.confirm": "Move",
-
   "privacy-policy.title": "Privacy Policy",
   "privacy-policy.intro": "TaroFlash respects your privacy and is committed to handling user data transparently and responsibly. This policy explains what information we collect, how it is used, and how it is stored.",
-
   "privacy-policy.section-1.title": "Information We Collect",
   "privacy-policy.section-1.subsection-1.title": "Account Information",
   "privacy-policy.section-1.subsection-1.content": "When you create an account, TaroFlash collects the following information:",
@@ -324,13 +300,11 @@
   "privacy-policy.section-1.subsection-1.item-2": "Display name",
   "privacy-policy.section-1.subsection-1.item-3": "Profile image (avatar URL), if provided",
   "privacy-policy.section-1.subsection-1.footer": "This information is required to create and manage your account.",
-
   "privacy-policy.section-1.subsection-2.title": "Google Sign-In Data",
   "privacy-policy.section-1.subsection-2.content": "If you choose to sign in using Google, TaroFlash accesses the following Google user data:",
   "privacy-policy.section-1.subsection-2.item-1": "Email address",
   "privacy-policy.section-1.subsection-2.item-2": "Basic profile information (name and profile image)",
   "privacy-policy.section-1.subsection-2.footer": "TaroFlash only requests non-sensitive scopes (email and userinfo.profile) for authentication purposes.",
-
   "privacy-policy.section-2.title": "How We Use Your Information",
   "privacy-policy.section-2.content": "Your information is used only to:",
   "privacy-policy.section-2.item-1": "Authenticate and identify your account",
@@ -338,55 +312,42 @@
   "privacy-policy.section-2.item-3": "Provide core app functionality such as deck management and study sessions",
   "privacy-policy.section-2.item-4": "Support account recovery and communication related to your account",
   "privacy-policy.section-2.footer": "Your data is not used for advertising or marketing purposes.",
-
   "privacy-policy.section-3.title": "Data Storage and Security",
   "privacy-policy.section-3.item-1": "User data is securely stored using Supabase.",
   "privacy-policy.section-3.item-2": "TaroFlash does not store Google access tokens.",
   "privacy-policy.section-3.item-3": "Authentication sessions are handled securely by our authentication provider.",
   "privacy-policy.section-3.item-4": "Payment-related data is processed securely by Stripe; TaroFlash does not store full payment details.",
   "privacy-policy.section-3.item-5": "Reasonable technical and organizational measures are used to protect user data from unauthorized access.",
-
   "privacy-policy.section-4.title": "Data Sharing",
   "privacy-policy.section-4.content-1": "TaroFlash does not sell or rent user data.",
   "privacy-policy.section-4.content-2": "User data is shared only with the following service providers, solely to operate the app:",
   "privacy-policy.section-4.item-1": "Supabase — authentication, database, and backend infrastructure",
   "privacy-policy.section-4.item-2": "Stripe — payment processing for paid plans",
   "privacy-policy.section-4.footer": "No user data is shared with advertisers.",
-
   "privacy-policy.section-5.title": "Future Social Features",
   "privacy-policy.section-5.content": "TaroFlash may introduce optional social features in the future, such as public profiles or shared decks. If these features are added, users will be clearly informed about what information is public and given control over their participation.",
-
   "privacy-policy.section-6.title": "Data Deletion",
   "privacy-policy.section-6.content": "Users may request deletion of their account and associated data at any time through the app or by contacting support.",
-
   "privacy-policy.section-7.title": "Changes to This Policy",
   "privacy-policy.section-7.content": "This privacy policy may be updated as the app evolves. Any changes will be reflected on this page.",
-
   "privacy-policy.section-8.title": "Contact",
   "privacy-policy.section-8.content": "If you have questions about this policy, you may contact us at:",
   "privacy-policy.section-8.email": "support{'@'}taro-flash.com",
   "terms-of-service.title": "Terms of Service",
   "terms-of-service.intro": "By using TaroFlash, you agree to the following terms.",
-
   "terms-of-service.section-1.title": "Use of the Service",
   "terms-of-service.section-1.content": "TaroFlash provides a spaced-repetition flashcard application for personal study. You agree to use the service lawfully and as intended.",
-
   "terms-of-service.section-2.title": "Accounts",
   "terms-of-service.section-2.content": "You are responsible for maintaining the security of your account. Account information must be accurate and up to date.",
-
   "terms-of-service.section-3.title": "User Content",
   "terms-of-service.section-3.content-1": "All study content you create remains yours. You grant TaroFlash permission to store and display this content as necessary to provide the service.",
   "terms-of-service.section-3.content-2": "Future features may allow users to share content publicly or with other users. Participation in such features will be optional.",
-
   "terms-of-service.section-4.title": "Payments",
   "terms-of-service.section-4.content": "Some features may require a paid subscription. Payments are processed securely by Stripe.",
-
   "terms-of-service.section-5.title": "Service Availability",
   "terms-of-service.section-5.content": "The service is provided \"as is\" and may change or evolve over time. We make no guarantees regarding uninterrupted availability.",
-
   "terms-of-service.section-6.title": "Termination",
   "terms-of-service.section-6.content": "Accounts may be suspended or deleted if these terms are violated.",
-
   "terms-of-service.section-7.title": "Changes to These Terms",
   "terms-of-service.section-7.content": "These terms may be updated periodically. Continued use of the service constitutes acceptance of the updated terms."
 }

@@ -105,38 +105,37 @@ async function onSubmit() {
     data-testid="add-credit-card-modal"
     class="sm:max-w-130! max-h-[95dvh]"
     :title="t('settings.member-settings.billing.add-credit-card.title')"
-    theme="green-400"
+    data-theme="green-400"
     @close="close()"
   >
-    <template #body>
-      <div
-        data-testid="add-credit-card-modal__body"
-        class="overflow-y-auto max-h-[65dvh] px-6 pb-2 flex flex-col gap-4"
+    <div
+      data-testid="add-credit-card-modal__body"
+      class="overflow-y-auto max-h-[65dvh] px-6 pb-2 flex flex-col gap-4"
+    >
+      <p
+        v-if="is_loading"
+        data-testid="add-credit-card-modal__loading"
+        class="text-brown-700 py-10 text-center"
       >
-        <p
-          v-if="is_loading"
-          data-testid="add-credit-card-modal__loading"
-          class="text-brown-700 py-10 text-center"
-        >
-          {{ t('settings.member-settings.billing.add-credit-card.loading') }}
-        </p>
-        <p
-          v-else-if="load_error"
-          data-testid="add-credit-card-modal__error"
-          class="py-10 text-center text-red-500"
-        >
-          {{ t('settings.member-settings.billing.add-credit-card.error') }}
-        </p>
-        <div ref="container" data-testid="add-credit-card-modal__payment-element"></div>
-        <p
-          v-if="submit_error"
-          data-testid="add-credit-card-modal__submit-error"
-          class="text-sm text-red-500"
-        >
-          {{ submit_error }}
-        </p>
-      </div>
-    </template>
+        {{ t('settings.member-settings.billing.add-credit-card.loading') }}
+      </p>
+      <p
+        v-else-if="load_error"
+        data-testid="add-credit-card-modal__error"
+        class="py-10 text-center text-red-500"
+      >
+        {{ t('settings.member-settings.billing.add-credit-card.error') }}
+      </p>
+      <div ref="container" data-testid="add-credit-card-modal__payment-element"></div>
+      <p
+        v-if="submit_error"
+        data-testid="add-credit-card-modal__submit-error"
+        class="text-sm text-red-500"
+      >
+        {{ submit_error }}
+      </p>
+    </div>
+
     <template #footer>
       <div
         v-if="!is_loading && !load_error"

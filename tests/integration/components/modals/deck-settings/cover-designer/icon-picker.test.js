@@ -1,18 +1,9 @@
 import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
-import { defineComponent, h } from 'vue'
-import IconPicker from '@/components/modals/deck-settings/cover-designer/icon-picker.vue'
+import IconPicker from '@/components/modals/deck-settings/tab-design/cover-designer/icon-picker.vue'
 
 const { mockEmitSfx } = vi.hoisted(() => ({ mockEmitSfx: vi.fn() }))
 vi.mock('@/sfx/bus', () => ({ emitSfx: mockEmitSfx }))
-
-const PickerPopoverStub = defineComponent({
-  name: 'PickerPopover',
-  props: ['label', 'icon', 'size'],
-  setup(_props, { slots }) {
-    return () => h('div', { 'data-testid': 'picker-popover-stub' }, slots.default?.())
-  }
-})
 
 const SUPPORTED_ICONS = ['card-deck', 'book', 'school-cap']
 
@@ -24,7 +15,6 @@ function makePicker(props = {}) {
       ...props
     },
     global: {
-      stubs: { PickerPopover: PickerPopoverStub },
       directives: { sfx: {} }
     }
   })
@@ -35,12 +25,11 @@ beforeEach(() => {
 })
 
 describe('IconPicker', () => {
-  test('renders one option per supported icon plus the none button', () => {
+  test('renders one option per supported icon', () => {
     const wrapper = makePicker()
     SUPPORTED_ICONS.forEach((name) => {
       expect(wrapper.find(`[data-testid="icon-picker__option-${name}"]`).exists()).toBe(true)
     })
-    expect(wrapper.find('[data-testid="icon-picker__none"]').exists()).toBe(true)
   })
 
   test('marks the selected icon with data-selected', () => {
@@ -51,13 +40,6 @@ describe('IconPicker', () => {
     expect(
       wrapper.find('[data-testid="icon-picker__option-card-deck"]').attributes('data-selected')
     ).toBeUndefined()
-  })
-
-  test('marks the none button as selected when icon is undefined', () => {
-    const wrapper = makePicker({ icon: undefined })
-    expect(wrapper.find('[data-testid="icon-picker__none"]').attributes('data-selected')).toBe(
-      'true'
-    )
   })
 
   test('clicking an unselected icon emits update:icon with that name', async () => {
@@ -73,13 +55,7 @@ describe('IconPicker', () => {
     await wrapper.find('[data-testid="icon-picker__option-book"]').trigger('click')
 
     expect(wrapper.emitted('update:icon')).toBeUndefined()
+    // Still plays a sound (powerdown) on the no-op.
     expect(mockEmitSfx).toHaveBeenCalledTimes(1)
-  })
-
-  test('clicking the none button emits update:icon with undefined', async () => {
-    const wrapper = makePicker({ icon: 'book' })
-    await wrapper.find('[data-testid="icon-picker__none"]').trigger('click')
-
-    expect(wrapper.emitted('update:icon')).toEqual([[undefined]])
   })
 })

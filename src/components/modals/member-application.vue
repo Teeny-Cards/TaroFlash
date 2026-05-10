@@ -28,18 +28,11 @@ const member = reactive<Member>({
   id: memberStore.id
 })
 
-const selected_theme = ref<MemberTheme>('green-400')
+const selected_theme = ref<Theme>('green-400')
 
-const themes: MemberTheme[] = [
-  'green-400',
-  'blue-500',
-  'purple-500',
-  'pink-400',
-  'red-500',
-  'yellow-500'
-]
+const themes: Theme[] = ['green-400', 'blue-500', 'purple-500', 'pink-400', 'red-500', 'yellow-500']
 
-function setTheme(theme: MemberTheme) {
+function setTheme(theme: Theme) {
   if (theme === selected_theme.value) {
     emitSfx('ui.digi_powerdown')
     return

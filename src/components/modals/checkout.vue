@@ -104,34 +104,29 @@ async function onSubmit() {
     data-testid="checkout"
     class="sm:max-w-130! max-h-[95dvh]"
     :title="t('billing.checkout.title')"
-    theme="green-400"
+    data-theme="green-400"
     @close="close()"
   >
-    <template #body>
-      <div
-        data-testid="checkout__body"
-        class="overflow-y-auto max-h-[65dvh] px-6 pb-2 flex flex-col gap-4"
+    <div
+      data-testid="checkout__body"
+      class="overflow-y-auto max-h-[65dvh] px-6 pb-2 flex flex-col gap-4"
+    >
+      <p v-if="is_loading" data-testid="checkout__loading" class="text-brown-700 py-10 text-center">
+        {{ t('billing.checkout.loading') }}
+      </p>
+      <p
+        v-else-if="load_error"
+        data-testid="checkout__error"
+        class="py-10 text-center text-red-500"
       >
-        <p
-          v-if="is_loading"
-          data-testid="checkout__loading"
-          class="text-brown-700 py-10 text-center"
-        >
-          {{ t('billing.checkout.loading') }}
-        </p>
-        <p
-          v-else-if="load_error"
-          data-testid="checkout__error"
-          class="py-10 text-center text-red-500"
-        >
-          {{ t('billing.checkout.error') }}
-        </p>
-        <div ref="container" data-testid="checkout__payment-element"></div>
-        <p v-if="submit_error" data-testid="checkout__submit-error" class="text-sm text-red-500">
-          {{ submit_error }}
-        </p>
-      </div>
-    </template>
+        {{ t('billing.checkout.error') }}
+      </p>
+      <div ref="container" data-testid="checkout__payment-element"></div>
+      <p v-if="submit_error" data-testid="checkout__submit-error" class="text-sm text-red-500">
+        {{ submit_error }}
+      </p>
+    </div>
+
     <template #footer>
       <div v-if="!is_loading && !load_error" data-testid="checkout__footer" class="px-6 pb-6 pt-2">
         <ui-button

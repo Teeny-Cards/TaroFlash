@@ -52,20 +52,19 @@ function onSessionFinished(
   <mobile-sheet
     data-testid="study-session"
     class="sm:max-w-170!"
-    :theme="deck?.cover_config?.bg_color ?? 'purple-500'"
+    :data-theme="deck?.cover_config?.bg_color ?? 'purple-500'"
     @close="onCloseButtonClicked"
   >
     <template #header-content>
       <h1 class="text-5xl text-white">{{ deck?.title }}</h1>
     </template>
-    <template #body>
-      <session-flashcard
-        ref="mode"
-        :deck="deck"
-        :config_override="config_override"
-        @closed="close"
-        @finished="onSessionFinished"
-      />
-    </template>
+
+    <session-flashcard
+      ref="mode"
+      :deck="deck"
+      :config_override="config_override"
+      @closed="close"
+      @finished="onSessionFinished"
+    />
   </mobile-sheet>
 </template>

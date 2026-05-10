@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
 import { defineComponent, h } from 'vue'
-import PickerPopover from '@/components/modals/deck-settings/cover-designer/picker-popover.vue'
+import PickerPopover from '@/components/modals/deck-settings/tab-design/cover-designer/picker-popover.vue'
 
 // Render-function stub for UiPopover that exposes its trigger + default slots
 // inline so we can reach the trigger button and the default slot content.

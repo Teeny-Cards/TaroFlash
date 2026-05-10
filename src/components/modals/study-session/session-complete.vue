@@ -9,7 +9,7 @@ const { score, total, secondary_action, close } = defineProps<{
   score: number
   total: number
   secondary_action: SecondaryAction
-  theme: MemberTheme
+  theme: Theme
   close: (action?: SecondaryAction) => void
 }>()
 
@@ -33,20 +33,18 @@ const secondary_label = computed(() => t(`study-session.complete.${secondary_act
 </script>
 
 <template>
-  <mobile-sheet :theme="theme ?? 'purple-500'" class="sm:max-w-110!" @close="close()">
+  <mobile-sheet :data-theme="theme ?? 'purple-500'" class="sm:max-w-110!" @close="close()">
     <template #header-content>
       <h1 data-testid="session-complete__heading" class="text-5xl text-white">{{ heading }}</h1>
     </template>
 
-    <template #body>
-      <div class="h-full w-full flex flex-col items-center justify-center gap-5 p-6 -mt-2">
-        <p class="text-brown-700 dark:text-brown-300 text-lg text-center">{{ message }}</p>
-        <p class="text-brown-700 dark:text-brown-300 leading-none">
-          <span class="text-7xl">{{ score }}</span
-          ><span class="text-brown-500 dark:text-brown-400 text-xl"> / {{ total }}</span>
-        </p>
-      </div>
-    </template>
+    <div class="h-full w-full flex flex-col items-center justify-center gap-5 p-6 -mt-2">
+      <p class="text-brown-700 dark:text-brown-300 text-lg text-center">{{ message }}</p>
+      <p class="text-brown-700 dark:text-brown-300 leading-none">
+        <span class="text-7xl">{{ score }}</span
+        ><span class="text-brown-500 dark:text-brown-400 text-xl"> / {{ total }}</span>
+      </p>
+    </div>
 
     <template #footer>
       <div class="w-full p-4 flex gap-2 items-center">

@@ -77,7 +77,7 @@ const new_all = computed({
 </script>
 
 <template>
-  <div class="flex w-95 flex-col gap-5">
+  <div class="flex w-full flex-col gap-5">
     <ui-toggle v-model:checked="is_spaced">
       <div class="flex items-center gap-2.5">
         <ui-icon src="moon-stars" />

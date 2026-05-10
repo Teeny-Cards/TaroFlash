@@ -15,7 +15,7 @@ export type { StudyCard } from './study-session-core'
 export function useFlashcardSession(_config?: Partial<DeckConfig>) {
   const core = useStudySessionCore(_config)
 
-  const current_card_side = ref<'front' | 'back' | 'cover'>('cover')
+  const current_card_side = ref<CardSide>('cover')
 
   const starting_side = computed<'front' | 'back'>(() =>
     core.config.flip_cards ? 'back' : 'front'
