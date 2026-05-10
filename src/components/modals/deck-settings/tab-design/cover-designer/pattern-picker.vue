@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import { emitSfx } from '@/sfx/bus'
-import { patternOpacity, patternSize } from '@/utils/cover'
+import { coverBindings, patternOpacity, patternSize } from '@/utils/cover'
 
 const { t } = useI18n()
 
@@ -18,11 +18,16 @@ const emit = defineEmits<{
   (e: 'update:pattern', pattern: DeckCoverPattern | undefined): void
 }>()
 
-function swatchStyle(p: DeckCoverPattern): Record<string, string> {
+function swatchBindings(p: DeckCoverPattern) {
+  const base = coverBindings({ pattern: p, pattern_size }, { border: false, bgImage: false })
+
   return {
-    '--bgx-fill': 'var(--theme-neutral)',
-    '--bgx-opacity': patternOpacity(p, 1),
-    ...(pattern_size ? { '--bgx-size': patternSize(p, pattern_size, 0.65) } : {})
+    ...base,
+    style: {
+      ...base.style,
+      '--bgx-opacity': patternOpacity(p, 1),
+      ...(pattern_size ? { '--bgx-size': patternSize(p, pattern_size, 0.65) } : {})
+    }
   }
 }
 
@@ -50,8 +55,7 @@ function onPatternSelect(p: DeckCoverPattern | undefined) {
         :data-testid="`pattern-picker__option-${pattern}`"
         :data-selected="pattern === selected_pattern || undefined"
         v-sfx.hover="'ui.click_07'"
-        :class="`bgx-${pattern}`"
-        :style="swatchStyle(pattern)"
+        v-bind="swatchBindings(pattern)"
         class="w-14.5 aspect-square rounded-6 rounded-tr-3 rounded-bl-3 cursor-pointer bg-(--theme-primary) data-selected:ring-3 ring-brown-700 relative"
         @click="onPatternSelect(pattern)"
       >
