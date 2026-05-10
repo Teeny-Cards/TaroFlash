@@ -57,7 +57,7 @@ export async function upsertDeck(deck: Deck): Promise<void> {
 }
 
 export async function deleteDeck(id: number): Promise<void> {
-  const { error } = await supabase.from('decks').delete().eq('id', id)
+  const { error } = await supabase.rpc('delete_deck', { p_deck_id: id })
 
   if (error) {
     logger.error(error.message)

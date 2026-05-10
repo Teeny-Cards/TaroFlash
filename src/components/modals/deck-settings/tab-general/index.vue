@@ -13,7 +13,7 @@ const { settings } = inject(deckEditorKey)!
 </script>
 
 <template>
-  <section-list data-testid="tab-deck-settings">
+  <section-list data-testid="tab-general">
     <labeled-section :label="t('deck.settings-modal.general.section.details-heading')">
       <ui-input
         :placeholder="t('deck.title-placeholder')"
