@@ -2,16 +2,22 @@ import { describe, test, expect } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
 import MobileSheet from '@/components/layout-kit/modal/mobile-sheet.vue'
 
-function mountSheet(props = {}, slots = {}) {
-  return shallowMount(MobileSheet, { props, slots })
+function mountSheet(props = {}, slots = {}, attrs = {}) {
+  return shallowMount(MobileSheet, { props, slots, attrs })
 }
 
 describe('MobileSheet', () => {
   // ── Structure ──────────────────────────────────────────────────────────────
 
-  test('renders the sheet root element', () => {
+  test('renders the sheet root + inner element', () => {
     const wrapper = mountSheet()
+    expect(wrapper.find('[data-testid="mobile-sheet-root"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="mobile-sheet"]').exists()).toBe(true)
+  })
+
+  test('always renders the overlay target outside the overflow-hidden inner', () => {
+    const wrapper = mountSheet()
+    expect(wrapper.find('[data-testid="mobile-sheet__overlay"]').exists()).toBe(true)
   })
 
   test('always renders body slot area', () => {
@@ -19,21 +25,22 @@ describe('MobileSheet', () => {
     expect(wrapper.find('[data-testid="mobile-sheet__body"]').exists()).toBe(true)
   })
 
-  test('always renders footer slot area', () => {
-    const wrapper = mountSheet()
-    expect(wrapper.find('[data-testid="mobile-sheet__footer"]').exists()).toBe(true)
+  // ── overlay slot ───────────────────────────────────────────────────────────
+
+  test('renders overlay slot content into the overlay target', () => {
+    const wrapper = mountSheet({}, { overlay: '<div data-testid="overlay-content">over</div>' })
+
+    const overlay = wrapper.find('[data-testid="mobile-sheet__overlay"]')
+    expect(overlay.find('[data-testid="overlay-content"]').exists()).toBe(true)
   })
 
-  // ── data-theme ─────────────────────────────────────────────────────────────
+  // ── data-theme passes through via inheritAttrs ─────────────────────────────
 
-  test('sets data-theme to the theme prop', () => {
-    const wrapper = mountSheet({ theme: 'blue-500' })
-    expect(wrapper.find('[data-testid="mobile-sheet"]').attributes('data-theme')).toBe('blue-500')
-  })
-
-  test('defaults data-theme to green-400', () => {
-    const wrapper = mountSheet()
-    expect(wrapper.find('[data-testid="mobile-sheet"]').attributes('data-theme')).toBe('green-400')
+  test('forwards data-theme attribute to the root via inheritAttrs', () => {
+    const wrapper = mountSheet({}, {}, { 'data-theme': 'blue-500' })
+    expect(wrapper.find('[data-testid="mobile-sheet-root"]').attributes('data-theme')).toBe(
+      'blue-500'
+    )
   })
 
   // ── showHeader logic ───────────────────────────────────────────────────────
@@ -59,7 +66,6 @@ describe('MobileSheet', () => {
       { header: '<div data-testid="custom-header">Custom</div>' }
     )
     expect(wrapper.find('[data-testid="custom-header"]').exists()).toBe(true)
-    // Default header is not rendered when a custom header slot is used
     expect(wrapper.find('[data-testid="mobile-sheet__header"]').exists()).toBe(false)
   })
 
@@ -70,9 +76,9 @@ describe('MobileSheet', () => {
     expect(wrapper.find('[data-testid="mobile-sheet__header"]').text()).toContain('Hello World')
   })
 
-  // ── close event ───────────────────────────────────────────────────────────
+  // ── close button + show_close_button ───────────────────────────────────────
 
-  test('close button emits close event when clicked', async () => {
+  test('close button emits close when clicked', async () => {
     const wrapper = mountSheet({ title: 'My Sheet' })
     const closeBtn = wrapper.findComponent({ name: 'UiButton' })
     expect(closeBtn.exists()).toBe(true)
@@ -80,10 +86,15 @@ describe('MobileSheet', () => {
     expect(wrapper.emitted('close')).toHaveLength(1)
   })
 
-  // ── body and footer slots ──────────────────────────────────────────────────
+  test('hides the built-in close button when show_close_button is false', () => {
+    const wrapper = mountSheet({ title: 'My Sheet', show_close_button: false })
+    expect(wrapper.findComponent({ name: 'UiButton' }).exists()).toBe(false)
+  })
 
-  test('renders body slot content', () => {
-    const wrapper = mountSheet({}, { body: '<p data-testid="body-content">Body</p>' })
+  // ── default + footer slots ─────────────────────────────────────────────────
+
+  test('renders default slot content into body', () => {
+    const wrapper = mountSheet({}, { default: '<p data-testid="body-content">Body</p>' })
     expect(wrapper.find('[data-testid="body-content"]').exists()).toBe(true)
   })
 
@@ -92,16 +103,20 @@ describe('MobileSheet', () => {
     expect(wrapper.find('[data-testid="footer-content"]').exists()).toBe(true)
   })
 
-  // ── mobile-modal variant utilities ─────────────────────────────────────────
+  // ── overflow + mobile-modal variant utilities ─────────────────────────────
 
-  test('declares the mobile-modal variant utilities for layout flip', () => {
+  test('inner container clips with overflow-hidden + rounded corners', () => {
     const wrapper = mountSheet()
-    const classes = wrapper.find('[data-testid="mobile-sheet"]').classes()
-    // CSS-driven via the `mobile-modal` variant — these classes only take
-    // effect when an ancestor has data-mobile-below-{width,height}.
-    expect(classes).toContain('mobile-modal:mt-auto')
-    expect(classes).toContain('mobile-modal:rounded-b-none')
-    // Default desktop look (overridden by the variant when active).
+    const classes = wrapper.find('[data-testid="mobile-sheet-container"]').classes()
+    expect(classes).toContain('overflow-hidden')
     expect(classes).toContain('rounded-b-8')
+    expect(classes).toContain('mobile-modal:rounded-b-none')
+  })
+
+  test('root wrapper carries the mobile-modal mt-auto layout flip class', () => {
+    const wrapper = mountSheet()
+    const classes = wrapper.find('[data-testid="mobile-sheet-root"]').classes()
+    expect(classes).toContain('mobile-modal:mt-auto')
+    expect(classes).toContain('relative')
   })
 })
