@@ -246,9 +246,19 @@ jobs:
           path: coverage-base/
           if_no_artifact_found: warn
 
+      - name: Check baseline summary present
+        if: github.event_name == 'pull_request'
+        id: baseline
+        run: |
+          if [ -f coverage-base/coverage-summary.json ]; then
+            echo "path=coverage-base/coverage-summary.json" >> "$GITHUB_OUTPUT"
+          else
+            echo "path=" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Report Coverage
         if: github.event_name == 'pull_request'
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           file-coverage-mode: 'all'
-          json-summary-compare-path: coverage-base/coverage-summary.json
+          json-summary-compare-path: ${{ steps.baseline.outputs.path }}
