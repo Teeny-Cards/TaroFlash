@@ -1,4 +1,4 @@
-import { reactive, ref, type InjectionKey } from 'vue'
+import { computed, reactive, ref, type InjectionKey } from 'vue'
 import { useDeleteDeckMutation } from '@/api/decks'
 import { useUploadImageMutation } from '@/api/media'
 import { useResetDeckReviewsMutation } from '@/api/reviews'
@@ -6,6 +6,7 @@ import { useDeckActions } from '@/composables/deck/use-deck-actions'
 import { useSessionRef } from '@/composables/use-session-ref'
 import { useMemberStore } from '@/stores/member'
 import { DECK_SETTINGS_DEFAULTS, DECK_CONFIG_DEFAULTS } from '@/utils/deck/defaults'
+import { buildDeckPayload, hasDeckChanges } from '@/utils/deck/payload'
 import { emitSfx } from '@/sfx/bus'
 import type { ImageUploadPayload } from '@/components/image-uploader.vue'
 
@@ -44,6 +45,11 @@ export function useDeckEditor(deck?: Deck) {
 
   const active_side = useSessionRef<CardSide>('deck-settings.active-side', 'cover')
 
+  const initial_payload = buildDeckPayload({ settings, config, cover, card_attributes })
+  const is_dirty = computed(() =>
+    hasDeckChanges({ settings, config, cover, card_attributes }, initial_payload)
+  )
+
   const deck_actions = useDeckActions()
   const delete_mutation = useDeleteDeckMutation()
   const reset_reviews_mutation = useResetDeckReviewsMutation()
@@ -51,13 +57,8 @@ export function useDeckEditor(deck?: Deck) {
 
   async function saveDeck(): Promise<boolean> {
     const payload: Deck = {
-      ...settings,
-      study_config: { ...config },
-      cover_config: { ...cover },
-      card_attributes: {
-        front: { ...card_attributes.front },
-        back: { ...card_attributes.back }
-      }
+      id: settings.id,
+      ...buildDeckPayload({ settings, config, cover, card_attributes })
     }
     return settings.id
       ? await deck_actions.updateDeck(payload)
@@ -137,6 +138,7 @@ export function useDeckEditor(deck?: Deck) {
     cover_image_preview,
     cover_image_loading,
     active_side,
+    is_dirty,
     deleting: delete_mutation.isLoading,
     resetting_reviews: reset_reviews_mutation.isLoading,
     saveDeck,
