@@ -42,7 +42,6 @@ const vertical_alignment = computed({
       size="lg"
     />
 
-    <align-picker axis="horizontal" v-model:value="horizontal_alignment" />
-    <align-picker axis="vertical" v-model:value="vertical_alignment" />
+    <align-picker v-model:horizontal="horizontal_alignment" v-model:vertical="vertical_alignment" />
   </div>
 </template>

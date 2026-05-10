@@ -1,68 +1,60 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import UiIcon from '@/components/ui-kit/icon.vue'
-import PickerPopover from './cover-designer/picker-popover.vue'
 import { emitSfx } from '@/sfx/bus'
 
-type Axis = 'horizontal' | 'vertical'
-type AlignValue = 'left' | 'center' | 'right' | 'top' | 'bottom'
+type Horizontal = 'left' | 'center' | 'right'
+type Vertical = 'top' | 'center' | 'bottom'
 
-type AlignPickerProps = {
-  axis: Axis
+const horizontal = defineModel<Horizontal | undefined>('horizontal')
+const vertical = defineModel<Vertical | undefined>('vertical')
+
+const HORIZONTALS: Horizontal[] = ['left', 'center', 'right']
+const VERTICALS: Vertical[] = ['top', 'center', 'bottom']
+
+const DOT_POSITION: Record<Vertical, Record<Horizontal, string>> = {
+  top: { left: 'top-1 left-1', center: 'top-1 left-1/2 -translate-x-1/2', right: 'top-1 right-1' },
+  center: {
+    left: 'top-1/2 left-1 -translate-y-1/2',
+    center: 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+    right: 'top-1/2 right-1 -translate-y-1/2'
+  },
+  bottom: {
+    left: 'bottom-1 left-1',
+    center: 'bottom-1 left-1/2 -translate-x-1/2',
+    right: 'bottom-1 right-1'
+  }
 }
 
-const { axis } = defineProps<AlignPickerProps>()
-
-const value = defineModel<AlignValue | undefined>('value')
-
-const { t } = useI18n()
-
-const OPTIONS: Record<Axis, { value: AlignValue; icon: string }[]> = {
-  horizontal: [
-    { value: 'left', icon: 'align-left' },
-    { value: 'center', icon: 'align-center' },
-    { value: 'right', icon: 'align-right' }
-  ],
-  vertical: [
-    { value: 'top', icon: 'align-v-top' },
-    { value: 'center', icon: 'align-v-center' },
-    { value: 'bottom', icon: 'align-v-bottom' }
-  ]
+function isActive(h: Horizontal, v: Vertical) {
+  return (horizontal.value ?? 'center') === h && (vertical.value ?? 'center') === v
 }
 
-const TRIGGER_ICON: Record<Axis, string> = {
-  horizontal: 'align-center',
-  vertical: 'align-v-center'
-}
-
-const TRIGGER_LABEL_KEY: Record<Axis, string> = {
-  horizontal: 'deck-view.card-attributes.horizontal-alignment',
-  vertical: 'deck-view.card-attributes.vertical-alignment'
-}
-
-function onSelect(next: AlignValue) {
-  if (next === value.value) {
+function onSelect(h: Horizontal, v: Vertical) {
+  if (isActive(h, v)) {
     emitSfx('ui.digi_powerdown')
     return
   }
   emitSfx('ui.etc_camera_shutter')
-  value.value = next
+  horizontal.value = h
+  vertical.value = v
 }
 </script>
 
 <template>
-  <picker-popover :label="t(TRIGGER_LABEL_KEY[axis])" :icon="TRIGGER_ICON[axis]">
-    <div :data-testid="`align-picker__${axis}-options`" class="col-span-4 grid grid-cols-3 gap-1">
+  <div data-testid="align-picker" class="grid grid-cols-3 gap-1 w-24">
+    <template v-for="v in VERTICALS" :key="v">
       <button
-        v-for="option in OPTIONS[axis]"
-        :key="option.value"
-        :data-testid="`align-picker__${axis}-option`"
-        :data-active="option.value === (value ?? 'center')"
-        class="aspect-square flex items-center justify-center rounded-2 cursor-pointer text-(--theme-on-neutral) hover:bg-(--theme-neutral) data-[active=true]:bg-(--theme-primary) data-[active=true]:text-(--theme-on-primary)"
-        @click="onSelect(option.value)"
+        v-for="h in HORIZONTALS"
+        :key="`${h}-${v}`"
+        :data-testid="`align-picker__cell-${h}-${v}`"
+        :data-active="isActive(h, v)"
+        class="relative aspect-square rounded-2 cursor-pointer bg-(--theme-neutral)/30 hover:bg-(--theme-neutral) data-[active=true]:bg-(--theme-primary)"
+        @click="onSelect(h, v)"
       >
-        <ui-icon :src="option.icon" />
+        <span
+          :class="DOT_POSITION[v][h]"
+          class="absolute size-1.5 rounded-full bg-(--theme-on-neutral) in-data-[active=true]:bg-(--theme-on-primary)"
+        ></span>
       </button>
-    </div>
-  </picker-popover>
+    </template>
+  </div>
 </template>
