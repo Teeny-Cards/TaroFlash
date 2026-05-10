@@ -3,8 +3,15 @@ import { useDeleteDeckMutation } from '@/api/decks'
 import { useUploadImageMutation } from '@/api/media'
 import { useDeckActions } from '@/composables/deck/use-deck-actions'
 import { useMemberStore } from '@/stores/member'
+import { emitSfx } from '@/sfx/bus'
 import type { ImageUploadPayload } from '@/components/image-uploader.vue'
 
+/**
+ * Reactive state + mutations for editing one deck (or staging a brand-new one
+ * when `deck` is omitted). Owns the in-flight `settings` / `config` / `cover`
+ * objects that the deck-settings tabs bind into, plus the persistence
+ * helpers that flush them to the backend.
+ */
 export function useDeckEditor(deck?: Deck) {
   const settings = reactive<Omit<Deck, 'study_config' | 'cover_config'>>({
     id: deck?.id as number,
@@ -31,6 +38,8 @@ export function useDeckEditor(deck?: Deck) {
 
   const cover_image_preview = ref<string | undefined>(deck?.cover_config?.bg_image)
   const cover_image_loading = ref(false)
+
+  const active_side = ref<CardSide>('cover')
 
   const deck_actions = useDeckActions()
   const delete_mutation = useDeleteDeckMutation()
@@ -95,6 +104,13 @@ export function useDeckEditor(deck?: Deck) {
     cover.bg_image = undefined
   }
 
+  /** Switch the design tab's previewed side. No-op when already active. */
+  function setActiveSide(side: CardSide) {
+    if (side === active_side.value) return
+    emitSfx('ui.slide_up')
+    active_side.value = side
+  }
+
   return {
     settings,
     config,
@@ -102,11 +118,13 @@ export function useDeckEditor(deck?: Deck) {
     card_attributes,
     cover_image_preview,
     cover_image_loading,
+    active_side,
     saveDeck,
     deleteDeck,
     uploadImage,
     removeImage,
     setCoverImage,
-    removeCoverImage
+    removeCoverImage,
+    setActiveSide
   }
 }

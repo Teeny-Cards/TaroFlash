@@ -1,6 +1,7 @@
-import { describe, test, expect } from 'vite-plus/test'
+import { describe, test, expect, beforeEach } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
 import { defineComponent, h } from 'vue'
+import { setActivePinia, createPinia } from 'pinia'
 import TabSheet from '@/components/layout-kit/modal/tab-sheet.vue'
 
 const tabs = [
@@ -36,6 +37,8 @@ function mountSheet(props = {}, slots = {}) {
 }
 
 describe('TabSheet', () => {
+  beforeEach(() => setActivePinia(createPinia()))
+
   // ── Sidebar rendering ──────────────────────────────────────────────────────
 
   test('renders one button per tab', () => {
@@ -60,7 +63,28 @@ describe('TabSheet', () => {
       props: { tabs: [] },
       global: { stubs: { MobileSheet: MobileSheetStub } }
     })
-    expect(wrapper.find('[data-testid="tab-sheet__tabs"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="tab-sheet__sidebar"]').exists()).toBe(false)
+  })
+
+  // ── Tablist a11y ───────────────────────────────────────────────────────────
+
+  test('marks the active tab with aria-selected=true and inactive with false', () => {
+    const wrapper = mountSheet({ active: 'two' })
+    const buttons = wrapper.findAll('[data-testid="tab-sheet__tab"]')
+    expect(buttons[1].attributes('aria-selected')).toBe('true')
+    expect(buttons[0].attributes('aria-selected')).toBe('false')
+  })
+
+  test('exposes role="tablist" on the tab list and role="tab" on each tab', () => {
+    const wrapper = mountSheet()
+    expect(wrapper.find('[data-testid="tab-sheet__tabs"]').attributes('role')).toBe('tablist')
+    const buttons = wrapper.findAll('[data-testid="tab-sheet__tab"]')
+    for (const button of buttons) expect(button.attributes('role')).toBe('tab')
+  })
+
+  test('exposes role="tabpanel" on the content container', () => {
+    const wrapper = mountSheet()
+    expect(wrapper.find('[data-testid="tab-sheet__content"]').attributes('role')).toBe('tabpanel')
   })
 
   // ── Tab switching + v-model ────────────────────────────────────────────────
@@ -75,18 +99,21 @@ describe('TabSheet', () => {
     expect(events[events.length - 1]).toEqual(['two'])
   })
 
-  test('clicking the already-active tab does not emit update:active', async () => {
+  test('clicking a different tab emits select with that tab value', async () => {
+    const wrapper = mountSheet()
+    const buttons = wrapper.findAll('[data-testid="tab-sheet__tab"]')
+    await buttons[1].trigger('click')
+    expect(wrapper.emitted('select')).toEqual([['two']])
+  })
+
+  test('clicking the already-active tab emits reselect, not update:active', async () => {
     const wrapper = mountSheet({ active: 'two' })
     const buttons = wrapper.findAll('[data-testid="tab-sheet__tab"]')
-    // index 1 corresponds to the 'two' tab
     await buttons[1].trigger('click')
 
-    // The only emissions should be the initialization-time update (if any),
-    // not a fresh emission caused by clicking the active tab.
+    expect(wrapper.emitted('reselect')).toEqual([['two']])
     const events = wrapper.emitted('update:active') ?? []
     const fromClick = events.filter(([value]) => value === 'two')
-    // The click should not produce any update:active=two emissions beyond
-    // what was already there before the click.
     expect(fromClick.length).toBeLessThanOrEqual(1)
   })
 
@@ -129,6 +156,11 @@ describe('TabSheet', () => {
     expect(wrapper.find('[data-testid="header-custom"]').exists()).toBe(true)
   })
 
+  test('forwards footer slot through to the underlying mobile-sheet', () => {
+    const wrapper = mountSheet({}, { footer: '<div data-testid="footer-content">f</div>' })
+    expect(wrapper.find('[data-testid="footer-content"]').exists()).toBe(true)
+  })
+
   // ── parts prop ─────────────────────────────────────────────────────────────
 
   test('merges parts.content classes onto the content container', () => {
@@ -139,7 +171,7 @@ describe('TabSheet', () => {
 
   test('merges parts.sidebar classes onto the sidebar container', () => {
     const wrapper = mountSheet({ parts: { sidebar: 'extra-sidebar-class' } })
-    const classes = wrapper.find('[data-testid="tab-sheet__tabs"]').classes()
+    const classes = wrapper.find('[data-testid="tab-sheet__sidebar"]').classes()
     expect(classes).toContain('extra-sidebar-class')
   })
 
