@@ -61,6 +61,7 @@ async function onSave() {
       :cover="cover"
       :card_attributes="card_attributes"
       :side="active_side"
+      @update:side="setActiveSide"
     />
 
     <tab-deck-settings v-else-if="active_tab === 'deck-settings'" :settings="settings" />
