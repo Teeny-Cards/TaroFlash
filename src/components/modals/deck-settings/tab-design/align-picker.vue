@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiIcon from '@/components/ui-kit/icon.vue'
 import { emitSfx } from '@/sfx/bus'
 
 type Horizontal = 'left' | 'center' | 'right'
@@ -10,17 +11,21 @@ const vertical = defineModel<Vertical | undefined>('vertical')
 const HORIZONTALS: Horizontal[] = ['left', 'center', 'right']
 const VERTICALS: Vertical[] = ['top', 'center', 'bottom']
 
-const DOT_POSITION: Record<Vertical, Record<Horizontal, string>> = {
-  top: { left: 'top-1 left-1', center: 'top-1 left-1/2 -translate-x-1/2', right: 'top-1 right-1' },
+const ICONS: Record<Vertical, Record<Horizontal, string>> = {
+  top: {
+    left: 'align-top-left',
+    center: 'align-top-center',
+    right: 'align-top-right'
+  },
   center: {
-    left: 'top-1/2 left-1 -translate-y-1/2',
-    center: 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
-    right: 'top-1/2 right-1 -translate-y-1/2'
+    left: 'align-middle-left',
+    center: 'align-middle-center',
+    right: 'align-middle-right'
   },
   bottom: {
-    left: 'bottom-1 left-1',
-    center: 'bottom-1 left-1/2 -translate-x-1/2',
-    right: 'bottom-1 right-1'
+    left: 'align-bottom-left',
+    center: 'align-bottom-center',
+    right: 'align-bottom-right'
   }
 }
 
@@ -40,20 +45,21 @@ function onSelect(h: Horizontal, v: Vertical) {
 </script>
 
 <template>
-  <div data-testid="align-picker" class="grid grid-cols-3 gap-1 w-24">
+  <div
+    data-testid="align-picker"
+    class="grid grid-cols-3 gap-1 w-full bg-brown-100 dark:bg-grey-700 rounded-[22px] p-2"
+  >
     <template v-for="v in VERTICALS" :key="v">
       <button
         v-for="h in HORIZONTALS"
         :key="`${h}-${v}`"
         :data-testid="`align-picker__cell-${h}-${v}`"
         :data-active="isActive(h, v)"
-        class="relative aspect-square rounded-2 cursor-pointer bg-(--theme-neutral)/30 hover:bg-(--theme-neutral) data-[active=true]:bg-(--theme-primary)"
+        class="aspect-square flex items-center justify-center rounded-5 cursor-pointer text-brown-500 dark:text-brown-100 data-[active=true]:bg-(--theme-primary) data-[active=true]:text-(--theme-on-primary) data-[active=true]:bgx-diagonal-stripes data-[active=true]:bgx-opacity-10 data-[active=false]:hover:bg-(--theme-primary) data-[active=false]:hover:text-(--theme-on-primary) data-[active=false]:hover:bgx-diagonal-stripes data-[active=false]:hover:bgx-opacity-10"
         @click="onSelect(h, v)"
+        v-sfx.hover="'ui.click_07'"
       >
-        <span
-          :class="DOT_POSITION[v][h]"
-          class="absolute size-1.5 rounded-full bg-(--theme-on-neutral) in-data-[active=true]:bg-(--theme-on-primary)"
-        ></span>
+        <ui-icon :src="isActive(h, v) ? ICONS[v][h] : 'dot'" />
       </button>
     </template>
   </div>
