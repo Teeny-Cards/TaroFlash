@@ -148,6 +148,7 @@ async function onDelete() {
 
     <template #footer>
       <ui-button
+        v-if="editor.is_dirty.value"
         data-theme="blue-500"
         data-theme-dark="blue-650"
         size="xl"
