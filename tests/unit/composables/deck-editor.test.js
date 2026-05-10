@@ -16,6 +16,10 @@ const { mockUploadImage } = vi.hoisted(() => ({
   mockUploadImage: vi.fn().mockResolvedValue('https://cdn.example.com/cover.jpg')
 }))
 
+const { mockEmitSfx } = vi.hoisted(() => ({
+  mockEmitSfx: vi.fn()
+}))
+
 const TEST_MEMBER_ID = '11111111-1111-1111-1111-111111111111'
 
 vi.mock('@/api/decks', () => ({
@@ -35,6 +39,10 @@ vi.mock('@/api/media', () => ({
 
 vi.mock('@/stores/member', () => ({
   useMemberStore: () => ({ id: TEST_MEMBER_ID })
+}))
+
+vi.mock('@/sfx/bus', () => ({
+  emitSfx: mockEmitSfx
 }))
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -63,6 +71,7 @@ describe('useDeckEditor', () => {
     mockDeleteDeck.mockClear()
     mockUploadImage.mockClear()
     mockUploadImage.mockResolvedValue('https://cdn.example.com/cover.jpg')
+    mockEmitSfx.mockClear()
   })
 
   // ── Initialization ─────────────────────────────────────────────────────────
@@ -464,6 +473,44 @@ describe('useDeckEditor', () => {
       removeCoverImage()
 
       expect(cover.bg_image).toBeUndefined()
+    })
+  })
+
+  // ── active_side / setActiveSide ─────────────────────────────────────────────
+
+  describe('active_side / setActiveSide', () => {
+    test('initializes active_side to "cover"', () => {
+      const { active_side } = useDeckEditor(makeDeck())
+      expect(active_side.value).toBe('cover')
+    })
+
+    test('setActiveSide updates active_side and emits sfx', () => {
+      const { active_side, setActiveSide } = useDeckEditor(makeDeck())
+
+      setActiveSide('front')
+
+      expect(active_side.value).toBe('front')
+      expect(mockEmitSfx).toHaveBeenCalledWith('ui.slide_up')
+    })
+
+    test('setActiveSide is a no-op when side is already active', () => {
+      const { active_side, setActiveSide } = useDeckEditor(makeDeck())
+
+      setActiveSide('cover')
+
+      expect(active_side.value).toBe('cover')
+      expect(mockEmitSfx).not.toHaveBeenCalled()
+    })
+
+    test('setActiveSide cycles through cover/front/back', () => {
+      const { active_side, setActiveSide } = useDeckEditor(makeDeck())
+
+      setActiveSide('front')
+      setActiveSide('back')
+      setActiveSide('cover')
+
+      expect(active_side.value).toBe('cover')
+      expect(mockEmitSfx).toHaveBeenCalledTimes(3)
     })
   })
 })
