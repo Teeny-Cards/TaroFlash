@@ -32,3 +32,12 @@ export async function saveReview(card_id: number, card: Review, log: ReviewLog):
     throw new Error(error.message)
   }
 }
+
+export async function resetDeckReviews(deck_id: number): Promise<void> {
+  const { error } = await supabase.rpc('reset_deck_reviews', { p_deck_id: deck_id })
+
+  if (error) {
+    logger.error(error.message)
+    throw new Error(error.message)
+  }
+}
