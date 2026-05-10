@@ -14,7 +14,7 @@ const MobileSheetStub = defineComponent({
     return () =>
       h('div', { 'data-testid': 'mobile-sheet-stub' }, [
         slots['header-content']?.(),
-        slots.body?.()
+        slots.default?.()
       ])
   }
 })
