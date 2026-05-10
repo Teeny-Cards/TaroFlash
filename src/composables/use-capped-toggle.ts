@@ -25,21 +25,31 @@ export function useCappedToggle(
   default_value: number,
   on_all_prefill?: () => number | undefined
 ): UseCappedToggleResult {
-  const local = ref<number>(model.value ?? default_value)
+  const local = ref<number>(
+    model.value ?? on_all_prefill?.() ?? (Number.isFinite(max) ? max : default_value)
+  )
+
+  const last_numeric = ref<number | null>(model.value ?? null)
 
   watch(model, (v) => {
-    if (v != null) local.value = v
+    if (v != null) {
+      local.value = v
+      last_numeric.value = v
+    }
   })
 
   const is_all = computed({
     get: () => model.value === null,
     set: (on: boolean) => {
       if (on) {
+        if (local.value != null) last_numeric.value = local.value
         const prefill = on_all_prefill?.()
         if (prefill != null) local.value = prefill
         model.value = null
       } else {
-        model.value = local.value
+        const restored = last_numeric.value ?? local.value
+        local.value = restored
+        model.value = restored
       }
     }
   })

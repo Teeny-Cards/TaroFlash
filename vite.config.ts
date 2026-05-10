@@ -63,6 +63,7 @@ export default defineConfig({
           setupFiles: ['./tests/setup-browser.js'],
           browser: {
             enabled: true,
+            headless: true,
             provider: playwright(),
             instances: [{ browser: 'chromium' }]
           }

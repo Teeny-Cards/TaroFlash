@@ -72,6 +72,7 @@ describe('useDeckEditor', () => {
     mockUploadImage.mockClear()
     mockUploadImage.mockResolvedValue('https://cdn.example.com/cover.jpg')
     mockEmitSfx.mockClear()
+    sessionStorage.clear()
   })
 
   // ── Initialization ─────────────────────────────────────────────────────────

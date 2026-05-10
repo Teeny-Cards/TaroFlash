@@ -3,6 +3,8 @@ import { useI18n } from 'vue-i18n'
 import UiInput from '@/components/ui-kit/input.vue'
 import UiToggle from '@/components/ui-kit/toggle.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
+import SectionList from '@/components/layout-kit/section-list.vue'
+import LabeledSection from '@/components/layout-kit/labeled-section.vue'
 
 type TabDeckSettingsProps = {
   settings: {
@@ -18,23 +20,27 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div data-testid="tab-deck-settings" class="flex flex-col gap-5 items-start w-full">
-    <ui-input
-      :placeholder="t('deck.title-placeholder')"
-      text-align="center"
-      size="lg"
-      v-model:value="settings.title"
-    />
-    <ui-input
-      :placeholder="t('deck.description-placeholder')"
-      v-model:value="settings.description"
-    />
+  <section-list data-testid="tab-deck-settings">
+    <labeled-section :label="t('deck.settings-modal.general.section.details-heading')">
+      <ui-input
+        :placeholder="t('deck.title-placeholder')"
+        text-align="center"
+        size="lg"
+        v-model:value="settings.title"
+      />
+      <ui-input
+        :placeholder="t('deck.description-placeholder')"
+        v-model:value="settings.description"
+      />
+    </labeled-section>
 
-    <ui-toggle v-model:checked="settings.is_public">
-      <div class="flex items-center gap-2.5">
-        <ui-icon src="public" />
-        {{ t('deck.settings-modal.is-public') }}
-      </div>
-    </ui-toggle>
-  </div>
+    <labeled-section :label="t('deck.settings-modal.general.section.visibility-heading')">
+      <ui-toggle v-model:checked="settings.is_public">
+        <div class="flex items-center gap-2.5">
+          <ui-icon src="public" />
+          {{ t('deck.settings-modal.is-public') }}
+        </div>
+      </ui-toggle>
+    </labeled-section>
+  </section-list>
 </template>
