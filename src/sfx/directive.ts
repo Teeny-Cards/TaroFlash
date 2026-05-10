@@ -21,7 +21,7 @@ type SfxState = {
   cleanup: Cleanup
 }
 
-const STATE_KEY = '__vSfxState'
+const states = new WeakMap<HTMLElement, SfxState>()
 
 export const vSfx: Directive<HTMLElement, SfxBindingValue> = {
   mounted(el, binding) {
@@ -30,7 +30,7 @@ export const vSfx: Directive<HTMLElement, SfxBindingValue> = {
 
   updated(el, binding) {
     if (binding.value === binding.oldValue) return
-    const state = (el as any)[STATE_KEY] as SfxState | undefined
+    const state = states.get(el)
     if (!state) {
       _attach(el, binding)
       return
@@ -39,9 +39,9 @@ export const vSfx: Directive<HTMLElement, SfxBindingValue> = {
   },
 
   beforeUnmount(el) {
-    const state = (el as any)[STATE_KEY] as SfxState | undefined
+    const state = states.get(el)
     state?.cleanup()
-    ;(el as any)[STATE_KEY] = undefined
+    states.delete(el)
   }
 }
 
@@ -88,7 +88,7 @@ function _attach(el: HTMLElement, binding: DirectiveBinding<SfxBindingValue>) {
   )
 
   state.cleanup = () => cleanups.forEach((c) => c())
-  ;(el as any)[STATE_KEY] = state
+  states.set(el, state)
 }
 
 function _add(el: HTMLElement, event: string, handler: EventListener) {
