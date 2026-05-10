@@ -6,6 +6,7 @@ import TabDeckSettings from './tab-deck-settings/index.vue'
 import TabStudy from './tab-study/index.vue'
 import DeckPreview from './deck-preview.vue'
 import { useDeckEditor } from '@/composables/deck-editor'
+import { useSessionRef } from '@/composables/use-session-ref'
 import UiButton from '@/components/ui-kit/button.vue'
 import TabSheet from '@/components/layout-kit/modal/tab-sheet.vue'
 import { emitSfx } from '@/sfx/bus'
@@ -26,7 +27,7 @@ const tabs = computed(() => [
   { value: 'study', icon: 'school-cap', label: t('deck.settings-modal.tab.study') }
 ])
 
-const active_tab = ref('')
+const active_tab = useSessionRef('deck-settings.active-tab', '')
 const active_side = ref<CardSide>('cover')
 
 const visible_side = computed(() => (active_tab.value === 'design' ? active_side.value : 'cover'))
