@@ -45,6 +45,10 @@ function selectOption(value: string) {
       <slot name="overlay"></slot>
     </template>
 
+    <template #header-content>
+      <slot name="header-content"></slot>
+    </template>
+
     <template v-if="tabs?.length" #sidebar>
       <div
         data-testid="tab-sheet__tabs"
