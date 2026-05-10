@@ -38,6 +38,7 @@ type Theme =
   | 'red-500'
   | 'red-400'
   | 'red-300'
+  | 'orange-700'
   | 'yellow-700'
   | 'yellow-600'
   | 'yellow-500'

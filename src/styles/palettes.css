@@ -69,8 +69,8 @@
   --theme-secondary: var(--color-blue-500);
   --theme-on-secondary: var(--color-brown-100);
 
-  --theme-accent: var(--color-yellow-500);
-  --theme-on-accent: var(--color-brown-700);
+  --theme-accent: var(--color-pink-700);
+  --theme-on-accent: var(--color-brown-100);
 
   --theme-neutral: var(--color-brown-100);
   --theme-on-neutral: var(--color-grey-900);
@@ -384,6 +384,23 @@
 
   --theme-neutral: var(--color-brown-100);
   --theme-on-neutral: var(--color-brown-700);
+}
+
+/* ─── ORANGE ───────────────────────────────────────────────────────── */
+
+[data-theme='orange-700'],
+[data-theme='dark'] [data-theme-dark='orange-700'] {
+  --theme-primary: var(--color-orange-700);
+  --theme-on-primary: var(--color-brown-100);
+
+  --theme-secondary: var(--color-yellow-600);
+  --theme-on-secondary: var(--color-brown-100);
+
+  --theme-accent: var(--color-yellow-500);
+  --theme-on-accent: var(--color-brown-700);
+
+  --theme-neutral: var(--color-brown-100);
+  --theme-on-neutral: var(--color-orange-700);
 }
 
 /* ─── YELLOW ───────────────────────────────────────────────────────── */
