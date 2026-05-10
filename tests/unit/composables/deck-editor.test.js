@@ -164,7 +164,10 @@ describe('useDeckEditor', () => {
 
       expect(mockUpdateDeck).toHaveBeenCalledOnce()
       const [arg] = mockUpdateDeck.mock.calls[0]
-      expect(arg.study_config).toEqual({ study_all_cards: true, retry_failed_cards: false })
+      expect(arg.study_config).toMatchObject({
+        study_all_cards: true,
+        retry_failed_cards: false
+      })
     })
 
     test('calls upsertDeck with cover_config key', async () => {
@@ -299,6 +302,64 @@ describe('useDeckEditor', () => {
       expect(arg.card_attributes.front.text_size).toBe('x-large')
       expect(arg.card_attributes.front.horizontal_alignment).toBe('right')
       expect(arg.card_attributes.back.vertical_alignment).toBe('top')
+    })
+  })
+
+  // ── is_dirty ───────────────────────────────────────────────────────────────
+
+  describe('is_dirty', () => {
+    test('is false right after init for an existing deck (no edits yet)', () => {
+      const { is_dirty } = useDeckEditor(makeDeck())
+      expect(is_dirty.value).toBe(false)
+    })
+
+    test('is false right after init for a new deck (no edits yet)', () => {
+      const { is_dirty } = useDeckEditor()
+      expect(is_dirty.value).toBe(false)
+    })
+
+    test('flips to true when a settings field is mutated', () => {
+      const { settings, is_dirty } = useDeckEditor(makeDeck())
+      settings.title = 'Renamed'
+      expect(is_dirty.value).toBe(true)
+    })
+
+    test('flips to true when a study_config field is mutated', () => {
+      const { config, is_dirty } = useDeckEditor(
+        makeDeck({ study_config: { study_all_cards: false } })
+      )
+      config.study_all_cards = true
+      expect(is_dirty.value).toBe(true)
+    })
+
+    test('flips to true when cover_config is mutated', () => {
+      const { cover, is_dirty } = useDeckEditor(makeDeck())
+      cover.color = '#000000'
+      expect(is_dirty.value).toBe(true)
+    })
+
+    test('flips to true when card_attributes is mutated', () => {
+      const { card_attributes, is_dirty } = useDeckEditor(makeDeck())
+      card_attributes.front.text_size = 6
+      expect(is_dirty.value).toBe(true)
+    })
+
+    test('flips to true after setCoverImage updates bg_image', async () => {
+      const { setCoverImage, is_dirty } = useDeckEditor(makeDeck())
+      await setCoverImage({
+        preview: 'p',
+        file: new File([''], 'x.png', { type: 'image/png' })
+      })
+      expect(is_dirty.value).toBe(true)
+    })
+
+    test('returns false again when a mutation is reverted to the original value', () => {
+      const deck = makeDeck({ title: 'Original' })
+      const { settings, is_dirty } = useDeckEditor(deck)
+      settings.title = 'Changed'
+      expect(is_dirty.value).toBe(true)
+      settings.title = 'Original'
+      expect(is_dirty.value).toBe(false)
     })
   })
 
