@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import UiSpinbox from '@/components/ui-kit/spinbox.vue'
 import AlignPicker from './align-picker.vue'
 import { emitSfx } from '@/sfx/bus'
 
-type CardDesignerToolbarProps = {
+type CardDesignerProps = {
   attributes: CardAttributes
 }
 
-const { attributes } = defineProps<CardDesignerToolbarProps>()
+const { attributes } = defineProps<CardDesignerProps>()
+
+const { t } = useI18n()
 
 const TEXT_SIZE_DEFAULT = 4
 
@@ -32,9 +35,15 @@ const vertical_alignment = computed({
 </script>
 
 <template>
-  <div data-testid="card-designer-toolbar" class="flex gap-4">
+  <div
+    data-testid="card-designer"
+    class="grid grid-cols-[1fr_auto] items-start gap-x-4 gap-y-3 w-full"
+  >
+    <span data-testid="card-designer__text-size-label" class="text-sm">
+      {{ t('card-designer.text-size-label') }}
+    </span>
     <ui-spinbox
-      data-testid="card-designer-toolbar__text-size-spinbox"
+      data-testid="card-designer__text-size-spinbox"
       v-model:value="text_size"
       :min="1"
       :max="10"
@@ -42,6 +51,9 @@ const vertical_alignment = computed({
       size="lg"
     />
 
+    <span data-testid="card-designer__alignment-label" class="text-sm">
+      {{ t('card-designer.alignment-label') }}
+    </span>
     <align-picker v-model:horizontal="horizontal_alignment" v-model:vertical="vertical_alignment" />
   </div>
 </template>

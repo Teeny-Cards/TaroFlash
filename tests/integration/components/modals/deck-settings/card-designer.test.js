@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vite-plus/test'
 import { mount } from '@vue/test-utils'
 import { reactive, defineComponent, h } from 'vue'
-import CardDesignerToolbar from '@/components/modals/deck-settings/tab-design/card-designer-toolbar.vue'
+import CardDesigner from '@/components/modals/deck-settings/tab-design/card-designer.vue'
 
 const AlignPickerStub = defineComponent({
   name: 'AlignPicker',
@@ -40,7 +40,7 @@ const UiSpinboxStub = defineComponent({
 
 function makeToolbar(initial = {}) {
   const attributes = reactive(initial)
-  const wrapper = mount(CardDesignerToolbar, {
+  const wrapper = mount(CardDesigner, {
     props: { attributes },
     global: {
       stubs: { AlignPicker: AlignPickerStub, UiSpinbox: UiSpinboxStub },
@@ -50,10 +50,10 @@ function makeToolbar(initial = {}) {
   return { wrapper, attributes }
 }
 
-describe('CardDesignerToolbar', () => {
+describe('CardDesigner', () => {
   test('renders the toolbar container', () => {
     const { wrapper } = makeToolbar()
-    expect(wrapper.find('[data-testid="card-designer-toolbar"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="card-designer"]').exists()).toBe(true)
   })
 
   test('renders one align-picker', () => {
