@@ -2,6 +2,8 @@
 name: update-docs
 description: Bring `docs/` up to date with all code changes since the last docs sync — driven by `docs/.last-updated.json`, not branch diffs
 allowed-tools: Read, Edit, Write, Bash, Glob, Grep
+argument-hint: ''
+arguments: []
 lastUpdated: 2026-04-16T23:13:06Z
 ---
 
