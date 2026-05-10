@@ -3,7 +3,6 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Card from '@/components/card/index.vue'
 import { useCardsInDeckInfiniteQuery } from '@/api/cards'
-import { emitSfx } from '@/sfx/bus'
 
 type DeckPreviewProps = {
   deck_id?: number
