@@ -15,13 +15,13 @@ defineEmits<{
   (e: 'cover-image-remove'): void
 }>()
 
-const supported_themes: MemberTheme[] = [
-  'blue-500',
-  'green-400',
-  'purple-500',
-  'pink-400',
-  'red-500',
-  'yellow-500'
+const supported_themes: DeckCoverThemeOption[] = [
+  { light: 'blue-500', dark: 'blue-800' },
+  { light: 'green-400', dark: 'green-500' },
+  { light: 'purple-500', dark: 'purple-700' },
+  { light: 'pink-400', dark: 'pink-500' },
+  { light: 'red-500' },
+  { light: 'yellow-500', dark: 'yellow-600' }
 ]
 
 const supported_patterns: DeckCoverPattern[] = [
@@ -49,12 +49,14 @@ const supported_icons: string[] = [
 
 <template>
   <div data-testid="cover-designer-toolbar">
-    <div data-testid="cover-designer-toolbar__controls" class="flex gap-4">
+    <div data-testid="cover-designer-toolbar__controls" class="flex flex-col gap-4">
       <bg-color-picker
         :supported_themes="supported_themes"
         :bg_color="config.bg_color"
+        :bg_color_dark="config.bg_color_dark"
         :border_size="config.border_size"
         @update:bg_color="config.bg_color = $event"
+        @update:bg_color_dark="config.bg_color_dark = $event"
         @update:border_size="config.border_size = $event"
       />
 

@@ -1,5 +1,6 @@
 export type CoverBindings = {
   'data-theme': MemberTheme | undefined
+  'data-theme-dark': MemberTheme | undefined
   class: string[]
   style: Record<string, string>
 }
@@ -65,6 +66,7 @@ export function coverBindings(
 
   return {
     'data-theme': config?.bg_color ?? fallbackTheme,
+    'data-theme-dark': config?.bg_color_dark,
     class: classes,
     style
   }
