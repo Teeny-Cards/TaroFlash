@@ -1,54 +1,34 @@
 <script setup lang="ts">
 import { emitSfx } from '@/sfx/bus'
+
 const checked = defineModel<boolean>('checked')
 </script>
 
 <template>
   <label
     data-testid="ui-kit-toggle"
-    class="ui-kit-toggle"
-    :class="{ 'ui-kit-toggle--checked': checked }"
+    :data-checked="checked"
+    class="flex cursor-pointer items-center justify-between gap-2"
   >
-    <span data-testid="ui-kit-toggle__label" class="ui-kit-toggle__label">
+    <span data-testid="ui-kit-toggle__label" class="text-(--theme-nuetral)">
       <slot></slot>
     </span>
 
-    <span data-testid="ui-kit-toggle__switch" class="ui-kit-toggle__switch">
+    <span
+      data-testid="ui-kit-toggle__switch"
+      class="flex w-12 items-center rounded-full p-1 transition-colors bg-(--theme-neutral) has-checked:bg-(--theme-primary)"
+    >
       <input
         type="checkbox"
         v-model="checked"
-        class="hidden"
-        @change="emitSfx('ui.etc_camera_shutter')"
+        class="peer sr-only"
+        @change="emitSfx('ui.select')"
+        v-sfx.hover="'ui.click_07'"
       />
-      <span data-testid="ui-kit-toggle__switch-handle" class="ui-kit-toggle__switch-handle"></span>
+      <span
+        data-testid="ui-kit-toggle__switch-handle"
+        class="size-5 rounded-full transition-all duration-100 ease-in-out bg-(--theme-on-neutral) peer-checked:bg-(--theme-neutral) peer-checked:translate-x-full"
+      ></span>
     </span>
   </label>
 </template>
-
-<style>
-@reference '@/styles/main.css';
-
-.ui-kit-toggle {
-  @apply flex cursor-pointer items-center justify-between gap-2;
-}
-
-.ui-kit-toggle .ui-kit-toggle__label {
-  @apply text-brown-700;
-}
-
-.ui-kit-toggle .ui-kit-toggle__switch {
-  @apply bg-brown-100 flex w-12 items-center rounded-full p-1 transition-colors;
-}
-
-.ui-kit-toggle.ui-kit-toggle--checked .ui-kit-toggle__switch {
-  @apply bg-green-400;
-}
-
-.ui-kit-toggle .ui-kit-toggle__switch-handle {
-  @apply bg-brown-500 h-5 w-5 rounded-full transition-all duration-100 ease-in-out;
-}
-
-.ui-kit-toggle.ui-kit-toggle--checked .ui-kit-toggle__switch-handle {
-  @apply bg-brown-100 translate-x-full transform;
-}
-</style>
