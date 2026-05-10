@@ -29,6 +29,8 @@ If there's any chance the test is catching a real bug, **stop**. Name the test, 
 
 Run: `vp test`, `vp test --project Unit|Integration|Contract`, `vp test <file>`, or `deno test` (from `supabase/functions/`) for edge functions.
 
+Integration tests run **headless** by default (Chromium via Playwright — no window opens). Configured via `headless: true` in `vite.config.ts`. Don't pass `--browser.headless=false` or open `vp test --ui` unless the user explicitly asks to debug visually — a window popping to the foreground breaks their flow.
+
 ## Async updates
 
 - `await trigger()` / `await setValue()` — return `nextTick` internally
