@@ -55,26 +55,29 @@ async function onSave() {
       </div>
     </template>
 
-    <template #design>
-      <tab-design :cover="cover" :card_attributes="card_attributes" :side="active_side" />
-    </template>
+    <tab-design
+      v-if="active_tab === 'design'"
+      :cover="cover"
+      :card_attributes="card_attributes"
+      :side="active_side"
+    />
 
-    <template #deck-settings>
-      <tab-deck-settings :settings="settings" :cover="cover" />
-    </template>
+    <tab-deck-settings
+      v-else-if="active_tab === 'deck-settings'"
+      :settings="settings"
+      :cover="cover"
+    />
 
-    <template #study>
-      <tab-study
-        :card_count="deck?.card_count"
-        v-model:shuffle="config.shuffle"
-        x
-        v-model:flip_cards="config.flip_cards"
-        v-model:is_spaced="config.is_spaced"
-        v-model:auto_play="config.auto_play"
-        v-model:max_reviews_per_day="config.max_reviews_per_day"
-        v-model:max_new_per_day="config.max_new_per_day"
-      />
-    </template>
+    <tab-study
+      v-else-if="active_tab === 'study'"
+      :card_count="deck?.card_count"
+      v-model:shuffle="config.shuffle"
+      v-model:flip_cards="config.flip_cards"
+      v-model:is_spaced="config.is_spaced"
+      v-model:auto_play="config.auto_play"
+      v-model:max_reviews_per_day="config.max_reviews_per_day"
+      v-model:max_new_per_day="config.max_new_per_day"
+    />
 
     <template #overlay>
       <deck-preview

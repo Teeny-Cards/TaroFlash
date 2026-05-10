@@ -3,7 +3,6 @@ import { provide } from 'vue'
 import mobileSheet, { type MobileSheetProps } from './mobile-sheet.vue'
 import { activeTabKey } from './tab-sheet-context'
 import { emitSfx } from '@/sfx/bus'
-import { tabContentEnter, tabContentLeave } from '@/utils/animations/tab-sheet'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 
@@ -84,11 +83,7 @@ function selectOption(value: string) {
 
     <div data-testid="tab-sheet__content" :class="['p-8 pt-0', parts?.content]">
       <slot name="before"></slot>
-      <Transition mode="out-in" :css="false" @enter="tabContentEnter" @leave="tabContentLeave">
-        <div :key="active">
-          <slot :name="active"></slot>
-        </div>
-      </Transition>
+      <slot></slot>
       <slot name="after"></slot>
     </div>
   </mobile-sheet>
