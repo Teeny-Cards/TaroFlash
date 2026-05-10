@@ -10,6 +10,16 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
+  server: {
+    watch: {
+      ignored: [
+        '**/tests/**',
+        '**/coverage/**',
+        '**/__screenshots__/**',
+        '**/.vitest-attachments/**'
+      ]
+    }
+  },
   fmt: {
     semi: false,
     tabWidth: 2,
