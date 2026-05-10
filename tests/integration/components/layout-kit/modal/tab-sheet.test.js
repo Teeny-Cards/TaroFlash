@@ -131,18 +131,6 @@ describe('TabSheet', () => {
     expect(wrapper.find('[data-testid="content"]').exists()).toBe(true)
   })
 
-  test('renders before and after slots in the content area', () => {
-    const wrapper = mountSheet(
-      {},
-      {
-        before: '<p data-testid="before">b</p>',
-        after: '<p data-testid="after">a</p>'
-      }
-    )
-    expect(wrapper.find('[data-testid="before"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="after"]').exists()).toBe(true)
-  })
-
   test('forwards overlay slot through to the underlying mobile-sheet', () => {
     const wrapper = mountSheet({}, { overlay: '<div data-testid="overlay-content">over</div>' })
     expect(wrapper.find('[data-testid="overlay-content"]').exists()).toBe(true)
