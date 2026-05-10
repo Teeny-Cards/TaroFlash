@@ -41,34 +41,6 @@ const SpinboxStub = defineComponent({
   }
 })
 
-const ToggleStub = defineComponent({
-  name: 'UiToggle',
-  props: { checked: { type: Boolean, default: false } },
-  emits: ['update:checked'],
-  inheritAttrs: false,
-  setup(props, { slots, emit }) {
-    const attrs = useAttrs()
-    return () =>
-      h(
-        'label',
-        {
-          'data-testid': 'ui-kit-toggle',
-          'data-checked': String(!!props.checked),
-          ...attrs
-        },
-        [
-          h('span', { 'data-testid': 'ui-kit-toggle__label' }, slots.default?.()),
-          h('input', {
-            type: 'checkbox',
-            checked: !!props.checked,
-            'data-testid': 'ui-kit-toggle__input',
-            onChange: (e) => emit('update:checked', e.target.checked)
-          })
-        ]
-      )
-  }
-})
-
 const DEFAULTS = {
   label: 'Reviews',
   all_label: 'All',
@@ -90,17 +62,17 @@ function makeRow(overrides = {}) {
       }
     },
     global: {
-      stubs: { UiSpinbox: SpinboxStub, UiToggle: ToggleStub }
+      stubs: { UiSpinbox: SpinboxStub }
     }
   })
   return { wrapper, getValue: () => modelValue }
 }
 
 describe('CappedSpinboxRow', () => {
-  test('renders the label and the all-toggle label', () => {
+  test('renders the label and the all-pill label', () => {
     const { wrapper } = makeRow({ label: 'Max reviews', all_label: 'Unlimited' })
     expect(wrapper.find('[data-testid="capped-spinbox-row__label"]').text()).toBe('Max reviews')
-    expect(wrapper.find('[data-testid="capped-spinbox-row__all-toggle"]').text()).toContain(
+    expect(wrapper.find('[data-testid="capped-spinbox-row__all-pill"]').text()).toContain(
       'Unlimited'
     )
   })
@@ -119,10 +91,10 @@ describe('CappedSpinboxRow', () => {
     expect(wrapper.find('[data-testid="ui-kit-spinbox"]').attributes('data-value')).toBe('60')
   })
 
-  test('marks the all-toggle checked when value is null', () => {
+  test('marks the all-pill active when value is null', () => {
     const { wrapper } = makeRow({ value: null })
     expect(
-      wrapper.find('[data-testid="capped-spinbox-row__all-toggle"]').attributes('data-checked')
+      wrapper.find('[data-testid="capped-spinbox-row__all-pill"]').attributes('data-active')
     ).toBe('true')
   })
 
@@ -138,22 +110,22 @@ describe('CappedSpinboxRow', () => {
     expect(getValue()).toBeNull()
   })
 
-  test('toggling all on emits null', async () => {
+  test('clicking the all-pill from a numeric value emits null', async () => {
     const { wrapper, getValue } = makeRow({ value: 50 })
-    await wrapper.find('[data-testid="capped-spinbox-row__all-toggle"] input').setValue(true)
+    await wrapper.find('[data-testid="capped-spinbox-row__all-pill"]').trigger('click')
     expect(getValue()).toBeNull()
   })
 
-  test('toggling all off restores a numeric value', async () => {
+  test('clicking the all-pill from null restores a numeric value', async () => {
     const { wrapper, getValue } = makeRow({ value: null, default_value: 50 })
-    await wrapper.find('[data-testid="capped-spinbox-row__all-toggle"] input').setValue(false)
+    await wrapper.find('[data-testid="capped-spinbox-row__all-pill"]').trigger('click')
     expect(typeof getValue()).toBe('number')
     expect(getValue()).toBeGreaterThan(0)
   })
 
-  test('toggling all on with prefill_when_all sets the spinbox to that value', async () => {
+  test('clicking the all-pill on with prefill_when_all sets the spinbox to that value', async () => {
     const { wrapper } = makeRow({ value: 50, prefill_when_all: 137 })
-    await wrapper.find('[data-testid="capped-spinbox-row__all-toggle"] input').setValue(true)
+    await wrapper.find('[data-testid="capped-spinbox-row__all-pill"]').trigger('click')
     expect(wrapper.find('[data-testid="ui-kit-spinbox"]').attributes('data-value')).toBe('137')
   })
 })

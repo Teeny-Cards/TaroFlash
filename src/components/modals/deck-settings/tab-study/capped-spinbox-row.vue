@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import UiSpinbox from '@/components/ui-kit/spinbox.vue'
-import UiToggle from '@/components/ui-kit/toggle.vue'
 import { useCappedToggle } from '@/composables/use-capped-toggle'
 
 type CappedSpinboxRowProps = {
@@ -32,26 +31,21 @@ const { spin_value, is_all, onSpin } = useCappedToggle(
 </script>
 
 <template>
-  <div data-testid="capped-spinbox-row" class="flex flex-col gap-2">
-    <span
-      data-testid="capped-spinbox-row__label"
-      class="text-sm font-medium text-brown-700 dark:text-brown-100"
-    >
+  <div data-testid="capped-spinbox-row" class="flex items-center justify-between gap-4">
+    <span data-testid="capped-spinbox-row__label" class="text-brown-700 dark:text-brown-100">
       {{ label }}
     </span>
-    <div data-testid="capped-spinbox-row__row" class="flex items-center gap-4">
-      <ui-spinbox
-        data-testid="capped-spinbox-row__spinbox"
-        :value="spin_value"
-        :min="min"
-        :max="max"
-        :step="step"
-        wrap
-        @update:value="onSpin"
-      />
-      <ui-toggle data-testid="capped-spinbox-row__all-toggle" v-model:checked="is_all">
-        {{ all_label }}
-      </ui-toggle>
-    </div>
+
+    <ui-spinbox
+      data-testid="capped-spinbox-row__spinbox"
+      :value="spin_value"
+      :min="min"
+      :max="max"
+      :step="step"
+      :all_label="all_label"
+      v-model:all_active="is_all"
+      wrap
+      @update:value="onSpin"
+    />
   </div>
 </template>
