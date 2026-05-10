@@ -8,9 +8,13 @@ const { mockCreateDeck, mockUpdateDeck } = vi.hoisted(() => ({
   mockUpdateDeck: vi.fn().mockResolvedValue(true)
 }))
 
-const { mockDeleteDeck } = vi.hoisted(() => ({
-  mockDeleteDeck: vi.fn().mockResolvedValue(undefined)
-}))
+const { mockDeleteDeck, mockDeleteIsLoading } = vi.hoisted(() => {
+  const ref = { value: false }
+  return {
+    mockDeleteDeck: vi.fn().mockResolvedValue(undefined),
+    mockDeleteIsLoading: ref
+  }
+})
 
 const { mockUploadImage } = vi.hoisted(() => ({
   mockUploadImage: vi.fn().mockResolvedValue('https://cdn.example.com/cover.jpg')
@@ -23,7 +27,11 @@ const { mockEmitSfx } = vi.hoisted(() => ({
 const TEST_MEMBER_ID = '11111111-1111-1111-1111-111111111111'
 
 vi.mock('@/api/decks', () => ({
-  useDeleteDeckMutation: () => ({ mutate: mockDeleteDeck, mutateAsync: mockDeleteDeck })
+  useDeleteDeckMutation: () => ({
+    mutate: mockDeleteDeck,
+    mutateAsync: mockDeleteDeck,
+    isLoading: mockDeleteIsLoading
+  })
 }))
 
 vi.mock('@/composables/deck/use-deck-actions', () => ({
@@ -291,21 +299,30 @@ describe('useDeckEditor', () => {
       expect(mockDeleteDeck).toHaveBeenCalledWith(42)
     })
 
-    test('does not call delete API when deck has no id', async () => {
+    test('resolves to true on success', async () => {
+      const { deleteDeck } = useDeckEditor(makeDeck({ id: 1 }))
+      await expect(deleteDeck()).resolves.toBe(true)
+    })
+
+    test('does not call delete API when deck has no id, and resolves false', async () => {
       const deck = makeDeck({ id: undefined })
       const { deleteDeck } = useDeckEditor(deck)
 
-      await deleteDeck()
-
+      await expect(deleteDeck()).resolves.toBe(false)
       expect(mockDeleteDeck).not.toHaveBeenCalled()
     })
 
-    test('does not throw when delete API rejects', async () => {
+    test('resolves to false (does not throw) when delete API rejects', async () => {
       mockDeleteDeck.mockRejectedValueOnce(new Error('Network error'))
       const deck = makeDeck({ id: 1 })
       const { deleteDeck } = useDeckEditor(deck)
 
-      await expect(deleteDeck()).resolves.toBeUndefined()
+      await expect(deleteDeck()).resolves.toBe(false)
+    })
+
+    test('exposes the mutation isLoading ref as `deleting`', () => {
+      const { deleting } = useDeckEditor(makeDeck({ id: 1 }))
+      expect(deleting).toBe(mockDeleteIsLoading)
     })
   })
 

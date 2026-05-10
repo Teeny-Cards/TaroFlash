@@ -67,10 +67,24 @@ describe('useDeleteDeckMutation', () => {
     expect(deleteDeckMock).toHaveBeenCalledWith(42)
   })
 
-  test('onSettled invalidates list + detail for the deleted deck', () => {
+  test('onSettled invalidates ["decks"] so the dashboard list refreshes', () => {
     const { onSettled } = configFrom(useDeleteDeckMutation)
     onSettled(undefined, undefined, 42)
     expect(invalidateSpy).toHaveBeenCalledWith({ key: ['decks'] })
-    expect(invalidateSpy).toHaveBeenCalledWith({ key: ['deck', 42] })
+  })
+
+  test('on success, invalidates ["deck", id] with refetchActive=false so no 404 refetch', () => {
+    const { onSettled } = configFrom(useDeleteDeckMutation)
+    onSettled(undefined, undefined, 42)
+    expect(invalidateSpy).toHaveBeenCalledWith({ key: ['deck', 42] }, false)
+  })
+
+  test('on error, skips ["deck", id] invalidation (row still exists, keep cache)', () => {
+    const { onSettled } = configFrom(useDeleteDeckMutation)
+    onSettled(undefined, new Error('boom'), 42)
+    const detailCalls = invalidateSpy.mock.calls.filter((c) => c[0].key[0] === 'deck')
+    expect(detailCalls).toHaveLength(0)
+    // List invalidation still fires regardless — harmless on error
+    expect(invalidateSpy).toHaveBeenCalledWith({ key: ['decks'] })
   })
 })
