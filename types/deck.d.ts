@@ -54,9 +54,15 @@ type DeckCoverPattern =
 
 type DeckCover = {
   bg_color?: MemberTheme
+  bg_color_dark?: MemberTheme
   border_size?: number
   pattern?: DeckCoverPattern
   pattern_size?: number
   bg_image?: string
   icon?: string
+}
+
+type DeckCoverThemeOption = {
+  light: MemberTheme
+  dark?: MemberTheme
 }
