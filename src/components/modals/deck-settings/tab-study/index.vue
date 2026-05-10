@@ -1,39 +1,33 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UiToggle from '@/components/ui-kit/toggle.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import SectionList from '@/components/layout-kit/section-list.vue'
 import LabeledSection from '@/components/layout-kit/labeled-section.vue'
 import CappedSpinboxRow from './capped-spinbox-row.vue'
-
-type TabStudyProps = {
-  card_count?: number
-  config: DeckConfig
-}
-
-const { card_count, config } = defineProps<TabStudyProps>()
+import { deckEditorKey } from '@/composables/deck-editor'
+import { DAILY_LIMIT_BOUNDS } from '@/utils/deck/defaults'
 
 const { t } = useI18n()
+const { deck, config } = inject(deckEditorKey)!
 
-const STEP = 5
-const MIN = 5
-const REVIEWS_MAX = 200
-const NEW_MAX = 100
-const REVIEWS_DEFAULT = 50
-const NEW_DEFAULT = 20
-
-function field<K extends keyof DeckConfig>(key: K) {
-  return computed({
-    get: () => config[key],
-    set: (v: DeckConfig[K]) => (config[key] = v)
-  })
-}
-
-const shuffle = field('shuffle')
-const flip_cards = field('flip_cards')
-const max_reviews_per_day = field('max_reviews_per_day')
-const max_new_per_day = field('max_new_per_day')
+const shuffle = computed({
+  get: () => config.shuffle,
+  set: (v) => (config.shuffle = v)
+})
+const flip_cards = computed({
+  get: () => config.flip_cards,
+  set: (v) => (config.flip_cards = v)
+})
+const max_reviews_per_day = computed({
+  get: () => config.max_reviews_per_day,
+  set: (v) => (config.max_reviews_per_day = v)
+})
+const max_new_per_day = computed({
+  get: () => config.max_new_per_day,
+  set: (v) => (config.max_new_per_day = v)
+})
 </script>
 
 <template>
@@ -62,11 +56,11 @@ const max_new_per_day = field('max_new_per_day')
         data-testid="tab-study__max-reviews"
         :label="t('deck.settings-modal.study.max-reviews-per-day')"
         :all_label="t('deck.settings-modal.study.max-reviews.all-toggle')"
-        :min="MIN"
-        :max="REVIEWS_MAX"
-        :step="STEP"
-        :default_value="REVIEWS_DEFAULT"
-        :prefill_when_all="card_count"
+        :min="DAILY_LIMIT_BOUNDS.min"
+        :max="DAILY_LIMIT_BOUNDS.reviews.max"
+        :step="DAILY_LIMIT_BOUNDS.step"
+        :default_value="DAILY_LIMIT_BOUNDS.reviews.default"
+        :prefill_when_all="deck?.card_count"
         v-model:value="max_reviews_per_day"
       />
 
@@ -74,11 +68,11 @@ const max_new_per_day = field('max_new_per_day')
         data-testid="tab-study__max-new"
         :label="t('deck.settings-modal.study.max-new-per-day')"
         :all_label="t('deck.settings-modal.study.max-new.all-toggle')"
-        :min="MIN"
-        :max="NEW_MAX"
-        :step="STEP"
-        :default_value="NEW_DEFAULT"
-        :prefill_when_all="card_count"
+        :min="DAILY_LIMIT_BOUNDS.min"
+        :max="DAILY_LIMIT_BOUNDS.new_cards.max"
+        :step="DAILY_LIMIT_BOUNDS.step"
+        :default_value="DAILY_LIMIT_BOUNDS.new_cards.default"
+        :prefill_when_all="deck?.card_count"
         v-model:value="max_new_per_day"
       />
     </labeled-section>

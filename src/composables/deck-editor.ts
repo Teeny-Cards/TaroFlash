@@ -1,9 +1,10 @@
-import { reactive, ref } from 'vue'
+import { reactive, ref, type InjectionKey } from 'vue'
 import { useDeleteDeckMutation } from '@/api/decks'
 import { useUploadImageMutation } from '@/api/media'
 import { useDeckActions } from '@/composables/deck/use-deck-actions'
 import { useSessionRef } from '@/composables/use-session-ref'
 import { useMemberStore } from '@/stores/member'
+import { DECK_SETTINGS_DEFAULTS, DECK_CONFIG_DEFAULTS } from '@/utils/deck/defaults'
 import { emitSfx } from '@/sfx/bus'
 import type { ImageUploadPayload } from '@/components/image-uploader.vue'
 
@@ -18,13 +19,13 @@ export function useDeckEditor(deck?: Deck) {
     id: deck?.id as number,
     title: deck?.title,
     description: deck?.description,
-    is_public: deck?.is_public ?? true,
+    is_public: deck?.is_public ?? DECK_SETTINGS_DEFAULTS.is_public,
     updated_at: deck?.updated_at
   })
 
   const config = reactive<DeckConfig>(
     deck?.study_config ?? {
-      study_all_cards: false
+      study_all_cards: DECK_CONFIG_DEFAULTS.study_all_cards
     }
   )
 
@@ -113,6 +114,7 @@ export function useDeckEditor(deck?: Deck) {
   }
 
   return {
+    deck,
     settings,
     config,
     cover,
@@ -129,3 +131,12 @@ export function useDeckEditor(deck?: Deck) {
     setActiveSide
   }
 }
+
+export type DeckEditor = ReturnType<typeof useDeckEditor>
+
+/**
+ * Inject key for the deck-settings modal's editor instance. The modal root
+ * provides the `useDeckEditor()` result; tabs and nested components
+ * `inject(deckEditorKey)` to read/write editor state without prop drilling.
+ */
+export const deckEditorKey = Symbol('deckEditor') as InjectionKey<DeckEditor>

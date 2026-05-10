@@ -7,7 +7,7 @@ const checked = defineModel<boolean>('checked')
 <template>
   <label
     data-testid="ui-kit-toggle"
-    :data-checked="checked"
+    :data-active="checked"
     class="group/toggle flex cursor-pointer items-center justify-between gap-2"
     v-sfx.hover="'ui.click_07'"
   >
@@ -17,7 +17,7 @@ const checked = defineModel<boolean>('checked')
 
     <span
       data-testid="ui-kit-toggle__switch"
-      class="flex w-12 items-center rounded-full p-1 transition-[background-color,box-shadow] bg-brown-100 dark:bg-grey-700 has-checked:bg-(--theme-primary) group-hover/toggle:ring-2 group-hover/toggle:ring-brown-100 dark:group-hover/toggle:ring-grey-700 has-checked:group-hover/toggle:ring-(--theme-primary)"
+      class="flex w-12 items-center rounded-full p-1 transition-[background-color,box-shadow] bg-input has-checked:bg-(--theme-primary) group-hover/toggle:ring-2 group-hover/toggle:ring-input has-checked:group-hover/toggle:ring-(--theme-primary)"
     >
       <input
         type="checkbox"

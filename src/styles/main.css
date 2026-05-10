@@ -79,6 +79,9 @@
   --theme-neutral: var(--color-brown-100);
   --theme-on-neutral: var(--color-grey-900);
 
+  /* Semantic surface tokens — neutral chrome backgrounds that swap in dark mode. */
+  --color-input: var(--color-brown-100);
+
   --radius-0_5: --spacing(0.5); /* 2px */
   --radius-1: --spacing(1); /* 4px */
   --radius-1_5: --spacing(1.5); /* 6px */
@@ -236,6 +239,7 @@
   /* Warning: This is global and will affect everything */
   &:where([data-theme='dark'], [data-theme='dark'] *) {
     --shadow-color: rgba(0, 0, 0, 1);
+    --color-input: var(--color-grey-700);
   }
 }
 
