@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n'
 import { emitSfx } from '@/sfx/bus'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiSlider from '@/components/ui-kit/slider.vue'
-import PickerPopover from './picker-popover.vue'
 
 const { t } = useI18n()
 
