@@ -184,7 +184,6 @@ jobs:
     needs: [changes, lint-and-test, test-contract]
     if: |
       always() &&
-      github.event_name == 'pull_request' &&
       needs.lint-and-test.result == 'success' &&
       (needs.test-contract.result == 'success' || needs.test-contract.result == 'skipped')
     runs-on: ubuntu-latest
@@ -227,7 +226,39 @@ jobs:
       - name: Merge coverage
         run: pnpm exec vp test --merge-reports --coverage
 
+      - name: Upload coverage summary (master baseline)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-summary-master
+          path: coverage/coverage-summary.json
+          retention-days: 30
+
+      - name: Download master coverage summary (PR delta baseline)
+        if: github.event_name == 'pull_request'
+        uses: dawidd6/action-download-artifact@v6
+        continue-on-error: true
+        with:
+          workflow: ci.yml
+          workflow_conclusion: success
+          branch: master
+          name: coverage-summary-master
+          path: coverage-base/
+          if_no_artifact_found: warn
+
+      - name: Check baseline summary present
+        if: github.event_name == 'pull_request'
+        id: baseline
+        run: |
+          if [ -f coverage-base/coverage-summary.json ]; then
+            echo "path=coverage-base/coverage-summary.json" >> "$GITHUB_OUTPUT"
+          else
+            echo "path=" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Report Coverage
+        if: github.event_name == 'pull_request'
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           file-coverage-mode: 'all'
+          json-summary-compare-path: ${{ steps.baseline.outputs.path }}

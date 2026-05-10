@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vite-plus/test'
-import { shallowMount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import { reactive, defineComponent, h } from 'vue'
 import CardDesignerToolbar from '@/components/modals/deck-settings/tab-design/card-designer-toolbar.vue'
 
@@ -30,14 +30,27 @@ const UiSpinboxStub = defineComponent({
   }
 })
 
+const UiIconStub = defineComponent({
+  name: 'UiIcon',
+  props: ['src'],
+  setup(p) {
+    return () => h('span', { 'data-testid': 'ui-icon', 'data-src': p.src })
+  }
+})
+
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
 function makeToolbar(initial = {}) {
   const attributes = reactive(initial)
-  const wrapper = shallowMount(CardDesignerToolbar, {
+  const wrapper = mount(CardDesignerToolbar, {
     props: { attributes },
     global: {
-      stubs: { PickerPopover: PickerPopoverStub, UiSpinbox: UiSpinboxStub }
+      stubs: {
+        PickerPopover: PickerPopoverStub,
+        UiSpinbox: UiSpinboxStub,
+        UiIcon: UiIconStub
+      },
+      mocks: { $t: (k) => k }
     }
   })
   return { wrapper, attributes }
@@ -89,7 +102,8 @@ describe('CardDesignerToolbar', () => {
   test('spinbox update:value writes back to attributes.text_size', async () => {
     const { wrapper, attributes } = makeToolbar({ text_size: 4 })
     const spinbox = wrapper.findComponent({ name: 'UiSpinbox' })
-    await spinbox.vm.$emit('update:value', 8)
+    spinbox.vm.$emit('update:value', 8)
+    await wrapper.vm.$nextTick()
     expect(attributes.text_size).toBe(8)
   })
 
@@ -97,33 +111,33 @@ describe('CardDesignerToolbar', () => {
 
   test('renders 3 horizontal alignment options', () => {
     const { wrapper } = makeToolbar()
-    const options = wrapper.findAll('[data-testid="card-designer-toolbar__h-align-option"]')
+    const options = wrapper.findAll('[data-testid="align-picker__horizontal-option"]')
     expect(options).toHaveLength(3)
   })
 
   test('clicking a horizontal alignment option updates attributes', async () => {
     const { wrapper, attributes } = makeToolbar()
-    const options = wrapper.findAll('[data-testid="card-designer-toolbar__h-align-option"]')
+    const options = wrapper.findAll('[data-testid="align-picker__horizontal-option"]')
     await options[0].trigger('click')
     expect(attributes.horizontal_alignment).toBe('left')
   })
 
   test('marks the active horizontal alignment option', () => {
     const { wrapper } = makeToolbar({ horizontal_alignment: 'right' })
-    const options = wrapper.findAll('[data-testid="card-designer-toolbar__h-align-option"]')
+    const options = wrapper.findAll('[data-testid="align-picker__horizontal-option"]')
     expect(options[2].attributes('data-active')).toBe('true')
     expect(options[0].attributes('data-active')).toBe('false')
   })
 
   test('defaults the active horizontal alignment to center', () => {
     const { wrapper } = makeToolbar()
-    const options = wrapper.findAll('[data-testid="card-designer-toolbar__h-align-option"]')
+    const options = wrapper.findAll('[data-testid="align-picker__horizontal-option"]')
     expect(options[1].attributes('data-active')).toBe('true')
   })
 
   test('re-clicking the active horizontal option does not change attributes', async () => {
     const { wrapper, attributes } = makeToolbar({ horizontal_alignment: 'left' })
-    const options = wrapper.findAll('[data-testid="card-designer-toolbar__h-align-option"]')
+    const options = wrapper.findAll('[data-testid="align-picker__horizontal-option"]')
     await options[0].trigger('click')
     expect(attributes.horizontal_alignment).toBe('left')
   })
@@ -132,33 +146,33 @@ describe('CardDesignerToolbar', () => {
 
   test('renders 3 vertical alignment options', () => {
     const { wrapper } = makeToolbar()
-    const options = wrapper.findAll('[data-testid="card-designer-toolbar__v-align-option"]')
+    const options = wrapper.findAll('[data-testid="align-picker__vertical-option"]')
     expect(options).toHaveLength(3)
   })
 
   test('clicking a vertical alignment option updates attributes', async () => {
     const { wrapper, attributes } = makeToolbar()
-    const options = wrapper.findAll('[data-testid="card-designer-toolbar__v-align-option"]')
+    const options = wrapper.findAll('[data-testid="align-picker__vertical-option"]')
     await options[2].trigger('click')
     expect(attributes.vertical_alignment).toBe('bottom')
   })
 
   test('marks the active vertical alignment option', () => {
     const { wrapper } = makeToolbar({ vertical_alignment: 'top' })
-    const options = wrapper.findAll('[data-testid="card-designer-toolbar__v-align-option"]')
+    const options = wrapper.findAll('[data-testid="align-picker__vertical-option"]')
     expect(options[0].attributes('data-active')).toBe('true')
     expect(options[1].attributes('data-active')).toBe('false')
   })
 
   test('defaults the active vertical alignment to center', () => {
     const { wrapper } = makeToolbar()
-    const options = wrapper.findAll('[data-testid="card-designer-toolbar__v-align-option"]')
+    const options = wrapper.findAll('[data-testid="align-picker__vertical-option"]')
     expect(options[1].attributes('data-active')).toBe('true')
   })
 
   test('re-clicking the active vertical option does not change attributes', async () => {
     const { wrapper, attributes } = makeToolbar({ vertical_alignment: 'top' })
-    const options = wrapper.findAll('[data-testid="card-designer-toolbar__v-align-option"]')
+    const options = wrapper.findAll('[data-testid="align-picker__vertical-option"]')
     await options[0].trigger('click')
     expect(attributes.vertical_alignment).toBe('top')
   })

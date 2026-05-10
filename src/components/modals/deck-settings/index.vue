@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TabDesign from './tab-design/index.vue'
 import TabDeckSettings from './tab-deck-settings/index.vue'
@@ -9,7 +9,6 @@ import { useDeckEditor } from '@/composables/deck-editor'
 import { useSessionRef } from '@/composables/use-session-ref'
 import UiButton from '@/components/ui-kit/button.vue'
 import TabSheet from '@/components/layout-kit/modal/tab-sheet.vue'
-import { emitSfx } from '@/sfx/bus'
 
 export type DeckSettingsResponse = boolean
 
@@ -19,7 +18,8 @@ const { deck, close } = defineProps<{
 }>()
 
 const { t } = useI18n()
-const { saveDeck, settings, config, cover, card_attributes } = useDeckEditor(deck)
+const { saveDeck, settings, config, cover, card_attributes, active_side, setActiveSide } =
+  useDeckEditor(deck)
 
 const tabs = computed(() => [
   { value: 'deck-settings', icon: 'label', label: t('deck.settings-modal.tab.general') },
@@ -28,14 +28,12 @@ const tabs = computed(() => [
 ])
 
 const active_tab = useSessionRef('deck-settings.active-tab', '')
-const active_side = ref<CardSide>('cover')
 
 const visible_side = computed(() => (active_tab.value === 'design' ? active_side.value : 'cover'))
 
-function setActiveSide(side: CardSide) {
-  if (active_tab.value !== 'design' || side === active_side.value) return
-  emitSfx('ui.slide_up')
-  active_side.value = side
+function onPreviewSide(side: CardSide) {
+  if (active_tab.value !== 'design') return
+  setActiveSide(side)
 }
 
 async function onSave() {
@@ -49,20 +47,15 @@ async function onSave() {
     data-testid="deck-settings-container"
     data-theme="green-500"
     data-theme-dark="green-800"
-    class="sm:w-245 sm:h-167 gap-0!"
+    class="sm:w-245 sm:h-167"
     :title="t('deck.settings-modal.title')"
     :tabs="tabs"
     :cover_config="{ pattern: 'endless-clouds' }"
     :parts="{ content: 'w-98 flex flex-col gap-4' }"
+    hover_sfx="ui.click_07"
     v-model:active="active_tab"
     @close="close(false)"
   >
-    <template #header-content>
-      <div class="w-full">
-        <h1 class="text-5xl text-white">{{ t('deck.settings-modal.title') }}</h1>
-      </div>
-    </template>
-
     <tab-design
       v-if="active_tab === 'design'"
       :cover="cover"
@@ -70,22 +63,9 @@ async function onSave() {
       :side="active_side"
     />
 
-    <tab-deck-settings
-      v-else-if="active_tab === 'deck-settings'"
-      :settings="settings"
-      :cover="cover"
-    />
+    <tab-deck-settings v-else-if="active_tab === 'deck-settings'" :settings="settings" />
 
-    <tab-study
-      v-else-if="active_tab === 'study'"
-      :card_count="deck?.card_count"
-      v-model:shuffle="config.shuffle"
-      v-model:flip_cards="config.flip_cards"
-      v-model:is_spaced="config.is_spaced"
-      v-model:auto_play="config.auto_play"
-      v-model:max_reviews_per_day="config.max_reviews_per_day"
-      v-model:max_new_per_day="config.max_new_per_day"
-    />
+    <tab-study v-else-if="active_tab === 'study'" :card_count="deck?.card_count" :config="config" />
 
     <template #overlay>
       <deck-preview
@@ -93,17 +73,17 @@ async function onSave() {
         :cover="cover"
         :card_attributes="card_attributes"
         :side="visible_side"
-        @update:side="setActiveSide"
+        @update:side="onPreviewSide"
       />
     </template>
 
-    <template #after>
+    <template #footer>
       <ui-button
         data-theme="blue-500"
         data-theme-dark="blue-650"
         size="xl"
-        @click="onSave"
         full-width
+        @click="onSave"
       >
         {{ deck ? t('deck.settings-modal.submit-edit') : t('deck.settings-modal.submit-create') }}
       </ui-button>

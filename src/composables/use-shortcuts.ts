@@ -13,6 +13,15 @@ export function useShortcuts(id: ScopeId, { priority }: { priority?: Priority } 
   const store = useShortcutStore()
   store.pushScope(id, priority)
 
+  // Symmetric to pushScope: pop + release focus when the owning component
+  // (or effect scope) tears down, so callers don't need manual `dispose()`.
+  if (getCurrentScope()) {
+    onScopeDispose(() => {
+      store.clearNamespace(id)
+      store.popScope(id)
+    })
+  }
+
   function register(shortcuts: ShortcutRegistration[] | ShortcutRegistration) {
     const _shortcuts = Array.isArray(shortcuts) ? shortcuts : [shortcuts]
     const shortcut_ids: ShortcutId[] = []
