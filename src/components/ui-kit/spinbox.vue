@@ -111,18 +111,22 @@ function onBlur(e: Event) {
 
 <template>
   <div data-testid="ui-kit-spinbox-container" class="flex flex-col gap-1.5 w-max">
-    <label v-if="label" data-testid="ui-kit-spinbox__label" class="text-brown-700">
+    <label
+      v-if="label"
+      data-testid="ui-kit-spinbox__label"
+      class="text-brown-700 dark:text-brown-100"
+    >
       {{ label }}
     </label>
     <div
       data-testid="ui-kit-spinbox"
-      class="inline-flex items-center bg-brown-100"
+      class="inline-flex items-center bg-brown-100 dark:bg-grey-700"
       :class="size_classes.row"
     >
       <button
         type="button"
         data-testid="ui-kit-spinbox__decrement"
-        class="inline-flex items-center justify-center aspect-square text-brown-700 cursor-pointer transition-[background-color,color,transform] duration-100 hover:bg-(--theme-primary) hover:text-(--theme-on-primary) active:scale-95 disabled:opacity-[0.35] disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-brown-700"
+        class="inline-flex items-center justify-center aspect-square text-brown-700 dark:text-brown-100 cursor-pointer transition-[background-color,color,transform] duration-100 hover:bg-(--theme-primary) hover:text-(--theme-on-primary) active:scale-95 disabled:opacity-[0.35] disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-brown-700 dark:disabled:hover:text-brown-100"
         :class="size_classes.btn"
         :disabled="!can_decrement"
         v-sfx="{ hover: 'ui.click_07', click: 'ui.select' }"
@@ -136,7 +140,7 @@ function onBlur(e: Event) {
           type="text"
           inputmode="numeric"
           data-testid="ui-kit-spinbox__input"
-          class="text-center tabular-nums text-brown-700 bg-transparent outline-none"
+          class="text-center tabular-nums text-brown-700 dark:text-brown-100 bg-transparent outline-none"
           :class="size_classes.val"
           :value="value"
           :step="step"
@@ -145,7 +149,11 @@ function onBlur(e: Event) {
           @input="onInput"
           @blur="onBlur"
         />
-        <span v-if="suffix" data-testid="ui-kit-spinbox__suffix" class="ml-0.5 text-brown-500">
+        <span
+          v-if="suffix"
+          data-testid="ui-kit-spinbox__suffix"
+          class="ml-0.5 text-brown-500 dark:text-brown-300"
+        >
           {{ suffix }}
         </span>
       </div>
@@ -153,7 +161,7 @@ function onBlur(e: Event) {
       <button
         type="button"
         data-testid="ui-kit-spinbox__increment"
-        class="inline-flex items-center justify-center aspect-square text-brown-700 cursor-pointer transition-[background-color,color,transform] duration-100 hover:bg-(--theme-primary) hover:text-(--theme-on-primary) active:scale-95 disabled:opacity-[0.35] disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-brown-700"
+        class="inline-flex items-center justify-center aspect-square text-brown-700 dark:text-brown-100 cursor-pointer transition-[background-color,color,transform] duration-100 hover:bg-(--theme-primary) hover:text-(--theme-on-primary) active:scale-95 disabled:opacity-[0.35] disabled:hover:bg-transparent disabled:hover:text-brown-700 dark:disabled:hover:text-brown-100"
         :class="size_classes.btn"
         :disabled="!can_increment"
         v-sfx="{ hover: 'ui.click_07', click: 'ui.select' }"

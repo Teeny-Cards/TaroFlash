@@ -128,7 +128,7 @@
 [data-theme='green-800'],
 [data-theme='dark'] [data-theme-dark='green-800'] {
   --theme-primary: var(--color-green-800);
-  --theme-on-primary: var(--color-brown-100);
+  --theme-on-primary: var(--color-brown-300);
 
   --theme-secondary: var(--color-green-600);
   --theme-on-secondary: var(--color-brown-100);
@@ -136,7 +136,7 @@
   --theme-accent: var(--color-orange-700);
   --theme-on-accent: var(--color-brown-700);
 
-  --theme-neutral: var(--color-brown-100);
+  --theme-neutral: var(--color-brown-300);
   --theme-on-neutral: var(--color-green-800);
 }
 

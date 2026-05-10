@@ -35,7 +35,7 @@ const { spin_value, is_all, onSpin } = useCappedToggle(
   <div data-testid="capped-spinbox-row" class="flex flex-col gap-2">
     <span
       data-testid="capped-spinbox-row__label"
-      class="text-sm font-medium text-(--theme-on-neutral)"
+      class="text-sm font-medium text-brown-700 dark:text-brown-100"
     >
       {{ label }}
     </span>
