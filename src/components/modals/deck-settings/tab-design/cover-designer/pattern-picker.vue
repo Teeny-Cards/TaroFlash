@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import { emitSfx } from '@/sfx/bus'
-import { coverBindings } from '@/utils/cover'
+import { coverBindings, patternSize } from '@/utils/cover'
 
 const { t } = useI18n()
 
@@ -19,7 +19,15 @@ const emit = defineEmits<{
 }>()
 
 function swatchBindings(p: DeckCoverPattern) {
-  return coverBindings({ pattern: p, pattern_size }, { border: false, bgImage: false })
+  const base = coverBindings({ pattern: p, pattern_size }, { border: false, bgImage: false })
+
+  return {
+    ...base,
+    style: {
+      ...base.style,
+      ...(pattern_size ? { '--bgx-size': patternSize(p, pattern_size, 0.65) } : {})
+    }
+  }
 }
 
 function onPatternSelect(p: DeckCoverPattern | undefined) {
