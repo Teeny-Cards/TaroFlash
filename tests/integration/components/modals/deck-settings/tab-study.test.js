@@ -107,13 +107,18 @@ function rowSpinbox(wrapper, row) {
 }
 
 function rowAllToggle(wrapper, row) {
-  return wrapper.find(`[data-testid="${row}"] [data-testid="capped-spinbox-row__all-toggle"]`)
+  return wrapper.find(`[data-testid="${row}"] [data-testid="ui-kit-spinbox__all-pill"]`)
 }
 
 describe('TabStudy', () => {
-  test('renders four behavior toggles plus two "all" toggles', () => {
+  test('renders two behavior toggles', () => {
     const { wrapper } = makeTabStudy()
-    expect(wrapper.findAllComponents(ToggleStub)).toHaveLength(6)
+    expect(wrapper.findAllComponents(ToggleStub)).toHaveLength(2)
+  })
+
+  test('renders two "all" pills (one per daily limit)', () => {
+    const { wrapper } = makeTabStudy()
+    expect(wrapper.findAll('[data-testid="ui-kit-spinbox__all-pill"]')).toHaveLength(2)
   })
 
   test('renders a spinbox for each daily limit', () => {
@@ -124,7 +129,7 @@ describe('TabStudy', () => {
   test('updates config.shuffle when shuffle toggle changes', async () => {
     const { wrapper, config } = makeTabStudy({ config: { shuffle: false } })
     const toggles = wrapper.findAllComponents(ToggleStub)
-    toggles[1].vm.$emit('update:checked', true)
+    toggles[0].vm.$emit('update:checked', true)
     await wrapper.vm.$nextTick()
     expect(config.shuffle).toBe(true)
   })
@@ -132,25 +137,9 @@ describe('TabStudy', () => {
   test('updates config.flip_cards from the flip-cards toggle', async () => {
     const { wrapper, config } = makeTabStudy({ config: { flip_cards: false } })
     const toggles = wrapper.findAllComponents(ToggleStub)
-    toggles[2].vm.$emit('update:checked', true)
+    toggles[1].vm.$emit('update:checked', true)
     await wrapper.vm.$nextTick()
     expect(config.flip_cards).toBe(true)
-  })
-
-  test('updates config.is_spaced from the spaced-repetition toggle', async () => {
-    const { wrapper, config } = makeTabStudy({ config: { is_spaced: true } })
-    const toggles = wrapper.findAllComponents(ToggleStub)
-    toggles[0].vm.$emit('update:checked', false)
-    await wrapper.vm.$nextTick()
-    expect(config.is_spaced).toBe(false)
-  })
-
-  test('updates config.auto_play from the auto-play toggle', async () => {
-    const { wrapper, config } = makeTabStudy({ config: { auto_play: false } })
-    const toggles = wrapper.findAllComponents(ToggleStub)
-    toggles[3].vm.$emit('update:checked', true)
-    await wrapper.vm.$nextTick()
-    expect(config.auto_play).toBe(true)
   })
 
   test('reviews spinbox is configured: step 5, min 5, max 200', () => {
@@ -195,48 +184,48 @@ describe('TabStudy', () => {
     expect(config.max_new_per_day).toBeNull()
   })
 
-  test('toggling the reviews "all" toggle on sets the value to null', async () => {
+  test('clicking the reviews "all" pill from numeric sets the value to null', async () => {
     const { wrapper, config } = makeTabStudy({ config: { max_reviews_per_day: 50 } })
-    await rowAllToggle(wrapper, 'tab-study__max-reviews').find('input').setValue(true)
+    await rowAllToggle(wrapper, 'tab-study__max-reviews').trigger('click')
     expect(config.max_reviews_per_day).toBeNull()
   })
 
-  test('toggling the new "all" toggle off restores a numeric value', async () => {
+  test('clicking the new "all" pill from null restores a numeric value', async () => {
     const { wrapper, config } = makeTabStudy({ config: { max_new_per_day: null } })
-    await rowAllToggle(wrapper, 'tab-study__max-new').find('input').setValue(false)
+    await rowAllToggle(wrapper, 'tab-study__max-new').trigger('click')
     expect(typeof config.max_new_per_day).toBe('number')
     expect(config.max_new_per_day).toBeGreaterThan(0)
   })
 
-  test('toggling reviews "all" on pre-fills the spinbox with card_count', async () => {
+  test('clicking reviews "all" pre-fills the spinbox with card_count', async () => {
     const { wrapper } = makeTabStudy({
       config: { max_reviews_per_day: 50 },
       card_count: 137
     })
-    await rowAllToggle(wrapper, 'tab-study__max-reviews').find('input').setValue(true)
+    await rowAllToggle(wrapper, 'tab-study__max-reviews').trigger('click')
     expect(rowSpinbox(wrapper, 'tab-study__max-reviews').attributes('data-value')).toBe('137')
   })
 
-  test('toggling new "all" on pre-fills the spinbox with card_count', async () => {
+  test('clicking new "all" pre-fills the spinbox with card_count', async () => {
     const { wrapper } = makeTabStudy({
       config: { max_new_per_day: 10 },
       card_count: 42
     })
-    await rowAllToggle(wrapper, 'tab-study__max-new').find('input').setValue(true)
+    await rowAllToggle(wrapper, 'tab-study__max-new').trigger('click')
     expect(rowSpinbox(wrapper, 'tab-study__max-new').attributes('data-value')).toBe('42')
   })
 
-  test('toggling "all" on without card_count leaves spinbox value unchanged', async () => {
+  test('clicking "all" without card_count leaves spinbox value unchanged', async () => {
     const { wrapper } = makeTabStudy({ config: { max_reviews_per_day: 50 } })
-    await rowAllToggle(wrapper, 'tab-study__max-reviews').find('input').setValue(true)
+    await rowAllToggle(wrapper, 'tab-study__max-reviews').trigger('click')
     expect(rowSpinbox(wrapper, 'tab-study__max-reviews').attributes('data-value')).toBe('50')
   })
 
-  test('toggling reviews "all" off restores the last numeric local value', async () => {
+  test('clicking reviews "all" twice restores the last numeric local value', async () => {
     const { wrapper, config } = makeTabStudy({ config: { max_reviews_per_day: 75 } })
-    const allToggle = rowAllToggle(wrapper, 'tab-study__max-reviews')
-    await allToggle.find('input').setValue(true)
-    await allToggle.find('input').setValue(false)
+    const pill = rowAllToggle(wrapper, 'tab-study__max-reviews')
+    await pill.trigger('click')
+    await pill.trigger('click')
     expect(config.max_reviews_per_day).toBe(75)
   })
 
@@ -253,7 +242,7 @@ describe('TabStudy', () => {
     const { wrapper, config } = makeTabStudy({ config: { max_reviews_per_day: 50 } })
     config.max_reviews_per_day = null
     await wrapper.vm.$nextTick()
-    expect(rowAllToggle(wrapper, 'tab-study__max-reviews').attributes('data-checked')).toBe('true')
+    expect(rowAllToggle(wrapper, 'tab-study__max-reviews').attributes('data-active')).toBe('true')
   })
 
   test('external prop change to a number updates the spinbox value', async () => {
@@ -267,7 +256,7 @@ describe('TabStudy', () => {
     const { wrapper } = makeTabStudy({
       config: { max_reviews_per_day: null, max_new_per_day: 20 }
     })
-    expect(rowAllToggle(wrapper, 'tab-study__max-reviews').attributes('data-checked')).toBe('true')
-    expect(rowAllToggle(wrapper, 'tab-study__max-new').attributes('data-checked')).toBe('false')
+    expect(rowAllToggle(wrapper, 'tab-study__max-reviews').attributes('data-active')).toBe('true')
+    expect(rowAllToggle(wrapper, 'tab-study__max-new').attributes('data-active')).toBe('false')
   })
 })
