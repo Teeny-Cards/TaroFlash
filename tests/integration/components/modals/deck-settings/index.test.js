@@ -44,6 +44,7 @@ vi.mock('@/composables/deck-editor', async () => {
     cover_image_preview: vueRef(undefined),
     cover_image_loading: vueRef(false),
     active_side: vueRef('cover'),
+    is_dirty: vueRef(false),
     deleting: vueRef(false),
     resetting_reviews: vueRef(false),
     saveDeck: (...args) => mockEditor.saveDeck(...args),
@@ -55,6 +56,8 @@ vi.mock('@/composables/deck-editor', async () => {
     removeCoverImage: () => {},
     setActiveSide: () => {}
   }
+  // expose on the mockEditor handle so individual tests can flip dirty state
+  mockEditor.editor = editor
   return {
     useDeckEditor: () => editor,
     deckEditorKey: Symbol('deckEditor')
@@ -96,7 +99,18 @@ vi.mock('@/composables/use-session-ref', () => ({
 const TabSheetStub = defineComponent({
   emits: ['close', 'update:active'],
   setup(_props, { slots }) {
-    return () => h('div', { 'data-testid': 'tab-sheet' }, slots.default?.())
+    return () =>
+      h('div', { 'data-testid': 'tab-sheet' }, [
+        slots.default?.(),
+        h('div', { 'data-testid': 'tab-sheet__footer' }, slots.footer?.())
+      ])
+  }
+})
+
+const UiButtonStub = defineComponent({
+  name: 'UiButton',
+  setup(_props, { slots, attrs }) {
+    return () => h('button', { 'data-testid': 'ui-button', ...attrs }, slots.default?.())
   }
 })
 
@@ -144,7 +158,7 @@ function makeWrapper() {
         TabStudy: PassthroughStub,
         TabDangerZone: TabDangerZoneStub,
         DeckPreview: PassthroughStub,
-        UiButton: PassthroughStub
+        UiButton: UiButtonStub
       },
       mocks: { $t: (k) => k }
     }
@@ -208,5 +222,35 @@ describe('DeckSettings — onResetReviews orchestration', () => {
       "Couldn't reset reviews for this deck. Please try again."
     )
     expect(mockToastSuccess).not.toHaveBeenCalled()
+  })
+})
+
+describe('DeckSettings — save button visibility (driven by editor.is_dirty)', () => {
+  test('hides the save button when the editor is not dirty', () => {
+    mockEditor.editor.is_dirty.value = false
+    const { wrapper } = makeWrapper()
+
+    const footer = wrapper.find('[data-testid="tab-sheet__footer"]')
+    expect(footer.find('[data-testid="ui-button"]').exists()).toBe(false)
+  })
+
+  test('shows the save button when the editor reports a dirty state', () => {
+    mockEditor.editor.is_dirty.value = true
+    const { wrapper } = makeWrapper()
+
+    const footer = wrapper.find('[data-testid="tab-sheet__footer"]')
+    expect(footer.find('[data-testid="ui-button"]').exists()).toBe(true)
+  })
+
+  test('clicking the save button calls editor.saveDeck and closes on success', async () => {
+    mockEditor.editor.is_dirty.value = true
+    mockEditor.saveDeck.mockResolvedValue(true)
+    const { wrapper, close } = makeWrapper()
+
+    await wrapper.find('[data-testid="ui-button"]').trigger('click')
+    await flushPromises()
+
+    expect(mockEditor.saveDeck).toHaveBeenCalledTimes(1)
+    expect(close).toHaveBeenCalledWith(true)
   })
 })
