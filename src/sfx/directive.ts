@@ -15,65 +15,80 @@ type SfxBindingValue = NamespacedAudioKey | SfxOptions
 
 type Cleanup = () => void
 
-const CLEANUP_KEY = '__vSfxCleanup'
+type SfxState = {
+  cfg: SfxOptions
+  mods: Partial<Record<string, boolean>>
+  cleanup: Cleanup
+}
+
+const STATE_KEY = '__vSfxState'
 
 export const vSfx: Directive<HTMLElement, SfxBindingValue> = {
   mounted(el, binding) {
-    _bind(el, binding)
+    _attach(el, binding)
   },
 
   updated(el, binding) {
     if (binding.value === binding.oldValue) return
-    _unbind(el)
-    _bind(el, binding)
+    const state = (el as any)[STATE_KEY] as SfxState | undefined
+    if (!state) {
+      _attach(el, binding)
+      return
+    }
+    state.cfg = _parseBinding(binding.value, binding.modifiers)
   },
 
   beforeUnmount(el) {
-    _unbind(el)
+    const state = (el as any)[STATE_KEY] as SfxState | undefined
+    state?.cleanup()
+    ;(el as any)[STATE_KEY] = undefined
   }
 }
 
-function _bind(el: HTMLElement, binding: DirectiveBinding<SfxBindingValue>) {
+function _attach(el: HTMLElement, binding: DirectiveBinding<SfxBindingValue>) {
   if (!binding.value) return
 
+  const state: SfxState = {
+    cfg: _parseBinding(binding.value, binding.modifiers),
+    mods: binding.modifiers,
+    cleanup: () => {}
+  }
+
   const cleanups: Cleanup[] = []
-  const mods = binding.modifiers
-  const cfg = _parseBinding(binding.value, mods)
 
-  if (cfg.click) {
-    cleanups.push(
-      _add(el, 'click', (e) => {
-        if (mods.prevent) e.preventDefault()
-        if (mods.stop) e.stopPropagation()
+  cleanups.push(
+    _add(el, 'click', (e) => {
+      if (!state.cfg.click) return
+      if (state.mods.prevent) e.preventDefault()
+      if (state.mods.stop) e.stopPropagation()
+      emitSfx(state.cfg.click, { debounce: state.cfg.debounce })
+    })
+  )
 
-        emitSfx(cfg.click!, { debounce: cfg.debounce })
-      })
-    )
-  }
+  cleanups.push(
+    _add(el, 'pointerenter', (e) => {
+      if (!state.cfg.hover) return
+      if ((e as PointerEvent).pointerType !== 'mouse') return
+      emitHoverSfx(state.cfg.hover, { debounce: state.cfg.debounce })
+    })
+  )
 
-  if (cfg.hover) {
-    cleanups.push(
-      _add(el, 'pointerenter', (e) => {
-        if ((e as PointerEvent).pointerType !== 'mouse') return
-        emitHoverSfx(cfg.hover!, { debounce: cfg.debounce })
-      })
-    )
-  }
+  cleanups.push(
+    _add(el, 'focus', () => {
+      if (!state.cfg.focus) return
+      emitSfx(state.cfg.focus, { debounce: state.cfg.debounce })
+    })
+  )
 
-  if (cfg.focus) {
-    cleanups.push(_add(el, 'focus', () => emitSfx(cfg.focus!, { debounce: cfg.debounce })))
-  }
+  cleanups.push(
+    _add(el, 'blur', () => {
+      if (!state.cfg.blur) return
+      emitSfx(state.cfg.blur, { debounce: state.cfg.debounce })
+    })
+  )
 
-  if (cfg.blur) {
-    cleanups.push(_add(el, 'blur', () => emitSfx(cfg.blur!, { debounce: cfg.debounce })))
-  }
-
-  ;(el as any)[CLEANUP_KEY] = () => cleanups.forEach((c) => c())
-}
-
-function _unbind(el: HTMLElement) {
-  ;(el as any)[CLEANUP_KEY]?.()
-  ;(el as any)[CLEANUP_KEY] = undefined
+  state.cleanup = () => cleanups.forEach((c) => c())
+  ;(el as any)[STATE_KEY] = state
 }
 
 function _add(el: HTMLElement, event: string, handler: EventListener) {
