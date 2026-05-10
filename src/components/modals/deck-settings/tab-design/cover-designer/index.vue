@@ -16,12 +16,13 @@ defineEmits<{
 }>()
 
 const supported_themes: DeckTheme[] = [
-  { light: 'blue-500', dark: 'blue-800' },
-  { light: 'green-400', dark: 'green-500' },
+  { light: 'green-500', dark: 'green-800' },
+  { light: 'blue-500', dark: 'blue-650' },
   { light: 'purple-500', dark: 'purple-700' },
-  { light: 'pink-400', dark: 'pink-500' },
-  { light: 'red-500' },
-  { light: 'yellow-500', dark: 'yellow-600' }
+  { light: 'pink-500', dark: 'pink-700' },
+  { light: 'red-500', dark: 'red-600' },
+  { light: 'orange-700', dark: 'orange-700' },
+  { light: 'yellow-500', dark: 'yellow-700' }
 ]
 
 const supported_patterns: DeckCoverPattern[] = [

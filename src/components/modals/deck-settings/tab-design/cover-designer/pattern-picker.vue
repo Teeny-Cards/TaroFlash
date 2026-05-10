@@ -3,7 +3,6 @@ import { useI18n } from 'vue-i18n'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import { emitSfx } from '@/sfx/bus'
 import { patternOpacity, patternSize } from '@/utils/cover'
-import PickerPopover from './picker-popover.vue'
 
 const { t } = useI18n()
 
@@ -39,8 +38,11 @@ function onPatternSelect(p: DeckCoverPattern | undefined) {
 </script>
 
 <template>
-  <picker-popover :label="t('deck.settings-modal.cover.pattern')" icon="texture-add" size="lg">
-    <template #default>
+  <div data-testid="pattern-picker-container" class="flex flex-col gap-2.5">
+    <h3 data-testid="pattern-picker__label" class="text-brown-700 dark:text-brown-100">
+      {{ t('deck.settings-modal.cover.pattern') }}
+    </h3>
+    <div data-testid="pattern-picker" class="grid grid-cols-4 gap-2 pt-3">
       <button
         v-for="pattern in supported_patterns"
         :key="pattern"
@@ -69,6 +71,6 @@ function onPatternSelect(p: DeckCoverPattern | undefined) {
       >
         {{ t('deck.settings-modal.cover.pattern-picker.none-option') }}
       </button>
-    </template>
-  </picker-popover>
+    </div>
+  </div>
 </template>
