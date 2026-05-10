@@ -55,7 +55,7 @@ const MobileSheetStub = defineComponent({
   emits: ['close'],
   setup(_props, { slots }) {
     return () =>
-      h('div', { 'data-testid': 'mobile-sheet-stub' }, [slots.body?.(), slots.footer?.()])
+      h('div', { 'data-testid': 'mobile-sheet-stub' }, [slots.default?.(), slots.footer?.()])
   }
 })
 
