@@ -9,17 +9,17 @@ import PickerPopover from './picker-popover.vue'
 const { t } = useI18n()
 
 type BgColorPickerProps = {
-  supported_themes: DeckCoverThemeOption[]
-  bg_color: MemberTheme | undefined
-  bg_color_dark: MemberTheme | undefined
+  supported_themes: DeckTheme[]
+  bg_color: Theme | undefined
+  bg_color_dark: Theme | undefined
   border_size: number | undefined
 }
 
 const { bg_color, bg_color_dark, border_size } = defineProps<BgColorPickerProps>()
 
 const emit = defineEmits<{
-  (e: 'update:bg_color', value: MemberTheme | undefined): void
-  (e: 'update:bg_color_dark', value: MemberTheme | undefined): void
+  (e: 'update:bg_color', value: Theme | undefined): void
+  (e: 'update:bg_color_dark', value: Theme | undefined): void
   (e: 'update:border_size', value: number): void
 }>()
 
@@ -39,11 +39,11 @@ const borderSizePercent = computed<number>({
   }
 })
 
-function isSelected(option: DeckCoverThemeOption) {
+function isSelected(option: DeckTheme) {
   return option.light === bg_color && (option.dark ?? null) === (bg_color_dark ?? null)
 }
 
-function onThemeSelect(option: DeckCoverThemeOption) {
+function onThemeSelect(option: DeckTheme) {
   if (isSelected(option)) {
     emitSfx('ui.digi_powerdown')
     return

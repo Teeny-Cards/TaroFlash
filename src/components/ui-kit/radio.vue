@@ -4,7 +4,7 @@ import UiIcon from '@/components/ui-kit/icon.vue'
 const { checked, theme = 'blue-500' } = defineProps<{
   checked: boolean
   intermediate?: boolean
-  theme?: MemberTheme
+  theme?: Theme
   inverted?: boolean
 }>()
 </script>

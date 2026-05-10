@@ -7,8 +7,8 @@ type ScopedProps = {
   loadingImage: string
   doneImage?: string
   size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl'
-  theme?: MemberTheme
-  themeDark?: MemberTheme
+  theme?: Theme
+  themeDark?: Theme
   burstDurationMs?: number
   phase: LoaderPhase
   is_dark_mode: boolean

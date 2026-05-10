@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import TabBar from './tab-bar.vue'
 import Card from '@/components/card/index.vue'
 import { useCardsInDeckInfiniteQuery } from '@/api/cards'
 import { emitSfx } from '@/sfx/bus'
@@ -37,26 +36,16 @@ const preview_text = computed(() => {
   return first_card.value?.back_text || t('deck.settings-modal.preview.back-fallback')
 })
 
-function onSideChange(next: CardSide) {
-  if (next === side) {
-    emitSfx('ui.digi_powerdown')
-    return
-  }
-
-  emitSfx('ui.slide_up')
-  emit('update:side', next)
-}
-
 function cycleSide() {
   const index = sides.value.findIndex((s) => s.value === side)
   const next = sides.value[(index + 1) % sides.value.length].value
-  onSideChange(next)
+  emit('update:side', next)
 }
 </script>
 
 <template>
-  <div data-testid="deck-preview" class="flex flex-col items-center gap-3 pointer-events-auto">
-    <tab-bar :tabs="sides" :active="side" @update:active="onSideChange" />
+  <div data-testid="deck-preview" class="pointer-events-auto absolute right-6 top-6">
+    <card size="xl" class="absolute! -top-2 right-1" face_classes="bg-white! dark:bg-stone-700!" />
 
     <card
       size="xl"
@@ -65,7 +54,8 @@ function cycleSide() {
       :back_text="side === 'back' ? preview_text : undefined"
       :cover_config="cover"
       :card_attributes="card_attributes"
-      class="cursor-pointer"
+      class="cursor-pointer rotate-4 drop-shadow-sm"
+      face_classes="border-t border-l border-brown-100 dark:border-stone-900"
       @click="cycleSide"
     />
   </div>

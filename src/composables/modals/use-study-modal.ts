@@ -44,7 +44,7 @@ export function useStudyModal() {
 
   async function _openSessionComplete(
     { score, total, remaining_due, study_all_used }: StudySessionResponse,
-    theme?: MemberTheme
+    theme?: Theme
   ) {
     await new Promise((resolve) => setTimeout(resolve, 300))
 

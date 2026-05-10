@@ -8,6 +8,7 @@ import DeckPreview from './deck-preview.vue'
 import { useDeckEditor } from '@/composables/deck-editor'
 import UiButton from '@/components/ui-kit/button.vue'
 import TabSheet from '@/components/layout-kit/modal/tab-sheet.vue'
+import { emitSfx } from '@/sfx/bus'
 
 export type DeckSettingsResponse = boolean
 
@@ -29,6 +30,12 @@ const active_tab = ref('')
 const active_side = ref<CardSide>('cover')
 
 const visible_side = computed(() => (active_tab.value === 'design' ? active_side.value : 'cover'))
+
+function setActiveSide(side: CardSide) {
+  if (active_tab.value !== 'design' || side === active_side.value) return
+  emitSfx('ui.slide_up')
+  active_side.value = side
+}
 
 async function onSave() {
   const saved = await saveDeck()
@@ -85,7 +92,7 @@ async function onSave() {
         :cover="cover"
         :card_attributes="card_attributes"
         :side="visible_side"
-        @update:side="active_side = $event"
+        @update:side="setActiveSide"
       />
     </template>
 
