@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
 import { reactive, defineComponent, h } from 'vue'
-import CoverDesigner from '@/components/modals/deck-settings/cover-designer/index.vue'
+import CoverDesigner from '@/components/modals/deck-settings/tab-design/cover-designer/index.vue'
 
 function slotlessStub(name) {
   return defineComponent({
@@ -63,8 +63,8 @@ describe('CoverDesigner toolbar', () => {
     const bg = wrapper.findComponent(BgColorPickerStub).props()
     expect(bg.bg_color).toBe('pink-400')
     expect(bg.border_size).toBe(8)
-    expect(bg.supported_themes).toEqual(
-      expect.arrayContaining(['blue-500', 'green-400', 'purple-500'])
+    expect(bg.supported_themes.map((option) => option.light)).toEqual(
+      expect.arrayContaining(['blue-500', 'green-500', 'purple-500'])
     )
 
     const iconProps = wrapper.findComponent(IconPickerStub).props()

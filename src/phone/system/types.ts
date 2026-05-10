@@ -34,7 +34,7 @@ export const APP_CTX_KEY = 'app-context'
 type LauncherConfig = {
   icon_src: string
   hover_icon_src?: string
-  theme: MemberTheme
+  theme: Theme
 }
 
 type BaseApp<TController extends AppController = AppController> = {

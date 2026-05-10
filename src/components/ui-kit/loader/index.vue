@@ -12,8 +12,8 @@ export type LoaderProps = {
   loadingImage: string
   doneImage?: string
   size?: LoaderSize
-  theme?: MemberTheme
-  themeDark?: MemberTheme
+  theme?: Theme
+  themeDark?: Theme
   loading?: boolean
   burstDurationMs?: number
   fadeMs?: number

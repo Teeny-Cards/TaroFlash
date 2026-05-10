@@ -4,7 +4,7 @@ import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 import { useGestures } from '@/composables/use-gestures'
 
 const { theme = 'brown-800' } = defineProps<{
-  theme?: MemberTheme
+  theme?: Theme
 }>()
 const percent = defineModel<number>()
 

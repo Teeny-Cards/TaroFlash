@@ -5,7 +5,7 @@ import UiIcon from '@/components/ui-kit/icon.vue'
 import Option from './option.vue'
 
 const { theme = 'blue-500' } = defineProps<{
-  theme?: MemberTheme
+  theme?: Theme
 }>()
 
 const open = ref(false)

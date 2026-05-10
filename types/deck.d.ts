@@ -53,10 +53,16 @@ type DeckCoverPattern =
   | 'endless-clouds'
 
 type DeckCover = {
-  bg_color?: MemberTheme
+  bg_color?: Theme
+  bg_color_dark?: Theme
   border_size?: number
   pattern?: DeckCoverPattern
   pattern_size?: number
   bg_image?: string
   icon?: string
+}
+
+type DeckTheme = {
+  light: Theme
+  dark?: Theme
 }

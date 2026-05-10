@@ -3,7 +3,7 @@ import AppWrapper from '@/phone/components/app-wrapper.vue'
 import UiTooltip from '@/components/ui-kit/tooltip.vue'
 
 const { hoverEffect = true } = defineProps<{
-  theme: MemberTheme
+  theme: Theme
   title: string
   hoverEffect?: boolean
 }>()

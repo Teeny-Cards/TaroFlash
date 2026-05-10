@@ -19,6 +19,7 @@ describe('coverBindings', () => {
   test('returns empty bindings when called with no argument', () => {
     expect(coverBindings()).toEqual({
       'data-theme': undefined,
+      'data-theme-dark': undefined,
       class: [],
       style: {}
     })
@@ -32,6 +33,23 @@ describe('coverBindings', () => {
   test('uses config bg_color over fallbackTheme', () => {
     const result = coverBindings({ bg_color: 'pink-400' }, { fallbackTheme: 'blue-500' })
     expect(result['data-theme']).toBe('pink-400')
+  })
+
+  test('forwards bg_color_dark to data-theme-dark when set', () => {
+    const result = coverBindings({ bg_color: 'pink-400', bg_color_dark: 'pink-700' })
+    expect(result['data-theme-dark']).toBe('pink-700')
+  })
+
+  test('omits data-theme-dark (undefined) when bg_color_dark is unset', () => {
+    const result = coverBindings({ bg_color: 'pink-400' })
+    expect(result['data-theme-dark']).toBeUndefined()
+  })
+
+  test('does not fall back fallbackTheme into data-theme-dark', () => {
+    // fallbackTheme only fills the light slot — dark stays unset so palette
+    // descendant rules can apply the same theme in dark mode.
+    const result = coverBindings({}, { fallbackTheme: 'blue-500' })
+    expect(result['data-theme-dark']).toBeUndefined()
   })
 
   test('emits pattern class when pattern is set', () => {

@@ -26,6 +26,7 @@
 
   --color-green-800: #467d60;
   --color-green-600: #6f9b80;
+  --color-green-500: #89b197;
   --color-green-400: #a4c6ae;
   --color-green-300: #e4edd9;
   --color-green-200: #e8f6e7;
@@ -35,6 +36,7 @@
   --color-purple-400: #bea0df;
   --color-purple-200: #c6c4db;
 
+  --color-pink-700: #d4577a;
   --color-pink-500: #f388a5;
   --color-pink-400: #f599b3;
 
@@ -42,6 +44,8 @@
   --color-red-500: #e66061;
   --color-red-400: #f97b7b;
   --color-red-300: #ffa399;
+
+  --color-orange-700: #cf6e19;
 
   --color-yellow-700: #d69224;
   --color-yellow-600: #fc946f;

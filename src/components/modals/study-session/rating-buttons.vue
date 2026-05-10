@@ -9,7 +9,7 @@ const { getRatingTimeFormat } = useRatingFormat()
 
 const { options, side } = defineProps<{
   options?: RecordLog
-  side: 'front' | 'back' | 'cover'
+  side: CardSide
 }>()
 
 const emit = defineEmits<{

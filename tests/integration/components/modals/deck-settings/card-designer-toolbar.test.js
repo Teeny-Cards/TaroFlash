@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
 import { reactive, defineComponent, h } from 'vue'
-import CardDesignerToolbar from '@/components/modals/deck-settings/card-designer-toolbar.vue'
+import CardDesignerToolbar from '@/components/modals/deck-settings/tab-design/card-designer-toolbar.vue'
 
 // ── Stubs ──────────────────────────────────────────────────────────────────────
 

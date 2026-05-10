@@ -8,7 +8,7 @@ import { emitSfx } from '@/sfx/bus'
 
 type ModeConfig = {
   label: string
-  theme: MemberTheme
+  theme: Theme
 }
 
 const theme_store = useThemeStore()

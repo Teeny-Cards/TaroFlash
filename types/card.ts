@@ -29,4 +29,5 @@ export type CardBase = {
 declare global {
   type Review = FSRSCard
   type Card = Prettify<CardBase>
+  type CardSide = 'front' | 'back' | 'cover'
 }

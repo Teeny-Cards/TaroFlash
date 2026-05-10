@@ -7,7 +7,7 @@ import type { StudyCard } from './study-session-core'
  * resolver used to sequence the pre-flip animation on the incoming card.
  */
 export function useCardPreview(next_card: ComputedRef<StudyCard | undefined>) {
-  const next_card_side = ref<'front' | 'back' | 'cover'>('cover')
+  const next_card_side = ref<CardSide>('cover')
   const preview_progress = ref(0)
   const preview_transition_duration = ref(0)
 
