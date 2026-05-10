@@ -48,11 +48,11 @@ async function onSave() {
     data-testid="deck-settings-container"
     data-theme="green-500"
     data-theme-dark="green-800"
-    class="sm:w-245 sm:h-167"
+    class="sm:w-245 sm:h-167 gap-0!"
     :title="t('deck.settings-modal.title')"
     :tabs="tabs"
     :cover_config="{ pattern: 'endless-clouds' }"
-    :parts="{ content: 'w-98 flex flex-col gap-10' }"
+    :parts="{ content: 'w-98 flex flex-col gap-4' }"
     v-model:active="active_tab"
     @close="close(false)"
   >
@@ -97,7 +97,13 @@ async function onSave() {
     </template>
 
     <template #after>
-      <ui-button data-theme="blue-500" size="xl" @click="onSave" full-width l>
+      <ui-button
+        data-theme="blue-500"
+        data-theme-dark="blue-650"
+        size="xl"
+        @click="onSave"
+        full-width
+      >
         {{ deck ? t('deck.settings-modal.submit-edit') : t('deck.settings-modal.submit-create') }}
       </ui-button>
     </template>

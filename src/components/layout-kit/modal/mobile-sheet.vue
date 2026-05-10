@@ -63,7 +63,7 @@ provide(mobileSheetOverlayKey, overlay_root)
 
       <div
         data-testid="mobile-sheet"
-        class="flex w-full h-full flex-col gap-8 bg-brown-300 dark:bg-grey-800"
+        class="flex w-full h-full flex-col bg-brown-300 dark:bg-grey-800"
       >
         <slot v-if="showHeader" name="header">
           <div
@@ -85,7 +85,7 @@ provide(mobileSheetOverlayKey, overlay_root)
           <slot></slot>
         </div>
 
-        <div data-testid="mobile-sheet__footer" class="shrink-0">
+        <div v-if="$slots.footer" data-testid="mobile-sheet__footer" class="shrink-0">
           <slot name="footer"></slot>
         </div>
       </div>
