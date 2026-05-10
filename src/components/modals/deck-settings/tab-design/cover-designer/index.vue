@@ -52,7 +52,7 @@ const supported_icons: string[] = [
     :data-theme="config.bg_color"
     :data-theme-dark="config.bg_color_dark"
   >
-    <div data-testid="cover-designer-toolbar__controls" class="flex flex-col gap-4">
+    <div data-testid="cover-designer-toolbar__controls" class="flex flex-col gap-8">
       <bg-color-picker
         :supported_themes="supported_themes"
         :bg_color="config.bg_color"
@@ -63,17 +63,17 @@ const supported_icons: string[] = [
         @update:border_size="config.border_size = $event"
       />
 
-      <icon-picker
-        :supported_icons="supported_icons"
-        :icon="config.icon"
-        @update:icon="config.icon = $event"
-      />
-
       <pattern-picker
         :supported_patterns="supported_patterns"
         :selected_pattern="config.pattern"
         :pattern_size="config.pattern_size"
         @update:pattern="config.pattern = $event"
+      />
+
+      <icon-picker
+        :supported_icons="supported_icons"
+        :icon="config.icon"
+        @update:icon="config.icon = $event"
       />
     </div>
   </div>
