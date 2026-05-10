@@ -25,7 +25,10 @@ const tabs = computed(() => [
   { value: 'study', icon: 'school-cap', label: t('deck.settings-modal.tab.study') }
 ])
 
+const active_tab = ref('')
 const active_side = ref<CardSide>('cover')
+
+const visible_side = computed(() => (active_tab.value === 'design' ? active_side.value : 'cover'))
 
 async function onSave() {
   const saved = await saveDeck()
@@ -43,6 +46,7 @@ async function onSave() {
     :tabs="tabs"
     :cover_config="{ pattern: 'endless-clouds' }"
     :parts="{ content: 'w-98 flex flex-col gap-10' }"
+    v-model:active="active_tab"
     @close="close(false)"
   >
     <template #header-content>
@@ -63,6 +67,7 @@ async function onSave() {
       <tab-study
         :card_count="deck?.card_count"
         v-model:shuffle="config.shuffle"
+        x
         v-model:flip_cards="config.flip_cards"
         v-model:is_spaced="config.is_spaced"
         v-model:auto_play="config.auto_play"
@@ -76,13 +81,13 @@ async function onSave() {
         :deck_id="deck?.id"
         :cover="cover"
         :card_attributes="card_attributes"
-        v-model:side="active_side"
-        class="absolute right-6 top-6 rotate-4 drop-shadow-sm"
+        :side="visible_side"
+        @update:side="active_side = $event"
       />
     </template>
 
     <template #after>
-      <ui-button data-theme="blue-500" size="xl" @click="onSave" full-width>
+      <ui-button data-theme="blue-500" size="xl" @click="onSave" full-width l>
         {{ deck ? t('deck.settings-modal.submit-edit') : t('deck.settings-modal.submit-create') }}
       </ui-button>
     </template>

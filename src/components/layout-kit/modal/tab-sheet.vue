@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { provide, ref } from 'vue'
+import { provide } from 'vue'
 import mobileSheet, { type MobileSheetProps } from './mobile-sheet.vue'
 import { activeTabKey } from './tab-sheet-context'
 import { emitSfx } from '@/sfx/bus'
@@ -25,7 +25,8 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-const active = ref<string>(props.tabs?.[0]?.value ?? '')
+const active = defineModel<string>('active', { default: '' })
+if (!active.value) active.value = props.tabs?.[0]?.value ?? ''
 provide(activeTabKey, active)
 
 function selectOption(value: string) {
@@ -43,10 +44,6 @@ function selectOption(value: string) {
   <mobile-sheet v-bind="props" :show_close_button="false">
     <template #overlay>
       <slot name="overlay"></slot>
-    </template>
-
-    <template #header-content>
-      <slot name="header-content"></slot>
     </template>
 
     <template v-if="tabs?.length" #sidebar>
@@ -72,7 +69,7 @@ function selectOption(value: string) {
             data-testid="tab-sheet__tab"
             :data-active="tab.value === active"
             :class="[
-              'text-left py-3 px-4 rounded-4 flex items-center cursor-pointer text-brown-700 data-[active=true]:bg-(--theme-primary) data-[active=true]:text-(--theme-on-primary) hover:bg-(--theme-neutral) hover:text-(--theme-on-neutral) data-[active=false]:hover:[&_svg]:scale-120 data-[active=false]:hover:[&_svg]:rotate-6 [&_svg]:transition-transform [&_svg]:duration-75',
+              'text-left py-3 px-4 rounded-4 flex items-center cursor-pointer text-brown-700 dark:text-brown-100 data-[active=true]:bg-(--theme-primary) data-[active=true]:text-(--theme-on-primary) hover:bg-(--theme-neutral) hover:text-(--theme-on-neutral) data-[active=false]:hover:[&_svg]:scale-120 data-[active=false]:hover:[&_svg]:rotate-6 [&_svg]:transition-transform [&_svg]:duration-75',
               parts?.tab
             ]"
             v-sfx.hover="tab.value === active ? '' : 'ui.click_07'"
