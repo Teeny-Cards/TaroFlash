@@ -3,7 +3,6 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { emitSfx } from '@/sfx/bus'
 import UiIcon from '@/components/ui-kit/icon.vue'
-import UiSlider from '@/components/ui-kit/slider.vue'
 
 const { t } = useI18n()
 
@@ -24,19 +23,6 @@ const emit = defineEmits<{
 
 const BORDER_SIZE_MIN = 1
 const BORDER_SIZE_MAX = 16
-
-const borderSizePercent = computed<number>({
-  get: () => {
-    if (border_size === undefined) return 25
-    return Math.round(((border_size - BORDER_SIZE_MIN) / (BORDER_SIZE_MAX - BORDER_SIZE_MIN)) * 100)
-  },
-  set: (percent: number) => {
-    emit(
-      'update:border_size',
-      Math.round(BORDER_SIZE_MIN + (percent / 100) * (BORDER_SIZE_MAX - BORDER_SIZE_MIN))
-    )
-  }
-})
 
 function isSelected(option: DeckTheme) {
   return option.light === bg_color && (option.dark ?? null) === (bg_color_dark ?? null)
@@ -59,7 +45,7 @@ function onThemeSelect(option: DeckTheme) {
     <h3 data-testid="bg-colo-picker__label" class="text-brown-700 dark:text-brown-100">
       {{ t('deck.settings-modal.cover.bg-color') }}
     </h3>
-    <div data-testid="bg-color-picker" class="w-full flex gap-3 pt-3">
+    <div data-testid="bg-color-picker" class="w-full flex gap-3">
       <button
         v-for="option in supported_themes"
         :key="`${option.light}:${option.dark ?? option.light}`"

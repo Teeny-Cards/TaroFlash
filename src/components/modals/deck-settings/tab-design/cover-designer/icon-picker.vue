@@ -39,19 +39,10 @@ function onIconSelect(value: string | undefined) {
         :data-testid="`icon-picker__option-${name}`"
         :data-selected="name === icon || undefined"
         v-sfx.hover="'ui.click_07'"
-        class="w-14.5 aspect-square rounded-4 rounded-tr-2 rounded-bl-2 cursor-pointer bg-(--theme-neutral) flex items-center justify-center text-(--theme-on-neutral) [&_svg]:size-6 ring-(--theme-primary) data-selected:ring-2 data-selected:bg-(--theme-primary) data-selected:text-(--theme-on-primary) hover:bg-(--theme-primary) hover:text-(--theme-on-primary)"
+        class="w-14.5 aspect-square rounded-6 cursor-pointer flex items-center justify-center bg-brown-100 dark:bg-stone-700 text-(--theme-neutral) [&_svg]:size-6 data-selected:bg-(--theme-primary) data-selected:text-(--theme-accent) hover:bg-(--theme-primary) hover:text-(--theme-accent) hover:bgx-diagonal-stripes hover:bgx-opacity-10 data-selected:bgx-diagonal-stripes data-selected:bgx-opacity-10 transition-colors duration-75 hover:[&_svg]:scale-120 hover:[&_svg]:rotate-6"
         @click="onIconSelect(name)"
       >
         <ui-icon :src="name" />
-      </button>
-
-      <button
-        data-testid="icon-picker__none"
-        :data-selected="icon === undefined || undefined"
-        class="w-14.5 aspect-square rounded-4 rounded-tr-2 rounded-bl-2 cursor-pointer bg-brown-200 border-2 border-dashed border-brown-400 flex items-center justify-center text-brown-500 text-xs font-medium"
-        @click="onIconSelect(undefined)"
-      >
-        {{ t('deck.settings-modal.cover.icon-picker.none-option') }}
       </button>
     </div>
   </div>

@@ -65,15 +65,6 @@ function onPatternSelect(p: DeckCoverPattern | undefined) {
           <ui-icon src="check" class="text-(--theme-primary)" />
         </div>
       </button>
-
-      <button
-        data-testid="pattern-picker__none"
-        :data-selected="selected_pattern === undefined || undefined"
-        class="w-14.5 aspect-square rounded-6 rounded-tr-3 rounded-bl-3 cursor-pointer bg-brown-200 border-2 border-dashed border-brown-400 flex items-center justify-center text-brown-500 text-xs font-medium"
-        @click="onPatternSelect(undefined)"
-      >
-        {{ t('deck.settings-modal.cover.pattern-picker.none-option') }}
-      </button>
     </div>
   </div>
 </template>
