@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vite-plus/test'
 import { mount } from '@vue/test-utils'
 import { reactive, defineComponent, h } from 'vue'
-import CardDesigner from '@/components/modals/deck-settings/tab-design/card-designer.vue'
+import CardDesigner from '@/components/modals/deck-settings/tab-design/card-designer/index.vue'
 
 const AlignPickerStub = defineComponent({
   name: 'AlignPicker',

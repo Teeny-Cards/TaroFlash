@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TabDesign from './tab-design/index.vue'
 import TabDeckSettings from './tab-deck-settings/index.vue'
 import TabStudy from './tab-study/index.vue'
 import DeckPreview from './deck-preview.vue'
-import { useDeckEditor } from '@/composables/deck-editor'
+import { useDeckEditor, deckEditorKey } from '@/composables/deck-editor'
 import { useSessionRef } from '@/composables/use-session-ref'
 import UiButton from '@/components/ui-kit/button.vue'
 import TabSheet from '@/components/layout-kit/modal/tab-sheet.vue'
@@ -18,8 +18,9 @@ const { deck, close } = defineProps<{
 }>()
 
 const { t } = useI18n()
-const { saveDeck, settings, config, cover, card_attributes, active_side, setActiveSide } =
-  useDeckEditor(deck)
+
+const editor = useDeckEditor(deck)
+provide(deckEditorKey, editor)
 
 const tabs = computed(() => [
   { value: 'deck-settings', icon: 'label', label: t('deck.settings-modal.tab.general') },
@@ -29,15 +30,17 @@ const tabs = computed(() => [
 
 const active_tab = useSessionRef('deck-settings.active-tab', '')
 
-const visible_side = computed(() => (active_tab.value === 'design' ? active_side.value : 'cover'))
+const visible_side = computed(() =>
+  active_tab.value === 'design' ? editor.active_side.value : 'cover'
+)
 
 function onPreviewSide(side: CardSide) {
   if (active_tab.value !== 'design') return
-  setActiveSide(side)
+  editor.setActiveSide(side)
 }
 
 async function onSave() {
-  const saved = await saveDeck()
+  const saved = await editor.saveDeck()
   if (saved) close(true)
 }
 </script>
@@ -56,23 +59,15 @@ async function onSave() {
     v-model:active="active_tab"
     @close="close(false)"
   >
-    <tab-design
-      v-if="active_tab === 'design'"
-      :cover="cover"
-      :card_attributes="card_attributes"
-      :side="active_side"
-      @update:side="setActiveSide"
-    />
-
-    <tab-deck-settings v-else-if="active_tab === 'deck-settings'" :settings="settings" />
-
-    <tab-study v-else-if="active_tab === 'study'" :card_count="deck?.card_count" :config="config" />
+    <tab-design v-if="active_tab === 'design'" />
+    <tab-deck-settings v-else-if="active_tab === 'deck-settings'" />
+    <tab-study v-else-if="active_tab === 'study'" />
 
     <template #overlay>
       <deck-preview
         :deck_id="deck?.id"
-        :cover="cover"
-        :card_attributes="card_attributes"
+        :cover="editor.cover"
+        :card_attributes="editor.card_attributes"
         :side="visible_side"
         @update:side="onPreviewSide"
       />

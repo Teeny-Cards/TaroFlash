@@ -95,6 +95,65 @@ describe('vSfx directive', () => {
     })
   })
 
+  describe('updated hook (binding value changes)', () => {
+    test('picks up the new audio key on the next event without unbinding', () => {
+      const el = mountDirective({ hover: 'ui.click_07' })
+      const oldValue = { hover: 'ui.click_07' }
+      const newValue = { hover: 'ui.select' }
+
+      vSfx.updated(el, { value: newValue, oldValue, modifiers: {} })
+
+      el.dispatchEvent(new PointerEvent('pointerenter', { pointerType: 'mouse' }))
+
+      expect(emitHoverSfx).toHaveBeenCalledWith('ui.select', { debounce: undefined })
+      unmount(el)
+    })
+
+    test('skips work when value reference is unchanged', () => {
+      const el = mountDirective({ hover: 'ui.click_07' })
+      const value = { hover: 'ui.click_07' }
+
+      vSfx.updated(el, { value, oldValue: value, modifiers: {} })
+
+      el.dispatchEvent(new PointerEvent('pointerenter', { pointerType: 'mouse' }))
+
+      expect(emitHoverSfx).toHaveBeenCalledTimes(1)
+      unmount(el)
+    })
+
+    test('attaches listeners on update if mounted with no binding value', () => {
+      const el = document.createElement('button')
+      document.body.appendChild(el)
+      vSfx.mounted(el, { value: undefined, modifiers: {} })
+
+      vSfx.updated(el, {
+        value: { hover: 'ui.click_07' },
+        oldValue: undefined,
+        modifiers: {}
+      })
+
+      el.dispatchEvent(new PointerEvent('pointerenter', { pointerType: 'mouse' }))
+
+      expect(emitHoverSfx).toHaveBeenCalledWith('ui.click_07', { debounce: undefined })
+      unmount(el)
+    })
+
+    test('clearing the audio key on update silences the listener', () => {
+      const el = mountDirective({ hover: 'ui.click_07' })
+
+      vSfx.updated(el, {
+        value: {},
+        oldValue: { hover: 'ui.click_07' },
+        modifiers: {}
+      })
+
+      el.dispatchEvent(new PointerEvent('pointerenter', { pointerType: 'mouse' }))
+
+      expect(emitHoverSfx).not.toHaveBeenCalled()
+      unmount(el)
+    })
+  })
+
   describe('binding shorthand', () => {
     test('string binding + .hover modifier wires hover sfx', () => {
       const el = mountDirective('ui.click_07', { hover: true })

@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
-import UiSpinbox from '@/components/ui-kit/spinbox.vue'
+import UiSpinbox from '@/components/ui-kit/spinbox/index.vue'
 
 function mountSpinbox(props = {}) {
   return shallowMount(UiSpinbox, { props: { value: 0, ...props } })
@@ -94,12 +94,12 @@ describe('UiSpinbox', () => {
 
   test('decrement button is disabled at min', () => {
     const wrapper = mountSpinbox({ value: 1, min: 1 })
-    expect(findDecrement(wrapper).attributes('disabled')).toBeDefined()
+    expect(findDecrement(wrapper).attributes('disabled')).toBe('true')
   })
 
   test('increment button is disabled at max', () => {
     const wrapper = mountSpinbox({ value: 10, max: 10 })
-    expect(findIncrement(wrapper).attributes('disabled')).toBeDefined()
+    expect(findIncrement(wrapper).attributes('disabled')).toBe('true')
   })
 
   test('decrement at min does not emit update:value', async () => {
@@ -142,8 +142,8 @@ describe('UiSpinbox', () => {
 
   test('wrap keeps both buttons enabled at the bounds', () => {
     const wrapper = mountSpinbox({ value: 1, min: 1, max: 10, wrap: true })
-    expect(findDecrement(wrapper).attributes('disabled')).toBeUndefined()
-    expect(findIncrement(wrapper).attributes('disabled')).toBeUndefined()
+    expect(findDecrement(wrapper).attributes('disabled')).toBe('false')
+    expect(findIncrement(wrapper).attributes('disabled')).toBe('false')
   })
 
   // ── Typing ─────────────────────────────────────────────────────────────────
@@ -279,8 +279,8 @@ describe('UiSpinbox', () => {
 
   test('with no min/max, both buttons are enabled by default', () => {
     const wrapper = mountSpinbox({ value: 0 })
-    expect(findDecrement(wrapper).attributes('disabled')).toBeUndefined()
-    expect(findIncrement(wrapper).attributes('disabled')).toBeUndefined()
+    expect(findDecrement(wrapper).attributes('disabled')).toBe('false')
+    expect(findIncrement(wrapper).attributes('disabled')).toBe('false')
   })
 
   test('default step is 1', async () => {
