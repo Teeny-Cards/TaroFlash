@@ -72,6 +72,22 @@ async function onSave() {
   if (saved) close(true)
 }
 
+async function onResetReviews() {
+  const confirmed = await alert.warn({
+    title: t('alert.reset-reviews.title'),
+    message: t('alert.reset-reviews.message'),
+    confirmLabel: t('alert.reset-reviews.confirm')
+  }).response
+  if (!confirmed) return
+
+  const ok = await editor.resetReviews()
+  if (!ok) {
+    toast.error(t('toast.error.reset-reviews-failed'))
+    return
+  }
+  toast.success(t('toast.success.reset-reviews'))
+}
+
 async function onDelete() {
   const confirmed = await alert.warn({
     title: t('alert.delete-deck.title'),
@@ -114,7 +130,11 @@ async function onDelete() {
     <tab-design v-if="active_tab === 'design'" />
     <tab-general v-else-if="active_tab === 'general'" />
     <tab-study v-else-if="active_tab === 'study'" />
-    <tab-danger-zone v-else-if="active_tab === 'danger-zone'" @delete="onDelete" />
+    <tab-danger-zone
+      v-else-if="active_tab === 'danger-zone'"
+      @delete="onDelete"
+      @reset-reviews="onResetReviews"
+    />
 
     <template #overlay>
       <deck-preview

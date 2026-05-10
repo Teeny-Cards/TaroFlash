@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach, afterEach } from 'vite-plus/test'
 import { signInAsTestUser } from '../setup.js'
 import { createDeck, insertCardDirect } from '../fixtures.js'
-import { saveReview } from '@/api/reviews/db'
+import { saveReview, resetDeckReviews } from '@/api/reviews/db'
 
 let session
 
@@ -61,5 +61,61 @@ describe('saveReview (contract)', () => {
       .eq('card_id', card.id)
     expect(logs).toHaveLength(1)
     expect(logs[0].rating).toBe(3)
+  })
+})
+
+describe('resetDeckReviews (contract)', () => {
+  test('clears reviews + review_logs for every card in the deck', async () => {
+    const deck = await createDeck(session.client, session.userId)
+    const card = await insertCardDirect(session.client, deck.id)
+
+    const now = new Date()
+    await saveReview(
+      card.id,
+      {
+        due: new Date(now.getTime() + 86_400_000).toISOString(),
+        stability: 1.5,
+        difficulty: 5,
+        elapsed_days: 0,
+        scheduled_days: 1,
+        reps: 1,
+        lapses: 0,
+        last_review: now.toISOString(),
+        state: 1
+      },
+      {
+        rating: 3,
+        state: 1,
+        due: now.toISOString(),
+        stability: 1.5,
+        difficulty: 5,
+        scheduled_days: 1,
+        review: now.toISOString()
+      }
+    )
+
+    await resetDeckReviews(deck.id)
+
+    const { data: reviews } = await session.client
+      .from('reviews')
+      .select('id')
+      .eq('card_id', card.id)
+    expect(reviews).toEqual([])
+
+    const { data: logs } = await session.client
+      .from('review_logs')
+      .select('id')
+      .eq('card_id', card.id)
+    expect(logs).toEqual([])
+  })
+
+  test('rejects when caller does not own the deck', async () => {
+    const deck = await createDeck(session.client, session.userId)
+
+    // Switch to a different user — signInAsTestUser swaps the global client.
+    await session.cleanup()
+    session = await signInAsTestUser()
+
+    await expect(resetDeckReviews(deck.id)).rejects.toThrow(/not found|not owned/i)
   })
 })

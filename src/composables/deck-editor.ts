@@ -1,6 +1,7 @@
 import { reactive, ref, type InjectionKey } from 'vue'
 import { useDeleteDeckMutation } from '@/api/decks'
 import { useUploadImageMutation } from '@/api/media'
+import { useResetDeckReviewsMutation } from '@/api/reviews'
 import { useDeckActions } from '@/composables/deck/use-deck-actions'
 import { useSessionRef } from '@/composables/use-session-ref'
 import { useMemberStore } from '@/stores/member'
@@ -45,6 +46,7 @@ export function useDeckEditor(deck?: Deck) {
 
   const deck_actions = useDeckActions()
   const delete_mutation = useDeleteDeckMutation()
+  const reset_reviews_mutation = useResetDeckReviewsMutation()
   const upload_image_mutation = useUploadImageMutation()
 
   async function saveDeck(): Promise<boolean> {
@@ -67,6 +69,18 @@ export function useDeckEditor(deck?: Deck) {
 
     try {
       await delete_mutation.mutateAsync(deck.id)
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  /** Wipe FSRS state + review-log history for every card in the deck. No-op for unsaved decks. */
+  async function resetReviews(): Promise<boolean> {
+    if (!deck?.id) return false
+
+    try {
+      await reset_reviews_mutation.mutateAsync(deck.id)
       return true
     } catch {
       return false
@@ -124,8 +138,10 @@ export function useDeckEditor(deck?: Deck) {
     cover_image_loading,
     active_side,
     deleting: delete_mutation.isLoading,
+    resetting_reviews: reset_reviews_mutation.isLoading,
     saveDeck,
     deleteDeck,
+    resetReviews,
     uploadImage,
     removeImage,
     setCoverImage,
