@@ -42,17 +42,17 @@ function onPatternSelect(p: DeckCoverPattern | undefined) {
     <h3 data-testid="pattern-picker__label" class="text-brown-700 dark:text-brown-100">
       {{ t('deck.settings-modal.cover.pattern') }}
     </h3>
-    <div data-testid="pattern-picker" class="grid grid-cols-4 gap-2 pt-3">
+
+    <div data-testid="pattern-picker" class="flex flex-wrap gap-2">
       <button
         v-for="pattern in supported_patterns"
         :key="pattern"
         :data-testid="`pattern-picker__option-${pattern}`"
-        :data-theme="'brown-300'"
         :data-selected="pattern === selected_pattern || undefined"
         v-sfx.hover="'ui.click_07'"
         :class="`bgx-${pattern}`"
         :style="swatchStyle(pattern)"
-        class="w-full aspect-square rounded-4 rounded-tr-2 rounded-bl-2 cursor-pointer bg-(--theme-primary) data-selected:ring-3 ring-brown-700 relative"
+        class="w-14.5 aspect-square rounded-6 rounded-tr-3 rounded-bl-3 cursor-pointer bg-(--theme-primary) data-selected:ring-3 ring-brown-700 relative"
         @click="onPatternSelect(pattern)"
       >
         <div
@@ -66,7 +66,7 @@ function onPatternSelect(p: DeckCoverPattern | undefined) {
       <button
         data-testid="pattern-picker__none"
         :data-selected="selected_pattern === undefined || undefined"
-        class="w-full aspect-square rounded-4 rounded-tr-2 rounded-bl-2 cursor-pointer bg-brown-200 border-2 border-dashed border-brown-400 flex items-center justify-center text-brown-500 text-xs font-medium"
+        class="w-14.5 aspect-square rounded-6 rounded-tr-3 rounded-bl-3 cursor-pointer bg-brown-200 border-2 border-dashed border-brown-400 flex items-center justify-center text-brown-500 text-xs font-medium"
         @click="onPatternSelect(undefined)"
       >
         {{ t('deck.settings-modal.cover.pattern-picker.none-option') }}
