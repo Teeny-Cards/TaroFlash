@@ -42,14 +42,16 @@ const supported_icons: string[] = [
   'cable-car',
   'bell',
   'public',
-  'id-card',
-  'store',
-  'teeny-cards'
+  'id-card'
 ]
 </script>
 
 <template>
-  <div data-testid="cover-designer-toolbar">
+  <div
+    data-testid="cover-designer-toolbar"
+    :data-theme="config.bg_color"
+    :data-theme-dark="config.bg_color_dark"
+  >
     <div data-testid="cover-designer-toolbar__controls" class="flex flex-col gap-4">
       <bg-color-picker
         :supported_themes="supported_themes"
