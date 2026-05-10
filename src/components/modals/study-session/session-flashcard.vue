@@ -12,7 +12,7 @@ import { useCardPreview } from '@/composables/study-session/card-preview'
 import { useCardEdit } from '@/composables/study-session/card-edit'
 import { useModalRequestClose } from '@/composables/modal'
 import { type Grade } from 'ts-fsrs'
-import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
+import { computed, onMounted, ref, useTemplateRef } from 'vue'
 import Card from '@/components/card/index.vue'
 import { useStudySessionCardsQuery } from '@/api/cards'
 import { useFlushDeckReviews } from '@/api/reviews'
@@ -82,19 +82,23 @@ const cards_query = useStudySessionCardsQuery(
 )
 const flushDeckReviews = useFlushDeckReviews()
 
-onMounted(() => {
-  if (!deck.id) emit('closed')
+// Force a fresh fetch on mount and seed only from its resolved state. Pinia
+// Colada exposes the cached value synchronously while a background refetch
+// runs, and after the prior session's `useFlushDeckReviews` invalidation the
+// cache often holds an empty `[]` (everything was capped/done) or cards with
+// future-dated `review.due` timestamps that the FE due-filter rejects. Seeding
+// from either snapshot ends the session immediately. Awaiting `refetch()`
+// guarantees the queue is populated from server truth.
+onMounted(async () => {
+  if (!deck.id) {
+    emit('closed')
+    return
+  }
+  const state = await cards_query.refetch()
+  if (state.status !== 'success') return
+  setCards(state.data ?? [])
+  loading.value = false
 })
-
-watch(
-  cards_query.data,
-  (data) => {
-    if (!data || !loading.value) return
-    setCards(data)
-    loading.value = false
-  },
-  { immediate: true }
-)
 
 function onSideChanged() {
   emitSfx(is_starting_side.value ? 'ui.transition_up' : 'ui.transition_down')

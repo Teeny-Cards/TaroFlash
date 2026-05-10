@@ -2,6 +2,8 @@
 name: revise-rules
 description: Revise rule files under `.claude/rules/` and skill files under `.claude/skills/` so they stay accurate and consistent with the code — driven by `.claude/.last-updated.json`. Unlike update-docs this is a revision task, not a write-from-scratch one; flag drift, confirm with the user, then edit minimally.
 allowed-tools: Read, Edit, Write, Bash, Glob, Grep
+argument-hint: ''
+arguments: []
 lastUpdated: 2026-04-17T01:31:17Z
 ---
 

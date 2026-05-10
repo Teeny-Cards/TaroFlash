@@ -16,6 +16,11 @@ const { mockDeleteDeck, mockDeleteIsLoading } = vi.hoisted(() => {
   }
 })
 
+const { mockResetReviews, mockResetReviewsIsLoading } = vi.hoisted(() => ({
+  mockResetReviews: vi.fn().mockResolvedValue(undefined),
+  mockResetReviewsIsLoading: { value: false }
+}))
+
 const { mockUploadImage } = vi.hoisted(() => ({
   mockUploadImage: vi.fn().mockResolvedValue('https://cdn.example.com/cover.jpg')
 }))
@@ -43,6 +48,14 @@ vi.mock('@/composables/deck/use-deck-actions', () => ({
 
 vi.mock('@/api/media', () => ({
   useUploadImageMutation: () => ({ mutate: mockUploadImage, mutateAsync: mockUploadImage })
+}))
+
+vi.mock('@/api/reviews', () => ({
+  useResetDeckReviewsMutation: () => ({
+    mutate: mockResetReviews,
+    mutateAsync: mockResetReviews,
+    isLoading: mockResetReviewsIsLoading
+  })
 }))
 
 vi.mock('@/stores/member', () => ({
@@ -77,6 +90,8 @@ describe('useDeckEditor', () => {
     mockUpdateDeck.mockClear()
     mockUpdateDeck.mockResolvedValue(true)
     mockDeleteDeck.mockClear()
+    mockResetReviews.mockClear()
+    mockResetReviews.mockResolvedValue(undefined)
     mockUploadImage.mockClear()
     mockUploadImage.mockResolvedValue('https://cdn.example.com/cover.jpg')
     mockEmitSfx.mockClear()
@@ -323,6 +338,42 @@ describe('useDeckEditor', () => {
     test('exposes the mutation isLoading ref as `deleting`', () => {
       const { deleting } = useDeckEditor(makeDeck({ id: 1 }))
       expect(deleting).toBe(mockDeleteIsLoading)
+    })
+  })
+
+  // ── resetReviews ───────────────────────────────────────────────────────────
+
+  describe('resetReviews', () => {
+    test('calls the reset mutation with the deck id', async () => {
+      const { resetReviews } = useDeckEditor(makeDeck({ id: 42 }))
+
+      await resetReviews()
+
+      expect(mockResetReviews).toHaveBeenCalledWith(42)
+    })
+
+    test('resolves to true on success', async () => {
+      const { resetReviews } = useDeckEditor(makeDeck({ id: 1 }))
+      await expect(resetReviews()).resolves.toBe(true)
+    })
+
+    test('does not call the mutation when deck has no id, and resolves false', async () => {
+      const { resetReviews } = useDeckEditor(makeDeck({ id: undefined }))
+
+      await expect(resetReviews()).resolves.toBe(false)
+      expect(mockResetReviews).not.toHaveBeenCalled()
+    })
+
+    test('resolves to false (does not throw) when the mutation rejects', async () => {
+      mockResetReviews.mockRejectedValueOnce(new Error('Network error'))
+      const { resetReviews } = useDeckEditor(makeDeck({ id: 1 }))
+
+      await expect(resetReviews()).resolves.toBe(false)
+    })
+
+    test('exposes the mutation isLoading ref as `resetting_reviews`', () => {
+      const { resetting_reviews } = useDeckEditor(makeDeck({ id: 1 }))
+      expect(resetting_reviews).toBe(mockResetReviewsIsLoading)
     })
   })
 

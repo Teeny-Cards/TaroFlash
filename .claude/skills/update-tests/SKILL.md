@@ -2,6 +2,8 @@
 name: update-tests
 description: Analyse branch changes in `src/` and `supabase/` and write tests to reach ~90% coverage of changed lines
 allowed-tools: Read, Edit, Write, Bash, Glob, Grep
+argument-hint: ''
+arguments: []
 lastUpdated: 2026-04-16T18:00:00-07:00
 ---
 
@@ -50,6 +52,18 @@ For each source file:
 3. Check whether an existing test file already covers this source file (look under `tests/` mirroring the source path, e.g. `src/components/foo/bar.vue` → `tests/integration/components/foo/bar.test.js`, or `src/composables/foo.ts` → `tests/unit/composables/foo.test.js`).
 4. If a test file exists, read it to understand what is already covered before writing new tests.
 5. **If no test file exists at all**, treat this as an opportunity to write full coverage for the entire file — not just the changed lines. Cover the public API, all meaningful branches, and edge cases. Note this in the Step 8 report as "new test file (full coverage)".
+
+#### Bias: always write the test
+
+When you find yourself reaching for a reason to skip, push past it. Reasons that are **not** valid grounds to skip:
+
+- "No test file exists yet for this source file" — create one. The skill _expects_ this case (see step 5 above).
+- "Out of scope for this PR" / "this change is small" — the change ships untested otherwise. Cover it.
+- "Already covered indirectly via another component / composable" — indirect coverage masks the regression surface this skill is meant to lock down. Add a direct test anyway.
+- "Would need a new fixture / harness" — build it. Reusable fixtures are cheap long-term, fragile manual repros are not.
+- "Orchestration is glue code" — glue code is exactly where invalidation contracts, emit wiring, and feature-flag branches silently break. Glue code gets tested.
+
+Valid grounds to skip are narrow and listed in step 8: barrel re-exports with no logic, files in `coverage.exclude`, and pure config / static-asset changes. Anything else, write the test.
 
 ### Step 2b — Backend changes (`supabase/`)
 
@@ -179,6 +193,6 @@ After writing all tests, output a short summary table:
 | ------------ | --------- | ---------------- | --------- | ---------------------- |
 | ...          | ...       | unit/integration | N         | ~X%                    |
 
-If any changed file was skipped (e.g., already well-covered, excluded from coverage config, or not testable), explain why in one line.
+If any changed file was skipped, explain why in one line. Skipping is reserved for the narrow valid cases only: barrel re-exports with no logic, files in `coverage.exclude`, or pure config / static-asset changes. "No test file exists yet", "out of scope for the PR", "covered indirectly elsewhere", and "would need a new harness" are **not** valid skip reasons — write the test (see Step 2 "Bias: always write the test").
 
 Also include a **Quality notes** section listing any non-critical issues spotted during the review (step 7) that were not auto-fixed, so the author is aware of them.

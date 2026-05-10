@@ -26,8 +26,9 @@ const ButtonStub = defineComponent({
   }
 })
 
-function makeTab({ deleting = false } = {}) {
+function makeTab({ deleting = false, resetting_reviews = false } = {}) {
   const deletingRef = ref(deleting)
+  const resettingReviewsRef = ref(resetting_reviews)
   const editor = {
     deck: { id: 1 },
     settings: reactive({}),
@@ -38,8 +39,10 @@ function makeTab({ deleting = false } = {}) {
     cover_image_loading: ref(false),
     active_side: ref('cover'),
     deleting: deletingRef,
+    resetting_reviews: resettingReviewsRef,
     saveDeck: async () => true,
     deleteDeck: async () => true,
+    resetReviews: async () => true,
     uploadImage: () => {},
     removeImage: () => {},
     setCoverImage: async () => {},
@@ -53,7 +56,7 @@ function makeTab({ deleting = false } = {}) {
       mocks: { $t: (k) => k }
     }
   })
-  return { wrapper, deletingRef }
+  return { wrapper, deletingRef, resettingReviewsRef }
 }
 
 describe('TabDangerZone', () => {
@@ -91,5 +94,36 @@ describe('TabDangerZone', () => {
     const { wrapper } = makeTab({ deleting: true })
     await wrapper.find('[data-testid="tab-danger-zone__delete-button"]').trigger('click')
     expect(wrapper.emitted('delete')).toBeUndefined()
+  })
+
+  test('renders the reset-reviews button', () => {
+    const { wrapper } = makeTab()
+    expect(wrapper.find('[data-testid="tab-danger-zone__reset-reviews-button"]').exists()).toBe(
+      true
+    )
+  })
+
+  test('emits "reset-reviews" when the reset button is clicked', async () => {
+    const { wrapper } = makeTab()
+    await wrapper.find('[data-testid="tab-danger-zone__reset-reviews-button"]').trigger('click')
+    expect(wrapper.emitted('reset-reviews')).toHaveLength(1)
+  })
+
+  test('reflects the editor.resetting_reviews ref on the reset button (loading state)', async () => {
+    const { wrapper, resettingReviewsRef } = makeTab({ resetting_reviews: false })
+    const btn = wrapper.find('[data-testid="tab-danger-zone__reset-reviews-button"]')
+
+    expect(btn.attributes('data-loading')).toBe('false')
+
+    resettingReviewsRef.value = true
+    await wrapper.vm.$nextTick()
+
+    expect(btn.attributes('data-loading')).toBe('true')
+  })
+
+  test('does not emit "reset-reviews" while resetting (button disabled)', async () => {
+    const { wrapper } = makeTab({ resetting_reviews: true })
+    await wrapper.find('[data-testid="tab-danger-zone__reset-reviews-button"]').trigger('click')
+    expect(wrapper.emitted('reset-reviews')).toBeUndefined()
   })
 })
