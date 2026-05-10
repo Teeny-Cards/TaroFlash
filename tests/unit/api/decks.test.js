@@ -129,17 +129,19 @@ describe('upsertDeck', () => {
 })
 
 describe('deleteDeck', () => {
-  test('deletes the given deck by id', async () => {
-    queryMock.eq.mockResolvedValueOnce({ error: null })
+  test('calls the delete_deck RPC with the deck id as p_deck_id', async () => {
+    supabase.rpc.mockImplementationOnce((fn, args) => {
+      capturedRpcs.push({ fn, args })
+      return Promise.resolve({ error: null })
+    })
     await deleteDeck(42)
-    expect(capturedTables[0]).toBe('decks')
-    expect(queryMock.delete).toHaveBeenCalled()
-    expect(queryMock.eq).toHaveBeenCalledWith('id', 42)
+    expect(capturedRpcs[0].fn).toBe('delete_deck')
+    expect(capturedRpcs[0].args).toEqual({ p_deck_id: 42 })
   })
 
-  test('throws when the delete fails', async () => {
+  test('throws when the RPC errors', async () => {
     const err = new Error('denied')
-    queryMock.eq.mockResolvedValueOnce({ error: err })
+    supabase.rpc.mockImplementationOnce(() => Promise.resolve({ error: err }))
     await expect(deleteDeck(42)).rejects.toBe(err)
   })
 })

@@ -62,13 +62,14 @@ export function useDeckEditor(deck?: Deck) {
       : await deck_actions.createDeck(payload)
   }
 
-  async function deleteDeck() {
-    if (!deck?.id) return
+  async function deleteDeck(): Promise<boolean> {
+    if (!deck?.id) return false
 
     try {
       await delete_mutation.mutateAsync(deck.id)
+      return true
     } catch {
-      // TODO
+      return false
     }
   }
 
@@ -122,6 +123,7 @@ export function useDeckEditor(deck?: Deck) {
     cover_image_preview,
     cover_image_loading,
     active_side,
+    deleting: delete_mutation.isLoading,
     saveDeck,
     deleteDeck,
     uploadImage,

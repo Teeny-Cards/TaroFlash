@@ -47,9 +47,7 @@ defineSlots<{
   overlay(): any
   header(): any
   'header-content'(): any
-  before(): any
   default(): any
-  after(): any
   footer(): any
 }>()
 
@@ -169,9 +167,7 @@ shortcuts.register([
       role="tabpanel"
       :class="['p-8 pt-0', parts?.content]"
     >
-      <slot name="before"></slot>
       <slot></slot>
-      <slot name="after"></slot>
     </div>
   </mobile-sheet>
 </template>
