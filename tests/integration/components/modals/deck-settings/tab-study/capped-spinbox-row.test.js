@@ -9,9 +9,11 @@ const SpinboxStub = defineComponent({
     value: { type: Number, required: true },
     min: { type: Number, default: -Infinity },
     max: { type: Number, default: Infinity },
-    step: { type: Number, default: 1 }
+    step: { type: Number, default: 1 },
+    all_label: { type: String, default: undefined },
+    all_active: { type: Boolean, default: false }
   },
-  emits: ['update:value'],
+  emits: ['update:value', 'update:all_active'],
   inheritAttrs: false,
   setup(props, { emit }) {
     const attrs = useAttrs()
@@ -35,7 +37,19 @@ const SpinboxStub = defineComponent({
               onClick: () => emit('update:value', Math.min(props.max, props.value + props.step))
             },
             '+'
-          )
+          ),
+          props.all_label
+            ? h(
+                'button',
+                {
+                  type: 'button',
+                  'data-testid': 'ui-kit-spinbox__all-pill',
+                  'data-active': String(!!props.all_active),
+                  onClick: () => emit('update:all_active', !props.all_active)
+                },
+                props.all_label
+              )
+            : null
         ]
       )
   }
@@ -72,9 +86,7 @@ describe('CappedSpinboxRow', () => {
   test('renders the label and the all-pill label', () => {
     const { wrapper } = makeRow({ label: 'Max reviews', all_label: 'Unlimited' })
     expect(wrapper.find('[data-testid="capped-spinbox-row__label"]').text()).toBe('Max reviews')
-    expect(wrapper.find('[data-testid="capped-spinbox-row__all-pill"]').text()).toContain(
-      'Unlimited'
-    )
+    expect(wrapper.find('[data-testid="ui-kit-spinbox__all-pill"]').text()).toContain('Unlimited')
   })
 
   test('passes min/max/step through to the spinbox', () => {
@@ -86,16 +98,21 @@ describe('CappedSpinboxRow', () => {
     expect(spinbox.attributes('data-value')).toBe('50')
   })
 
-  test('seeds spinbox from default_value when value is null', () => {
-    const { wrapper } = makeRow({ value: null, default_value: 60 })
-    expect(wrapper.find('[data-testid="ui-kit-spinbox"]').attributes('data-value')).toBe('60')
+  test('seeds spinbox from max when value is null and prefill_when_all is unset', () => {
+    const { wrapper } = makeRow({ value: null, max: 200 })
+    expect(wrapper.find('[data-testid="ui-kit-spinbox"]').attributes('data-value')).toBe('200')
+  })
+
+  test('seeds spinbox from prefill_when_all when value is null', () => {
+    const { wrapper } = makeRow({ value: null, prefill_when_all: 137, max: 200 })
+    expect(wrapper.find('[data-testid="ui-kit-spinbox"]').attributes('data-value')).toBe('137')
   })
 
   test('marks the all-pill active when value is null', () => {
     const { wrapper } = makeRow({ value: null })
-    expect(
-      wrapper.find('[data-testid="capped-spinbox-row__all-pill"]').attributes('data-active')
-    ).toBe('true')
+    expect(wrapper.find('[data-testid="ui-kit-spinbox__all-pill"]').attributes('data-active')).toBe(
+      'true'
+    )
   })
 
   test('incrementing the spinbox emits update:value with the stepped number', async () => {
@@ -112,20 +129,20 @@ describe('CappedSpinboxRow', () => {
 
   test('clicking the all-pill from a numeric value emits null', async () => {
     const { wrapper, getValue } = makeRow({ value: 50 })
-    await wrapper.find('[data-testid="capped-spinbox-row__all-pill"]').trigger('click')
+    await wrapper.find('[data-testid="ui-kit-spinbox__all-pill"]').trigger('click')
     expect(getValue()).toBeNull()
   })
 
   test('clicking the all-pill from null restores a numeric value', async () => {
     const { wrapper, getValue } = makeRow({ value: null, default_value: 50 })
-    await wrapper.find('[data-testid="capped-spinbox-row__all-pill"]').trigger('click')
+    await wrapper.find('[data-testid="ui-kit-spinbox__all-pill"]').trigger('click')
     expect(typeof getValue()).toBe('number')
     expect(getValue()).toBeGreaterThan(0)
   })
 
   test('clicking the all-pill on with prefill_when_all sets the spinbox to that value', async () => {
     const { wrapper } = makeRow({ value: 50, prefill_when_all: 137 })
-    await wrapper.find('[data-testid="capped-spinbox-row__all-pill"]').trigger('click')
+    await wrapper.find('[data-testid="ui-kit-spinbox__all-pill"]').trigger('click')
     expect(wrapper.find('[data-testid="ui-kit-spinbox"]').attributes('data-value')).toBe('137')
   })
 })

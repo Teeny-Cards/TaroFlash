@@ -45,9 +45,11 @@ const SpinboxStub = defineComponent({
     value: { type: Number, required: true },
     min: { type: Number, default: -Infinity },
     max: { type: Number, default: Infinity },
-    step: { type: Number, default: 1 }
+    step: { type: Number, default: 1 },
+    all_label: { type: String, default: undefined },
+    all_active: { type: Boolean, default: false }
   },
-  emits: ['update:value'],
+  emits: ['update:value', 'update:all_active'],
   inheritAttrs: false,
   setup(props, { emit }) {
     const attrs = useAttrs()
@@ -80,7 +82,19 @@ const SpinboxStub = defineComponent({
               onClick: () => emit('update:value', Math.min(props.max, props.value + props.step))
             },
             '+'
-          )
+          ),
+          props.all_label
+            ? h(
+                'button',
+                {
+                  type: 'button',
+                  'data-testid': 'ui-kit-spinbox__all-pill',
+                  'data-active': String(!!props.all_active),
+                  onClick: () => emit('update:all_active', !props.all_active)
+                },
+                props.all_label
+              )
+            : null
         ]
       )
   }
