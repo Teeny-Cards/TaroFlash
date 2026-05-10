@@ -8,26 +8,26 @@ const checked = defineModel<boolean>('checked')
   <label
     data-testid="ui-kit-toggle"
     :data-checked="checked"
-    class="flex cursor-pointer items-center justify-between gap-2"
+    class="group/toggle flex cursor-pointer items-center justify-between gap-2"
+    v-sfx.hover="'ui.click_07'"
   >
-    <span data-testid="ui-kit-toggle__label" class="text-(--theme-nuetral)">
+    <span data-testid="ui-kit-toggle__label" class="text-brown-700 dark:text-brown-100">
       <slot></slot>
     </span>
 
     <span
       data-testid="ui-kit-toggle__switch"
-      class="flex w-12 items-center rounded-full p-1 transition-colors bg-(--theme-neutral) has-checked:bg-(--theme-primary)"
+      class="flex w-12 items-center rounded-full p-1 transition-[background-color,box-shadow] bg-brown-100 dark:bg-grey-700 has-checked:bg-(--theme-primary) group-hover/toggle:ring-2 group-hover/toggle:ring-brown-100 dark:group-hover/toggle:ring-grey-700 has-checked:group-hover/toggle:ring-(--theme-primary)"
     >
       <input
         type="checkbox"
         v-model="checked"
         class="peer sr-only"
         @change="emitSfx('ui.select')"
-        v-sfx.hover="'ui.click_07'"
       />
       <span
         data-testid="ui-kit-toggle__switch-handle"
-        class="size-5 rounded-full transition-all duration-100 ease-in-out bg-(--theme-on-neutral) peer-checked:bg-(--theme-neutral) peer-checked:translate-x-full"
+        class="size-5 rounded-full transition-all duration-100 ease-in-out bg-brown-500 dark:bg-brown-300 peer-checked:bg-(--theme-on-primary) peer-checked:translate-x-full group-hover/toggle:scale-110"
       ></span>
     </span>
   </label>
