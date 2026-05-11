@@ -23,9 +23,9 @@ const cards_query = useCardsInDeckInfiniteQuery(() => deck_id)
 const first_card = computed(() => cards_query.data.value?.pages?.[0]?.[0])
 
 const sides = computed(() => [
-  { value: 'cover' as const, label: t('deck.settings-modal.designer-tabs.cover') },
-  { value: 'front' as const, label: t('deck.settings-modal.designer-tabs.front') },
-  { value: 'back' as const, label: t('deck.settings-modal.designer-tabs.back') }
+  { value: 'cover' as const, label: t('deck.settings-modal.design.designer-tabs.cover') },
+  { value: 'front' as const, label: t('deck.settings-modal.design.designer-tabs.front') },
+  { value: 'back' as const, label: t('deck.settings-modal.design.designer-tabs.back') }
 ])
 
 const preview_text = computed(() => {
