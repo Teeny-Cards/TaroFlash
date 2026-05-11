@@ -35,16 +35,17 @@ vi.mock('vue-router', () => ({
 
 vi.mock('@/composables/use-media-query', async () => {
   const vue = await import('vue')
-  const belowLg = vue.ref(false)
-  globalThis.__deckSettingsBelowLg = belowLg
+  const isTablet = vue.ref(false)
+  globalThis.__deckSettingsIsTablet = isTablet
   return {
-    useMobileBreakpoint: () => belowLg,
-    useMediaQuery: () => vue.ref(false)
+    useMobileBreakpoint: () => vue.ref(false),
+    useMediaQuery: () => vue.ref(false),
+    useIsTablet: () => isTablet
   }
 })
 
 function setBelowLg(v) {
-  if (globalThis.__deckSettingsBelowLg) globalThis.__deckSettingsBelowLg.value = v
+  if (globalThis.__deckSettingsIsTablet) globalThis.__deckSettingsIsTablet.value = v
 }
 
 vi.mock('@/composables/deck-editor', async () => {

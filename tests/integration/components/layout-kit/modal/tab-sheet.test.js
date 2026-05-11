@@ -4,16 +4,17 @@ import { defineComponent, h } from 'vue'
 import { setActivePinia, createPinia } from 'pinia'
 
 vi.mock('@/composables/use-media-query', () => ({
-  useMobileBreakpoint: () => ({
+  useMobileBreakpoint: () => ({ value: false }),
+  useMediaQuery: () => ({ value: false }),
+  useIsTablet: () => ({
     get value() {
-      return globalThis.__belowLg ?? false
+      return globalThis.__isTablet ?? false
     }
-  }),
-  useMediaQuery: () => ({ value: false })
+  })
 }))
 
 function setBelowLg(v) {
-  globalThis.__belowLg = v
+  globalThis.__isTablet = v
 }
 
 import TabSheet from '@/components/layout-kit/modal/tab-sheet.vue'
@@ -206,6 +207,13 @@ describe('TabSheet', () => {
     const wrapper = mountSheet()
     const closeBtn = wrapper.find('[data-testid="tab-sheet__close-button"]')
     await closeBtn.trigger('click')
+    expect(wrapper.emitted('close')).toBeTruthy()
+  })
+
+  test('re-emits close when the underlying mobile-sheet emits close', async () => {
+    const wrapper = mountSheet()
+    const sheet = wrapper.findComponent({ name: 'MobileSheet' })
+    sheet.vm.$emit('close')
     expect(wrapper.emitted('close')).toBeTruthy()
   })
 
