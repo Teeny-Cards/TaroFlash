@@ -46,6 +46,7 @@ beforeEach(() => {
   queryMock.eq.mockReturnValue(queryMock)
   queryMock.order.mockReturnValue(queryMock)
   queryMock.delete.mockReturnValue(queryMock)
+  queryMock.upsert.mockReturnValue(queryMock)
   capturedTables.length = 0
   capturedRpcs.length = 0
   supabase.from.mockClear()
@@ -111,19 +112,28 @@ describe('fetchMemberDeckCount', () => {
 })
 
 describe('upsertDeck', () => {
-  test('upserts on the decks table and stamps updated_at', async () => {
-    queryMock.upsert.mockResolvedValueOnce({ error: null })
-    const deck = { id: 1, title: 'T' }
-    await upsertDeck(deck)
+  test('upserts on the decks table, stamps updated_at, and returns the inserted row', async () => {
+    const inserted = { id: 1, title: 'T', updated_at: '2026-05-10T00:00:00Z' }
+    queryMock.single.mockResolvedValueOnce({ data: inserted, error: null })
+    const result = await upsertDeck({ id: 1, title: 'T' })
+
     expect(capturedTables[0]).toBe('decks')
     const [payload, opts] = queryMock.upsert.mock.calls[0]
     expect(payload.updated_at).toBeTruthy()
     expect(opts).toEqual({ onConflict: 'id' })
+    expect(result).toEqual(inserted)
+  })
+
+  test('does not mutate the supplied deck argument', async () => {
+    queryMock.single.mockResolvedValueOnce({ data: { id: 1 }, error: null })
+    const deck = { id: 1, title: 'T' }
+    await upsertDeck(deck)
+    expect(deck).toEqual({ id: 1, title: 'T' })
   })
 
   test('throws when the upsert fails', async () => {
     const err = new Error('dup')
-    queryMock.upsert.mockResolvedValueOnce({ error: err })
+    queryMock.single.mockResolvedValueOnce({ data: null, error: err })
     await expect(upsertDeck({ id: 1 })).rejects.toBe(err)
   })
 })

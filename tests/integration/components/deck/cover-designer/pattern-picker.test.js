@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
-import PatternPicker from '@/components/modals/deck-settings/tab-design/cover-designer/pattern-picker.vue'
+import PatternPicker from '@/components/deck/cover-designer/pattern-picker.vue'
 
 const { mockEmitSfx } = vi.hoisted(() => ({ mockEmitSfx: vi.fn() }))
 vi.mock('@/sfx/bus', () => ({ emitSfx: mockEmitSfx }))
@@ -12,7 +12,6 @@ function makePicker(props = {}) {
     props: {
       supported_patterns: SUPPORTED_PATTERNS,
       selected_pattern: undefined,
-      pattern_size: undefined,
       ...props
     },
     global: {
@@ -62,14 +61,9 @@ describe('PatternPicker', () => {
     expect(mockEmitSfx).toHaveBeenCalledTimes(1)
   })
 
-  test('swatches set --bgx-size only when pattern_size is provided', () => {
-    const withoutSize = makePicker({ pattern_size: undefined })
-    const withSize = makePicker({ pattern_size: 50 })
-
-    const unsizedSwatch = withoutSize.find('[data-testid="pattern-picker__option-aztec"]')
-    const sizedSwatch = withSize.find('[data-testid="pattern-picker__option-aztec"]')
-
-    expect(unsizedSwatch.attributes('style') || '').not.toContain('--bgx-size')
-    expect(sizedSwatch.attributes('style') || '').toContain('--bgx-size')
+  test('swatches set --bgx-size from the static patternSize helper', () => {
+    const wrapper = makePicker()
+    const swatch = wrapper.find('[data-testid="pattern-picker__option-aztec"]')
+    expect(swatch.attributes('style') || '').toContain('--bgx-size')
   })
 })

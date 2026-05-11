@@ -29,7 +29,7 @@ describe('useDeckSettingsModal', () => {
     mockOpen.mockReturnValueOnce(makeModalResult(undefined))
 
     const { open } = useDeckSettingsModal()
-    open()
+    open({ id: 1 })
 
     expect(mockEmitSfx).toHaveBeenCalled()
   })
@@ -48,25 +48,12 @@ describe('useDeckSettingsModal', () => {
     })
   })
 
-  test('passes undefined deck when called without an argument', () => {
-    mockOpen.mockReturnValueOnce(makeModalResult(undefined))
-
-    const { open } = useDeckSettingsModal()
-    open()
-
-    expect(mockOpen).toHaveBeenCalledWith(asyncComponentMatcher, {
-      backdrop: true,
-      mode: 'mobile-sheet',
-      props: { deck: undefined }
-    })
-  })
-
   test('returns the result of modal.open unchanged', () => {
     const result = makeModalResult('x')
     mockOpen.mockReturnValueOnce(result)
 
     const { open } = useDeckSettingsModal()
-    const returned = open()
+    const returned = open({ id: 1 })
 
     expect(returned).toBe(result)
   })
@@ -75,7 +62,7 @@ describe('useDeckSettingsModal', () => {
     mockOpen.mockReturnValueOnce(makeModalResult(undefined))
 
     const { open } = useDeckSettingsModal()
-    open()
+    open({ id: 1 })
     const openSfxCount = mockEmitSfx.mock.calls.length
 
     await flushPromises()

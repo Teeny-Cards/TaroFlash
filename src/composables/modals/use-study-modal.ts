@@ -21,7 +21,7 @@ export function useStudyModal() {
     emitSfx('ui.slide_up')
 
     if (payload) {
-      const action = await _openSessionComplete(payload, deck.cover_config?.bg_color)
+      const action = await _openSessionComplete(payload, deck.cover_config?.theme)
       emitSfx('ui.slide_up')
 
       if (action === 'study-more') {

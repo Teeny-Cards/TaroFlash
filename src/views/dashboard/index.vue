@@ -8,7 +8,7 @@ import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
 import { useMediaQuery } from '@/composables/use-media-query'
 import ReviewInbox from './review-inbox.vue'
-import { useDeckSettingsModal } from '@/composables/modals/use-deck-settings-modal'
+import { useDeckCreateModal } from '@/composables/modals/use-deck-create-modal'
 import { useDeckActions } from '@/composables/deck/use-deck-actions'
 
 const { t } = useI18n()
@@ -16,7 +16,7 @@ const toast = useToast()
 const router = useRouter()
 const is_md = useMediaQuery('md')
 
-const deck_settings_modal = useDeckSettingsModal()
+const deck_create_modal = useDeckCreateModal()
 const deck_actions = useDeckActions()
 const { data: decks_data, error: decks_error } = useMemberDecksQuery()
 const decks = computed(() => decks_data.value ?? [])
@@ -34,7 +34,7 @@ function onDeckClicked(deck: Deck) {
 
 async function onCreateDeckClicked() {
   if (await deck_actions.guardCreateDeck()) {
-    deck_settings_modal.open()
+    deck_create_modal.open()
   }
 }
 </script>
@@ -47,6 +47,7 @@ async function onCreateDeckClicked() {
     <ui-button
       icon-left="add"
       data-theme="blue-500"
+      data-theme-dark="blue-650"
       class="w-full! max-md:row-start-4"
       size="xl"
       @click="onCreateDeckClicked"

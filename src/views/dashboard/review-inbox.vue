@@ -14,7 +14,10 @@ function onItemClicked(deck: Deck) {
 </script>
 
 <template>
-  <div data-testid="due-cards-container" class="w-full h-117.5 rounded-5 bg-green-400 pt-14.5">
+  <div
+    data-testid="due-cards-container"
+    class="w-full h-117.5 rounded-5 bg-green-400 dark:bg-green-800 pt-14.5"
+  >
     <div
       class="h-full w-full bgx-dot-grid bgx-color-green-600 bgx-opacity-40 bgx-size-12 border-t border-green-600 flex flex-col gap-3.5 px-5 py-7"
     >
