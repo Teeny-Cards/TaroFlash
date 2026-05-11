@@ -7,6 +7,7 @@ import TabGeneral from './tab-general/index.vue'
 import TabStudy from './tab-study/index.vue'
 import TabDangerZone from './tab-danger-zone/index.vue'
 import DeckPreview from './deck-preview.vue'
+import DeckAside from './deck-aside.vue'
 import { useDeckEditor, deckEditorKey } from '@/composables/deck-editor'
 import { useSessionRef } from '@/composables/use-session-ref'
 import { useAlert } from '@/composables/alert'
@@ -57,6 +58,11 @@ if (!deck?.id) {
 } else if (!tabs.value.some((tab) => tab.value === active_tab.value)) {
   active_tab.value = tabs.value[0].value
 }
+
+const active_header = computed(() => ({
+  title: t(`deck.settings-modal.header.${active_tab.value}.title`),
+  description: t(`deck.settings-modal.header.${active_tab.value}.description`)
+}))
 
 const visible_side = computed(() =>
   active_tab.value === 'design' ? editor.active_side.value : 'cover'
@@ -119,21 +125,39 @@ async function onDelete() {
     data-theme="green-500"
     data-theme-dark="green-800"
     class="sm:w-245 sm:h-167"
-    :title="t('deck.settings-modal.title')"
     :tabs="tabs"
     :cover_config="{ pattern: 'endless-clouds' }"
-    :parts="{ content: 'w-98 flex flex-col gap-4' }"
+    :parts="{ content: 'flex gap-6 h-full items-start' }"
     hover_sfx="ui.click_07"
     v-model:active="active_tab"
     @close="close(false)"
   >
-    <tab-design v-if="active_tab === 'design'" />
-    <tab-general v-else-if="active_tab === 'general'" />
-    <tab-study v-else-if="active_tab === 'study'" />
-    <tab-danger-zone
-      v-else-if="active_tab === 'danger-zone'"
-      @delete="onDelete"
-      @reset-reviews="onResetReviews"
+    <template #header-content>
+      <div data-testid="deck-settings__header" class="w-full flex flex-col">
+        <h1 data-testid="deck-settings__header-title" class="text-5xl text-white">
+          {{ active_header.title }}
+        </h1>
+        <p data-testid="deck-settings__header-description" class="text-white/80">
+          {{ active_header.description }}
+        </p>
+      </div>
+    </template>
+
+    <div data-testid="deck-settings__main" class="flex flex-1 flex-col gap-4 min-w-0">
+      <tab-design v-if="active_tab === 'design'" />
+      <tab-general v-else-if="active_tab === 'general'" />
+      <tab-study v-else-if="active_tab === 'study'" />
+      <tab-danger-zone
+        v-else-if="active_tab === 'danger-zone'"
+        @delete="onDelete"
+        @reset-reviews="onResetReviews"
+      />
+    </div>
+
+    <deck-aside
+      data-testid="deck-settings__aside"
+      :deck="deck"
+      class="w-78.5 shrink-0 self-end pt-60"
     />
 
     <template #overlay>

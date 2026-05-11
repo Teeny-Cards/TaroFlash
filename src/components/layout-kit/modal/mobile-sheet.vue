@@ -33,7 +33,7 @@ const header_bindings = computed(() =>
       pattern: cover_config?.pattern,
       pattern_size: 60
     },
-    { border: false }
+    { border: false, patternOpacity: '0.25' }
   )
 )
 
@@ -69,7 +69,7 @@ provide(mobileSheetOverlayKey, overlay_root)
           <div
             data-testid="mobile-sheet__header"
             v-bind="header_bindings"
-            class="w-full flex justify-center items-center place-items-center px-13 pt-11.5 pb-14 gap-6 wave-bottom-[50px] bg-(--theme-primary) text-(--theme-on-primary) relative"
+            class="w-full flex justify-center items-center place-items-center px-8 pt-11.5 pb-14 gap-6 wave-bottom-[50px] bg-(--theme-primary) text-(--theme-on-primary) relative"
           >
             <div v-if="show_close_button" class="absolute top-0 left-0 p-4">
               <ui-button icon-left="close" icon-only inverted @click="emit('close')" />
