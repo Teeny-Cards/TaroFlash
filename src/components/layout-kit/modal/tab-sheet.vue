@@ -3,7 +3,7 @@ import { computed, provide } from 'vue'
 import mobileSheet, { type MobileSheetProps } from './mobile-sheet.vue'
 import { activeTabKey } from './tab-sheet-context'
 import { useShortcuts } from '@/composables/use-shortcuts'
-import { useMobileBreakpoint } from '@/composables/use-media-query'
+import { useIsTablet } from '@/composables/use-media-query'
 import { emitSfx } from '@/sfx/bus'
 import type { NamespacedAudioKey } from '@/sfx/config'
 import uid from '@/utils/uid'
@@ -57,8 +57,8 @@ if (!active.value) active.value = tabs?.[0]?.value ?? ''
 provide(activeTabKey, active)
 
 const has_tabs = computed(() => !!tabs?.length)
-const below_lg = useMobileBreakpoint('lg', 'lg')
-const sheet_close_button = computed(() => (!has_tabs.value || below_lg.value) && show_close_button)
+const is_tablet = useIsTablet()
+const sheet_close_button = computed(() => (!has_tabs.value || is_tablet.value) && show_close_button)
 
 const tab_panel_id = 'tab-sheet__panel'
 const tab_id_prefix = `tab-sheet__tab--${uid()}--`
@@ -117,7 +117,7 @@ shortcuts.register([
       <div
         data-testid="tab-sheet__sidebar"
         :class="[
-          'hidden lg:flex flex-col gap-10 bg-brown-200 dark:bg-grey-900 p-4.5 shrink-0',
+          'hidden lg:pointer-fine:flex flex-col gap-10 bg-brown-200 dark:bg-grey-900 p-4.5 shrink-0',
           parts?.sidebar
         ]"
       >
@@ -164,7 +164,7 @@ shortcuts.register([
       :id="tab_panel_id"
       data-testid="tab-sheet__content"
       role="tabpanel"
-      :class="['p-8 pt-0', parts?.content]"
+      :class="['px-18 lg:px-8 pb-8 pt-0', parts?.content]"
     >
       <slot></slot>
     </div>
