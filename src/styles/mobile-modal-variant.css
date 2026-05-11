@@ -19,8 +19,8 @@
       @slot;
     }
   }
-  /* width < md (48rem): thresholds md/lg/xl/2xl go mobile */
-  @media (width < 48rem) {
+  /* width < md (52rem): thresholds md/lg/xl/2xl go mobile */
+  @media (width < 52rem) {
     &:where(
       [data-mobile-below-width='md'],
       [data-mobile-below-width='md'] *,
@@ -71,7 +71,7 @@
       @slot;
     }
   }
-  @media (height < 48rem) {
+  @media (height < 52rem) {
     &:where(
       [data-mobile-below-height='md'],
       [data-mobile-below-height='md'] *,
