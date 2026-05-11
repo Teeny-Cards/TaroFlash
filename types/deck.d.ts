@@ -58,6 +58,7 @@ type DeckCover = {
   border_size?: number
   pattern?: DeckCoverPattern
   pattern_size?: number
+  pattern_opacity?: string
   bg_image?: string
   icon?: string
 }
