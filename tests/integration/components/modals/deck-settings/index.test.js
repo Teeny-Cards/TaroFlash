@@ -6,8 +6,8 @@ import { deck as deckFixture } from '../../../../fixtures/deck'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
 
-const { mockAlertWarn, mockToastSuccess, mockToastError, mockEditor, mockRouterPush } = vi.hoisted(
-  () => ({
+const { mockAlertWarn, mockToastSuccess, mockToastError, mockEditor, mockRouterPush, initialTab } =
+  vi.hoisted(() => ({
     mockAlertWarn: vi.fn(),
     mockToastSuccess: vi.fn(),
     mockToastError: vi.fn(),
@@ -16,9 +16,9 @@ const { mockAlertWarn, mockToastSuccess, mockToastError, mockEditor, mockRouterP
       deleteDeck: vi.fn().mockResolvedValue(true),
       saveDeck: vi.fn().mockResolvedValue(true)
     },
-    mockRouterPush: vi.fn()
-  })
-)
+    mockRouterPush: vi.fn(),
+    initialTab: { value: 'danger-zone' }
+  }))
 
 vi.mock('@/composables/alert', () => ({
   useAlert: () => ({ warn: mockAlertWarn })
@@ -66,6 +66,23 @@ vi.mock('@/composables/deck-editor', async () => {
 
 // `<script setup>` imports are direct bindings — Vue's `stubs` option can't
 // replace them. Use module mocks for the tab children we want stubbed.
+vi.mock('@/components/modals/deck-settings/deck-aside.vue', async () => {
+  const { defineComponent, h } = await import('vue')
+  return {
+    default: defineComponent({
+      name: 'DeckAside',
+      props: ['deck'],
+      setup(props) {
+        return () =>
+          h('div', {
+            'data-testid': 'deck-aside-stub',
+            'data-deck-id': props.deck?.id ?? ''
+          })
+      }
+    })
+  }
+})
+
 vi.mock('@/components/modals/deck-settings/tab-danger-zone/index.vue', async () => {
   const { defineComponent, h } = await import('vue')
   return {
@@ -88,10 +105,10 @@ vi.mock('@/components/modals/deck-settings/tab-danger-zone/index.vue', async () 
 })
 
 vi.mock('@/composables/use-session-ref', () => ({
-  // Force the deck-settings active tab to 'danger-zone' so the reset/delete
-  // controls are rendered. All other sessionRef callers fall through to the
-  // provided initial value.
-  useSessionRef: (key, initial) => ref(key === 'deck-settings.active-tab' ? 'danger-zone' : initial)
+  // The deck-settings active tab is driven by `initialTab.value` from the
+  // hoisted block — tests can flip it before mount to render any tab.
+  useSessionRef: (key, initial) =>
+    ref(key === 'deck-settings.active-tab' ? initialTab.value : initial)
 }))
 
 // ── Stubs ─────────────────────────────────────────────────────────────────────
@@ -101,7 +118,9 @@ const TabSheetStub = defineComponent({
   setup(_props, { slots }) {
     return () =>
       h('div', { 'data-testid': 'tab-sheet' }, [
+        h('div', { 'data-testid': 'tab-sheet__header-content' }, slots['header-content']?.()),
         slots.default?.(),
+        slots.overlay?.(),
         h('div', { 'data-testid': 'tab-sheet__footer' }, slots.footer?.())
       ])
   }
@@ -146,6 +165,18 @@ const PassthroughStub = defineComponent({
   }
 })
 
+const DeckAsideStub = defineComponent({
+  name: 'DeckAside',
+  props: ['deck'],
+  setup(props) {
+    return () =>
+      h('div', {
+        'data-testid': 'deck-aside-stub',
+        'data-deck-id': props.deck?.id ?? ''
+      })
+  }
+})
+
 function makeWrapper() {
   const close = vi.fn()
   const wrapper = mount(DeckSettings, {
@@ -158,6 +189,7 @@ function makeWrapper() {
         TabStudy: PassthroughStub,
         TabDangerZone: TabDangerZoneStub,
         DeckPreview: PassthroughStub,
+        DeckAside: DeckAsideStub,
         UiButton: UiButtonStub
       },
       mocks: { $t: (k) => k }
@@ -176,6 +208,7 @@ beforeEach(() => {
   mockEditor.resetReviews.mockReset().mockResolvedValue(true)
   mockEditor.deleteDeck.mockReset().mockResolvedValue(true)
   mockEditor.saveDeck.mockReset().mockResolvedValue(true)
+  initialTab.value = 'danger-zone'
 })
 
 describe('DeckSettings — onResetReviews orchestration', () => {
@@ -252,5 +285,40 @@ describe('DeckSettings — save button visibility (driven by editor.is_dirty)', 
 
     expect(mockEditor.saveDeck).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledWith(true)
+  })
+})
+
+describe('DeckSettings — header copy is tab-driven', () => {
+  const cases = [
+    {
+      tab: 'general',
+      title: 'Details & Settings',
+      description: 'Name, description, and visibility.'
+    },
+    { tab: 'design', title: 'Card Designer', description: 'Cover art and card layout.' },
+    { tab: 'study', title: 'Study Preferences', description: 'Pacing and daily limits.' },
+    { tab: 'danger-zone', title: 'Danger Zone', description: 'Delete or reset this deck.' }
+  ]
+
+  for (const { tab, title, description } of cases) {
+    test(`renders the ${tab} title + description`, () => {
+      initialTab.value = tab
+      const { wrapper } = makeWrapper()
+
+      expect(wrapper.find('[data-testid="deck-settings__header-title"]').text()).toBe(title)
+      expect(wrapper.find('[data-testid="deck-settings__header-description"]').text()).toBe(
+        description
+      )
+    })
+  }
+})
+
+describe('DeckSettings — aside wiring', () => {
+  test('renders the DeckAside with the deck prop forwarded', () => {
+    const { wrapper } = makeWrapper()
+
+    const aside = wrapper.find('[data-testid="deck-settings__aside"]')
+    expect(aside.exists()).toBe(true)
+    expect(aside.attributes('data-deck-id')).toBe('1')
   })
 })

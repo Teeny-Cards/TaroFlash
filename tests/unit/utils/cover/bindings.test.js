@@ -85,6 +85,19 @@ describe('coverBindings', () => {
     expect(result.style['--bgx-size']).toBeUndefined()
   })
 
+  test('options.patternOpacity overrides the per-pattern scaled default', () => {
+    // aztec normally → 0.2; override should win verbatim
+    const result = coverBindings({ pattern: 'aztec' }, { patternOpacity: '0.5' })
+    expect(result.style['--bgx-opacity']).toBe('0.5')
+  })
+
+  test('falls back to scaled default when options.patternOpacity is absent', () => {
+    // wave scale 3.5 → 0.2 * 3.5 = 0.7 (stringified via String(); use numeric compare
+    // to avoid pinning IEEE-754 float artifacts in the assertion)
+    const result = coverBindings({ pattern: 'wave' })
+    expect(parseFloat(result.style['--bgx-opacity'])).toBeCloseTo(0.7)
+  })
+
   test('emits themed border style when border_size is set', () => {
     const result = coverBindings({ border_size: 3 })
     expect(result.style.border).toBe('3px solid var(--theme-primary)')
