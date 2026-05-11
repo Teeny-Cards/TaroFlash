@@ -33,6 +33,20 @@ vi.mock('vue-router', () => ({
   useRoute: () => ({ name: 'dashboard', params: {} })
 }))
 
+vi.mock('@/composables/use-media-query', async () => {
+  const vue = await import('vue')
+  const belowLg = vue.ref(false)
+  globalThis.__deckSettingsBelowLg = belowLg
+  return {
+    useMobileBreakpoint: () => belowLg,
+    useMediaQuery: () => vue.ref(false)
+  }
+})
+
+function setBelowLg(v) {
+  if (globalThis.__deckSettingsBelowLg) globalThis.__deckSettingsBelowLg.value = v
+}
+
 vi.mock('@/composables/deck-editor', async () => {
   const { reactive, ref: vueRef } = await import('vue')
   const editor = {
@@ -209,6 +223,7 @@ beforeEach(() => {
   mockEditor.deleteDeck.mockReset().mockResolvedValue(true)
   mockEditor.saveDeck.mockReset().mockResolvedValue(true)
   initialTab.value = 'danger-zone'
+  setBelowLg(false)
 })
 
 describe('DeckSettings — save button visibility (driven by editor.is_dirty)', () => {
@@ -273,5 +288,49 @@ describe('DeckSettings — aside wiring', () => {
     const aside = wrapper.find('[data-testid="deck-settings__aside"]')
     expect(aside.exists()).toBe(true)
     expect(aside.attributes('data-deck-id')).toBe('1')
+  })
+})
+
+describe('DeckSettings — null active_tab + breakpoint redirect', () => {
+  test('null active_tab renders the general header on desktop', () => {
+    initialTab.value = null
+    setBelowLg(false)
+    const { wrapper } = makeWrapper()
+    expect(wrapper.find('[data-testid="deck-settings__header-title"]').text()).toBe(
+      'Details & Settings'
+    )
+  })
+
+  test('null active_tab renders the index header below lg', () => {
+    initialTab.value = null
+    setBelowLg(true)
+    const { wrapper } = makeWrapper()
+    expect(wrapper.find('[data-testid="deck-settings__header-title"]').text()).toBe('Deck Settings')
+  })
+
+  test('crossing into below-lg with danger-zone selected redirects to the index (null)', async () => {
+    initialTab.value = 'danger-zone'
+    setBelowLg(false)
+    const { wrapper } = makeWrapper()
+
+    expect(wrapper.find('[data-testid="deck-settings__header-title"]').text()).toBe('Danger Zone')
+
+    setBelowLg(true)
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="deck-settings__header-title"]').text()).toBe('Deck Settings')
+  })
+
+  test('explicit general tab persists across resize (no auto-collapse to index)', async () => {
+    initialTab.value = 'general'
+    setBelowLg(false)
+    const { wrapper } = makeWrapper()
+
+    setBelowLg(true)
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="deck-settings__header-title"]').text()).toBe(
+      'Details & Settings'
+    )
   })
 })
