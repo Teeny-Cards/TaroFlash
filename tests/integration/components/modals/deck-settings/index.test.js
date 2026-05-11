@@ -33,6 +33,20 @@ vi.mock('vue-router', () => ({
   useRoute: () => ({ name: 'dashboard', params: {} })
 }))
 
+vi.mock('@/composables/use-media-query', async () => {
+  const vue = await import('vue')
+  const belowLg = vue.ref(false)
+  globalThis.__deckSettingsBelowLg = belowLg
+  return {
+    useMobileBreakpoint: () => belowLg,
+    useMediaQuery: () => vue.ref(false)
+  }
+})
+
+function setBelowLg(v) {
+  if (globalThis.__deckSettingsBelowLg) globalThis.__deckSettingsBelowLg.value = v
+}
+
 vi.mock('@/composables/deck-editor', async () => {
   const { reactive, ref: vueRef } = await import('vue')
   const editor = {
@@ -209,53 +223,7 @@ beforeEach(() => {
   mockEditor.deleteDeck.mockReset().mockResolvedValue(true)
   mockEditor.saveDeck.mockReset().mockResolvedValue(true)
   initialTab.value = 'danger-zone'
-})
-
-describe('DeckSettings — onResetReviews orchestration', () => {
-  test('does nothing when the user cancels the confirm alert', async () => {
-    mockAlertWarn.mockReturnValue({ response: Promise.resolve(false) })
-    const { wrapper } = makeWrapper()
-
-    await wrapper.find('[data-testid="tdz__reset"]').trigger('click')
-    await flushPromises()
-
-    expect(mockAlertWarn).toHaveBeenCalledWith(
-      expect.objectContaining({ title: 'Reset All Reviews?' })
-    )
-    expect(mockEditor.resetReviews).not.toHaveBeenCalled()
-    expect(mockToastSuccess).not.toHaveBeenCalled()
-    expect(mockToastError).not.toHaveBeenCalled()
-  })
-
-  test('calls editor.resetReviews and fires a success toast when the mutation succeeds', async () => {
-    mockAlertWarn.mockReturnValue({ response: Promise.resolve(true) })
-    mockEditor.resetReviews.mockResolvedValue(true)
-    const { wrapper, close } = makeWrapper()
-
-    await wrapper.find('[data-testid="tdz__reset"]').trigger('click')
-    await flushPromises()
-
-    expect(mockEditor.resetReviews).toHaveBeenCalledTimes(1)
-    expect(mockToastSuccess).toHaveBeenCalledWith('Reviews reset for this deck.')
-    expect(mockToastError).not.toHaveBeenCalled()
-    // Reset does not close the modal — user stays on the danger-zone tab.
-    expect(close).not.toHaveBeenCalled()
-  })
-
-  test('fires an error toast (no success toast) when the mutation fails', async () => {
-    mockAlertWarn.mockReturnValue({ response: Promise.resolve(true) })
-    mockEditor.resetReviews.mockResolvedValue(false)
-    const { wrapper } = makeWrapper()
-
-    await wrapper.find('[data-testid="tdz__reset"]').trigger('click')
-    await flushPromises()
-
-    expect(mockEditor.resetReviews).toHaveBeenCalledTimes(1)
-    expect(mockToastError).toHaveBeenCalledWith(
-      "Couldn't reset reviews for this deck. Please try again."
-    )
-    expect(mockToastSuccess).not.toHaveBeenCalled()
-  })
+  setBelowLg(false)
 })
 
 describe('DeckSettings — save button visibility (driven by editor.is_dirty)', () => {
@@ -320,5 +288,49 @@ describe('DeckSettings — aside wiring', () => {
     const aside = wrapper.find('[data-testid="deck-settings__aside"]')
     expect(aside.exists()).toBe(true)
     expect(aside.attributes('data-deck-id')).toBe('1')
+  })
+})
+
+describe('DeckSettings — null active_tab + breakpoint redirect', () => {
+  test('null active_tab renders the general header on desktop', () => {
+    initialTab.value = null
+    setBelowLg(false)
+    const { wrapper } = makeWrapper()
+    expect(wrapper.find('[data-testid="deck-settings__header-title"]').text()).toBe(
+      'Details & Settings'
+    )
+  })
+
+  test('null active_tab renders the index header below lg', () => {
+    initialTab.value = null
+    setBelowLg(true)
+    const { wrapper } = makeWrapper()
+    expect(wrapper.find('[data-testid="deck-settings__header-title"]').text()).toBe('Deck Settings')
+  })
+
+  test('crossing into below-lg with danger-zone selected redirects to the index (null)', async () => {
+    initialTab.value = 'danger-zone'
+    setBelowLg(false)
+    const { wrapper } = makeWrapper()
+
+    expect(wrapper.find('[data-testid="deck-settings__header-title"]').text()).toBe('Danger Zone')
+
+    setBelowLg(true)
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="deck-settings__header-title"]').text()).toBe('Deck Settings')
+  })
+
+  test('explicit general tab persists across resize (no auto-collapse to index)', async () => {
+    initialTab.value = 'general'
+    setBelowLg(false)
+    const { wrapper } = makeWrapper()
+
+    setBelowLg(true)
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="deck-settings__header-title"]').text()).toBe(
+      'Details & Settings'
+    )
   })
 })

@@ -1,7 +1,21 @@
-import { describe, test, expect, beforeEach } from 'vite-plus/test'
+import { describe, test, expect, beforeEach, vi } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
 import { defineComponent, h } from 'vue'
 import { setActivePinia, createPinia } from 'pinia'
+
+vi.mock('@/composables/use-media-query', () => ({
+  useMobileBreakpoint: () => ({
+    get value() {
+      return globalThis.__belowLg ?? false
+    }
+  }),
+  useMediaQuery: () => ({ value: false })
+}))
+
+function setBelowLg(v) {
+  globalThis.__belowLg = v
+}
+
 import TabSheet from '@/components/layout-kit/modal/tab-sheet.vue'
 
 const tabs = [
@@ -16,15 +30,27 @@ const tabs = [
 const MobileSheetStub = defineComponent({
   name: 'MobileSheet',
   inheritAttrs: false,
-  setup(_props, { slots }) {
+  props: {
+    show_close_button: { type: Boolean, default: undefined },
+    title: { type: String, default: undefined },
+    cover_config: { type: Object, default: undefined }
+  },
+  setup(props, { slots }) {
     return () =>
-      h('div', { 'data-testid': 'mobile-sheet-stub' }, [
-        slots.overlay?.(),
-        slots['header-content']?.(),
-        slots.sidebar?.(),
-        slots.default?.(),
-        slots.footer?.()
-      ])
+      h(
+        'div',
+        {
+          'data-testid': 'mobile-sheet-stub',
+          'data-show-close-button': String(props.show_close_button)
+        },
+        [
+          slots.overlay?.(),
+          slots['header-content']?.(),
+          slots.sidebar?.(),
+          slots.default?.(),
+          slots.footer?.()
+        ]
+      )
   }
 })
 
@@ -37,7 +63,10 @@ function mountSheet(props = {}, slots = {}) {
 }
 
 describe('TabSheet', () => {
-  beforeEach(() => setActivePinia(createPinia()))
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    setBelowLg(false)
+  })
 
   // ── Sidebar rendering ──────────────────────────────────────────────────────
 
@@ -178,5 +207,41 @@ describe('TabSheet', () => {
     const closeBtn = wrapper.find('[data-testid="tab-sheet__close-button"]')
     await closeBtn.trigger('click')
     expect(wrapper.emitted('close')).toBeTruthy()
+  })
+
+  // ── mobile-sheet close-button fallback (below lg) ─────────────────────────
+
+  test('does not surface the mobile-sheet close button on desktop when tabs are present', () => {
+    setBelowLg(false)
+    const wrapper = mountSheet()
+    const sheet = wrapper.find('[data-testid="mobile-sheet-stub"]')
+    expect(sheet.attributes('data-show-close-button')).toBe('false')
+  })
+
+  test('surfaces the mobile-sheet close button when collapsed below lg (sidebar hidden)', () => {
+    setBelowLg(true)
+    const wrapper = mountSheet()
+    const sheet = wrapper.find('[data-testid="mobile-sheet-stub"]')
+    expect(sheet.attributes('data-show-close-button')).toBe('true')
+  })
+
+  test('surfaces the mobile-sheet close button when no tabs are passed regardless of breakpoint', () => {
+    setBelowLg(false)
+    const wrapper = shallowMount(TabSheet, {
+      props: {},
+      global: { stubs: { MobileSheet: MobileSheetStub } }
+    })
+    const sheet = wrapper.find('[data-testid="mobile-sheet-stub"]')
+    expect(sheet.attributes('data-show-close-button')).toBe('true')
+  })
+
+  test('honors an explicit show_close_button=false even when below lg', () => {
+    setBelowLg(true)
+    const wrapper = shallowMount(TabSheet, {
+      props: { tabs, show_close_button: false },
+      global: { stubs: { MobileSheet: MobileSheetStub } }
+    })
+    const sheet = wrapper.find('[data-testid="mobile-sheet-stub"]')
+    expect(sheet.attributes('data-show-close-button')).toBe('false')
   })
 })

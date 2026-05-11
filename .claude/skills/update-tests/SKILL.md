@@ -170,14 +170,32 @@ After writing each new test file, run it using the same command as baseline (ste
 If any test fails:
 
 1. Read the failure output carefully.
-2. Fix the test (or the source if the test revealed a real bug — call this out explicitly).
-
-- If the source needs to be fixed, suggest the change to the user.
-- Ask for confirmation before making any changes to source files.
-
+2. Decide whether the test or the source is wrong.
 3. Re-run until green.
 
 Do not proceed to the next file until the current file's tests are passing.
+
+#### When a new test refuses to pass — suspect the source
+
+A new test that won't pass after one or two reasonable adjustments to the scaffolding (mocks, stubs, mount mode, async timing) is a strong signal the **source** is wrong, not the test. The assertion was written from your understanding of what the code _should_ do; if reality keeps disagreeing, the gap is a candidate bug.
+
+Don't:
+
+- delete the test
+- relax the assertion to match the (suspected-wrong) behaviour
+- weaken to an indirect check (e.g. asserting on a stub presence instead of the real output)
+- chalk it up to "test infra quirk" and move on
+
+Do:
+
+- pause, re-read the source line that produced the unexpected value
+- form a hypothesis (Vue Boolean prop coercion, computed reading non-reactive source, destructured-prop default capture, mock path mismatch, …)
+- raise it to the user with: (1) the assertion, (2) the source line, (3) the hypothesis, (4) the proposed fix
+- wait for confirmation before patching source
+
+When the user confirms a real bug, commit the source fix as a separate `fix(<scope>):` Conventional Commit alongside the `test(<scope>):` commit so it lands clearly in the changelog. Call it out in the Step 8 report under a **Bug found + fixed** line.
+
+If the failure really is a test-scaffolding issue (and you've eliminated source as the cause), fix the test and move on.
 
 ### Step 7 — Review and quality check
 
