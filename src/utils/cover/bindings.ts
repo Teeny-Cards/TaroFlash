@@ -36,6 +36,7 @@ export type CoverBindingsOptions = {
   pattern?: boolean
   border?: boolean
   bgImage?: boolean
+  patternOpacity?: string
 }
 
 export function coverBindings(
@@ -50,7 +51,7 @@ export function coverBindings(
   if (pattern && config?.pattern) {
     classes.push(`bgx-${config.pattern}`)
     style['--bgx-fill'] = 'var(--theme-neutral)'
-    style['--bgx-opacity'] = patternOpacity(config.pattern, 0.2)
+    style['--bgx-opacity'] = options.patternOpacity ?? patternOpacity(config.pattern, 0.2)
     if (config.pattern_size) style['--bgx-size'] = patternSize(config.pattern, config.pattern_size)
   }
 
