@@ -224,10 +224,33 @@ jobs:
           if_no_artifact_found: warn
 
       - name: Merge coverage
+        id: merge
+        continue-on-error: true
         run: pnpm exec vp test --merge-reports --coverage
 
+      # Decouple baseline upload from merge step's exit code. `vp test
+      # --merge-reports --coverage` occasionally exits non-zero after
+      # successfully writing coverage-summary.json (e.g. Vue warns flipping
+      # an internal error count, or mixed vitest+coverage-v8 versions). As
+      # long as the summary file landed on disk we still want it published
+      # as the master baseline so subsequent PR runs aren't comparing
+      # against a stale snapshot.
+      - name: Check merged summary present
+        id: merged
+        run: |
+          if [ -f coverage/coverage-summary.json ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            echo "::error::Merge coverage did not produce coverage/coverage-summary.json"
+            exit 1
+          fi
+
       - name: Upload coverage summary (master baseline)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: |
+          github.event_name == 'push' &&
+          github.ref == 'refs/heads/master' &&
+          steps.merged.outputs.ok == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-summary-master
