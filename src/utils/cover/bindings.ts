@@ -5,6 +5,9 @@ export type CoverBindings = {
   style: Record<string, string>
 }
 
+export const PATTERN_SIZE_PX = 60
+export const BORDER_SIZE_PX = 16
+
 export const PATTERN_SIZE_SCALE: Record<DeckCoverPattern, number> = {
   'diagonal-stripes': 1.15,
   saw: 1,
@@ -14,8 +17,8 @@ export const PATTERN_SIZE_SCALE: Record<DeckCoverPattern, number> = {
   'endless-clouds': 2
 }
 
-export function patternSize(pattern: DeckCoverPattern, size: number, multiplier = 1): string {
-  return `${size * PATTERN_SIZE_SCALE[pattern] * multiplier}px`
+export function patternSize(pattern: DeckCoverPattern, multiplier = 1): string {
+  return `${PATTERN_SIZE_PX * PATTERN_SIZE_SCALE[pattern] * multiplier}px`
 }
 
 export const PATTERN_OPACITY_SCALE: Record<DeckCoverPattern, number> = {
@@ -35,7 +38,6 @@ export type CoverBindingsOptions = {
   fallbackTheme?: Theme
   pattern?: boolean
   border?: boolean
-  bgImage?: boolean
   patternOpacity?: string
 }
 
@@ -43,7 +45,7 @@ export function coverBindings(
   config?: DeckCover,
   options: CoverBindingsOptions = {}
 ): CoverBindings {
-  const { fallbackTheme, pattern = true, border = true, bgImage = true } = options
+  const { fallbackTheme, pattern = true, border = true } = options
 
   const classes: string[] = []
   const style: Record<string, string> = {}
@@ -52,22 +54,16 @@ export function coverBindings(
     classes.push(`bgx-${config.pattern}`)
     style['--bgx-fill'] = 'var(--theme-neutral)'
     style['--bgx-opacity'] = options.patternOpacity ?? patternOpacity(config.pattern, 0.2)
-    if (config.pattern_size) style['--bgx-size'] = patternSize(config.pattern, config.pattern_size)
+    style['--bgx-size'] = patternSize(config.pattern)
   }
 
-  if (border && config?.border_size) {
-    style.border = `${config.border_size}px solid var(--theme-primary)`
-  }
-
-  if (bgImage && config?.bg_image) {
-    style.backgroundImage = `url('${config.bg_image}')`
-    style.backgroundSize = 'cover'
-    style.backgroundPosition = 'center'
+  if (border && config) {
+    style.border = `${BORDER_SIZE_PX}px solid var(--theme-primary)`
   }
 
   return {
-    'data-theme': config?.bg_color ?? fallbackTheme,
-    'data-theme-dark': config?.bg_color_dark,
+    'data-theme': config?.theme ?? fallbackTheme,
+    'data-theme-dark': config?.theme_dark,
     class: classes,
     style
   }

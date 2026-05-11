@@ -13,7 +13,7 @@ vi.mock('@/api/cards', () => ({
 
 vi.mock('@/sfx/bus', () => ({ emitSfx: emitSfxMock }))
 
-import DeckPreview from '@/components/modals/deck-settings/deck-preview.vue'
+import DeckPreview from '@/components/deck/deck-preview.vue'
 
 const CardStub = defineComponent({
   name: 'Card',
@@ -33,7 +33,7 @@ const CardStub = defineComponent({
 
 const baseProps = {
   deck_id: 42,
-  cover: { bg_color: 'blue-500' },
+  cover: { theme: 'blue-500' },
   card_attributes: { front: {}, back: {} },
   side: 'cover'
 }
@@ -51,17 +51,15 @@ describe('DeckPreview', () => {
     cardsQueryMock.mockReturnValue({ data: ref({ pages: [[]] }) })
   })
 
-  test('renders the preview container and two card stubs (back card + active card)', () => {
+  test('renders the preview container with a single card stub', () => {
     const wrapper = mountPreview()
     expect(wrapper.find('[data-testid="deck-preview"]').exists()).toBe(true)
-    expect(wrapper.findAll('[data-testid="card-stub"]')).toHaveLength(2)
+    expect(wrapper.findAll('[data-testid="card-stub"]')).toHaveLength(1)
   })
 
-  test('passes the active side to the front card', () => {
+  test('passes the active side to the card', () => {
     const wrapper = mountPreview({ side: 'front' })
-    const cards = wrapper.findAll('[data-testid="card-stub"]')
-    // Active card is the second card (rendered after the back-card decoration).
-    expect(cards[1].attributes('data-side')).toBe('front')
+    expect(wrapper.find('[data-testid="card-stub"]').attributes('data-side')).toBe('front')
   })
 
   test('uses the first card front_text when side is front and a card exists', () => {
@@ -69,8 +67,7 @@ describe('DeckPreview', () => {
       data: ref({ pages: [[{ front_text: 'hello front', back_text: 'hello back' }]] })
     })
     const wrapper = mountPreview({ side: 'front' })
-    const cards = wrapper.findAll('[data-testid="card-stub"]')
-    expect(cards[1].attributes('data-front')).toBe('hello front')
+    expect(wrapper.find('[data-testid="card-stub"]').attributes('data-front')).toBe('hello front')
   })
 
   test('uses the first card back_text when side is back', () => {
@@ -78,16 +75,13 @@ describe('DeckPreview', () => {
       data: ref({ pages: [[{ front_text: 'hello front', back_text: 'hello back' }]] })
     })
     const wrapper = mountPreview({ side: 'back' })
-    const cards = wrapper.findAll('[data-testid="card-stub"]')
-    expect(cards[1].attributes('data-back')).toBe('hello back')
+    expect(wrapper.find('[data-testid="card-stub"]').attributes('data-back')).toBe('hello back')
   })
 
   test('falls back to translated placeholder when first card has no text', () => {
     cardsQueryMock.mockReturnValue({ data: ref({ pages: [[{}]] }) })
     const wrapper = mountPreview({ side: 'front' })
-    const cards = wrapper.findAll('[data-testid="card-stub"]')
-    // i18n returns the key in tests if no message is registered — either way it's non-empty.
-    expect(cards[1].attributes('data-front')).not.toBe('')
+    expect(wrapper.find('[data-testid="card-stub"]').attributes('data-front')).not.toBe('')
   })
 
   test('does not pass front/back text on the cover side', () => {
@@ -95,29 +89,26 @@ describe('DeckPreview', () => {
       data: ref({ pages: [[{ front_text: 'hello front', back_text: 'hello back' }]] })
     })
     const wrapper = mountPreview({ side: 'cover' })
-    const cards = wrapper.findAll('[data-testid="card-stub"]')
-    expect(cards[1].attributes('data-front')).toBe('')
-    expect(cards[1].attributes('data-back')).toBe('')
+    const card = wrapper.find('[data-testid="card-stub"]')
+    expect(card.attributes('data-front')).toBe('')
+    expect(card.attributes('data-back')).toBe('')
   })
 
-  test('clicking the active card cycles cover → front', async () => {
+  test('clicking the card cycles cover → front', async () => {
     const wrapper = mountPreview({ side: 'cover' })
-    const cards = wrapper.findAll('[data-testid="card-stub"]')
-    await cards[1].trigger('click')
+    await wrapper.find('[data-testid="card-stub"]').trigger('click')
     expect(wrapper.emitted('update:side')).toEqual([['front']])
   })
 
   test('clicking cycles front → back', async () => {
     const wrapper = mountPreview({ side: 'front' })
-    const cards = wrapper.findAll('[data-testid="card-stub"]')
-    await cards[1].trigger('click')
+    await wrapper.find('[data-testid="card-stub"]').trigger('click')
     expect(wrapper.emitted('update:side')).toEqual([['back']])
   })
 
   test('clicking cycles back → cover (wraps around)', async () => {
     const wrapper = mountPreview({ side: 'back' })
-    const cards = wrapper.findAll('[data-testid="card-stub"]')
-    await cards[1].trigger('click')
+    await wrapper.find('[data-testid="card-stub"]').trigger('click')
     expect(wrapper.emitted('update:side')).toEqual([['cover']])
   })
 

@@ -21,15 +21,9 @@ const { mockResetReviews, mockResetReviewsIsLoading } = vi.hoisted(() => ({
   mockResetReviewsIsLoading: { value: false }
 }))
 
-const { mockUploadImage } = vi.hoisted(() => ({
-  mockUploadImage: vi.fn().mockResolvedValue('https://cdn.example.com/cover.jpg')
-}))
-
 const { mockEmitSfx } = vi.hoisted(() => ({
   mockEmitSfx: vi.fn()
 }))
-
-const TEST_MEMBER_ID = '11111111-1111-1111-1111-111111111111'
 
 vi.mock('@/api/decks', () => ({
   useDeleteDeckMutation: () => ({
@@ -46,20 +40,12 @@ vi.mock('@/composables/deck/use-deck-actions', () => ({
   })
 }))
 
-vi.mock('@/api/media', () => ({
-  useUploadImageMutation: () => ({ mutate: mockUploadImage, mutateAsync: mockUploadImage })
-}))
-
 vi.mock('@/api/reviews', () => ({
   useResetDeckReviewsMutation: () => ({
     mutate: mockResetReviews,
     mutateAsync: mockResetReviews,
     isLoading: mockResetReviewsIsLoading
   })
-}))
-
-vi.mock('@/stores/member', () => ({
-  useMemberStore: () => ({ id: TEST_MEMBER_ID })
 }))
 
 vi.mock('@/sfx/bus', () => ({
@@ -92,8 +78,6 @@ describe('useDeckEditor', () => {
     mockDeleteDeck.mockClear()
     mockResetReviews.mockClear()
     mockResetReviews.mockResolvedValue(undefined)
-    mockUploadImage.mockClear()
-    mockUploadImage.mockResolvedValue('https://cdn.example.com/cover.jpg')
     mockEmitSfx.mockClear()
     sessionStorage.clear()
   })
@@ -344,15 +328,6 @@ describe('useDeckEditor', () => {
       expect(is_dirty.value).toBe(true)
     })
 
-    test('flips to true after setCoverImage updates bg_image', async () => {
-      const { setCoverImage, is_dirty } = useDeckEditor(makeDeck())
-      await setCoverImage({
-        preview: 'p',
-        file: new File([''], 'x.png', { type: 'image/png' })
-      })
-      expect(is_dirty.value).toBe(true)
-    })
-
     test('returns false again when a mutation is reverted to the original value', () => {
       const deck = makeDeck({ title: 'Original' })
       const { settings, is_dirty } = useDeckEditor(deck)
@@ -435,174 +410,6 @@ describe('useDeckEditor', () => {
     test('exposes the mutation isLoading ref as `resetting_reviews`', () => {
       const { resetting_reviews } = useDeckEditor(makeDeck({ id: 1 }))
       expect(resetting_reviews).toBe(mockResetReviewsIsLoading)
-    })
-  })
-
-  // ── uploadImage / removeImage ──────────────────────────────────────────────
-
-  describe('image management', () => {
-    test('uploadImage accepts a File without throwing', () => {
-      const { uploadImage } = useDeckEditor()
-      const file = new File([''], 'cover.png', { type: 'image/png' })
-
-      expect(() => uploadImage(file)).not.toThrow()
-    })
-
-    test('removeImage can be called without throwing', () => {
-      const { removeImage } = useDeckEditor()
-
-      expect(() => removeImage()).not.toThrow()
-    })
-  })
-
-  // ── cover_image_preview initialization ────────────────────────────────────
-
-  describe('cover_image_preview initialization', () => {
-    test('initializes cover_image_preview from deck.cover_config.bg_image', () => {
-      const deck = makeDeck({ cover_config: { bg_image: 'https://example.com/img.jpg' } })
-      const { cover_image_preview } = useDeckEditor(deck)
-
-      expect(cover_image_preview.value).toBe('https://example.com/img.jpg')
-    })
-
-    test('cover_image_preview is undefined when deck has no bg_image', () => {
-      const deck = makeDeck({ cover_config: {} })
-      const { cover_image_preview } = useDeckEditor(deck)
-
-      expect(cover_image_preview.value).toBeUndefined()
-    })
-
-    test('cover_image_loading starts as false', () => {
-      const { cover_image_loading } = useDeckEditor()
-
-      expect(cover_image_loading.value).toBe(false)
-    })
-  })
-
-  // ── setCoverImage ──────────────────────────────────────────────────────────
-
-  describe('setCoverImage', () => {
-    function makePayload(overrides = {}) {
-      return {
-        preview: 'data:image/png;base64,abc',
-        file: new File([''], 'cover.png', { type: 'image/png' }),
-        ...overrides
-      }
-    }
-
-    test('sets cover_image_preview to payload.preview immediately (before upload)', async () => {
-      let resolveUpload
-      mockUploadImage.mockReturnValueOnce(
-        new Promise((r) => {
-          resolveUpload = r
-        })
-      )
-
-      const { setCoverImage, cover_image_preview } = useDeckEditor()
-      const payload = makePayload()
-
-      const promise = setCoverImage(payload)
-
-      expect(cover_image_preview.value).toBe(payload.preview)
-
-      resolveUpload('https://cdn.example.com/cover.jpg')
-      await promise
-    })
-
-    test('sets cover_image_loading to true during upload', async () => {
-      let resolveUpload
-      mockUploadImage.mockReturnValueOnce(
-        new Promise((r) => {
-          resolveUpload = r
-        })
-      )
-
-      const { setCoverImage, cover_image_loading } = useDeckEditor()
-
-      const promise = setCoverImage(makePayload())
-
-      expect(cover_image_loading.value).toBe(true)
-
-      resolveUpload('https://cdn.example.com/cover.jpg')
-      await promise
-    })
-
-    test('sets cover_image_loading back to false after upload completes', async () => {
-      const { setCoverImage, cover_image_loading } = useDeckEditor()
-
-      await setCoverImage(makePayload())
-
-      expect(cover_image_loading.value).toBe(false)
-    })
-
-    test('sets cover_image_loading back to false when upload fails', async () => {
-      mockUploadImage.mockRejectedValueOnce(new Error('Upload failed'))
-      const { setCoverImage, cover_image_loading } = useDeckEditor()
-
-      await expect(setCoverImage(makePayload())).rejects.toThrow('Upload failed')
-
-      expect(cover_image_loading.value).toBe(false)
-    })
-
-    test('updates cover.bg_image with the returned URL', async () => {
-      const { setCoverImage, cover } = useDeckEditor()
-
-      await setCoverImage(makePayload())
-
-      expect(cover.bg_image).toBe('https://cdn.example.com/cover.jpg')
-    })
-
-    test('updates cover_image_preview with the returned URL after upload', async () => {
-      const { setCoverImage, cover_image_preview } = useDeckEditor()
-
-      await setCoverImage(makePayload())
-
-      expect(cover_image_preview.value).toBe('https://cdn.example.com/cover.jpg')
-    })
-
-    test('uses deck id in storage path when deck has an id', async () => {
-      const deck = makeDeck({ id: 42 })
-      const { setCoverImage } = useDeckEditor(deck)
-
-      await setCoverImage(makePayload())
-
-      expect(mockUploadImage).toHaveBeenCalledWith({
-        bucket: 'decks',
-        path: `${TEST_MEMBER_ID}/covers/42`,
-        file: expect.any(File)
-      })
-    })
-
-    test('uses draft path when deck has no id', async () => {
-      const deck = makeDeck({ id: undefined })
-      const { setCoverImage } = useDeckEditor(deck)
-
-      await setCoverImage(makePayload())
-
-      const [{ path }] = mockUploadImage.mock.calls[0]
-      expect(path).toMatch(new RegExp(`^${TEST_MEMBER_ID}/covers/draft-`))
-    })
-  })
-
-  // ── removeCoverImage ───────────────────────────────────────────────────────
-
-  describe('removeCoverImage', () => {
-    test('clears cover_image_preview', () => {
-      const deck = makeDeck({ cover_config: { bg_image: 'https://example.com/img.jpg' } })
-      const { removeCoverImage, cover_image_preview } = useDeckEditor(deck)
-
-      removeCoverImage()
-
-      expect(cover_image_preview.value).toBeUndefined()
-    })
-
-    test('clears cover.bg_image', () => {
-      const deck = makeDeck({ cover_config: { bg_image: 'https://example.com/img.jpg' } })
-      const { removeCoverImage, cover } = useDeckEditor(deck)
-
-      removeCoverImage()
-
-      expect(cover.bg_image).toBeUndefined()
     })
   })
 

@@ -9,24 +9,20 @@ const { t } = useI18n()
 type PatternPickerProps = {
   supported_patterns: DeckCoverPattern[]
   selected_pattern: DeckCoverPattern | undefined
-  pattern_size: number | undefined
 }
 
-const { selected_pattern, pattern_size } = defineProps<PatternPickerProps>()
+const { selected_pattern } = defineProps<PatternPickerProps>()
 
 const emit = defineEmits<{
   (e: 'update:pattern', pattern: DeckCoverPattern | undefined): void
 }>()
 
 function swatchBindings(p: DeckCoverPattern) {
-  const base = coverBindings({ pattern: p, pattern_size }, { border: false, bgImage: false })
+  const base = coverBindings({ pattern: p }, { border: false, bgImage: false })
 
   return {
     ...base,
-    style: {
-      ...base.style,
-      ...(pattern_size ? { '--bgx-size': patternSize(p, pattern_size, 0.65) } : {})
-    }
+    style: { ...base.style, '--bgx-size': patternSize(p, 0.65) }
   }
 }
 

@@ -2,7 +2,7 @@ import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
 
 const { refreshMock, upsertMock, canCreateDeck, mockWarn, mockModalOpen } = vi.hoisted(() => ({
   refreshMock: vi.fn().mockResolvedValue(undefined),
-  upsertMock: vi.fn().mockResolvedValue(undefined),
+  upsertMock: vi.fn(),
   canCreateDeck: { value: true },
   mockWarn: vi.fn(),
   mockModalOpen: vi.fn()
@@ -43,6 +43,7 @@ describe('useDeckActions', () => {
   beforeEach(() => {
     refreshMock.mockClear()
     upsertMock.mockClear()
+    upsertMock.mockResolvedValue({ id: 1, title: 'Saved Deck' })
     mockWarn.mockReset()
     mockWarn.mockReturnValue(makeAlertResponse())
     mockModalOpen.mockClear()
@@ -103,35 +104,37 @@ describe('useDeckActions', () => {
   })
 
   describe('createDeck', () => {
-    test('upserts the deck when guard passes', async () => {
+    test('upserts the deck and returns the saved row when guard passes', async () => {
       canCreateDeck.value = true
+      upsertMock.mockResolvedValueOnce({ id: 7, title: 'New Deck' })
       const { createDeck } = useDeckActions()
       const result = await createDeck({ title: 'New Deck' })
 
       expect(upsertMock).toHaveBeenCalledWith({ title: 'New Deck' })
-      expect(result).toBe(true)
+      expect(result).toEqual({ id: 7, title: 'New Deck' })
     })
 
-    test('returns false and skips upsert when guard blocks', async () => {
+    test('returns null and skips upsert when guard blocks', async () => {
       canCreateDeck.value = false
       const { createDeck } = useDeckActions()
       const result = await createDeck({ title: 'Blocked Deck' })
 
       expect(upsertMock).not.toHaveBeenCalled()
-      expect(result).toBe(false)
+      expect(result).toBeNull()
     })
   })
 
   describe('updateDeck', () => {
-    test('upserts without running the guard', async () => {
+    test('upserts without running the guard and returns the saved row', async () => {
       canCreateDeck.value = false // guard would block — prove update bypasses it
+      upsertMock.mockResolvedValueOnce({ id: 1, title: 'Updated' })
       const { updateDeck } = useDeckActions()
       const result = await updateDeck({ id: 1, title: 'Updated' })
 
       expect(refreshMock).not.toHaveBeenCalled()
       expect(mockWarn).not.toHaveBeenCalled()
       expect(upsertMock).toHaveBeenCalledWith({ id: 1, title: 'Updated' })
-      expect(result).toBe(true)
+      expect(result).toEqual({ id: 1, title: 'Updated' })
     })
   })
 })
