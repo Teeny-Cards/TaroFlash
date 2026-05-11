@@ -28,10 +28,8 @@ const emit = defineEmits<{
 const header_bindings = computed(() =>
   coverBindings(
     {
-      bg_color: cover_config?.bg_color,
-      bg_image: cover_config?.bg_image,
-      pattern: cover_config?.pattern,
-      pattern_size: 60
+      theme: cover_config?.theme,
+      pattern: cover_config?.pattern
     },
     { border: false, patternOpacity: '0.25' }
   )

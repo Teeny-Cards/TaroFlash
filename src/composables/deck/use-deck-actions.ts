@@ -28,15 +28,13 @@ export function useDeckActions() {
     return false
   }
 
-  async function createDeck(deck: Deck): Promise<boolean> {
-    if (!(await guardCreateDeck())) return false
-    await upsert_mutation.mutateAsync(deck)
-    return true
+  async function createDeck(deck: Deck): Promise<Deck | null> {
+    if (!(await guardCreateDeck())) return null
+    return await upsert_mutation.mutateAsync(deck)
   }
 
-  async function updateDeck(deck: Deck): Promise<boolean> {
-    await upsert_mutation.mutateAsync(deck)
-    return true
+  async function updateDeck(deck: Deck): Promise<Deck | null> {
+    return await upsert_mutation.mutateAsync(deck)
   }
 
   return { guardCreateDeck, createDeck, updateDeck }

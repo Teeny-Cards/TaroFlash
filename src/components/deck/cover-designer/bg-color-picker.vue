@@ -8,24 +8,19 @@ const { t } = useI18n()
 
 type BgColorPickerProps = {
   supported_themes: DeckTheme[]
-  bg_color: Theme | undefined
-  bg_color_dark: Theme | undefined
-  border_size: number | undefined
+  theme: Theme | undefined
+  theme_dark: Theme | undefined
 }
 
-const { bg_color, bg_color_dark, border_size } = defineProps<BgColorPickerProps>()
+const { theme, theme_dark } = defineProps<BgColorPickerProps>()
 
 const emit = defineEmits<{
-  (e: 'update:bg_color', value: Theme | undefined): void
-  (e: 'update:bg_color_dark', value: Theme | undefined): void
-  (e: 'update:border_size', value: number): void
+  (e: 'update:theme', value: Theme | undefined): void
+  (e: 'update:theme_dark', value: Theme | undefined): void
 }>()
 
-const BORDER_SIZE_MIN = 1
-const BORDER_SIZE_MAX = 16
-
 function isSelected(option: DeckTheme) {
-  return option.light === bg_color && (option.dark ?? null) === (bg_color_dark ?? null)
+  return option.light === theme && (option.dark ?? null) === (theme_dark ?? null)
 }
 
 function onThemeSelect(option: DeckTheme) {
@@ -35,8 +30,8 @@ function onThemeSelect(option: DeckTheme) {
   }
 
   emitSfx('ui.toggle_on')
-  emit('update:bg_color', option.light)
-  emit('update:bg_color_dark', option.dark)
+  emit('update:theme', option.light)
+  emit('update:theme_dark', option.dark)
 }
 </script>
 

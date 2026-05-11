@@ -6,19 +6,20 @@ import TabDesign from './tab-design/index.vue'
 import TabGeneral from './tab-general/index.vue'
 import TabStudy from './tab-study/index.vue'
 import TabDangerZone from './tab-danger-zone/index.vue'
-import DeckPreview from './deck-preview.vue'
+import DeckPreview from '@/components/deck/deck-preview.vue'
 import DeckAside from './deck-aside.vue'
 import { useDeckEditor, deckEditorKey } from '@/composables/deck-editor'
 import { useSessionRef } from '@/composables/use-session-ref'
 import { useAlert } from '@/composables/alert'
 import { useToast } from '@/composables/toast'
 import UiButton from '@/components/ui-kit/button.vue'
+import Card from '@/components/card/index.vue'
 import TabSheet from '@/components/layout-kit/modal/tab-sheet.vue'
 
 export type DeckSettingsResponse = boolean
 
 const { deck, close } = defineProps<{
-  deck?: Deck
+  deck: Deck
   close: (response?: DeckSettingsResponse) => void
 }>()
 
@@ -31,33 +32,14 @@ const route = useRoute()
 const editor = useDeckEditor(deck)
 provide(deckEditorKey, editor)
 
-const tabs = computed(() => {
-  const base = [
-    { value: 'general', icon: 'label', label: t('deck.settings-modal.tab.general') },
-    { value: 'design', icon: 'design-services', label: t('deck.settings-modal.tab.design') },
-    { value: 'study', icon: 'school-cap', label: t('deck.settings-modal.tab.study') }
-  ]
-  if (deck?.id) {
-    base.push({
-      value: 'danger-zone',
-      icon: 'delete',
-      label: t('deck.settings-modal.tab.danger-zone')
-    })
-  }
-  return base
-})
+const tabs = computed(() => [
+  { value: 'general', icon: 'label', label: t('deck.settings-modal.tab.general') },
+  { value: 'design', icon: 'design-services', label: t('deck.settings-modal.tab.design') },
+  { value: 'study', icon: 'school-cap', label: t('deck.settings-modal.tab.study') },
+  { value: 'danger-zone', icon: 'delete', label: t('deck.settings-modal.tab.danger-zone') }
+])
 
 const active_tab = useSessionRef('deck-settings.active-tab', 'general')
-
-// New decks always start on the general tab — the persisted value from a
-// prior edit session shouldn't carry across to a create flow. For edits,
-// clamp any stale value (e.g. 'danger-zone' that doesn't exist this open)
-// back to the first tab.
-if (!deck?.id) {
-  active_tab.value = 'general'
-} else if (!tabs.value.some((tab) => tab.value === active_tab.value)) {
-  active_tab.value = tabs.value[0].value
-}
 
 const active_header = computed(() => ({
   title: t(`deck.settings-modal.header.${active_tab.value}.title`),
@@ -114,7 +96,7 @@ async function onDelete() {
   // Only navigate away if the user is currently viewing the deleted deck.
   // Opening settings from anywhere else (e.g. dashboard) shouldn't yank
   // them out of their current view.
-  const on_deleted_deck = route.name === 'deck' && Number(route.params.id) === deck?.id
+  const on_deleted_deck = route.name === 'deck' && Number(route.params.id) === deck.id
   if (on_deleted_deck) router.push({ name: 'dashboard' })
 }
 </script>
@@ -161,13 +143,24 @@ async function onDelete() {
     />
 
     <template #overlay>
-      <deck-preview
-        :deck_id="deck?.id"
-        :cover="editor.cover"
-        :card_attributes="editor.card_attributes"
-        :side="visible_side"
-        @update:side="onPreviewSide"
-      />
+      <div class="pointer-events-auto absolute right-6 top-6">
+        <div class="relative">
+          <card
+            size="xl"
+            class="absolute! -top-2 right-1"
+            face_classes="bg-white! dark:bg-stone-700!"
+          />
+
+          <deck-preview
+            :deck_id="deck.id"
+            :cover="editor.cover"
+            :card_attributes="editor.card_attributes"
+            :side="visible_side"
+            class="rotate-4 drop-shadow-sm"
+            @update:side="onPreviewSide"
+          />
+        </div>
+      </div>
     </template>
 
     <template #footer>
@@ -179,7 +172,7 @@ async function onDelete() {
         full-width
         @click="onSave"
       >
-        {{ deck ? t('deck.settings-modal.submit-edit') : t('deck.settings-modal.submit-create') }}
+        {{ t('deck.settings-modal.submit-edit') }}
       </ui-button>
     </template>
   </tab-sheet>

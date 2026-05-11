@@ -1,14 +1,11 @@
-import { computed, reactive, ref, type InjectionKey } from 'vue'
+import { computed, reactive, type InjectionKey } from 'vue'
 import { useDeleteDeckMutation } from '@/api/decks'
-import { useUploadImageMutation } from '@/api/media'
 import { useResetDeckReviewsMutation } from '@/api/reviews'
 import { useDeckActions } from '@/composables/deck/use-deck-actions'
 import { useSessionRef } from '@/composables/use-session-ref'
-import { useMemberStore } from '@/stores/member'
 import { DECK_SETTINGS_DEFAULTS, DECK_CONFIG_DEFAULTS } from '@/utils/deck/defaults'
 import { buildDeckPayload, hasDeckChanges } from '@/utils/deck/payload'
 import { emitSfx } from '@/sfx/bus'
-import type { ImageUploadPayload } from '@/components/image-uploader.vue'
 
 /**
  * Reactive state + mutations for editing one deck (or staging a brand-new one
@@ -37,12 +34,6 @@ export function useDeckEditor(deck?: Deck) {
     back: deck?.card_attributes?.back ?? {}
   })
 
-  const uploaded_image = ref<File | undefined>()
-  const image_removed = ref<boolean>(false)
-
-  const cover_image_preview = ref<string | undefined>(deck?.cover_config?.bg_image)
-  const cover_image_loading = ref(false)
-
   const active_side = useSessionRef<CardSide>('deck-settings.active-side', 'cover')
 
   const initial_payload = buildDeckPayload({ settings, config, cover, card_attributes })
@@ -53,9 +44,8 @@ export function useDeckEditor(deck?: Deck) {
   const deck_actions = useDeckActions()
   const delete_mutation = useDeleteDeckMutation()
   const reset_reviews_mutation = useResetDeckReviewsMutation()
-  const upload_image_mutation = useUploadImageMutation()
 
-  async function saveDeck(): Promise<boolean> {
+  async function saveDeck(): Promise<Deck | null> {
     const payload: Deck = {
       id: settings.id,
       ...buildDeckPayload({ settings, config, cover, card_attributes })
@@ -88,40 +78,6 @@ export function useDeckEditor(deck?: Deck) {
     }
   }
 
-  function uploadImage(file: File) {
-    uploaded_image.value = file
-  }
-
-  function removeImage() {
-    image_removed.value = true
-  }
-
-  async function setCoverImage(payload: ImageUploadPayload) {
-    cover_image_preview.value = payload.preview
-    cover_image_loading.value = true
-    try {
-      const member_id = useMemberStore().id
-      if (!member_id) throw new Error('Not authenticated')
-      const deck_id = settings.id
-      const leaf = deck_id ? `covers/${deck_id}` : `covers/draft-${crypto.randomUUID()}`
-      const path = `${member_id}/${leaf}`
-      const url = await upload_image_mutation.mutateAsync({
-        bucket: 'decks',
-        path,
-        file: payload.file
-      })
-      cover.bg_image = url
-      cover_image_preview.value = url
-    } finally {
-      cover_image_loading.value = false
-    }
-  }
-
-  function removeCoverImage() {
-    cover_image_preview.value = undefined
-    cover.bg_image = undefined
-  }
-
   /** Switch the design tab's previewed side. No-op when already active. */
   function setActiveSide(side: CardSide) {
     if (side === active_side.value) return
@@ -135,8 +91,6 @@ export function useDeckEditor(deck?: Deck) {
     config,
     cover,
     card_attributes,
-    cover_image_preview,
-    cover_image_loading,
     active_side,
     is_dirty,
     deleting: delete_mutation.isLoading,
@@ -144,10 +98,6 @@ export function useDeckEditor(deck?: Deck) {
     saveDeck,
     deleteDeck,
     resetReviews,
-    uploadImage,
-    removeImage,
-    setCoverImage,
-    removeCoverImage,
     setActiveSide
   }
 }

@@ -46,14 +46,20 @@ export async function fetchMemberDeckCount(): Promise<number> {
   return count ?? 0
 }
 
-export async function upsertDeck(deck: Deck): Promise<void> {
-  deck.updated_at = isoNow()
-  const { error } = await supabase.from('decks').upsert(deck, { onConflict: 'id' })
+export async function upsertDeck(deck: Deck): Promise<Deck> {
+  const payload = { ...deck, updated_at: isoNow() }
+  const { data, error } = await supabase
+    .from('decks')
+    .upsert(payload, { onConflict: 'id' })
+    .select()
+    .single()
 
   if (error) {
     logger.error(error.message)
     throw error
   }
+
+  return data as Deck
 }
 
 export async function deleteDeck(id: number): Promise<void> {

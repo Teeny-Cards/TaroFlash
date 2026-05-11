@@ -43,9 +43,7 @@ function cycleSide() {
 </script>
 
 <template>
-  <div data-testid="deck-preview" class="pointer-events-auto absolute right-6 top-6">
-    <card size="xl" class="absolute! -top-2 right-1" face_classes="bg-white! dark:bg-stone-700!" />
-
+  <div data-testid="deck-preview">
     <card
       size="xl"
       :side="side"
@@ -53,7 +51,7 @@ function cycleSide() {
       :back_text="side === 'back' ? preview_text : undefined"
       :cover_config="cover"
       :card_attributes="card_attributes"
-      class="cursor-pointer rotate-4 drop-shadow-sm"
+      class="cursor-pointer"
       face_classes="border-t border-l border-brown-100 dark:border-stone-900"
       @click="cycleSide"
     />

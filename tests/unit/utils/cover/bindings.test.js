@@ -1,17 +1,17 @@
 import { describe, test, expect } from 'vite-plus/test'
-import { coverBindings, patternSize } from '@/utils/cover'
+import { coverBindings, patternSize, BORDER_SIZE_PX, PATTERN_SIZE_PX } from '@/utils/cover'
 
 describe('patternSize', () => {
   test('defaults the multiplier to 1', () => {
-    // wave has scale 2 → 10 * 2 * 1 = 20
-    expect(patternSize('wave', 10)).toBe('20px')
+    // wave scale 2 → PATTERN_SIZE_PX * 2 * 1
+    expect(patternSize('wave')).toBe(`${PATTERN_SIZE_PX * 2}px`)
   })
 
   test('applies the multiplier argument', () => {
-    // wave: 10 * 2 * 0.5 = 10
-    expect(patternSize('wave', 10, 0.5)).toBe('10px')
-    // aztec: 20 * 1 * 0.65 = 13
-    expect(patternSize('aztec', 20, 0.65)).toBe('13px')
+    // wave: PATTERN_SIZE_PX * 2 * 0.5
+    expect(patternSize('wave', 0.5)).toBe(`${PATTERN_SIZE_PX * 2 * 0.5}px`)
+    // aztec: PATTERN_SIZE_PX * 1 * 0.65
+    expect(patternSize('aztec', 0.65)).toBe(`${PATTERN_SIZE_PX * 1 * 0.65}px`)
   })
 })
 
@@ -25,29 +25,27 @@ describe('coverBindings', () => {
     })
   })
 
-  test('falls back to fallbackTheme when config has no bg_color', () => {
+  test('falls back to fallbackTheme when config has no theme', () => {
     const result = coverBindings({}, { fallbackTheme: 'blue-500' })
     expect(result['data-theme']).toBe('blue-500')
   })
 
-  test('uses config bg_color over fallbackTheme', () => {
-    const result = coverBindings({ bg_color: 'pink-400' }, { fallbackTheme: 'blue-500' })
+  test('uses config theme over fallbackTheme', () => {
+    const result = coverBindings({ theme: 'pink-400' }, { fallbackTheme: 'blue-500' })
     expect(result['data-theme']).toBe('pink-400')
   })
 
-  test('forwards bg_color_dark to data-theme-dark when set', () => {
-    const result = coverBindings({ bg_color: 'pink-400', bg_color_dark: 'pink-700' })
+  test('forwards theme_dark to data-theme-dark when set', () => {
+    const result = coverBindings({ theme: 'pink-400', theme_dark: 'pink-700' })
     expect(result['data-theme-dark']).toBe('pink-700')
   })
 
-  test('omits data-theme-dark (undefined) when bg_color_dark is unset', () => {
-    const result = coverBindings({ bg_color: 'pink-400' })
+  test('omits data-theme-dark (undefined) when theme_dark is unset', () => {
+    const result = coverBindings({ theme: 'pink-400' })
     expect(result['data-theme-dark']).toBeUndefined()
   })
 
   test('does not fall back fallbackTheme into data-theme-dark', () => {
-    // fallbackTheme only fills the light slot — dark stays unset so palette
-    // descendant rules can apply the same theme in dark mode.
     const result = coverBindings({}, { fallbackTheme: 'blue-500' })
     expect(result['data-theme-dark']).toBeUndefined()
   })
@@ -60,17 +58,16 @@ describe('coverBindings', () => {
   test('sets --bgx-fill and pattern-scaled --bgx-opacity when pattern is set', () => {
     const result = coverBindings({ pattern: 'aztec' })
     expect(result.style['--bgx-fill']).toBe('var(--theme-neutral)')
-    // aztec has opacity scale 1 → baseline 0.2 * 1 = 0.2
     expect(result.style['--bgx-opacity']).toBe('0.2')
   })
 
-  test('sets --bgx-size style from pattern_size (scaled per pattern)', () => {
-    const result = coverBindings({ pattern: 'saw', pattern_size: 20 })
-    expect(result.style['--bgx-size']).toBe('20px')
+  test('sets --bgx-size from the static patternSize helper when pattern is set', () => {
+    const result = coverBindings({ pattern: 'saw' })
+    expect(result.style['--bgx-size']).toBe(patternSize('saw'))
   })
 
   test('omits pattern bindings when no pattern is set', () => {
-    const result = coverBindings({ pattern_size: 20 })
+    const result = coverBindings({})
     expect(result.class).toEqual([])
     expect(result.style['--bgx-size']).toBeUndefined()
     expect(result.style['--bgx-fill']).toBeUndefined()
@@ -78,7 +75,7 @@ describe('coverBindings', () => {
   })
 
   test('omits pattern bindings when pattern option is disabled', () => {
-    const result = coverBindings({ pattern: 'wave', pattern_size: 20 }, { pattern: false })
+    const result = coverBindings({ pattern: 'wave' }, { pattern: false })
     expect(result.class).toEqual([])
     expect(result.style['--bgx-fill']).toBeUndefined()
     expect(result.style['--bgx-opacity']).toBeUndefined()
@@ -86,59 +83,43 @@ describe('coverBindings', () => {
   })
 
   test('options.patternOpacity overrides the per-pattern scaled default', () => {
-    // aztec normally → 0.2; override should win verbatim
     const result = coverBindings({ pattern: 'aztec' }, { patternOpacity: '0.5' })
     expect(result.style['--bgx-opacity']).toBe('0.5')
   })
 
   test('falls back to scaled default when options.patternOpacity is absent', () => {
-    // wave scale 3.5 → 0.2 * 3.5 = 0.7 (stringified via String(); use numeric compare
-    // to avoid pinning IEEE-754 float artifacts in the assertion)
+    // wave scale 3.5 → 0.2 * 3.5 = 0.7
     const result = coverBindings({ pattern: 'wave' })
     expect(parseFloat(result.style['--bgx-opacity'])).toBeCloseTo(0.7)
   })
 
-  test('emits themed border style when border_size is set', () => {
-    const result = coverBindings({ border_size: 3 })
-    expect(result.style.border).toBe('3px solid var(--theme-primary)')
+  test('emits themed border style at the static BORDER_SIZE_PX when config is provided', () => {
+    const result = coverBindings({ theme: 'green-400' })
+    expect(result.style.border).toBe(`${BORDER_SIZE_PX}px solid var(--theme-primary)`)
   })
 
-  test('omits border style when border_size is not set', () => {
-    const result = coverBindings({ bg_color: 'green-400' })
-    expect(result.style.border).toBeUndefined()
+  test('omits border style when config is omitted', () => {
+    expect(coverBindings().style.border).toBeUndefined()
   })
 
   test('omits border style when border option is disabled', () => {
-    const result = coverBindings({ border_size: 3 }, { border: false })
+    const result = coverBindings({ theme: 'green-400' }, { border: false })
     expect(result.style.border).toBeUndefined()
-  })
-
-  test('emits background-image style when bg_image is set', () => {
-    const result = coverBindings({ bg_image: 'https://example.com/x.png' })
-    expect(result.style.backgroundImage).toBe("url('https://example.com/x.png')")
-    expect(result.style.backgroundSize).toBe('cover')
-    expect(result.style.backgroundPosition).toBe('center')
-  })
-
-  test('omits background-image style when bgImage option is disabled', () => {
-    const result = coverBindings({ bg_image: 'https://example.com/x.png' }, { bgImage: false })
-    expect(result.style.backgroundImage).toBeUndefined()
   })
 
   test('combines all bindings for a fully configured cover', () => {
     const result = coverBindings({
-      bg_color: 'purple-500',
-      pattern: 'aztec',
-      pattern_size: 15,
-      border_size: 2
+      theme: 'purple-500',
+      theme_dark: 'purple-700',
+      pattern: 'aztec'
     })
 
     expect(result['data-theme']).toBe('purple-500')
+    expect(result['data-theme-dark']).toBe('purple-700')
     expect(result.class).toEqual(['bgx-aztec'])
-    // aztec has scale 1 in PATTERN_SIZE_SCALE
-    expect(result.style['--bgx-size']).toBe('15px')
+    expect(result.style['--bgx-size']).toBe(patternSize('aztec'))
     expect(result.style['--bgx-opacity']).toBe('0.2')
     expect(result.style['--bgx-fill']).toBe('var(--theme-neutral)')
-    expect(result.style.border).toBe('2px solid var(--theme-primary)')
+    expect(result.style.border).toBe(`${BORDER_SIZE_PX}px solid var(--theme-primary)`)
   })
 })
