@@ -77,3 +77,15 @@ export function useMobileBreakpoint(
 
   return computed(() => below_width.value || below_height.value)
 }
+
+/**
+ * Reactive boolean — true when the viewport sits below the `lg` breakpoint
+ * (width or height) OR the primary pointer is coarse (touch). The pointer
+ * check lets a large touch screen (e.g. an iPad in landscape) opt into the
+ * tablet layout even when its viewport would otherwise read as desktop.
+ */
+export function useIsTablet() {
+  const below_lg = useMobileBreakpoint('lg', 'lg')
+  const coarse = useMediaQuery('coarse')
+  return computed(() => below_lg.value || coarse.value)
+}

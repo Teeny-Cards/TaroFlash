@@ -16,7 +16,7 @@ import {
   deckDangerActionsKey
 } from '@/composables/deck/use-deck-danger-actions'
 import { useSessionRef } from '@/composables/use-session-ref'
-import { useMobileBreakpoint } from '@/composables/use-media-query'
+import { useIsTablet } from '@/composables/use-media-query'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiTagButton from '@/components/ui-kit/tag-button.vue'
@@ -48,13 +48,13 @@ const tabs = computed(() => [
 type ActiveTab = 'general' | 'design' | 'study' | 'danger-zone'
 const active_tab = useSessionRef<ActiveTab | null>('deck-settings.active-tab', null)
 
-const below_lg = useMobileBreakpoint('lg', 'lg')
+const is_tablet = useIsTablet()
 
-watch(below_lg, (is_below) => {
+watch(is_tablet, (is_below) => {
   if (is_below && active_tab.value === 'danger-zone') active_tab.value = null
 })
 
-const displayed_tab = computed(() => active_tab.value ?? (below_lg.value ? 'index' : 'general'))
+const displayed_tab = computed(() => active_tab.value ?? (is_tablet.value ? 'index' : 'general'))
 
 const sidebar_active = computed({
   get: () => active_tab.value ?? 'general',
@@ -91,7 +91,7 @@ function onBack() {
     data-testid="deck-settings-container"
     data-theme="green-500"
     data-theme-dark="green-800"
-    class="w-auto! lg:w-245! md:h-167"
+    class="w-auto! lg:pointer-fine:w-245! md:h-167"
     :tabs="tabs"
     :cover_config="{ pattern: 'endless-clouds' }"
     :parts="{ content: 'flex gap-6 h-full items-start' }"
@@ -112,7 +112,7 @@ function onBack() {
 
     <div
       data-testid="deck-settings__main"
-      class="relative flex flex-1 flex-col gap-4 md:w-85 lg:w-auto min-w-0"
+      class="relative flex flex-1 flex-col gap-4 md:w-85 lg:pointer-fine:w-auto min-w-0"
     >
       <tab-index v-if="displayed_tab === 'index'" @navigate="active_tab = $event" />
       <tab-design v-else-if="displayed_tab === 'design'" />
@@ -134,7 +134,7 @@ function onBack() {
         @leave="(el, done) => slideFadeRightLeave(el, done)"
       >
         <ui-tag-button
-          v-if="below_lg && active_tab !== null"
+          v-if="is_tablet && active_tab !== null"
           data-testid="deck-settings__back-button"
           :aria-label="t('deck.settings-modal.back-button')"
           data-theme="yellow-500"
