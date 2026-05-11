@@ -231,3 +231,68 @@ describe('useMobileBreakpoint', () => {
     w.unmount()
   })
 })
+
+describe('useIsTablet', () => {
+  let widthMql
+  let heightMql
+  let coarseMql
+  let useIsTablet
+
+  beforeEach(async () => {
+    vi.resetModules()
+    widthMql = createMockMql(false)
+    heightMql = createMockMql(false)
+    coarseMql = createMockMql(false)
+
+    window.matchMedia = vi.fn((query) => {
+      if (query.includes('min-width')) return widthMql
+      if (query.includes('min-height')) return heightMql
+      if (query.includes('pointer: coarse')) return coarseMql
+      return createMockMql(false)
+    })
+    ;({ useIsTablet } = await import('@/composables/use-media-query'))
+  })
+
+  test('returns false on a wide fine-pointer viewport', async () => {
+    const [result, w] = withSetup(() => useIsTablet())
+    await nextTick()
+    expect(result.value).toBe(false)
+    w.unmount()
+  })
+
+  test('returns true when below the lg width breakpoint', async () => {
+    widthMql.matches = true
+    const [result, w] = withSetup(() => useIsTablet())
+    await nextTick()
+    expect(result.value).toBe(true)
+    w.unmount()
+  })
+
+  test('returns true when below the lg height breakpoint', async () => {
+    heightMql.matches = true
+    const [result, w] = withSetup(() => useIsTablet())
+    await nextTick()
+    expect(result.value).toBe(true)
+    w.unmount()
+  })
+
+  test('returns true on a wide viewport when the pointer is coarse', async () => {
+    coarseMql.matches = true
+    const [result, w] = withSetup(() => useIsTablet())
+    await nextTick()
+    expect(result.value).toBe(true)
+    w.unmount()
+  })
+
+  test('reacts when the pointer becomes coarse mid-session', async () => {
+    const [result, w] = withSetup(() => useIsTablet())
+    await nextTick()
+    expect(result.value).toBe(false)
+
+    coarseMql.matches = true
+    coarseMql._fire()
+    await nextTick()
+    expect(result.value).toBe(true)
+    w.unmount()
+  })
+})

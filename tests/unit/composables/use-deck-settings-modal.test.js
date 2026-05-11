@@ -34,7 +34,7 @@ describe('useDeckSettingsModal', () => {
     expect(mockEmitSfx).toHaveBeenCalled()
   })
 
-  test('opens modal with backdrop, mobile-sheet mode, and the deck prop', () => {
+  test('opens modal with backdrop, mobile-sheet mode, mobile thresholds, and the deck prop', () => {
     const deck = { id: 42, title: 'A' }
     mockOpen.mockReturnValueOnce(makeModalResult(undefined))
 
@@ -44,6 +44,8 @@ describe('useDeckSettingsModal', () => {
     expect(mockOpen).toHaveBeenCalledWith(asyncComponentMatcher, {
       backdrop: true,
       mode: 'mobile-sheet',
+      mobile_below_width: 'md',
+      mobile_below_height: 'lg',
       props: { deck }
     })
   })
