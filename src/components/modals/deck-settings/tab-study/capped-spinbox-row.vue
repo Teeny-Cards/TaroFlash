@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import UiSpinbox from '@/components/ui-kit/spinbox/index.vue'
 import { useCappedToggle } from '@/composables/use-capped-toggle'
 
@@ -17,13 +16,8 @@ const { max, default_value, prefill_when_all } = defineProps<CappedSpinboxRowPro
 
 const model = defineModel<number | null | undefined>('value')
 
-const writable = computed({
-  get: () => model.value,
-  set: (v: number | null | undefined) => (model.value = v)
-})
-
 const { spin_value, is_all, onSpin } = useCappedToggle(
-  writable,
+  model,
   max,
   default_value,
   () => prefill_when_all
