@@ -52,7 +52,7 @@ function onSessionFinished(
   <mobile-sheet
     data-testid="study-session"
     class="sm:max-w-170!"
-    :data-theme="deck?.cover_config?.bg_color ?? 'purple-500'"
+    :data-theme="deck?.cover_config?.theme ?? 'purple-500'"
     @close="onCloseButtonClicked"
   >
     <template #header-content>

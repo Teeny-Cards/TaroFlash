@@ -10,7 +10,7 @@ const DeckSettings = defineAsyncComponent(
 export function useDeckSettingsModal() {
   const modal = useModal()
 
-  function open(deck?: Deck) {
+  function open(deck: Deck) {
     emitSfx('ui.alert_clicks_wooden')
     const result = modal.open<DeckSettingsResponse>(DeckSettings, {
       backdrop: true,

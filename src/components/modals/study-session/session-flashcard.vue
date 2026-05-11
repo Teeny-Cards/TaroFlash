@@ -151,7 +151,7 @@ async function onCardReviewed(grade?: Grade) {
 <template>
   <div
     data-testid="study-session__body"
-    :data-theme="deck.cover_config?.bg_color ?? 'purple-500'"
+    :data-theme="deck.cover_config?.theme ?? 'purple-500'"
     class="w-full h-full max-h-130 flex flex-col items-center justify-between gap-4 self-center"
     :class="{ 'opacity-0 pointer-events-none': mode !== 'studying' }"
   >
