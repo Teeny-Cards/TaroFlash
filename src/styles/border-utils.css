@@ -21,7 +21,8 @@
         #0000 99%,
         #000 101%
       )
-      50% calc(100% - var(--baseline-offset)) / var(--wave-width) 100% repeat-x;
+      50% round(down, calc(100% - var(--baseline-offset)), 1px) / var(--wave-width)
+      round(down, 100%, 1px) repeat-x;
 
   -webkit-mask: var(--wave-mask);
   mask: var(--wave-mask);
@@ -46,7 +47,7 @@
         #0000 99%,
         #000 101%
       )
-      50% var(--baseline-offset) / var(--wave-width) 100% repeat-x;
+      50% round(up, var(--baseline-offset), 1px) / var(--wave-width) round(down, 100%, 1px) repeat-x;
 
   -webkit-mask: var(--wave-mask);
   mask: var(--wave-mask);
