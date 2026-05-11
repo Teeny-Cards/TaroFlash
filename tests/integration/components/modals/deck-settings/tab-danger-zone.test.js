@@ -1,8 +1,8 @@
-import { describe, test, expect } from 'vite-plus/test'
+import { describe, test, expect, vi } from 'vite-plus/test'
 import { mount } from '@vue/test-utils'
-import { defineComponent, h, reactive, ref, useAttrs } from 'vue'
+import { defineComponent, h, ref, useAttrs } from 'vue'
 import TabDangerZone from '@/components/modals/deck-settings/tab-danger-zone/index.vue'
-import { deckEditorKey } from '@/composables/deck-editor'
+import { deckDangerActionsKey } from '@/composables/deck/use-deck-danger-actions'
 
 const ButtonStub = defineComponent({
   name: 'UiButton',
@@ -29,101 +29,71 @@ const ButtonStub = defineComponent({
 function makeTab({ deleting = false, resetting_reviews = false } = {}) {
   const deletingRef = ref(deleting)
   const resettingReviewsRef = ref(resetting_reviews)
-  const editor = {
-    deck: { id: 1 },
-    settings: reactive({}),
-    config: reactive({}),
-    cover: reactive({}),
-    card_attributes: reactive({ front: {}, back: {} }),
-    cover_image_preview: ref(undefined),
-    cover_image_loading: ref(false),
-    active_side: ref('cover'),
+  const onDelete = vi.fn()
+  const onResetReviews = vi.fn()
+  const danger = {
+    onDelete,
+    onResetReviews,
     deleting: deletingRef,
-    resetting_reviews: resettingReviewsRef,
-    saveDeck: async () => true,
-    deleteDeck: async () => true,
-    resetReviews: async () => true,
-    uploadImage: () => {},
-    removeImage: () => {},
-    setCoverImage: async () => {},
-    removeCoverImage: () => {},
-    setActiveSide: () => {}
+    resetting_reviews: resettingReviewsRef
   }
   const wrapper = mount(TabDangerZone, {
     global: {
-      provide: { [deckEditorKey]: editor },
+      provide: { [deckDangerActionsKey]: danger },
       stubs: { UiButton: ButtonStub },
       mocks: { $t: (k) => k }
     }
   })
-  return { wrapper, deletingRef, resettingReviewsRef }
+  return { wrapper, deletingRef, resettingReviewsRef, onDelete, onResetReviews }
 }
 
 describe('TabDangerZone', () => {
-  test('renders the danger-zone container with the delete button', () => {
+  test('renders the danger-zone container with both action buttons', () => {
     const { wrapper } = makeTab()
     expect(wrapper.find('[data-testid="tab-danger-zone"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="tab-danger-zone__delete-button"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="danger-delete-button"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="danger-reset-button"]').exists()).toBe(true)
   })
 
-  test('emits "delete" when the delete button is clicked', async () => {
-    const { wrapper } = makeTab()
-    await wrapper.find('[data-testid="tab-danger-zone__delete-button"]').trigger('click')
-    expect(wrapper.emitted('delete')).toHaveLength(1)
+  test('invokes onDelete from injected danger actions when delete is clicked', async () => {
+    const { wrapper, onDelete } = makeTab()
+    await wrapper.find('[data-testid="danger-delete-button"]').trigger('click')
+    expect(onDelete).toHaveBeenCalledTimes(1)
   })
 
-  test('reflects the editor.deleting ref on the button (loading state)', async () => {
+  test('invokes onResetReviews when reset is clicked', async () => {
+    const { wrapper, onResetReviews } = makeTab()
+    await wrapper.find('[data-testid="danger-reset-button"]').trigger('click')
+    expect(onResetReviews).toHaveBeenCalledTimes(1)
+  })
+
+  test('reflects deleting ref on the delete button', async () => {
     const { wrapper, deletingRef } = makeTab({ deleting: false })
-    const btn = wrapper.find('[data-testid="tab-danger-zone__delete-button"]')
-
+    const btn = wrapper.find('[data-testid="danger-delete-button"]')
     expect(btn.attributes('data-loading')).toBe('false')
-
     deletingRef.value = true
     await wrapper.vm.$nextTick()
-
     expect(btn.attributes('data-loading')).toBe('true')
   })
 
-  test('starts in the loading state when editor.deleting is true on mount', () => {
-    const { wrapper } = makeTab({ deleting: true })
-    const btn = wrapper.find('[data-testid="tab-danger-zone__delete-button"]')
-    expect(btn.attributes('data-loading')).toBe('true')
-  })
-
-  test('does not emit "delete" while loading (button disabled)', async () => {
-    const { wrapper } = makeTab({ deleting: true })
-    await wrapper.find('[data-testid="tab-danger-zone__delete-button"]').trigger('click')
-    expect(wrapper.emitted('delete')).toBeUndefined()
-  })
-
-  test('renders the reset-reviews button', () => {
-    const { wrapper } = makeTab()
-    expect(wrapper.find('[data-testid="tab-danger-zone__reset-reviews-button"]').exists()).toBe(
-      true
-    )
-  })
-
-  test('emits "reset-reviews" when the reset button is clicked', async () => {
-    const { wrapper } = makeTab()
-    await wrapper.find('[data-testid="tab-danger-zone__reset-reviews-button"]').trigger('click')
-    expect(wrapper.emitted('reset-reviews')).toHaveLength(1)
-  })
-
-  test('reflects the editor.resetting_reviews ref on the reset button (loading state)', async () => {
+  test('reflects resetting_reviews ref on the reset button', async () => {
     const { wrapper, resettingReviewsRef } = makeTab({ resetting_reviews: false })
-    const btn = wrapper.find('[data-testid="tab-danger-zone__reset-reviews-button"]')
-
+    const btn = wrapper.find('[data-testid="danger-reset-button"]')
     expect(btn.attributes('data-loading')).toBe('false')
-
     resettingReviewsRef.value = true
     await wrapper.vm.$nextTick()
-
     expect(btn.attributes('data-loading')).toBe('true')
   })
 
-  test('does not emit "reset-reviews" while resetting (button disabled)', async () => {
-    const { wrapper } = makeTab({ resetting_reviews: true })
-    await wrapper.find('[data-testid="tab-danger-zone__reset-reviews-button"]').trigger('click')
-    expect(wrapper.emitted('reset-reviews')).toBeUndefined()
+  test('does not invoke onDelete while loading (button disabled)', async () => {
+    const { wrapper, onDelete } = makeTab({ deleting: true })
+    await wrapper.find('[data-testid="danger-delete-button"]').trigger('click')
+    expect(onDelete).not.toHaveBeenCalled()
+  })
+
+  test('does not invoke onResetReviews while resetting (button disabled)', async () => {
+    const { wrapper, onResetReviews } = makeTab({ resetting_reviews: true })
+    await wrapper.find('[data-testid="danger-reset-button"]').trigger('click')
+    expect(onResetReviews).not.toHaveBeenCalled()
   })
 })

@@ -1,18 +1,25 @@
 <script setup lang="ts">
-import { computed, provide } from 'vue'
+import { computed, provide, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter, useRoute } from 'vue-router'
 import TabDesign from './tab-design/index.vue'
 import TabGeneral from './tab-general/index.vue'
 import TabStudy from './tab-study/index.vue'
 import TabDangerZone from './tab-danger-zone/index.vue'
+import TabIndex from './tab-index/index.vue'
 import DeckPreview from '@/components/deck/deck-preview.vue'
 import DeckAside from './deck-aside.vue'
+import { emitSfx } from '@/sfx/bus'
+import { slideFadeRightEnter, slideFadeRightLeave } from '@/utils/animations/slide-fade-right'
 import { useDeckEditor, deckEditorKey } from '@/composables/deck-editor'
+import {
+  useDeckDangerActions,
+  deckDangerActionsKey
+} from '@/composables/deck/use-deck-danger-actions'
 import { useSessionRef } from '@/composables/use-session-ref'
-import { useAlert } from '@/composables/alert'
-import { useToast } from '@/composables/toast'
+import { useMobileBreakpoint } from '@/composables/use-media-query'
 import UiButton from '@/components/ui-kit/button.vue'
+import UiIcon from '@/components/ui-kit/icon.vue'
+import UiTagButton from '@/components/ui-kit/tag-button.vue'
 import Card from '@/components/card/index.vue'
 import TabSheet from '@/components/layout-kit/modal/tab-sheet.vue'
 
@@ -24,13 +31,12 @@ const { deck, close } = defineProps<{
 }>()
 
 const { t } = useI18n()
-const alert = useAlert()
-const toast = useToast()
-const router = useRouter()
-const route = useRoute()
 
 const editor = useDeckEditor(deck)
 provide(deckEditorKey, editor)
+
+const danger = useDeckDangerActions(editor, deck, close)
+provide(deckDangerActionsKey, danger)
 
 const tabs = computed(() => [
   { value: 'general', icon: 'label', label: t('deck.settings-modal.tab.general') },
@@ -39,19 +45,33 @@ const tabs = computed(() => [
   { value: 'danger-zone', icon: 'delete', label: t('deck.settings-modal.tab.danger-zone') }
 ])
 
-const active_tab = useSessionRef('deck-settings.active-tab', 'general')
+type ActiveTab = 'general' | 'design' | 'study' | 'danger-zone'
+const active_tab = useSessionRef<ActiveTab | null>('deck-settings.active-tab', null)
+
+const below_lg = useMobileBreakpoint('lg', 'lg')
+
+watch(below_lg, (is_below) => {
+  if (is_below && active_tab.value === 'danger-zone') active_tab.value = null
+})
+
+const displayed_tab = computed(() => active_tab.value ?? (below_lg.value ? 'index' : 'general'))
+
+const sidebar_active = computed({
+  get: () => active_tab.value ?? 'general',
+  set: (v) => (active_tab.value = v as ActiveTab)
+})
 
 const active_header = computed(() => ({
-  title: t(`deck.settings-modal.header.${active_tab.value}.title`),
-  description: t(`deck.settings-modal.header.${active_tab.value}.description`)
+  title: t(`deck.settings-modal.header.${displayed_tab.value}.title`),
+  description: t(`deck.settings-modal.header.${displayed_tab.value}.description`)
 }))
 
 const visible_side = computed(() =>
-  active_tab.value === 'design' ? editor.active_side.value : 'cover'
+  displayed_tab.value === 'design' ? editor.active_side.value : 'cover'
 )
 
 function onPreviewSide(side: CardSide) {
-  if (active_tab.value !== 'design') return
+  if (displayed_tab.value !== 'design') return
   editor.setActiveSide(side)
 }
 
@@ -60,44 +80,9 @@ async function onSave() {
   if (saved) close(true)
 }
 
-async function onResetReviews() {
-  const confirmed = await alert.warn({
-    title: t('alert.reset-reviews.title'),
-    message: t('alert.reset-reviews.message'),
-    confirmLabel: t('alert.reset-reviews.confirm')
-  }).response
-  if (!confirmed) return
-
-  const ok = await editor.resetReviews()
-  if (!ok) {
-    toast.error(t('toast.error.reset-reviews-failed'))
-    return
-  }
-  toast.success(t('toast.success.reset-reviews'))
-}
-
-async function onDelete() {
-  const confirmed = await alert.warn({
-    title: t('alert.delete-deck.title'),
-    message: t('alert.delete-deck.message'),
-    confirmLabel: t('alert.delete-deck.confirm'),
-    confirmAudio: 'ui.trash_crumple_short'
-  }).response
-  if (!confirmed) return
-
-  const ok = await editor.deleteDeck()
-  if (!ok) {
-    toast.error(t('toast.error.deck-delete-failed'))
-    return
-  }
-
-  close(true)
-
-  // Only navigate away if the user is currently viewing the deleted deck.
-  // Opening settings from anywhere else (e.g. dashboard) shouldn't yank
-  // them out of their current view.
-  const on_deleted_deck = route.name === 'deck' && Number(route.params.id) === deck.id
-  if (on_deleted_deck) router.push({ name: 'dashboard' })
+function onBack() {
+  emitSfx('ui.select')
+  active_tab.value = null
 }
 </script>
 
@@ -106,12 +91,12 @@ async function onDelete() {
     data-testid="deck-settings-container"
     data-theme="green-500"
     data-theme-dark="green-800"
-    class="sm:w-245 sm:h-167"
+    class="w-auto! lg:w-245! md:h-167"
     :tabs="tabs"
     :cover_config="{ pattern: 'endless-clouds' }"
     :parts="{ content: 'flex gap-6 h-full items-start' }"
     hover_sfx="ui.click_07"
-    v-model:active="active_tab"
+    v-model:active="sidebar_active"
     @close="close(false)"
   >
     <template #header-content>
@@ -125,15 +110,15 @@ async function onDelete() {
       </div>
     </template>
 
-    <div data-testid="deck-settings__main" class="flex flex-1 flex-col gap-4 min-w-0">
-      <tab-design v-if="active_tab === 'design'" />
-      <tab-general v-else-if="active_tab === 'general'" />
-      <tab-study v-else-if="active_tab === 'study'" />
-      <tab-danger-zone
-        v-else-if="active_tab === 'danger-zone'"
-        @delete="onDelete"
-        @reset-reviews="onResetReviews"
-      />
+    <div
+      data-testid="deck-settings__main"
+      class="relative flex flex-1 flex-col gap-4 md:w-85 lg:w-auto min-w-0"
+    >
+      <tab-index v-if="displayed_tab === 'index'" @navigate="active_tab = $event" />
+      <tab-design v-else-if="displayed_tab === 'design'" />
+      <tab-general v-else-if="displayed_tab === 'general'" />
+      <tab-study v-else-if="displayed_tab === 'study'" />
+      <tab-danger-zone v-else-if="displayed_tab === 'danger-zone'" />
     </div>
 
     <deck-aside
@@ -143,6 +128,25 @@ async function onDelete() {
     />
 
     <template #overlay>
+      <transition
+        :css="false"
+        @enter="(el, done) => slideFadeRightEnter(el, done)"
+        @leave="(el, done) => slideFadeRightLeave(el, done)"
+      >
+        <ui-tag-button
+          v-if="below_lg && active_tab !== null"
+          data-testid="deck-settings__back-button"
+          :aria-label="t('deck.settings-modal.back-button')"
+          data-theme="yellow-500"
+          data-theme-dark="yellow-700"
+          class="pointer-events-auto absolute! left-4 top-29 drop-shadow-xs"
+          @click="onBack"
+        >
+          <ui-icon src="arrow-back" class="w-4 h-4" />
+          <span>{{ t('deck.settings-modal.back-label') }}</span>
+        </ui-tag-button>
+      </transition>
+
       <div class="pointer-events-auto absolute right-6 top-6">
         <div class="relative">
           <card

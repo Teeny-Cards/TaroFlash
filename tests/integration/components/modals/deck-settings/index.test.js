@@ -211,53 +211,6 @@ beforeEach(() => {
   initialTab.value = 'danger-zone'
 })
 
-describe('DeckSettings — onResetReviews orchestration', () => {
-  test('does nothing when the user cancels the confirm alert', async () => {
-    mockAlertWarn.mockReturnValue({ response: Promise.resolve(false) })
-    const { wrapper } = makeWrapper()
-
-    await wrapper.find('[data-testid="tdz__reset"]').trigger('click')
-    await flushPromises()
-
-    expect(mockAlertWarn).toHaveBeenCalledWith(
-      expect.objectContaining({ title: 'Reset All Reviews?' })
-    )
-    expect(mockEditor.resetReviews).not.toHaveBeenCalled()
-    expect(mockToastSuccess).not.toHaveBeenCalled()
-    expect(mockToastError).not.toHaveBeenCalled()
-  })
-
-  test('calls editor.resetReviews and fires a success toast when the mutation succeeds', async () => {
-    mockAlertWarn.mockReturnValue({ response: Promise.resolve(true) })
-    mockEditor.resetReviews.mockResolvedValue(true)
-    const { wrapper, close } = makeWrapper()
-
-    await wrapper.find('[data-testid="tdz__reset"]').trigger('click')
-    await flushPromises()
-
-    expect(mockEditor.resetReviews).toHaveBeenCalledTimes(1)
-    expect(mockToastSuccess).toHaveBeenCalledWith('Reviews reset for this deck.')
-    expect(mockToastError).not.toHaveBeenCalled()
-    // Reset does not close the modal — user stays on the danger-zone tab.
-    expect(close).not.toHaveBeenCalled()
-  })
-
-  test('fires an error toast (no success toast) when the mutation fails', async () => {
-    mockAlertWarn.mockReturnValue({ response: Promise.resolve(true) })
-    mockEditor.resetReviews.mockResolvedValue(false)
-    const { wrapper } = makeWrapper()
-
-    await wrapper.find('[data-testid="tdz__reset"]').trigger('click')
-    await flushPromises()
-
-    expect(mockEditor.resetReviews).toHaveBeenCalledTimes(1)
-    expect(mockToastError).toHaveBeenCalledWith(
-      "Couldn't reset reviews for this deck. Please try again."
-    )
-    expect(mockToastSuccess).not.toHaveBeenCalled()
-  })
-})
-
 describe('DeckSettings — save button visibility (driven by editor.is_dirty)', () => {
   test('hides the save button when the editor is not dirty', () => {
     mockEditor.editor.is_dirty.value = false
