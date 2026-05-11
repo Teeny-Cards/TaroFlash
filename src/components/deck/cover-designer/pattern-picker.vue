@@ -18,7 +18,7 @@ const emit = defineEmits<{
 }>()
 
 function swatchBindings(p: DeckCoverPattern) {
-  const base = coverBindings({ pattern: p }, { border: false, bgImage: false })
+  const base = coverBindings({ pattern: p }, { border: false })
 
   return {
     ...base,
