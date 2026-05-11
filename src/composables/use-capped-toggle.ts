@@ -1,4 +1,4 @@
-import { computed, ref, watch, type WritableComputedRef } from 'vue'
+import { computed, ref, watch, type Ref, type WritableComputedRef } from 'vue'
 
 type Capped = number | null | undefined
 
@@ -20,7 +20,7 @@ export type UseCappedToggleResult = {
  * const { spin_value, is_all, onSpin } = useCappedToggle(model, 200, 50, () => deck.card_count)
  */
 export function useCappedToggle(
-  model: WritableComputedRef<Capped>,
+  model: Ref<Capped>,
   max: number,
   default_value: number,
   on_all_prefill?: () => number | undefined
