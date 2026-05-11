@@ -105,7 +105,12 @@ shortcuts.register([
 </script>
 
 <template>
-  <mobile-sheet :title="title" :cover_config="cover_config" :show_close_button="sheet_close_button">
+  <mobile-sheet
+    :title="title"
+    :cover_config="cover_config"
+    :show_close_button="sheet_close_button"
+    @close="emit('close')"
+  >
     <template v-if="$slots.overlay" #overlay><slot name="overlay"></slot></template>
     <template v-if="$slots.header" #header><slot name="header"></slot></template>
     <template v-if="$slots['header-content']" #header-content>
@@ -164,7 +169,7 @@ shortcuts.register([
       :id="tab_panel_id"
       data-testid="tab-sheet__content"
       role="tabpanel"
-      :class="['px-18 lg:px-8 pb-8 pt-0', parts?.content]"
+      :class="['px-(--sheet-px) pb-8 pt-0', parts?.content]"
     >
       <slot></slot>
     </div>

@@ -91,10 +91,10 @@ function onBack() {
     data-testid="deck-settings-container"
     data-theme="green-500"
     data-theme-dark="green-800"
-    class="w-auto! lg:pointer-fine:w-245! md:h-167"
+    class="w-full! max-w-205.5 lg:pointer-fine:max-w-none lg:pointer-fine:w-245! h-167"
     :tabs="tabs"
     :cover_config="{ pattern: 'endless-clouds' }"
-    :parts="{ content: 'flex gap-6 h-full items-start' }"
+    :parts="{ content: 'flex gap-14 h-full items-start' }"
     hover_sfx="ui.click_07"
     v-model:active="sidebar_active"
     @close="close(false)"
@@ -112,7 +112,7 @@ function onBack() {
 
     <div
       data-testid="deck-settings__main"
-      class="relative flex flex-1 flex-col gap-4 md:w-85 lg:pointer-fine:w-auto min-w-0"
+      class="relative flex flex-1 flex-col gap-4 w-full min-w-0"
     >
       <tab-index v-if="displayed_tab === 'index'" @navigate="active_tab = $event" />
       <tab-design v-else-if="displayed_tab === 'design'" />
@@ -139,7 +139,7 @@ function onBack() {
           :aria-label="t('deck.settings-modal.back-button')"
           data-theme="yellow-500"
           data-theme-dark="yellow-700"
-          class="pointer-events-auto absolute! left-4 top-29 drop-shadow-xs"
+          class="pointer-events-auto absolute! left-(--sheet-px) top-29 drop-shadow-xs"
           @click="onBack"
         >
           <ui-icon src="arrow-back" class="w-4 h-4" />
@@ -147,7 +147,7 @@ function onBack() {
         </ui-tag-button>
       </transition>
 
-      <div class="pointer-events-auto absolute right-6 top-6">
+      <div class="pointer-events-auto absolute right-(--sheet-px) top-6">
         <div class="relative">
           <card
             size="xl"
