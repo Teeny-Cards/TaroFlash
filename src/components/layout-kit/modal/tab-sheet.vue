@@ -31,7 +31,7 @@ const {
   parts,
   title,
   cover_config,
-  show_close_button,
+  show_close_button = true,
   hover_sfx = 'ui.click_07',
   select_sfx = 'ui.select',
   reselect_sfx = 'ui.digi_powerdown'
@@ -58,9 +58,7 @@ provide(activeTabKey, active)
 
 const has_tabs = computed(() => !!tabs?.length)
 const below_lg = useMobileBreakpoint('lg', 'lg')
-const sheet_close_button = computed(
-  () => (!has_tabs.value || below_lg.value) && (show_close_button ?? true)
-)
+const sheet_close_button = computed(() => (!has_tabs.value || below_lg.value) && show_close_button)
 
 const tab_panel_id = 'tab-sheet__panel'
 const tab_id_prefix = `tab-sheet__tab--${uid()}--`
