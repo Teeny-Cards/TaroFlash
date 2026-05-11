@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue'
+import { inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UiToggle from '@/components/ui-kit/toggle.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
@@ -11,36 +11,19 @@ import { DAILY_LIMIT_BOUNDS } from '@/utils/deck/defaults'
 
 const { t } = useI18n()
 const { deck, config } = inject(deckEditorKey)!
-
-const shuffle = computed({
-  get: () => config.shuffle,
-  set: (v) => (config.shuffle = v)
-})
-const flip_cards = computed({
-  get: () => config.flip_cards,
-  set: (v) => (config.flip_cards = v)
-})
-const max_reviews_per_day = computed({
-  get: () => config.max_reviews_per_day,
-  set: (v) => (config.max_reviews_per_day = v)
-})
-const max_new_per_day = computed({
-  get: () => config.max_new_per_day,
-  set: (v) => (config.max_new_per_day = v)
-})
 </script>
 
 <template>
   <section-list data-testid="tab-study">
     <labeled-section :label="t('deck.settings-modal.study.section.cards-heading')">
-      <ui-toggle v-model:checked="shuffle">
+      <ui-toggle v-model:checked="config.shuffle">
         <div class="flex items-center gap-2.5">
           <ui-icon src="reorder" />
           {{ t('deck.settings-modal.study.shuffle') }}
         </div>
       </ui-toggle>
 
-      <ui-toggle v-model:checked="flip_cards">
+      <ui-toggle v-model:checked="config.flip_cards">
         <div class="flex items-center gap-2.5">
           <ui-icon src="horizontal-align" />
           {{ t('deck.settings-modal.study.flip-cards') }}
@@ -61,7 +44,7 @@ const max_new_per_day = computed({
         :step="DAILY_LIMIT_BOUNDS.step"
         :default_value="DAILY_LIMIT_BOUNDS.reviews.default"
         :prefill_when_all="deck?.card_count"
-        v-model:value="max_reviews_per_day"
+        v-model:value="config.max_reviews_per_day"
       />
 
       <capped-spinbox-row
@@ -73,7 +56,7 @@ const max_new_per_day = computed({
         :step="DAILY_LIMIT_BOUNDS.step"
         :default_value="DAILY_LIMIT_BOUNDS.new_cards.default"
         :prefill_when_all="deck?.card_count"
-        v-model:value="max_new_per_day"
+        v-model:value="config.max_new_per_day"
       />
     </labeled-section>
   </section-list>
