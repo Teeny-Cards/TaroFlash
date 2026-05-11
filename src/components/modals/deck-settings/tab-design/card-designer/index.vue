@@ -24,16 +24,6 @@ const text_size = computed({
     emitSfx('ui.select')
   }
 })
-
-const horizontal_alignment = computed({
-  get: () => attributes.horizontal_alignment,
-  set: (v) => (attributes.horizontal_alignment = v)
-})
-
-const vertical_alignment = computed({
-  get: () => attributes.vertical_alignment,
-  set: (v) => (attributes.vertical_alignment = v)
-})
 </script>
 
 <template>
@@ -55,6 +45,9 @@ const vertical_alignment = computed({
     <span data-testid="card-designer__alignment-label" class="text-sm">
       {{ t('deck.settings-modal.design.card-designer.alignment-label') }}
     </span>
-    <align-picker v-model:horizontal="horizontal_alignment" v-model:vertical="vertical_alignment" />
+    <align-picker
+      v-model:horizontal="attributes.horizontal_alignment"
+      v-model:vertical="attributes.vertical_alignment"
+    />
   </div>
 </template>

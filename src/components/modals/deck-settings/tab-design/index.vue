@@ -3,18 +3,22 @@ import { computed, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CoverDesigner from '@/components/deck/cover-designer/index.vue'
 import CardDesigner from './card-designer/index.vue'
-import TabBar from './tab-bar.vue'
+import TabBar from '@/components/layout-kit/tab-bar.vue'
+import DeckPreview from '@/components/deck/deck-preview.vue'
 import { deckEditorKey } from '@/composables/deck-editor'
+import { useMobileBreakpoint } from '@/composables/use-media-query'
 
 type SideTab = { value: CardSide; label: string }
 
 const { t } = useI18n()
 const editor = inject(deckEditorKey)!
 
+const is_mobile = useMobileBreakpoint('md')
+
 const tabs = computed<SideTab[]>(() => [
-  { value: 'cover', label: t('deck.settings-modal.designer-tabs.cover') },
-  { value: 'front', label: t('deck.settings-modal.designer-tabs.front') },
-  { value: 'back', label: t('deck.settings-modal.designer-tabs.back') }
+  { value: 'cover', label: t('deck.settings-modal.design.designer-tabs.cover') },
+  { value: 'front', label: t('deck.settings-modal.design.designer-tabs.front') },
+  { value: 'back', label: t('deck.settings-modal.design.designer-tabs.back') }
 ])
 
 const card_side_attributes = computed(() =>
@@ -24,6 +28,19 @@ const card_side_attributes = computed(() =>
 
 <template>
   <div data-testid="tab-design" class="flex flex-col items-center gap-6">
+    <div
+      v-if="is_mobile"
+      data-testid="tab-design__inline-preview"
+      class="flex justify-center w-full"
+    >
+      <deck-preview
+        :deck_id="editor.settings.id"
+        :cover="editor.cover"
+        :card_attributes="editor.card_attributes"
+        :side="editor.active_side.value"
+        @update:side="editor.setActiveSide"
+      />
+    </div>
     <tab-bar
       :tabs="tabs"
       :active="editor.active_side.value"

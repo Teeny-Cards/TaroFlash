@@ -1,0 +1,41 @@
+import { ref } from 'vue'
+
+const is_tablet = ref(false)
+const is_mobile = ref(false)
+
+/**
+ * Shared mock module + setters for `@/composables/use-media-query`.
+ *
+ * Refs live at module scope so a `vi.mock` factory that imports this file
+ * sees the same instances the test code does. Vitest's per-file module
+ * isolation keeps state from leaking between test files.
+ *
+ * @example
+ *   import { responsiveMockModule, setBelowLg, setBelowMd, resetResponsive }
+ *     from '../../helpers/responsive-mock'
+ *
+ *   vi.mock('@/composables/use-media-query', async () => {
+ *     const m = await import('../../helpers/responsive-mock')
+ *     return m.responsiveMockModule
+ *   })
+ *
+ *   beforeEach(() => resetResponsive())
+ */
+export const responsiveMockModule = {
+  useMobileBreakpoint: () => is_mobile,
+  useMediaQuery: () => ref(false),
+  useIsTablet: () => is_tablet
+}
+
+export function setBelowLg(v) {
+  is_tablet.value = v
+}
+
+export function setBelowMd(v) {
+  is_mobile.value = v
+}
+
+export function resetResponsive() {
+  is_tablet.value = false
+  is_mobile.value = false
+}

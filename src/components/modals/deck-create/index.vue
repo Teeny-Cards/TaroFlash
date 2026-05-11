@@ -38,7 +38,7 @@ async function onSave() {
     data-theme-dark="green-800"
     class="sm:w-200"
     :title="t('deck.create-modal.title')"
-    :cover_config="{ pattern: 'endless-clouds' }"
+    :pattern_config="{ pattern: 'endless-clouds' }"
     @close="close(false)"
   >
     <div data-testid="deck-create__body" class="grid grid-cols-[auto_1fr] items-start gap-6 p-6">
