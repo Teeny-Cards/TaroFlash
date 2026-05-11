@@ -3,6 +3,7 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { defineComponent, h, ref } from 'vue'
 import DeckSettings from '@/components/modals/deck-settings/index.vue'
 import { deck as deckFixture } from '../../../../fixtures/deck'
+import { setBelowLg, setBelowMd, resetResponsive } from '../../../../helpers/responsive-mock'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
 
@@ -34,25 +35,9 @@ vi.mock('vue-router', () => ({
 }))
 
 vi.mock('@/composables/use-media-query', async () => {
-  const vue = await import('vue')
-  const isTablet = vue.ref(false)
-  const isMobile = vue.ref(false)
-  globalThis.__deckSettingsIsTablet = isTablet
-  globalThis.__deckSettingsIsMobile = isMobile
-  return {
-    useMobileBreakpoint: () => isMobile,
-    useMediaQuery: () => vue.ref(false),
-    useIsTablet: () => isTablet
-  }
+  const m = await import('../../../../helpers/responsive-mock')
+  return m.responsiveMockModule
 })
-
-function setBelowLg(v) {
-  if (globalThis.__deckSettingsIsTablet) globalThis.__deckSettingsIsTablet.value = v
-}
-
-function setBelowMd(v) {
-  if (globalThis.__deckSettingsIsMobile) globalThis.__deckSettingsIsMobile.value = v
-}
 
 vi.mock('@/composables/deck-editor', async () => {
   const { reactive, ref: vueRef } = await import('vue')
@@ -230,8 +215,7 @@ beforeEach(() => {
   mockEditor.deleteDeck.mockReset().mockResolvedValue(true)
   mockEditor.saveDeck.mockReset().mockResolvedValue(true)
   initialTab.value = 'danger-zone'
-  setBelowLg(false)
-  setBelowMd(false)
+  resetResponsive()
 })
 
 describe('DeckSettings — save button visibility (driven by editor.is_dirty)', () => {
