@@ -210,6 +210,13 @@ describe('TabSheet', () => {
     expect(wrapper.emitted('close')).toBeTruthy()
   })
 
+  test('re-emits close when the underlying mobile-sheet emits close', async () => {
+    const wrapper = mountSheet()
+    const sheet = wrapper.findComponent({ name: 'MobileSheet' })
+    sheet.vm.$emit('close')
+    expect(wrapper.emitted('close')).toBeTruthy()
+  })
+
   // ── mobile-sheet close-button fallback (below lg) ─────────────────────────
 
   test('does not surface the mobile-sheet close button on desktop when tabs are present', () => {
