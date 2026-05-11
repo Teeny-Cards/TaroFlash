@@ -16,7 +16,7 @@ import {
   deckDangerActionsKey
 } from '@/composables/deck/use-deck-danger-actions'
 import { useSessionRef } from '@/composables/use-session-ref'
-import { useIsTablet } from '@/composables/use-media-query'
+import { useIsTablet, useMobileBreakpoint } from '@/composables/use-media-query'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiTagButton from '@/components/ui-kit/tag-button.vue'
@@ -49,6 +49,7 @@ type ActiveTab = 'general' | 'design' | 'study' | 'danger-zone'
 const active_tab = useSessionRef<ActiveTab | null>('deck-settings.active-tab', null)
 
 const is_tablet = useIsTablet()
+const is_mobile = useMobileBreakpoint('md')
 
 watch(is_tablet, (is_below) => {
   if (is_below && active_tab.value === 'danger-zone') active_tab.value = null
@@ -91,7 +92,7 @@ function onBack() {
     data-testid="deck-settings-container"
     data-theme="green-500"
     data-theme-dark="green-800"
-    class="w-full! max-w-205.5 lg:pointer-fine:max-w-none lg:pointer-fine:w-245! h-167"
+    class="w-full! max-w-205.5 lg:pointer-fine:max-w-none lg:pointer-fine:w-245! md:h-167 h-254 max-md:[--sheet-px:2rem]"
     :tabs="tabs"
     :cover_config="{ pattern: 'endless-clouds' }"
     :parts="{ content: 'flex gap-14 h-full items-start' }"
@@ -100,7 +101,10 @@ function onBack() {
     @close="close(false)"
   >
     <template #header-content>
-      <div data-testid="deck-settings__header" class="w-full flex flex-col">
+      <div
+        data-testid="deck-settings__header"
+        class="w-full flex flex-col max-md:items-center max-md:text-center"
+      >
         <h1 data-testid="deck-settings__header-title" class="text-5xl text-white">
           {{ active_header.title }}
         </h1>
@@ -112,7 +116,7 @@ function onBack() {
 
     <div
       data-testid="deck-settings__main"
-      class="relative flex flex-1 flex-col gap-4 w-full min-w-0"
+      class="relative flex flex-1 flex-col gap-4 w-full min-w-0 max-md:max-w-111 max-md:mx-auto"
     >
       <tab-index v-if="displayed_tab === 'index'" @navigate="active_tab = $event" />
       <tab-design v-else-if="displayed_tab === 'design'" />
@@ -122,6 +126,7 @@ function onBack() {
     </div>
 
     <deck-aside
+      v-if="!is_mobile"
       data-testid="deck-settings__aside"
       :deck="deck"
       class="w-78.5 shrink-0 self-end pt-60"
@@ -147,7 +152,7 @@ function onBack() {
         </ui-tag-button>
       </transition>
 
-      <div class="pointer-events-auto absolute right-(--sheet-px) top-6">
+      <div v-if="!is_mobile" class="pointer-events-auto absolute right-(--sheet-px) top-6">
         <div class="relative">
           <card
             size="xl"
