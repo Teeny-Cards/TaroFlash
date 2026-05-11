@@ -15,6 +15,8 @@ export function useDeckSettingsModal() {
     const result = modal.open<DeckSettingsResponse>(DeckSettings, {
       backdrop: true,
       mode: 'mobile-sheet',
+      mobile_below_width: 'md',
+      mobile_below_height: 'lg',
       props: { deck }
     })
     result.response.then(() => emitSfx('ui.pop_up_close'))
