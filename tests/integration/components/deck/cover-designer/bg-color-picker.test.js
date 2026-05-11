@@ -18,7 +18,7 @@ function makePicker(props = {}) {
       supported_themes: DEFAULT_THEMES,
       theme: undefined,
       theme_dark: undefined,
-      
+
       ...props
     },
     global: {
