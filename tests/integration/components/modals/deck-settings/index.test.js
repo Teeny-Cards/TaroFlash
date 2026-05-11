@@ -39,6 +39,15 @@ vi.mock('@/composables/use-media-query', async () => {
   return m.responsiveMockModule
 })
 
+vi.mock('gsap', () => ({
+  gsap: {
+    fromTo: vi.fn((_el, _from, to) => to?.onComplete?.()),
+    to: vi.fn((_el, opts) => opts?.onComplete?.()),
+    set: vi.fn(),
+    killTweensOf: vi.fn()
+  }
+}))
+
 vi.mock('@/composables/deck-editor', async () => {
   const { reactive, ref: vueRef } = await import('vue')
   const editor = {
@@ -121,10 +130,26 @@ vi.mock('@/composables/use-session-ref', () => ({
 
 const TabSheetStub = defineComponent({
   emits: ['close', 'update:active'],
-  setup(_props, { slots }) {
+  setup(_props, { slots, emit }) {
     return () =>
       h('div', { 'data-testid': 'tab-sheet' }, [
         h('div', { 'data-testid': 'tab-sheet__header-content' }, slots['header-content']?.()),
+        h(
+          'button',
+          {
+            'data-testid': 'tab-sheet__close-emit',
+            onClick: () => emit('close')
+          },
+          'close'
+        ),
+        h(
+          'button',
+          {
+            'data-testid': 'tab-sheet__select-design',
+            onClick: () => emit('update:active', 'design')
+          },
+          'design'
+        ),
         slots.default?.(),
         slots.overlay?.(),
         h('div', { 'data-testid': 'tab-sheet__footer' }, slots.footer?.())
@@ -171,6 +196,22 @@ const PassthroughStub = defineComponent({
   }
 })
 
+const DeckPreviewStub = defineComponent({
+  name: 'DeckPreview',
+  emits: ['update:side'],
+  setup(_props, { emit }) {
+    return () =>
+      h(
+        'button',
+        {
+          'data-testid': 'deck-preview-stub',
+          onClick: () => emit('update:side', 'front')
+        },
+        'preview'
+      )
+  }
+})
+
 const DeckAsideStub = defineComponent({
   name: 'DeckAside',
   props: ['deck'],
@@ -194,7 +235,7 @@ function makeWrapper() {
         TabGeneral: PassthroughStub,
         TabStudy: PassthroughStub,
         TabDangerZone: TabDangerZoneStub,
-        DeckPreview: PassthroughStub,
+        DeckPreview: DeckPreviewStub,
         DeckAside: DeckAsideStub,
         UiButton: UiButtonStub
       },
@@ -361,5 +402,86 @@ describe('DeckSettings — below-md layout collapse', () => {
 
     expect(wrapper.find('[data-testid="deck-settings__aside"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="deck-settings__floating-preview"]').exists()).toBe(false)
+  })
+})
+
+const nextFrame = () => new Promise((r) => requestAnimationFrame(r))
+
+describe('DeckSettings — tab transition hooks', () => {
+  test('swapping tabs on desktop completes through requestAnimationFrame', async () => {
+    initialTab.value = 'general'
+    setBelowMd(false)
+    const { wrapper } = makeWrapper()
+
+    initialTab.value = 'design'
+    mockEditor.editor.is_dirty.value = false
+    // Drive the tab swap via the sheet's update:active emit so the
+    // sidebar_active setter is exercised too.
+    await wrapper.find('[data-testid="tab-sheet__select-design"]').trigger('click')
+    await flushPromises()
+    await nextFrame()
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="deck-settings__header-title"]').text()).toBe('Card Designer')
+  })
+
+  test('swapping tabs below md routes through the mobile height tween', async () => {
+    initialTab.value = 'general'
+    setBelowMd(true)
+    const { wrapper } = makeWrapper()
+
+    await wrapper.find('[data-testid="tab-sheet__select-design"]').trigger('click')
+    await flushPromises()
+    await nextFrame()
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="deck-settings__header-title"]').text()).toBe('Card Designer')
+  })
+})
+
+describe('DeckSettings — overlay actions', () => {
+  test('floating preview click forwards the new side to editor.setActiveSide on the design tab', async () => {
+    initialTab.value = 'design'
+    setBelowMd(false)
+    const setActiveSide = vi.spyOn(mockEditor.editor, 'setActiveSide').mockImplementation(() => {})
+    const { wrapper } = makeWrapper()
+
+    await wrapper.find('[data-testid="deck-preview-stub"]').trigger('click')
+
+    expect(setActiveSide).toHaveBeenCalledWith('front')
+    setActiveSide.mockRestore()
+  })
+
+  test('floating preview click is a no-op when not on the design tab', async () => {
+    initialTab.value = 'general'
+    setBelowMd(false)
+    const setActiveSide = vi.spyOn(mockEditor.editor, 'setActiveSide').mockImplementation(() => {})
+    const { wrapper } = makeWrapper()
+
+    await wrapper.find('[data-testid="deck-preview-stub"]').trigger('click')
+
+    expect(setActiveSide).not.toHaveBeenCalled()
+    setActiveSide.mockRestore()
+  })
+
+  test('back button clears active_tab when below lg', async () => {
+    initialTab.value = 'design'
+    setBelowLg(true)
+    const { wrapper } = makeWrapper()
+
+    expect(wrapper.find('[data-testid="deck-settings__back-button"]').exists()).toBe(true)
+
+    await wrapper.find('[data-testid="deck-settings__back-button"]').trigger('click')
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="deck-settings__header-title"]').text()).toBe('Deck Settings')
+  })
+
+  test('tab-sheet close emit forwards to close(false)', async () => {
+    const { wrapper, close } = makeWrapper()
+
+    await wrapper.find('[data-testid="tab-sheet__close-emit"]').trigger('click')
+
+    expect(close).toHaveBeenCalledWith(false)
   })
 })
