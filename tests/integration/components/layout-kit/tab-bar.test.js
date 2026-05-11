@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
-import TabBar from '@/components/modals/deck-settings/tab-design/tab-bar.vue'
+import TabBar from '@/components/layout-kit/tab-bar.vue'
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 

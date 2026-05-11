@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import SectionList from '@/components/layout-kit/section-list.vue'
@@ -14,7 +15,7 @@ const { t } = useI18n()
 type NavEntry = { value: TabIndexNavValue; icon: string }
 type NavGroup = { key: string; heading: string; entries: NavEntry[] }
 
-const nav_groups: NavGroup[] = [
+const nav_groups = computed<NavGroup[]>(() => [
   {
     key: 'appearance',
     heading: t('deck.settings-modal.index.appearance-heading'),
@@ -28,7 +29,7 @@ const nav_groups: NavGroup[] = [
     heading: t('deck.settings-modal.index.study-heading'),
     entries: [{ value: 'study', icon: 'school-cap' }]
   }
-]
+])
 
 const emit = defineEmits<{
   navigate: [value: TabIndexNavValue]

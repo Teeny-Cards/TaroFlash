@@ -22,7 +22,7 @@ defineEmits<{
       type="button"
       data-testid="tab-bar__tab"
       :data-active="tab.value === active"
-      class="py-1.5 px-3.5 rounded-2 text-sm cursor-pointer text-brown-500 data-[active=true]:bg-brown-500 data-[active=true]:text-brown-100 dark:data-[active=true]:bg-grey-700 dark:data-[active=true]:text-brown-300"
+      class="py-1.5 px-3.5 rounded-2 text-sm cursor-pointer text-brown-500 dark:text-brown-300 data-[active=true]:bg-(--theme-primary) data-[active=true]:text-(--theme-on-primary)"
       @click="$emit('update:active', tab.value)"
     >
       {{ tab.label }}
