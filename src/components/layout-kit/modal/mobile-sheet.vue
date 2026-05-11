@@ -4,13 +4,19 @@ import { coverBindings } from '@/utils/cover'
 import { mobileSheetOverlayKey } from './mobile-sheet-overlay'
 import UiButton from '@/components/ui-kit/button.vue'
 
+export type SheetPatternConfig = {
+  theme?: Theme
+  theme_dark?: Theme
+  pattern?: DeckCoverPattern
+}
+
 export type MobileSheetProps = {
-  cover_config?: DeckCover
+  pattern_config?: SheetPatternConfig
   title?: string
   show_close_button?: boolean
 }
 
-const { cover_config, title, show_close_button = true } = defineProps<MobileSheetProps>()
+const { pattern_config, title, show_close_button = true } = defineProps<MobileSheetProps>()
 
 const slots = defineSlots<{
   sidebar(): any
@@ -28,8 +34,8 @@ const emit = defineEmits<{
 const header_bindings = computed(() =>
   coverBindings(
     {
-      theme: cover_config?.theme,
-      pattern: cover_config?.pattern
+      theme: pattern_config?.theme,
+      pattern: pattern_config?.pattern
     },
     { border: false, patternOpacity: '0.25' }
   )

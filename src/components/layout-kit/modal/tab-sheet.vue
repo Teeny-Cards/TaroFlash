@@ -30,7 +30,7 @@ const {
   tabs,
   parts,
   title,
-  cover_config,
+  pattern_config,
   show_close_button = true,
   hover_sfx = 'ui.click_07',
   select_sfx = 'ui.select',
@@ -107,7 +107,7 @@ shortcuts.register([
 <template>
   <mobile-sheet
     :title="title"
-    :cover_config="cover_config"
+    :pattern_config="pattern_config"
     :show_close_button="sheet_close_button"
     @close="emit('close')"
   >
