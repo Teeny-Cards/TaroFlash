@@ -3,25 +3,12 @@ import { mount } from '@vue/test-utils'
 import { defineComponent, h, reactive, ref } from 'vue'
 import TabDesign from '@/components/modals/deck-settings/tab-design/index.vue'
 import { deckEditorKey } from '@/composables/deck-editor'
-
-const { isMobile } = vi.hoisted(() => {
-  return { isMobile: { value: false } }
-})
+import { setBelowMd, resetResponsive } from '../../../../../helpers/responsive-mock'
 
 vi.mock('@/composables/use-media-query', async () => {
-  const vue = await import('vue')
-  const r = vue.ref(false)
-  isMobile.ref = r
-  return {
-    useMobileBreakpoint: () => r,
-    useMediaQuery: () => vue.ref(false),
-    useIsTablet: () => vue.ref(false)
-  }
+  const m = await import('../../../../../helpers/responsive-mock')
+  return m.responsiveMockModule
 })
-
-function setBelowMd(v) {
-  if (isMobile.ref) isMobile.ref.value = v
-}
 
 const DeckPreviewStub = defineComponent({
   name: 'DeckPreview',
@@ -92,7 +79,7 @@ function makeWrapper(editor = makeEditor()) {
 }
 
 beforeEach(() => {
-  setBelowMd(false)
+  resetResponsive()
 })
 
 describe('TabDesign — inline preview visibility', () => {
