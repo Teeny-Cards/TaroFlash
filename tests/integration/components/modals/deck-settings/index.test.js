@@ -36,9 +36,11 @@ vi.mock('vue-router', () => ({
 vi.mock('@/composables/use-media-query', async () => {
   const vue = await import('vue')
   const isTablet = vue.ref(false)
+  const isMobile = vue.ref(false)
   globalThis.__deckSettingsIsTablet = isTablet
+  globalThis.__deckSettingsIsMobile = isMobile
   return {
-    useMobileBreakpoint: () => vue.ref(false),
+    useMobileBreakpoint: () => isMobile,
     useMediaQuery: () => vue.ref(false),
     useIsTablet: () => isTablet
   }
@@ -46,6 +48,10 @@ vi.mock('@/composables/use-media-query', async () => {
 
 function setBelowLg(v) {
   if (globalThis.__deckSettingsIsTablet) globalThis.__deckSettingsIsTablet.value = v
+}
+
+function setBelowMd(v) {
+  if (globalThis.__deckSettingsIsMobile) globalThis.__deckSettingsIsMobile.value = v
 }
 
 vi.mock('@/composables/deck-editor', async () => {
@@ -225,6 +231,7 @@ beforeEach(() => {
   mockEditor.saveDeck.mockReset().mockResolvedValue(true)
   initialTab.value = 'danger-zone'
   setBelowLg(false)
+  setBelowMd(false)
 })
 
 describe('DeckSettings — save button visibility (driven by editor.is_dirty)', () => {
@@ -333,5 +340,42 @@ describe('DeckSettings — null active_tab + breakpoint redirect', () => {
     expect(wrapper.find('[data-testid="deck-settings__header-title"]').text()).toBe(
       'Details & Settings'
     )
+  })
+})
+
+describe('DeckSettings — below-md layout collapse', () => {
+  test('renders aside + floating preview above md', () => {
+    setBelowMd(false)
+    const { wrapper } = makeWrapper()
+
+    expect(wrapper.find('[data-testid="deck-settings__aside"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="deck-settings__floating-preview"]').exists()).toBe(true)
+  })
+
+  test('hides the aside when below md', () => {
+    setBelowMd(true)
+    const { wrapper } = makeWrapper()
+
+    expect(wrapper.find('[data-testid="deck-settings__aside"]').exists()).toBe(false)
+  })
+
+  test('hides the floating overlay preview when below md', () => {
+    setBelowMd(true)
+    const { wrapper } = makeWrapper()
+
+    expect(wrapper.find('[data-testid="deck-settings__floating-preview"]').exists()).toBe(false)
+  })
+
+  test('toggles aside + floating preview reactively when crossing md', async () => {
+    setBelowMd(false)
+    const { wrapper } = makeWrapper()
+
+    expect(wrapper.find('[data-testid="deck-settings__aside"]').exists()).toBe(true)
+
+    setBelowMd(true)
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="deck-settings__aside"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="deck-settings__floating-preview"]').exists()).toBe(false)
   })
 })
