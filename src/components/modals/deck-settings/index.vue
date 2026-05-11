@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, provide, watch } from 'vue'
+import { computed, provide, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TabDesign from './tab-design/index.vue'
 import TabGeneral from './tab-general/index.vue'
@@ -10,6 +10,7 @@ import DeckPreview from '@/components/deck/deck-preview.vue'
 import DeckAside from './deck-aside.vue'
 import { emitSfx } from '@/sfx/bus'
 import { slideFadeRightEnter, slideFadeRightLeave } from '@/utils/animations/slide-fade-right'
+import { tabHeightEnter, tabHeightLeave } from '@/utils/animations/tab-height'
 import { useDeckEditor, deckEditorKey } from '@/composables/deck-editor'
 import {
   useDeckDangerActions,
@@ -85,6 +86,34 @@ function onBack() {
   emitSfx('ui.select')
   active_tab.value = null
 }
+
+const tab_outlet = ref<HTMLElement>()
+
+const TAB_COMPONENTS = {
+  index: TabIndex,
+  design: TabDesign,
+  general: TabGeneral,
+  study: TabStudy,
+  'danger-zone': TabDangerZone
+}
+
+const tab_component = computed(() => TAB_COMPONENTS[displayed_tab.value])
+
+function onTabLeave(el: Element, done: () => void) {
+  if (!is_mobile.value || !tab_outlet.value) {
+    requestAnimationFrame(done)
+    return
+  }
+  tabHeightLeave(tab_outlet.value)(el, done)
+}
+
+function onTabEnter(el: Element, done: () => void) {
+  if (!is_mobile.value || !tab_outlet.value) {
+    requestAnimationFrame(done)
+    return
+  }
+  tabHeightEnter(tab_outlet.value)(el, done)
+}
 </script>
 
 <template>
@@ -92,7 +121,7 @@ function onBack() {
     data-testid="deck-settings-container"
     data-theme="green-500"
     data-theme-dark="green-800"
-    class="w-full! max-w-205.5 lg:pointer-fine:max-w-none lg:pointer-fine:w-245! md:h-167 h-254 max-md:[--sheet-px:2rem]"
+    class="w-full! max-w-205.5 lg:pointer-fine:max-w-none lg:pointer-fine:w-250! md:h-167 max-md:[--sheet-px:2rem]"
     :tabs="tabs"
     :cover_config="{ pattern: 'endless-clouds' }"
     :parts="{ content: 'flex gap-14 h-full items-start' }"
@@ -115,14 +144,13 @@ function onBack() {
     </template>
 
     <div
+      ref="tab_outlet"
       data-testid="deck-settings__main"
-      class="relative flex flex-1 flex-col gap-4 w-full min-w-0 max-md:max-w-111 max-md:mx-auto"
+      class="relative flex flex-1 flex-col gap-4 w-full min-w-0 max-md:max-w-111 max-md:mx-auto max-md:overflow-hidden"
     >
-      <tab-index v-if="displayed_tab === 'index'" @navigate="active_tab = $event" />
-      <tab-design v-else-if="displayed_tab === 'design'" />
-      <tab-general v-else-if="displayed_tab === 'general'" />
-      <tab-study v-else-if="displayed_tab === 'study'" />
-      <tab-danger-zone v-else-if="displayed_tab === 'danger-zone'" />
+      <transition :css="false" mode="out-in" @leave="onTabLeave" @enter="onTabEnter">
+        <component :is="tab_component" :key="displayed_tab" @navigate="active_tab = $event" />
+      </transition>
     </div>
 
     <deck-aside
@@ -152,7 +180,11 @@ function onBack() {
         </ui-tag-button>
       </transition>
 
-      <div v-if="!is_mobile" class="pointer-events-auto absolute right-(--sheet-px) top-6">
+      <div
+        v-if="!is_mobile"
+        data-testid="deck-settings__floating-preview"
+        class="pointer-events-auto absolute right-(--sheet-px) top-6"
+      >
         <div class="relative">
           <card
             size="xl"
