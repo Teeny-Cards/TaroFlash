@@ -117,6 +117,7 @@ function onTabEnter(el: Element, done: () => void) {
     data-theme="blue-500"
     data-theme-dark="blue-650"
     class="w-full! max-w-205.5 lg:pointer-fine:max-w-none lg:pointer-fine:w-250! md:h-167 max-md:[--sheet-px:2rem]"
+    surface="inverted"
     :tabs="tabs"
     :pattern_config="{ pattern: 'endless-clouds' }"
     :parts="{ content: 'flex gap-14 h-full items-start' }"
