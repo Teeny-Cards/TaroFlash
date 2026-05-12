@@ -63,12 +63,12 @@ vi.mock('@/phone/apps/settings/component/billing-settings/add-credit-card-modal.
   default: { name: 'AddCreditCardModal' }
 }))
 
-const SectionHeaderStub = defineComponent({
-  name: 'SectionHeader',
+const LabeledSectionStub = defineComponent({
+  name: 'LabeledSection',
   inheritAttrs: false,
   setup(_props, { slots }) {
     const attrs = useAttrs()
-    return () => h('div', { ...attrs, 'data-testid': 'section-header-stub' }, slots.default?.())
+    return () => h('div', { ...attrs, 'data-testid': 'labeled-section-stub' }, slots.default?.())
   }
 })
 
@@ -90,7 +90,7 @@ async function makePaymentMethodsSection() {
   return shallowMount(PaymentMethodsSection, {
     global: {
       stubs: {
-        SectionHeader: SectionHeaderStub,
+        LabeledSection: LabeledSectionStub,
         UiButton: UiButtonStub
       }
     }
