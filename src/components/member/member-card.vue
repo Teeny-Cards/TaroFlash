@@ -3,20 +3,24 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { isoNow, formatShortDate } from '@/utils/date'
 import { coverBindings } from '@/utils/cover'
+import { withMemberCardCoverDefaults } from '@/utils/member/defaults'
 import UiImage from '@/components/ui-kit/image.vue'
 
 const { t, locale } = useI18n()
 
-const { createdAt = isoNow() } = defineProps<{
+const { createdAt = isoNow(), cover } = defineProps<{
   createdAt: string
   displayName?: string
   cardComment?: string
   cardTitle: string
+  cover?: DeckCover
 }>()
 
 const created_on = computed(() => formatShortDate(createdAt, locale.value))
 
-const body_bindings = coverBindings({ pattern: 'bank-note' }, { border: false })
+const body_bindings = computed(() =>
+  coverBindings(withMemberCardCoverDefaults(cover), { border: false })
+)
 </script>
 
 <template>
@@ -31,7 +35,7 @@ const body_bindings = coverBindings({ pattern: 'bank-note' }, { border: false })
     <div
       data-testid="member-card__body"
       v-bind="body_bindings"
-      class="wave-top-[30px] flex h-full flex-col items-center gap-4.5 bg-(--theme-primary) px-8 pt-9 pb-3 text-(--theme-on-primary)"
+      class="wave-top-[40px] flex h-full flex-col items-center gap-4.5 bg-(--theme-primary) px-8 pt-9 pb-3 text-(--theme-on-primary)"
     >
       <div data-testid="member-card__avatar" class="flex h-full flex-col justify-center">
         <div class="bg-brown-300 rounded-19 border-brown-300 h-50 w-50 overflow-hidden border-10">

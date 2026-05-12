@@ -17,7 +17,7 @@ function makeEditor({
 } = {}) {
   return {
     settings: { display_name, description: '' },
-    theme: ref('blue-500'),
+    cover: { theme: 'green-500', theme_dark: 'green-800', pattern: 'bank-note' },
     email: ref(''),
     created_at: ref(created_at),
     plan: ref(plan),

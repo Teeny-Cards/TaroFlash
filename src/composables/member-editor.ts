@@ -1,14 +1,15 @@
-import { computed, reactive, ref, type InjectionKey, type Ref } from 'vue'
+import { computed, reactive, type InjectionKey } from 'vue'
 import { useUpsertMemberMutation } from '@/api/members'
 import { useMemberStore } from '@/stores/member'
-import { MEMBER_CARD_PREVIEW_DEFAULTS } from '@/utils/member/defaults'
+import { MEMBER_CARD_COVER_DEFAULTS } from '@/utils/member/defaults'
 import { buildMemberPayload, hasMemberChanges } from '@/utils/member/payload'
 
 /**
  * Reactive state + mutations for editing the current member's profile.
  * Owns the in-flight `settings` object that the settings tabs bind into,
- * plus the previewed theme for the floating member-card. Mirrors
- * `useDeckEditor` for the deck-settings modal.
+ * plus a `cover` object the member-card preview consumes. `cover` is
+ * client-only today (no member.cover_config column yet) — seeded from
+ * MEMBER_CARD_COVER_DEFAULTS each session. Mirrors `useDeckEditor`.
  */
 export function useMemberEditor() {
   const member_store = useMemberStore()
@@ -18,7 +19,7 @@ export function useMemberEditor() {
     description: member_store.description
   })
 
-  const theme: Ref<Theme> = ref(MEMBER_CARD_PREVIEW_DEFAULTS.theme)
+  const cover = reactive<DeckCover>({ ...MEMBER_CARD_COVER_DEFAULTS })
 
   const email = computed(() => member_store.email ?? '')
   const created_at = computed(() => member_store.created_at ?? '')
@@ -47,7 +48,7 @@ export function useMemberEditor() {
 
   return {
     settings,
-    theme,
+    cover,
     email,
     created_at,
     plan,

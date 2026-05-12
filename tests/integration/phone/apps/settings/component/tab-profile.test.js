@@ -39,7 +39,7 @@ const MemberCardStub = defineComponent({
 function makeEditor() {
   return {
     settings: { display_name: 'Chris', description: 'Hi' },
-    theme: ref('blue-500'),
+    cover: { theme: 'green-500', theme_dark: 'green-800', pattern: 'bank-note' },
     email: ref('chris@example.com'),
     created_at: ref('2024-04-15T00:00:00Z'),
     plan: ref('free'),
