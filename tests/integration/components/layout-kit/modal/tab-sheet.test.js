@@ -5,7 +5,12 @@ import { setActivePinia, createPinia } from 'pinia'
 
 vi.mock('@/composables/use-media-query', () => ({
   useMobileBreakpoint: () => ({ value: false }),
-  useMediaQuery: () => ({ value: false }),
+  useMediaQuery: (key) => ({
+    get value() {
+      if (key === 'lg' || key === 'fine') return !(globalThis.__isTablet ?? false)
+      return false
+    }
+  }),
   useIsTablet: () => ({
     get value() {
       return globalThis.__isTablet ?? false
