@@ -17,7 +17,7 @@ import {
   memberDangerActionsKey
 } from '@/composables/member/use-member-danger-actions'
 import { useSessionRef } from '@/composables/use-session-ref'
-import { useIsTablet, useMobileBreakpoint } from '@/composables/use-media-query'
+import { useMediaQuery, useMobileBreakpoint } from '@/composables/use-media-query'
 import UiButton from '@/components/ui-kit/button.vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiTagButton from '@/components/ui-kit/tag-button.vue'
@@ -45,14 +45,22 @@ const tabs = computed(() => [
 type ActiveTab = 'profile' | 'subscription' | 'sounds' | 'danger-zone'
 const active_tab = useSessionRef<ActiveTab | null>('settings.active-tab', null)
 
-const is_tablet = useIsTablet()
 const is_mobile = useMobileBreakpoint('md')
 
-watch(is_tablet, (is_below) => {
-  if (is_below && active_tab.value === 'danger-zone') active_tab.value = null
+// Sidebar is shown by CSS via `lg:pointer-fine:flex`, which is a viewport-only
+// width check + a pointer-fine media query. `useIsTablet` also folds in a
+// height check, so it can read `true` on a wide-but-short desktop window even
+// while the sidebar is visible — leaving the main column on the mobile index.
+// Match the CSS condition exactly so the displayed tab tracks the sidebar.
+const lg_width = useMediaQuery('lg')
+const pointer_fine = useMediaQuery('fine')
+const has_sidebar = computed(() => lg_width.value && pointer_fine.value)
+
+watch(has_sidebar, (visible) => {
+  if (!visible && active_tab.value === 'danger-zone') active_tab.value = null
 })
 
-const displayed_tab = computed(() => active_tab.value ?? (is_tablet.value ? 'index' : 'profile'))
+const displayed_tab = computed(() => active_tab.value ?? (has_sidebar.value ? 'profile' : 'index'))
 
 const sidebar_active = computed({
   get: () => active_tab.value ?? 'profile',
@@ -153,7 +161,7 @@ function onTabEnter(el: Element, done: () => void) {
         @leave="(el, done) => slideFadeRightLeave(el, done)"
       >
         <ui-tag-button
-          v-if="is_tablet && active_tab !== null"
+          v-if="!has_sidebar && active_tab !== null"
           data-testid="settings__back-button"
           :aria-label="t('settings.back-button')"
           data-theme="yellow-500"
