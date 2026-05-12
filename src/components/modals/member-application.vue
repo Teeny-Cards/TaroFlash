@@ -56,6 +56,7 @@ async function onConfirm() {
       :card-comment="member.description"
       :card-title="t('member-application.preview-card-title')"
       :theme="selected_theme"
+      class="shadow-lg"
     />
 
     <div

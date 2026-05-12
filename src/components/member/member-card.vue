@@ -22,7 +22,7 @@ const created_on = computed(() => {
 <template>
   <div
     data-testid="member-card"
-    class="bg-brown-300 rounded-8 border-brown-300 flex w-89 flex-col overflow-hidden border-8 shadow-lg"
+    class="bg-brown-300 rounded-8 border-brown-300 flex w-89 flex-col overflow-hidden border-8"
   >
     <div data-testid="member-card__header" class="flex items-center justify-center px-9 pt-6 pb-2">
       <h1 class="text-brown-700 text-5xl">{{ t('member-card.heading') }}</h1>
