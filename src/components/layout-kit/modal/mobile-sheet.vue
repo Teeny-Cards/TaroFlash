@@ -2,9 +2,15 @@
 import { computed, provide, ref } from 'vue'
 import { coverBindings } from '@/utils/cover'
 import { mobileSheetOverlayKey } from './mobile-sheet-overlay'
+import {
+  SHEET_BODY_BG,
+  SHEET_HEADER_BORDER_CLASS,
+  type SheetHeaderBorder,
+  type SheetSurface
+} from './sheet-surface'
 import UiButton from '@/components/ui-kit/button.vue'
 
-export type SheetPatternConfig = {
+type SheetPatternConfig = {
   theme?: Theme
   theme_dark?: Theme
   pattern?: DeckCoverPattern
@@ -14,9 +20,20 @@ export type MobileSheetProps = {
   pattern_config?: SheetPatternConfig
   title?: string
   show_close_button?: boolean
+  surface?: SheetSurface
+  header_border?: SheetHeaderBorder
 }
 
-const { pattern_config, title, show_close_button = true } = defineProps<MobileSheetProps>()
+const {
+  pattern_config,
+  title,
+  show_close_button = true,
+  surface = 'standard',
+  header_border = 'wave'
+} = defineProps<MobileSheetProps>()
+
+const body_bg_class = computed(() => SHEET_BODY_BG[surface])
+const header_border_class = computed(() => SHEET_HEADER_BORDER_CLASS[header_border])
 
 const slots = defineSlots<{
   sidebar(): any
@@ -70,13 +87,18 @@ provide(mobileSheetOverlayKey, overlay_root)
 
       <div
         data-testid="mobile-sheet"
-        class="flex w-full h-full flex-col bg-brown-300 dark:bg-grey-800"
+        :data-surface="surface"
+        :class="['flex w-full h-full flex-col', body_bg_class]"
       >
         <slot v-if="showHeader" name="header">
           <div
             data-testid="mobile-sheet__header"
+            :data-header-border="header_border"
             v-bind="header_bindings"
-            class="w-full flex justify-center items-center place-items-center px-(--sheet-px) pt-11.5 pb-14 gap-6 wave-bottom-[50px] bg-(--theme-primary) text-(--theme-on-primary) relative"
+            :class="[
+              'w-full flex justify-center items-center place-items-center px-(--sheet-px) pt-11.5 pb-14 gap-6 bg-(--theme-primary) text-(--theme-on-primary) relative',
+              header_border_class
+            ]"
           >
             <div v-if="show_close_button" class="absolute top-0 left-0 p-4">
               <ui-button icon-left="close" icon-only inverted @click="emit('close')" />

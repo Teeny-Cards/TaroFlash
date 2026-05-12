@@ -119,4 +119,39 @@ describe('MobileSheet', () => {
     expect(classes).toContain('mobile-modal:mt-auto')
     expect(classes).toContain('relative')
   })
+
+  // ── surface prop ───────────────────────────────────────────────────────────
+
+  test('defaults the body surface to "standard"', () => {
+    const wrapper = mountSheet()
+    expect(wrapper.find('[data-testid="mobile-sheet"]').attributes('data-surface')).toBe('standard')
+  })
+
+  test('reflects surface="inverted" on the body data-surface attribute', () => {
+    const wrapper = mountSheet({ surface: 'inverted' })
+    expect(wrapper.find('[data-testid="mobile-sheet"]').attributes('data-surface')).toBe('inverted')
+  })
+
+  // ── header_border prop ────────────────────────────────────────────────────
+
+  test('defaults the header border to "wave"', () => {
+    const wrapper = mountSheet({ title: 'x' })
+    expect(
+      wrapper.find('[data-testid="mobile-sheet__header"]').attributes('data-header-border')
+    ).toBe('wave')
+  })
+
+  test('reflects header_border="cloud" on the header data-header-border attribute', () => {
+    const wrapper = mountSheet({ title: 'x', header_border: 'cloud' })
+    expect(
+      wrapper.find('[data-testid="mobile-sheet__header"]').attributes('data-header-border')
+    ).toBe('cloud')
+  })
+
+  test('reflects header_border="none" on the header data-header-border attribute', () => {
+    const wrapper = mountSheet({ title: 'x', header_border: 'none' })
+    expect(
+      wrapper.find('[data-testid="mobile-sheet__header"]').attributes('data-header-border')
+    ).toBe('none')
+  })
 })

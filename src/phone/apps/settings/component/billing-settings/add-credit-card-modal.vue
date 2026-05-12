@@ -84,7 +84,7 @@ async function onSubmit() {
 
   if (result.error) {
     submit_error.value =
-      result.error.message ?? t('settings.member-settings.billing.add-credit-card.submit-error')
+      result.error.message ?? t('settings.subscription.add-credit-card.submit-error')
     is_submitting.value = false
     return
   }
@@ -95,7 +95,7 @@ async function onSubmit() {
     return
   }
 
-  submit_error.value = t('settings.member-settings.billing.add-credit-card.submit-error')
+  submit_error.value = t('settings.subscription.add-credit-card.submit-error')
   is_submitting.value = false
 }
 </script>
@@ -104,7 +104,7 @@ async function onSubmit() {
   <mobile-sheet
     data-testid="add-credit-card-modal"
     class="sm:max-w-130! max-h-[95dvh]"
-    :title="t('settings.member-settings.billing.add-credit-card.title')"
+    :title="t('settings.subscription.add-credit-card.title')"
     data-theme="green-400"
     @close="close()"
   >
@@ -117,14 +117,14 @@ async function onSubmit() {
         data-testid="add-credit-card-modal__loading"
         class="text-brown-700 py-10 text-center"
       >
-        {{ t('settings.member-settings.billing.add-credit-card.loading') }}
+        {{ t('settings.subscription.add-credit-card.loading') }}
       </p>
       <p
         v-else-if="load_error"
         data-testid="add-credit-card-modal__error"
         class="py-10 text-center text-red-500"
       >
-        {{ t('settings.member-settings.billing.add-credit-card.error') }}
+        {{ t('settings.subscription.add-credit-card.error') }}
       </p>
       <div ref="container" data-testid="add-credit-card-modal__payment-element"></div>
       <p
@@ -151,7 +151,7 @@ async function onSubmit() {
           :disabled="!is_ready"
           @click="onSubmit"
         >
-          {{ t('settings.member-settings.billing.add-credit-card.submit') }}
+          {{ t('settings.subscription.add-credit-card.submit') }}
         </ui-button>
       </div>
     </template>

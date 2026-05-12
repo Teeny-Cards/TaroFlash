@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, provide } from 'vue'
 import mobileSheet, { type MobileSheetProps } from './mobile-sheet.vue'
+import { SHEET_SIDEBAR_BG } from './sheet-surface'
 import { activeTabKey } from './tab-sheet-context'
 import { useShortcuts } from '@/composables/use-shortcuts'
-import { useIsTablet } from '@/composables/use-media-query'
+import { useMediaQuery } from '@/composables/use-media-query'
 import { emitSfx } from '@/sfx/bus'
 import type { NamespacedAudioKey } from '@/sfx/config'
 import uid from '@/utils/uid'
@@ -32,6 +33,8 @@ const {
   title,
   pattern_config,
   show_close_button = true,
+  surface = 'standard',
+  header_border = 'wave',
   hover_sfx = 'ui.click_07',
   select_sfx = 'ui.select',
   reselect_sfx = 'ui.digi_powerdown'
@@ -56,9 +59,18 @@ const active = defineModel<string>('active', { default: '' })
 if (!active.value) active.value = tabs?.[0]?.value ?? ''
 provide(activeTabKey, active)
 
+const sidebar_bg_class = computed(() => SHEET_SIDEBAR_BG[surface])
+
 const has_tabs = computed(() => !!tabs?.length)
-const is_tablet = useIsTablet()
-const sheet_close_button = computed(() => (!has_tabs.value || is_tablet.value) && show_close_button)
+// Sidebar render condition mirrors CSS `lg:pointer-fine:flex`. Hide
+// mobile-sheet's close button whenever the sidebar (which carries its own
+// close) is visible; otherwise the user sees two stacked close buttons.
+const lg_width = useMediaQuery('lg')
+const pointer_fine = useMediaQuery('fine')
+const has_sidebar = computed(() => lg_width.value && pointer_fine.value)
+const sheet_close_button = computed(
+  () => (!has_tabs.value || !has_sidebar.value) && show_close_button
+)
 
 const tab_panel_id = 'tab-sheet__panel'
 const tab_id_prefix = `tab-sheet__tab--${uid()}--`
@@ -109,6 +121,8 @@ shortcuts.register([
     :title="title"
     :pattern_config="pattern_config"
     :show_close_button="sheet_close_button"
+    :surface="surface"
+    :header_border="header_border"
     @close="emit('close')"
   >
     <template v-if="$slots.overlay" #overlay><slot name="overlay"></slot></template>
@@ -121,8 +135,10 @@ shortcuts.register([
     <template v-if="has_tabs" #sidebar>
       <div
         data-testid="tab-sheet__sidebar"
+        :data-surface="surface"
         :class="[
-          'hidden lg:pointer-fine:flex flex-col gap-10 bg-brown-200 dark:bg-grey-900 p-4.5 shrink-0',
+          'hidden lg:pointer-fine:flex flex-col gap-10 p-4.5 shrink-0',
+          sidebar_bg_class,
           parts?.sidebar
         ]"
       >

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MemberCard from '@/components/modals/member-card.vue'
+import MemberCard from '@/components/member/member-card.vue'
 import { useI18n } from 'vue-i18n'
 import { reactive, ref } from 'vue'
 import { isoNow, formatShortDate } from '@/utils/date'
@@ -55,7 +55,8 @@ async function onConfirm() {
       :display-name="member.display_name"
       :card-comment="member.description"
       :card-title="t('member-application.preview-card-title')"
-      :theme="selected_theme"
+      :cover="{ theme: selected_theme, pattern: 'bank-note' }"
+      class="shadow-lg"
     />
 
     <div
