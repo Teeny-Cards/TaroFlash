@@ -19,7 +19,7 @@ const { createdAt = isoNow(), cover } = defineProps<{
 const created_on = computed(() => formatShortDate(createdAt, locale.value))
 
 const body_bindings = computed(() =>
-  coverBindings(withMemberCardCoverDefaults(cover), { border: false })
+  coverBindings(withMemberCardCoverDefaults(cover), { border: false, patternOpacity: '0.1' })
 )
 </script>
 
