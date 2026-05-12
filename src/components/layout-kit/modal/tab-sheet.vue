@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, provide } from 'vue'
 import mobileSheet, { type MobileSheetProps } from './mobile-sheet.vue'
+import { SHEET_SIDEBAR_BG } from './sheet-surface'
 import { activeTabKey } from './tab-sheet-context'
 import { useShortcuts } from '@/composables/use-shortcuts'
 import { useMediaQuery } from '@/composables/use-media-query'
@@ -32,6 +33,8 @@ const {
   title,
   pattern_config,
   show_close_button = true,
+  surface = 'standard',
+  header_border = 'wave',
   hover_sfx = 'ui.click_07',
   select_sfx = 'ui.select',
   reselect_sfx = 'ui.digi_powerdown'
@@ -55,6 +58,8 @@ defineSlots<{
 const active = defineModel<string>('active', { default: '' })
 if (!active.value) active.value = tabs?.[0]?.value ?? ''
 provide(activeTabKey, active)
+
+const sidebar_bg_class = computed(() => SHEET_SIDEBAR_BG[surface])
 
 const has_tabs = computed(() => !!tabs?.length)
 // Sidebar render condition mirrors CSS `lg:pointer-fine:flex`. Hide
@@ -116,6 +121,8 @@ shortcuts.register([
     :title="title"
     :pattern_config="pattern_config"
     :show_close_button="sheet_close_button"
+    :surface="surface"
+    :header_border="header_border"
     @close="emit('close')"
   >
     <template v-if="$slots.overlay" #overlay><slot name="overlay"></slot></template>
@@ -128,8 +135,10 @@ shortcuts.register([
     <template v-if="has_tabs" #sidebar>
       <div
         data-testid="tab-sheet__sidebar"
+        :data-surface="surface"
         :class="[
-          'hidden lg:pointer-fine:flex flex-col gap-10 bg-brown-200 dark:bg-grey-900 p-4.5 shrink-0',
+          'hidden lg:pointer-fine:flex flex-col gap-10 p-4.5 shrink-0',
+          sidebar_bg_class,
           parts?.sidebar
         ]"
       >
