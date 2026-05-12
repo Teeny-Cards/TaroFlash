@@ -88,6 +88,8 @@
   "settings.tab.subscription": "Subscription",
   "settings.tab.sounds": "Sounds",
   "settings.tab.danger-zone": "Danger Zone",
+  "settings.header.index.title": "Settings",
+  "settings.header.index.description": "Pick a section to edit.",
   "settings.header.profile.title": "Profile",
   "settings.header.profile.description": "Your member card and identity.",
   "settings.header.subscription.title": "Subscription",
