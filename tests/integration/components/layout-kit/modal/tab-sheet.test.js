@@ -39,7 +39,9 @@ const MobileSheetStub = defineComponent({
   props: {
     show_close_button: { type: Boolean, default: undefined },
     title: { type: String, default: undefined },
-    cover_config: { type: Object, default: undefined }
+    cover_config: { type: Object, default: undefined },
+    surface: { type: String, default: undefined },
+    header_border: { type: String, default: undefined }
   },
   setup(props, { slots }) {
     return () =>
@@ -47,7 +49,9 @@ const MobileSheetStub = defineComponent({
         'div',
         {
           'data-testid': 'mobile-sheet-stub',
-          'data-show-close-button': String(props.show_close_button)
+          'data-show-close-button': String(props.show_close_button),
+          'data-surface': props.surface,
+          'data-header-border': props.header_border
         },
         [
           slots.overlay?.(),
@@ -256,5 +260,41 @@ describe('TabSheet', () => {
     })
     const sheet = wrapper.find('[data-testid="mobile-sheet-stub"]')
     expect(sheet.attributes('data-show-close-button')).toBe('false')
+  })
+
+  // ── surface prop ───────────────────────────────────────────────────────────
+
+  test('defaults the sidebar surface to "standard"', () => {
+    const wrapper = mountSheet()
+    expect(wrapper.find('[data-testid="tab-sheet__sidebar"]').attributes('data-surface')).toBe(
+      'standard'
+    )
+  })
+
+  test('reflects surface="inverted" on the sidebar data-surface attribute', () => {
+    const wrapper = mountSheet({ surface: 'inverted' })
+    expect(wrapper.find('[data-testid="tab-sheet__sidebar"]').attributes('data-surface')).toBe(
+      'inverted'
+    )
+  })
+
+  test('forwards surface prop to the underlying mobile-sheet', () => {
+    const wrapper = mountSheet({ surface: 'inverted' })
+    const sheet = wrapper.find('[data-testid="mobile-sheet-stub"]')
+    expect(sheet.attributes('data-surface')).toBe('inverted')
+  })
+
+  // ── header_border prop ────────────────────────────────────────────────────
+
+  test('forwards header_border prop to the underlying mobile-sheet', () => {
+    const wrapper = mountSheet({ header_border: 'cloud' })
+    const sheet = wrapper.find('[data-testid="mobile-sheet-stub"]')
+    expect(sheet.attributes('data-header-border')).toBe('cloud')
+  })
+
+  test('defaults header_border to "wave" when forwarded', () => {
+    const wrapper = mountSheet()
+    const sheet = wrapper.find('[data-testid="mobile-sheet-stub"]')
+    expect(sheet.attributes('data-header-border')).toBe('wave')
   })
 })
