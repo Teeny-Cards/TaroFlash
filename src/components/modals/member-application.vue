@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MemberCard from '@/components/modals/member-card.vue'
+import MemberCard from '@/components/member/member-card.vue'
 import { useI18n } from 'vue-i18n'
 import { reactive, ref } from 'vue'
 import { isoNow, formatShortDate } from '@/utils/date'
