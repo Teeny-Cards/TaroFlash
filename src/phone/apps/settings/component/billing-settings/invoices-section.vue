@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { formatShortDate } from '@/utils/date'
-import SectionHeader from '../section-header.vue'
+import LabeledSection from '@/components/layout-kit/labeled-section.vue'
 import { useInvoicesQuery } from '@/api/billing'
 
 const { t, locale } = useI18n()
@@ -23,15 +23,16 @@ function formatDate(ts: number) {
 </script>
 
 <template>
-  <div data-testid="billing-settings__invoices" class="flex flex-col gap-8">
-    <section-header>{{ t('settings.member-settings.billing.invoices.label') }}</section-header>
-
+  <labeled-section
+    data-testid="billing-settings__invoices"
+    :label="t('settings.subscription.invoices.label')"
+  >
     <p
       v-if="invoices_query.isLoading.value"
       data-testid="billing-settings__invoices-loading"
       class="text-brown-500 dark:text-brown-400"
     >
-      {{ t('settings.member-settings.billing.invoices.loading') }}
+      {{ t('settings.subscription.invoices.loading') }}
     </p>
 
     <p
@@ -39,7 +40,7 @@ function formatDate(ts: number) {
       data-testid="billing-settings__invoices-empty"
       class="text-brown-500 dark:text-brown-400"
     >
-      {{ t('settings.member-settings.billing.invoices.empty') }}
+      {{ t('settings.subscription.invoices.empty') }}
     </p>
 
     <ul v-else data-testid="billing-settings__invoices-list" class="flex flex-col gap-2">
@@ -64,10 +65,10 @@ function formatDate(ts: number) {
           rel="noopener noreferrer"
           class="text-sm text-green-700 dark:text-green-400 hover:underline"
         >
-          {{ t('settings.member-settings.billing.invoices.view') }}
+          {{ t('settings.subscription.invoices.view') }}
         </a>
         <span v-else></span>
       </li>
     </ul>
-  </div>
+  </labeled-section>
 </template>

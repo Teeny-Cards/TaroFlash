@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import SectionHeader from '../section-header.vue'
+import LabeledSection from '@/components/layout-kit/labeled-section.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import AddCreditCardModal from './add-credit-card-modal.vue'
 import {
@@ -30,18 +30,18 @@ function formatExpiry(month: number, year: number) {
 async function onSetDefault(paymentMethodId: string) {
   try {
     await set_default_mutation.mutateAsync(paymentMethodId)
-    toast.success(t('settings.member-settings.billing.payment-methods.set-default-success'))
+    toast.success(t('settings.subscription.payment-methods.set-default-success'))
   } catch {
-    toast.error(t('settings.member-settings.billing.payment-methods.set-default-error'))
+    toast.error(t('settings.subscription.payment-methods.set-default-error'))
   }
 }
 
 async function onDetach(paymentMethodId: string) {
   try {
     await detach_mutation.mutateAsync(paymentMethodId)
-    toast.success(t('settings.member-settings.billing.payment-methods.detach-success'))
+    toast.success(t('settings.subscription.payment-methods.detach-success'))
   } catch {
-    toast.error(t('settings.member-settings.billing.payment-methods.detach-error'))
+    toast.error(t('settings.subscription.payment-methods.detach-error'))
   }
 }
 
@@ -51,18 +51,17 @@ function openAddCreditCard() {
 </script>
 
 <template>
-  <div data-testid="billing-settings__payment-methods" class="flex flex-col gap-8">
-    <section-header>{{
-      t('settings.member-settings.billing.payment-methods.label')
-    }}</section-header>
-
+  <labeled-section
+    data-testid="billing-settings__payment-methods"
+    :label="t('settings.subscription.payment-methods.label')"
+  >
     <div class="flex flex-col gap-4">
       <p
         v-if="methods_query.isLoading.value"
         data-testid="billing-settings__payment-methods-loading"
         class="text-brown-500 dark:text-brown-400"
       >
-        {{ t('settings.member-settings.billing.payment-methods.loading') }}
+        {{ t('settings.subscription.payment-methods.loading') }}
       </p>
 
       <p
@@ -70,7 +69,7 @@ function openAddCreditCard() {
         data-testid="billing-settings__payment-methods-empty"
         class="text-brown-500 dark:text-brown-400"
       >
-        {{ t('settings.member-settings.billing.payment-methods.empty') }}
+        {{ t('settings.subscription.payment-methods.empty') }}
       </p>
 
       <ul v-else data-testid="billing-settings__payment-methods-list" class="flex flex-col gap-3">
@@ -86,7 +85,7 @@ function openAddCreditCard() {
             </p>
             <p v-if="method.card" class="text-sm text-brown-500 dark:text-brown-400">
               {{
-                t('settings.member-settings.billing.payment-methods.expires', {
+                t('settings.subscription.payment-methods.expires', {
                   expiry: formatExpiry(method.card.exp_month, method.card.exp_year)
                 })
               }}
@@ -98,7 +97,7 @@ function openAddCreditCard() {
             data-testid="billing-settings__payment-method-default"
             class="text-sm text-green-700 dark:text-green-400"
           >
-            {{ t('settings.member-settings.billing.payment-methods.default') }}
+            {{ t('settings.subscription.payment-methods.default') }}
           </span>
           <ui-button
             v-else
@@ -109,7 +108,7 @@ function openAddCreditCard() {
             :loading="set_default_mutation.isLoading.value"
             @click="onSetDefault(method.id)"
           >
-            {{ t('settings.member-settings.billing.payment-methods.make-default') }}
+            {{ t('settings.subscription.payment-methods.make-default') }}
           </ui-button>
 
           <ui-button
@@ -122,7 +121,7 @@ function openAddCreditCard() {
             :loading="detach_mutation.isLoading.value"
             @click="onDetach(method.id)"
           >
-            {{ t('settings.member-settings.billing.payment-methods.detach') }}
+            {{ t('settings.subscription.payment-methods.detach') }}
           </ui-button>
         </li>
       </ul>
@@ -135,9 +134,9 @@ function openAddCreditCard() {
           icon-left="add"
           @click="openAddCreditCard"
         >
-          {{ t('settings.member-settings.billing.payment-methods.add') }}
+          {{ t('settings.subscription.payment-methods.add') }}
         </ui-button>
       </div>
     </div>
-  </div>
+  </labeled-section>
 </template>
