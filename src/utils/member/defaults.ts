@@ -10,5 +10,5 @@ export const MEMBER_SETTINGS_DEFAULTS = {
 } as const
 
 export const MEMBER_CARD_PREVIEW_DEFAULTS = {
-  theme: 'blue-500' as Theme
+  theme: 'green-600' as Theme
 } as const

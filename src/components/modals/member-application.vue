@@ -55,7 +55,7 @@ async function onConfirm() {
       :display-name="member.display_name"
       :card-comment="member.description"
       :card-title="t('member-application.preview-card-title')"
-      :theme="selected_theme"
+      :data-theme="selected_theme"
       class="shadow-lg"
     />
 
