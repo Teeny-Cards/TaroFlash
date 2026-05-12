@@ -143,7 +143,7 @@ function onTabEnter(el: Element, done: () => void) {
     <settings-aside
       v-if="!is_mobile"
       data-testid="settings__aside"
-      class="w-78.5 shrink-0 self-end pt-60"
+      class="w-96 shrink-0 self-end pt-60"
     />
 
     <template #overlay>
