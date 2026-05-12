@@ -26,7 +26,7 @@ const nav_groups = computed<NavGroup[]>(() => [
   {
     key: 'app',
     heading: t('settings.index.app-heading'),
-    entries: [{ value: 'sounds', icon: 'audio' }]
+    entries: [{ value: 'sounds', icon: 'music-note' }]
   }
 ])
 

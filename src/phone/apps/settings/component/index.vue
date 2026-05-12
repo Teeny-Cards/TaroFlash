@@ -38,7 +38,7 @@ provide(memberDangerActionsKey, danger)
 const tabs = computed(() => [
   { value: 'profile', icon: 'id-card', label: t('settings.tab.profile') },
   { value: 'subscription', icon: 'moon-stars', label: t('settings.tab.subscription') },
-  { value: 'sounds', icon: 'audio', label: t('settings.tab.sounds') },
+  { value: 'sounds', icon: 'music-note', label: t('settings.tab.sounds') },
   { value: 'danger-zone', icon: 'delete', label: t('settings.tab.danger-zone') }
 ])
 
