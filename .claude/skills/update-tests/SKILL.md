@@ -4,14 +4,43 @@ description: Analyse branch changes in `src/` and `supabase/` and write tests to
 allowed-tools: Read, Edit, Write, Bash, Glob, Grep
 argument-hint: ''
 arguments: []
-lastUpdated: 2026-04-16T18:00:00-07:00
+lastUpdated: 2026-05-12T16:30:00-07:00
 ---
 
 ## Workflow
 
-### Step 1 — Identify changed source files
+### Step 0 — Coverage baseline diff (authoritative scope)
 
-Before running the following commands, make sure the master branch is up to date. (don't checkout master, just fetch updates) `git fetch origin master`
+`git diff --name-only` lies by omission: it only shows source-file edits, not the regression they caused. A `test(...)` commit can delete an old test file while the source it covered stays put — `git diff` shows nothing changed in the source, but coverage falls off a cliff. Likewise, a new `src/utils/foo.ts` shows up in the diff but the diff doesn't tell you whether existing indirect coverage was 90% or 0%. Trusting the diff alone is what makes "wrote tests, coverage still down" possible.
+
+So **measure first, write second**. Run coverage on `master` and on the branch tip, diff the per-file table, and let the regression list — not `git diff` — drive the rest of the workflow.
+
+```sh
+git fetch origin master
+
+# Branch coverage (current working tree, includes uncommitted)
+vp test 2>&1 | tee /tmp/cov-branch.log
+
+# Master coverage. Use a worktree so the working tree stays untouched —
+# never `git checkout master -- .` followed by `git checkout HEAD -- .`;
+# that combo can leave conflict markers and stage files from master.
+WORKTREE="$(mktemp -d)"
+git worktree add --quiet "$WORKTREE" origin/master
+( cd "$WORKTREE" && vp install --frozen-lockfile && vp test ) 2>&1 | tee /tmp/cov-master.log
+git worktree remove --force "$WORKTREE"
+```
+
+Parse both logs' per-file tables. Build the regression list:
+
+- Any file with **lines coverage on branch < lines coverage on master − 0.5pp** → in scope.
+- Any file present on branch but absent from master (new file) with **< 80% lines** → in scope.
+- Any file with a top-line metric (Statements / Branches / Functions / Lines) regressed > 0.2pp at the project level → drill into per-file rows to find which file caused it; add to scope.
+
+This list is **authoritative**. The `git diff --name-only` list from Step 1 is supplementary — it tells you which source changed, but Step 0 tells you which source _needs tests_.
+
+If the master worktree fails to install or test (lockfile drift, missing env), don't silently fall back to "diff-only" mode. Surface the failure to the user and ask whether to proceed with diff-only scope or fix the baseline first.
+
+### Step 1 — Identify changed source files (supplementary)
 
 Run the following two commands to capture all changes, whether committed or not:
 
@@ -30,7 +59,9 @@ Filter out:
 - Config and fixture files (`*.config.*`)
 - Non-source files (`*.md`, `*.json`, `*.lock`, `*.css`)
 
-You are left with the **source files to cover**.
+You now have the **changed source files**. Union this list with Step 0's regression list — work the union. Files in Step 0 but not Step 1 (test was deleted, source untouched) are still in scope. Files in Step 1 but not Step 0 (source changed, coverage held) get a brief sanity check (read the diff, confirm existing tests cover the new branches) and only get new tests if a branch went uncovered.
+
+**Don't re-narrow at this step.** A common trap: "this committed change has a `test(...)` commit nearby in the log, must already be covered." Read the actual coverage row, not the commit log. A `test(...)` commit can be net-negative if it deleted more than it added.
 
 ### Step 2 — Understand the changes
 
@@ -203,13 +234,39 @@ Once all tests are written and passing, review the full set of new tests for qua
 
 **Fix any critical issues** — specifically anything that would cause intermittent CI failures or mask real regressions. Call out non-critical issues (low severity style/practice notes) in the report but do not auto-fix them.
 
+### Step 7b — Re-measure coverage and verify recovery
+
+After all new tests are passing, re-run full-suite coverage and diff against the Step 0 master baseline.
+
+```sh
+vp test 2>&1 | tee /tmp/cov-branch-after.log
+```
+
+Compare top-line metrics (Statements / Branches / Functions / Lines) to `/tmp/cov-master.log`:
+
+- Every metric must be **within 0.2pp** of master, or **above** master. If any regressed > 0.2pp, the work isn't done.
+- Re-diff the per-file table. Any file still on Step 0's regression list with coverage below master — go back to Step 5 and write more tests for it.
+- Don't report success until the deltas confirm recovery. The Step 8 table's "Lines covered" column must come from this re-measured run, not from a guess based on reading source.
+
+If a regression is genuinely unfixable in this branch (e.g. depends on infra that isn't yet wired), surface it as a **Deferred coverage gap** in the Step 8 report with a one-line root-cause note — don't silently accept the regression.
+
 ### Step 8 — Report
 
-After writing all tests, output a short summary table:
+After writing all tests and confirming recovery in Step 7b, output a short summary table:
 
-| File changed | Test file | Type             | New tests | Lines covered (approx) |
-| ------------ | --------- | ---------------- | --------- | ---------------------- |
-| ...          | ...       | unit/integration | N         | ~X%                    |
+| File changed | Test file | Type             | New tests | Lines covered (measured) |
+| ------------ | --------- | ---------------- | --------- | ------------------------ |
+| ...          | ...       | unit/integration | N         | X%                       |
+
+Include a **Coverage delta** block showing master baseline vs branch after, per top-line metric, so the user can verify recovery at a glance:
+
+```
+            master  branch  Δ
+Statements  66.34   68.24   +1.90
+Branches    63.54   65.07   +1.53
+Functions   65.90   67.24   +1.34
+Lines       65.44   67.20   +1.76
+```
 
 If any changed file was skipped, explain why in one line. Skipping is reserved for the narrow valid cases only: barrel re-exports with no logic, files in `coverage.exclude`, or pure config / static-asset changes. "No test file exists yet", "out of scope for the PR", "covered indirectly elsewhere", and "would need a new harness" are **not** valid skip reasons — write the test (see Step 2 "Bias: always write the test").
 

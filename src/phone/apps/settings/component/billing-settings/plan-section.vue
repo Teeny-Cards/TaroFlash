@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import SectionHeader from '../section-header.vue'
+import LabeledSection from '@/components/layout-kit/labeled-section.vue'
 import UiButton from '@/components/ui-kit/button.vue'
 import { useCancelSubscriptionMutation, useResumeSubscriptionMutation } from '@/api/billing'
 import type { useSubscriptionQuery } from '@/api/billing'
@@ -39,8 +39,8 @@ const price_label = computed(() => {
   const currency = price.currency.toUpperCase()
   const interval = price.recurring?.interval ?? null
   return interval
-    ? t('settings.member-settings.billing.plan.price-per-interval', { amount, currency, interval })
-    : t('settings.member-settings.billing.plan.price', { amount, currency })
+    ? t('settings.subscription.plan.price-per-interval', { amount, currency, interval })
+    : t('settings.subscription.plan.price', { amount, currency })
 })
 
 const renewal_label = computed(() => {
@@ -48,50 +48,51 @@ const renewal_label = computed(() => {
   const ts = subscription.value.current_period_end * 1000
   const formatted = formatShortDate(ts, locale.value)
   return subscription.value.cancel_at_period_end
-    ? t('settings.member-settings.billing.plan.cancels-on', { date: formatted })
-    : t('settings.member-settings.billing.plan.renews-on', { date: formatted })
+    ? t('settings.subscription.plan.cancels-on', { date: formatted })
+    : t('settings.subscription.plan.renews-on', { date: formatted })
 })
 
 const status_label = computed(() => {
   const status = subscription.value?.status
   if (!status) return null
-  return t(`settings.member-settings.billing.plan.status.${status}`, status)
+  return t(`settings.subscription.plan.status.${status}`, status)
 })
 
 async function onCancel() {
   try {
     await cancelMutation.mutateAsync(true)
     confirming_cancel.value = false
-    toast.success(t('settings.member-settings.billing.plan.cancel-success'))
+    toast.success(t('settings.subscription.plan.cancel-success'))
   } catch {
-    toast.error(t('settings.member-settings.billing.plan.cancel-error'))
+    toast.error(t('settings.subscription.plan.cancel-error'))
   }
 }
 
 async function onResume() {
   try {
     await resumeMutation.mutateAsync()
-    toast.success(t('settings.member-settings.billing.plan.resume-success'))
+    toast.success(t('settings.subscription.plan.resume-success'))
   } catch {
-    toast.error(t('settings.member-settings.billing.plan.resume-error'))
+    toast.error(t('settings.subscription.plan.resume-error'))
   }
 }
 </script>
 
 <template>
-  <div data-testid="billing-settings__plan" class="flex flex-col gap-8">
-    <section-header>{{ t('settings.member-settings.billing.plan.label') }}</section-header>
-
+  <labeled-section
+    data-testid="billing-settings__plan"
+    :label="t('settings.subscription.plan.label')"
+  >
     <div class="grid grid-cols-[200px_1fr] gap-6 items-start">
       <h2 class="text-brown-700 dark:text-brown-300 text-lg">
-        {{ t('settings.member-settings.billing.plan.current') }}
+        {{ t('settings.subscription.plan.current') }}
       </h2>
       <div
         data-testid="billing-settings__plan-details"
         class="flex flex-col gap-2 text-brown-700 dark:text-brown-300"
       >
         <p data-testid="billing-settings__plan-name" class="text-xl">
-          {{ product_name ?? t('settings.member-settings.billing.plan.unknown') }}
+          {{ product_name ?? t('settings.subscription.plan.unknown') }}
         </p>
         <p
           v-if="price_label"
@@ -126,7 +127,7 @@ async function onResume() {
             :loading="resumeMutation.isLoading.value"
             @click="onResume"
           >
-            {{ t('settings.member-settings.billing.plan.resume') }}
+            {{ t('settings.subscription.plan.resume') }}
           </ui-button>
         </template>
 
@@ -138,7 +139,7 @@ async function onResume() {
             variant="outline"
             @click="confirming_cancel = true"
           >
-            {{ t('settings.member-settings.billing.plan.cancel') }}
+            {{ t('settings.subscription.plan.cancel') }}
           </ui-button>
         </template>
 
@@ -147,7 +148,7 @@ async function onResume() {
             data-testid="billing-settings__plan-cancel-prompt"
             class="text-sm text-brown-700 dark:text-brown-300 w-full"
           >
-            {{ t('settings.member-settings.billing.plan.cancel-confirm') }}
+            {{ t('settings.subscription.plan.cancel-confirm') }}
           </p>
           <ui-button
             data-testid="billing-settings__plan-cancel-confirm"
@@ -156,7 +157,7 @@ async function onResume() {
             :loading="cancelMutation.isLoading.value"
             @click="onCancel"
           >
-            {{ t('settings.member-settings.billing.plan.cancel-confirm-button') }}
+            {{ t('settings.subscription.plan.cancel-confirm-button') }}
           </ui-button>
           <ui-button
             data-testid="billing-settings__plan-cancel-abort"
@@ -165,10 +166,10 @@ async function onResume() {
             variant="outline"
             @click="confirming_cancel = false"
           >
-            {{ t('settings.member-settings.billing.plan.cancel-abort') }}
+            {{ t('settings.subscription.plan.cancel-abort') }}
           </ui-button>
         </template>
       </div>
     </div>
-  </div>
+  </labeled-section>
 </template>
