@@ -176,7 +176,7 @@ function onTabEnter(el: Element, done: () => void) {
           :display-name="editor.settings.display_name"
           :card-comment="editor.settings.description"
           :card-title="t('settings.preview.title-fallback')"
-          :theme="editor.theme.value"
+          :data-theme="editor.theme.value"
           class="rotate-4 drop-shadow-sm"
         />
       </div>

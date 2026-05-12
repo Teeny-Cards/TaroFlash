@@ -75,6 +75,8 @@
   "member-application.description-placeholder": "Add a short comment to your card",
   "member-card.field.member-label": "MEMBER",
   "member-card.field.title-label": "TITLE",
+  "member-card.field.name-placeholder": "Member Name",
+  "member-card.field.title-placeholder": "Title",
   "member-card.field.registration-label": "Reg. {date}",
   "member-application.submit": "Confirm",
   "member-application.preview-card-title": "Debut Deck Builder",

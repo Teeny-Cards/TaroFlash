@@ -25,7 +25,7 @@ const is_mobile = useMobileBreakpoint('md')
         :display-name="editor.settings.display_name"
         :card-comment="editor.settings.description"
         :card-title="t('settings.preview.title-fallback')"
-        :theme="editor.theme.value"
+        :data-theme="editor.theme.value"
         class="mx-auto"
       />
     </labeled-section>
