@@ -1,18 +1,15 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { emitSfx } from '@/sfx/bus'
 import UiIcon from '@/components/ui-kit/icon.vue'
 
-const { t } = useI18n()
-
-type BgColorPickerProps = {
+type ThemePickerProps = {
+  label: string
   supported_themes: DeckTheme[]
   theme: Theme | undefined
   theme_dark: Theme | undefined
 }
 
-const { theme, theme_dark } = defineProps<BgColorPickerProps>()
+const { theme, theme_dark } = defineProps<ThemePickerProps>()
 
 const emit = defineEmits<{
   (e: 'update:theme', value: Theme | undefined): void
@@ -36,15 +33,15 @@ function onThemeSelect(option: DeckTheme) {
 </script>
 
 <template>
-  <div data-testid="bg-color-picker-container" class="flex flex-col gap-2.5">
-    <h3 data-testid="bg-colo-picker__label" class="text-brown-700 dark:text-brown-100">
-      {{ t('deck.settings-modal.cover.bg-color') }}
+  <div data-testid="theme-picker-container" class="flex flex-col gap-2.5">
+    <h3 data-testid="theme-picker__label" class="text-brown-700 dark:text-brown-100">
+      {{ label }}
     </h3>
-    <div data-testid="bg-color-picker" class="w-full flex gap-3">
+    <div data-testid="theme-picker" class="w-full flex gap-3">
       <button
         v-for="option in supported_themes"
         :key="`${option.light}:${option.dark ?? option.light}`"
-        :data-testid="`bg-color-picker__option-${option.light}`"
+        :data-testid="`theme-picker__option-${option.light}`"
         :data-theme="option.light"
         :data-theme-dark="option.dark"
         v-sfx.hover="'ui.click_07'"

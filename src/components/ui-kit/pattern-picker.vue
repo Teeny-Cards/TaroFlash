@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import { emitSfx } from '@/sfx/bus'
-import { coverBindings, patternSize } from '@/utils/cover'
+import { coverBindings } from '@/utils/cover'
 
-const { t } = useI18n()
+const PATTERN_SWATCH_SIZE: Record<DeckCoverPattern, string> = {
+  'diagonal-stripes': '45px',
+  saw: '39px',
+  wave: '78px',
+  'bank-note': '90px',
+  aztec: '39px',
+  'endless-clouds': '78px'
+}
 
 type PatternPickerProps = {
+  label: string
   supported_patterns: DeckCoverPattern[]
   selected_pattern: DeckCoverPattern | undefined
 }
@@ -18,12 +25,7 @@ const emit = defineEmits<{
 }>()
 
 function swatchBindings(p: DeckCoverPattern) {
-  const base = coverBindings({ pattern: p }, { border: false })
-
-  return {
-    ...base,
-    style: { ...base.style, '--bgx-size': patternSize(p, 0.65) }
-  }
+  return coverBindings({ pattern: p }, { border: false, patternSize: PATTERN_SWATCH_SIZE[p] })
 }
 
 function onPatternSelect(p: DeckCoverPattern | undefined) {
@@ -40,7 +42,7 @@ function onPatternSelect(p: DeckCoverPattern | undefined) {
 <template>
   <div data-testid="pattern-picker-container" class="flex flex-col gap-2.5">
     <h3 data-testid="pattern-picker__label" class="text-brown-700 dark:text-brown-100">
-      {{ t('deck.settings-modal.cover.pattern') }}
+      {{ label }}
     </h3>
 
     <div data-testid="pattern-picker" class="flex flex-wrap gap-2">

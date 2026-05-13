@@ -22,9 +22,9 @@ function slotlessStub(name) {
   })
 }
 
-const BgColorPickerStub = slotlessStub('BgColorPicker')
+const UiThemePickerStub = slotlessStub('UiThemePicker')
 const IconPickerStub = slotlessStub('IconPicker')
-const PatternPickerStub = slotlessStub('PatternPicker')
+const UiPatternPickerStub = slotlessStub('UiPatternPicker')
 
 const SectionListStub = defineComponent({
   name: 'SectionList',
@@ -39,9 +39,9 @@ function makeDesigner(initial = {}) {
     props: { config },
     global: {
       stubs: {
-        BgColorPicker: BgColorPickerStub,
+        UiThemePicker: UiThemePickerStub,
         IconPicker: IconPickerStub,
-        PatternPicker: PatternPickerStub,
+        UiPatternPicker: UiPatternPickerStub,
         SectionList: SectionListStub
       }
     }
@@ -53,9 +53,9 @@ describe('CoverDesigner toolbar', () => {
   test('renders all three pickers', () => {
     const { wrapper } = makeDesigner()
     expect(wrapper.find('[data-testid="cover-designer-toolbar"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="BgColorPicker-stub"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="UiThemePicker-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="IconPicker-stub"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="PatternPicker-stub"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="UiPatternPicker-stub"]').exists()).toBe(true)
   })
 
   test('forwards config fields to the appropriate picker', () => {
@@ -66,7 +66,7 @@ describe('CoverDesigner toolbar', () => {
       pattern: 'wave'
     })
 
-    const bg = wrapper.findComponent(BgColorPickerStub).props()
+    const bg = wrapper.findComponent(UiThemePickerStub).props()
     expect(bg.theme).toBe('pink-400')
     expect(bg.theme_dark).toBe('pink-700')
     expect(bg.supported_themes.map((option) => option.light)).toEqual(
@@ -77,21 +77,21 @@ describe('CoverDesigner toolbar', () => {
     expect(iconProps.icon).toBe('book')
     expect(iconProps.supported_icons).toEqual(expect.arrayContaining(['card-deck', 'book']))
 
-    const patternProps = wrapper.findComponent(PatternPickerStub).props()
+    const patternProps = wrapper.findComponent(UiPatternPickerStub).props()
     expect(patternProps.selected_pattern).toBe('wave')
     expect(patternProps.supported_patterns).toEqual(expect.arrayContaining(['wave', 'aztec']))
   })
 
-  test('update:theme from BgColorPicker mutates config.theme', async () => {
+  test('update:theme from UiThemePicker mutates config.theme', async () => {
     const { wrapper, config } = makeDesigner({ theme: 'blue-500' })
-    wrapper.findComponent(BgColorPickerStub).vm.$emit('update:theme', 'red-500')
+    wrapper.findComponent(UiThemePickerStub).vm.$emit('update:theme', 'red-500')
     await wrapper.vm.$nextTick()
     expect(config.theme).toBe('red-500')
   })
 
-  test('update:theme_dark from BgColorPicker mutates config.theme_dark', async () => {
+  test('update:theme_dark from UiThemePicker mutates config.theme_dark', async () => {
     const { wrapper, config } = makeDesigner({ theme_dark: 'blue-800' })
-    wrapper.findComponent(BgColorPickerStub).vm.$emit('update:theme_dark', 'red-800')
+    wrapper.findComponent(UiThemePickerStub).vm.$emit('update:theme_dark', 'red-800')
     await wrapper.vm.$nextTick()
     expect(config.theme_dark).toBe('red-800')
   })
@@ -103,9 +103,9 @@ describe('CoverDesigner toolbar', () => {
     expect(config.icon).toBe('store')
   })
 
-  test('update:pattern from PatternPicker mutates config.pattern', async () => {
+  test('update:pattern from UiPatternPicker mutates config.pattern', async () => {
     const { wrapper, config } = makeDesigner({ pattern: 'wave' })
-    wrapper.findComponent(PatternPickerStub).vm.$emit('update:pattern', 'aztec')
+    wrapper.findComponent(UiPatternPickerStub).vm.$emit('update:pattern', 'aztec')
     await wrapper.vm.$nextTick()
     expect(config.pattern).toBe('aztec')
   })
