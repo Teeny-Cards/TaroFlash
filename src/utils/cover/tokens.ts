@@ -1,3 +1,8 @@
+export type PatternToken = {
+  size: string
+  opacity: string
+}
+
 export const SUPPORTED_THEMES: DeckTheme[] = [
   { light: 'green-500', dark: 'green-800' },
   { light: 'blue-500', dark: 'blue-650' },
@@ -28,16 +33,13 @@ export const SUPPORTED_ICONS: string[] = [
   'id-card'
 ]
 
-function pick<T>(items: readonly T[]): T {
-  return items[Math.floor(Math.random() * items.length)]
-}
+export const BORDER_SIZE_PX = 16
 
-export function randomCoverConfig(): DeckCover {
-  const theme = pick(SUPPORTED_THEMES)
-  return {
-    theme: theme.light,
-    theme_dark: theme.dark,
-    pattern: pick(SUPPORTED_PATTERNS),
-    icon: pick(SUPPORTED_ICONS)
-  }
+export const PATTERN_TOKENS: Record<DeckCoverPattern, PatternToken> = {
+  'diagonal-stripes': { size: '69px', opacity: '0.15' },
+  saw: { size: '60px', opacity: '0.2' },
+  wave: { size: '120px', opacity: '0.7' },
+  'bank-note': { size: '138px', opacity: '0.15' },
+  aztec: { size: '60px', opacity: '0.15' },
+  'endless-clouds': { size: '120px', opacity: '0.6' }
 }
