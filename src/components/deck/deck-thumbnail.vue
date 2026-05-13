@@ -14,6 +14,7 @@ const { deck, size = 'base' } = defineProps<{
   <div
     data-testid="deck-thumbnail"
     class="deck-thumbnail--outline pointer-fine:hover:scale-101 relative cursor-pointer h-min transition-all duration-75"
+    v-sfx.hover="'ui.click_07'"
   >
     <card side="cover" :size="size" :cover_config="deck?.cover_config" />
 

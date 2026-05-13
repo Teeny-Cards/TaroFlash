@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import BgColorPicker from './bg-color-picker.vue'
+import { useI18n } from 'vue-i18n'
+import UiThemePicker from '@/components/ui-kit/theme-picker.vue'
+import UiPatternPicker from '@/components/ui-kit/pattern-picker.vue'
 import IconPicker from './icon-picker.vue'
-import PatternPicker from './pattern-picker.vue'
 import SectionList from '@/components/layout-kit/section-list.vue'
 import { SUPPORTED_THEMES, SUPPORTED_PATTERNS, SUPPORTED_ICONS } from '@/utils/cover'
 
@@ -10,6 +11,7 @@ type CoverDesignerToolbarProps = {
 }
 
 const { config } = defineProps<CoverDesignerToolbarProps>()
+const { t } = useI18n()
 </script>
 
 <template>
@@ -19,7 +21,8 @@ const { config } = defineProps<CoverDesignerToolbarProps>()
     :data-theme-dark="config.theme_dark"
   >
     <section-list data-testid="cover-designer-toolbar__controls">
-      <bg-color-picker
+      <ui-theme-picker
+        :label="t('deck.settings-modal.cover.bg-color')"
         :supported_themes="SUPPORTED_THEMES"
         :theme="config.theme"
         :theme_dark="config.theme_dark"
@@ -27,7 +30,8 @@ const { config } = defineProps<CoverDesignerToolbarProps>()
         @update:theme_dark="config.theme_dark = $event"
       />
 
-      <pattern-picker
+      <ui-pattern-picker
+        :label="t('deck.settings-modal.cover.pattern')"
         :supported_patterns="SUPPORTED_PATTERNS"
         :selected_pattern="config.pattern"
         @update:pattern="config.pattern = $event"

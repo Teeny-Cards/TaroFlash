@@ -104,6 +104,7 @@ export default defineConfig({
         '**/supabase-client.ts',
         '**/router/**',
         '**/src/components/ui-kit/_index.ts',
+        '**/src/utils/cover/index.ts',
         '**/types/**',
         '**/src/utils/logger.ts',
         '**/src/utils/uid.ts',
