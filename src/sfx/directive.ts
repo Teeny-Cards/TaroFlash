@@ -9,6 +9,7 @@ export type SfxOptions = {
   focus?: NamespacedAudioKey
   blur?: NamespacedAudioKey
   debounce?: number
+  click_blocking?: boolean
 }
 
 type SfxBindingValue = NamespacedAudioKey | SfxOptions
@@ -61,7 +62,10 @@ function _attach(el: HTMLElement, binding: DirectiveBinding<SfxBindingValue>) {
       if (!state.cfg.click) return
       if (state.mods.prevent) e.preventDefault()
       if (state.mods.stop) e.stopPropagation()
-      emitSfx(state.cfg.click, { debounce: state.cfg.debounce })
+      emitSfx(state.cfg.click, {
+        debounce: state.cfg.debounce,
+        blocking: state.cfg.click_blocking
+      })
     })
   )
 

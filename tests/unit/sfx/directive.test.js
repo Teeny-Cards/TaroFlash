@@ -90,7 +90,22 @@ describe('vSfx directive', () => {
 
       el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
-      expect(emitSfx).toHaveBeenCalledWith('ui.click_07', { debounce: undefined })
+      expect(emitSfx).toHaveBeenCalledWith('ui.click_07', {
+        debounce: undefined,
+        blocking: undefined
+      })
+      unmount(el)
+    })
+
+    test('forwards click_blocking option as PlayOptions.blocking', () => {
+      const el = mountDirective({ click: 'ui.select', click_blocking: true })
+
+      el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+      expect(emitSfx).toHaveBeenCalledWith('ui.select', {
+        debounce: undefined,
+        blocking: true
+      })
       unmount(el)
     })
   })

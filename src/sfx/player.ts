@@ -12,6 +12,7 @@ import {
 export type PlayOptions = {
   volume?: number
   debounce?: number
+  blocking?: boolean
 }
 
 // Audio files ship as separate hashed assets; Howler fetches them when
@@ -26,7 +27,7 @@ const AUDIO_FILES = import.meta.glob('@/assets/audio/**/*.{wav,mp3,ogg}', {
 
 const DEFAULT_VOLUME = 0.5
 const DEFAULT_CATEGORY_VOLUME = 1
-const DEBOUNCE_DELAY = 50
+const DEBOUNCE_DELAY = 10
 const QUEUE_TIMEOUT = 10
 
 class AudioPlayer {
@@ -35,6 +36,7 @@ class AudioPlayer {
   unlock_registered = false
   unlocked = false
   queued_sound: { key: NamespacedAudioKey; options: PlayOptions } | undefined
+  blocking = false
 
   setup = () => {
     if (this.initialized) return Promise.resolve()
@@ -50,6 +52,8 @@ class AudioPlayer {
   }
 
   play = async (key: NamespacedAudioKey, options: PlayOptions = {}): Promise<void> => {
+    if (options.blocking) this.blocking = true
+
     return debounce(() => this._play(key, options), {
       delay: options.debounce ?? DEBOUNCE_DELAY,
       key
@@ -67,6 +71,8 @@ class AudioPlayer {
   }
 
   private _play = async (key: NamespacedAudioKey, options: PlayOptions = {}): Promise<void> => {
+    if (this.blocking && !options.blocking) return
+
     if (!this.unlocked) {
       this._enqueue(key, options)
       return
@@ -81,6 +87,7 @@ class AudioPlayer {
     await this._ensureContextRunning()
 
     if (Howler.ctx && Howler.ctx.state !== 'running') {
+      if (options.blocking) this.blocking = false
       return
     }
 
@@ -106,6 +113,7 @@ class AudioPlayer {
         sound.off('end', settle)
         sound.off('playerror', settle)
         clearTimeout(timer)
+        if (options.blocking) this.blocking = false
         resolve()
       }
       const fallbackMs = Math.ceil((sound.duration() || 1) * 1000) + 500
