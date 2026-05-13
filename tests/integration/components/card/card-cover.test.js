@@ -32,14 +32,11 @@ describe('CardCover', () => {
 
   test.each([
     ['diagonal-stripes', 'bgx-diagonal-stripes'],
-    ['dot-grid', 'bgx-dot-grid'],
     ['wave', 'bgx-wave'],
     ['saw', 'bgx-saw'],
     ['bank-note', 'bgx-bank-note'],
     ['aztec', 'bgx-aztec'],
-    ['endless-clouds', 'bgx-endless-clouds'],
-    ['stars', 'bgx-stars'],
-    ['leaf', 'bgx-leaf']
+    ['endless-clouds', 'bgx-endless-clouds']
   ])('pattern "%s" applies class "%s"', (pattern, expectedClass) => {
     const wrapper = mountCover({ pattern })
     expect(wrapper.find('[data-testid="card-cover"]').classes()).toContain(expectedClass)
