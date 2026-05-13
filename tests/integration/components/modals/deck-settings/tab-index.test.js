@@ -78,10 +78,10 @@ describe('TabIndex', () => {
     expect(wrapper.emitted('navigate')).toEqual([['design']])
   })
 
-  test('plays the select sfx on nav click', async () => {
+  test('plays the select sfx as a blocking sound on nav click', async () => {
     const { wrapper } = makeTab()
     await wrapper.find('[data-testid="tab-index__nav-card"][data-value="general"]').trigger('click')
-    expect(mockEmitSfx).toHaveBeenCalledWith('ui.select')
+    expect(mockEmitSfx).toHaveBeenCalledWith('ui.select', { blocking: true })
   })
 
   test('renders inlined danger reset + delete buttons', () => {
