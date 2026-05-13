@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
-import PatternPicker from '@/components/deck/cover-designer/pattern-picker.vue'
+import UiPatternPicker from '@/components/ui-kit/pattern-picker.vue'
 
 const { mockEmitSfx } = vi.hoisted(() => ({ mockEmitSfx: vi.fn() }))
 vi.mock('@/sfx/bus', () => ({ emitSfx: mockEmitSfx }))
@@ -8,8 +8,9 @@ vi.mock('@/sfx/bus', () => ({ emitSfx: mockEmitSfx }))
 const SUPPORTED_PATTERNS = ['diagonal-stripes', 'wave', 'aztec']
 
 function makePicker(props = {}) {
-  return shallowMount(PatternPicker, {
+  return shallowMount(UiPatternPicker, {
     props: {
+      label: 'Pattern',
       supported_patterns: SUPPORTED_PATTERNS,
       selected_pattern: undefined,
       ...props
@@ -24,7 +25,7 @@ beforeEach(() => {
   mockEmitSfx.mockClear()
 })
 
-describe('PatternPicker', () => {
+describe('UiPatternPicker', () => {
   test('renders one option per supported pattern', () => {
     const wrapper = makePicker()
     SUPPORTED_PATTERNS.forEach((pattern) => {
@@ -61,7 +62,7 @@ describe('PatternPicker', () => {
     expect(mockEmitSfx).toHaveBeenCalledTimes(1)
   })
 
-  test('swatches set --bgx-size from the static patternSize helper', () => {
+  test('swatches set a swatch-specific --bgx-size', () => {
     const wrapper = makePicker()
     const swatch = wrapper.find('[data-testid="pattern-picker__option-aztec"]')
     expect(swatch.attributes('style') || '').toContain('--bgx-size')
