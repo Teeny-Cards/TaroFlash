@@ -1,19 +1,5 @@
 import { describe, test, expect } from 'vite-plus/test'
-import { coverBindings, patternSize, BORDER_SIZE_PX, PATTERN_SIZE_PX } from '@/utils/cover'
-
-describe('patternSize', () => {
-  test('defaults the multiplier to 1', () => {
-    // wave scale 2 → PATTERN_SIZE_PX * 2 * 1
-    expect(patternSize('wave')).toBe(`${PATTERN_SIZE_PX * 2}px`)
-  })
-
-  test('applies the multiplier argument', () => {
-    // wave: PATTERN_SIZE_PX * 2 * 0.5
-    expect(patternSize('wave', 0.5)).toBe(`${PATTERN_SIZE_PX * 2 * 0.5}px`)
-    // aztec: PATTERN_SIZE_PX * 1 * 0.65
-    expect(patternSize('aztec', 0.65)).toBe(`${PATTERN_SIZE_PX * 1 * 0.65}px`)
-  })
-})
+import { coverBindings, PATTERN_TOKENS, BORDER_SIZE_PX } from '@/utils/cover'
 
 describe('coverBindings', () => {
   test('returns empty bindings when called with no argument', () => {
@@ -58,12 +44,17 @@ describe('coverBindings', () => {
   test('sets --bgx-fill and pattern-scaled --bgx-opacity when pattern is set', () => {
     const result = coverBindings({ pattern: 'aztec' })
     expect(result.style['--bgx-fill']).toBe('var(--theme-neutral)')
-    expect(result.style['--bgx-opacity']).toBe('0.2')
+    expect(result.style['--bgx-opacity']).toBe(PATTERN_TOKENS.aztec.opacity)
   })
 
-  test('sets --bgx-size from the static patternSize helper when pattern is set', () => {
+  test('sets --bgx-size from PATTERN_TOKENS[pattern].size when pattern is set', () => {
     const result = coverBindings({ pattern: 'saw' })
-    expect(result.style['--bgx-size']).toBe(patternSize('saw'))
+    expect(result.style['--bgx-size']).toBe(PATTERN_TOKENS.saw.size)
+  })
+
+  test('options.patternSize overrides the per-pattern default', () => {
+    const result = coverBindings({ pattern: 'wave' }, { patternSize: '20px' })
+    expect(result.style['--bgx-size']).toBe('20px')
   })
 
   test('omits pattern bindings when no pattern is set', () => {
@@ -82,15 +73,14 @@ describe('coverBindings', () => {
     expect(result.style['--bgx-size']).toBeUndefined()
   })
 
-  test('options.patternOpacity overrides the per-pattern scaled default', () => {
+  test('options.patternOpacity overrides the per-pattern default', () => {
     const result = coverBindings({ pattern: 'aztec' }, { patternOpacity: '0.5' })
     expect(result.style['--bgx-opacity']).toBe('0.5')
   })
 
-  test('falls back to scaled default when options.patternOpacity is absent', () => {
-    // wave scale 3.5 → 0.2 * 3.5 = 0.7
+  test('falls back to PATTERN_TOKENS[pattern].opacity when options.patternOpacity is absent', () => {
     const result = coverBindings({ pattern: 'wave' })
-    expect(parseFloat(result.style['--bgx-opacity'])).toBeCloseTo(0.7)
+    expect(result.style['--bgx-opacity']).toBe(PATTERN_TOKENS.wave.opacity)
   })
 
   test('emits themed border style at the static BORDER_SIZE_PX when config is provided', () => {
@@ -117,8 +107,8 @@ describe('coverBindings', () => {
     expect(result['data-theme']).toBe('purple-500')
     expect(result['data-theme-dark']).toBe('purple-700')
     expect(result.class).toEqual(['bgx-aztec'])
-    expect(result.style['--bgx-size']).toBe(patternSize('aztec'))
-    expect(result.style['--bgx-opacity']).toBe('0.2')
+    expect(result.style['--bgx-size']).toBe(PATTERN_TOKENS.aztec.size)
+    expect(result.style['--bgx-opacity']).toBe(PATTERN_TOKENS.aztec.opacity)
     expect(result.style['--bgx-fill']).toBe('var(--theme-neutral)')
     expect(result.style.border).toBe(`${BORDER_SIZE_PX}px solid var(--theme-primary)`)
   })
