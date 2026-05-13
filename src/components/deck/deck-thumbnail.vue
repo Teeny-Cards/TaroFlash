@@ -11,7 +11,10 @@ const { deck, size = 'base' } = defineProps<{
 </script>
 
 <template>
-  <div data-testid="deck-thumbnail" class="relative cursor-pointer h-min">
+  <div
+    data-testid="deck-thumbnail"
+    class="deck-thumbnail--outline pointer-fine:hover:scale-101 relative cursor-pointer h-min transition-all duration-75"
+  >
     <card side="cover" :size="size" :cover_config="deck?.cover_config" />
 
     <div
@@ -23,3 +26,24 @@ const { deck, size = 'base' } = defineProps<{
     </div>
   </div>
 </template>
+
+<style scoped>
+@media (pointer: fine) {
+  .deck-thumbnail--outline:hover {
+    --outline-color: var(--color-white);
+    --outline-size: 2px;
+    --outline-size--inset: calc(var(--outline-size) * -1);
+    --outline-diag: calc(var(--outline-size) * 0.7071);
+    --outline-diag--inset: calc(var(--outline-diag) * -1);
+
+    filter: drop-shadow(var(--outline-size) 0 0 var(--outline-color))
+      drop-shadow(var(--outline-size--inset) 0 0 var(--outline-color))
+      drop-shadow(0 var(--outline-size) 0 var(--outline-color))
+      drop-shadow(0 var(--outline-size--inset) 0 var(--outline-color))
+      drop-shadow(var(--outline-diag) var(--outline-diag) 0 var(--outline-color))
+      drop-shadow(var(--outline-diag--inset) var(--outline-diag) 0 var(--outline-color))
+      drop-shadow(var(--outline-diag) var(--outline-diag--inset) 0 var(--outline-color))
+      drop-shadow(var(--outline-diag--inset) var(--outline-diag--inset) 0 var(--outline-color));
+  }
+}
+</style>
