@@ -197,7 +197,7 @@ const PassthroughStub = defineComponent({
 })
 
 const DeckPreviewStub = defineComponent({
-  name: 'DeckPreview',
+  name: 'DeckDesignPreview',
   emits: ['update:side'],
   setup(_props, { emit }) {
     return () =>
@@ -235,7 +235,7 @@ function makeWrapper() {
         TabGeneral: PassthroughStub,
         TabStudy: PassthroughStub,
         TabDangerZone: TabDangerZoneStub,
-        DeckPreview: DeckPreviewStub,
+        DeckDesignPreview: DeckPreviewStub,
         DeckAside: DeckAsideStub,
         UiButton: UiButtonStub
       },
