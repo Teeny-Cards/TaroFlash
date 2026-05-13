@@ -484,4 +484,33 @@ describe('DeckSettings — overlay actions', () => {
 
     expect(close).toHaveBeenCalledWith(false)
   })
+
+  test('mounts under requestIdleCallback fallback (setTimeout) without throwing', async () => {
+    const originalIdle = window.requestIdleCallback
+    // @ts-ignore — drop rIC to force the setTimeout fallback path in onMounted
+    window.requestIdleCallback = undefined
+
+    expect(() => makeWrapper()).not.toThrow()
+    await flushPromises()
+
+    window.requestIdleCallback = originalIdle
+  })
+
+  test('mounts and fires the idle prefetch callback', async () => {
+    const idleSpy = vi.fn((cb) => {
+      cb({ didTimeout: false, timeRemaining: () => 50 })
+      return 0
+    })
+    const originalIdle = window.requestIdleCallback
+    // @ts-ignore — intercept the rIC call so the prefetch runs synchronously
+    window.requestIdleCallback = idleSpy
+
+    makeWrapper()
+    await flushPromises()
+
+    expect(idleSpy).toHaveBeenCalledTimes(1)
+    expect(idleSpy.mock.calls[0][0]).toBeTypeOf('function')
+
+    window.requestIdleCallback = originalIdle
+  })
 })
