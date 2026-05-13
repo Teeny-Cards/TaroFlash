@@ -6,6 +6,7 @@ const { mockEditor, mockDanger, mockEmitSfx, state } = vi.hoisted(() => ({
   state: { hasSidebar: true },
   mockEditor: {
     settings: { display_name: 'Chris', description: 'hi' },
+    preferences: { accessibility: { left_hand: false } },
     cover: { theme: 'green-500', theme_dark: 'green-800', pattern: 'bank-note' },
     email: { value: 'chris@example.com' },
     created_at: { value: '2026-01-01T00:00:00Z' },
@@ -58,7 +59,7 @@ vi.mock('@/phone/apps/settings/component/tab-index/index.vue', async () => {
             'button',
             {
               'data-testid': 'tab-index-stub',
-              onClick: () => emit('navigate', 'sounds')
+              onClick: () => emit('navigate', 'app')
             },
             'go'
           )
@@ -97,7 +98,7 @@ const TabIndexStub = defineComponent({
         'button',
         {
           'data-testid': 'tab-index-stub',
-          onClick: () => emit('navigate', 'sounds')
+          onClick: () => emit('navigate', 'app')
         },
         'go'
       )
@@ -132,10 +133,10 @@ const TabSheetStub = defineComponent({
           h(
             'button',
             {
-              'data-testid': 'tab-sheet__select-sounds',
-              onClick: () => emit('update:active', 'sounds')
+              'data-testid': 'tab-sheet__select-app',
+              onClick: () => emit('update:active', 'app')
             },
-            'sounds'
+            'app'
           ),
           h('div', { 'data-testid': 'tab-sheet__content' }, slots.default?.()),
           h('div', { 'data-testid': 'tab-sheet__overlay' }, slots.overlay?.()),
@@ -188,7 +189,7 @@ describe('settings app — tab routing', () => {
   test('exposes the four expected tab values', () => {
     const wrapper = makeWrapper()
     const tabs = JSON.parse(wrapper.find('[data-testid="tab-sheet-stub"]').attributes('data-tabs'))
-    expect(tabs).toEqual(['profile', 'subscription', 'sounds', 'danger-zone'])
+    expect(tabs).toEqual(['profile', 'subscription', 'app', 'danger-zone'])
   })
 
   test('defaults the active sidebar tab to "profile"', () => {
@@ -198,8 +199,8 @@ describe('settings app — tab routing', () => {
 
   test('sidebar tab updates flip the displayed tab', async () => {
     const wrapper = makeWrapper()
-    await wrapper.find('[data-testid="tab-sheet__select-sounds"]').trigger('click')
-    expect(wrapper.find('[data-testid="tab-sheet-stub"]').attributes('data-active')).toBe('sounds')
+    await wrapper.find('[data-testid="tab-sheet__select-app"]').trigger('click')
+    expect(wrapper.find('[data-testid="tab-sheet-stub"]').attributes('data-active')).toBe('app')
   })
 })
 
@@ -211,8 +212,8 @@ describe('settings app — header copy follows displayed tab', () => {
 
   test('switches header copy when the active tab changes', async () => {
     const wrapper = makeWrapper()
-    await wrapper.find('[data-testid="tab-sheet__select-sounds"]').trigger('click')
-    expect(wrapper.find('[data-testid="settings__header-title"]').text()).toBe('Sounds')
+    await wrapper.find('[data-testid="tab-sheet__select-app"]').trigger('click')
+    expect(wrapper.find('[data-testid="settings__header-title"]').text()).toBe('App')
   })
 })
 
@@ -228,14 +229,14 @@ describe('settings app — sidebar visibility (set at mount)', () => {
     const wrapper = makeWrapper()
     expect(wrapper.find('[data-testid="settings__back-button"]').exists()).toBe(false)
 
-    await wrapper.find('[data-testid="tab-sheet__select-sounds"]').trigger('click')
+    await wrapper.find('[data-testid="tab-sheet__select-app"]').trigger('click')
     expect(wrapper.find('[data-testid="settings__back-button"]').exists()).toBe(true)
   })
 
   test('back button click clears the active tab and emits the back sfx', async () => {
     state.hasSidebar = false
     const wrapper = makeWrapper()
-    await wrapper.find('[data-testid="tab-sheet__select-sounds"]').trigger('click')
+    await wrapper.find('[data-testid="tab-sheet__select-app"]').trigger('click')
 
     await wrapper.find('[data-testid="settings__back-button"]').trigger('click')
     expect(mockEmitSfx).toHaveBeenCalledWith('ui.select')
@@ -252,7 +253,7 @@ describe('settings app — sidebar visibility (set at mount)', () => {
     state.hasSidebar = false
     const wrapper = makeWrapper()
     await wrapper.find('[data-testid="tab-index-stub"]').trigger('click')
-    expect(wrapper.find('[data-testid="tab-sheet-stub"]').attributes('data-active')).toBe('sounds')
+    expect(wrapper.find('[data-testid="tab-sheet-stub"]').attributes('data-active')).toBe('app')
   })
 })
 

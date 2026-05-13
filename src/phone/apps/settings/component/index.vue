@@ -3,7 +3,7 @@ import { computed, provide, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TabProfile from './tab-profile/index.vue'
 import TabSubscription from './tab-subscription/index.vue'
-import TabSounds from './tab-sounds/index.vue'
+import TabApp from './tab-app/index.vue'
 import TabDangerZone from './tab-danger-zone/index.vue'
 import TabIndex from './tab-index/index.vue'
 import SettingsAside from './settings-aside.vue'
@@ -38,11 +38,11 @@ provide(memberDangerActionsKey, danger)
 const tabs = computed(() => [
   { value: 'profile', icon: 'id-card', label: t('settings.tab.profile') },
   { value: 'subscription', icon: 'moon-stars', label: t('settings.tab.subscription') },
-  { value: 'sounds', icon: 'music-note', label: t('settings.tab.sounds') },
+  { value: 'app', icon: 'music-note', label: t('settings.tab.app') },
   { value: 'danger-zone', icon: 'delete', label: t('settings.tab.danger-zone') }
 ])
 
-type ActiveTab = 'profile' | 'subscription' | 'sounds' | 'danger-zone'
+type ActiveTab = 'profile' | 'subscription' | 'app' | 'danger-zone'
 const active_tab = useSessionRef<ActiveTab | null>('settings.active-tab', null)
 
 const is_mobile = useMobileBreakpoint('md')
@@ -88,7 +88,7 @@ const TAB_COMPONENTS = {
   index: TabIndex,
   profile: TabProfile,
   subscription: TabSubscription,
-  sounds: TabSounds,
+  app: TabApp,
   'danger-zone': TabDangerZone
 }
 
