@@ -36,7 +36,7 @@ const emit = defineEmits<{
 }>()
 
 function onNavigate(value: TabIndexNavValue) {
-  emitSfx('ui.select')
+  emitSfx('ui.select', { blocking: true })
   emit('navigate', value)
 }
 </script>
