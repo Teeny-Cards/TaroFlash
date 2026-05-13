@@ -11,7 +11,7 @@ const { deck, size = 'base' } = defineProps<{
 </script>
 
 <template>
-  <div data-testid="deck" class="relative cursor-pointer h-min">
+  <div data-testid="deck-thumbnail" class="relative cursor-pointer h-min">
     <card side="cover" :size="size" :cover_config="deck?.cover_config" />
 
     <div

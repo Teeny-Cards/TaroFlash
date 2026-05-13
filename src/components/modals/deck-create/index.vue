@@ -2,7 +2,7 @@
 import { provide } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import DeckPreview from '@/components/deck/deck-preview.vue'
+import DeckDesignPreview from '@/components/deck/deck-design-preview.vue'
 import CoverDesigner from '@/components/deck/cover-designer/index.vue'
 import { useDeckEditor, deckEditorKey } from '@/composables/deck-editor'
 import { randomCoverConfig } from '@/utils/cover'
@@ -43,7 +43,7 @@ async function onSave() {
   >
     <div data-testid="deck-create__body" class="grid grid-cols-[auto_1fr] items-start gap-6 p-6">
       <div data-testid="deck-create__left" class="flex flex-col gap-6">
-        <deck-preview
+        <deck-design-preview
           data-testid="deck-create__preview"
           :cover="editor.cover"
           :card_attributes="editor.card_attributes"

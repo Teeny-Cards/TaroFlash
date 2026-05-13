@@ -43,7 +43,7 @@ function cycleSide() {
 </script>
 
 <template>
-  <div data-testid="deck-preview">
+  <div data-testid="deck-design-preview">
     <card
       size="xl"
       :side="side"
