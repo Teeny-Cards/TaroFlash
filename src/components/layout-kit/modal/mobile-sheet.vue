@@ -101,7 +101,14 @@ provide(mobileSheetOverlayKey, overlay_root)
             ]"
           >
             <div v-if="show_close_button" class="absolute top-0 left-0 p-4">
-              <ui-button icon-left="close" icon-only inverted @click="emit('close')" />
+              <ui-button
+                icon-left="close"
+                icon-only
+                inverted
+                @click="emit('close')"
+                play-on-tap
+                :sfx="{ click: 'ui.select' }"
+              />
             </div>
 
             <slot name="header-content">
