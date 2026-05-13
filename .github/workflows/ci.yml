@@ -242,14 +242,14 @@ jobs:
           def is_strip(key: str) -> bool:
               return '/src/' in key and '/src/api/' not in key
 
-          stripped = 0
+          counter = [0]
+
           def visit(node):
-              nonlocal stripped
               if isinstance(node, dict):
                   for k in list(node.keys()):
                       if isinstance(k, str) and is_strip(k):
                           del node[k]
-                          stripped += 1
+                          counter[0] += 1
                       else:
                           visit(node[k])
               elif isinstance(node, list):
@@ -258,7 +258,7 @@ jobs:
 
           visit(blob)
           path.write_text(json.dumps(blob))
-          print(f'stripped {stripped} non-api file entries from stale contract blob')
+          print(f'stripped {counter[0]} non-api file entries from stale contract blob')
           PY
 
       - name: Merge coverage
