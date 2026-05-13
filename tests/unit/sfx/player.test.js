@@ -49,6 +49,7 @@ describe('audio_player._play', () => {
     audio_player.loaded_sounds.clear()
     audio_player.unlocked = true
     audio_player.queued_sound = undefined
+    audio_player.blocking = false
     vi.useRealTimers()
   })
 
@@ -140,6 +141,72 @@ describe('audio_player._play', () => {
 
   test('throws when sound not loaded', async () => {
     await expect(audio_player.play('ui.missing')).rejects.toThrow('Sound "ui.missing" not loaded.')
+  })
+
+  test('sets blocking flag synchronously when play() called with blocking option', () => {
+    const sound = makeFakeSound()
+    audio_player.loaded_sounds.set('ui.select', sound)
+
+    audio_player.play('ui.select', { blocking: true })
+
+    expect(audio_player.blocking).toBe(true)
+  })
+
+  test('drops non-blocking sound while blocking flag is set', async () => {
+    const blocker = makeFakeSound()
+    const other = makeFakeSound()
+    audio_player.loaded_sounds.set('ui.select', blocker)
+    audio_player.loaded_sounds.set('ui.click_07', other)
+
+    const blocking_promise = audio_player.play('ui.select', { blocking: true })
+    await audio_player.play('ui.click_07')
+
+    expect(other.play).not.toHaveBeenCalled()
+
+    blocker._fire('end')
+    await blocking_promise
+  })
+
+  test('clears blocking flag once the blocking sound ends', async () => {
+    const sound = makeFakeSound()
+    audio_player.loaded_sounds.set('ui.select', sound)
+
+    const promise = audio_player.play('ui.select', { blocking: true })
+    expect(audio_player.blocking).toBe(true)
+
+    await Promise.resolve()
+    sound._fire('end')
+    await promise
+
+    expect(audio_player.blocking).toBe(false)
+  })
+
+  test('allows another blocking sound to play even while flag is set (self-bypass)', async () => {
+    const a = makeFakeSound()
+    const b = makeFakeSound()
+    audio_player.loaded_sounds.set('ui.select', a)
+    audio_player.loaded_sounds.set('ui.click_07', b)
+
+    const p1 = audio_player.play('ui.select', { blocking: true })
+    const p2 = audio_player.play('ui.click_07', { blocking: true })
+
+    await Promise.resolve()
+    expect(b.play).toHaveBeenCalled()
+
+    a._fire('end')
+    b._fire('end')
+    await Promise.all([p1, p2])
+  })
+
+  test('clears blocking flag when context fails to resume', async () => {
+    mockCtx.state = 'suspended'
+    mockCtx.resume.mockRejectedValue(new Error('needs gesture'))
+    const sound = makeFakeSound()
+    audio_player.loaded_sounds.set('ui.select', sound)
+
+    await audio_player.play('ui.select', { blocking: true })
+
+    expect(audio_player.blocking).toBe(false)
   })
 
   test('applies volume option before playing', async () => {
