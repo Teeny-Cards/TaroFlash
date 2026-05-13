@@ -223,6 +223,44 @@ jobs:
           path: .vitest-reports/
           if_no_artifact_found: warn
 
+      # Master's contract blob carries stale v8 instrumentation for files
+      # outside src/api/ (transitively imported during contract tests).
+      # When merged against PR source where those files have changed line
+      # numbers, v8 misaligns and reports drops on otherwise well-covered
+      # files (e.g. src/sfx/*). Strip non-api entries so the fallback blob
+      # contributes only its actual value: api coverage.
+      - name: Strip non-api entries from stale contract blob
+        if: needs.test-contract.result == 'skipped'
+        run: |
+          python3 - <<'PY'
+          import json, pathlib
+          path = pathlib.Path('.vitest-reports/blob-contract.json')
+          if not path.exists():
+              raise SystemExit(0)
+          blob = json.loads(path.read_text())
+
+          def is_strip(key: str) -> bool:
+              return '/src/' in key and '/src/api/' not in key
+
+          stripped = 0
+          def visit(node):
+              nonlocal stripped
+              if isinstance(node, dict):
+                  for k in list(node.keys()):
+                      if isinstance(k, str) and is_strip(k):
+                          del node[k]
+                          stripped += 1
+                      else:
+                          visit(node[k])
+              elif isinstance(node, list):
+                  for item in node:
+                      visit(item)
+
+          visit(blob)
+          path.write_text(json.dumps(blob))
+          print(f'stripped {stripped} non-api file entries from stale contract blob')
+          PY
+
       - name: Merge coverage
         id: merge
         continue-on-error: true
