@@ -6,7 +6,7 @@ import TabGeneral from './tab-general/index.vue'
 import TabStudy from './tab-study/index.vue'
 import TabDangerZone from './tab-danger-zone/index.vue'
 import TabIndex from './tab-index/index.vue'
-import DeckPreview from '@/components/deck/deck-preview.vue'
+import DeckDesignPreview from '@/components/deck/deck-design-preview.vue'
 import DeckAside from './deck-aside.vue'
 import { emitSfx } from '@/sfx/bus'
 import { slideFadeRightEnter, slideFadeRightLeave } from '@/utils/animations/slide-fade-right'
@@ -192,7 +192,7 @@ function onTabEnter(el: Element, done: () => void) {
             face_classes="bg-white! dark:bg-stone-700!"
           />
 
-          <deck-preview
+          <deck-design-preview
             :deck_id="deck.id"
             :cover="editor.cover"
             :card_attributes="editor.card_attributes"

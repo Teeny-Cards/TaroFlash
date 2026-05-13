@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import CoverDesigner from '@/components/deck/cover-designer/index.vue'
 import CardDesigner from './card-designer/index.vue'
 import TabBar from '@/components/layout-kit/tab-bar.vue'
-import DeckPreview from '@/components/deck/deck-preview.vue'
+import DeckDesignPreview from '@/components/deck/deck-design-preview.vue'
 import { deckEditorKey } from '@/composables/deck-editor'
 import { useMobileBreakpoint } from '@/composables/use-media-query'
 
@@ -33,7 +33,7 @@ const card_side_attributes = computed(() =>
       data-testid="tab-design__inline-preview"
       class="flex justify-center w-full"
     >
-      <deck-preview
+      <deck-design-preview
         :deck_id="editor.settings.id"
         :cover="editor.cover"
         :card_attributes="editor.card_attributes"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Deck from '@/components/deck.vue'
+import DeckThumbnail from '@/components/deck/deck-thumbnail.vue'
 import { useI18n } from 'vue-i18n'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiButton from '@/components/ui-kit/button.vue'
@@ -36,7 +36,7 @@ function onToggleEditCards() {
     data-testid="deck-hero"
     class="flex max-w-full flex-col items-center gap-6 md:flex-row md:items-end xl:w-max xl:flex-col xl:items-start"
   >
-    <deck size="lg" class="relative" :deck="deck">
+    <deck-thumbnail size="lg" class="relative" :deck="deck">
       <template #actions>
         <ui-button
           data-testid="deck-hero__settings-button"
@@ -49,7 +49,7 @@ function onToggleEditCards() {
           >{{ t('deck.settings-modal.title') }}</ui-button
         >
       </template>
-    </deck>
+    </deck-thumbnail>
 
     <div data-testid="deck-hero__details" class="flex flex-col items-center gap-2 md:items-start">
       <h2

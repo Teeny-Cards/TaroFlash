@@ -11,7 +11,7 @@ vi.mock('@/composables/use-media-query', async () => {
 })
 
 const DeckPreviewStub = defineComponent({
-  name: 'DeckPreview',
+  name: 'DeckDesignPreview',
   props: ['deck_id', 'cover', 'card_attributes', 'side'],
   emits: ['update:side'],
   setup(props, { emit }) {
@@ -67,7 +67,7 @@ function makeWrapper(editor = makeEditor()) {
     global: {
       provide: { [deckEditorKey]: editor },
       stubs: {
-        DeckPreview: DeckPreviewStub,
+        DeckDesignPreview: DeckPreviewStub,
         TabBar: TabBarStub,
         CoverDesigner: CoverDesignerStub,
         CardDesigner: CardDesignerStub
