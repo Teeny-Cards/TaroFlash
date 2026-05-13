@@ -37,7 +37,7 @@ function onThemeSelect(option: DeckTheme) {
     <h3 data-testid="theme-picker__label" class="text-brown-700 dark:text-brown-100">
       {{ label }}
     </h3>
-    <div data-testid="theme-picker" class="w-full flex gap-3">
+    <div data-testid="theme-picker" class="w-full flex flex-wrap gap-3">
       <button
         v-for="option in supported_themes"
         :key="`${option.light}:${option.dark ?? option.light}`"
@@ -45,7 +45,7 @@ function onThemeSelect(option: DeckTheme) {
         :data-theme="option.light"
         :data-theme-dark="option.dark"
         v-sfx.hover="'ui.click_07'"
-        class="w-9 aspect-square bg-(--theme-primary) rounded-8 rounded-tr-3 cursor-pointer relative! hover:outline-5 outline-white"
+        class="w-9 shrink-0 aspect-square bg-(--theme-primary) rounded-8 rounded-tr-3 cursor-pointer relative! hover:outline-5 outline-white"
         :class="{ 'outline-5 outline-white': isSelected(option) }"
         @click="onThemeSelect(option)"
       >
