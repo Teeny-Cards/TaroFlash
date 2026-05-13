@@ -11,3 +11,9 @@
     @slot;
   }
 }
+
+@custom-variant left-hand {
+  &:where([data-left-hand='true'] *, [data-left-hand='true']) {
+    @slot;
+  }
+}

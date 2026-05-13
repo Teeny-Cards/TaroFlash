@@ -7,7 +7,7 @@ import LabeledSection from '@/components/layout-kit/labeled-section.vue'
 import DangerDeleteAccountButton from '../danger-delete-account-button.vue'
 import { emitSfx } from '@/sfx/bus'
 
-export type TabIndexNavValue = 'profile' | 'subscription' | 'sounds'
+export type TabIndexNavValue = 'profile' | 'subscription' | 'app'
 
 const { t } = useI18n()
 
@@ -26,7 +26,7 @@ const nav_groups = computed<NavGroup[]>(() => [
   {
     key: 'app',
     heading: t('settings.index.app-heading'),
-    entries: [{ value: 'sounds', icon: 'music-note' }]
+    entries: [{ value: 'app', icon: 'music-note' }]
   }
 ])
 
