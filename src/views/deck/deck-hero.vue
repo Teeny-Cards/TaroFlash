@@ -36,7 +36,7 @@ function onToggleEditCards() {
     data-testid="deck-hero"
     class="flex max-w-full flex-col items-center gap-6 md:flex-row md:items-end xl:w-max xl:flex-col xl:items-start"
   >
-    <deck-thumbnail size="lg" class="relative" :deck="deck">
+    <deck-thumbnail size="lg" class="relative" :deck="deck" @click="onSettingsClicked">
       <template #actions>
         <ui-button
           data-testid="deck-hero__settings-button"
@@ -45,7 +45,6 @@ function onToggleEditCards() {
           icon-left="build"
           class="absolute! -top-2.5 -left-2.5"
           icon-only
-          @click="onSettingsClicked"
           >{{ t('deck.settings-modal.title') }}</ui-button
         >
       </template>
