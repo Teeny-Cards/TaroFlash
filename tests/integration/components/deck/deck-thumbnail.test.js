@@ -79,4 +79,21 @@ describe('Deck', () => {
     const wrapper = shallowMount(Deck, { props: {} })
     expect(wrapper.text()).toBe('')
   })
+
+  // ── actions slot ──────────────────────────────────────────────────────────────
+
+  test('renders the actions slot above the title', () => {
+    const wrapper = shallowMount(Deck, {
+      props: { deck: { title: 'My Deck' } },
+      slots: { actions: '<button data-testid="thumbnail-action">act</button>' }
+    })
+    expect(wrapper.find('[data-testid="thumbnail-action"]').exists()).toBe(true)
+  })
+
+  test('emits click when the root wrapper is clicked', async () => {
+    const wrapper = makeDeck()
+    await wrapper.find('[data-testid="deck-thumbnail"]').trigger('click')
+    expect(wrapper.emitted('click')).toBeTruthy()
+    expect(wrapper.emitted('click')).toHaveLength(1)
+  })
 })
