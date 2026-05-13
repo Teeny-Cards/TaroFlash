@@ -1,5 +1,24 @@
-import { describe, test, expect } from 'vite-plus/test'
+import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
+
+const { coarseRef, mockEmitSfx } = vi.hoisted(() => ({
+  coarseRef: { value: true },
+  mockEmitSfx: vi.fn()
+}))
+
+vi.mock('@/composables/use-media-query', () => ({
+  useMediaQuery: () => coarseRef
+}))
+
+vi.mock('gsap', () => ({
+  gsap: { to: vi.fn((_el, opts) => opts?.onComplete?.()) }
+}))
+
+vi.mock('@/sfx/bus', () => ({
+  emitSfx: mockEmitSfx,
+  emitHoverSfx: vi.fn()
+}))
+
 import UiButton from '@/components/ui-kit/button.vue'
 import UiTooltip from '@/components/ui-kit/tooltip.vue'
 
@@ -67,5 +86,102 @@ describe('UiButton', () => {
     expect(wrapper.find('[data-testid="ui-kit-button"]').attributes('data-theme-dark')).toBe(
       'grey-900'
     )
+  })
+
+  // ── playOnTap ──────────────────────────────────────────────────────────────
+
+  describe('playOnTap', () => {
+    beforeEach(() => {
+      coarseRef.value = true
+      mockEmitSfx.mockClear()
+    })
+
+    test('defers the click handler until after the tap animation on coarse pointers', async () => {
+      const onClick = vi.fn()
+      const wrapper = shallowMount(UiButton, {
+        props: { playOnTap: true },
+        attrs: { onClick }
+      })
+
+      await wrapper.find('[data-testid="ui-kit-button"]').trigger('click')
+
+      expect(onClick).toHaveBeenCalledTimes(1)
+    })
+
+    test('toggles data-playing while the tap is in flight', async () => {
+      let resolveTween
+      const { gsap } = await import('gsap')
+      gsap.to.mockImplementationOnce(
+        (_el, opts) =>
+          new Promise((resolve) => {
+            resolveTween = () => {
+              opts.onComplete()
+              resolve()
+            }
+          })
+      )
+
+      const onClick = vi.fn()
+      const wrapper = shallowMount(UiButton, {
+        props: { playOnTap: true },
+        attrs: { onClick }
+      })
+
+      await wrapper.find('[data-testid="ui-kit-button"]').trigger('click')
+
+      expect(wrapper.find('[data-testid="ui-kit-button"]').attributes('data-playing')).toBe('true')
+
+      resolveTween()
+    })
+
+    test('does not intercept on pointer:fine — handler fires natively', async () => {
+      coarseRef.value = false
+      const onClick = vi.fn()
+      const wrapper = shallowMount(UiButton, {
+        props: { playOnTap: true },
+        attrs: { onClick }
+      })
+
+      await wrapper.find('[data-testid="ui-kit-button"]').trigger('click')
+
+      expect(onClick).toHaveBeenCalledTimes(1)
+    })
+
+    test('does not intercept when playOnTap is false', async () => {
+      const onClick = vi.fn()
+      const wrapper = shallowMount(UiButton, {
+        props: { playOnTap: false },
+        attrs: { onClick }
+      })
+
+      const { gsap } = await import('gsap')
+      gsap.to.mockClear()
+      await wrapper.find('[data-testid="ui-kit-button"]').trigger('click')
+
+      expect(gsap.to).not.toHaveBeenCalled()
+      expect(onClick).toHaveBeenCalledTimes(1)
+    })
+
+    test('emits click sfx at the start of the tap when sfx.click is set', async () => {
+      const wrapper = shallowMount(UiButton, {
+        props: { playOnTap: true, sfx: { click: 'ui.select' } },
+        attrs: { onClick: vi.fn() }
+      })
+
+      await wrapper.find('[data-testid="ui-kit-button"]').trigger('click')
+
+      expect(mockEmitSfx).toHaveBeenCalledWith('ui.select', expect.any(Object))
+    })
+
+    test('omits sfx when sfx.click is not set', async () => {
+      const wrapper = shallowMount(UiButton, {
+        props: { playOnTap: true },
+        attrs: { onClick: vi.fn() }
+      })
+
+      await wrapper.find('[data-testid="ui-kit-button"]').trigger('click')
+
+      expect(mockEmitSfx).not.toHaveBeenCalled()
+    })
   })
 })

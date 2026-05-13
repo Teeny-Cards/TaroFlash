@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { computed, useSlots } from 'vue'
+import { computed, useAttrs, useSlots } from 'vue'
 import UiIcon from '@/components/ui-kit/icon.vue'
 import UiTooltip from '@/components/ui-kit/tooltip.vue'
+import { usePlayOnTap } from '@/composables/use-play-on-tap'
+import { emitSfx } from '@/sfx/bus'
 import type { SfxOptions } from '@/sfx/directive'
 
 defineOptions({ inheritAttrs: false })
@@ -19,6 +21,7 @@ export type ButtonProps = {
   sfx?: SfxOptions
   fullWidth?: boolean
   mobileTooltip?: boolean
+  playOnTap?: boolean
 }
 
 const {
@@ -30,10 +33,24 @@ const {
   fancyHover = true,
   sfx = {},
   fullWidth = false,
-  mobileTooltip = false
+  mobileTooltip = false,
+  playOnTap = false
 } = defineProps<ButtonProps>()
 
 const slots = useSlots()
+const attrs = useAttrs()
+
+const { playing, interceptClick } = usePlayOnTap({
+  reset: false,
+  beforePlay: () => {
+    const click_sfx = merged_sfx.value.click
+    if (!click_sfx) return
+    emitSfx(click_sfx, {
+      debounce: merged_sfx.value.debounce,
+      blocking: merged_sfx.value.click_blocking
+    })
+  }
+})
 
 const merged_sfx = computed(() => {
   return {
@@ -43,6 +60,13 @@ const merged_sfx = computed(() => {
 })
 
 const tooltip_active = computed(() => iconOnly && !!slots.default)
+
+function onCaptureClick(e: MouseEvent) {
+  if (!playOnTap) return
+  const handler = attrs.onClick as ((ev: MouseEvent) => void) | undefined
+  if (!handler) return
+  interceptClick(e, handler)
+}
 </script>
 
 <template>
@@ -56,6 +80,8 @@ const tooltip_active = computed(() => iconOnly && !!slots.default)
     class="ui-kit-btn group/btn"
     v-sfx="merged_sfx"
     v-bind="$attrs"
+    :data-playing="playing || null"
+    @click.capture="onCaptureClick"
     :class="[
       `ui-kit-btn--${size}`,
       `ui-kit-btn--${variant}`,
@@ -78,7 +104,7 @@ const tooltip_active = computed(() => iconOnly && !!slots.default)
       :class="{
         'bg-(--theme-primary) flex items-center justify-center': loading,
         hidden: !loading,
-        'group-hover/btn:block': !loading && fancyHover,
+        'group-hover/btn:block group-data-[playing=true]/btn:block': !loading && fancyHover,
         'bgx-color-[var(--theme-neutral)]': variant === 'solid',
         'bgx-color-[var(--theme-on-neutral)]': inverted
       }"
@@ -229,5 +255,15 @@ const tooltip_active = computed(() => iconOnly && !!slots.default)
   .ui-kit-btn:hover .btn-icon.btn-icon--right {
     transform: scale(1.3) rotate(5deg);
   }
+}
+
+.ui-kit-btn[data-playing] {
+  --btn-outline-width: 2px;
+}
+.ui-kit-btn[data-playing] .btn-icon.btn-icon--left {
+  transform: scale(1.3) rotate(-5deg);
+}
+.ui-kit-btn[data-playing] .btn-icon.btn-icon--right {
+  transform: scale(1.3) rotate(5deg);
 }
 </style>

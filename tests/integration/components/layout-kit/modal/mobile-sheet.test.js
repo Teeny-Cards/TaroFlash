@@ -91,6 +91,13 @@ describe('MobileSheet', () => {
     expect(wrapper.findComponent({ name: 'UiButton' }).exists()).toBe(false)
   })
 
+  test('close button opts into play-on-tap with ui.select sfx', () => {
+    const wrapper = mountSheet({ title: 'My Sheet' })
+    const closeBtn = wrapper.findComponent({ name: 'UiButton' })
+    expect(closeBtn.props('playOnTap')).toBe(true)
+    expect(closeBtn.props('sfx')).toEqual({ click: 'ui.select' })
+  })
+
   // ── default + footer slots ─────────────────────────────────────────────────
 
   test('renders default slot content into body', () => {

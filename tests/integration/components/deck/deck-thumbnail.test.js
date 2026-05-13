@@ -1,9 +1,24 @@
-import { describe, test, expect, vi } from 'vite-plus/test'
+import { describe, test, expect, vi, beforeEach } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
-import Deck from '@/components/deck/deck-thumbnail.vue'
+
+const { coarseRef, mockEmitSfx } = vi.hoisted(() => ({
+  coarseRef: { value: true },
+  mockEmitSfx: vi.fn()
+}))
+
+vi.mock('@/composables/use-media-query', () => ({
+  useMediaQuery: () => coarseRef
+}))
+
+vi.mock('@/sfx/bus', () => ({
+  emitSfx: mockEmitSfx,
+  emitHoverSfx: vi.fn()
+}))
 
 // Stub GSAP — pulled in transitively via Card
 vi.mock('gsap', () => ({ gsap: { fromTo: vi.fn(), to: vi.fn() } }))
+
+import Deck from '@/components/deck/deck-thumbnail.vue'
 
 function makeDeck(deck = {}, extraProps = {}) {
   return shallowMount(Deck, {
@@ -95,5 +110,91 @@ describe('Deck', () => {
     await wrapper.find('[data-testid="deck-thumbnail"]').trigger('click')
     expect(wrapper.emitted('click')).toBeTruthy()
     expect(wrapper.emitted('click')).toHaveLength(1)
+  })
+
+  // ── play-on-tap ────────────────────────────────────────────────────────────
+
+  describe('play-on-tap', () => {
+    beforeEach(() => {
+      coarseRef.value = true
+      mockEmitSfx.mockClear()
+    })
+
+    test('invokes the parent click handler after the hold completes on coarse pointers', async () => {
+      vi.useFakeTimers()
+      const onClick = vi.fn()
+      const wrapper = shallowMount(Deck, {
+        props: { deck: { title: 'X' } },
+        attrs: { onClick }
+      })
+
+      const click = wrapper.find('[data-testid="deck-thumbnail"]').trigger('click')
+
+      // Hold matches usePlayOnTap default — non-animate path uses setTimeout.
+      vi.advanceTimersByTime(500)
+      await click
+      vi.useRealTimers()
+
+      expect(onClick).toHaveBeenCalledTimes(1)
+    })
+
+    test('data-playing flips on while the hold is in flight', async () => {
+      vi.useFakeTimers()
+      const wrapper = shallowMount(Deck, {
+        props: { deck: { title: 'X' } },
+        attrs: { onClick: vi.fn() }
+      })
+
+      wrapper.find('[data-testid="deck-thumbnail"]').trigger('click')
+      await Promise.resolve() // let intercept run up to the await
+
+      expect(wrapper.find('[data-testid="deck-thumbnail"]').attributes('data-playing')).toBe('true')
+      vi.advanceTimersByTime(500)
+      vi.useRealTimers()
+    })
+
+    test('emits click_sfx via beforePlay when provided', async () => {
+      vi.useFakeTimers()
+      const wrapper = shallowMount(Deck, {
+        props: { deck: { title: 'X' }, click_sfx: 'ui.select' },
+        attrs: { onClick: vi.fn() }
+      })
+
+      wrapper.find('[data-testid="deck-thumbnail"]').trigger('click')
+      await Promise.resolve()
+
+      expect(mockEmitSfx).toHaveBeenCalledWith('ui.select')
+      vi.advanceTimersByTime(500)
+      vi.useRealTimers()
+    })
+
+    test('does not emit click_sfx when prop is absent', async () => {
+      vi.useFakeTimers()
+      const wrapper = shallowMount(Deck, {
+        props: { deck: { title: 'X' } },
+        attrs: { onClick: vi.fn() }
+      })
+
+      wrapper.find('[data-testid="deck-thumbnail"]').trigger('click')
+      await Promise.resolve()
+
+      expect(mockEmitSfx).not.toHaveBeenCalled()
+      vi.advanceTimersByTime(500)
+      vi.useRealTimers()
+    })
+
+    test('does not intercept on pointer:fine — click goes through immediately', async () => {
+      coarseRef.value = false
+      const onClick = vi.fn()
+      const wrapper = shallowMount(Deck, {
+        props: { deck: { title: 'X' } },
+        attrs: { onClick }
+      })
+
+      await wrapper.find('[data-testid="deck-thumbnail"]').trigger('click')
+
+      expect(onClick).toHaveBeenCalledTimes(1)
+      expect(mockEmitSfx).not.toHaveBeenCalled()
+    })
   })
 })
