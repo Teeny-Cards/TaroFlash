@@ -3,6 +3,7 @@ import { useUpsertMemberMutation } from '@/api/members'
 import { useMemberStore } from '@/stores/member'
 import { MEMBER_CARD_COVER_DEFAULTS } from '@/utils/member/defaults'
 import { buildMemberPayload, hasMemberChanges } from '@/utils/member/payload'
+import { withMemberPreferencesDefaults } from '@/utils/member/preferences'
 
 /**
  * Reactive state + mutations for editing the current member's profile.
@@ -19,14 +20,16 @@ export function useMemberEditor() {
     description: member_store.description
   })
 
+  const preferences = reactive(withMemberPreferencesDefaults(member_store.preferences))
+
   const cover = reactive<DeckCover>({ ...MEMBER_CARD_COVER_DEFAULTS })
 
   const email = computed(() => member_store.email ?? '')
   const created_at = computed(() => member_store.created_at ?? '')
   const plan = computed(() => member_store.plan ?? 'free')
 
-  const initial_payload = buildMemberPayload({ settings })
-  const is_dirty = computed(() => hasMemberChanges({ settings }, initial_payload))
+  const initial_payload = buildMemberPayload({ settings, preferences })
+  const is_dirty = computed(() => hasMemberChanges({ settings, preferences }, initial_payload))
 
   const upsert_mutation = useUpsertMemberMutation()
 
@@ -38,7 +41,7 @@ export function useMemberEditor() {
     try {
       await upsert_mutation.mutateAsync({
         id: member_store.id,
-        ...buildMemberPayload({ settings })
+        ...buildMemberPayload({ settings, preferences })
       })
       return true
     } catch {
@@ -48,6 +51,7 @@ export function useMemberEditor() {
 
   return {
     settings,
+    preferences,
     cover,
     email,
     created_at,

@@ -34,4 +34,16 @@ describe('upsertMember (contract)', () => {
     const member = await fetchMemberById(session.userId)
     expect(member?.display_name).toBe(display_name)
   })
+
+  test('round-trips a preferences blob (jsonb)', async () => {
+    const preferences = { accessibility: { left_hand: true } }
+    await upsertMember({
+      id: session.userId,
+      display_name: `prefs-${session.userId.slice(0, 8)}`,
+      description: '',
+      preferences
+    })
+    const member = await fetchMemberById(session.userId)
+    expect(member?.preferences).toEqual(preferences)
+  })
 })

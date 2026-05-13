@@ -116,7 +116,8 @@ describe('useMemberEditor', () => {
     expect(mockUpsert).toHaveBeenCalledWith({
       id: 'member-1',
       display_name: 'Renamed',
-      description: 'new desc'
+      description: 'new desc',
+      preferences: { accessibility: { left_hand: false } }
     })
   })
 

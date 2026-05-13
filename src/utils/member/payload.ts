@@ -1,12 +1,15 @@
 import { MEMBER_SETTINGS_DEFAULTS } from './defaults'
+import { withMemberPreferencesDefaults, type ResolvedMemberPreferences } from './preferences'
 
 export type MemberEditorState = {
   settings: { display_name?: string; description?: string }
+  preferences: MemberPreferences
 }
 
 export type MemberPayload = {
   display_name: string
   description: string
+  preferences: ResolvedMemberPreferences
 }
 
 /**
@@ -17,7 +20,8 @@ export type MemberPayload = {
 export function buildMemberPayload(state: MemberEditorState): MemberPayload {
   return {
     display_name: state.settings.display_name ?? MEMBER_SETTINGS_DEFAULTS.display_name,
-    description: state.settings.description ?? MEMBER_SETTINGS_DEFAULTS.description
+    description: state.settings.description ?? MEMBER_SETTINGS_DEFAULTS.description,
+    preferences: withMemberPreferencesDefaults(state.preferences)
   }
 }
 
@@ -25,3 +29,5 @@ export function buildMemberPayload(state: MemberEditorState): MemberPayload {
 export function hasMemberChanges(state: MemberEditorState, snapshot: MemberPayload): boolean {
   return JSON.stringify(buildMemberPayload(state)) !== JSON.stringify(snapshot)
 }
+
+export type { ResolvedMemberPreferences }

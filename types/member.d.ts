@@ -8,6 +8,13 @@ type Member = {
   updated_at?: string
   role?: MemberRole
   plan?: MemberPlan
+  preferences?: MemberPreferences
+}
+
+type MemberPreferences = {
+  accessibility?: {
+    left_hand?: boolean
+  }
 }
 
 declare type MemberRole = 'user' | 'moderator' | 'admin'
