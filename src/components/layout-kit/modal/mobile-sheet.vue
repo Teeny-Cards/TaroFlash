@@ -100,7 +100,11 @@ provide(mobileSheetOverlayKey, overlay_root)
               header_border_class
             ]"
           >
-            <div v-if="show_close_button" class="absolute top-0 left-0 p-4">
+            <div
+              v-if="show_close_button"
+              data-testid="mobile-sheet__close-slot"
+              class="absolute top-0 p-4 left-0 mobile-modal:left-auto mobile-modal:right-0 mobile-modal:left-hand:left-0 mobile-modal:left-hand:right-auto"
+            >
               <ui-button
                 icon-left="close"
                 icon-only
