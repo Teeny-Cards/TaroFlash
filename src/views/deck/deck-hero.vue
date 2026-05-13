@@ -36,7 +36,13 @@ function onToggleEditCards() {
     data-testid="deck-hero"
     class="flex max-w-full flex-col items-center gap-6 md:flex-row md:items-end xl:w-max xl:flex-col xl:items-start"
   >
-    <deck-thumbnail size="lg" class="relative" :deck="deck" @click="onSettingsClicked">
+    <deck-thumbnail
+      size="lg"
+      class="relative"
+      :deck="deck"
+      :click_sfx="'ui.select'"
+      @click="onSettingsClicked"
+    >
       <template #actions>
         <ui-button
           data-testid="deck-hero__settings-button"

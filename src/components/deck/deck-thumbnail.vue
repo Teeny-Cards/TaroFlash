@@ -1,20 +1,48 @@
 <script setup lang="ts">
+import { useAttrs } from 'vue'
 import Card from '@/components/card/index.vue'
+import { usePlayOnTap } from '@/composables/use-play-on-tap'
+import { emitSfx } from '@/sfx/bus'
+import type { NamespacedAudioKey } from '@/sfx/config'
 
 type CardSize = InstanceType<typeof Card>['$props']['size']
 
-const { deck, size = 'base' } = defineProps<{
+const {
+  deck,
+  size = 'base',
+  click_sfx
+} = defineProps<{
   deck?: Deck
   size?: CardSize
   hide_title?: boolean
+  click_sfx?: NamespacedAudioKey
 }>()
+
+const attrs = useAttrs()
+
+const { playing, interceptClick } = usePlayOnTap({
+  animate: false,
+  beforePlay: () => {
+    if (click_sfx) emitSfx(click_sfx)
+  }
+})
+
+function onCaptureClick(e: MouseEvent) {
+  const handler = attrs.onClick as ((ev: MouseEvent) => void) | undefined
+
+  if (!handler) return
+
+  interceptClick(e, handler)
+}
 </script>
 
 <template>
   <div
     data-testid="deck-thumbnail"
-    class="deck-thumbnail--outline pointer-fine:hover:scale-101 relative cursor-pointer h-min transition-all duration-75"
+    class="deck-thumbnail--outline pointer-fine:hover:scale-101 data-[playing=true]:scale-101 pointer-coarse:data-[playing=true]:scale-105 pointer-fine:transition-transform duration-75 relative cursor-pointer h-min touch-manipulation"
+    :data-playing="playing || null"
     v-sfx.hover="'ui.click_07'"
+    @click.capture="onCaptureClick"
   >
     <card side="cover" :size="size" :cover_config="deck?.cover_config" />
 
@@ -29,22 +57,30 @@ const { deck, size = 'base' } = defineProps<{
 </template>
 
 <style scoped>
+.deck-thumbnail--outline {
+  will-change: filter, transform;
+  --outline-color: var(--color-white);
+  --outline-size: 2px;
+  --outline-size--inset: calc(var(--outline-size) * -1);
+  --outline-diag: calc(var(--outline-size) * 0.7071);
+  --outline-diag--inset: calc(var(--outline-diag) * -1);
+  --outline-filter: drop-shadow(var(--outline-size) 0 0 var(--outline-color))
+    drop-shadow(var(--outline-size--inset) 0 0 var(--outline-color))
+    drop-shadow(0 var(--outline-size) 0 var(--outline-color))
+    drop-shadow(0 var(--outline-size--inset) 0 var(--outline-color))
+    drop-shadow(var(--outline-diag) var(--outline-diag) 0 var(--outline-color))
+    drop-shadow(var(--outline-diag--inset) var(--outline-diag) 0 var(--outline-color))
+    drop-shadow(var(--outline-diag) var(--outline-diag--inset) 0 var(--outline-color))
+    drop-shadow(var(--outline-diag--inset) var(--outline-diag--inset) 0 var(--outline-color));
+}
+
 @media (pointer: fine) {
   .deck-thumbnail--outline:hover {
-    --outline-color: var(--color-white);
-    --outline-size: 2px;
-    --outline-size--inset: calc(var(--outline-size) * -1);
-    --outline-diag: calc(var(--outline-size) * 0.7071);
-    --outline-diag--inset: calc(var(--outline-diag) * -1);
-
-    filter: drop-shadow(var(--outline-size) 0 0 var(--outline-color))
-      drop-shadow(var(--outline-size--inset) 0 0 var(--outline-color))
-      drop-shadow(0 var(--outline-size) 0 var(--outline-color))
-      drop-shadow(0 var(--outline-size--inset) 0 var(--outline-color))
-      drop-shadow(var(--outline-diag) var(--outline-diag) 0 var(--outline-color))
-      drop-shadow(var(--outline-diag--inset) var(--outline-diag) 0 var(--outline-color))
-      drop-shadow(var(--outline-diag) var(--outline-diag--inset) 0 var(--outline-color))
-      drop-shadow(var(--outline-diag--inset) var(--outline-diag--inset) 0 var(--outline-color));
+    filter: var(--outline-filter);
   }
+}
+
+.deck-thumbnail--outline[data-playing='true'] {
+  filter: var(--outline-filter);
 }
 </style>
