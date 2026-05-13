@@ -1,12 +1,6 @@
 <script setup lang="ts">
-import { computed, provide, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, onMounted, provide, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import TabDesign from './tab-design/index.vue'
-import TabGeneral from './tab-general/index.vue'
-import TabStudy from './tab-study/index.vue'
-import TabDangerZone from './tab-danger-zone/index.vue'
-import TabIndex from './tab-index/index.vue'
-import DeckDesignPreview from '@/components/deck/deck-design-preview.vue'
 import DeckAside from './deck-aside.vue'
 import { emitSfx } from '@/sfx/bus'
 import { slideFadeRightEnter, slideFadeRightLeave } from '@/utils/animations/slide-fade-right'
@@ -25,11 +19,29 @@ import Card from '@/components/card/index.vue'
 import TabSheet from '@/components/layout-kit/modal/tab-sheet.vue'
 
 export type DeckSettingsResponse = boolean
+type ActiveTab = 'general' | 'design' | 'study' | 'danger-zone'
 
 const { deck, close } = defineProps<{
   deck: Deck
   close: (response?: DeckSettingsResponse) => void
 }>()
+
+const TabDesign = defineAsyncComponent(() => import('./tab-design/index.vue'))
+const TabGeneral = defineAsyncComponent(() => import('./tab-general/index.vue'))
+const TabStudy = defineAsyncComponent(() => import('./tab-study/index.vue'))
+const TabDangerZone = defineAsyncComponent(() => import('./tab-danger-zone/index.vue'))
+const TabIndex = defineAsyncComponent(() => import('./tab-index/index.vue'))
+const DeckDesignPreview = defineAsyncComponent(
+  () => import('@/components/deck/deck-design-preview.vue')
+)
+
+const TAB_COMPONENTS = {
+  index: TabIndex,
+  design: TabDesign,
+  general: TabGeneral,
+  study: TabStudy,
+  'danger-zone': TabDangerZone
+}
 
 const { t } = useI18n()
 
@@ -39,22 +51,18 @@ provide(deckEditorKey, editor)
 const danger = useDeckDangerActions(editor, deck, close)
 provide(deckDangerActionsKey, danger)
 
+const is_tablet = useIsTablet()
+const is_mobile = useMobileBreakpoint('md')
+
+const active_tab = useSessionRef<ActiveTab | null>('deck-settings.active-tab', null)
+const tab_outlet = ref<HTMLElement>()
+
 const tabs = computed(() => [
   { value: 'general', icon: 'label', label: t('deck.settings-modal.tab.general') },
   { value: 'design', icon: 'design-services', label: t('deck.settings-modal.tab.design') },
   { value: 'study', icon: 'school-cap', label: t('deck.settings-modal.tab.study') },
   { value: 'danger-zone', icon: 'delete', label: t('deck.settings-modal.tab.danger-zone') }
 ])
-
-type ActiveTab = 'general' | 'design' | 'study' | 'danger-zone'
-const active_tab = useSessionRef<ActiveTab | null>('deck-settings.active-tab', null)
-
-const is_tablet = useIsTablet()
-const is_mobile = useMobileBreakpoint('md')
-
-watch(is_tablet, (is_below) => {
-  if (is_below && active_tab.value === 'danger-zone') active_tab.value = null
-})
 
 const displayed_tab = computed(() => active_tab.value ?? (is_tablet.value ? 'index' : 'general'))
 
@@ -72,6 +80,19 @@ const visible_side = computed(() =>
   displayed_tab.value === 'design' ? editor.active_side.value : 'cover'
 )
 
+const tab_component = computed(() => TAB_COMPONENTS[displayed_tab.value])
+
+onMounted(() => {
+  const idle = window.requestIdleCallback ?? ((cb: IdleRequestCallback) => setTimeout(cb, 200))
+  idle(() => {
+    import('./tab-design/index.vue')
+    import('./tab-general/index.vue')
+    import('./tab-study/index.vue')
+    import('./tab-danger-zone/index.vue')
+    import('./tab-index/index.vue')
+  })
+})
+
 function onPreviewSide(side: CardSide) {
   if (displayed_tab.value !== 'design') return
   editor.setActiveSide(side)
@@ -86,18 +107,6 @@ function onBack() {
   emitSfx('ui.select')
   active_tab.value = null
 }
-
-const tab_outlet = ref<HTMLElement>()
-
-const TAB_COMPONENTS = {
-  index: TabIndex,
-  design: TabDesign,
-  general: TabGeneral,
-  study: TabStudy,
-  'danger-zone': TabDangerZone
-}
-
-const tab_component = computed(() => TAB_COMPONENTS[displayed_tab.value])
 
 function onTabLeave(el: Element, done: () => void) {
   if (!is_mobile.value || !tab_outlet.value) {
@@ -114,6 +123,10 @@ function onTabEnter(el: Element, done: () => void) {
   }
   tabHeightEnter(tab_outlet.value)(el, done)
 }
+
+watch(is_tablet, (is_below) => {
+  if (is_below && active_tab.value === 'danger-zone') active_tab.value = null
+})
 </script>
 
 <template>
