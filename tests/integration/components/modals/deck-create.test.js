@@ -32,7 +32,7 @@ vi.mock('@/composables/deck-editor', async () => {
   }
 })
 
-vi.mock('@/components/deck/deck-preview.vue', async () => {
+vi.mock('@/components/deck/deck-design-preview.vue', async () => {
   const { defineComponent, h } = await import('vue')
   return {
     default: defineComponent({

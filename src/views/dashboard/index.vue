@@ -2,7 +2,7 @@
 import { computed, watch } from 'vue'
 import { useMemberDecksQuery } from '@/api/decks'
 import { useToast } from '@/composables/toast'
-import Deck from '@/components/deck.vue'
+import DeckThumbnail from '@/components/deck/deck-thumbnail.vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import UiButton from '@/components/ui-kit/button.vue'
@@ -64,7 +64,7 @@ async function onCreateDeckClicked() {
     <review-inbox :due_decks="due_decks" />
 
     <div class="flex gap-x-6.5 gap-y-8 flex-wrap md:col-start-2">
-      <Deck
+      <DeckThumbnail
         v-for="(deck, index) in decks"
         :key="index"
         :deck="deck"

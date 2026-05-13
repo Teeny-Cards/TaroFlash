@@ -1,6 +1,6 @@
 import { describe, test, expect, vi } from 'vite-plus/test'
 import { shallowMount } from '@vue/test-utils'
-import Deck from '@/components/deck.vue'
+import Deck from '@/components/deck/deck-thumbnail.vue'
 
 // Stub GSAP — pulled in transitively via Card
 vi.mock('gsap', () => ({ gsap: { fromTo: vi.fn(), to: vi.fn() } }))
@@ -16,7 +16,7 @@ describe('Deck', () => {
 
   test('renders the deck element', () => {
     const wrapper = makeDeck()
-    expect(wrapper.find('[data-testid="deck"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="deck-thumbnail"]').exists()).toBe(true)
   })
 
   // ── Card component with cover side ────────────────────────────────────────────
@@ -67,7 +67,7 @@ describe('Deck', () => {
 
   test('renders without crashing when deck prop is not provided', () => {
     const wrapper = shallowMount(Deck, { props: {} })
-    expect(wrapper.find('[data-testid="deck"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="deck-thumbnail"]').exists()).toBe(true)
   })
 
   test('passes undefined cover_config to Card when deck is not provided', () => {

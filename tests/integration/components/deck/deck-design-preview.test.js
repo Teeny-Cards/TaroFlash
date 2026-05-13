@@ -13,7 +13,7 @@ vi.mock('@/api/cards', () => ({
 
 vi.mock('@/sfx/bus', () => ({ emitSfx: emitSfxMock }))
 
-import DeckPreview from '@/components/deck/deck-preview.vue'
+import DeckPreview from '@/components/deck/deck-design-preview.vue'
 
 const CardStub = defineComponent({
   name: 'Card',
@@ -53,7 +53,7 @@ describe('DeckPreview', () => {
 
   test('renders the preview container with a single card stub', () => {
     const wrapper = mountPreview()
-    expect(wrapper.find('[data-testid="deck-preview"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="deck-design-preview"]').exists()).toBe(true)
     expect(wrapper.findAll('[data-testid="card-stub"]')).toHaveLength(1)
   })
 
