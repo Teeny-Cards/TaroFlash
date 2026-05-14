@@ -17,6 +17,7 @@ const emit = defineEmits<{ done: [] }>()
 
 <template>
   <div
+    data-testid="ui-kit-burst"
     class="burst"
     data-theme="brown-100"
     :class="`burst--${size}`"
