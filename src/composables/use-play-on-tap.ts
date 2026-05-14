@@ -5,6 +5,10 @@ import { BUTTON_TAP_DURATION, playButtonTap } from '@/utils/animations/button-ta
 type Options = {
   /** Run GSAP scale/rotate tween on the element. When false, just hold `playing` for the same duration so consumers can drive their own CSS via `[data-playing]`. Defaults to true. */
   animate?: boolean
+  /** Animate back to neutral after peaking instead of leaving the inline transform applied. Defaults to false. */
+  yoyo?: boolean
+  /** Seconds to hold at peak before resolving + returning. Yoyo-only. Defaults to 0.1. */
+  hold?: number
   /** Flip `playing` back to false after `onAfter` runs. Defaults to true. Set false to hold the active state (e.g. when a GSAP transform should remain applied until unmount). */
   reset?: boolean
   /** How long (in seconds) the tap state holds — also the duration handed to GSAP when `animate` is true. Defaults to `BUTTON_TAP_DURATION`. */
@@ -32,21 +36,24 @@ export function usePlayOnTap(options: Options = {}) {
   async function interceptClick(e: MouseEvent, onAfter: (e: MouseEvent) => void) {
     if (playing.value) return
 
+    options.beforePlay?.(e)
+
     if (active_on === 'coarse-only' && !is_coarse.value) return
+
+    const target = e.currentTarget as HTMLElement
 
     e.stopImmediatePropagation()
     e.preventDefault()
 
-    options.beforePlay?.(e)
-
     playing.value = true
     if (animate) {
-      await playButtonTap(e.currentTarget as HTMLElement, duration)
+      await playButtonTap(target, duration, { yoyo: options.yoyo, hold: options.hold })
     } else {
       await new Promise((resolve) => setTimeout(resolve, duration * 1000))
     }
 
     onAfter(e)
+    target.blur()
 
     if (reset) playing.value = false
   }
