@@ -10,7 +10,8 @@ defineProps<{ app: ViewApp | TriggerApp }>()
   <app-wrapper
     :title="app.title"
     :theme="app.launcher.theme"
-    class="rounded-6 pointer-fine:rounded-5.5 w-16.5 pointer-fine:w-15 aspect-square cursor-pointer hover:scale-110 focus:scale-110 transition-transform duration-50 flex items-center justify-center text-white group outline-none bg-(--theme-primary) hover:bgx-diagonal-stripes animation-safe:hover:bgx-slide animation-safe:focus:bgx-slide focus:bgx-diagonal-stripes"
+    tap-burst="base"
+    class="rounded-6 pointer-fine:rounded-5.5 w-16.5 pointer-fine:w-15 aspect-square cursor-pointer hover:scale-110 focus:scale-110 transition-transform duration-50 flex items-center justify-center text-white group outline-none bg-(--theme-primary) tap:bgx-diagonal-stripes animation-safe:tap:bgx-slide"
   >
     <ui-image
       :src="app.launcher.icon_src"

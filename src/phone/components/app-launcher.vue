@@ -37,7 +37,11 @@ shortcuts.register([
   },
   {
     combo: 'enter',
-    handler: () => openApp()
+    handler: () => {
+      const app = apps[active_app.value]
+      if (app) onTapApp(app)
+      openApp()
+    }
   }
 ])
 
@@ -73,10 +77,10 @@ function openApp(app?: PhoneApp) {
   if (found.type === 'widget') return
 
   phone.open(found.id)
+}
 
-  if (found.type === 'view') {
-    emitSfx('ui.toggle_on')
-  }
+function onTapApp(app: PhoneApp) {
+  if (app.type === 'view') emitSfx('ui.toggle_on')
 }
 
 // If the hovered app is not the active app,
@@ -113,7 +117,7 @@ function _getActiveApp() {
     </div>
 
     <div
-      class="w-full grid grid-cols-[auto_auto_auto] grid-rows-[auto_auto_auto] gap-2 pointer-coarse:gap-y-4 justify-center content-center"
+      class="w-full grid grid-cols-[auto_auto_auto] grid-rows-[auto_auto_auto] gap-2 justify-center content-center"
     >
       <template v-for="app in apps">
         <view-app
@@ -122,6 +126,7 @@ function _getActiveApp() {
           :key="app.id"
           :app="app"
           @click="openApp(app)"
+          @tap-start="onTapApp(app)"
           @mouseenter="onHoverApp(app)"
         />
 
