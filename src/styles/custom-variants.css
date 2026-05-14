@@ -12,6 +12,17 @@
   }
 }
 
+@custom-variant tap {
+  &:where(:focus-visible, [data-playing='true']) {
+    @slot;
+  }
+  @media (hover: hover) {
+    &:where(:hover) {
+      @slot;
+    }
+  }
+}
+
 @custom-variant left-hand {
   &:where([data-left-hand='true'] *, [data-left-hand='true']) {
     @slot;
