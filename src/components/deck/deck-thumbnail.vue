@@ -20,19 +20,19 @@ const {
 
 const attrs = useAttrs()
 
-const { playing, interceptClick } = usePlayOnTap({
-  animate: false,
-  beforePlay: () => {
-    if (click_sfx) emitSfx(click_sfx)
-  }
-})
+const { playing, interceptClick } = usePlayOnTap({ animate: false })
 
 function onCaptureClick(e: MouseEvent) {
   const handler = attrs.onClick as ((ev: MouseEvent) => void) | undefined
 
   if (!handler) return
 
-  interceptClick(e, handler)
+  interceptClick(e, {
+    beforePlay: () => {
+      if (click_sfx) emitSfx(click_sfx)
+    },
+    onAfter: handler
+  })
 }
 </script>
 

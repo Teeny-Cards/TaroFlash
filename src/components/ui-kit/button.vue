@@ -40,17 +40,7 @@ const {
 const slots = useSlots()
 const attrs = useAttrs()
 
-const { playing, interceptClick } = usePlayOnTap({
-  reset: false,
-  beforePlay: () => {
-    const click_sfx = merged_sfx.value.click
-    if (!click_sfx) return
-    emitSfx(click_sfx, {
-      debounce: merged_sfx.value.debounce,
-      blocking: merged_sfx.value.click_blocking
-    })
-  }
-})
+const { playing, interceptClick } = usePlayOnTap({ reset: false })
 
 const merged_sfx = computed(() => {
   return {
@@ -65,7 +55,20 @@ function onCaptureClick(e: MouseEvent) {
   if (!playOnTap) return
   const handler = attrs.onClick as ((ev: MouseEvent) => void) | undefined
   if (!handler) return
-  interceptClick(e, handler)
+
+  interceptClick(e, {
+    beforePlay: emitClickSfx,
+    onAfter: handler
+  })
+}
+
+function emitClickSfx() {
+  const click_sfx = merged_sfx.value.click
+  if (!click_sfx) return
+  emitSfx(click_sfx, {
+    debounce: merged_sfx.value.debounce,
+    blocking: merged_sfx.value.click_blocking
+  })
 }
 </script>
 
