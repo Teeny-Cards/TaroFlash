@@ -4,11 +4,12 @@ export type BurstSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl'
 const {
   size = 'base',
   duration = 350,
-  color = 'white'
+  width
 } = defineProps<{
   size?: BurstSize
   duration?: number
-  color?: string
+  /** Streak width in px. Defaults to 6. */
+  width?: number
 }>()
 
 const emit = defineEmits<{ done: [] }>()
@@ -17,18 +18,22 @@ const emit = defineEmits<{ done: [] }>()
 <template>
   <div
     class="burst"
+    data-theme="brown-100"
     :class="`burst--${size}`"
-    :style="{ '--burst-dur': `${duration}ms`, '--burst-dot-color': color }"
+    :style="{
+      '--burst-dur': `${duration}ms`,
+      ...(width !== undefined && { '--burst-dot-size': `${width}px` })
+    }"
     @animationend.once="emit('done')"
   >
-    <div class="spoke" style="--i: 0"><span class="dot"></span></div>
-    <div class="spoke" style="--i: 1"><span class="dot"></span></div>
-    <div class="spoke" style="--i: 2"><span class="dot"></span></div>
-    <div class="spoke" style="--i: 3"><span class="dot"></span></div>
-    <div class="spoke" style="--i: 4"><span class="dot"></span></div>
-    <div class="spoke" style="--i: 5"><span class="dot"></span></div>
-    <div class="spoke" style="--i: 6"><span class="dot"></span></div>
-    <div class="spoke" style="--i: 7"><span class="dot"></span></div>
+    <div class="spoke" style="--i: 0"><span class="dot bg-(--theme-primary)"></span></div>
+    <div class="spoke" style="--i: 1"><span class="dot bg-(--theme-primary)"></span></div>
+    <div class="spoke" style="--i: 2"><span class="dot bg-(--theme-primary)"></span></div>
+    <div class="spoke" style="--i: 3"><span class="dot bg-(--theme-primary)"></span></div>
+    <div class="spoke" style="--i: 4"><span class="dot bg-(--theme-primary)"></span></div>
+    <div class="spoke" style="--i: 5"><span class="dot bg-(--theme-primary)"></span></div>
+    <div class="spoke" style="--i: 6"><span class="dot bg-(--theme-primary)"></span></div>
+    <div class="spoke" style="--i: 7"><span class="dot bg-(--theme-primary)"></span></div>
   </div>
 </template>
 
@@ -51,7 +56,7 @@ const emit = defineEmits<{ done: [] }>()
 
 .burst {
   --n: 8;
-  --dot-size: 6px;
+  --dot-size: var(--burst-dot-size, 6px);
   --spoke-min: var(--dot-size);
   --spoke-max: 25px;
 
@@ -103,7 +108,6 @@ const emit = defineEmits<{ done: [] }>()
   top: 0;
   width: var(--dot-size);
   height: var(--spoke-length);
-  background: var(--burst-dot-color, white);
   border-radius: 9999px;
   transform-origin: 50% 0%;
   translate: calc(-0.5 * var(--dot-size)) 0;
