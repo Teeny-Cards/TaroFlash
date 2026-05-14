@@ -32,7 +32,7 @@ function cycleMode() {
 </script>
 
 <template>
-  <widget :theme="theme" :title="title" tap-burst="base" @click="cycleMode">
+  <widget :theme="theme" :title="title" tap-burst="base" instant-action @click="cycleMode">
     <ui-image v-if="mode === 'system'" src="darkmode-system" />
     <ui-image v-else-if="mode === 'light'" src="darkmode-light" />
     <ui-image v-else src="darkmode-dark" />

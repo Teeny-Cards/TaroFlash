@@ -11,8 +11,15 @@ type AppWrapperProps = {
   tapHold?: number
   tapDuration?: number
   tapBurst?: BurstSize | false
+  /** Run the click handler synchronously on tap instead of waiting for the animation peak. */
+  instantAction?: boolean
 }
-const { tapHold = 0.1, tapDuration = 0.1, tapBurst = false } = defineProps<AppWrapperProps>()
+const {
+  tapHold = 0.1,
+  tapDuration = 0.1,
+  tapBurst = false,
+  instantAction = false
+} = defineProps<AppWrapperProps>()
 const emit = defineEmits<{ (e: 'tapStart'): void }>()
 defineOptions({ inheritAttrs: false })
 
@@ -29,13 +36,20 @@ const { playing, interceptClick } = usePlayOnTap({
 type ClickHandler = (ev: MouseEvent) => void
 
 function onCaptureClick(e: MouseEvent) {
-  emit('tapStart')
-  spawnBurst()
-
   const handler = resolveClickHandler()
-  if (!handler) return
 
-  interceptClick(e, handler)
+  interceptClick(e, {
+    onTap: () => {
+      emit('tapStart')
+      spawnBurst()
+    },
+    beforePlay: () => {
+      if (instantAction) handler?.(e)
+    },
+    onPeak: () => {
+      if (!instantAction) handler?.(e)
+    }
+  })
 }
 
 function resolveClickHandler(): ClickHandler | undefined {

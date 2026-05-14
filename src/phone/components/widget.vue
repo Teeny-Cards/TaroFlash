@@ -6,7 +6,8 @@ const {
   hoverEffect = true,
   tapHold = 0,
   tapDuration = 0.2,
-  tapBurst = false
+  tapBurst = false,
+  instantAction = true
 } = defineProps<{
   theme: Theme
   title: string
@@ -14,6 +15,7 @@ const {
   tapHold?: number
   tapDuration?: number
   tapBurst?: BurstSize | false
+  instantAction?: boolean
 }>()
 </script>
 
@@ -24,6 +26,7 @@ const {
     :tap-hold="tapHold"
     :tap-duration="tapDuration"
     :tap-burst="tapBurst"
+    :instant-action="instantAction"
     class="rounded-6 pointer-fine:rounded-5.5 w-16.5 pointer-fine:w-15 aspect-square cursor-pointer hover:scale-110 focus:scale-110 transition-transform duration-50 flex items-center justify-center text-white outline-none bg-(--theme-primary)"
     :class="{ 'tap:bgx-diagonal-stripes animation-safe:tap:bgx-slide': hoverEffect }"
   >
