@@ -16,12 +16,15 @@ defineProps<{ app: ViewApp | TriggerApp }>()
     <ui-image
       :src="app.launcher.icon_src"
       class="pointer-events-none"
-      :class="{ 'group-hover:hidden group-focus:hidden': app.launcher.hover_icon_src }"
+      :class="{
+        'group-hover:hidden group-focus:hidden group-data-[playing=true]:hidden':
+          app.launcher.hover_icon_src
+      }"
     />
     <ui-image
       v-if="app.launcher.hover_icon_src"
       :src="app.launcher.hover_icon_src"
-      class="hidden group-hover:block group-focus:block pointer-events-none"
+      class="hidden group-hover:block group-focus:block group-data-[playing=true]:block pointer-events-none"
     />
   </app-wrapper>
 </template>

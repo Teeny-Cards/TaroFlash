@@ -66,26 +66,29 @@ function spawnBurst() {
 
 <template>
   <div data-testid="app-wrapper-container" class="flex flex-col items-center gap-0.5">
-    <ui-tooltip
-      :text="title"
-      position="bottom"
-      :data-theme="theme"
-      :gap="is_coarse ? -16 : -5"
-      element="button"
-      data-testid="phone-app"
-      v-bind="$attrs"
-      :data-playing="playing || null"
-      @click.capture="onCaptureClick"
-    >
-      <slot></slot>
+    <div class="relative">
+      <ui-tooltip
+        :text="title"
+        position="bottom"
+        :data-theme="theme"
+        :gap="is_coarse ? -16 : -5"
+        element="button"
+        data-testid="phone-app"
+        v-bind="$attrs"
+        :data-playing="playing || null"
+        @click.capture="onCaptureClick"
+      >
+        <slot></slot>
+      </ui-tooltip>
       <ui-burst
         v-if="burst_id"
         :key="burst_id"
         :size="tapBurst || 'base'"
-        class="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        :width="5"
+        class="pointer-events-none left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
         @done="burst_id = 0"
       />
-    </ui-tooltip>
+    </div>
 
     <span data-testid="app-wrapper__title" class="text-brown-500 dark:text-brown-100 text-sm">{{
       title
