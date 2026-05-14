@@ -3,7 +3,7 @@ export type BurstSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl'
 
 const {
   size = 'base',
-  duration = 500,
+  duration = 350,
   color = 'white'
 } = defineProps<{
   size?: BurstSize
@@ -113,12 +113,15 @@ const emit = defineEmits<{ done: [] }>()
 @keyframes burstProgress {
   0% {
     --p: 0;
+    opacity: 1;
   }
-  50% {
+  60% {
     --p: 1;
+    opacity: 1;
   }
   100% {
     --p: 1;
+    opacity: 0;
   }
 }
 </style>
